@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -318,7 +319,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   ((BranchContentProvider) changeTable.getContentProvider()).refresh(true);
                   refreshContentDescription();
                   changeTable.refresh();
-               } catch (IllegalStateException ex) {
+               } catch (OseeCoreException ex) {
                   OSEELog.logException(getClass(), ex, true);
                } catch (SQLException ex) {
                   OSEELog.logException(getClass(), ex, true);
@@ -861,6 +862,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                });
             } catch (SQLException ex) {
                OSEELog.logException(ChangeReportView.class, ex, true);
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(ChangeReportView.class, ex, true);
             }
 
             monitor.done();
@@ -942,6 +945,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                ChangeReportInput input = new ChangeReportInput(branch);
                explore(input);
             } catch (SQLException ex) {
+               OSEELog.logException(ChangeReportView.class, ex, true);
+            } catch (OseeCoreException ex) {
                OSEELog.logException(ChangeReportView.class, ex, true);
             }
 

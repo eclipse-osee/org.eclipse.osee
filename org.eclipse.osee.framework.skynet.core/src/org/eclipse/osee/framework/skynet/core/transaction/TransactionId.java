@@ -17,6 +17,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 
 /**
  * Describes information associated with a transaction.
@@ -143,8 +144,9 @@ public class TransactionId implements Serializable {
     * @return The TransactionId associated with the transactionNumber from this dumb object
     * @throws ObjectStreamException
     * @throws SQLException
+    * @throws BranchDoesNotExist
     */
-   private Object readResolve() throws ObjectStreamException, SQLException {
+   private Object readResolve() throws ObjectStreamException, SQLException, BranchDoesNotExist {
       return TransactionIdManager.getInstance().getNonEditableTransactionId(transactionNumber);
    }
 

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactType
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -361,8 +362,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * the parent of a team is not a team. <br/><br/> If no branch is associated then null will be returned.
     * 
     * @throws SQLException
+    * @throws BranchDoesNotExist
     */
-   public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, BranchDoesNotExist {
       Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
       if (branchId != null && branchId > 0) {
          return BranchPersistenceManager.getInstance().getBranch(branchId);
@@ -372,7 +374,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
             return ((TeamDefinitionArtifact) parent).getTeamBranch();
          }
       }
-      return null;
+      throw new BranchDoesNotExist("Team Branch not found.");
    }
 
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws Exception {

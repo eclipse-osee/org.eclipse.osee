@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
@@ -50,6 +51,8 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
          try {
             changes = RevisionManager.getInstance().getTransactionChanges(parentItem);
          } catch (SQLException ex) {
+            OSEELog.logException(getClass(), ex, false);
+         } catch (OseeCoreException ex) {
             OSEELog.logException(getClass(), ex, false);
          }
          if (changes != null) {

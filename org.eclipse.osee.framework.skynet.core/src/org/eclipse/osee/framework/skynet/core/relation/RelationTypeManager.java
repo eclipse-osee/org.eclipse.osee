@@ -68,7 +68,7 @@ public class RelationTypeManager {
       return new ArrayList<RelationType>(idToTypeMap.values());
    }
 
-   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws SQLException {
+   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) {
       Collection<RelationType> relationTypes = instance.idToTypeMap.values();
       List<RelationType> validRelationTypes = new ArrayList<RelationType>();
       for (RelationType relationType : relationTypes) {

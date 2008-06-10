@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
@@ -73,10 +72,6 @@ public class ResultBrowserListener implements LocationListener {
             event.doit = false;
             int branchId = new Integer(value);
             Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-            if (branch == null) {
-               AWorkbench.popup("ERROR", "Can't retrieve branch.");
-               return;
-            }
             BranchView.revealBranch(branch);
          }
       } catch (Exception ex) {

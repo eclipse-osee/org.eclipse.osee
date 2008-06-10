@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,7 +29,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -38,9 +39,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -288,12 +291,13 @@ public class BranchManager {
          VersionArtifact verArt = smaMgr.getTargetedForVersion();
          if (verArt != null) {
             try {
-               Integer branchId = verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+               Integer branchId =
+                     verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
                if (branchId != null && branchId > 0) {
                   parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
                }
-            } catch (AttributeDoesNotExist ex) {
-               // do nothing
+            } catch (BranchDoesNotExist ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
          }
       }
@@ -508,26 +512,29 @@ public class BranchManager {
     * 
     * @return artifacts modified
     */
-   public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) throws SQLException {
+   public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-      if (smaMgr.getBranchMgr().isWorkingBranch()) {
-         try {
-            Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
-            return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch, includeRelationOnlyChanges);
-         } catch (SQLException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
-         TransactionId transactionId = getTransactionId();
-         if (transactionId != null) {
+      try {
+         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
+         if (smaMgr.getBranchMgr().isWorkingBranch()) {
             try {
-               return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
+               Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+               return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch,
                      includeRelationOnlyChanges);
             } catch (SQLException ex) {
-               OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
+            TransactionId transactionId = getTransactionId();
+            if (transactionId != null) {
+
+               return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
+                     includeRelationOnlyChanges);
+
             }
          }
+      } catch (Exception ex) {
+         OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
       }
       return arts;
    }
@@ -540,12 +547,13 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsRelChanged() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-      TransactionId transactionId = getTransactionId();
-      if (transactionId == null) return arts;
       try {
+         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
+         TransactionId transactionId = getTransactionId();
+         if (transactionId == null) return arts;
+
          return RevisionManager.getInstance().getRelationChangedArtifacts(transactionId, transactionId);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logSevere(AtsPlugin.class, "Error getting relation changed artifacts", true);
       }
       return arts;
@@ -554,8 +562,10 @@ public class BranchManager {
    /**
     * @return true if isWorkingBranch() and changes exist else false
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public Boolean isChangesOnWorkingBranch() throws SQLException {
+   public Boolean isChangesOnWorkingBranch() throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       if (isWorkingBranch()) {
          Pair<TransactionId, TransactionId> transactionToFrom =
                TransactionIdManager.getInstance().getStartEndPoint(getWorkingBranch());
@@ -574,14 +584,13 @@ public class BranchManager {
     * 
     * @return artifacts that were deleted
     */
-   public Collection<Artifact> getArtifactsDeleted() throws SQLException {
+   public Collection<Artifact> getArtifactsDeleted() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-
-      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-      TransactionId transactionId = getTransactionId();
-      if (transactionId == null) return arts;
-
       try {
+         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
+         TransactionId transactionId = getTransactionId();
+         if (transactionId == null) return arts;
+
          for (ArtifactChange artChange : RevisionManager.getInstance().getDeletedArtifactChanges(transactionId)) {
             if (artChange.getModType() == ModificationType.DELETED) {
                arts.add(artChange.getArtifact());

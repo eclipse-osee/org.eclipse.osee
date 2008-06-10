@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
@@ -218,8 +219,9 @@ public class ArtifactChange extends RevisionChange {
    /**
     * @param conflictingModArtifact The conflictingModArtifact to set.
     * @throws SQLException
+    * @throws BranchDoesNotExist
     */
-   public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException {
+   public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException, BranchDoesNotExist {
       this.conflictingModArtifact = conflictingModArtifact;
       this.conflictingArtId = conflictingModArtifact.getArtId();
       this.conflictingArtTransactionId =

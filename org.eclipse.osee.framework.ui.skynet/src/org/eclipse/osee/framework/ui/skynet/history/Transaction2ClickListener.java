@@ -10,27 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.history;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
  */
 public class Transaction2ClickListener implements IDoubleClickListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(Transaction2ClickListener.class);
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-
    /*
     * (non-Javadoc)
     * 
@@ -41,20 +36,21 @@ public class Transaction2ClickListener implements IDoubleClickListener {
       if (selectedItem instanceof TransactionData) {
          openArtifact((TransactionData) selectedItem);
       } else {
-         logger.log(Level.WARNING, selectedItem.getClass().getName());
+         OSEELog.logWarning(SkynetGuiPlugin.class, "Selected item not of expected type", true);
       }
    }
 
    private void openArtifact(TransactionData transactionData) {
       try {
          TransactionId transactionId =
-               transactionIdManager.getPossiblyEditableTransactionIfFromCache(transactionData.getTransactionNumber());
+               TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                     transactionData.getTransactionNumber());
          Artifact artifact =
                ArtifactPersistenceManager.getInstance().getArtifactFromId(transactionData.getAssociatedArtId(),
                      transactionId);
          ArtifactEditor.editArtifact(artifact);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 }

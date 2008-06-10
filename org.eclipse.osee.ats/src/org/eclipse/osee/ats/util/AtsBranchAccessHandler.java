@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -53,7 +55,7 @@ public class AtsBranchAccessHandler implements IEventReceiver {
             }
          }
       } catch (Exception ex) {
-         // Do nothing
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

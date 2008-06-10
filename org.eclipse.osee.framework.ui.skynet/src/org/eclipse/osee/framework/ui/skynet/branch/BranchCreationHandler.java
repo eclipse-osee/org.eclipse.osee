@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -85,6 +86,9 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       } catch (SQLException ex) {
          OSEELog.logException(getClass(), ex, true);
          return null;
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(getClass(), ex, true);
+         return null;
       }
       final EntryDialog dialog =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch",
@@ -100,8 +104,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                   // Artifact"};
 
                   Set<String> allArtifactTypes = new HashSet<String>();
-                  for (ArtifactType artifactType : ConfigurationPersistenceManager.getValidArtifactTypes(
-                        parentTransactionId.getBranch())) {
+                  for (ArtifactType artifactType : ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch())) {
                      allArtifactTypes.add(artifactType.getName());
                   }
 
@@ -136,6 +139,8 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
                PermissionEnum.READ)));
       } catch (SQLException ex) {
+         return false;
+      } catch (OseeCoreException ex) {
          return false;
       }
    }

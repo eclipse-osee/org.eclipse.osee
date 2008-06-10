@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
  * @author Robert A. Fisher
  */
 public class ConflictingArtifactSearch implements ISearchPrimitive {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ConflictingArtifactSearch.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final String TOKEN = ";";
    private static final String CONFLICT_TABLE =
@@ -132,10 +130,10 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
       try {
          parentBranch = branchManager.getBranch(parentBranchId).getBranchName();
          childBranch = branchManager.getBranch(childBranchId).getBranchName();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          parentBranch = Integer.toString(parentBranchId);
          childBranch = Integer.toString(childBranchId);
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return "Parent Branch:" + parentBranch + " transactions " + parentBaseTransactionNumber + " to " + parentHeadTransactionNumber + "\n" + "Child Branch:" + childBranch + " transactions " + childBaseTransactionNumber + " to " + childHeadTransactionNumber;

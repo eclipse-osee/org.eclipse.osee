@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
@@ -174,8 +175,9 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     * @throws IOException
+    * @throws BranchDoesNotExist
     */
-   private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, IOException {
+   private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, IOException, BranchDoesNotExist {
       int artID = dataIn.readInt();
       int branchId = dataIn.readInt();
       return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getInstance().getBranch(branchId));

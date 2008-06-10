@@ -17,6 +17,9 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.ui.IMemento;
@@ -46,8 +49,10 @@ public class ChangeReportInput implements Serializable {
    /**
     * @param branch
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(Branch branch) throws SQLException {
+   public ChangeReportInput(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this("Change Report: " + branch.getDisplayName(), transactionIdManager.getStartEndPoint(branch),
             branch.getParentBranch() != null);
    }
@@ -56,16 +61,20 @@ public class ChangeReportInput implements Serializable {
     * @param transactionToFrom
     * @param detectConflicts
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, Pair<TransactionId, TransactionId> transactionToFrom, boolean detectConflicts) throws SQLException {
+   public ChangeReportInput(String name, Pair<TransactionId, TransactionId> transactionToFrom, boolean detectConflicts) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, transactionToFrom.getKey(), transactionToFrom.getValue(), detectConflicts, true);
    }
 
    /**
     * @param transactionId
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, TransactionId transactionId) throws SQLException {
+   public ChangeReportInput(String name, TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, transactionIdManager.getPriorTransaction(transactionId), transactionId);
    }
 
@@ -73,8 +82,10 @@ public class ChangeReportInput implements Serializable {
     * @param baseTransactionId
     * @param toTransactionId
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, TransactionId baseTransactionId, TransactionId toTransactionId) throws SQLException {
+   public ChangeReportInput(String name, TransactionId baseTransactionId, TransactionId toTransactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, baseTransactionId, toTransactionId, false, false);
    }
 
@@ -83,8 +94,10 @@ public class ChangeReportInput implements Serializable {
     * @param toTransaction
     * @param detectConflicts
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   private ChangeReportInput(String name, TransactionId baseTransaction, TransactionId toTransaction, boolean detectConflicts, boolean branchInput) throws SQLException {
+   private ChangeReportInput(String name, TransactionId baseTransaction, TransactionId toTransaction, boolean detectConflicts, boolean branchInput) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, null, baseTransaction, toTransaction, branchInput);
 
       if (baseTransaction.equals(toTransaction)) {
@@ -161,9 +174,11 @@ public class ChangeReportInput implements Serializable {
    /**
     * @param forceRefresh The forceRefresh to set.
     * @throws SQLException
+    * @throws BranchDoesNotExist
+    * @throws TransactionDoesNotExist
     * @throws IllegalStateException
     */
-   public void setForceRefresh(boolean forceRefresh) throws IllegalStateException, SQLException {
+   public void setForceRefresh(boolean forceRefresh) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this.forceRefresh = forceRefresh;
       if (branchInput && this.forceRefresh == true) {
          toTransaction = transactionIdManager.getNonEditableStartEndPoint(baseTransaction.getBranch()).getValue();
@@ -234,7 +249,7 @@ public class ChangeReportInput implements Serializable {
 
          return new ChangeReportInput(priorName, priorBaseParentTransactionId, priorBaseTransactionId,
                priorToTransactionId, priorBranchInput);
-      } catch (IllegalArgumentException ex) {
+      } catch (OseeCoreException ex) {
          return null;
       }
    }

@@ -27,9 +27,11 @@ import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTem
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -582,12 +585,16 @@ public class AccessControlManager implements PersistenceManager {
 
    private PermissionEnum getBranchPermission(Artifact subject, Object object) throws SQLException {
       Branch branch = null;
-      if (object instanceof BranchAccessObject) {
-         branch = BranchPersistenceManager.getInstance().getBranch(((BranchAccessObject) object).getBranchId());
-      } else if (object instanceof ArtifactAccessObject) {
-         branch = BranchPersistenceManager.getInstance().getBranch(((ArtifactAccessObject) object).getBranchId());
+      try {
+         if (object instanceof BranchAccessObject) {
+            branch = BranchPersistenceManager.getInstance().getBranch(((BranchAccessObject) object).getBranchId());
+         } else if (object instanceof ArtifactAccessObject) {
+            branch = BranchPersistenceManager.getInstance().getBranch(((ArtifactAccessObject) object).getBranchId());
+         }
+      } catch (BranchDoesNotExist ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         return null;
       }
-      if (branch == null) return null;
       return AccessControlManager.getInstance().getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
    }
 

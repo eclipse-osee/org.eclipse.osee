@@ -18,18 +18,23 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 
 /**
@@ -196,7 +201,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public Branch getParentBranch() throws SQLException {
       if (parentBranch == null && parentBranchId != NULL_PARENT_BRANCH_ID) {
-         parentBranch = BranchPersistenceManager.getInstance().getBranch(parentBranchId);
+         try {
+            parentBranch = BranchPersistenceManager.getInstance().getBranch(parentBranchId);
+         } catch (BranchDoesNotExist ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
       }
       return parentBranch;
    }
@@ -271,7 +280,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       archived = true;
    }
 
-   public boolean hasChanges() throws IllegalStateException, SQLException {
+   public boolean hasChanges() throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return RevisionManager.getInstance().branchHasChanges(this);
    }
 

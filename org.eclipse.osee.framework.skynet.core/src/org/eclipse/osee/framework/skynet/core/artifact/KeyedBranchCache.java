@@ -16,9 +16,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 
 /**
  * @author Donald G. Dunne
@@ -69,8 +73,12 @@ public class KeyedBranchCache {
 
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
-            keynameBranchMap.put(rSet.getString("static_branch_name").toLowerCase(),
-                  BranchPersistenceManager.getInstance().getBranch(rSet.getInt("mapped_branch_id")));
+            try {
+               keynameBranchMap.put(rSet.getString("static_branch_name").toLowerCase(),
+                     BranchPersistenceManager.getInstance().getBranch(rSet.getInt("mapped_branch_id")));
+            } catch (BranchDoesNotExist ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            }
          }
       } finally {
          DbUtil.close(chStmt);

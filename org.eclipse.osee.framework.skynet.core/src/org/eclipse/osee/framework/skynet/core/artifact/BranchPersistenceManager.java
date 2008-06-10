@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEve
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetEventBase;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -65,8 +64,11 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -327,10 +329,10 @@ public class BranchPersistenceManager implements PersistenceManager {
       }
    }
 
-   public Branch getBranch(Integer branchId) throws SQLException {
+   public Branch getBranch(Integer branchId) throws SQLException, BranchDoesNotExist {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
-      if (branchId < 1) throw new IllegalArgumentException("Branch Id " + branchId + " is invalid");
+      if (branchId < 1) throw new BranchDoesNotExist("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
       // so rehit the database for ids we don't have in cache.
@@ -340,13 +342,13 @@ public class BranchPersistenceManager implements PersistenceManager {
       Branch branch = branchCache.get(branchId);
 
       if (branch == null) {
-         throw new IllegalArgumentException("Branch could not be acquired for branch id: " + branchId);
+         throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
       }
 
       return branch;
    }
 
-   public Branch getBranchForTransactionNumber(Integer transactionNumber) throws SQLException {
+   public Branch getBranchForTransactionNumber(Integer transactionNumber) throws SQLException, BranchDoesNotExist {
       Branch branch;
       if (transactionIdBranchCache.containsKey(transactionNumber)) {
          branch = transactionIdBranchCache.get(transactionNumber);
@@ -360,7 +362,7 @@ public class BranchPersistenceManager implements PersistenceManager {
             if (chStmt.next()) {
                branch = getBranch(chStmt.getRset().getInt("branch_id"));
             } else {
-               throw new IllegalArgumentException(
+               throw new BranchDoesNotExist(
                      "There is no branch in the database associated with transaction: " + transactionNumber);
             }
          } finally {
@@ -492,20 +494,24 @@ public class BranchPersistenceManager implements PersistenceManager {
    /**
     * @return Returns true if there exists a conflict between the fromBranch and the toBranch
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public boolean hasConflicts(final Branch fromBranch, final Branch toBranch) throws SQLException {
+   public boolean hasConflicts(final Branch fromBranch, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return hasConflicts(fromBranch, null, toBranch);
    }
 
    /**
     * @return Returns true is there exists a conflict between the fromTransaction and the toBranch
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   public boolean hasConflicts(final TransactionId fromTransactionId, final Branch toBranch) throws SQLException {
+   public boolean hasConflicts(final TransactionId fromTransactionId, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return hasConflicts(null, fromTransactionId, toBranch);
    }
 
-   private boolean hasConflicts(final Branch fromBranch, final TransactionId fromTransactionId, final Branch toBranch) throws SQLException {
+   private boolean hasConflicts(final Branch fromBranch, final TransactionId fromTransactionId, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       boolean conflicts = false;
       boolean hasBranch = fromBranch != null;
 
@@ -938,7 +944,7 @@ public class BranchPersistenceManager implements PersistenceManager {
             }
             // if the branch id could not be acquired from the preferenceStore set the default
             // branch to the common branch.
-            catch (IllegalArgumentException ex) {
+            catch (BranchDoesNotExist ex) {
                try {
                   logger.log(Level.WARNING,
                         "Could not use default branch id from the prefernce store: " + ex.toString());

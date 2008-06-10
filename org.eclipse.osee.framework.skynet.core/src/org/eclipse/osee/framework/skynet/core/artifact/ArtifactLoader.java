@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -131,6 +133,8 @@ public final class ArtifactLoader {
                loadArtifactsData(queryId, artifacts, loadLevel, reload);
             }
             return artifacts;
+         } catch (OseeCoreException ex) {
+            throw new SQLException(ex);
          } finally {
             clearQuery(queryId);
             OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Artifact Load Time: %s",
@@ -182,7 +186,7 @@ public final class ArtifactLoader {
             Lib.getElapseString(time)));
    }
 
-   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws SQLException {
+   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws BranchDoesNotExist, SQLException {
       int artifactId = rSet.getInt("art_id");
       Branch branch = BranchPersistenceManager.getInstance().getBranch(rSet.getInt("branch_id"));
 
@@ -202,16 +206,20 @@ public final class ArtifactLoader {
       return artifact;
    }
 
-   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws SQLException {
+   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeDataStoreException, BranchDoesNotExist {
       int queryId = getNewQueryId();
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
-            artifact.getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+      try {
+         ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
+               artifact.getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
       List<Artifact> artifacts = new ArrayList<Artifact>(1);
       artifacts.add(artifact);
       loadArtifactsData(queryId, artifacts, loadLevel, false);
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws SQLException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws OseeDataStoreException, BranchDoesNotExist {
       if (reload) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
@@ -234,7 +242,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws SQLException {
+   private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws OseeDataStoreException, BranchDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
@@ -265,6 +273,8 @@ public final class ArtifactLoader {
             RelationManager.manageRelation(relation, RelationSide.SIDE_A);
             RelationManager.manageRelation(relation, RelationSide.SIDE_B);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -272,11 +282,11 @@ public final class ArtifactLoader {
       Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
       for (Artifact artifact : artifacts) {
          artifact.setLinksLoaded();
-         artifact.sortRelations(sideA, sideB);
+         RelationManager.sortRelations(artifact, sideA, sideB);
       }
    }
 
-   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts) throws SQLException {
+   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
@@ -291,11 +301,7 @@ public final class ArtifactLoader {
             int branchId = rSet.getInt("branch_id");
             if (artifactId != previousArtifactId || branchId != previousBranchId) {
                if (artifact != null) { // exclude the first pass because there is no previous artifact
-                  try {
-                     AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-                  } catch (OseeDataStoreException ex) {
-                     throw new SQLException(ex);
-                  }
+                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
                }
                previousArtifactId = artifactId;
                previousBranchId = branchId;
@@ -311,6 +317,8 @@ public final class ArtifactLoader {
             AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
                   rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }

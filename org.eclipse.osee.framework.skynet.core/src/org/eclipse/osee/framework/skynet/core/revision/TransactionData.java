@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -31,16 +33,16 @@ public class TransactionData {
    private int commitArtId;
    private int transactionNumber;
    private String name;
-   private int branchId;
+   private Branch branch;
 
-   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, int branchId, int commitArtId) {
+   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) {
       super();
       this.comment = comment == null ? "" : comment;
       this.timeStamp = timeStamp;
       this.transactionNumber = transactionId;
       this.associatedArtId = associatedArtId;
       this.commitArtId = commitArtId;
-      this.branchId = branchId;
+      this.branch = branch;
 
       try {
          User user = SkynetAuthentication.getInstance().getUserByArtId(authorId);
@@ -74,11 +76,11 @@ public class TransactionData {
    /**
     * @return Returns the branchId.
     */
-   public int getBranchId() {
-      return branchId;
+   public Branch getBranch() {
+      return branch;
    }
 
-   public TransactionId getTransactionId() throws SQLException {
+   public TransactionId getTransactionId() throws SQLException, BranchDoesNotExist {
       return TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(transactionNumber);
    }
 

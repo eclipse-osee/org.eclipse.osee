@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author b1528444

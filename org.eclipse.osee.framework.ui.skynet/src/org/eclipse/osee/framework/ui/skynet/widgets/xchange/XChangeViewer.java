@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -272,7 +273,9 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                   }
                });
             } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
             return Status.OK_STATUS;
          }

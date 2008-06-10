@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.skywalker;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -67,8 +66,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                }
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (ArtifactDoesNotExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (OseeDataStoreException ex) {
@@ -112,8 +109,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                   }
                }
             }
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          } catch (ArtifactDoesNotExist ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          } catch (OseeDataStoreException ex) {

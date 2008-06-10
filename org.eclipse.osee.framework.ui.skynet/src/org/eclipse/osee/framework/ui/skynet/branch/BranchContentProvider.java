@@ -43,6 +43,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifac
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -203,7 +205,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    // so they will just
    // use the snapshot that the first concurrently running job produced.
    @SuppressWarnings("unchecked")
-   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws SQLException {
+   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws SQLException, TransactionDoesNotExist {
       String key = calculateKey(input);
       Object[] changeReport = null;
       Date changeTime = null;
@@ -236,7 +238,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          ITreeNode node = new TreeNode(new SnapshotDescription(oldInput, input, changeTime));
          node.setChildren(changeReport);
          changeReport = new Object[] {node};
-      } catch (IllegalArgumentException ex) {
+      } catch (BranchDoesNotExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
 
@@ -251,7 +253,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    }
 
    @SuppressWarnings("unchecked")
-   private Object[] computeChangeReport(ChangeReportInput input) throws SQLException {
+   private Object[] computeChangeReport(ChangeReportInput input) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       Object[] items;
       if (input.isEmptyChange()) {
          items = EMPTY_REPORT_CHILDREN;
@@ -284,16 +286,16 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       return items;
    }
 
-   public static Object[] getArtifactChanges(ChangeReportInput input) throws SQLException {
+   public static Object[] getArtifactChanges(ChangeReportInput input) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return getArtifactChanges(input.getBaseParentTransactionId(), input.getBaseTransaction(),
             input.getToTransaction());
    }
 
-   private static Object[] getArtifactChanges(TransactionId toTransaction) throws SQLException {
+   private static Object[] getArtifactChanges(TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return getArtifactChanges(null, transactionIdManager.getPriorTransaction(toTransaction), toTransaction);
    }
 
-   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
+   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId headParentTransaction =
             baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
                   baseParentTransaction.getBranch()).getValue();

@@ -70,6 +70,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -742,7 +743,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   BranchPersistenceManager.getInstance().moveTransaction(transactionData.getTransactionId(), toBranch);
                }
             }
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);
          }
 
@@ -1021,9 +1022,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
                   return null;
                }
-               if (AccessControlManager.getInstance().checkObjectPermission(
-                     SkynetAuthentication.getUser(), selectedBranch.getAssociatedArtifact(),
-                     PermissionEnum.READ)) {
+               if (AccessControlManager.getInstance().checkObjectPermission(SkynetAuthentication.getUser(),
+                     selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
                   if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                      OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
                   else
@@ -1100,10 +1100,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    public void saveState(IMemento memento) {
       // Ask to save the user in case any changes to favorite branches have been made
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
-      try {
-         SkynetAuthentication.getUser().persistAttributes();
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         try {
+            SkynetAuthentication.getUser().persistAttributes();
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
    }
@@ -1191,6 +1191,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                return (SkynetSelections.oneBranchSelected(selection) && AccessControlManager.getInstance().checkObjectPermission(
                      SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || SkynetSelections.twoTransactionsSelectedOnSameBranch(selection);
             } catch (SQLException ex) {
+               return false;
+            } catch (OseeCoreException ex) {
                return false;
             }
          }

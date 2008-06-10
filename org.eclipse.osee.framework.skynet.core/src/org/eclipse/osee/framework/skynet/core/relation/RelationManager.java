@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEven
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 
 /**
@@ -284,7 +284,7 @@ public class RelationManager {
     * @throws SQLException
     * @deprecated
     */
-   public static void revertRelationsFor(Artifact artifact) throws SQLException {
+   public static void revertRelationsFor(Artifact artifact) {
       //This is inappropriate to use as references held to links by other applications will continue to exist.
       artifactToRelations.remove(artifact);
       for (RelationType type : RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch())) {
@@ -653,7 +653,7 @@ public class RelationManager {
     * @param artifact
     * @throws SQLException
     */
-   public static void sortRelations(Artifact artifact, Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) throws SQLException {
+   public static void sortRelations(Artifact artifact, Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) {
       List<RelationType> types = RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
       for (RelationType type : types) {
          List<RelationLink> relations = relationsByType.get(artifact, type);

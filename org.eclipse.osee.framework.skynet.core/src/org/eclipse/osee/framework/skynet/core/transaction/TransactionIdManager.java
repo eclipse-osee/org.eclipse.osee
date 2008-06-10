@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -82,7 +84,7 @@ public class TransactionIdManager {
       return transactionId;
    }
 
-   public TransactionId getPossiblyEditableTransactionId(Integer transactionNumber) throws SQLException {
+   public TransactionId getPossiblyEditableTransactionId(Integer transactionNumber) throws SQLException, BranchDoesNotExist {
       return getPossiblyEditableTransactionId(transactionNumber, true);
    }
 
@@ -91,12 +93,13 @@ public class TransactionIdManager {
     * non-editable transaction will be created if necessary and returned.
     * 
     * @param transactionNumber
+    * @throws BranchDoesNotExist
     */
-   public TransactionId getPossiblyEditableTransactionIfFromCache(Integer transactionNumber) throws SQLException {
+   public TransactionId getPossiblyEditableTransactionIfFromCache(Integer transactionNumber) throws SQLException, BranchDoesNotExist {
       return getPossiblyEditableTransactionId(transactionNumber, false);
    }
 
-   private TransactionId getPossiblyEditableTransactionId(Integer transactionNumber, boolean aggresive) throws SQLException {
+   private TransactionId getPossiblyEditableTransactionId(Integer transactionNumber, boolean aggresive) throws SQLException, BranchDoesNotExist {
       TransactionId transactionId;
       Branch branch = BranchPersistenceManager.getInstance().getBranchForTransactionNumber(transactionNumber);
 
@@ -128,8 +131,9 @@ public class TransactionIdManager {
     * new transactionId will be created, cached and then returned.
     * 
     * @param transactionNumber
+    * @throws BranchDoesNotExist
     */
-   public TransactionId getNonEditableTransactionId(Integer transactionNumber) throws SQLException {
+   public TransactionId getNonEditableTransactionId(Integer transactionNumber) throws SQLException, BranchDoesNotExist {
       TransactionId transactionId;
 
       if (nonEditableTransactionIdCache.containsKey(transactionNumber)) {
@@ -236,8 +240,9 @@ public class TransactionIdManager {
     * 
     * @param branch
     * @throws SQLException
+    * @throws BranchDoesNotExist
     */
-   public TransactionSwitch switchTransaction(Branch branch) throws SQLException {
+   public TransactionSwitch switchTransaction(Branch branch) throws SQLException, BranchDoesNotExist {
       int priorEditableTransactionNumber = getEditableTransactionId(branch).getTransactionNumber();
       int editableTransactionNumber = getlatestTransactionForBranch(branch);
       TransactionId editableTransactionId;
@@ -264,19 +269,21 @@ public class TransactionIdManager {
       return new Pair<Integer, TransactionId>(transactionNumber, updateEditableTransactionId(transactionNumber, branch));
    }
 
-   public Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws IllegalStateException, SQLException {
+   public Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return getStartEndPoint(branch, false);
    }
 
    /**
     * @throws SQLException
+    * @throws BranchDoesNotExist
+    * @throws TransactionDoesNotExist
     * @throws IllegalStateException occurs when the datastore query returns no min or max
     */
-   public Pair<TransactionId, TransactionId> getNonEditableStartEndPoint(Branch branch) throws SQLException, IllegalStateException {
+   public Pair<TransactionId, TransactionId> getNonEditableStartEndPoint(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       return getStartEndPoint(branch, true);
    }
 
-   private Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch, boolean nonEditable) throws SQLException, IllegalStateException {
+   private Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch, boolean nonEditable) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, SQL3DataType.INTEGER, branch.getBranchId());
@@ -297,7 +304,7 @@ public class TransactionIdManager {
          }
 
          if (rset.wasNull()) {
-            throw new IllegalStateException("Branch " + branch + " has no transactions");
+            throw new TransactionDoesNotExist("Branch " + branch + " has no transactions");
          }
 
          return new Pair<TransactionId, TransactionId>(minId, maxId);
@@ -339,8 +346,9 @@ public class TransactionIdManager {
     * @param time
     * @param branch
     * @return The prior transactionId, or null if there is no prior.
+    * @throws BranchDoesNotExist
     */
-   public TransactionId getPriorTransaction(Timestamp time, Branch branch) {
+   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws BranchDoesNotExist {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -367,8 +375,10 @@ public class TransactionIdManager {
     * @param transactionId
     * @return The prior transactionId, or null if there is no prior.
     * @throws SQLException
+    * @throws BranchDoesNotExist
+    * @throws TransactionDoesNotExist
     */
-   public TransactionId getPriorTransaction(TransactionId transactionId) throws SQLException {
+   public TransactionId getPriorTransaction(TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -382,9 +392,10 @@ public class TransactionIdManager {
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
             int priorId = rset.getInt("prior_id");
-            if (!rset.wasNull()) {
-               priorTransactionId = getPossiblyEditableTransactionIfFromCache(priorId);
+            if (rset.wasNull()) {
+               throw new TransactionDoesNotExist("the prior transation id was null");
             }
+            priorTransactionId = getPossiblyEditableTransactionIfFromCache(priorId);
          }
       } finally {
          DbUtil.close(chStmt);
@@ -392,7 +403,7 @@ public class TransactionIdManager {
       return priorTransactionId;
    }
 
-   public TransactionId getNextTransaction(TransactionId transactionId) {
+   public TransactionId getNextTransaction(TransactionId transactionId) throws TransactionDoesNotExist, BranchDoesNotExist {
       TransactionId nextTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -406,7 +417,10 @@ public class TransactionIdManager {
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
             int nextId = rset.getInt("next_id");
-            if (!rset.wasNull()) nextTransactionId = getPossiblyEditableTransactionIfFromCache(nextId);
+            if (rset.wasNull()) {
+               throw new TransactionDoesNotExist("the next transaction id was null");
+            }
+            nextTransactionId = getPossiblyEditableTransactionIfFromCache(nextId);
          }
       } catch (SQLException e) {
          logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -416,7 +430,7 @@ public class TransactionIdManager {
       return nextTransactionId;
    }
 
-   public TransactionId getParentBaseTransaction(Branch branch) throws SQLException {
+   public TransactionId getParentBaseTransaction(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       if (branch == null) throw new IllegalArgumentException("branch can not be null.");
       if (branch.getParentBranch() == null) throw new IllegalArgumentException("branch must have a parent branch.");
 

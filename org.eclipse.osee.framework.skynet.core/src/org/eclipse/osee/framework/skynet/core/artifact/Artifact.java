@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -55,8 +53,10 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -511,7 +511,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    private void ensureAttributesLoaded() throws SQLException {
       if (!isAttributesLoaded() && isInDb()) {
-         ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
+         try {
+            ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
+         } catch (OseeDataStoreException ex) {
+            throw new SQLException(ex);
+         } catch (BranchDoesNotExist ex) {
+            throw new SQLException(ex);
+         }
       }
    }
 
@@ -897,7 +903,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 
-   void prepareForReload() throws SQLException {
+   void prepareForReload() {
       attributes.clear();
       dirty = false;
       linksLoaded = false;
@@ -1560,12 +1566,5 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
       this.transactionId = active ? 0 : transactionId;
-   }
-
-   /**
-    * @throws SQLException
-    */
-   public void sortRelations(Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) throws SQLException {
-      RelationManager.sortRelations(this, sideA, sideB);
    }
 }

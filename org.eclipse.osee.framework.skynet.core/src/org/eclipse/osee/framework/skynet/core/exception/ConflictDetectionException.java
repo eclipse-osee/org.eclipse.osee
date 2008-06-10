@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.exception;
 
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 
 /**
  * @author Theron Virgin

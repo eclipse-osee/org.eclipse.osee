@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
@@ -189,7 +190,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       }
    }
 
-   private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, NumberFormatException, BranchDoesNotExist {
       BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
       final Branch branch;
       if (Strings.isValid(branchId)) {
