@@ -258,14 +258,6 @@
          </CharacterBackedAttributeType>
       </extension>  
       <extension
-            id="SimpleDateAttribute"
-            name="SimpleDateAttribute"
-            point="org.eclipse.osee.framework.skynet.core.AttributeType">
-         <CharacterBackedAttributeType
-               class="org.eclipse.osee.framework.skynet.core.attribute.SimpleDateAttribute">
-         </CharacterBackedAttributeType>
-      </extension>
-      <extension
             id="EnumeratedAttribute"
             name="EnumeratedAttribute"
             point="org.eclipse.osee.framework.skynet.core.AttributeType">

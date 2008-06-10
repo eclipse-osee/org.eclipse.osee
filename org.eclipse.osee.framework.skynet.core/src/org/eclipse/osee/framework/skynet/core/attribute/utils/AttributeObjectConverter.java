@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -24,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.SimpleDateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 
 /**
@@ -54,14 +51,6 @@ public class AttributeObjectConverter {
       if (clas.equals(FloatingPointAttribute.class)) {
          if (value.equals("")) return new Double(0);
          return new Double(value);
-      }
-      if (clas.equals(SimpleDateAttribute.class)) {
-         if (value.equals("")) return new Date(1);
-         try {
-            return DateFormat.getDateInstance().parse(value);
-         } catch (ParseException ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, "Could not parse the string value: " + value + " into a date");
-         }
       }
       if (clas.equals(EnumeratedAttribute.class)) {
          return value;

@@ -146,6 +146,7 @@ public class AttributeTypeManager {
       ensurePopulated();
       AttributeType attributeType = instance.idToTypeMap.get(attrTypeId);
       if (attributeType == null) {
+
          throw new IllegalArgumentException("Attribute type: " + attrTypeId + " is not available.");
       }
       return attributeType;

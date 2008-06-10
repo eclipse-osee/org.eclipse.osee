@@ -59,6 +59,9 @@ public class AttributeExtensionManager {
       if (index != -1 && index + 1 < name.length()) {
          name = name.substring(index + 1, name.length());
       }
+      if ("SimpleDateAttribute".equals(name)) {
+         name = "DateAttribute";
+      }
       return SkynetActivator.PLUGIN_ID + "." + name;
    }
 
