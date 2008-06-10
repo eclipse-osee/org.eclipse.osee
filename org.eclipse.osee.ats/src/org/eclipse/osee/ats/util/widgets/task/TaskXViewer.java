@@ -49,7 +49,6 @@ public class TaskXViewer extends WorldXViewer {
    private static String NAMESPACE = "org.eclipse.osee.ats.TaskXViewer";
    private final XTaskViewer xTaskViewer;
    private final IDirtiableEditor editor;
-   private final boolean isUsingTaskResolutionOptions;
    private final List<TaskResOptionDefinition> taskResOptionDefinitions;
    private Map<String, TaskResOptionDefinition> nameToResOptionDef = null;
    private boolean tasksEditable = true;
@@ -58,12 +57,15 @@ public class TaskXViewer extends WorldXViewer {
     * @param parent
     * @param style
     */
-   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, boolean isUsingTaskResolutionOptions, List<TaskResOptionDefinition> taskResOptionDefinition, XTaskViewer xTaskViewer) {
+   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, List<TaskResOptionDefinition> taskResOptionDefinition, XTaskViewer xTaskViewer) {
       super(parent, style, NAMESPACE, new TaskXViewerFactory());
       this.editor = editor;
-      this.isUsingTaskResolutionOptions = isUsingTaskResolutionOptions;
       this.taskResOptionDefinitions = taskResOptionDefinition;
       this.xTaskViewer = xTaskViewer;
+   }
+
+   public boolean isUsingTaskResolutionOptions() {
+      return this.taskResOptionDefinitions != null && taskResOptionDefinitions.size() > 0;
    }
 
    @Override
@@ -188,7 +190,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions ? taskResOptionDefinitions : null),
+               if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions() ? taskResOptionDefinitions : null),
                      getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifactItemsArray(), null);
@@ -277,7 +279,7 @@ public class TaskXViewer extends WorldXViewer {
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskStatusAction);
       editTaskStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
-      if (!isUsingTaskResolutionOptions) {
+      if (!isUsingTaskResolutionOptions()) {
          mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskResolutionAction);
          editTaskResolutionAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
       }
@@ -308,7 +310,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public boolean handleChangeResolution() throws Exception {
-      if (isUsingTaskResolutionOptions) {
+      if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
             update(getSelectedTaskArtifactItemsArray(), null);
@@ -347,7 +349,7 @@ public class TaskXViewer extends WorldXViewer {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false);
          } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Assignees_Col) {
             modified = taskSmaMgr.promptChangeAssignees();
-         } else if (isUsingTaskResolutionOptions && (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col)) {
+         } else if (isUsingTaskResolutionOptions() && (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col)) {
             modified = handleChangeResolution();
          } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Resolution_Col) {
             modified = handleChangeResolution();
@@ -383,13 +385,6 @@ public class TaskXViewer extends WorldXViewer {
 
    public Collection<WorldArtifactItem> getRootSet() {
       return xTaskViewer.getXViewer().getRootSet();
-   }
-
-   /**
-    * @return the isUsingTaskResolutionOptions
-    */
-   public boolean isUsingTaskResolutionOptions() {
-      return isUsingTaskResolutionOptions;
    }
 
    /**

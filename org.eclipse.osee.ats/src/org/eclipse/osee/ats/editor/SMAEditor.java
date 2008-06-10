@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
@@ -391,7 +392,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (wids.size() > 1) throw new IllegalArgumentException(
             "Expected on 1 " + TaskResolutionOptionRule.WORK_TYPE + ", found " + wids.size());
       WorkItemDefinition workItemDefinition = wids.iterator().next();
-      if (workItemDefinition != null) return ((TaskResolutionOptionRule) workItemDefinition).getOptions();
+      if (workItemDefinition != null) {
+         return TaskResolutionOptionRule.getOptions((WorkRuleDefinition) workItemDefinition);
+      }
       return new ArrayList<TaskResOptionDefinition>();
    }
 
@@ -432,7 +435,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public boolean isUsingTaskResolutionOptions() throws Exception {
       if (smaMgr.getWorkPageDefinition() == null) return false;
-      return (smaMgr.getWorkPageDefinition().getWorkItemDefinition(TaskResolutionOptionRule.ATS_TASK_OPTIONS_TAG) != null);
+      return (smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE).size() == 1);
    }
 
    /*

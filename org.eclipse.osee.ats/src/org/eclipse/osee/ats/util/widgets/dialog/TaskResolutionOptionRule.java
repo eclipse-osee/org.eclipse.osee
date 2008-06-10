@@ -12,9 +12,8 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -55,6 +54,13 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       return null;
    }
 
+   public static List<TaskResOptionDefinition> getOptions(WorkRuleDefinition workRuleDefinition) throws Exception {
+      TaskResolutionOptionRule taskResolutionOptionRule =
+            new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
+      taskResolutionOptionRule.fromXml((String) workRuleDefinition.getData());
+      return taskResolutionOptionRule.getOptions();
+   }
+
    public void setFromDoc(Document doc) {
       NodeList nodes = doc.getElementsByTagName(TaskResOptionDefinition.ATS_TASK_OPTION_TAG);
       if (nodes.getLength() > 0) {
@@ -67,17 +73,8 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       }
    }
 
-   public void fromXml(String xmlStr) {
-      String optionsXml = AXml.getTagData(xmlStr, ATS_TASK_OPTIONS_TAG);
-      Matcher m =
-            Pattern.compile(
-                  "<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">.*?</" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">",
-                  Pattern.DOTALL | Pattern.MULTILINE).matcher(optionsXml);
-      while (m.find()) {
-         TaskResOptionDefinition trd = new TaskResOptionDefinition();
-         trd.setFromXml(m.group());
-         options.add(trd);
-      }
+   public void fromXml(String xmlStr) throws Exception {
+      setFromDoc(Jaxp.readXmlDocument(xmlStr));
    }
 
    public String toXml() {
