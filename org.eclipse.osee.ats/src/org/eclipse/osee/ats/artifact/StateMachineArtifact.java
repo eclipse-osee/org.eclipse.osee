@@ -269,8 +269,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) throw new IllegalArgumentException("No Cancelled Event");
-         for (WorkPageDefinition toPage : smaMgr.getWorkFlowDefinition().getToPages(smaMgr.getWorkPageDefinition()))
-            if (toPage.getName().equals(item.getState())) return true;
+         for (WorkPageDefinition toWorkPageDefinition : smaMgr.getWorkFlowDefinition().getToPages(
+               smaMgr.getWorkPageDefinition()))
+            if (toWorkPageDefinition.getPageName().equals(item.getState())) return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

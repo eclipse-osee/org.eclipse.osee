@@ -25,7 +25,7 @@ public class WorkPageDefinitionViewSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      return getComparator().compare(((WorkPageDefinition) e1).getName(), ((WorkPageDefinition) e2).getName());
+      return getComparator().compare(((WorkPageDefinition) e1).getPageName(), ((WorkPageDefinition) e2).getPageName());
    }
 
 }

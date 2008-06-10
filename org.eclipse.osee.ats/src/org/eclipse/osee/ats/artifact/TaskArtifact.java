@@ -136,8 +136,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public StateMachineArtifact getParentSMA() throws SQLException {
-      Collection<StateMachineArtifact> smas =
-            getArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
+      Collection<StateMachineArtifact> smas = getArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
       if (smas.size() > 0) return smas.iterator().next();
       return null;
    }
@@ -199,10 +198,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       }
    }
 
-   public void parentWorkFlowTransitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
-      if (toPage.getName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
+   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist) throws Exception {
+      if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
-      else if (fromPage.getName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
+      else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
             SkynetAuthentication.getUser(), persist);
    }
 

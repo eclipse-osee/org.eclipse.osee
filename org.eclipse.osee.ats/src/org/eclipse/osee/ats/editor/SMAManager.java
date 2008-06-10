@@ -748,14 +748,15 @@ public class SMAManager {
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck) {
       try {
          // Validate toState name
-         final WorkPageDefinition fromPage = getWorkPageDefinition();
-         final WorkPageDefinition toPage = getWorkPageDefinitionByName(toStateName);
-         if (toPage == null) return new Result("Invalid toState \"" + toStateName + "\"");
+         final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
+         final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
+         if (toWorkPageDefinition == null) return new Result("Invalid toState \"" + toStateName + "\"");
 
          // Validate transition from fromPage to toPage
-         if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromPage).contains(toPage)) {
+         if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
+               toWorkPageDefinition)) {
             String errStr =
-                  "Not configured to transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
+                  "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
             OSEELog.logSevere(AtsPlugin.class, errStr, false);
             return new Result(errStr);
          }
@@ -765,12 +766,12 @@ public class SMAManager {
                "Working Branch exists.  Please commit or delete working branch before transition.");
 
          // Check extension points for valid transition
-         for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
-            Result result = item.transitioning(this, fromPage.getName(), toStateName, toAssignees);
+         for (IAtsStateItem item : stateItems.getStateItems(fromWorkPageDefinition.getId())) {
+            Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
             if (result.isFalse()) return result;
          }
-         for (IAtsStateItem item : stateItems.getStateItems(toPage.getId())) {
-            Result result = item.transitioning(this, fromPage.getName(), toStateName, toAssignees);
+         for (IAtsStateItem item : stateItems.getStateItems(toWorkPageDefinition.getId())) {
+            Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
             if (result.isFalse()) return result;
          }
 
@@ -779,13 +780,15 @@ public class SMAManager {
 
                @Override
                protected void handleTxWork() throws Exception {
-                  transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
+                  transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
+                        cancelReason);
                }
 
             };
             txWrapper.execute();
          } else {
-            transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
+            transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
+                  cancelReason);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -796,7 +799,7 @@ public class SMAManager {
 
    private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws Exception {
       // Log transition
-      if (toPage.getName().equals(DefaultTeamState.Cancelled.name())) {
+      if (toPage.isCancelledPage()) {
          getSma().getLog().addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
       } else {
          getSma().getLog().addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");
@@ -825,10 +828,10 @@ public class SMAManager {
 
       // Notify extension points of transition
       for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
-         item.transitioned(this, fromPage.getName(), toStateName, toAssignees);
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees);
       }
       for (IAtsStateItem item : stateItems.getStateItems(toPage.getId())) {
-         item.transitioned(this, fromPage.getName(), toStateName, toAssignees);
+         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees);
       }
    }
 

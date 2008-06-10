@@ -379,7 +379,7 @@ public class SMAWorkFlowSection extends SectionPart {
       smaMgr.getEditor().onDirtied();
    }
 
-   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
+   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws Exception {
       Composite comp = toolkit.createContainer(parent, 5);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -408,9 +408,16 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Set default page from workflow default
       ArrayList<Object> defaultPage = new ArrayList<Object>();
-      if (page.getDefaultToPage() != null) {
-         defaultPage.add(page.getDefaultToPage());
+      if (atsWorkPage.getDefaultToPage() != null) {
+         defaultPage.add(atsWorkPage.getDefaultToPage());
          transitionToStateCombo.setSelected(defaultPage);
+      }
+      if (atsWorkPage.isCancelledPage()) {
+         LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+         if (item != null) {
+            defaultPage.add(smaMgr.getWorkPageDefinitionByName(item.getState()));
+            transitionToStateCombo.setSelected(defaultPage);
+         }
       }
       // Update transition based on state items
       updateTransitionToState();
@@ -476,11 +483,11 @@ public class SMAWorkFlowSection extends SectionPart {
          // Return if override state is same as selected
          if (((AtsWorkPage) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) return;
          // Find page corresponding to override state name
-         for (WorkPageDefinition toPage : smaMgr.getToWorkPages()) {
-            if (toPage.getName().equals(transitionStateOverride)) {
+         for (WorkPageDefinition toWorkPageDefinition : smaMgr.getToWorkPages()) {
+            if (toWorkPageDefinition.getPageName().equals(transitionStateOverride)) {
                // Reset selection
                ArrayList<Object> defaultPage = new ArrayList<Object>();
-               defaultPage.add(toPage);
+               defaultPage.add(toWorkPageDefinition);
                transitionToStateCombo.setSelected(defaultPage);
                return;
             }
@@ -491,7 +498,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void setTransitionToStateSelection(String stateName) throws Exception {
       ArrayList<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
-         if (nextPage.getName().equals(stateName)) allPages.add(nextPage);
+         if (nextPage.getPageName().equals(stateName)) allPages.add(nextPage);
       }
       transitionToStateCombo.setSelected(allPages);
    }
@@ -515,7 +522,7 @@ public class SMAWorkFlowSection extends SectionPart {
             AWorkbench.popup("ERROR", "No Transition State Selected.");
             return;
          }
-         if (toWorkPageDefinition.getName().equals(DefaultTeamState.Cancelled.name())) {
+         if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
             EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
             Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true);
@@ -582,7 +589,7 @@ public class SMAWorkFlowSection extends SectionPart {
                try {
                   result =
                         item.transitioning(smaMgr, smaMgr.getStateMgr().getCurrentStateName(),
-                              toWorkPageDefinition.getName(), toAssignees);
+                              toWorkPageDefinition.getPageName(), toAssignees);
                   if (result.isFalse()) {
                      result.popup();
                      return;

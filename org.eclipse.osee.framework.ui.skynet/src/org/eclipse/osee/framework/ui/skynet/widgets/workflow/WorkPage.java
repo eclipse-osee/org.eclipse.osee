@@ -161,7 +161,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    public String toString() {
       StringBuffer sb =
             new StringBuffer(
-                  workPageDefinition.getName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
+                  workPageDefinition.getPageName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
       try {
          for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
                TransitionType.ToPage)) {
