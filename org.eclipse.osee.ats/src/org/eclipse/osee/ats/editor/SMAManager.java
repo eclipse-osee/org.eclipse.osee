@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.BranchManager;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
@@ -51,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -174,6 +174,19 @@ public class SMAManager {
       if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isTeamUsesVersions();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return false;
+      }
+   }
+
+   /**
+    * @return true if this is a TeamWorkflow requires a targeted version at all times
+    */
+   public boolean isRequireTargetedVersion() {
+      if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
+      try {
+         return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isRequireTargetedVersion();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
@@ -715,9 +728,9 @@ public class SMAManager {
       Result result =
             transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false);
       if (result.isTrue()) {
-         for (VersionArtifact verArt : sma.getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version,
+         for (VersionArtifact verArt : sma.getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version,
                VersionArtifact.class)) {
-            sma.deleteRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, verArt);
+            sma.deleteRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
          }
          sma.persistRelations();
       }
@@ -750,6 +763,14 @@ public class SMAManager {
          // Don't transition with uncommitted branch if this is a commit state
          if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
                "Working Branch exists.  Please commit or delete working branch before transition.");
+
+         // Don't transition without targeted version if so configured
+         if (sma.getSmaMgr().isRequireTargetedVersion() || AtsWorkDefinitions.isRequireTargetedVersion(getWorkPageDefinition())) {
+            if (getSma().getTargetedForVersion() == null && !toPage.isCancelledPage()) {
+               return new Result(
+                     "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
+            }
+         }
 
          // Check extension points for valid transition
          for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {

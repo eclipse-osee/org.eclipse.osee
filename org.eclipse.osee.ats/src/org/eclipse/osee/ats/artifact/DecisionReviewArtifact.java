@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -48,14 +48,14 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(CoreRelationEnumeration.TeamWorkflowToReview_Team);
+      registerSMARelation(AtsRelation.TeamWorkflowToReview_Team);
       decisionOptions = new XDecisionOptions(this);
    }
 
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
          Collection<TeamWorkFlowArtifact> teamArts =
-               getArtifacts(CoreRelationEnumeration.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+               getArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
          if (teamArts.size() == 0) throw new IllegalStateException(
                "Decision Review " + getHumanReadableId() + " has no parent workflow");
          if (teamArts.size() > 1) throw new IllegalStateException(

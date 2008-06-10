@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
@@ -54,7 +55,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsAllowTransitionWithWorkingBranch,
       atsAllowCreateBranch,
       atsAllowCommitBranch,
-      atsForceAssigneesToTeamLeads
+      atsForceAssigneesToTeamLeads,
+      atsRequireTargetedVersion
    }
 
    public static void relatePageToBranchCommitRules(String pageId) throws SQLException {
@@ -73,6 +75,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCreateBranch.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCommitBranch.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireTargetedVersion.name()));
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
@@ -104,11 +107,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam"));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
-            "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
+            "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
             "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE, "XDateDam",
-            XOption.HORIZONTAL_LABEL));
+            XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE, "XCheckBoxDam",
             XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE,
@@ -172,6 +175,10 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null);
    }
 
+   public static boolean isRequireTargetedVersion(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) != null);
+   }
+
    public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws Exception {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()) != null);
    }
@@ -203,7 +210,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
                System.out.println("Adding " + wid.getId() + " as class " + clazz);
                Artifact art = wid.toArtifact(writeType);
                // Relate if not already related
-               if (art.getArtifacts(CoreRelationEnumeration.WorkItem__Parent, Artifact.class).size() == 0) {
+               if (art.getArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
                   if (wid instanceof WorkPageDefinition) {
                      relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(), art);
                   }

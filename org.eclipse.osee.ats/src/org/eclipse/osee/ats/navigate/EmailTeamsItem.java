@@ -18,11 +18,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -67,11 +67,11 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getArtifacts(CoreRelationEnumeration.TeamMember_Member, User.class))
+            for (User user : teamDef.getArtifacts(AtsRelation.TeamMember_Member, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getArtifacts(CoreRelationEnumeration.TeamLead_Lead, User.class))
+            for (User user : teamDef.getArtifacts(AtsRelation.TeamLead_Lead, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
       }

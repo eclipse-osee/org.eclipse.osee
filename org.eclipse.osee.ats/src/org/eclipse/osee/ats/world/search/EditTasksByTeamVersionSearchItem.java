@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeByVersionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -29,11 +30,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -110,11 +110,11 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
       allProductCriteria.add(teamDefWorkflowSearch);
       allProductCriteria.add(teamWorkflowSearch);
       if (selectedVersion != null) allProductCriteria.add(new InRelationSearch(versionWorkflowSearch,
-            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow));
+            AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
       FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allProductCriteria, true);
 
       List<ISearchPrimitive> taskCriteria = new LinkedList<ISearchPrimitive>();
-      taskCriteria.add(new InRelationSearch(allTeamWorkflows, CoreRelationEnumeration.SmaToTask_Task));
+      taskCriteria.add(new InRelationSearch(allTeamWorkflows, AtsRelation.SmaToTask_Task));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

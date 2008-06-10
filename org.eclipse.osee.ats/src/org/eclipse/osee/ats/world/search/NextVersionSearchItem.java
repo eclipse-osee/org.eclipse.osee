@@ -16,10 +16,10 @@ import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -79,7 +79,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
       }
       List<Artifact> arts =
             getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
-                  CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow);
+                  AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }

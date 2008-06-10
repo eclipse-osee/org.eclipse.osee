@@ -180,7 +180,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
    }
 
-   public void moveObjectB(Artifact sideAArt, Artifact sideBArt, CoreRelationEnumeration relSide, Direction dir) throws SQLException {
+   public void moveObjectB(Artifact sideAArt, Artifact sideBArt, IRelationEnumeration relSide, Direction dir) throws SQLException {
       List<Artifact> arts = sideAArt.getRelatedArtifacts(relSide);
       Artifact prevArt = null;
       Artifact nextArt = null;

@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -29,7 +28,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
       User user = SkynetAuthentication.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
-               user.getArtifacts(CoreRelationEnumeration.TeamMember_Team, TeamDefinitionArtifact.class);
+               user.getArtifacts(AtsRelation.TeamMember_Team, TeamDefinitionArtifact.class);
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;

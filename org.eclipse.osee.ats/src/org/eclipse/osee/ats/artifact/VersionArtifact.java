@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 public class VersionArtifact extends BasicArtifact {
 
@@ -39,7 +39,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public TeamDefinitionArtifact getParentTeamDefinition() throws SQLException {
-      return getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
+      return getArtifacts(AtsRelation.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
    }
 
    public Boolean isReleased() throws IllegalStateException, SQLException, MultipleAttributesExist {
@@ -79,7 +79,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws SQLException {
-      return getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
+      return getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
    }
 
    public String getFullDisplayName() throws SQLException, MultipleAttributesExist {
@@ -102,7 +102,7 @@ public class VersionArtifact extends BasicArtifact {
 
    public TeamDefinitionArtifact getTeamDefinitionArtifact() throws SQLException {
       try {
-         return (TeamDefinitionArtifact) getRelatedArtifact(CoreRelationEnumeration.TeamDefinitionToVersion_TeamDefinition);
+         return (TeamDefinitionArtifact) getRelatedArtifact(AtsRelation.TeamDefinitionToVersion_TeamDefinition);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (Exception ex) {

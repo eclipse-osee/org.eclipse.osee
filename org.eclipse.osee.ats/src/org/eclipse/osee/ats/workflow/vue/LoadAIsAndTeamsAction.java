@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -29,7 +30,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
 import org.eclipse.osee.ats.config.AtsConfig;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -40,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -62,7 +64,6 @@ public class LoadAIsAndTeamsAction extends Action {
    private static String GET_OR_CREATE = "GetOrCreate";
    private static String LEAD = "Lead:";
    private static String MEMBER = "Member:";
-   private static String TEAM_USES_VERSIONS = "AtsTeamUsesVersions";
    private final String bundleId;
 
    /**
@@ -163,10 +164,10 @@ public class LoadAIsAndTeamsAction extends Action {
          ArrayList<User> members = new ArrayList<User>();
          java.util.Set<String> staticIds = new HashSet<String>();
          String desc = "";
-         boolean teamUsesVersions = false;
          boolean getOrCreate = false;
          String fullName = "";
          String workflowId = "";
+         List<TeamDefinitionOptions> teamDefinitionOptions = new ArrayList<TeamDefinitionOptions>();
          for (String line : page.getInstructionStr().replaceAll("\r", "\n").split("\n")) {
             if (!line.equals("")) {
                if (line.startsWith(DESCRIPTION))
@@ -179,8 +180,10 @@ public class LoadAIsAndTeamsAction extends Action {
                   getOrCreate = true;
                else if (line.startsWith(FULL_NAME))
                   fullName = line.replaceFirst(FULL_NAME, "");
-               else if (line.startsWith(TEAM_USES_VERSIONS))
-                  teamUsesVersions = true;
+               else if (line.contains(TeamDefinitionOptions.TeamUsesVersions.name()))
+                  teamDefinitionOptions.add(TeamDefinitionOptions.TeamUsesVersions);
+               else if (line.contains(TeamDefinitionOptions.RequireTargetedVersion.name()))
+                  teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
                   // Get user or create temp user if not on production DB
@@ -221,14 +224,15 @@ public class LoadAIsAndTeamsAction extends Action {
 
             if (teamDefArt != null) {
                for (Artifact actionableItem : actionableItems) {
-                  teamDefArt.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, actionableItem);
+                  teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
                }
             }
          }
          if (teamDefArt == null) {
             teamDefArt =
                   TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
-                        teamUsesVersions, actionableItems, parent);
+                        actionableItems, parent,
+                        teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
          }
          for (String staticId : staticIds) {
             teamDefArt.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
@@ -240,7 +244,7 @@ public class LoadAIsAndTeamsAction extends Action {
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
                            AtsPlugin.getAtsBranch());
                if (workflowArt != null)
-                  teamDefArt.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
+                  teamDefArt.addRelation(AtsRelation.WorkItem__Child, workflowArt);
                else
                   System.err.println("Can't find workflow with id \"" + workflowId + "\"");
             } catch (Exception ex) {
@@ -297,7 +301,7 @@ public class LoadAIsAndTeamsAction extends Action {
                aia.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
             }
             for (User user : leads) {
-               aia.addRelation(CoreRelationEnumeration.TeamLead_Lead, user);
+               aia.addRelation(AtsRelation.TeamLead_Lead, user);
             }
 
             aia.persistAttributes();

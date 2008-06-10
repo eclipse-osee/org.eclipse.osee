@@ -425,7 +425,7 @@ public class BranchManager {
                if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
                   return new Result(
                         String.format(
-                              "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match workflow's " + "parent branch id \"%s\"",
+                              "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
                               smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
                               String.valueOf(targetedVersionBranchId),
                               String.valueOf(workflowWorkingBranchParentBranchId)));

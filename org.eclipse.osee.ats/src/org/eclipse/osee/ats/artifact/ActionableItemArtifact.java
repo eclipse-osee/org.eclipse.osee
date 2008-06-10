@@ -14,9 +14,11 @@ package org.eclipse.osee.ats.artifact;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactType
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -65,7 +66,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public Collection<User> getLeads() throws SQLException {
-      return getArtifacts(CoreRelationEnumeration.TeamLead_Lead, User.class);
+      return getArtifacts(AtsRelation.TeamLead_Lead, User.class);
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws SQLException {
@@ -103,11 +104,11 @@ public class ActionableItemArtifact extends Artifact {
       return TeamDefinitionArtifact.getImpactedTeamDefs(aias);
    }
 
-   public static Set<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
+   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDef(aia);
    }
 
-   public Set<TeamDefinitionArtifact> getImpactedTeamDefs() throws SQLException {
+   public List<TeamDefinitionArtifact> getImpactedTeamDefs() throws SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDef(this);
    }
 

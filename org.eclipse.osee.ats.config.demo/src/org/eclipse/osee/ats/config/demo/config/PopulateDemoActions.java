@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.ProgramAttributes;
 import org.eclipse.osee.ats.config.demo.util.Subsystems;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.DefaultTeamWorkflowManager;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
@@ -373,7 +374,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
-                  teamWf.addRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, verArt);
+                  teamWf.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persistAttributesAndRelations();
                }
             }

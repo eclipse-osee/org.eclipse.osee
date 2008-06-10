@@ -242,12 +242,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param clazz
     * @throws SQLException
     */
-   public <A extends Artifact> Set<A> getArtifacts(IRelationEnumeration side, Class<A> clazz) throws SQLException {
-      Set<A> artifacts = new HashSet<A>();
-      for (Artifact artifact : getRelatedArtifacts(side)) {
-         artifacts.add((A) artifact);
-      }
-      return artifacts;
+   public <A extends Artifact> List<A> getArtifacts(IRelationEnumeration side, Class<A> clazz) throws SQLException {
+      return Collections.castAll(getRelatedArtifacts(side));
    }
 
    /**
@@ -1094,6 +1090,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       RelationManager.addRelation(targetArtifactA, insertAfterATarget, targetArtifactB, insertAfterBTarget,
             relationSide.getRelationType(), artifactA, artifactB, rationale);
+   }
+
+   public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws SQLException, OseeCoreException {
+      List<Artifact> currentOrder = getArtifacts(relationSide, Artifact.class);
+      // Insert first artifact before first artifact in list
+      Artifact previousArtifact = currentOrder.iterator().next();
+      for (Artifact artifact : artifactsInNewOrder) {
+         setRelationOrder(previousArtifact, false, relationSide, artifact);
+         previousArtifact = artifact;
+      }
    }
 
    public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws SQLException, OseeCoreException {

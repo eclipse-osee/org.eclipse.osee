@@ -61,8 +61,6 @@ public class WorkPageDefinition extends WorkItemDefinition {
       }
       // This supports both relating new children and when WriteType.Overwrite of updating
       art.setRelations(CoreRelationEnumeration.WorkItem__Child, children);
-      //      System.err.println("WorkPageDefinition - need to call to reorder relations");
-      // TODO reorder relations
       //      art.setRelationOrder(CoreRelationEnumeration.WorkItem__Child, children);
       return art;
    }

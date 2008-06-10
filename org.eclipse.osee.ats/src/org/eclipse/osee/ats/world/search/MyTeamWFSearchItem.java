@@ -15,17 +15,17 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +56,7 @@ public class MyTeamWFSearchItem extends UserSearchItem {
       // Add all the Team Workflow's related to assigned Tasks
       List<ISearchPrimitive> teamAndTaskCriteria = new LinkedList<ISearchPrimitive>();
       teamAndTaskCriteria.add(currentStateSearch);
-      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, CoreRelationEnumeration.SmaToTask_Sma));
+      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, AtsRelation.SmaToTask_Sma));
       FromArtifactsSearch teamAndTaskSearch = new FromArtifactsSearch(teamAndTaskCriteria, false);
 
       // Find all Team Workflows artifact types

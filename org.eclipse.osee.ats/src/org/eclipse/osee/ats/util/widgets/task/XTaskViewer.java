@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
 import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.WorldArtifactItem;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -545,7 +545,7 @@ public class XTaskViewer extends XWidget implements IActionable {
       if (taskArt != null) {
          try {
             RelationPersistenceManager.getInstance().moveObjectB(iXTaskViewer.getParentSmaMgr().getSma(), taskArt,
-                  CoreRelationEnumeration.SmaToTask_Task, dir);
+                  AtsRelation.SmaToTask_Task, dir);
             refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -684,9 +684,9 @@ public class XTaskViewer extends XWidget implements IActionable {
                      if (art instanceof TaskArtifact) {
                         TaskArtifact taskArt = (TaskArtifact) art;
                         if (taskArt.getParentSMA() != null) {
-                           taskArt.deleteRelation(CoreRelationEnumeration.SmaToTask_Sma, taskArt.getParentSMA());
+                           taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
                         }
-                        taskArt.addRelation(CoreRelationEnumeration.SmaToTask_Sma,
+                        taskArt.addRelation(AtsRelation.SmaToTask_Sma,
                               iXTaskViewer.getParentSmaMgr().getSma());
                         taskArt.persistRelations();
                      }

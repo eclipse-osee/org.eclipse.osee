@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -57,7 +57,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(CoreRelationEnumeration.SmaToTask_Sma);
+      registerSMARelation(AtsRelation.SmaToTask_Sma);
    }
 
    /*
@@ -137,7 +137,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    @Override
    public StateMachineArtifact getParentSMA() throws SQLException {
       Collection<StateMachineArtifact> smas =
-            getArtifacts(CoreRelationEnumeration.SmaToTask_Sma, StateMachineArtifact.class);
+            getArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
       if (smas.size() > 0) return smas.iterator().next();
       return null;
    }

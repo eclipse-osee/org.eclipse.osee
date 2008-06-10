@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
  * @author Donald G. Dunne
  */
 public class UserCommunity {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static UserCommunity instance = new UserCommunity();
 
    private UserCommunity() {
@@ -36,7 +35,7 @@ public class UserCommunity {
       try {
          communities =
                ConfigurationPersistenceManager.getValidEnumerationAttributeValues("ats.User Community",
-                     branchManager.getCommonBranch());
+                     BranchPersistenceManager.getCommonBranch());
       } catch (SQLException ex) {
          communities = new HashSet<String>();
          communities.add(ex.getLocalizedMessage());

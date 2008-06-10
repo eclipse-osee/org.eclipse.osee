@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.artifact;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -27,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -50,14 +51,14 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     */
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(CoreRelationEnumeration.TeamWorkflowToReview_Team);
+      registerSMARelation(AtsRelation.TeamWorkflowToReview_Team);
       defectManager = new DefectManager(this);
    }
 
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
-         Set<TeamWorkFlowArtifact> teams =
-               getArtifacts(CoreRelationEnumeration.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+         List<TeamWorkFlowArtifact> teams =
+               getArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
          if (teams.size() > 0) return teams.iterator().next();
          return null;
       } catch (SQLException ex) {

@@ -61,7 +61,8 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
-      Collection<Artifact> arts = getSearchGroup().getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
+      Collection<Artifact> arts =
+            getSearchGroup().getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
       if (cancelled) return EMPTY_SET;
       return arts;
    }

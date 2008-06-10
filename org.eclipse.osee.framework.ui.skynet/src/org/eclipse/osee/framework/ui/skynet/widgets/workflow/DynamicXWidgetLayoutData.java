@@ -131,6 +131,10 @@ public class DynamicXWidgetLayoutData implements Cloneable {
     * @return Returns the beginComposite.
     */
    public int getBeginComposite() {
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) return 10;
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) return 8;
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) return 6;
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) return 4;
       return beginComposite;
    }
 

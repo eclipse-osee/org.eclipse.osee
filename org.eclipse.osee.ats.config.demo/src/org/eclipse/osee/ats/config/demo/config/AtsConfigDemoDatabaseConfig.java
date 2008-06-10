@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -135,8 +135,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(
-               CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }
 
@@ -148,8 +147,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(
-               CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }
    }

@@ -68,6 +68,13 @@ public class Collections {
       return toString(c, null, separator, null);
    }
 
+   /**
+    * Return List with object as an element
+    * 
+    * @param <T>
+    * @param object
+    * @return
+    */
    public static <T> List<T> toList(T object) {
       List<T> list = new ArrayList<T>(1);
       list.add(object);
@@ -133,9 +140,16 @@ public class Collections {
       return set;
    }
 
-   public static List<Object> getAggregate(Object... objects) {
-      List<Object> objs = new ArrayList<Object>();
-      for (Object obj : objects) {
+   /**
+    * Convert an aggregate list of objects into a List
+    * 
+    * @param <T>
+    * @param objects
+    * @return
+    */
+   public static <T> List<T> getAggregate(T... objects) {
+      List<T> objs = new ArrayList<T>();
+      for (T obj : objects) {
          objs.add(obj);
       }
       return objs;

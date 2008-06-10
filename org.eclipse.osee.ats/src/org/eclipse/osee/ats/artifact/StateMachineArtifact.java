@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -302,7 +302,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
-   public void registerSMARelation(CoreRelationEnumeration side) {
+   public void registerSMARelation(AtsRelation side) {
       smaRelations.add(side);
    }
 
@@ -332,41 +332,41 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void addSubscribed(User user) throws SQLException {
-      relate(CoreRelationEnumeration.SubscribedUser_User, user, true);
+      relate(AtsRelation.SubscribedUser_User, user, true);
    }
 
    public void removeSubscribed(User user) throws SQLException {
-      deleteRelation(CoreRelationEnumeration.SubscribedUser_User, user);
+      deleteRelation(AtsRelation.SubscribedUser_User, user);
       persistRelations();
    }
 
    public boolean isSubscribed(User user) throws SQLException {
-      return (getRelatedArtifacts(CoreRelationEnumeration.SubscribedUser_User).contains(user));
+      return (getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user));
    }
 
    public ArrayList<User> getSubscribed() throws SQLException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.SubscribedUser_User))
+      for (Artifact art : getRelatedArtifacts(AtsRelation.SubscribedUser_User))
          arts.add((User) art);
       return arts;
    }
 
    public void addFavorite(User user) throws SQLException {
-      relate(CoreRelationEnumeration.FavoriteUser_User, user, true);
+      relate(AtsRelation.FavoriteUser_User, user, true);
    }
 
    public void removeFavorite(User user) throws SQLException {
-      deleteRelation(CoreRelationEnumeration.FavoriteUser_User, user);
+      deleteRelation(AtsRelation.FavoriteUser_User, user);
       persistRelations();
    }
 
    public boolean isFavorite(User user) throws SQLException {
-      return (getRelatedArtifacts(CoreRelationEnumeration.FavoriteUser_User).contains(user));
+      return (getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user));
    }
 
    public ArrayList<User> getFavorites() throws SQLException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.FavoriteUser_User))
+      for (Artifact art : getRelatedArtifacts(AtsRelation.FavoriteUser_User))
          arts.add((User) art);
       return arts;
    }

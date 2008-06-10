@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -33,12 +34,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -156,7 +156,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       List<ISearchPrimitive> untargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
       untargetedTeamsCriteria.add(teamWorkflowSearch);
       untargetedTeamsCriteria.add(new NotSearch(new InRelationSearch(allTeamWorkflows,
-            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow)));
+            AtsRelation.TeamWorkflowTargetedForVersion_Workflow)));
       FromArtifactsSearch untargetedTeamsCriteriaArts = new FromArtifactsSearch(untargetedTeamsCriteria, true);
 
       // Get un-released version artifacts
@@ -168,7 +168,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       List<ISearchPrimitive> unReleasedTeamsCriteria = new LinkedList<ISearchPrimitive>();
       unReleasedTeamsCriteria.add(new InRelationSearch(unReleasedVersionCriteriaArts,
-            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow));
+            AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
       unReleasedTeamsCriteria.add(allTeamWorkflows);
       FromArtifactsSearch unReleasedTeamsCriteriaArts = new FromArtifactsSearch(unReleasedTeamsCriteria, true);
 
@@ -190,7 +190,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
       actionCriteria.add(new InRelationSearch(unReleasedAndUntargetedTeamsCriteriaArts,
-            CoreRelationEnumeration.ActionToWorkflow_Action));
+            AtsRelation.ActionToWorkflow_Action));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

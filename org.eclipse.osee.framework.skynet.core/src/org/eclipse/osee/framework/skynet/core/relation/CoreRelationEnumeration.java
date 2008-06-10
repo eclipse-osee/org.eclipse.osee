@@ -17,52 +17,7 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
 
    x(false, null), y(false, null),
 
-   // ATS Relations
-   ActionToWorkflow_Action(true, "ActionToWorkflow"),
-   ActionToWorkflow_WorkFlow(false, "ActionToWorkflow"),
-   //
-   TeamActionableItem_Team(true, "TeamActionableItem"),
-   TeamActionableItem_ActionableItem(false, "TeamActionableItem"),
-   //
-   TeamLead_Team(true, "TeamLead"),
-   TeamLead_Lead(false, "TeamLead"),
-   //
-   TeamMember_Team(true, "TeamMember"),
-   TeamMember_Member(false, "TeamMember"),
-   //
-   SmaToTask_Sma(true, "SmaToTask"),
-   SmaToTask_Task(false, "SmaToTask"),
-   //
-   TeamWorkflowTargetedForVersion_Workflow(true, "TeamWorkflowTargetedForVersion"),
-   TeamWorkflowTargetedForVersion_Version(false, "TeamWorkflowTargetedForVersion"),
-   //
-   TeamDefinitionToVersion_TeamDefinition(true, "TeamDefinitionToVersion"),
-   TeamDefinitionToVersion_Version(false, "TeamDefinitionToVersion"),
-   //
-   TeamDefinitionToWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToWorkflowDiagram"),
-   TeamDefinitionToWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToWorkflowDiagram"),
-   //
-   TeamDefinitionToTaskWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToTaskWorkflowDiagram"),
-   TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToTaskWorkflowDiagram"),
-   //
-   TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
-   TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
-   //
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
-   //
-   TeamWorkflowToReview_Team(true, "TeamWorkflowToReview"),
-   TeamWorkflowToReview_Review(false, "TeamWorkflowToReview"),
-
-   //
-   Users_Artifact(true, "Users"),
-   Users_User(false, "Users"),
-
-   //
-   SubscribedUser_Artifact(true, "SubscribedUser"),
-   SubscribedUser_User(false, "SubscribedUser"),
-   FavoriteUser_Artifact(true, "FavoriteUser"),
-   FavoriteUser_User(false, "FavoriteUser"),
+   Users_Artifact(true, "Users"), Users_User(false, "Users"),
 
    // Define relations
    Supercedes_Supercedes(true, "Supercedes"),
@@ -81,6 +36,9 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
 
    Dependency__Dependency(false, "Dependency"),
    Dependency__Artifact(true, "Dependency"),
+
+   TeamMember_Team(true, "TeamMember"),
+   TeamMember_Member(false, "TeamMember"),
 
    WorkItem__Parent(true, "Work Item"),
    WorkItem__Child(false, "Work Item"),

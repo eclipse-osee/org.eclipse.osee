@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -43,8 +43,8 @@ public class MyWorldSearchItem extends UserSearchItem {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                   "%<" + user.getUserId() + ">%", BranchPersistenceManager.getAtsBranch());
-      artifacts.addAll(RelationManager.getRelatedArtifacts(artifacts, 4, CoreRelationEnumeration.SmaToTask_Sma,
-            CoreRelationEnumeration.TeamWorkflowToReview_Team, CoreRelationEnumeration.ActionToWorkflow_Action));
+      artifacts.addAll(RelationManager.getRelatedArtifacts(artifacts, 4, AtsRelation.SmaToTask_Sma,
+            AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action));
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
 

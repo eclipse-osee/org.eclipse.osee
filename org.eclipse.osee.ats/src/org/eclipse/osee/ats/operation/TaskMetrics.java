@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -34,12 +35,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -72,7 +72,7 @@ public class TaskMetrics extends AbstractBlam {
       FromArtifactsSearch teamWorkflowSearch =
             new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), DepricatedOperator.EQUAL));
       LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
-      relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, CoreRelationEnumeration.SmaToTask_Task));
+      relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, AtsRelation.SmaToTask_Task));
 
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());

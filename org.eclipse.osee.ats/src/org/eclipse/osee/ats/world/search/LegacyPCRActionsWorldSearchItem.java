@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +62,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
       }
 
       if (returnActions) {
-         criteria.add(new RelationCriteria(CoreRelationEnumeration.ActionToWorkflow_Action));
+         criteria.add(new RelationCriteria(AtsRelation.ActionToWorkflow_Action));
       }
 
       return ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 200, criteria);

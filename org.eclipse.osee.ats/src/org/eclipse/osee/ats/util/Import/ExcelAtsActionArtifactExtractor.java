@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsPriority;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -209,7 +209,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                            aData.version, AtsPlugin.getAtsBranch());
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
-                  verArt.relate(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow, team, true);
+                  verArt.relate(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team, true);
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

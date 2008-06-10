@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -174,12 +173,12 @@ public class Overview {
    }
 
    public void addRelationsBlock(ATSArtifact artifact) {
-      addRelationTable("Is Superceded By", CoreRelationEnumeration.Supercedes_Supercedes, artifact);
-      addRelationTable("Supercedes", CoreRelationEnumeration.Supercedes_Superceded, artifact);
-      addRelationTable("Issues Addressed By", CoreRelationEnumeration.AddressesIssues_AddressesIssues, artifact);
-      addRelationTable("Addresses Issues In", CoreRelationEnumeration.AddressesIssues_IssuedArtifact, artifact);
-      addRelationTable("Supports", CoreRelationEnumeration.SupportingInfo_SupportedBy, artifact);
-      addRelationTable("Is Supported By", CoreRelationEnumeration.SupportingInfo_SupportingInfo, artifact);
+      addRelationTable("Is Superceded By", AtsRelation.Supercedes_Supercedes, artifact);
+      addRelationTable("Supercedes", AtsRelation.Supercedes_Superceded, artifact);
+      addRelationTable("Issues Addressed By", AtsRelation.AddressesIssues_AddressesIssues, artifact);
+      addRelationTable("Addresses Issues In", AtsRelation.AddressesIssues_IssuedArtifact, artifact);
+      addRelationTable("Supports", AtsRelation.SupportingInfo_SupportedBy, artifact);
+      addRelationTable("Is Supported By", AtsRelation.SupportingInfo_SupportingInfo, artifact);
    }
 
    public void addNotes(StateMachineArtifact artifact, String state) {
@@ -218,7 +217,7 @@ public class Overview {
       return builder.toString();
    }
 
-   public void addRelationTable(String name, CoreRelationEnumeration side, Artifact parent) {
+   public void addRelationTable(String name, AtsRelation side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);
          if (arts.size() == 0) return;
