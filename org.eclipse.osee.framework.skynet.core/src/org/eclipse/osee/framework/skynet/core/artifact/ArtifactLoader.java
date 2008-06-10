@@ -301,7 +301,7 @@ public final class ArtifactLoader {
             int branchId = rSet.getInt("branch_id");
             if (artifactId != previousArtifactId || branchId != previousBranchId) {
                if (artifact != null) { // exclude the first pass because there is no previous artifact
-                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
                }
                previousArtifactId = artifactId;
                previousBranchId = branchId;

@@ -562,6 +562,9 @@
 	<extension id="DeleteTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteTransaction"/>
 	</extension>
+		<extension id="FindArtifactsWithMinAttributeContraintProblems" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeContraintProblems"/>
+	</extension>
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>

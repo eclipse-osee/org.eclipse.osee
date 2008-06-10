@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
@@ -176,12 +177,16 @@ public class AttributeToTransactionOperation {
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
 
-   public static void meetMinimumAttributeCounts(Artifact artifact) throws OseeDataStoreException {
+   public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeDataStoreException {
       try {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
             for (int i = 0; i < missingCount; i++) {
                artifact.createAttribute(attributeType, true);
+               if (!isNewArtifact) {
+                  OseeLog.log(SkynetActivator.class, Level.FINER, String.format("%s [%d]- %s was created",
+                        artifact.toString(), artifact.getArtId(), attributeType.toString()));
+               }
             }
          }
       } catch (SQLException ex) {

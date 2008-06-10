@@ -60,7 +60,7 @@ public abstract class ArtifactFactory {
       if (earlyArtifactInitialization != null) {
          earlyArtifactInitialization.run(artifact);
       }
-      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded();
       artifact.onBirth();

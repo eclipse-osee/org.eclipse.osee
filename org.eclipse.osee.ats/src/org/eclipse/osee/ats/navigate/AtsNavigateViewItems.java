@@ -156,8 +156,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(aiTeam);
 
       XNavigateItem teamItem = new XNavigateItem(null, "Teams");
-      new SearchNavigateItem(teamItem, new TeamWorldSearchItem("Team Actions", (String[]) null, false, true, false,
-            null));
+      new SearchNavigateItem(teamItem, new TeamWorldSearchItem("Team Actions", null, false, true, false, null));
       new SearchNavigateItem(teamItem, new TeamVersionWorldSearchItem("Team Actions by Version", (String[]) null,
             false, false, false, null));
       new SearchNavigateItem(teamItem, new UnReleasedTeamWorldSearchItem("Un-Released Team Actions", (String[]) null,

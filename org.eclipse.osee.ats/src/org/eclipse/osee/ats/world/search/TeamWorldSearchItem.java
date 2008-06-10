@@ -16,27 +16,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -50,12 +47,16 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    private boolean recurseChildren;
    private boolean showFinished;
    private boolean showAction;
-   private final String[] teamDefNames;
+   private final Collection<String> teamDefNames;
    private final ChangeType changeType;
 
    public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType) {
       super(displayName);
-      this.teamDefNames = teamDefNames;
+      if (teamDefNames != null) {
+         this.teamDefNames = Collections.toList(teamDefNames);
+      } else {
+         this.teamDefNames = null;
+      }
       this.showFinished = showFinished;
       this.showAction = showAction;
       this.recurseChildren = recurseChildren;
@@ -79,7 +80,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
 
    public Collection<String> getProductSearchName() {
       if (teamDefNames != null)
-         return Arrays.asList(teamDefNames);
+         return teamDefNames;
       else if (teamDefs != null)
          return Artifacts.artNames(teamDefs);
       else if (selectedTeamDefs != null) return Artifacts.artNames(selectedTeamDefs);
@@ -98,17 +99,11 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     * @throws IllegalArgumentException
     */
    public void getTeamDefs() throws Exception {
-      if (teamDefNames == null) return;
-      if (teamDefs == null) {
-         teamDefs = new HashSet<TeamDefinitionArtifact>();
-         for (String name : teamDefNames) {
-            TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
-            teamDefs.add(teamDef);
-         }
+      if (teamDefNames != null && teamDefs == null) {
+         teamDefs =
+               Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(ActionableItemArtifact.ARTIFACT_NAME,
+                     "Name", teamDefNames, AtsPlugin.getAtsBranch(), 200));
       }
-      if (teamDefs == null) throw new IllegalArgumentException("Can't Find ProductDefinitionArtifact for " + getName());
    }
 
    /**
@@ -130,54 +125,34 @@ public class TeamWorldSearchItem extends WorldSearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
-      getTeamDefs();
-      List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (TeamDefinitionArtifact tda : getSearchTeamDefs())
-         teamDefWorkflowCriteria.add(new AttributeValueSearch(
-               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamDefWorkflowSearch = new FromArtifactsSearch(teamDefWorkflowCriteria, false);
+      Set<TeamDefinitionArtifact> items = getSearchTeamDefs();
+      List<String> teamDefinitionGuids = new ArrayList<String>(items.size());
+      for (TeamDefinitionArtifact art : items) {
+         teamDefinitionGuids.add(art.getGuid());
+      }
+      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+            teamDefinitionGuids));
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
-
-      List<ISearchPrimitive> allProductCriteria = new LinkedList<ISearchPrimitive>();
-      allProductCriteria.add(teamDefWorkflowSearch);
-      allProductCriteria.add(teamWorkflowSearch);
       if (!showFinished) {
-         allProductCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
-         allProductCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
+         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
+         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
+               Operator.NOT_EQUAL));
       }
       if (changeType != null) {
-         allProductCriteria.add(new AttributeValueSearch(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(),
-               changeType.name(), DepricatedOperator.EQUAL));
-      }
-      FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allProductCriteria, true);
-
-      if (!showAction) {
-         if (isCancelled()) return EMPTY_SET;
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(allProductCriteria, true,
-                     BranchPersistenceManager.getAtsBranch());
-         if (isCancelled()) return EMPTY_SET;
-         return arts;
+         criteria.add(new AttributeCriteria(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name()));
       }
 
-      List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(allTeamWorkflows, AtsRelation.ActionToWorkflow_Action));
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
-
+      if (showAction) {
+         return RelationManager.getRelatedArtifacts(artifacts, 1, CoreRelationEnumeration.ActionToWorkflow_Action);
+      } else {
+         return artifacts;
+      }
    }
 
    @Override

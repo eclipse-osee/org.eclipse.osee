@@ -467,7 +467,7 @@ public class ArtifactPersistenceManager {
       }
 
       try {
-         AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+         AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
       } catch (OseeDataStoreException ex) {
          throw new SQLException(ex);
       }
