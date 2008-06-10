@@ -194,12 +194,6 @@
   <Style ss:ID="s43">
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s45">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Borders/>
-   <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat ss:Format="0"/>
-  </Style>
   <Style ss:ID="s46">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Font x:Family="Swiss" ss:Size="9"/>
@@ -208,10 +202,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R57C1:R60C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R58C1:R61C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="65" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="66" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="359.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300.75"/>
@@ -230,6 +224,11 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">Factory Class</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type Name</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Super Type Name</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="14.25">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.blam.BlamFactory</Data></Cell>
@@ -569,7 +568,7 @@
     <Cell ss:StyleID="s37"><Data ss:Type="String">Group</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="55" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="56" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s43"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -625,16 +624,16 @@
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Universal Group</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Universal Group</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Universal Grouping</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
-    <Cell ss:StyleID="s45"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s35"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Universal Grouping</Data></Cell>
-    <Cell ss:StyleID="s45"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s45"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0">
@@ -652,12 +651,11 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>19</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <ActiveRow>60</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

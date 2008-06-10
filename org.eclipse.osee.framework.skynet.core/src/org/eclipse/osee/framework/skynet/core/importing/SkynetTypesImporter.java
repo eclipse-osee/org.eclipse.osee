@@ -268,7 +268,9 @@ public class SkynetTypesImporter implements RowProcessor {
       String artifactTypeName = row[1];
       String superTypeName = row[2];
 
-      associateWithSuperType(artifactTypeName, superTypeName);
+      if (!artifactTypeName.equals("Artifact")) {
+         associateWithSuperType(artifactTypeName, superTypeName);
+      }
       ArtifactTypeManager.createType(factoryClassName, "", artifactTypeName, artifactTypeName);
    }
 
