@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -554,6 +555,15 @@ public class SMAWorkFlowSection extends SectionPart {
                            "Task Not Complete\n\nTitle: " + taskArt.getDescriptiveName() + "\n\nHRID: " + taskArt.getHumanReadableId());
                      return;
                   }
+               }
+            }
+
+            // Don't transition without targeted version if so configured
+            if (smaMgr.isRequireTargetedVersion() || AtsWorkDefinitions.isRequireTargetedVersion(smaMgr.getWorkPageDefinition())) {
+               if (smaMgr.getSma().getTargetedForVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
+                  AWorkbench.popup("Error",
+                        "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
+                  return;
                }
             }
 

@@ -207,7 +207,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          WorkItemDefinitionFactory.clearCache();
          for (WorkItemDefinition wid : workItemDefinitions) {
             if (clazz.isInstance(wid)) {
-               System.out.println("Adding " + wid.getId() + " as class " + clazz);
+               // System.out.println("Adding " + wid.getId() + " as class " + clazz);
                Artifact art = wid.toArtifact(writeType);
                // Relate if not already related
                if (art.getArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {

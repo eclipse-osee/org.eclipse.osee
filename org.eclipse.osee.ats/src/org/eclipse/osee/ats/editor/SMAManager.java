@@ -764,14 +764,6 @@ public class SMAManager {
          if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
                "Working Branch exists.  Please commit or delete working branch before transition.");
 
-         // Don't transition without targeted version if so configured
-         if (sma.getSmaMgr().isRequireTargetedVersion() || AtsWorkDefinitions.isRequireTargetedVersion(getWorkPageDefinition())) {
-            if (getSma().getTargetedForVersion() == null && !toPage.isCancelledPage()) {
-               return new Result(
-                     "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
-            }
-         }
-
          // Check extension points for valid transition
          for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
             Result result = item.transitioning(this, fromPage.getName(), toStateName, toAssignees);
