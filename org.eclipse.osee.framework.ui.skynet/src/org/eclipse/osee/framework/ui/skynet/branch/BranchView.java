@@ -486,8 +486,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    private String addChangeViewCommand(MenuManager menuManager) {
       CommandContributionItem accessControlCommand =
-            Commands.getLocalCommandContribution(getSite(), "change2ViewCommand",
-                  "Experimental Use Only -New Change Report- Not For Production", null, null, null, "M", null, null);
+            Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "New Change Report", null, null,
+                  null, "M", null, null);
       menuManager.add(accessControlCommand);
       return accessControlCommand.getId();
    }
