@@ -48,18 +48,18 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  */
 public final class ArtifactLoader {
    private static final String SELECT_RELATIONS =
-         "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order_value, b_order_value, rel1.gamma_id, rationale, al1.branch_id FROM osee_artifact_loader al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
+         "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order_value, b_order_value, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
    private static final String SELECT_ATTRIBUTES =
-         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_artifact_loader al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
+         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
 
    private static final String SELECT_ARTIFACTS =
-         "SELECT al1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id, art_type_id, guid, human_readable_id, mod_type FROM osee_artifact_loader al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
+         "SELECT al1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id, art_type_id, guid, human_readable_id, mod_type FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    public static final String INSERT_INTO_LOADER =
-         "INSERT INTO osee_artifact_loader (query_id, art_id, branch_id) VALUES (?, ?, ?)";
+         "INSERT INTO osee_join_artifact (query_id, art_id, branch_id) VALUES (?, ?, ?)";
 
-   private static final String DELETE_FROM_LOADER = "DELETE FROM osee_artifact_loader WHERE query_id = ?";
+   private static final String DELETE_FROM_LOADER = "DELETE FROM osee_join_artifact WHERE query_id = ?";
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list

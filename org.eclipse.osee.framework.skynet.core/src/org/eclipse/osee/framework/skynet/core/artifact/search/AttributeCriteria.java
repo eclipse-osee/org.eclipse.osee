@@ -27,9 +27,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public class AttributeCriteria extends AbstractArtifactSearchCriteria {
 
    public static final String INSERT_INTO_ATTRIBUTE_SEARCH =
-         "INSERT INTO osee_attribute_search (attr_query_id, value) VALUES (?, ?)";
-   public static final String DELETE_FROM_ATTRIBUTE_SEARCH =
-         "DELETE FROM osee_attribute_search WHERE attr_query_id = ?";
+         "INSERT INTO osee_join_attribute (attr_query_id, value) VALUES (?, ?)";
+   public static final String DELETE_FROM_ATTRIBUTE_SEARCH = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
 
    private AttributeType attributeType;
    private String value;
@@ -176,7 +175,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
          if (operator == Operator.NOT_EQUAL) {
             builder.append("NOT ");
          }
-         builder.append("IN ( SELECT value FROM osee_attribute_search WHERE attr_query_id = ? ) AND ");
+         builder.append("IN ( SELECT value FROM osee_join_attribute WHERE attr_query_id = ? ) AND ");
          builder.addParameter(SQL3DataType.INTEGER, this.attrQueryId);
       }
 

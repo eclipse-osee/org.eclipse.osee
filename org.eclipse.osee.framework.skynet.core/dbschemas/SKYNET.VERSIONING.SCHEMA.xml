@@ -28,17 +28,17 @@
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_ARTIFACT_LOADER" schema="OSEE">
+	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_ARTIFACT_LOADER_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
+		<Constraint schema="OSEE" id="OSEE_JOIN_ARTIFACT_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
 	</Table>
 	
-	<Table name="OSEE_ATTRIBUTE_SEARCH" schema="OSEE">
+	<Table name="OSEE_JOIN_ATTRIBUTE" schema="OSEE">
 		<Column id="ATTR_QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="VALUE" defaultValue="not null" limits="4000" type="VARCHAR" />
-		<Index id="OSEE_ATTRIBUTE_SEARCH_A_IDX">
+		<Index id="OSEE_JOIN_ATTRIBUTE_A_IDX">
 			<AppliesTo id="ATTR_QUERY_ID"/>
 		</Index>
 	</Table>
