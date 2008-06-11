@@ -495,6 +495,24 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public List<Attribute<?>> getAttributes() throws SQLException {
       ensureAttributesLoaded();
+      List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
+      for (String attributeTypeName : attributes.keySet()) {
+         for (Attribute<?> attribute : attributes.getValues(attributeTypeName)) {
+            if (!attribute.isDeleted()) {
+               notDeltedAttributes.add(attribute);
+            }
+         }
+      }
+
+      return notDeltedAttributes;
+   }
+
+   /**
+    * This returns all attributes including deleted ones
+    * 
+    * @return
+    */
+   public List<Attribute<?>> internalGetAttributes() {
       return attributes.getValues();
    }
 
@@ -862,7 +880,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private boolean anAttributeIsDirty() throws SQLException {
-      for (Attribute<?> attribute : getAttributes()) {
+      for (Attribute<?> attribute : attributes.getValues()) {
          if (attribute.isDirty()) {
             return true;
          }
@@ -1236,7 +1254,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       try {
          if (isDirty()) {
 
-            for (Attribute<?> attribute : getAttributes()) {
+            for (Attribute<?> attribute : attributes.getValues()) {
                if (attribute.isDirty()) {
                   return new Result(true, "===> Dirty Attribute - " + attribute.getAttributeType().getName() + "\n");
                }
@@ -1364,7 +1382,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws Exception {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
-      for (Attribute<?> attribute : getAttributes()) {
+      for (Attribute<?> attribute : attributes.getValues()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
                   attribute.getAttributeDataProvider().getData(), attribute.getAttrId(), attribute.getGammaId()));

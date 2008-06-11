@@ -143,6 +143,7 @@ public abstract class Attribute<T> {
     */
    public void delete() {
       deleted = true;
+      dirty = true;
    }
 
    public boolean canDelete() {

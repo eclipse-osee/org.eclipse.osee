@@ -62,15 +62,13 @@ public class AttributeToTransactionOperation {
    }
 
    public void execute() throws Exception {
-      for (Attribute<?> attribute : artifact.getAttributes()) {
+      for (Attribute<?> attribute : artifact.internalGetAttributes()) {
          if (attribute.isDirty()) {
-            addAttributeData(artifact, attribute, transaction);
-         }
-      }
-
-      for (Attribute<?> attribute : artifact.getAttributes()) {
-         if (attribute.isDeleted()) {
-            deleteAttribute(attribute, transaction, artifact);
+            if (attribute.isDeleted()) {
+               deleteAttribute(attribute, transaction, artifact);
+            } else {
+               addAttributeData(artifact, attribute, transaction);
+            }
          }
       }
    }
