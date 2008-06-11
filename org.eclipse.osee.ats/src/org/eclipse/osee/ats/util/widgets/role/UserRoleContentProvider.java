@@ -31,7 +31,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    }
 
    public void add(final UserRole item) {
-      add(Arrays.asList(new UserRole[] {item}));
+      add(Arrays.asList(item));
    }
 
    public void add(final Collection<? extends UserRole> items) {
@@ -55,7 +55,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Artifact art) {
-      remove(Arrays.asList(new Artifact[] {art}));
+      remove(Arrays.asList(art));
    }
 
    public void remove(final Collection<? extends Artifact> arts) {

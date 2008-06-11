@@ -80,10 +80,10 @@
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R196C1:R221C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R198C1:R223C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="225" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="227" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="330"/>
    <Column ss:AutoFitWidth="0" ss:Width="382.5"/>
@@ -260,6 +260,15 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Metrics from Tasks</Data></Cell>
     <Cell ss:Index="5"><Data ss:Type="String">no</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="10"><Data ss:Type="String">Yes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Actionable</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="10"><Data ss:Type="String">Yes</Data></Cell>
@@ -657,10 +666,6 @@
     <Cell><Data ss:Type="String">PeerToPeer Review</Data></Cell>
     <Cell><Data ss:Type="String">ats.Estimated Hours</Data></Cell>
    </Row>
-   <Row>
-    <Cell><Data ss:Type="String">Decision Review</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Require Targeted Version</Data></Cell>
-   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Decision Review</Data></Cell>
     <Cell><Data ss:Type="String">ats.Actionable Item</Data></Cell>
@@ -739,7 +744,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Definition</Data></Cell>
-    <Cell><Data ss:Type="String">ats.Team Uses Versions</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Require Targeted Version</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Definition</Data></Cell>
@@ -750,8 +755,16 @@
     <Cell><Data ss:Type="String">ats.Active</Data></Cell>
    </Row>
    <Row>
+    <Cell><Data ss:Type="String">Team Definition</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Actionable</Data></Cell>
+   </Row>
+   <Row>
     <Cell><Data ss:Type="String">Actionable Item</Data></Cell>
     <Cell><Data ss:Type="String">ats.Active</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Actionable Item</Data></Cell>
+    <Cell><Data ss:Type="String">ats.Actionable</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
@@ -1521,11 +1534,11 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>54</TopRowVisible>
+   <TopRowVisible>65</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>84</ActiveRow>
+     <ActiveRow>97</ActiveRow>
      <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>

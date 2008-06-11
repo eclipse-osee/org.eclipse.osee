@@ -38,7 +38,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void add(final WorldArtifactItem item) {
-      add(Arrays.asList(new WorldArtifactItem[] {item}));
+      add(Arrays.asList(item));
    }
 
    public void add(final Collection<? extends WorldArtifactItem> items) {
@@ -62,7 +62,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Artifact art) {
-      remove(Arrays.asList(new Artifact[] {art}));
+      remove(Arrays.asList(art));
    }
 
    public void remove(final Collection<? extends Artifact> arts) {

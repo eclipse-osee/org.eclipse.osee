@@ -10,7 +10,6 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -24,8 +23,8 @@ public class DemoDbTasks {
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             codeArt.getSmaMgr().getTaskMgr().createNewTask(
-                  (firstTaskWorkflow ? Arrays.asList(new User[] {DemoUsers.getDemoUser(DemoUsers.Joe_Smith),
-                        DemoUsers.getDemoUser(DemoUsers.Kay_Jones)}) : Arrays.asList(new User[] {DemoUsers.getDemoUser(DemoUsers.Joe_Smith)})),
+                  (firstTaskWorkflow ? Arrays.asList(DemoUsers.getDemoUser(DemoUsers.Joe_Smith),
+                        DemoUsers.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoUsers.getDemoUser(DemoUsers.Joe_Smith))),
                   title, true);
          }
          firstTaskWorkflow = false;
@@ -40,12 +39,12 @@ public class DemoDbTasks {
    public static Collection<String> getTaskTitles(boolean firstTaskWorkflow) {
       if (firstTaskWorkflow) {
          firstTaskWorkflow = false;
-         return Arrays.asList(new String[] {"Look into Graph View.", "Redesign how view shows values.",
+         return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
                "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
-               "Create development plan", "Create test plan", "Make changes"});
+               "Create development plan", "Create test plan", "Make changes");
       } else
-         return Arrays.asList(new String[] {"Document how Graph View works", "Update help contents",
-               "Review new documentation", "Publish documentation to website", "Remove old viewer", "Deploy release"});
+         return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
+               "Publish documentation to website", "Remove old viewer", "Deploy release");
    }
 
    public static int getNumTasks() {

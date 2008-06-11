@@ -1143,7 +1143,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void setRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
-      setRelations(relationSide, Arrays.asList(new Artifact[] {artifact}));
+      setRelations(relationSide, Arrays.asList(artifact));
    }
 
    /**

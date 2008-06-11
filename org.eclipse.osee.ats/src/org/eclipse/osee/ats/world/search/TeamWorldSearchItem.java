@@ -53,7 +53,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType) {
       super(displayName);
       if (teamDefNames != null) {
-         this.teamDefNames = Collections.toList(teamDefNames);
+         this.teamDefNames = Arrays.asList(teamDefNames);
       } else {
          this.teamDefNames = null;
       }
@@ -74,8 +74,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    }
 
    public TeamWorldSearchItem(String displayName, TeamDefinitionArtifact teamDef, boolean showFinished, boolean showAction, boolean recurseChildren) {
-      this(displayName, Arrays.asList(new TeamDefinitionArtifact[] {teamDef}), showFinished, showAction,
-            recurseChildren);
+      this(displayName, Arrays.asList(teamDef), showFinished, showAction, recurseChildren);
    }
 
    public Collection<String> getProductSearchName() {

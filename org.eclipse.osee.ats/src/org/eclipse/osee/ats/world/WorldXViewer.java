@@ -636,7 +636,7 @@ public class WorldXViewer extends XViewer {
    }
 
    public void add(final Artifact artifact) {
-      add(Arrays.asList(new Artifact[] {artifact}));
+      add(Arrays.asList(artifact));
    }
 
    public void remove(final Artifact artifact) {

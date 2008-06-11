@@ -740,7 +740,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             }
          }
          if (!teamExists) {
-            createTeamWorkflow(tda, Arrays.asList(new ActionableItemArtifact[] {aia}), tda.getLeads());
+            createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads());
             sb.append(aia.getDescriptiveName() + " => added team workflow \"" + tda.getDescriptiveName() + "\"\n");
          }
       }

@@ -33,5 +33,5 @@ public class Requirements {
    public static String CSCI = "CSCI";
 
    public static List<String> Software_RequirementTypes =
-         Arrays.asList(new String[] {SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT});
+         Arrays.asList(SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT);
 }

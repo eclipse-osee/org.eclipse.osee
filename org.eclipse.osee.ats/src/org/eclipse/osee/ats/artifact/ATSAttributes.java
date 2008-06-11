@@ -80,6 +80,8 @@ public class ATSAttributes {
          new ATSAttributes("Released", "True if object is in a released state.");
    public static final ATSAttributes NEXT_VERSION_ATTRIBUTE =
          new ATSAttributes("Next Version", "True if version artifact is \"Next\" version to be released.");
+   public static final ATSAttributes ACTIONABLE_ATTRIBUTE =
+         new ATSAttributes("Actionable", "True if item can have Action written against or assigned to.");
    public static final ATSAttributes TEAM_USES_VERSIONS_ATTRIBUTE =
          new ATSAttributes("Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
    public static final ATSAttributes REQUIRE_TARGETED_VERSION_ATTRIBUTE =

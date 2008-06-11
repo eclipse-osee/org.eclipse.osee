@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSe
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -189,9 +190,11 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return teamDefs;
    }
 
-   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws SQLException {
+   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
       Set<TeamDefinitionArtifact> resultTeams = new HashSet<TeamDefinitionArtifact>();
       for (ActionableItemArtifact aia : aias) {
+         if (!aia.isActionable()) throw new IllegalArgumentException(
+               "Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") is not Actionable.  Choose another item.\n\nAction can not be written against this item.");
          Collection<TeamDefinitionArtifact> aiaTeams = getImpactedTeamDef(aia);
          if (aiaTeams == null) throw new IllegalArgumentException(
                "No team workflow associated with Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") or any parent.\n\nAction can not be written against this item.");
@@ -200,7 +203,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return resultTeams;
    }
 
-   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
+   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws OseeCoreException, SQLException {
+      if (!aia.isActionable()) throw new IllegalArgumentException(
+            "Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") is not Actionable.  Choose another item.\n\nAction can not be written against this item.");
       if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
          return aia.getArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class);
       }
@@ -226,7 +231,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws SQLException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      getTeamFromItemAndChildren(Arrays.asList(new TeamDefinitionArtifact[] {teamDef}), teamDefs);
+      getTeamFromItemAndChildren(Arrays.asList(teamDef), teamDefs);
       return teamDefs;
    }
 
@@ -235,7 +240,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          returnTeamDefs.add(teamDef);
          for (Artifact childArt : teamDef.getChildren()) {
             if (childArt instanceof TeamDefinitionArtifact) getTeamFromItemAndChildren(
-                  Arrays.asList(new TeamDefinitionArtifact[] {(TeamDefinitionArtifact) childArt}), returnTeamDefs);
+                  Arrays.asList((TeamDefinitionArtifact) childArt), returnTeamDefs);
          }
       }
    }
@@ -299,7 +304,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @return users configured as leads by ActionableItems, then by TeamDefinition
     * @throws SQLException
     */
-   public Collection<User> getLeads(Collection<ActionableItemArtifact> actionableItems) throws SQLException {
+   public Collection<User> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException {
       Set<User> leads = new HashSet<User>();
       for (ActionableItemArtifact aia : actionableItems) {
          if (aia.getImpactedTeamDefs().contains(this)) {
@@ -366,6 +371,10 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public boolean isRequireTargetedVersion() throws IllegalStateException, SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.REQUIRE_TARGETED_VERSION_ATTRIBUTE.getStoreName(), false);
+   }
+
+   public boolean isActionable() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
    }
 
    /**

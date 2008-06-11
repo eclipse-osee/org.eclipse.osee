@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.WorldView;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -38,11 +37,11 @@ public class OpenInAtsWorldOperation extends WorkPageService {
       try {
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
             ActionArtifact actionArt = ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact();
-            WorldView.loadIt("Action " + actionArt.getHumanReadableId(), Arrays.asList(new Artifact[] {actionArt}));
+            WorldView.loadIt("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
             return;
          } else if (smaMgr.getSma() instanceof StateMachineArtifact) {
             WorldView.loadIt(smaMgr.getSma().getArtifactTypeName() + ": " + smaMgr.getSma().getHumanReadableId(),
-                  Arrays.asList(new Artifact[] {smaMgr.getSma()}));
+                  Arrays.asList(smaMgr.getSma()));
             return;
          }
          OSEELog.logSevere(AtsPlugin.class, "Unhandled artifact type " + smaMgr.getSma().getArtifactTypeName(), true);

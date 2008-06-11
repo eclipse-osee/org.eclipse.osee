@@ -91,7 +91,7 @@ public class EditAttributeWizardPage extends WizardPage {
       if (!changeType.equals(WordAttribute.CONTENT_NAME)) {
          editor =
                EmbededAttributeEditorFactory.getEmbeddedEditor(changeType, conflict.getSourceDisplayData(),
-                     Arrays.asList(new AttributeConflict[] {conflict}), true);
+                     Arrays.asList(conflict), true);
       }
    }
 

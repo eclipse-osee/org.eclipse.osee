@@ -127,8 +127,7 @@ public class MassXViewer extends XViewer {
             AWorkbench.popup("ERROR", "Can't change the field " + colName);
          }
          Artifact useArt = ((MassArtifactItem) treeItem.getData()).getArtifact();
-         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, Arrays.asList(new Artifact[] {useArt}),
-               persist)) {
+         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, Arrays.asList(useArt), persist)) {
             refresh();
             editor.onDirtied();
             return true;
@@ -321,7 +320,7 @@ public class MassXViewer extends XViewer {
       }
 
       custData.getColumnData().setColumns(cols);
-      custData.getSortingData().setSortingNames(Arrays.asList(new String[] {"Name"}));
+      custData.getSortingData().setSortingNames(Arrays.asList("Name"));
       getCustomize().setCustomization(custData);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
    }

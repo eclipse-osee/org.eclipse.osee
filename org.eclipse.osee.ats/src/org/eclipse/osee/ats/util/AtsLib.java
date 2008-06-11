@@ -194,8 +194,7 @@ public class AtsLib implements IAtsLib {
                      for (TeamWorkFlowArtifact team : teams)
                         SMAEditor.editArtifact(team);
                   else if (option == AtsOpenOption.AtsWorld)
-                     WorldView.loadIt("Action " + actionArt.getHumanReadableId(),
-                           Arrays.asList(new Artifact[] {actionArt}));
+                     WorldView.loadIt("Action " + actionArt.getHumanReadableId(), Arrays.asList(actionArt));
                   else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
                      if (teams.size() == 1)
                         SMAEditor.editArtifact(teams.iterator().next());

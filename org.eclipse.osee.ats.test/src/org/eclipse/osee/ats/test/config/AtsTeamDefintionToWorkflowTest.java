@@ -27,8 +27,8 @@ public class AtsTeamDefintionToWorkflowTest extends TestCase {
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(TeamDefinitionArtifact.ARTIFACT_NAME,
             BranchPersistenceManager.getAtsBranch())) {
          TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) artifact;
-         if (teamDef.getWorkFlowDefinition() == null) {
-            System.err.println(teamDef + " has no Work Flow associated.");
+         if (teamDef.isActionable() && teamDef.getWorkFlowDefinition() == null) {
+            System.err.println(teamDef + " has no Work Flow associated and is Actionable.");
          }
       }
    }

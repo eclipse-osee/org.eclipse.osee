@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.test.config;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -29,10 +28,8 @@ public class AtsActionableItemToTeamDefinitionTest extends TestCase {
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
             BranchPersistenceManager.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-         if (!aia.getDescriptiveName().equals(AtsConfig.ACTIONABLE_ITEMS_HEADING)) {
-            if (TeamDefinitionArtifact.getImpactedTeamDef(aia) == null) {
-               System.err.println(aia + " has no Team Def associated.");
-            }
+         if (aia.isActionable() && TeamDefinitionArtifact.getImpactedTeamDef(aia) == null) {
+            System.err.println(aia + " has no Team Def associated and is Actionable.");
          }
       }
    }

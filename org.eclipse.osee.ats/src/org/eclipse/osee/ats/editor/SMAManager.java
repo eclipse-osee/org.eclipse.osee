@@ -211,7 +211,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeAssignees() throws Exception {
-      return promptChangeAssignees(Arrays.asList(new StateMachineArtifact[] {sma}));
+      return promptChangeAssignees(Arrays.asList(sma));
    }
 
    public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas) throws Exception {
@@ -246,7 +246,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeOriginator() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return promptChangeOriginator(Arrays.asList(new StateMachineArtifact[] {sma}));
+      return promptChangeOriginator(Arrays.asList(sma));
    }
 
    public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws IllegalStateException, SQLException, MultipleAttributesExist {
@@ -264,8 +264,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return promptChangeVersion(Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}),
-            versionReleaseType, persist);
+      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, persist);
    }
 
    public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
@@ -337,8 +336,8 @@ public class SMAManager {
    }
 
    public boolean promptChangeType(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) return promptChangeType(
-            Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}), persist);
+      if (sma instanceof TeamWorkFlowArtifact) return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma),
+            persist);
       return false;
    }
 
@@ -379,8 +378,8 @@ public class SMAManager {
    }
 
    public boolean promptChangePriority(boolean persist) {
-      if (sma instanceof TeamWorkFlowArtifact) return promptChangePriority(
-            Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}), persist);
+      if (sma instanceof TeamWorkFlowArtifact) return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma),
+            persist);
       return false;
    }
 
@@ -424,7 +423,7 @@ public class SMAManager {
    }
 
    public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist) throws Exception {
-      return promptChangeStatus(options, Arrays.asList(new StateMachineArtifact[] {sma}), persist);
+      return promptChangeStatus(options, Arrays.asList(sma), persist);
    }
 
    public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws Exception {
@@ -489,7 +488,7 @@ public class SMAManager {
    public boolean promptChangeFloatAttribute(ATSAttributes atsAttr, boolean persist) throws SQLException {
       try {
          return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+               Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -499,7 +498,7 @@ public class SMAManager {
    public boolean promptChangeIntegerAttribute(ATSAttributes atsAttr, boolean persist) throws SQLException {
       try {
          return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+               Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -519,7 +518,7 @@ public class SMAManager {
    public boolean promptChangeBoolean(ATSAttributes atsAttr, String toggleMessage, boolean persist) throws SQLException {
       try {
          return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), toggleMessage, persist);
+               Arrays.asList(sma), toggleMessage, persist);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -549,7 +548,7 @@ public class SMAManager {
    public boolean promptChangeAttribute(ATSAttributes atsAttr, final boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-               Arrays.asList(new Artifact[] {sma}), persist);
+               Arrays.asList(sma), persist);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -742,7 +741,7 @@ public class SMAManager {
    }
 
    public Result transition(String toStateName, User toAssignee, boolean persist, boolean overrideTransitionCheck) {
-      return transition(toStateName, Arrays.asList(new User[] {toAssignee}), persist, null, overrideTransitionCheck);
+      return transition(toStateName, Arrays.asList(toAssignee), persist, null, overrideTransitionCheck);
    }
 
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck) {

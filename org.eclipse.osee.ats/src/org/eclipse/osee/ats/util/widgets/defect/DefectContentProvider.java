@@ -33,7 +33,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    }
 
    public void add(final DefectItem item) {
-      add(Arrays.asList(new DefectItem[] {item}));
+      add(Arrays.asList(item));
    }
 
    public void add(final Collection<? extends DefectItem> items) {
@@ -57,7 +57,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Artifact art) {
-      remove(Arrays.asList(new Artifact[] {art}));
+      remove(Arrays.asList(art));
    }
 
    public void remove(final Collection<? extends Artifact> arts) {

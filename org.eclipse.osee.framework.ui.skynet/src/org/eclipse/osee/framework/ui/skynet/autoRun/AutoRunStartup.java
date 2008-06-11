@@ -108,7 +108,7 @@ public class AutoRunStartup implements IStartup {
             emails.addAll(Arrays.asList(autoRunTask.getNotificationEmailAddresses()));
          // Otherwise, default to the man, the myth, the legend
          else
-            emails.addAll(Arrays.asList(new String[] {"donald.g.dunne@boeing.com"}));
+            emails.addAll(Arrays.asList("donald.g.dunne@boeing.com"));
 
          if (autoRunTask == null) {
             // Send email of completion
@@ -178,7 +178,7 @@ public class AutoRunStartup implements IStartup {
     */
    private static IAutoRunTask getAutoRunTask(String autoRunTaskId) throws Exception {
       List<IExtension> iExtensions =
-            ExtensionPoints.getExtensionsByUniqueId(EXTENSION_POINT, Arrays.asList(new String[] {autoRunTaskId}));
+            ExtensionPoints.getExtensionsByUniqueId(EXTENSION_POINT, Arrays.asList(autoRunTaskId));
       for (IExtension iExtension : iExtensions) {
          for (IConfigurationElement element : iExtension.getConfigurationElements()) {
             String className = element.getAttribute("classname");

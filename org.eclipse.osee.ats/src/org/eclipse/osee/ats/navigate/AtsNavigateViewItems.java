@@ -186,16 +186,16 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       XNavigateItem reviewItem = new XNavigateItem(null, "Reviews");
       new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
             "Show Open " + DecisionReviewArtifact.ARTIFACT_NAME + "s",
-            Arrays.asList(new String[] {DecisionReviewArtifact.ARTIFACT_NAME}), false, false));
+            Arrays.asList(DecisionReviewArtifact.ARTIFACT_NAME), false, false));
       new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
             "Show Workflows Waiting " + DecisionReviewArtifact.ARTIFACT_NAME + "s",
-            Arrays.asList(new String[] {DecisionReviewArtifact.ARTIFACT_NAME}), false, true));
+            Arrays.asList(DecisionReviewArtifact.ARTIFACT_NAME), false, true));
       new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
             "Show Open " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
-            Arrays.asList(new String[] {PeerToPeerReviewArtifact.ARTIFACT_NAME}), false, false));
+            Arrays.asList(PeerToPeerReviewArtifact.ARTIFACT_NAME), false, false));
       new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
             "Show Workflows Waiting " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
-            Arrays.asList(new String[] {PeerToPeerReviewArtifact.ARTIFACT_NAME}), false, true));
+            Arrays.asList(PeerToPeerReviewArtifact.ARTIFACT_NAME), false, true));
       new NewPeerToPeerReviewItem(reviewItem);
       new GenerateReviewParticipationReport(reviewItem);
       items.add(reviewItem);

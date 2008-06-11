@@ -58,7 +58,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
     */
    public Collection<String> getIds() throws Exception {
       if (getId() == null) return EMPTY_STRING;
-      return Arrays.asList(new String[] {getId()});
+      return Arrays.asList(getId());
    }
 
    /* (non-Javadoc)

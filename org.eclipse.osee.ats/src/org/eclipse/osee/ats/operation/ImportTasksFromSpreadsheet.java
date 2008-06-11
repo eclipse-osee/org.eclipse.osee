@@ -103,7 +103,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflowArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
-         viewer.setInput(Arrays.asList(new Object[] {defaultTeamWorkflowArtifact}));
+         viewer.setInput(Arrays.asList(defaultTeamWorkflowArtifact));
       }
    }
 

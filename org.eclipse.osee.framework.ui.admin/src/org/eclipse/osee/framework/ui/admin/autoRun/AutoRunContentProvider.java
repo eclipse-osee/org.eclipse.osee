@@ -32,7 +32,7 @@ public class AutoRunContentProvider implements ITreeContentProvider {
    }
 
    public void add(final IAutoRunTask item) {
-      add(Arrays.asList(new IAutoRunTask[] {item}));
+      add(Arrays.asList(item));
    }
 
    public void add(final Collection<? extends IAutoRunTask> items) {
@@ -56,7 +56,7 @@ public class AutoRunContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Artifact art) {
-      remove(Arrays.asList(new Artifact[] {art}));
+      remove(Arrays.asList(art));
    }
 
    public void remove(final Collection<? extends Artifact> arts) {

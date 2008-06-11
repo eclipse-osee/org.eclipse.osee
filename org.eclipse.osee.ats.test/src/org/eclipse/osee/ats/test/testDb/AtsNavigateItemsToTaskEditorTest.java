@@ -57,9 +57,9 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Tasks by Team Version");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof EditTasksByTeamVersionSearchItem);
-      ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
+      ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList("SAW Code")));
       ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
-            Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
+            Arrays.asList("SAW_Bld_2")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 

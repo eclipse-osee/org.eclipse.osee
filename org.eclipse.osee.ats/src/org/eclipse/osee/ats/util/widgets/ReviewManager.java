@@ -176,7 +176,7 @@ public class ReviewManager {
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
 
       // Else, return current user; should never hit this
-      return Arrays.asList(new User[] {SkynetAuthentication.getUser()});
+      return Arrays.asList(SkynetAuthentication.getUser());
    }
 
    public Collection<ReviewSMArtifact> getReviews() throws SQLException {
@@ -222,7 +222,7 @@ public class ReviewManager {
    }
 
    public static Collection<String> getAllReviewArtifactTypeNames() {
-      return Arrays.asList(new String[] {DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME});
+      return Arrays.asList(DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME);
    }
 
    /**

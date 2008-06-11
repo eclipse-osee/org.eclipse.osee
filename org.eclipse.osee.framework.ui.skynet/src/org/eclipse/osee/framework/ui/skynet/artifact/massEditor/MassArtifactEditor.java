@@ -108,7 +108,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    }
 
    public static void editArtifact(final Artifact artifact, TableLoadOption... tableLoadOptions) {
-      editArtifacts("", Arrays.asList(new Artifact[] {artifact}));
+      editArtifacts("", Arrays.asList(artifact));
    }
 
    public void createTaskActionBar(Composite parent) {

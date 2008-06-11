@@ -122,23 +122,23 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList(new String[] {"SAW Code"})));
+      ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
       handleGeneralDoubleClickAndTestResults(item, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorldSearchItem);
-      ((TeamWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
+      ((TeamWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList("SAW Code")));
       handleGeneralDoubleClickAndTestResults(item, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionByVersionSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Actions by Version");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamVersionWorldSearchItem);
-      ((TeamVersionWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
+      ((TeamVersionWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList("SAW Code")));
       ((TeamVersionWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
-            Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
+            Arrays.asList("SAW_Bld_2")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 6);
    }
 
@@ -148,7 +148,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
       ((VersionTargetedForTeamSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersionArt(VersionArtifact.getVersions(
-            Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
+            Arrays.asList("SAW_Bld_2")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 19);
    }
 
@@ -158,7 +158,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
       ((NextVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
-            Arrays.asList(new String[] {"SAW SW"})).iterator().next());
+            Arrays.asList("SAW SW")).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 19);
    }
 

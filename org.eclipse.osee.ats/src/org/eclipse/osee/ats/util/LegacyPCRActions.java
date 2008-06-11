@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class LegacyPCRActions {
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(TeamDefinitionArtifact teamDef) throws Exception {
-      return getTeamsTeamWorkflowArtifacts(Arrays.asList(new TeamDefinitionArtifact[] {teamDef}));
+      return getTeamsTeamWorkflowArtifacts(Arrays.asList(teamDef));
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
@@ -40,17 +40,15 @@ public class LegacyPCRActions {
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      return getTeamsTeamWorkflowArtifacts(Arrays.asList(new String[] {pcrId}), teamDefs);
+      return getTeamsTeamWorkflowArtifacts(Arrays.asList(pcrId), teamDefs);
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId) throws Exception {
-      return getTeamsTeamWorkflowArtifacts(Arrays.asList(new String[] {pcrId}),
-            (Collection<TeamDefinitionArtifact>) null);
+      return getTeamsTeamWorkflowArtifacts(Arrays.asList(pcrId), (Collection<TeamDefinitionArtifact>) null);
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, TeamDefinitionArtifact teamDef) throws Exception {
-      return getTeamsTeamWorkflowArtifacts(pcrIds,
-            teamDef != null ? Arrays.asList(new TeamDefinitionArtifact[] {teamDef}) : null);
+      return getTeamsTeamWorkflowArtifacts(pcrIds, teamDef != null ? Arrays.asList(teamDef) : null);
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
@@ -63,7 +61,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws Exception {
-      return getTeamsActionArtifacts(Arrays.asList(new TeamDefinitionArtifact[] {teamDef}));
+      return getTeamsActionArtifacts(Arrays.asList(teamDef));
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
@@ -76,7 +74,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      return getTeamsActionArtifacts(Arrays.asList(new String[] {pcrId}), teamDefs);
+      return getTeamsActionArtifacts(Arrays.asList(pcrId), teamDefs);
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {

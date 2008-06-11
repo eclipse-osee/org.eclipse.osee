@@ -52,8 +52,7 @@ public class TaskManager {
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException, MultipleAttributesExist {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
-      for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(AtsRelation.SmaToTask_Task,
-            TaskArtifact.class)) {
+      for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class)) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) arts.add(taskArt);
       }
@@ -70,11 +69,11 @@ public class TaskManager {
    }
 
    public TaskArtifact createNewTask(String title, boolean persist) throws Exception {
-      return createNewTask(Arrays.asList(new User[] {SkynetAuthentication.getUser()}), title, persist);
+      return createNewTask(Arrays.asList(SkynetAuthentication.getUser()), title, persist);
    }
 
    public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws Exception {
-      return createNewTask(Arrays.asList(new User[] {assignee}), title, persist);
+      return createNewTask(Arrays.asList(assignee), title, persist);
    }
 
    public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws Exception {

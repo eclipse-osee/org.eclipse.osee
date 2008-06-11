@@ -82,7 +82,7 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel);
    }
 
    public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
@@ -106,11 +106,11 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel, criteria);
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, criteria);
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel, toArray(criteria));
+      this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, toArray(criteria));
    }
 
    private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactType
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -80,6 +81,10 @@ public class ActionableItemArtifact extends Artifact {
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
+   public boolean isActionable() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+   }
+
    public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws Exception {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
@@ -100,15 +105,15 @@ public class ActionableItemArtifact extends Artifact {
             AtsPlugin.getAtsBranch());
    }
 
-   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws SQLException {
+   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDefs(aias);
    }
 
-   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
+   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws OseeCoreException, SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDef(aia);
    }
 
-   public List<TeamDefinitionArtifact> getImpactedTeamDefs() throws SQLException {
+   public List<TeamDefinitionArtifact> getImpactedTeamDefs() throws OseeCoreException, SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDef(this);
    }
 

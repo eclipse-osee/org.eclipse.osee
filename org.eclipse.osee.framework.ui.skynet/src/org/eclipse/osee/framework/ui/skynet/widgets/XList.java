@@ -352,7 +352,7 @@ public class XList extends XWidget {
    }
 
    public void setSelected(String name) {
-      setSelected(Arrays.asList(new String[] {name}));
+      setSelected(Arrays.asList(name));
       updateListWidget();
    }
 

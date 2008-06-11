@@ -28,6 +28,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
@@ -62,6 +63,7 @@ public class LoadAIsAndTeamsAction extends Action {
    private static String WORKFLOW_ID = "WorkflowId:";
    private static String STATIC_ID = "StaticId:";
    private static String GET_OR_CREATE = "GetOrCreate";
+   private static String NOT_ACTIONABLE = "NotActionable";
    private static String LEAD = "Lead:";
    private static String MEMBER = "Member:";
    private final String bundleId;
@@ -165,6 +167,7 @@ public class LoadAIsAndTeamsAction extends Action {
          java.util.Set<String> staticIds = new HashSet<String>();
          String desc = "";
          boolean getOrCreate = false;
+         boolean actionable = true;
          String fullName = "";
          String workflowId = "";
          List<TeamDefinitionOptions> teamDefinitionOptions = new ArrayList<TeamDefinitionOptions>();
@@ -178,6 +181,8 @@ public class LoadAIsAndTeamsAction extends Action {
                   staticIds.add(line.replaceFirst(STATIC_ID, ""));
                } else if (line.startsWith(GET_OR_CREATE))
                   getOrCreate = true;
+               else if (line.startsWith(NOT_ACTIONABLE))
+                  actionable = false;
                else if (line.startsWith(FULL_NAME))
                   fullName = line.replaceFirst(FULL_NAME, "");
                else if (line.contains(TeamDefinitionOptions.TeamUsesVersions.name()))
@@ -238,6 +243,8 @@ public class LoadAIsAndTeamsAction extends Action {
             teamDefArt.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
          }
 
+         teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
+
          if (!workflowId.equals("")) {
             try {
                Artifact workflowArt =
@@ -251,7 +258,6 @@ public class LoadAIsAndTeamsAction extends Action {
                System.err.println(ex.getLocalizedMessage());
             }
          }
-
          teamDefArt.persistAttributesAndRelations();
       }
 
@@ -266,12 +272,15 @@ public class LoadAIsAndTeamsAction extends Action {
       // System.out.println("Processing page " + page.getName());
       ActionableItemArtifact aia = null;
       boolean getOrCreate = false;
+      boolean actionable = true;
       Set<String> staticIds = new HashSet<String>();
       Set<User> leads = new HashSet<User>();
       for (String line : page.getInstructionStr().replaceAll("\r", "\n").split("\n")) {
          if (!line.equals("")) {
             if (line.startsWith(GET_OR_CREATE))
                getOrCreate = true;
+            else if (line.startsWith(NOT_ACTIONABLE))
+               actionable = false;
             else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
                // Get user or create temp user if not on production DB
@@ -313,6 +322,8 @@ public class LoadAIsAndTeamsAction extends Action {
       for (DiagramNode childPage : page.getToPages()) {
          addActionableItem(aia, (DiagramNode) childPage);
       }
+      aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
+
       aia.persistAttributes();
       return aia;
    }

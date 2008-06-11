@@ -78,13 +78,13 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX,
-            Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, Arrays.asList(artifact),
+            persist);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX,
-            Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX, Arrays.asList(artifact),
+            persist);
    }
 
    public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
@@ -92,7 +92,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeFloatAttribute(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeFloatAttribute(attributeName, displayName, Arrays.asList(artifact), persist);
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
@@ -100,8 +100,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
-      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(new Artifact[] {artifact}),
-            persist);
+      return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(artifact), persist);
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
@@ -109,7 +108,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeDate(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {
-      return promptChangeDate(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeDate(attributeName, displayName, Arrays.asList(artifact), persist);
    }
 
    public static boolean promptChangeDate(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
@@ -131,8 +130,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {
-      return promptChangeEnumeratedAttribute(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}),
-            persist);
+      return promptChangeEnumeratedAttribute(attributeName, displayName, Arrays.asList(artifact), persist);
    }
 
    public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
@@ -200,8 +198,7 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeBoolean(String attributeName, String displayName, final Artifact artifact, String toggleMessage, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      return promptChangeBoolean(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), toggleMessage,
-            persist);
+      return promptChangeBoolean(attributeName, displayName, Arrays.asList(artifact), toggleMessage, persist);
    }
 
    public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {

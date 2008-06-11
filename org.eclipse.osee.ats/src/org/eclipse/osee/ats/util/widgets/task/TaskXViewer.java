@@ -91,7 +91,7 @@ public class TaskXViewer extends WorldXViewer {
    @Override
    public void add(final Artifact artifact) {
       if (!(artifact instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      add(Arrays.asList(new Artifact[] {artifact}));
+      add(Arrays.asList(artifact));
    }
 
    @Override

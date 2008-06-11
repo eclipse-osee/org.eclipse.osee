@@ -66,10 +66,10 @@ public class AtsPlugin extends OseeUiActivator {
    public void bulkLoadTypeData() {
       try {
          List<Artifact> typeArts =
-               ArtifactQuery.getArtifactsFromTypes(Arrays.asList(new String[] {TeamDefinitionArtifact.ARTIFACT_NAME,
+               ArtifactQuery.getArtifactsFromTypes(Arrays.asList(TeamDefinitionArtifact.ARTIFACT_NAME,
                      ActionableItemArtifact.ARTIFACT_NAME, WorkRuleDefinition.ARTIFACT_NAME,
                      WorkFlowDefinition.ARTIFACT_NAME, WorkWidgetDefinition.ARTIFACT_NAME,
-                     WorkPageDefinition.ARTIFACT_NAME}), AtsPlugin.getAtsBranch());
+                     WorkPageDefinition.ARTIFACT_NAME), AtsPlugin.getAtsBranch());
          RelationManager.getRelatedArtifacts(typeArts, 2, AtsRelation.WorkItem__Child,
                AtsRelation.TeamDefinitionToVersion_Version, AtsRelation.TeamActionableItem_ActionableItem);
       } catch (SQLException ex) {

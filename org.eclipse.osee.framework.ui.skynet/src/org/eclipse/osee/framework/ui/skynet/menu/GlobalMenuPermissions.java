@@ -49,7 +49,7 @@ public class GlobalMenuPermissions {
     * @param artifact
     */
    public GlobalMenuPermissions(Artifact artifact) {
-      this(Arrays.asList(new Artifact[] {artifact}));
+      this(Arrays.asList(artifact));
    }
 
    /**

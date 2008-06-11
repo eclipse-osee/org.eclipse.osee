@@ -58,8 +58,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (teamArts.size() == 0) throw new IllegalStateException("No Actions/Workflows Specified");
          retrieveData(monitor, teamArts, byAttribute, rd);
          if (rd.toString().equals("")) rd.log("No Problems Found");
-         final String html =
-               rd.getReport(jobName).getManipulatedHtml(Arrays.asList(new Manipulations[] {Manipulations.NONE}));
+         final String html = rd.getReport(jobName).getManipulatedHtml(Arrays.asList(Manipulations.NONE));
          final String title = jobName;
          Displays.ensureInDisplayThread(new Runnable() {
             /*

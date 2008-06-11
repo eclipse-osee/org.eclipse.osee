@@ -297,7 +297,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       };
 
       public Collection<GlobalMenuItem> getValidMenuItems() {
-         return Arrays.asList(new GlobalMenuItem[] {GlobalMenuItem.TagArtifacts});
+         return Arrays.asList(GlobalMenuItem.TagArtifacts);
       }
 
    };
@@ -993,10 +993,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   Artifact artifact = ((ArtifactChange) object).getArtifact();
 
                   if (artifact != null) {
-                     readPermission &=
-                           AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
-                     writePermission &=
-                           AccessControlManager.checkObjectPermission(artifact, PermissionEnum.WRITE);
+                     readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
+                     writePermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.WRITE);
                   }
                } catch (SQLException ex) {
                   readPermission = false;
