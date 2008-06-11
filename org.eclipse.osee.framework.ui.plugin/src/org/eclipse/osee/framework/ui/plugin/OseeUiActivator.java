@@ -148,7 +148,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    public Image getImageForProgram(String extenstion) {
       Image image = getImageFromRegistry(extenstion);
 
-      if (image == null) {
+      if (image == null && extenstion != null) {
          Program program = Program.findProgram(extenstion);
          if (program == null || program.getImageData() == null) {
             // provide no image (i.e. leave null)
