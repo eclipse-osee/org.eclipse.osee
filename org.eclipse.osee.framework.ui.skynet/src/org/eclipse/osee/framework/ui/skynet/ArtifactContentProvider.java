@@ -43,7 +43,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    private static Object[] EMPTY_ARRAY = new Object[0];
    protected TreeViewer viewer;
    private final ArtifactExplorer artifactExplorer;
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
 
    public ArtifactContentProvider(ArtifactExplorer artifactExplorer) {
       this.artifactExplorer = artifactExplorer;
@@ -84,7 +83,8 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact parentItem = (Artifact) parentElement;
 
          try {
-            if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), parentItem, PermissionEnum.READ)) {
+            if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), parentItem,
+                  PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
                   for (Artifact art : children) {
@@ -133,7 +133,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
+         if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact.isDeleted()) return false;
 
             try {

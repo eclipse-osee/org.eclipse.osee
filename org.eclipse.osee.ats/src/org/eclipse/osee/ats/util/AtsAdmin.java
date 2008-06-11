@@ -36,13 +36,12 @@ public class AtsAdmin {
          if (!atsAdmin) {
             if (!searched) {
                atsAdminArtifact =
-                     ArtifactQuery.getArtifactFromTypeAndName("General Document", "AtsAdmin", AtsPlugin.getAtsBranch());
+                     ArtifactQuery.getArtifactFromTypeAndName("Artifact", "AtsAdmin", AtsPlugin.getAtsBranch());
                searched = true;
             }
             if (atsAdminArtifact != null) {
                atsAdmin =
-                     AccessControlManager.getInstance().checkObjectPermission(
-                           SkynetAuthentication.getUser(), atsAdminArtifact,
+                     AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), atsAdminArtifact,
                            PermissionEnum.FULLACCESS);
             }
          }

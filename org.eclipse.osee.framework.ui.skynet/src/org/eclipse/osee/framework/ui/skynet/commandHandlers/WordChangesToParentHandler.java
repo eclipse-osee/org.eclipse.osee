@@ -40,7 +40,6 @@ import org.eclipse.ui.PlatformUI;
 public class WordChangesToParentHandler extends AbstractHandler {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public WordChangesToParentHandler() {
@@ -109,7 +108,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
             boolean validDiffParent = wordArtifactSelected && parentBranch != null;
 
-            boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
+            boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
             boolean modifiedWordArtifactSelected =
                   wordArtifactSelected && mySelectedArtifactChange.getModType() == CHANGE;
             isEnabled = validDiffParent && modifiedWordArtifactSelected && readPermission;

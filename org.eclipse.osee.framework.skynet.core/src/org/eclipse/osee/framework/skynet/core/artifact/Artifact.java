@@ -156,7 +156,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Image getImage() {
-      if (AccessControlManager.getInstance().hasLock(this)) {
+      if (AccessControlManager.hasLock(this)) {
          return artifactType.getLockedImage(AccessControlManager.getInstance().hasLockAccess(this));
       }
 
@@ -872,7 +872,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isReadOnly() {
-      return isHistorical() || !AccessControlManager.getInstance().checkObjectPermission(this, PermissionEnum.WRITE);
+      return isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
    }
 
    private boolean anAttributeIsDirty() throws SQLException {

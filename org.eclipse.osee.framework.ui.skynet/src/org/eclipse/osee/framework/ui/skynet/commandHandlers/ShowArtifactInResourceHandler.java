@@ -11,22 +11,20 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
@@ -34,11 +32,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ShowArtifactInResourceHandler extends AbstractHandler {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ShowArtifactInResourceHandler.class);
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static final ArtifactPersistenceManager artifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 
    public ShowArtifactInResourceHandler() {
@@ -58,7 +51,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
                         IWorkbenchPage.VIEW_ACTIVATE);
             revisionHistoryView.explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch(), true));
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
       return null;
@@ -86,8 +79,8 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
          boolean reportBranch = true;
 
          for (Artifact artifact : artifacts) {
-            readPermission &= accessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
-            reportBranch &= (artifact.getBranch() == branchPersistenceManager.getDefaultBranch());
+            readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
+            reportBranch &= (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch());
          }
          isEnabled = readPermission && reportBranch;
       }

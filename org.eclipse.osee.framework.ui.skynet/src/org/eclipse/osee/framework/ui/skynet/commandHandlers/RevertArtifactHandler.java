@@ -55,7 +55,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RevertArtifactHandler extends AbstractHandler {
    private static final RevisionManager myRevisionManager = RevisionManager.getInstance();
-   private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private List<ArtifactChange> artifactChanges;
 
    public RevertArtifactHandler() {
@@ -234,7 +233,7 @@ public class RevertArtifactHandler extends AbstractHandler {
 
             for (ArtifactChange artifactChange : artifactChanges) {
                isEnabled =
-                     myAccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+                     AccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
                if (!isEnabled) {
                   break;
                }

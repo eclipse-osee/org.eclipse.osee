@@ -38,7 +38,6 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    private static final ArtifactPersistenceManager myArtifactPersistenceManager =
          ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private ArtifactChange artifactChange;
 
    public WordChangesBetweenCurrentAndParentHandler() {
@@ -85,7 +84,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
          try {
             Artifact artifact = artifactChange.getArtifact();
 
-            boolean readPermission = myAccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
+            boolean readPermission = AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
             boolean wordArtifactSelected = artifact instanceof WordArtifact;
             boolean modifiedWordArtifactSelected =
                   wordArtifactSelected && artifactChange.getModType() == ModificationType.CHANGE;

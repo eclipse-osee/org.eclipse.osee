@@ -29,8 +29,6 @@ import org.eclipse.search.ui.text.Match;
  * @author Ryan D. Brooks
  */
 public class ArtifactDoubleClick implements IDoubleClickListener {
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
-
    /*
     * (non-Javadoc)
     * 
@@ -57,7 +55,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       if (artifact == null) {
          OSEELog.logSevere(SkynetGuiPlugin.class, "The artifact associated with the double-click was null", false);
       } else {
-         if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
+         if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact instanceof IATSArtifact)
                OseeAts.openATSArtifact(artifact);
             else

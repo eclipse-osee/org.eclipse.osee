@@ -309,9 +309,9 @@ public class AccessControlManager implements PersistenceManager {
     * @param permission
     * @return true if the subject has permission for an object else false.
     */
-   public boolean checkObjectPermission(Object object, PermissionEnum permission) {
-      return skynetAuth.duringUserCreation() || checkObjectPermission(SkynetAuthentication.getUser(), object,
-            permission);
+   public static boolean checkObjectPermission(Object object, PermissionEnum permission) {
+      return SkynetAuthentication.getInstance().duringUserCreation() || checkObjectPermission(
+            SkynetAuthentication.getUser(), object, permission);
    }
 
    public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
@@ -333,7 +333,7 @@ public class AccessControlManager implements PersistenceManager {
     * @param permission
     * @return true if the subject has permission for an object else false.
     */
-   public boolean checkObjectPermission(Artifact subject, Object object, PermissionEnum permission) {
+   public static boolean checkObjectPermission(Artifact subject, Object object, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       PermissionEnum branchPermission = null;
       Branch branch = null;
@@ -341,13 +341,13 @@ public class AccessControlManager implements PersistenceManager {
       if (object instanceof Artifact) {
          Artifact artifact = (Artifact) object;
          branch = artifact.getBranch();
-         userPermission = getArtifactPermission(subject, (Artifact) object, permission);
+         userPermission = instance.getArtifactPermission(subject, (Artifact) object, permission);
       } else if (object instanceof Branch) {
          branch = (Branch) object;
       } else
          throw new IllegalStateException("Unhandled object type for access control - " + object);
 
-      branchPermission = getBranchPermission(subject, branch, permission);
+      branchPermission = instance.getBranchPermission(subject, branch, permission);
 
       if (branchPermission != null && (branchPermission.equals(PermissionEnum.DENY) || (userPermission == null && userPermission != PermissionEnum.LOCK))) {
          userPermission = branchPermission;
@@ -760,31 +760,31 @@ public class AccessControlManager implements PersistenceManager {
    /**
     * @return - Returns true if the object has been locked on any branch.
     */
-   public boolean hasLock(Artifact object) {
+   public static boolean hasLock(Artifact object) {
       if (!object.isInDb()) return false;
 
-      return objectToBranchLockCache.containsKey(object.getArtId());
+      return instance.objectToBranchLockCache.containsKey(object.getArtId());
    }
 
    /**
     * @return - Returns true if the subject locked the object else false.
     */
-   public boolean canUnlockObject(Artifact object, Artifact subject) {
-      Integer subjectId = lockedObjectToSubject.get(object.getArtId());
+   public static boolean canUnlockObject(Artifact object, Artifact subject) {
+      Integer subjectId = instance.lockedObjectToSubject.get(object.getArtId());
       return subjectId != null && subjectId.intValue() == subject.getArtId();
    }
 
    /**
     * @return - Returns the subject who has the artifact locked or null if the object is not locked.
     */
-   public Artifact getSubjectFromLockedObject(Object object) {
+   public static Artifact getSubjectFromLockedObject(Object object) {
       Artifact subject = null;
 
       if (object instanceof Artifact) {
-         Integer subjectArtId = lockedObjectToSubject.get(((Artifact) object).getArtId());
+         Integer subjectArtId = instance.lockedObjectToSubject.get(((Artifact) object).getArtId());
 
          if (subjectArtId != null) {
-            subject = skynetAuth.getUserByArtId(subjectArtId);
+            subject = SkynetAuthentication.getInstance().getUserByArtId(subjectArtId);
          }
       }
       return subject;

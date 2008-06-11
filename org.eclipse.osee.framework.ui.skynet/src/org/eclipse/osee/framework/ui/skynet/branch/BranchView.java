@@ -640,7 +640,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.getInstance().checkObjectPermission(
+            return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.checkObjectPermission(
                   SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.FULLACCESS) || OseeProperties.isDeveloper());
          }
       });
@@ -1022,7 +1022,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
                   return null;
                }
-               if (AccessControlManager.getInstance().checkObjectPermission(SkynetAuthentication.getUser(),
+               if (AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(),
                      selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
                   if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                      OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
@@ -1188,7 +1188,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
             try {
-               return (SkynetSelections.oneBranchSelected(selection) && AccessControlManager.getInstance().checkObjectPermission(
+               return (SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
                      SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || SkynetSelections.twoTransactionsSelectedOnSameBranch(selection);
             } catch (SQLException ex) {
                return false;
@@ -1445,7 +1445,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.getInstance().checkObjectPermission(
+            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
                   SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.WRITE);
          }
       });
@@ -1480,7 +1480,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.getInstance().checkObjectPermission(
+            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
                   SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.WRITE);
          }
       });
@@ -1515,7 +1515,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.getInstance().checkObjectPermission(
+            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
                   SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ);
          }
       });

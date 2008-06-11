@@ -59,14 +59,14 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
          for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
-            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(
                   art, PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
          for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
-            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(
                   art, PermissionEnum.READ)) groupOptions.add(art);
          }
       }

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
  */
 public class GlobalMenuPermissions {
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
 
    private boolean isLocked;
    private boolean accessToRemoveLock;
@@ -71,19 +70,21 @@ public class GlobalMenuPermissions {
       for (Artifact objectArtifact : artifacts) {
 
          writePermission &=
-               accessManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact, PermissionEnum.WRITE);
+               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+                     PermissionEnum.WRITE);
          readPermission &=
-               accessManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact, PermissionEnum.READ);
+               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+                     PermissionEnum.READ);
          fullAccess &=
-               accessManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
+               AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), objectArtifact,
                      PermissionEnum.FULLACCESS);
-         isLocked |= accessManager.hasLock(objectArtifact);
+         isLocked |= AccessControlManager.hasLock(objectArtifact);
          defaultBranchReadable =
-               accessManager.checkObjectPermission(branchManager.getDefaultBranch(), PermissionEnum.READ);
-         accessToRemoveLock &= accessManager.canUnlockObject(objectArtifact, SkynetAuthentication.getUser());
+               AccessControlManager.checkObjectPermission(branchManager.getDefaultBranch(), PermissionEnum.READ);
+         accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, SkynetAuthentication.getUser());
 
          // acquire the name of the subject that has the lock
-         Artifact subject = accessManager.getSubjectFromLockedObject(objectArtifact);
+         Artifact subject = AccessControlManager.getSubjectFromLockedObject(objectArtifact);
 
          if (isLocked && subject != null) {
             if (combinationSubject == null) {

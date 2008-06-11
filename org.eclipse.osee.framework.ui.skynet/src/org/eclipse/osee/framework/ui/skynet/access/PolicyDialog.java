@@ -182,7 +182,7 @@ public class PolicyDialog extends Dialog {
 
    private void checkEnabled() {
       // get information from db
-      boolean accessEnabled = AccessControlManager.getInstance().checkObjectPermission(object, PermissionEnum.WRITE);
+      boolean accessEnabled = AccessControlManager.checkObjectPermission(object, PermissionEnum.WRITE);
 
       accessLabel.setText(accessEnabled ? "" : "You do not have permissions to modify access.");
       radEnabled.setSelection(true);

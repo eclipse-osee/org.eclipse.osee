@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.MenuItem;
  */
 public class ArtifactPreviewMenu {
 
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static final RendererManager rendererManager = RendererManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
@@ -111,7 +110,7 @@ public class ArtifactPreviewMenu {
 
                   if (artifact != null) {
                      permitted &=
-                           accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
+                           AccessControlManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                                  PermissionEnum.READ);
 
                      //whole word artifacts can only be viewed as a single document

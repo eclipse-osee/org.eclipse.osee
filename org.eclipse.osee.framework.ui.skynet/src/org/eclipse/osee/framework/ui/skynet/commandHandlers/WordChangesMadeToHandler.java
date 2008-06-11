@@ -38,7 +38,6 @@ public class WordChangesMadeToHandler extends AbstractHandler {
    private static final ArtifactPersistenceManager myArtifactPersistenceManager =
          ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public WordChangesMadeToHandler() {
@@ -93,7 +92,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
 
          try {
             Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
-            boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
+            boolean readPermission = AccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
             boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
             isEnabled = readPermission && wordArtifactSelected;
          } catch (SQLException ex) {

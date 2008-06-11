@@ -72,7 +72,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final SnapshotPersistenceManager snapshotManager = SnapshotPersistenceManager.getInstance();
    private static final RevisionManager revisionManager = RevisionManager.getInstance();
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private static final Object[] EMPTY_ARRAY = new Object[0];
    private static final String EMPTY_REPORT = "No changes";
@@ -360,7 +359,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
       }
 
-      return ((element instanceof Branch && accessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
+      return ((element instanceof Branch && AccessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
    }
 
    public void dispose() {

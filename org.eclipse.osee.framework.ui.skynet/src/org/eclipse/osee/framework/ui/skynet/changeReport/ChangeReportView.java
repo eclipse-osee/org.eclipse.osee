@@ -702,7 +702,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             if (object instanceof ITreeNode && ((ITreeNode) object).getBackingData() instanceof ArtifactChange) {
                try {
                   artifact = ((ArtifactChange) ((ITreeNode) object).getBackingData()).getArtifact();
-                  if (AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.READ)) {
+                  if (AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
                      artifactTransferData.add(artifact);
                      textTransferData.add(artifact.getDescriptiveName());
                   }
@@ -994,9 +994,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
                   if (artifact != null) {
                      readPermission &=
-                           AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.READ);
+                           AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
                      writePermission &=
-                           AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.WRITE);
+                           AccessControlManager.checkObjectPermission(artifact, PermissionEnum.WRITE);
                   }
                } catch (SQLException ex) {
                   readPermission = false;

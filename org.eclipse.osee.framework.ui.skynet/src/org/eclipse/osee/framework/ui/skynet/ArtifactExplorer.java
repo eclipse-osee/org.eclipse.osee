@@ -1486,7 +1486,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          if (myTreeItemObject instanceof Artifact) {
             Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
             boolean writePermission =
-                  AccessControlManager.getInstance().checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+                  AccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
             renameArtifactMenuItem.setEnabled(writePermission);
          }
       }

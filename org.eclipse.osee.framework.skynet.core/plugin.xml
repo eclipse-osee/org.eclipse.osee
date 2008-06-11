@@ -152,6 +152,10 @@
                ArtifactTypeName="Work Widget Definition"
                ImagePath="images/widget.gif">
          </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Artifact"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
       </extension>
       <extension
             point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">

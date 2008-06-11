@@ -50,7 +50,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchCreationHandler.class);
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private TreeViewer branchTable;
@@ -134,8 +133,8 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
       try {
-         return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && accessManager.checkObjectPermission(
-               SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && accessManager.checkObjectPermission(
+         return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
+               SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
                ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
                PermissionEnum.READ)));
       } catch (SQLException ex) {

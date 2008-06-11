@@ -179,7 +179,7 @@ public class ArtifactPersistenceManager {
    }
 
    public static void saveTrace(Artifact artifact, SkynetTransactionBuilder builder) throws Exception {
-      if (!AccessControlManager.getInstance().checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
+      if (!AccessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
       if (artifact.isHistorical()) {
          throw new IllegalArgumentException(
