@@ -192,7 +192,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
 
       };
 
-      thread.setPriority(Thread.MAX_PRIORITY);
+      thread.setPriority(Thread.MIN_PRIORITY);
       thread.start();
    }
 
