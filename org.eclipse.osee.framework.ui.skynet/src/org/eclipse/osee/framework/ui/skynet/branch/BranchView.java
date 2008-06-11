@@ -116,7 +116,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -163,7 +162,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private TreeViewer branchTable;
    private TreeEditor myTreeEditor;
    private Text myTextBeingRenamed;
-   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
    private Text filterText;
    private BranchNameFilter nameFilter;
    private FavoritesSorter sorter;
@@ -845,7 +843,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                oldEditor.dispose();
             }
             myTextBeingRenamed = new Text(branchTable.getTree(), SWT.BORDER);
-            myTextBeingRenamed.setBackground(myYellowColor);
             myTextBeingRenamed.setText(selectedBranch.getBranchName());
             myTextBeingRenamed.addFocusListener(new FocusAdapter() {
                public void focusLost(FocusEvent e) {
