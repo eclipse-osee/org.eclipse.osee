@@ -386,7 +386,7 @@ public class ArtifactQueryBuilder {
    private String getSoleExceptionMessage(int artifactCount) {
       StringBuilder message = new StringBuilder(250);
       if (artifactCount == 0) {
-         message.append("No artifact found");
+         message.append("ArtifactQueryBuilder: No artifact found");
       } else {
          message.append(artifactCount);
          message.append(" artifacts found");

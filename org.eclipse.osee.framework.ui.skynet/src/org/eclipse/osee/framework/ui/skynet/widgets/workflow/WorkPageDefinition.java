@@ -61,7 +61,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
       }
       // This supports both relating new children and when WriteType.Overwrite of updating
       art.setRelations(CoreRelationEnumeration.WorkItem__Child, children);
-      //      art.setRelationOrder(CoreRelationEnumeration.WorkItem__Child, children);
+      art.setRelationOrder(CoreRelationEnumeration.WorkItem__Child, children);
       return art;
    }
 

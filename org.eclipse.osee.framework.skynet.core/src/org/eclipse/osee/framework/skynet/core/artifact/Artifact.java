@@ -1093,11 +1093,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws SQLException, OseeCoreException {
+      if (artifactsInNewOrder.size() == 0) return;
       List<Artifact> currentOrder = getArtifacts(relationSide, Artifact.class);
       // Insert first artifact before first artifact in list
       Artifact previousArtifact = currentOrder.iterator().next();
+      boolean firstArtifact = true;
       for (Artifact artifact : artifactsInNewOrder) {
-         setRelationOrder(previousArtifact, false, relationSide, artifact);
+         if (previousArtifact != artifact) {
+            setRelationOrder(previousArtifact, !firstArtifact, relationSide, artifact);
+         }
+         firstArtifact = false;
          previousArtifact = artifact;
       }
    }

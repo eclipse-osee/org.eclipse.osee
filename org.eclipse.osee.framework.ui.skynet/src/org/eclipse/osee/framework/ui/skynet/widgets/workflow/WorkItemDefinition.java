@@ -11,7 +11,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
  * Definition of WorkItem. Once created, nothing in this class, or any subclasses, should be modified as these
@@ -134,8 +133,7 @@ public abstract class WorkItemDefinition {
    public Artifact toArtifact(WriteType writeType) throws Exception {
       Artifact artifact = null;
       if (writeType == WriteType.Update) {
-         artifact =
-               Artifacts.getOrCreateArtifact(BranchPersistenceManager.getCommonBranch(), getArtifactTypeName(), getId());
+         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       } else {
          // Ensure doesn't already exist
          if (ArtifactQuery.getArtifactsFromTypeAndName(getArtifactTypeName(), getId(),
@@ -143,6 +141,8 @@ public abstract class WorkItemDefinition {
             throw new IllegalStateException(
                   "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
          }
+      }
+      if (artifact == null) {
          // Create new
          artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchPersistenceManager.getCommonBranch());
       }

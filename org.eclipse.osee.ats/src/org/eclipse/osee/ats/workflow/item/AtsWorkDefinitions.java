@@ -204,7 +204,9 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
             WorkPageDefinition.class, WorkFlowDefinition.class}) {
-         WorkItemDefinitionFactory.clearCache();
+         if (writeType == WriteType.New) {
+            WorkItemDefinitionFactory.clearCache();
+         }
          for (WorkItemDefinition wid : workItemDefinitions) {
             if (clazz.isInstance(wid)) {
                // System.out.println("Adding " + wid.getId() + " as class " + clazz);
