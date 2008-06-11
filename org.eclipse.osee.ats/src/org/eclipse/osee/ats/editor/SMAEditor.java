@@ -213,7 +213,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          workFlowPageIndex = addPage(workFlowTab);
 
          // Create Tasks tab
-         System.err.println("Disabling TaskTab...fix this");
          if (smaMgr.showTaskTab()) {
             taskComposite = new SMATaskComposite(getContainer(), SWT.NONE);
             taskComposite.create(this);

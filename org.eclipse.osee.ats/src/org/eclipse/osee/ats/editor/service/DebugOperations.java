@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts.OpenView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -59,7 +60,8 @@ public class DebugOperations extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            smaMgr.getSma().isSMADirty().popup();
+            Result result = smaMgr.getSma().isSMADirty();
+            result.popup(true);
          }
 
       });
