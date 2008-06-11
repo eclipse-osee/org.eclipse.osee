@@ -77,7 +77,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private boolean dirty = false;
-   private boolean inTransaction = false;
    private boolean deleted = false;
    private final Branch branch;
    private final String guid;
@@ -839,19 +838,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Not supported in the public API for internal use only.
-    * 
-    * @param inTransaction
-    */
-   public void setInTransaction(boolean inTransaction) {
-      this.inTransaction = inTransaction;
-   }
-
-   protected boolean isInTransaction() {
-      return inTransaction;
-   }
-
-   /**
     * @return Returns the dirty.
     * @throws SQLException
     */
@@ -907,10 +893,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void persistAttributes() throws SQLException {
+      if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
+            "No write permissions for the branch that this artifact belongs to:" + getBranch());
+      if (isHistorical()) {
+         throw new IllegalArgumentException(
+               "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
+      }
+
       AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
          @Override
          protected void handleTxWork() throws Exception {
-            ArtifactPersistenceManager.saveTrace(Artifact.this, getTxBuilder());
+            if (isDirty()) {
+               getTxBuilder().addArtifactToPersist(Artifact.this);
+            }
          }
       };
       try {

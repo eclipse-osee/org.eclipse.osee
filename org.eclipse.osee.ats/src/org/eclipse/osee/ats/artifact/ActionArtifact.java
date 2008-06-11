@@ -90,7 +90,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
-      if (isDirty()) persistAttributes();
+      persistAttributes();
    }
 
    /**
@@ -349,8 +349,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       super.atsDelete(deleteArts, allRelated);
       // Delete all products
-      for (TeamWorkFlowArtifact art : getArtifacts(AtsRelation.ActionToWorkflow_WorkFlow,
-            TeamWorkFlowArtifact.class))
+      for (TeamWorkFlowArtifact art : getArtifacts(AtsRelation.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class))
          art.atsDelete(deleteArts, allRelated);
    }
 

@@ -138,9 +138,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
          if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
             rd.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
          }
-         if (sma.isDirty()) {
-            sma.persistAttributes();
-         }
+         sma.persistAttributes();
       }
       rd.log("Completed processing " + arts.size() + " artifacts.");
    }

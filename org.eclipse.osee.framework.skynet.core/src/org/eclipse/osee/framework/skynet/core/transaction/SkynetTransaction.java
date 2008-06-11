@@ -225,10 +225,7 @@ public class SkynetTransaction {
       for (ITransactionData transactionData : transactionItems.keySet()) {
          if (transactionData instanceof ArtifactTransactionData) {
             Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
-            artifact.setInTransaction(false);
-            if (!artifact.isDeleted()) {
-               artifact.setNotDirty();
-            }
+            artifact.setNotDirty();
          }
       }
    }

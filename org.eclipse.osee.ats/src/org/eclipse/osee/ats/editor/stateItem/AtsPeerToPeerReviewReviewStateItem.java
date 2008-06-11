@@ -51,7 +51,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
       smaMgr.getStateMgr().setAssignees(assignees);
-      if (smaMgr.getSma().isDirty()) smaMgr.getSma().persistAttributes();
+      smaMgr.getSma().persistAttributes();
    }
 
    /* (non-Javadoc)

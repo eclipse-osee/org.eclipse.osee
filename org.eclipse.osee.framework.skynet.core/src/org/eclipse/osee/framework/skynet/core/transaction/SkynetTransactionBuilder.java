@@ -61,13 +61,8 @@ public class SkynetTransactionBuilder {
       ConnectionHandler.startTransactionLevel(transactionKey);
    }
 
-   public void addArtifact(Artifact artifact) throws Exception {
-      artifactManager.doSave(artifact, getTransaction(artifact.isVersionControlled()), true);
-   }
-
-   public void addArtifacts(Collection<Artifact> artifacts) throws Exception {
-      for (Artifact artifact : artifacts)
-         addArtifact(artifact);
+   public void addArtifactToPersist(Artifact artifact) throws Exception {
+      artifactManager.persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
    }
 
    public void addLinkToPersist(RelationLink link) throws SQLException, ArtifactDoesNotExist {

@@ -38,8 +38,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDe
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -178,18 +176,6 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public static void saveTrace(Artifact artifact, SkynetTransactionBuilder builder) throws Exception {
-      if (!AccessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
-            "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
-      if (artifact.isHistorical()) {
-         throw new IllegalArgumentException(
-               "The artifact " + artifact.getGuid() + " must be at the head of the branch to be edited.");
-      }
-      if (artifact.isDirty() && !artifact.isInTransaction()) {
-         builder.addArtifact(artifact);
-      }
-   }
-
    private void notifyOnAttributeSave(Artifact artifact) {
       try {
          List<IAttributeSaveListener> listeners = attributeSaveListeners.getObjects();
@@ -201,7 +187,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public void doSave(Artifact artifact, SkynetTransaction transaction, boolean persistAttributes) throws Exception {
+   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws Exception {
       workingOn(artifact.getDescriptiveName());
       ModificationType modType;
 
@@ -220,18 +206,14 @@ public class ArtifactPersistenceManager {
       artifact.setGammaId(artGamma);
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
 
-      if (persistAttributes) {
-         notifyOnAttributeSave(artifact);
+      notifyOnAttributeSave(artifact);
 
-         // Add Attributes to Transaction
-         AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
-         operation.execute();
+      // Add Attributes to Transaction
+      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
+      operation.execute();
 
-         if (modType != ModificationType.NEW) {
-            transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact,
-                  transaction.getTransactionNumber()));
-         }
-         artifact.setInTransaction(true);
+      if (modType != ModificationType.NEW) {
+         transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact, transaction.getTransactionNumber()));
       }
       workedOneUnit();
    }

@@ -197,7 +197,7 @@ public class UserRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
       smaMgr.getStateMgr().setHoursSpent(hoursSpent);
-      if (artifact.isDirty() && persist) artifact.persistAttributes();
+      if (persist) artifact.persistAttributes();
    }
 
 }

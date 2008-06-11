@@ -47,7 +47,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
             smaMgr.getStateMgr().setAssignees(teamLeads);
-            if (smaMgr.getSma().isDirty()) smaMgr.getSma().persistAttributes();
+            smaMgr.getSma().persistAttributes();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
          }
