@@ -392,8 +392,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public Artifact addNewChild(ArtifactType descriptor, String name) throws SQLException, OseeCoreException {
-      Artifact child = descriptor.makeNewArtifact(branch);
+   public Artifact addNewChild(ArtifactType artifactType, String name) throws SQLException, OseeCoreException {
+      Artifact child = artifactType.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
       child.persistAttributesAndRelations();
