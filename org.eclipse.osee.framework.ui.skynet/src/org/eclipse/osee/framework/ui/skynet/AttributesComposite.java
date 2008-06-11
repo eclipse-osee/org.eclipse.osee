@@ -249,22 +249,13 @@ public class AttributesComposite extends Composite {
          public void widgetSelected(SelectionEvent e) {
             Attribute<?> attribute = getSelectedAttribute();
             attribute.delete();
+            editor.onDirtied();
+            notifyModifyAttribuesListeners();
             tableViewer.refresh();
          }
 
          public void widgetDefaultSelected(SelectionEvent e) {
          }
-      });
-
-      deleteItem.addSelectionListener(new SelectionListener() {
-         public void widgetSelected(SelectionEvent e) {
-            editor.onDirtied();
-            notifyModifyAttribuesListeners();
-         }
-
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
       });
    }
 
