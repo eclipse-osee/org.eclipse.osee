@@ -15,9 +15,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectComposite;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -212,7 +210,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
             Branch branch = BranchPersistenceManager.getInstance().getBranch(branchName);
             defaultBranch = branch.getBranchId();
          } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, "Unable to set default branch.", ex, false);
+            //OSEELog.logException(SkynetGuiPlugin.class, "Unable to set default branch.", ex, false);
          }
       }
    }
