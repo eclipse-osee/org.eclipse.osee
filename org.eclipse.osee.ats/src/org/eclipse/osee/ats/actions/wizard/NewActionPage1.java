@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -148,7 +149,18 @@ public class NewActionPage1 extends WizardPage {
    public boolean isPageComplete() {
       if (treeViewer.getChecked().size() == 0) return false;
       try {
-         TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+         for (ActionableItemArtifact aia : getSelectedActionableItemArtifacts()) {
+            if (!aia.isActionable()) {
+               AWorkbench.popup("ERROR", ActionableItemArtifact.getNotActionableItemError(aia));
+               return false;
+            }
+         }
+         Collection<TeamDefinitionArtifact> teamDefs =
+               TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+         if (teamDefs.size() == 0) {
+            AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
+            return false;
+         }
       } catch (Exception ex) {
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          return false;

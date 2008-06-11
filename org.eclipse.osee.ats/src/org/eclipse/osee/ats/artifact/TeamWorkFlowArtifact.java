@@ -12,10 +12,10 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -387,7 +387,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          if (diag.getChecked().size() == 0) return new Result("At least one actionable item must must be selected.");
          if (diag.getChecked().size() > 1) return new Result("Only ONE actionable item can be selected for converts");
          ActionableItemArtifact selectedAia = (ActionableItemArtifact) diag.getChecked().iterator().next();
-         List<TeamDefinitionArtifact> teamDefs = ActionableItemArtifact.getImpactedTeamDef(selectedAia);
+         Collection<TeamDefinitionArtifact> teamDefs =
+               ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
          if (teamDefs.size() != 1) {
             toReturn = new Result("Single team can not retrieved for " + selectedAia.getDescriptiveName());
          } else {

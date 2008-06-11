@@ -12,9 +12,9 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -57,6 +57,10 @@ public class ActionableItemArtifact extends Artifact {
       ActiveArtifactTypeSearch search =
             new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getAtsBranch());
       return search.getArtifacts(ActionableItemArtifact.class);
+   }
+
+   public static String getNotActionableItemError(ActionableItemArtifact aia) {
+      return "Action can not be written against Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
    public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException, MultipleAttributesExist {
@@ -105,16 +109,12 @@ public class ActionableItemArtifact extends Artifact {
             AtsPlugin.getAtsBranch());
    }
 
-   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
+   public static Collection<TeamDefinitionArtifact> getImpactedTeamDefs(Collection<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
       return TeamDefinitionArtifact.getImpactedTeamDefs(aias);
    }
 
-   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws OseeCoreException, SQLException {
-      return TeamDefinitionArtifact.getImpactedTeamDef(aia);
-   }
-
-   public List<TeamDefinitionArtifact> getImpactedTeamDefs() throws OseeCoreException, SQLException {
-      return TeamDefinitionArtifact.getImpactedTeamDef(this);
+   public Collection<TeamDefinitionArtifact> getImpactedTeamDefs() throws OseeCoreException, SQLException {
+      return TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(this));
    }
 
    public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(ActionableItemArtifact aia) throws SQLException {

@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.test.config;
 
+import java.util.Arrays;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -25,12 +26,17 @@ public class AtsActionableItemToTeamDefinitionTest extends TestCase {
    }
 
    public void testAtsActionableItemToTeamDefinition() throws Exception {
+      boolean error = false;
       for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
             BranchPersistenceManager.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-         if (aia.isActionable() && TeamDefinitionArtifact.getImpactedTeamDef(aia) == null) {
-            System.err.println(aia + " has no Team Def associated and is Actionable.");
+         if (aia.isActionable()) {
+            if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).size() == 0) {
+               System.err.println("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
+               error = true;
+            }
          }
       }
+      assertFalse(error);
    }
 }

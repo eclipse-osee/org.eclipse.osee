@@ -12,11 +12,16 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
@@ -38,6 +43,7 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    }
 
    public Collection<ActionableItemArtifact> getChecked() {
+      if (super.getTreeViewer() == null) return Collections.emptyList();
       Set<ActionableItemArtifact> checked = new HashSet<ActionableItemArtifact>();
       for (Object obj : super.getTreeViewer().getChecked()) {
          checked.add((ActionableItemArtifact) obj);
@@ -50,11 +56,41 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(ActionableItemArtifact.getTopLevelActionableItems(active));
+         getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            /* (non-Javadoc)
+             * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+             */
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+               try {
+                  for (ActionableItemArtifact aia : getChecked()) {
+                     if (!aia.isActionable()) {
+                        AWorkbench.popup("ERROR", ActionableItemArtifact.getNotActionableItemError(aia));
+                     }
+                  }
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
+            }
+         });
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-
       return comp;
+   }
+
+   @Override
+   protected Result isComplete() {
+      try {
+         for (ActionableItemArtifact aia : getChecked()) {
+            if (!aia.isActionable()) {
+               return Result.FalseResult;
+            }
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return super.isComplete();
    }
 
 }

@@ -190,28 +190,21 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return teamDefs;
    }
 
-   public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
+   public static Collection<TeamDefinitionArtifact> getImpactedTeamDefs(Collection<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
       Set<TeamDefinitionArtifact> resultTeams = new HashSet<TeamDefinitionArtifact>();
       for (ActionableItemArtifact aia : aias) {
-         if (!aia.isActionable()) throw new IllegalArgumentException(
-               "Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") is not Actionable.  Choose another item.\n\nAction can not be written against this item.");
-         Collection<TeamDefinitionArtifact> aiaTeams = getImpactedTeamDef(aia);
-         if (aiaTeams == null) throw new IllegalArgumentException(
-               "No team workflow associated with Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") or any parent.\n\nAction can not be written against this item.");
-         resultTeams.addAll(aiaTeams);
+         resultTeams.addAll(getImpactedTeamDefInherited(aia));
       }
       return resultTeams;
    }
 
-   public static List<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws OseeCoreException, SQLException {
-      if (!aia.isActionable()) throw new IllegalArgumentException(
-            "Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ") is not Actionable.  Choose another item.\n\nAction can not be written against this item.");
+   private static List<TeamDefinitionArtifact> getImpactedTeamDefInherited(ActionableItemArtifact aia) throws OseeCoreException, SQLException {
       if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
          return aia.getArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class);
       }
       Artifact parentArt = aia.getParent();
-      if (parentArt instanceof ActionableItemArtifact) return getImpactedTeamDef((ActionableItemArtifact) parentArt);
-      return null;
+      if (parentArt instanceof ActionableItemArtifact) return getImpactedTeamDefInherited((ActionableItemArtifact) parentArt);
+      return java.util.Collections.emptyList();
    }
 
    public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(ActionableItemArtifact aia) throws SQLException {
@@ -220,7 +213,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return aiaTeams;
    }
 
-   public static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws SQLException {
+   private static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws SQLException {
       if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getArtifacts(
             AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class));
       for (Artifact childArt : aia.getChildren()) {
@@ -235,7 +228,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return teamDefs;
    }
 
-   public static void getTeamFromItemAndChildren(Collection<TeamDefinitionArtifact> teamDefs, Set<TeamDefinitionArtifact> returnTeamDefs) throws SQLException {
+   private static void getTeamFromItemAndChildren(Collection<TeamDefinitionArtifact> teamDefs, Set<TeamDefinitionArtifact> returnTeamDefs) throws SQLException {
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          returnTeamDefs.add(teamDef);
          for (Artifact childArt : teamDef.getChildren()) {

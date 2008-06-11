@@ -135,7 +135,7 @@ public class NewActionJob extends Job {
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) monitor.subTask("Creating WorkFlows");
-      Set<TeamDefinitionArtifact> teams =
+      Collection<TeamDefinitionArtifact> teams =
             TeamDefinitionArtifact.getImpactedTeamDefs(actionArt.getActionableItemsDam().getActionableItems());
       if (teams == null || teams.size() == 0) {
          StringBuffer sb = new StringBuffer();

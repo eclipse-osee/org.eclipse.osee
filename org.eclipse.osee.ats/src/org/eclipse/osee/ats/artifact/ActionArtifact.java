@@ -720,7 +720,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia) throws Exception {
       StringBuffer sb = new StringBuffer();
-      for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDef(aia)) {
+      for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
          // Look for team workflow that is associated with this tda
          for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
