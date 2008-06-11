@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -174,20 +173,11 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       treeViewer.setColumnProperties(columnNames);
       treeViewer.setContentProvider(new RelationContentProvider(this));
       treeViewer.setLabelProvider(relationLabelProvider);
-      // treeViewer.addSelectionChangedListener(this.getParent());
       treeViewer.setSorter(new LabelSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (e1 instanceof RelationLink && e2 instanceof RelationLink) {
-               RelationLink link1 = (RelationLink) e1;
-               RelationLink link2 = (RelationLink) e2;
-               RelationSide side = link1.getSide(artifact);
-               float val = link1.getOrder(side) - link2.getOrder(side);
-
-               if (val > 0)
-                  return 1;
-               else
-                  return -1;
+               return 0;
             }
             return super.compare(viewer, e1, e2);
          }
