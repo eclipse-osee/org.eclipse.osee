@@ -97,17 +97,17 @@ public class ArtifactPersistenceManager {
          "SELECT txs1.gamma_id, txd1.tx_type, txs1.transaction_id  FROM osee_define_tx_details txd1, osee_define_txs  txs1, osee_define_attribute atr1 where  txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = atr1.gamma_id and txd1.branch_id = ? and atr1.art_id = ? UNION ALL SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_define_tx_details txd2, osee_define_txs  txs2, osee_define_rel_link rel2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = rel2.gamma_id and txd2.branch_id = ? and (rel2.a_art_id = ?  or  rel2.b_art_id = ?) UNION ALL SELECT txs3.gamma_id, txd3.tx_type, txs3.transaction_id   FROM osee_define_tx_details txd3, osee_define_txs txs3, osee_define_artifact_version art3 where  txd3.transaction_id = txs3.transaction_id and txs3.gamma_id = art3.gamma_id and txd3.branch_id = ? and art3.art_id = ?";
 
    private static final String DELETE_ATTRIBUTE_GAMMAS_REVERT =
-         "DELETE FROM osee_define_attribute  atr1 WHERE atr1.gamma_id  in (SELECT txh1.gamma_id FROM osee_transaction_holder txh1 where txh1.query_id = ?)";
+         "DELETE FROM osee_define_attribute  atr1 WHERE atr1.gamma_id  in (SELECT txh1.gamma_id FROM osee_join_transaction txh1 where txh1.query_id = ?)";
    private static final String DELETE_RELATION_GAMMAS_REVERT =
-         "DELETE FROM osee_define_rel_link  rel1 WHERE rel1.gamma_id in (SELECT txh1.gamma_id FROM osee_transaction_holder txh1 where txh1.query_id = ?)";
+         "DELETE FROM osee_define_rel_link  rel1 WHERE rel1.gamma_id in (SELECT txh1.gamma_id FROM osee_join_transaction txh1 where txh1.query_id = ?)";
    private static final String DELETE_ARTIFACT_GAMMAS_REVERT =
-         "DELETE FROM osee_define_artifact_version art1 WHERE art1.gamma_id in (SELECT txh1.gamma_id FROM osee_transaction_holder txh1 where txh1.query_id = ?)";
+         "DELETE FROM osee_define_artifact_version art1 WHERE art1.gamma_id in (SELECT txh1.gamma_id FROM osee_join_transaction txh1 where txh1.query_id = ?)";
 
    private static final String DELETE_TXS_GAMMAS_REVERT =
-         "DELETE from osee_define_txs txs1 WHERE (txs1.transaction_id , txs1.gamma_id ) in (SELECT txh1.transaction_id , txh1.gamma_id FROM osee_transaction_holder  txh1 WHERE query_id = ? )";
+         "DELETE from osee_define_txs txs1 WHERE (txs1.transaction_id , txs1.gamma_id ) in (SELECT txh1.transaction_id , txh1.gamma_id FROM osee_join_transaction  txh1 WHERE query_id = ? )";
 
    private static final String SET_TX_CURRENT_REVERT =
-         "UPDATE osee_define_txs txs1 SET tx_current = 1 WHERE (txs1.transaction_id , txs1.gamma_id ) in (SELECT txh1.transaction_id , txh1.gamma_id FROM osee_transaction_holder  txh1 WHERE query_id = ? )";
+         "UPDATE osee_define_txs txs1 SET tx_current = 1 WHERE (txs1.transaction_id , txs1.gamma_id ) in (SELECT txh1.transaction_id , txh1.gamma_id FROM osee_join_transaction  txh1 WHERE query_id = ? )";
 
    private static final String PURGE_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
@@ -119,7 +119,7 @@ public class ArtifactPersistenceManager {
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
    public static final String INSERT_TRANSACTION_HOLDER =
-         "INSERT INTO osee_transaction_holder (query_id, gamma_id, transaction_id) VALUES (?, ?, ?)";
+         "INSERT INTO osee_join_transaction (query_id, gamma_id, transaction_id) VALUES (?, ?, ?)";
 
    private static final String SELECT_ARTIFACT_START =
          "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
@@ -128,7 +128,7 @@ public class ArtifactPersistenceManager {
    private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
    private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
 
-   private static final String DELETE_FROM_HOLDER = "DELETE FROM osee_transaction_holder WHERE query_id = ?";
+   private static final String DELETE_FROM_HOLDER = "DELETE FROM osee_join_transaction WHERE query_id = ?";
 
    private static final String ARTIFACT_SELECT =
          "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
