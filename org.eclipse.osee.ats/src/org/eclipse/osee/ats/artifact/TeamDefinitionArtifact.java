@@ -388,7 +388,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
             return ((TeamDefinitionArtifact) parent).getTeamBranch();
          }
       }
-      throw new BranchDoesNotExist("Team Branch not found.");
+      return null;
    }
 
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws Exception {

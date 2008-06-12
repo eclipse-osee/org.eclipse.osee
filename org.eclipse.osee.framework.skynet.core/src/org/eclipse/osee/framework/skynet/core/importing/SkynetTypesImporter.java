@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -201,9 +202,9 @@ public class SkynetTypesImporter implements RowProcessor {
 
    /**
     * @param row
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   private void addRelationType(String[] row) throws SQLException {
+   private void addRelationType(String[] row) throws OseeCoreException {
       if (debugRows) System.out.println("   addRelationType => " + row[0] + "," + row[1]);
       String relationTypeName = row[0];
       String sideAName = row[1];

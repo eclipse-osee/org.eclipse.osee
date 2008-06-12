@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -83,32 +85,36 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static RelationType getType(int relationTypeId) throws SQLException {
+   public static RelationType getType(int relationTypeId) throws OseeCoreException {
       ensurePopulated();
 
       RelationType relationType = instance.idToTypeMap.get(relationTypeId);
       if (relationType == null) {
-         throw new IllegalArgumentException("The relation with type id: " + relationTypeId + " does not exist");
+         throw new OseeCoreException("The relation with type id: " + relationTypeId + " does not exist");
       }
       return relationType;
    }
 
-   public static RelationType getType(String namespace, String typeName) throws SQLException {
+   public static RelationType getType(String namespace, String typeName) throws OseeCoreException {
       ensurePopulated();
       RelationType relationType = instance.nameToTypeMap.get(namespace + typeName);
       if (relationType == null) {
-         throw new IllegalArgumentException("The relation type: " + namespace + typeName + " does not exist");
+         throw new OseeCoreException("The relation type: \"" + namespace + typeName + "\" does not exist");
       }
       return relationType;
    }
 
-   public static boolean typeExists(String namespace, String name) throws SQLException {
+   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException {
       ensurePopulated();
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
 
    public static RelationType getType(String typeName) throws SQLException {
-      return getType("", typeName);
+      try {
+         return getType("", typeName);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
    }
 
    private void cache(RelationType relationType) {
@@ -116,19 +122,19 @@ public class RelationTypeManager {
       idToTypeMap.put(relationType.getRelationTypeId(), relationType);
    }
 
-   public void refreshCache() throws SQLException {
+   public void refreshCache() throws OseeDataStoreException {
       nameToTypeMap.clear();
       idToTypeMap.clear();
       populateCache();
    }
 
-   private static synchronized void ensurePopulated() throws SQLException {
+   private static synchronized void ensurePopulated() throws OseeDataStoreException {
       if (instance.idToTypeMap.size() == 0) {
          instance.populateCache();
       }
    }
 
-   private void populateCache() throws SQLException {
+   private void populateCache() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -142,11 +148,12 @@ public class RelationTypeManager {
                         rset.getString("ab_phrasing"), rset.getString("ba_phrasing"), rset.getString("short_name"));
             cache(relationType);
          }
+         loadLinkValidities();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
-
-      loadLinkValidities();
    }
 
    public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) {
@@ -185,7 +192,7 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws SQLException
     */
-   public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws SQLException {
+   public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws OseeCoreException {
       if (typeExists(namespace, relationTypeName)) {
          return getType(namespace, relationTypeName);
       }
@@ -202,19 +209,22 @@ public class RelationTypeManager {
       if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
             "The shortName can not be null or empty");
 
-      int relationTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
+      try {
+         int relationTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
 
-      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
-            SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR, sideAName,
-            SQL3DataType.VARCHAR, sideBName, SQL3DataType.VARCHAR, abPhrasing, SQL3DataType.VARCHAR, baPhrasing,
-            SQL3DataType.VARCHAR, shortName);
+         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
+               SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR,
+               sideAName, SQL3DataType.VARCHAR, sideBName, SQL3DataType.VARCHAR, abPhrasing, SQL3DataType.VARCHAR,
+               baPhrasing, SQL3DataType.VARCHAR, shortName);
 
-      RelationType relationType =
-            new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-                  shortName);
-      instance.cache(relationType);
-
-      return relationType;
+         RelationType relationType =
+               new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing,
+                     baPhrasing, shortName);
+         instance.cache(relationType);
+         return relationType;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    /**

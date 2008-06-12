@@ -206,7 +206,7 @@ public final class ArtifactLoader {
       return artifact;
    }
 
-   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeDataStoreException, BranchDoesNotExist {
+   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeCoreException {
       int queryId = getNewQueryId();
       try {
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
@@ -219,7 +219,7 @@ public final class ArtifactLoader {
       loadArtifactsData(queryId, artifacts, loadLevel, false);
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws OseeDataStoreException, BranchDoesNotExist {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
       if (reload) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
@@ -242,7 +242,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws OseeDataStoreException, BranchDoesNotExist {
+   private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =

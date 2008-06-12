@@ -394,10 +394,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param baselineTransactionId
     * @return
     * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
+    * @throws OseeCoreException
     */
-   public Collection<Change> getChangesPerTransaction(int transactionNumber) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public Collection<Change> getChangesPerTransaction(int transactionNumber) throws SQLException, OseeCoreException {
       return getChangesPerBranch(null, transactionNumber);
    }
 
@@ -408,10 +407,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param baselineTransactionId
     * @return
     * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
+    * @throws OseeCoreException
     */
-   public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws SQLException, OseeCoreException {
       return getChangesPerBranch(sourceBranch, -1);
    }
 
@@ -422,10 +420,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param baselineTransactionId
     * @return
     * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
+    * @throws OseeCoreException
     */
-   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionNumber) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionNumber) throws SQLException, OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
@@ -501,8 +498,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param sourceBranch
     * @param changes
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException {
+   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          //Changes per a branch

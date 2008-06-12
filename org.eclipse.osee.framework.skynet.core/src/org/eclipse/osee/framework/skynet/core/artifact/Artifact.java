@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -526,9 +525,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (!isAttributesLoaded() && isInDb()) {
          try {
             ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
-         } catch (OseeDataStoreException ex) {
-            throw new SQLException(ex);
-         } catch (BranchDoesNotExist ex) {
+         } catch (OseeCoreException ex) {
             throw new SQLException(ex);
          }
       }
