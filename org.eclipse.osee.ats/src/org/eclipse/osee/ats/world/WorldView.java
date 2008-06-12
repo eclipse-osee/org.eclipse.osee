@@ -616,8 +616,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
          Set<Artifact> arts = new HashSet<Artifact>();
          for (TreeItem item : treeItem) {
             Object obj = item.getData();
-            if (obj instanceof WorldArtifactItem) {
-               Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
+            if (obj instanceof Artifact) {
+               Artifact art = (Artifact) obj;
                if (art instanceof TeamWorkFlowArtifact) {
                   arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
                } else
@@ -635,8 +635,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
          TreeItem treeItem[] = xViewer.getTree().getItems();
          Set<Artifact> arts = new HashSet<Artifact>();
          for (TreeItem item : treeItem) {
-            if (item.getData() instanceof WorldArtifactItem) {
-               Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
+            if (item.getData() instanceof Artifact) {
+               Artifact art = (Artifact) item.getData();
                if (art instanceof ActionArtifact) {
                   arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
                } else

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.ActionDebug;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -46,8 +47,8 @@ public class WorldXViewerSorter extends XViewerSorter {
          XViewerColumn sortXCol =
                xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
          AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
-         IWorldViewArtifact m1 = (IWorldViewArtifact) ((WorldArtifactItem) o1).getArtifact();
-         IWorldViewArtifact m2 = (IWorldViewArtifact) ((WorldArtifactItem) o2).getArtifact();
+         IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
+         IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
          if (aCol == AtsXColumn.Change_Type_Col) {
             int compareInt =

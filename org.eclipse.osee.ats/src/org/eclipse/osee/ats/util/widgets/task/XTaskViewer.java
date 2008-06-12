@@ -19,7 +19,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -31,7 +30,6 @@ import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
-import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -39,8 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -91,9 +87,8 @@ import org.eclipse.ui.PlatformUI;
 public class XTaskViewer extends XWidget implements IActionable {
 
    private TaskXViewer xViewer;
-   private ToolItem upItem, downItem, currentStateFilterItem;
+   private ToolItem currentStateFilterItem;
    private MenuItem currentStateFilterMenuItem, filterCompletedMenuItem, selectionMetricsMenuItem;
-   private TaskArtifact selected;
    private IXTaskViewer iXTaskViewer;
    private TaskCurrentStateFilter currentStateFilter = null;
    private Label extraInfoLabel;
@@ -250,30 +245,6 @@ public class XTaskViewer extends XWidget implements IActionable {
       });
 
       if (iXTaskViewer.isTaskable()) {
-
-         upItem = new ToolItem(toolBar, SWT.PUSH);
-         upItem.setImage(AtsPlugin.getInstance().getImage("up.gif"));
-         upItem.setToolTipText("Up; Disabled if sorted by Column");
-         // DON Add ability to move tasks up/down
-         // upItem.setEnabled(smaMgr.isTaskable());
-         upItem.setEnabled(false);
-         upItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-               handleMoveSelection(Direction.Back);
-            }
-         });
-
-         downItem = new ToolItem(toolBar, SWT.PUSH);
-         downItem.setImage(AtsPlugin.getInstance().getImage("down.gif"));
-         downItem.setToolTipText("Down; Disabled if sorted by Column");
-         // DON Add ability to move tasks up/down
-         // downItem.setEnabled(smaMgr.isTaskable());
-         downItem.setEnabled(false);
-         downItem.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-               handleMoveSelection(Direction.Forward);
-            }
-         });
 
          item = new ToolItem(toolBar, SWT.PUSH);
          item.setImage(AtsPlugin.getInstance().getImage("newTask.gif"));
@@ -448,7 +419,7 @@ public class XTaskViewer extends XWidget implements IActionable {
    }
 
    public void handleDeleteTask() {
-      final ArrayList<TaskArtifactItem> items = getSelectedTaskArtifactItems();
+      final ArrayList<TaskArtifact> items = getSelectedTaskArtifactItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No Tasks Selected");
          return;
@@ -458,8 +429,8 @@ public class XTaskViewer extends XWidget implements IActionable {
          builder.append("Are You Sure You Wish to Delete " + items.size() + " Tasks");
       } else {
          builder.append("Are You Sure You Wish to Delete the Task(s):\n\n");
-         for (TaskArtifactItem taskItem : items) {
-            builder.append("\"" + taskItem.getTaskArtifact().getDescriptiveName() + "\"\n");
+         for (TaskArtifact taskItem : items) {
+            builder.append("\"" + taskItem.getDescriptiveName() + "\"\n");
          }
       }
       boolean delete =
@@ -471,17 +442,16 @@ public class XTaskViewer extends XWidget implements IActionable {
                @Override
                protected void handleTxWork() throws Exception {
                   // Done for concurrent modification purposes
-                  ArrayList<TaskArtifactItem> delItems = new ArrayList<TaskArtifactItem>();
+                  ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
                   delItems.addAll(items);
-                  for (TaskArtifactItem taskItem : delItems) {
-                     SMAEditor.close(taskItem.getTaskArtifact(), false);
-                     TaskArtifact taskArt = taskItem.getTaskArtifact();
+                  for (TaskArtifact taskArt : delItems) {
+                     SMAEditor.close(taskArt, false);
                      taskArt.delete();
                   }
                }
             };
             txWrapper.execute();
-            xViewer.removeItems(items);
+            xViewer.remove(items);
             xViewer.refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -507,50 +477,14 @@ public class XTaskViewer extends XWidget implements IActionable {
       return taskArt;
    }
 
-   public ArrayList<TaskArtifactItem> getSelectedTaskArtifactItems() {
+   public ArrayList<TaskArtifact> getSelectedTaskArtifactItems() {
       Iterator<?> i = ((IStructuredSelection) xViewer.getSelection()).iterator();
-      ArrayList<TaskArtifactItem> items = new ArrayList<TaskArtifactItem>();
+      ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifactItem) items.add((TaskArtifactItem) obj);
+         if (obj instanceof TaskArtifact) items.add((TaskArtifact) obj);
       }
       return items;
-   }
-
-   public void storeSelection() {
-      // Store selected so can re-select after event re-draw
-      if (xViewer.getSelectedTaskArtifactItems().size() > 0) selected =
-            xViewer.getSelectedTaskArtifactItems().iterator().next().getTaskArtifact();
-   }
-
-   public void restoreSelection() {
-      if (selected != null) {
-         for (WorldArtifactItem item : xViewer.getRootSet()) {
-            if (item.getArtifact().equals(selected)) {
-               ArrayList<TaskArtifactItem> selected = new ArrayList<TaskArtifactItem>();
-               selected.add((TaskArtifactItem) item);
-               xViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
-            }
-         }
-      }
-   }
-
-   public void handleMoveSelection(Direction dir) {
-      storeSelection();
-      if (xViewer.getSelectedTaskArtifactItems().size() != 1) {
-         AWorkbench.popup("ERROR", "Must select single item to move");
-         return;
-      }
-      TaskArtifact taskArt = xViewer.getSelectedTaskArtifactItems().iterator().next().getTaskArtifact();
-      if (taskArt != null) {
-         try {
-            RelationPersistenceManager.getInstance().moveObjectB(iXTaskViewer.getParentSmaMgr().getSma(), taskArt,
-                  AtsRelation.SmaToTask_Task, dir);
-            refresh();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      }
    }
 
    @Override

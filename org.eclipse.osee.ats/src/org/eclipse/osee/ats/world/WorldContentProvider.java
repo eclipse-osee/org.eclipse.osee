@@ -15,16 +15,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.ActionDebug;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class WorldContentProvider implements ITreeContentProvider {
 
-   protected Collection<WorldArtifactItem> rootSet = new HashSet<WorldArtifactItem>();
+   protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final WorldXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
    private ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
@@ -34,11 +39,11 @@ public class WorldContentProvider implements ITreeContentProvider {
       this.xViewer = WorldXViewer;
    }
 
-   public void add(final WorldArtifactItem item) {
+   public void add(final Artifact item) {
       add(Arrays.asList(item));
    }
 
-   public void add(final Collection<? extends WorldArtifactItem> items) {
+   public void add(final Collection<? extends Artifact> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -48,7 +53,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends WorldArtifactItem> arts) {
+   public void set(final Collection<? extends Artifact> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -63,17 +68,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Collection<? extends Artifact> arts) {
-      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<WorldArtifactItem> delItems = new ArrayList<WorldArtifactItem>();
-      delItems.addAll(rootSet);
-      for (Artifact art : arts) {
-         for (WorldArtifactItem wai : rootSet)
-            if (wai.getArtifact().equals(art)) delItems.add(wai);
-      }
-      removeItems(delItems);
-   }
-
-   public void removeItems(final Collection<? extends WorldArtifactItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -87,8 +81,6 @@ public class WorldContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (WorldArtifactItem wai : rootSet)
-               wai.dispose();
             rootSet.clear();
             xViewer.refresh();
          };
@@ -100,16 +92,60 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection<?>) parentElement).toArray();
       }
-      if (parentElement instanceof WorldArtifactItem) {
-         return ((WorldArtifactItem) parentElement).getChildren();
+      if (parentElement instanceof Artifact) {
+         try {
+            Artifact artifact = (Artifact) parentElement;
+            if (artifact == null) {
+               return new Object[] {};
+            }
+            if (artifact.isDeleted()) return new Object[] {};
+            if (artifact instanceof ActionArtifact) {
+               return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
+            }
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               List<Artifact> arts = new ArrayList<Artifact>();
+               // Convert artifacts to WorldArtifactItems
+               arts.addAll(teamArt.getSmaMgr().getReviewManager().getReviews());
+               arts.addAll(teamArt.getSmaMgr().getTaskMgr().getTaskArtifacts());
+               return arts.toArray();
+            }
+            if (artifact instanceof ReviewSMArtifact) {
+               ReviewSMArtifact reviewArt = (ReviewSMArtifact) artifact;
+               List<Artifact> arts = new ArrayList<Artifact>();
+               // Convert artifacts to WorldArtifactItems
+               arts.addAll(reviewArt.getSmaMgr().getReviewManager().getReviews());
+               arts.addAll(reviewArt.getSmaMgr().getTaskMgr().getTaskArtifacts());
+               return arts.toArray();
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
       }
       return EMPTY_ARRAY;
    }
 
    public Object getParent(Object element) {
       debug.report("getParent");
-      if (element instanceof WorldArtifactItem) {
-         return ((WorldArtifactItem) element).getParentItem();
+      if (element instanceof Artifact) {
+         try {
+            Artifact artifact = (Artifact) element;
+            if (artifact == null) {
+               return null;
+            }
+            if (artifact.isDeleted()) return null;
+            if (artifact instanceof TeamWorkFlowArtifact) {
+               ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
+            }
+            if (artifact instanceof TaskArtifact) {
+               ((TaskArtifact) artifact).getParentSMA();
+            }
+            if (artifact instanceof ReviewSMArtifact) {
+               ((TeamWorkFlowArtifact) artifact).getParentSMA();
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
       }
       return null;
    }
@@ -118,11 +154,11 @@ public class WorldContentProvider implements ITreeContentProvider {
       debug.report("hasChildren");
       if (element instanceof Collection) return true;
       if (element instanceof String) return false;
-      if (((WorldArtifactItem) element).getArtifact() == null) return false;
-      if (((WorldArtifactItem) element).getArtifact().isDeleted()) return false;
-      if (((WorldArtifactItem) element).getArtifact() instanceof StateMachineArtifact) {
+      if (((Artifact) element).isDeleted()) return false;
+      if (element instanceof ActionArtifact) return true;
+      if (element instanceof StateMachineArtifact) {
          try {
-            return ((StateMachineArtifact) ((WorldArtifactItem) element).getArtifact()).hasChildren();
+            return ((StateMachineArtifact) element).hasChildren();
          } catch (Exception ex) {
             // do nothing
          }
@@ -151,7 +187,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    /**
     * @return the rootSet
     */
-   public Collection<WorldArtifactItem> getRootSet() {
+   public Collection<Artifact> getRootSet() {
       return rootSet;
    }
 

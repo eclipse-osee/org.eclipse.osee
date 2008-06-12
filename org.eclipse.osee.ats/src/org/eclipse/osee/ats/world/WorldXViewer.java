@@ -47,10 +47,19 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.TransactionChangeType;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -74,7 +83,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer {
+public class WorldXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
    private String title;
@@ -102,6 +111,8 @@ public class WorldXViewer extends XViewer {
             handleDoubleClick();
          };
       });
+      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
    }
 
    @Override
@@ -142,7 +153,7 @@ public class WorldXViewer extends XViewer {
          @Override
          public void run() {
             if (SMAManager.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
-               update(getSelectedArtifactItemsArray(), null);
+               update(getSelectedArtifactItems().toArray(), null);
             }
          }
       };
@@ -151,7 +162,7 @@ public class WorldXViewer extends XViewer {
          @Override
          public void run() {
             if (SMAManager.promptChangePriority(getSelectedTeamWorkflowArtifacts(), true)) {
-               update(getSelectedArtifactItemsArray(), null);
+               update(getSelectedArtifactItems().toArray(), null);
             }
          }
       };
@@ -162,7 +173,7 @@ public class WorldXViewer extends XViewer {
             try {
                if (SMAManager.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
                      (AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
-                  update(getSelectedArtifactItemsArray(), null);
+                  update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -177,7 +188,7 @@ public class WorldXViewer extends XViewer {
                Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
                if (SMAManager.promptChangeAssignees(artifacts)) {
                   Artifacts.persist(artifacts, false);
-                  update(getSelectedArtifactItemsArray(), null);
+                  update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -192,11 +203,11 @@ public class WorldXViewer extends XViewer {
                if (getSelectedActionArtifacts().size() == 1) {
                   ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
                   AtsLib.editActionActionableItems(actionArt);
-                  refresh(getSelectedArtifactItemsArray()[0]);
+                  refresh(getSelectedArtifactItems().iterator().next());
                } else {
                   TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
                   AtsLib.editTeamActionableItems(teamArt);
-                  refresh(getSelectedArtifactItemsArray()[0]);
+                  refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -211,7 +222,7 @@ public class WorldXViewer extends XViewer {
                TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
                Result result = teamArt.convertActionableItems();
                if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
-               refresh(getSelectedArtifactItemsArray()[0]);
+               refresh(getSelectedArtifactItems().iterator().next());
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -221,8 +232,7 @@ public class WorldXViewer extends XViewer {
       openInAtsEditorAction = new Action("Open in ATS Editor", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next().getArtifact(),
-                  AtsOpenOption.OpenOneOrPopupSelect);
+            AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
          }
       };
 
@@ -255,7 +265,7 @@ public class WorldXViewer extends XViewer {
          @Override
          public void run() {
             if (getSelectedArtifacts().size() > 0)
-               ArtifactEditor.editArtifact(getSelectedArtifactItems().iterator().next().getArtifact());
+               ArtifactEditor.editArtifact(getSelectedArtifactItems().iterator().next());
             else
                OSEELog.logException(AtsPlugin.class, new Exception("Can't retrieve SMA"), true);
          }
@@ -308,7 +318,7 @@ public class WorldXViewer extends XViewer {
       }
       final Set<Artifact> useArts = new HashSet<Artifact>();
       for (TreeItem item : treeItems) {
-         Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
+         Artifact art = (Artifact) item.getData();
          try {
             if (art.isAttributeTypeValid(attrName)) {
                useArts.add(art);
@@ -374,10 +384,9 @@ public class WorldXViewer extends XViewer {
       String attrName = getAttributeNameFromColumn(aCol);
       if (attrName == null) return false;
       for (TreeItem item : treeItems) {
-         Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
-         if (art instanceof ActionArtifact) return false;
+         if (item.getData() instanceof ActionArtifact) return false;
          try {
-            if (!art.isAttributeTypeValid(attrName)) {
+            if (!((Artifact) item.getData()).isAttributeTypeValid(attrName)) {
                return false;
             }
          } catch (SQLException ex) {
@@ -418,7 +427,7 @@ public class WorldXViewer extends XViewer {
       Object obj = null;
       if (getSelectedArtifactItems().size() == 0) return null;
       obj = ((TreeItem) getTree().getSelection()[0]).getData();
-      return (obj != null && (obj instanceof WorldArtifactItem)) ? ((WorldArtifactItem) obj).getSMA() : null;
+      return (obj != null && (obj instanceof StateMachineArtifact)) ? (StateMachineArtifact) obj : null;
    }
 
    public void updateEditMenuActions() {
@@ -497,14 +506,14 @@ public class WorldXViewer extends XViewer {
 
    public void handleDoubleClick() {
       if (getSelectedArtifactItems().size() == 0) return;
-      Artifact art = getSelectedArtifactItems().iterator().next().getArtifact();
+      Artifact art = getSelectedArtifactItems().iterator().next();
       AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (WorldArtifactItem wai : ((WorldContentProvider) getContentProvider()).rootSet) {
-         arts.add(wai.getArtifact());
+      for (Artifact artifact : ((WorldContentProvider) getContentProvider()).rootSet) {
+         arts.add(artifact);
       }
       return arts;
    }
@@ -521,13 +530,14 @@ public class WorldXViewer extends XViewer {
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources
       getLabelProvider().dispose();
+      SkynetEventManager.getInstance().unRegisterAll(this);
    }
 
    public ArrayList<Artifact> getSelectedArtifacts() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items)
-         arts.add((Artifact) ((WorldArtifactItem) item.getData()).getArtifact());
+         arts.add((Artifact) item.getData());
       return arts;
    }
 
@@ -537,14 +547,13 @@ public class WorldXViewer extends XViewer {
    public boolean isSelectedTeamWorkflowArtifacts() {
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items) {
-         Artifact art = (((WorldArtifactItem) item.getData()).getArtifact());
-         if (art instanceof ActionArtifact) {
+         if (item.getData() instanceof ActionArtifact) {
             try {
-               if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() != 1) return false;
+               if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() != 1) return false;
             } catch (SQLException ex) {
                // Do Nothing
             }
-         } else if (!(art instanceof TeamWorkFlowArtifact)) return false;
+         } else if (!(item.getData() instanceof TeamWorkFlowArtifact)) return false;
       }
       return true;
    }
@@ -556,11 +565,10 @@ public class WorldXViewer extends XViewer {
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items) {
-         Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
-         if (art instanceof TeamWorkFlowArtifact) teamArts.add((TeamWorkFlowArtifact) art);
-         if (art instanceof ActionArtifact) {
+         if (item.getData() instanceof TeamWorkFlowArtifact) teamArts.add((TeamWorkFlowArtifact) item.getData());
+         if (item.getData() instanceof ActionArtifact) {
             try {
-               if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 1) teamArts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
+               if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() == 1) teamArts.addAll(((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts());
             } catch (SQLException ex) {
                // Do Nothing
             }
@@ -578,12 +586,9 @@ public class WorldXViewer extends XViewer {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
             Object obj = i.next();
-            if (obj instanceof WorldArtifactItem) {
-               Artifact art = ((WorldArtifactItem) obj).getArtifact();
-               if (art instanceof StateMachineArtifact)
-                  smaArts.add((StateMachineArtifact) art);
-               else if (art instanceof ActionArtifact) smaArts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-            }
+            if (obj instanceof StateMachineArtifact)
+               smaArts.add((StateMachineArtifact) obj);
+            else if (obj instanceof ActionArtifact) smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
          }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -595,8 +600,7 @@ public class WorldXViewer extends XViewer {
       Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items) {
-         Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
-         if (art instanceof ActionArtifact) actionArts.add((ActionArtifact) art);
+         if (item.getData() instanceof ActionArtifact) actionArts.add((ActionArtifact) item.getData());
       }
       return actionArts;
    }
@@ -622,17 +626,11 @@ public class WorldXViewer extends XViewer {
    }
 
    public void set(Collection<? extends Artifact> artifacts) {
-      Set<WorldArtifactItem> items = new HashSet<WorldArtifactItem>();
-      for (Artifact art : artifacts)
-         items.add(new WorldArtifactItem(this, art, null));
-      ((WorldContentProvider) getContentProvider()).set(items);
+      ((WorldContentProvider) getContentProvider()).set(artifacts);
    }
 
    public void add(Collection<Artifact> artifacts) {
-      Set<WorldArtifactItem> items = new HashSet<WorldArtifactItem>();
-      for (Artifact art : artifacts)
-         items.add(new WorldArtifactItem(this, art, null));
-      ((WorldContentProvider) getContentProvider()).add(items);
+      ((WorldContentProvider) getContentProvider()).add(artifacts);
    }
 
    public void add(final Artifact artifact) {
@@ -647,27 +645,19 @@ public class WorldXViewer extends XViewer {
       ((WorldContentProvider) getContentProvider()).remove(artifacts);
    }
 
-   public void removeItems(final Collection<? extends WorldArtifactItem> items) {
-      ((WorldContentProvider) getContentProvider()).removeItems(items);
-   }
-
-   public ArrayList<WorldArtifactItem> getSelectedArtifactItems() {
-      ArrayList<WorldArtifactItem> arts = new ArrayList<WorldArtifactItem>();
+   public ArrayList<Artifact> getSelectedArtifactItems() {
+      ArrayList<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) for (TreeItem item : items)
-         arts.add((WorldArtifactItem) item.getData());
+         arts.add((Artifact) item.getData());
       return arts;
-   }
-
-   public Object[] getSelectedArtifactItemsArray() {
-      return getSelectedArtifactItems().toArray(new WorldArtifactItem[getSelectedArtifactItems().size()]);
    }
 
    private void handleDeleteAtsObject() {
       try {
          ArrayList<Artifact> delArts = new ArrayList<Artifact>();
          StringBuilder artBuilder = new StringBuilder();
-         ArrayList<WorldArtifactItem> items = getSelectedArtifactItems();
+         ArrayList<Artifact> items = getSelectedArtifactItems();
          ArrayList<Artifact> selectedArts = getSelectedArtifacts();
 
          for (Artifact art : selectedArts) {
@@ -725,7 +715,7 @@ public class WorldXViewer extends XViewer {
                         }
                      };
                txWrapper.execute();
-               removeItems(items);
+               remove(items);
             }
          }
       } catch (Exception ex) {
@@ -762,8 +752,7 @@ public class WorldXViewer extends XViewer {
       try {
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
-         WorldArtifactItem wai = ((WorldArtifactItem) treeItem.getData());
-         Artifact useArt = wai.getArtifact();
+         Artifact useArt = (Artifact) treeItem.getData();
          if (useArt instanceof StateMachineArtifact) {
             SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
             boolean modified = false;
@@ -775,7 +764,7 @@ public class WorldXViewer extends XViewer {
             } else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(true);
             if (aCol == AtsXColumn.Change_Type_Col) modified = smaMgr.promptChangeType(true);
             if (modified) {
-               update(wai, null);
+               update(useArt, null);
                return true;
             }
          }
@@ -792,8 +781,7 @@ public class WorldXViewer extends XViewer {
          // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
-         WorldArtifactItem wai = ((WorldArtifactItem) treeItem.getData());
-         Artifact useArt = wai.getArtifact();
+         Artifact useArt = (Artifact) treeItem.getData();
          if (useArt instanceof ActionArtifact) {
             if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
                useArt = (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next());
@@ -841,7 +829,7 @@ public class WorldXViewer extends XViewer {
             modified = smaMgr.promptChangeType(persist);
          else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(persist);
          if (modified) {
-            update(wai, null);
+            update(useArt, null);
             return true;
          }
       } catch (Exception ex) {
@@ -862,6 +850,46 @@ public class WorldXViewer extends XViewer {
     */
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
+   }
+
+   public void onEvent(final Event event) {
+      if (getTree() == null || getTree().isDisposed()) {
+         dispose();
+         return;
+      }
+      if (event instanceof TransactionEvent) {
+         TransactionEvent transEvent = (TransactionEvent) event;
+         Set<Integer> artIds = transEvent.getArtIds(TransactionChangeType.Modified);
+         Set<Artifact> modArts = new HashSet<Artifact>(20);
+         for (int artId : artIds) {
+            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
+            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+         }
+         update(modArts.toArray(), null);
+
+         artIds = transEvent.getArtIds(TransactionChangeType.Deleted);
+         artIds.addAll(transEvent.getArtIds(TransactionChangeType.Purged));
+         modArts.clear();
+         for (int artId : artIds) {
+            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
+            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+         }
+         remove(modArts.toArray(), null);
+
+         artIds = transEvent.getArtIds(TransactionChangeType.RelChanged);
+         modArts.clear();
+         for (int artId : artIds) {
+            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
+            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+         }
+         update(modArts.toArray(), null);
+
+      } else
+         OSEELog.logSevere(AtsPlugin.class, "Unexpected event => " + event, true);
+   }
+
+   public boolean runOnEventInDisplayThread() {
+      return true;
    }
 
 }

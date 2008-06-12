@@ -40,7 +40,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
          else
             return "";
       }
-      Artifact artifact = ((WorldArtifactItem) element).getArtifact();
+      Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return "";
       XViewerColumn xCol = treeViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
@@ -156,7 +156,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
 
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof String) return null;
-      Artifact artifact = ((WorldArtifactItem) element).getArtifact();
+      Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
       XViewerColumn xCol = treeViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {

@@ -27,8 +27,7 @@ public class WorldCompletedFilter extends ViewerFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {
-         WorldArtifactItem item = (WorldArtifactItem) element;
-         Artifact art = item.getArtifact();
+         Artifact art = (Artifact) element;
          if (art instanceof IWorldViewArtifact) {
             return !p.matcher(((IWorldViewArtifact) art).getWorldViewState()).find();
          }

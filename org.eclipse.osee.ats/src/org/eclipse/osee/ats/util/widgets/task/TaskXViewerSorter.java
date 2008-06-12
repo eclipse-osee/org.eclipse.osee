@@ -15,8 +15,8 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 
@@ -45,8 +45,8 @@ public class TaskXViewerSorter extends WorldXViewerSorter {
       XViewerColumn sortXCol =
             xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
       AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
-      IWorldViewArtifact m1 = (IWorldViewArtifact) ((WorldArtifactItem) o1).getArtifact();
-      IWorldViewArtifact m2 = (IWorldViewArtifact) ((WorldArtifactItem) o2).getArtifact();
+      IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
+      IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
       if (aCol == AtsXColumn.Assignees_Col) {
          int compareInt =

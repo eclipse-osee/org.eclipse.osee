@@ -52,7 +52,7 @@ public class XViewer extends TreeViewer {
    private String namespace;
    private MenuManager menuManager;
    private boolean ctrlKeyDown = false;
-   private final IXViewerFactory xViewerFactory;
+   protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private boolean columnMultiEditEnabled = false;
 

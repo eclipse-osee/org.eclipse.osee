@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.world.AtsXColumn;
-import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -52,7 +51,7 @@ public class TaskLabelProvider extends WorldLabelProvider {
          else
             return "";
       }
-      TaskArtifact taskArt = ((TaskArtifactItem) element).getTaskArtifact();
+      TaskArtifact taskArt = (TaskArtifact) element;
       if (taskArt == null || taskArt.isDeleted()) return "";
       XViewerColumn xCol = taskXViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
@@ -69,7 +68,7 @@ public class TaskLabelProvider extends WorldLabelProvider {
    @Override
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof String) return null;
-      Artifact artifact = ((WorldArtifactItem) element).getArtifact();
+      Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
       XViewerColumn xCol = taskXViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
@@ -92,7 +91,7 @@ public class TaskLabelProvider extends WorldLabelProvider {
          if (xCol != null) {
             AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
             if (aCol != null && aCol == AtsXColumn.Resolution_Col) {
-               TaskArtifact taskArt = (TaskArtifact) ((WorldArtifactItem) element).getArtifact();
+               TaskArtifact taskArt = (TaskArtifact) element;
                if (taskArt != null) {
                   TaskResOptionDefinition def =
                         taskXViewer.getTaskResOptionDefinition(taskArt.getWorldViewResolution());
@@ -107,5 +106,4 @@ public class TaskLabelProvider extends WorldLabelProvider {
       }
       return super.getForeground(element, columnIndex);
    }
-
 }

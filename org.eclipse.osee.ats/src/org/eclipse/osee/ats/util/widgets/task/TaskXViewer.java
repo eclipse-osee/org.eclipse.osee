@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.world.AtsXColumn;
-import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -71,9 +70,9 @@ public class TaskXViewer extends WorldXViewer {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       handleColumnMultiEdit(treeColumn, treeItems, false);
-      Set<TaskArtifactItem> items = new HashSet<TaskArtifactItem>();
+      Set<TaskArtifact> items = new HashSet<TaskArtifact>();
       for (TreeItem item : treeItems)
-         items.add((TaskArtifactItem) item.getData());
+         items.add((TaskArtifact) item.getData());
       refresh();
       editor.onDirtied();
    }
@@ -82,10 +81,7 @@ public class TaskXViewer extends WorldXViewer {
    public void set(Collection<? extends Artifact> artifacts) {
       for (Artifact art : artifacts)
          if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      Set<TaskArtifactItem> items = new HashSet<TaskArtifactItem>();
-      for (Artifact art : artifacts)
-         items.add(new TaskArtifactItem(this, art, null));
-      ((TaskContentProvider) getContentProvider()).set(items);
+      ((TaskContentProvider) getContentProvider()).set(artifacts);
    }
 
    @Override
@@ -98,10 +94,7 @@ public class TaskXViewer extends WorldXViewer {
    public void add(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts)
          if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      Set<TaskArtifactItem> items = new HashSet<TaskArtifactItem>();
-      for (Artifact art : artifacts)
-         items.add(new TaskArtifactItem(this, art, null));
-      ((TaskContentProvider) getContentProvider()).add(items);
+      ((TaskContentProvider) getContentProvider()).add(artifacts);
    }
 
    public void removeTask(final Collection<TaskArtifact> artifacts) {
@@ -119,7 +112,7 @@ public class TaskXViewer extends WorldXViewer {
       ArrayList<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifactItem) taskArts.add(((TaskArtifactItem) obj).getTaskArtifact());
+         if (obj instanceof TaskArtifact) taskArts.add((TaskArtifact) obj);
       }
       return taskArts;
    }
@@ -128,23 +121,9 @@ public class TaskXViewer extends WorldXViewer {
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifactItem) if (!((TaskArtifactItem) obj).getTaskArtifact().isInWork()) return false;
+         if (obj instanceof TaskArtifact) if (!((TaskArtifact) obj).isInWork()) return false;
       }
       return true;
-   }
-
-   public Collection<TaskArtifactItem> getSelectedTaskArtifactItems() {
-      Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
-      ArrayList<TaskArtifactItem> items = new ArrayList<TaskArtifactItem>();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         if (obj instanceof TaskArtifactItem) items.add((TaskArtifactItem) obj);
-      }
-      return items;
-   }
-
-   public Object[] getSelectedTaskArtifactItemsArray() {
-      return getSelectedArtifactItems().toArray(new TaskArtifactItem[getSelectedArtifactItems().size()]);
    }
 
    Action editTaskTitleAction;
@@ -167,7 +146,7 @@ public class TaskXViewer extends WorldXViewer {
             SMAManager taskSmaMgr = new SMAManager(getSelectedTaskArtifact());
             if (taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false)) {
                editor.onDirtied();
-               update(getSelectedTaskArtifactItemsArray(), null);
+               update(getSelectedTaskArtifacts().toArray(), null);
             }
          }
       };
@@ -178,7 +157,7 @@ public class TaskXViewer extends WorldXViewer {
             try {
                if (SMAManager.promptChangeAssignees(getSelectedTaskArtifacts())) {
                   editor.onDirtied();
-                  update(getSelectedTaskArtifactItemsArray(), null);
+                  update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -193,7 +172,7 @@ public class TaskXViewer extends WorldXViewer {
                if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions() ? taskResOptionDefinitions : null),
                      getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
-                  update(getSelectedTaskArtifactItemsArray(), null);
+                  update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -220,7 +199,7 @@ public class TaskXViewer extends WorldXViewer {
                      ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(),
                      ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName(), getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
-                  update(getSelectedTaskArtifactItemsArray(), null);
+                  update(getSelectedTaskArtifacts().toArray(), null);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
@@ -234,7 +213,7 @@ public class TaskXViewer extends WorldXViewer {
             if (SMAManager.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, getSelectedTaskArtifacts(),
                   false)) {
                editor.onDirtied();
-               update(getSelectedTaskArtifactItemsArray(), null);
+               update(getSelectedTaskArtifacts().toArray(), null);
             }
          }
       };
@@ -244,7 +223,7 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             if (SMAManager.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, getSelectedTaskArtifacts(), false)) {
                editor.onDirtied();
-               update(getSelectedTaskArtifactItemsArray(), null);
+               update(getSelectedTaskArtifacts().toArray(), null);
             }
          }
       };
@@ -313,12 +292,12 @@ public class TaskXViewer extends WorldXViewer {
       if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
-            update(getSelectedTaskArtifactItemsArray(), null);
+            update(getSelectedTaskArtifacts().toArray(), null);
             return true;
          }
       } else if (SMAManager.promptChangeAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE, getSelectedTaskArtifacts(), false)) {
          editor.onDirtied();
-         update(getSelectedTaskArtifactItemsArray(), null);
+         update(getSelectedTaskArtifacts().toArray(), null);
          return true;
       }
       return false;
@@ -338,7 +317,7 @@ public class TaskXViewer extends WorldXViewer {
       }
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
-      SMAManager taskSmaMgr = new SMAManager(((TaskArtifactItem) treeItem.getData()).getTaskArtifact());
+      SMAManager taskSmaMgr = new SMAManager((TaskArtifact) treeItem.getData());
       boolean modified = false;
       try {
          if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Estimated_Hours_Col) {
@@ -360,7 +339,7 @@ public class TaskXViewer extends WorldXViewer {
 
          if (modified) {
             editor.onDirtied();
-            update(((TaskArtifactItem) treeItem.getData()), null);
+            update(((TaskArtifact) treeItem.getData()), null);
             return true;
          }
       } catch (Exception ex) {
@@ -381,10 +360,6 @@ public class TaskXViewer extends WorldXViewer {
     */
    public void setTasksEditable(boolean tasksEditable) {
       this.tasksEditable = tasksEditable;
-   }
-
-   public Collection<WorldArtifactItem> getRootSet() {
-      return xTaskViewer.getXViewer().getRootSet();
    }
 
    /**

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,6 +43,9 @@ public abstract class TransactionEvent extends Event {
    private Set<Integer> artifactVersionIncremented = new HashSet<Integer>();
    private Map<Artifact, ArtifactVersionIncrementedEvent> artifactVersionIncrementedEvent =
          new HashMap<Artifact, ArtifactVersionIncrementedEvent>();
+   public enum TransactionChangeType {
+      Modified, Deleted, Purged, RelChanged
+   };
 
    /**
     * @param events
@@ -52,6 +56,14 @@ public abstract class TransactionEvent extends Event {
       this.localEvents = new ArrayList<Event>();
       this.localEvents.addAll(events);
       processLookups();
+   }
+
+   public Set<Integer> getArtIds(TransactionChangeType transactionChangeType) {
+      if (transactionChangeType == TransactionChangeType.Deleted) return deleted;
+      if (transactionChangeType == TransactionChangeType.RelChanged) return relChanged;
+      if (transactionChangeType == TransactionChangeType.Modified) return modified;
+      if (transactionChangeType == TransactionChangeType.Purged) return purged;
+      return Collections.emptySet();
    }
 
    /**

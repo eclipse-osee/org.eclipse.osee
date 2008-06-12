@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.task;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 
 public class TaskCurrentStateFilter extends ViewerFilter {
 
@@ -25,10 +26,9 @@ public class TaskCurrentStateFilter extends ViewerFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {
-         TaskArtifactItem item = (TaskArtifactItem) element;
-         if (item.getTaskArtifact().isDeleted()) return true;
-         return (item.getTaskArtifact().getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-               "").equals(stateName));
+         TaskArtifact taskArt = (TaskArtifact) element;
+         if (taskArt.isDeleted()) return true;
+         return (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName));
       } catch (Exception ex) {
          // do nothing
       }
