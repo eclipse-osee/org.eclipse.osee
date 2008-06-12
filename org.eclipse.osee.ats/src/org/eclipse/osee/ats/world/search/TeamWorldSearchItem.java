@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -100,7 +99,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    public void getTeamDefs() throws Exception {
       if (teamDefNames != null && teamDefs == null) {
          teamDefs =
-               Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(ActionableItemArtifact.ARTIFACT_NAME,
+               Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(TeamDefinitionArtifact.ARTIFACT_NAME,
                      "Name", teamDefNames, AtsPlugin.getAtsBranch(), 200));
       }
    }
