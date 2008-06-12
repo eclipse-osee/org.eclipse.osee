@@ -142,7 +142,7 @@ public class SkynetEventManager extends EventManager {
       Set<IEventReceiver> receivers = guidReceiverMap.get(event, guid);
       if (receivers == null) {
          receivers = new HashSet<IEventReceiver>();
-         if (!receivers.contains(eventReceiver)) guidReceiverMap.put(event, guid, receivers);
+         guidReceiverMap.put(event, guid, receivers);
       }
       receivers.add(eventReceiver);
    }
