@@ -11,29 +11,20 @@
 
 package org.eclipse.osee.ats;
 
-import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
@@ -60,19 +51,18 @@ public class AtsPlugin extends OseeUiActivator {
       super();
       pluginInstance = this;
       AtsBranchAccessHandler.getInstance();
-      //      bulkLoadTypeData();
    }
 
-   public void bulkLoadTypeData() {
+   private static boolean atsTypeDataLoaded = false;
+
+   public static void bulkLoadAtsConfigArtifacts() {
+      if (atsTypeDataLoaded) return;
+      OSEELog.logInfo(AtsPlugin.class, "Bulk Loading ATS Config Artifacts", false);
       try {
-         List<Artifact> typeArts =
-               ArtifactQuery.getArtifactsFromTypes(Arrays.asList(TeamDefinitionArtifact.ARTIFACT_NAME,
-                     ActionableItemArtifact.ARTIFACT_NAME, WorkRuleDefinition.ARTIFACT_NAME,
-                     WorkFlowDefinition.ARTIFACT_NAME, WorkWidgetDefinition.ARTIFACT_NAME,
-                     WorkPageDefinition.ARTIFACT_NAME), AtsPlugin.getAtsBranch());
-         RelationManager.getRelatedArtifacts(typeArts, 2, AtsRelation.WorkItem__Child,
-               AtsRelation.TeamDefinitionToVersion_Version, AtsRelation.TeamActionableItem_ActionableItem);
-      } catch (SQLException ex) {
+         RelationManager.getRelatedArtifacts(Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+         atsTypeDataLoaded = true;
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }

@@ -42,8 +42,11 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    private Collection<ActionableItemArtifact> actionItems;
    private Set<ActionableItemArtifact> selectedActionItems;
    private boolean recurseChildren;
+   private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean showFinished;
+   private boolean selectedShowFinished; // Used to not corrupt original values
    private boolean showAction;
+   private boolean selectedShowAction; // Used to not corrupt original values
    private final Collection<String> actionItemNames;
 
    public ActionableItemWorldSearchItem(Collection<String> actionItemNames, String displayName, boolean showFinished, boolean showAction, boolean recurseChildren) {
@@ -94,7 +97,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
       for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems))
          srchTeamDefs.add(actionableItem);
-      if (recurseChildren) {
+      if (selectedRecurseChildren) {
          for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems)) {
             Artifacts.getChildrenOfType(actionableItem, srchTeamDefs, ActionableItemArtifact.class, true);
          }
@@ -113,7 +116,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
 
       criteria.add(new AttributeCriteria(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), actionItemGuids));
 
-      if (!showFinished) {
+      if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
@@ -124,7 +127,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (showAction) {
+      if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
       } else {
          return artifacts;
@@ -143,9 +146,9 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       diag.setRecurseChildren(recurseChildren);
       int result = diag.open();
       if (result == 0) {
-         showFinished = diag.isShowFinished();
-         showAction = diag.isShowAction();
-         recurseChildren = diag.isRecurseChildren();
+         selectedShowFinished = diag.isShowFinished();
+         selectedShowAction = diag.isShowAction();
+         selectedRecurseChildren = diag.isRecurseChildren();
          if (selectedActionItems == null)
             selectedActionItems = new HashSet<ActionableItemArtifact>();
          else

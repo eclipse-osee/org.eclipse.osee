@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +46,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -162,10 +164,9 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
-      options.add(TableLoadOption.ClearLastSearchItem);
+      List<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
       if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
+      AtsPlugin.bulkLoadAtsConfigArtifacts();
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -379,6 +380,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
+      AtsPlugin.bulkLoadAtsConfigArtifacts();
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
       debug.report("loadTable", true);

@@ -883,7 +883,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
             if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
          }
          if (modArts.size() > 0) {
-            for (Artifact art : modArts) {
+            for (Artifact art: modArts) {
                refresh(art);
             }
          }

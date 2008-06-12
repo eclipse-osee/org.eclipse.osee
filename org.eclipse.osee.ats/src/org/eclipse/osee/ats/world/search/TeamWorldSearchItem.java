@@ -43,8 +43,11 @@ public class TeamWorldSearchItem extends WorldSearchItem {
 
    private Collection<TeamDefinitionArtifact> teamDefs;
    private Set<TeamDefinitionArtifact> selectedTeamDefs;
+   private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean recurseChildren;
+   private boolean selectedShowFinished; // Used to not corrupt original values
    private boolean showFinished;
+   private boolean selectedShowAction; // Used to not corrupt original values
    private boolean showAction;
    private final Collection<String> teamDefNames;
    private final ChangeType changeType;
@@ -113,7 +116,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
          srchTeamDefs.add(teamDef);
-      if (recurseChildren) {
+      if (selectedRecurseChildren) {
          for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs)) {
             Artifacts.getChildrenOfType(teamDef, srchTeamDefs, TeamDefinitionArtifact.class, true);
          }
@@ -132,7 +135,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
             teamDefinitionGuids));
 
-      if (!showFinished) {
+      if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
@@ -146,7 +149,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (showAction) {
+      if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
       } else {
          return artifacts;
