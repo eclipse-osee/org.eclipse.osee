@@ -34,9 +34,11 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
@@ -768,5 +771,125 @@ public class ArtifactPersistenceManager {
    public static void purgeAttribute(Attribute<?> attribute, int attributeId) throws SQLException {
       ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, SQL3DataType.INTEGER, attributeId);
       ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, SQL3DataType.INTEGER, attributeId);
+   }
+
+   private static final String INSERT_SELECT_RELATIONS =
+         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
+
+   private static final String INSERT_SELECT_ATTRIBUTES =
+         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
+
+   private static final String INSERT_SELECT_ARTIFACTS =
+         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
+
+   private static final String COUNT_ARTIFACT_VIOLATIONS =
+         "SELECT art1.art_id, txd1.branch_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
+   private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
+         "DELETE FROM osee_define_txs txs1 WHERE EXISTS ( select 1 from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.transaction_id = txs1.transaction_id AND jt1.gamma_id = txs1.gamma_id)";
+   private static final String DELETE_FROM_RELATION_VERSIONS =
+         "DELETE FROM osee_define_rel_link rel1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = rel1.gamma_id AND not exists ( select * from osee_define_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+   private static final String DELETE_FROM_ATTRIBUTE_VERSIONS =
+         "DELETE FROM osee_define_attribute attr1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = attr1.gamma_id AND not exists ( select * from osee_define_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+   private static final String DELETE_FROM_ARTIFACT_VERSIONS =
+         "DELETE FROM osee_define_artifact_version artv1 WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = artv1.gamma_id AND not exists ( select * from osee_define_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
+   private static final String DELETE_FROM_ARTIFACT =
+         "DELETE FROM osee_define_artifact art1 WHERE EXISTS ( select * from osee_join_artifact ja1 WHERE ja1.query_id = ? AND ja1.art_id = art1.art_id AND not exists ( select * from osee_define_artifact_version artv1 where artv1.art_id = ja1.art_id))";
+
+   /**
+    * @param artifactsToPurge
+    * @param collection
+    * @throws SQLException
+    * @throws OseeCoreException
+    */
+   public static void purgeArtifacts(Collection<Artifact> artifactsToPurge) throws SQLException, OseeCoreException {
+      //first determine if the purge is legal.
+      List<Object[]> batchParameters = new ArrayList<Object[]>();
+      int queryId = ArtifactLoader.getNewQueryId();
+      for (Artifact art : artifactsToPurge) {
+         for (Branch branch : art.getBranch().getChildBranches(true)) {
+            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, art.getArtId(),
+                  SQL3DataType.INTEGER, branch.getBranchId()});
+         }
+      }
+      if (batchParameters.size() > 0) {
+         ArtifactLoader.selectArtifacts(batchParameters);
+         ConnectionHandlerStatement stmt = null;
+         try {
+            stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, SQL3DataType.INTEGER, queryId);
+            boolean failed = false;
+            StringBuilder sb = new StringBuilder();
+            while (stmt.getRset().next()) {
+               failed = true;
+               sb.append("ArtifactId[");
+               sb.append(stmt.getRset().getInt(1));
+               sb.append("] BranchId[");
+               sb.append(stmt.getRset().getInt(2));
+               sb.append("]\n");
+            }
+            if (failed) {
+               throw new OseeCoreException(String.format(
+                     "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
+            }
+         } finally {
+            DbUtil.close(stmt);
+         }
+         ArtifactLoader.clearQuery(queryId);
+      }
+
+      // now load the artifacts to be purged
+      batchParameters.clear();
+      queryId = ArtifactLoader.getNewQueryId();
+      // insert into the artifact_join_table
+      for (Artifact art : artifactsToPurge) {
+         batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, art.getArtId(),
+               SQL3DataType.INTEGER, art.getBranch().getBranchId()});
+      }
+      int returnCount = ArtifactLoader.selectArtifacts(batchParameters);
+
+      //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
+      int transactionJoinId = ArtifactLoader.getNewQueryId();
+      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, SQL3DataType.INTEGER, transactionJoinId,
+            SQL3DataType.INTEGER, queryId);
+      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, SQL3DataType.INTEGER, transactionJoinId,
+            SQL3DataType.INTEGER, queryId);
+      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, SQL3DataType.INTEGER, transactionJoinId,
+            SQL3DataType.INTEGER, queryId);
+
+      //delete from the txs table
+      int txsDeletes =
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
+                  transactionJoinId);
+
+      int relationVersions =
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS, SQL3DataType.INTEGER, transactionJoinId);
+      int attributeVersions =
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_VERSIONS, SQL3DataType.INTEGER, transactionJoinId);
+      int artifactVersions =
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, SQL3DataType.INTEGER, transactionJoinId);
+      int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, SQL3DataType.INTEGER, queryId);
+
+      OseeLog.log(
+            SkynetActivator.class,
+            Level.INFO,
+            String.format(
+                  "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
+                  txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
+                  (relationVersions + attributeVersions + artifactVersions)));
+
+      ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_transaction where query_id = ?", SQL3DataType.INTEGER,
+            transactionJoinId);
+      ArtifactLoader.clearQuery(queryId);
+
+      for (Artifact art : artifactsToPurge) {
+         art.setDeleted();
+         for (RelationLink rel : art.getRelationsAll()) {
+            rel.markAsPurged();
+         }
+         for (Attribute<?> attr : art.internalGetAttributes()) {
+            attr.markAsPurged();
+         }
+         SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(art, ModType.Purged, instance));
+      }
+
    }
 }
