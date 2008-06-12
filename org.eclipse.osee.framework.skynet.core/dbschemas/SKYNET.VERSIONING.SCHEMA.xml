@@ -178,8 +178,8 @@
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="A_ORDER_VALUE" type="INTEGER" />
-		<Column id="B_ORDER_VALUE" type="INTEGER" />
+		<Column id="A_ORDER" type="INTEGER" />
+		<Column id="B_ORDER" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
@@ -598,9 +598,11 @@
    	
 	<Table name="OSEE_JOIN_TRANSACTION" schema="OSEE">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="GAMMA_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_JOIN_TRANSACTION_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, TRANSACTION_ID, GAMMA_ID" />
+		<Column id="TRANSACTION_ID" type="INTEGER" />
+		<Column id="GAMMA_ID" type="INTEGER" />
+		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
 	</Table>
 	
 	
