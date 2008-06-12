@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSBranchMetrics;
@@ -29,6 +28,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
@@ -58,7 +57,6 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -442,19 +440,35 @@ public class BranchManager {
          }
 
          try {
-            BranchPersistenceManager.getInstance().commitBranch(branch, true);
+            BranchPersistenceManager.getInstance().commitBranch(branch, true, false);
          } catch (ConflictDetectionException ex) {
-            CheckBoxDialog dialog =
-                  new CheckBoxDialog(Display.getCurrent().getActiveShell(), "Commit Failed", null,
-                        "Commit Failed Due To Unresolved Conflicts",
-                        "Launch Merge Manager to handle unresolved conflicts", MessageDialog.QUESTION, 0);
+            MessageDialog dialog;
+            if (OseeProperties.isDeveloper()) {
+               dialog =
+                     new MessageDialog(
+                           Display.getCurrent().getActiveShell(),
+                           "Commit Failed",
+                           null,
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
+                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
+            } else {
+               dialog =
+                     new MessageDialog(
+                           Display.getCurrent().getActiveShell(),
+                           "Commit Failed",
+                           null,
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
+                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
+
+            }
 
             try {
-               if (commitPopup && dialog.open() == Window.OK) {
-                  Conflict[] transactionArtifactChanges = new Conflict[0];
-                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(branch,
-                        branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(branch).getKey()).toArray(
-                        transactionArtifactChanges));
+               int result = dialog.open();
+               if (commitPopup && result == 1) {
+                  MergeView.openViewUpon(branch, branch.getParentBranch(),
+                        TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
+               } else if (result == 2) {
+                  BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
                }
             } catch (Exception exc) {
                OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);

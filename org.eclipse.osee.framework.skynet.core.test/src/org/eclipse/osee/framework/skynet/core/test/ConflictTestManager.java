@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.test;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -19,9 +20,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -102,8 +109,7 @@ public class ConflictTestManager {
          //               ConfigurationPersistenceManager.getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
          destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
          for (AttributeValue value : conflictDefs[i].newAttributes) {
-            destArtifacts[i].addAttribute(value.attributeName, AttributeObjectConverter.stringToObject(value.clas,
-                  value.sourceValue));
+            destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
             destArtifacts[i].persistAttributes();
          }
       }
@@ -122,12 +128,8 @@ public class ConflictTestManager {
          int numArtifacts = 0;
          for (AttributeValue value : conflictDefs[i].values) {
             if (value.sourceValue != null) {
-               sourceArtifacts[i].setSoleAttributeValue(value.attributeName, AttributeObjectConverter.stringToObject(
-                     value.clas, value.sourceValue));
-            }
-            if (value.destValue != null) {
-               destArtifacts[i].setSoleAttributeValue(value.attributeName, AttributeObjectConverter.stringToObject(
-                     value.clas, value.destValue));
+               sourceArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas,
+                     value.sourceValue));
             }
             if (value.sourceValue != null && value.destValue != null) {
                numConflicts++;
@@ -135,6 +137,11 @@ public class ConflictTestManager {
             }
          }
          sourceArtifacts[i].persistAttributes();
+         for (AttributeValue value : conflictDefs[i].values) {
+            if (value.destValue != null) {
+               destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
+            }
+         }
          destArtifacts[i].persistAttributes();
 
          if (conflictDefs[i].destDelete) {
@@ -276,7 +283,7 @@ public class ConflictTestManager {
       } else if (aValue.mergeValue.equalsIgnoreCase("Destination")) {
          conflict.setToDest();
       } else {
-         conflict.setAttributeValue(AttributeObjectConverter.stringToObject(aValue.clas, aValue.mergeValue));
+         conflict.setAttributeValue(stringToObject(aValue.clas, aValue.mergeValue));
       }
    }
 
@@ -296,9 +303,9 @@ public class ConflictTestManager {
                if (value.destValue == null) {
                   expected = value.sourceValue;
                }
-               if (!AttributeObjectConverter.stringToObject(value.clas, expected).toString().equals(
+               if (!stringToObject(value.clas, expected).toString().equals(
                      destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " "))) {
-                  System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + AttributeObjectConverter.stringToObject(
+                  System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + stringToObject(
                         value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
                         value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId());
                   return false;
@@ -332,13 +339,13 @@ public class ConflictTestManager {
             "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
       conflictDefs[3].setValues("Software Requirement", true, false);
-      //      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
-      //            StringAttribute.class));
-      //      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
-      //            StringAttribute.class));
-      //      conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      //      conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
-      //            StringAttribute.class));
+      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
+            StringAttribute.class));
+      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
+            StringAttribute.class));
+      conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
+            StringAttribute.class));
 
       conflictDefs[4].setValues("Software Requirement", false, false);
 
@@ -351,16 +358,51 @@ public class ConflictTestManager {
             StringAttribute.class));
 
       conflictDefs[6].setValues("Software Requirement", false, false);
+
       conflictDefs[7].setValues("Version", false, false);
-      conflictDefs[7].newAttributes.add(new AttributeValue("ats.Release Date", "1", DateAttribute.class));
 
       conflictDefs[8].setValues("Version", false, false);
       conflictDefs[8].values.add(new AttributeValue("ats.Release Date", "2000", "50000000", "Source",
             DateAttribute.class));
-      conflictDefs[8].newAttributes.add(new AttributeValue("ats.Release Date", "1", DateAttribute.class));
 
       conflictDefs[9].setValues("Version", false, false);
-      conflictDefs[9].newAttributes.add(new AttributeValue("ats.Release Date", "1", DateAttribute.class));
 
+   }
+
+   @SuppressWarnings( {"unchecked"})
+   public static Object stringToObject(Class clas, String value) {
+
+      if (clas.equals(BooleanAttribute.class)) {
+         return new Boolean(value.equals(BooleanAttribute.booleanChoices[0]));
+      }
+      if (clas.equals(IntegerAttribute.class)) {
+         if (value.equals("")) return new Integer(0);
+         return new Integer(value);
+      }
+      if (clas.equals(DateAttribute.class)) {
+         if (value.equals("")) return new Date(1);
+         return new Date(Long.parseLong(value));
+      }
+      if (clas.equals(FloatingPointAttribute.class)) {
+         if (value.equals("")) return new Double(0);
+         return new Double(value);
+      }
+      if (clas.equals(EnumeratedAttribute.class)) {
+         return value;
+      }
+      if (clas.equals(StringAttribute.class)) {
+         return value;
+      }
+      if (clas.equals(BlobWordAttribute.class)) {
+         return value;
+      }
+      if (clas.equals(JavaObjectAttribute.class)) {
+         return value;
+      }
+      if (clas.equals(CompressedContentAttribute.class)) {
+         return value;
+      }
+
+      return value;
    }
 }

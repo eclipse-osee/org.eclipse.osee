@@ -33,12 +33,9 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactConflict extends Conflict {
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactConflict.class);
-   private static final String CHANGE_ITEM = "Artifact";
+   private static final String CHANGE_ITEM = "Artifact State";
    private static final String ARTIFACT_DELETED = "DELETED";
-   private static final Image ARTIFACT_IMAGE = SkynetActivator.getInstance().getImage("artifact.gif");
-   private int sourceTxType;
-   private int destTxType;
-   private int artTypeId;
+   private static final String ARTIFACT_MODIFIED = "MODIFIED";
 
    /**
     * @param sourceGamma
@@ -55,9 +52,6 @@ public class ArtifactConflict extends Conflict {
    public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceTxType, int destTxType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, changeType, mergeBranch,
             sourceBranch, destBranch);
-      this.sourceTxType = sourceTxType;
-      this.destTxType = destTxType;
-      this.artTypeId = artTypeId;
    }
 
    /*
@@ -141,7 +135,7 @@ public class ArtifactConflict extends Conflict {
     */
    @Override
    public Image getImage() throws SQLException {
-      return ARTIFACT_IMAGE;
+      return SkynetActivator.getInstance().getImage("laser_16_16.gif");
    }
 
    /* (non-Javadoc)
@@ -164,7 +158,7 @@ public class ArtifactConflict extends Conflict {
     */
    @Override
    public String getSourceDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
-      return getSourceArtifact().getDescriptiveName();
+      return ARTIFACT_MODIFIED;
    }
 
    /* (non-Javadoc)

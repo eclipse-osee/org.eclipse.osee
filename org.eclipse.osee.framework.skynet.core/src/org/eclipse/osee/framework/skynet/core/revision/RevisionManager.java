@@ -58,7 +58,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
@@ -1302,29 +1301,47 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    // branch == fromBranch
    public boolean branchHasConflicts(Branch sourceBranch, Branch destBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       if (sourceBranch == null || destBranch == null) throw new IllegalArgumentException("branch can not be null.");
-
-      Pair<TransactionId, TransactionId> sourceBranchPoints = transactionIdManager.getStartEndPoint(sourceBranch);
-
-      int destBranchBase = transactionIdManager.getParentBaseTransaction(sourceBranch).getTransactionNumber();
-      int destBranchHead = transactionIdManager.getStartEndPoint(destBranch).getValue().getTransactionNumber();
-      return hasConflicts(destBranch.getBranchId(), destBranchBase, destBranchHead, sourceBranch,
-            sourceBranchPoints.getKey().getTransactionNumber(), sourceBranchPoints.getValue().getTransactionNumber());
-   }
-
-   private boolean hasConflicts(int destBranch, int destBase, int destHead, Branch sourceBranch, int sourceBase, int sourceHead) {
-      boolean hasConflicts = true;
+      ConnectionHandlerStatement connectionHandlerStatement = null;
+      boolean conflictsExist = false;
 
       try {
-         ISearchPrimitive conflict =
-               new ConflictingArtifactSearch(destBranch, destBase, destHead, sourceBranch.getBranchId(), sourceBase,
-                     sourceHead);
+         connectionHandlerStatement =
+               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
+                     SQL3DataType.INTEGER,
+                     TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey().getTransactionNumber(),
+                     SQL3DataType.INTEGER, destBranch.getBranchId());
 
-         hasConflicts = artifactManager.getArtifactCount(conflict, sourceBranch) > 0;
-      } catch (Exception e) {
-         logger.log(Level.SEVERE, e.toString(), e);
+         ResultSet resultSet = connectionHandlerStatement.getRset();
+
+         while (resultSet.next()) {
+            int sourceModType = resultSet.getInt("source_mod_type");
+            int destModType = resultSet.getInt("dest_mod_type");
+
+            if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) {
+               conflictsExist = true;
+            }
+         }
+      } finally {
+         DbUtil.close(connectionHandlerStatement);
+      }
+      try {
+         connectionHandlerStatement =
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
+                     sourceBranch.getBranchId(), SQL3DataType.INTEGER,
+                     TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey().getTransactionNumber(),
+                     SQL3DataType.INTEGER, destBranch.getBranchId());
+
+         ResultSet resultSet = connectionHandlerStatement.getRset();
+
+         if (resultSet.next()) {
+            conflictsExist = true;
+         }
+      } finally {
+         DbUtil.close(connectionHandlerStatement);
       }
 
-      return hasConflicts;
+      return conflictsExist;
+
    }
 
    /* (non-Javadoc)

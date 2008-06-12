@@ -68,7 +68,6 @@ import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -433,13 +432,13 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Job commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
+   public Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
       Branch parentBranch = childBranch.getParentBranch();
 
       if (parentBranch == null) {
          throw new IllegalArgumentException("This branch does not have a parent branch.");
       }
-      return commitBranch(childBranch, parentBranch, archiveChildBranch);
+      return commitBranch(childBranch, parentBranch, archiveChildBranch, forceCommit);
    }
 
    /**
@@ -451,8 +450,8 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) throws ConflictDetectionException, Exception {
-      CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch);
+   public Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws ConflictDetectionException, Exception {
+      CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch, forceCommit);
       Jobs.startJob(commitJob);
       return commitJob;
    }
@@ -489,85 +488,6 @@ public class BranchPersistenceManager implements PersistenceManager {
 
       createWorkingBranch(fromTransactionId, toBranchName, toBranchName, associatedArtifact);
       return getBranch(toBranchName);
-   }
-
-   /**
-    * @return Returns true if there exists a conflict between the fromBranch and the toBranch
-    * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
-    */
-   public boolean hasConflicts(final Branch fromBranch, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      return hasConflicts(fromBranch, null, toBranch);
-   }
-
-   /**
-    * @return Returns true is there exists a conflict between the fromTransaction and the toBranch
-    * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
-    */
-   public boolean hasConflicts(final TransactionId fromTransactionId, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      return hasConflicts(null, fromTransactionId, toBranch);
-   }
-
-   private boolean hasConflicts(final Branch fromBranch, final TransactionId fromTransactionId, final Branch toBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      boolean conflicts = false;
-      boolean hasBranch = fromBranch != null;
-
-      String ATTRIBUTE_CONFLICT =
-            "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_attribute t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.attr_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_attribute t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.attr_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.attr_id = t44.attr_id  AND exists (SELECT txs.gamma_id  FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
-
-      String ARTIFACT_CONFLICT =
-            " SELECT t1.gamma_id from osee_define_txs t1, osee_Define_tx_details t2, osee_define_artifact_version t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.art_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_artifact_version t6" + " WHERE t4.gamma_id = t6.gamma_id" + " and t6.modification_id = 3" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.art_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.art_id = t44.art_id and exists (select txs.gamma_id from osee_define_txs txs, osee_define_artifact_version attr where attr.art_id = t44.art_id and attr.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
-
-      String RELATION_CONFLICT =
-            "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_rel_link t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.rel_link_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_rel_link t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.rel_link_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.rel_link_id = t44.rel_link_id and exists (select txs.gamma_id from osee_define_txs txs, osee_Define_rel_link rel where rel.rel_link_id = t44.rel_link_id and rel.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
-
-      ConnectionHandlerStatement chStmt = null;
-
-      try {
-         List<Object> datas = new LinkedList<Object>();
-
-         if (hasBranch) {
-            int baselineTransactionNumber =
-                  ((TransactionId) TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey()).getTransactionNumber();
-
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(toBranch.getBranchId());
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(baselineTransactionNumber);
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(fromBranch.getBranchId());
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(baselineTransactionNumber);
-         } else {
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(toBranch.getBranchId());
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(fromTransactionId.getTransactionNumber());
-            datas.add(SQL3DataType.INTEGER);
-            datas.add(fromTransactionId.getTransactionNumber());
-         }
-
-         // Check for attribute conflicts
-         chStmt = ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICT, datas.toArray());
-         conflicts = chStmt.next();
-
-         if (!conflicts) {
-            // Check for artifact work on delete conflicts
-            chStmt = ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICT, datas.toArray());
-            conflicts = chStmt.next();
-         }
-         if (!conflicts) {
-            // Check for relation conflicts
-            chStmt = ConnectionHandler.runPreparedQuery(RELATION_CONFLICT, datas.toArray());
-            conflicts = chStmt.next();
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-      return conflicts;
    }
 
    /**

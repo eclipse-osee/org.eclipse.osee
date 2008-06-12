@@ -25,6 +25,35 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
 public class XMergeLabelProvider implements ITableLabelProvider {
+   public static enum ConflictState {
+      UNTOUCHED(1, " "),
+      REVERT(2, "Must Be Reverted"),
+      MODIFIED(3, "Modified"),
+      CHANGED(4, "Artifact Changed After Resolution"),
+      RESOLVED(5, "Resolved");
+
+      private final int value;
+      private final String text;
+
+      ConflictState(int value, String text) {
+         this.value = value;
+         this.text = text;
+      }
+
+      public final int getValue(String text) {
+         for (ConflictState state : values()) {
+            if (state.text.equals(text)) {
+               return value;
+            }
+         }
+         return 0;
+      }
+
+      public final String getText() {
+         return text;
+      }
+
+   };
    Font font = null;
 
    private final MergeXViewer mergeXViewer;
@@ -54,7 +83,7 @@ public class XMergeLabelProvider implements ITableLabelProvider {
 
       XViewerColumn xCol = mergeXViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
-         MergeColumn aCol = MergeColumn.getAtsXColumn(xCol);
+         MergeColumn aCol = MergeColumn.getXColumn(xCol);
          try {
             return getColumnText(element, columnIndex, xCol, aCol);
          } catch (Exception ex) {
@@ -82,11 +111,11 @@ public class XMergeLabelProvider implements ITableLabelProvider {
          if (element instanceof Conflict) {
             Conflict conflict = (Conflict) element;
             if (aCol == MergeColumn.Conflict_Resolved) {
-               if (conflict.statusResolved()) return "D) Resolved";
-               if (conflict.statusEdited()) return "B) Modified";
-               if (conflict.statusOutOfDate()) return "C) Artifact Changed After Resolution";
-               if (conflict.statusUntouched()) return " ";
-               if (conflict.statusNotResolvable()) return "A) Must Be Reverted";
+               if (conflict.statusResolved()) return ConflictState.RESOLVED.getText();
+               if (conflict.statusEdited()) return ConflictState.MODIFIED.getText();
+               if (conflict.statusOutOfDate()) return ConflictState.CHANGED.getText();
+               if (conflict.statusUntouched()) return ConflictState.UNTOUCHED.getText();
+               if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
             } else if (aCol == MergeColumn.Artifact_Name) {
                return conflict.getArtifactName();
             } else if (aCol == MergeColumn.Change_Item) {
@@ -132,7 +161,7 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       if (element instanceof String) return null;
       XViewerColumn xCol = mergeXViewer.getXTreeColumn(columnIndex);
       if (xCol == null) return null;
-      MergeColumn dCol = MergeColumn.getAtsXColumn(xCol);
+      MergeColumn dCol = MergeColumn.getXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
 
       if (element instanceof Conflict) {

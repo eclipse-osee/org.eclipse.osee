@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 import java.util.Arrays;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -88,7 +87,7 @@ public class EditAttributeWizardPage extends WizardPage {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      if (!changeType.equals(WordAttribute.CONTENT_NAME)) {
+      if (!conflict.isWordAttribute()) {
          editor =
                EmbededAttributeEditorFactory.getEmbeddedEditor(changeType, conflict.getSourceDisplayData(),
                      Arrays.asList(conflict), true);

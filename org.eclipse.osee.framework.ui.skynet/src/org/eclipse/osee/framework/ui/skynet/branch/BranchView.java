@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
@@ -73,7 +72,6 @@ import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionExcepti
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -116,14 +114,12 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -441,8 +437,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    private String addMergeViewCommand(MenuManager menuManager) {
       CommandContributionItem accessControlCommand =
-            Commands.getLocalCommandContribution(getSite(), "mergeViewCommand",
-                  "Experimental Only -Merge View- Not For Production", null, null, null, "M", null, null);
+            Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Merge Manager", null, null, null, "M",
+                  null, null);
       menuManager.add(accessControlCommand);
       return accessControlCommand.getId();
    }
@@ -456,20 +452,13 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            Shell shell = Display.getCurrent().getActiveShell().getShell();
             try {
                if (selectedBranch != null) {
-                  shell.setCursor(new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT));
-                  Conflict[] transactionArtifactChanges = new Conflict[0];
-                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch,
-                        selectedBranch.getParentBranch(),
-                        TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey()).toArray(
-                        transactionArtifactChanges));
+                  MergeView.openViewUpon(selectedBranch, selectedBranch.getParentBranch(),
+                        TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey());
                }
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            } finally {
-               shell.setCursor(new Cursor(shell.getDisplay(), SWT.CURSOR_ARROW));
             }
 
             return null;
@@ -1284,19 +1273,35 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                toBranch =
                      BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true);
+            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true, false);
          } catch (ConflictDetectionException ex) {
-            CheckBoxDialog dialog =
-                  new CheckBoxDialog(Display.getCurrent().getActiveShell(), "Commit Failed", null,
-                        "Commit Failed Due To Unresolved Conflicts",
-                        "Launch Merge Manager to handle unresolved conflicts", MessageDialog.QUESTION, 0);
+            MessageDialog dialog;
+            if (OseeProperties.isDeveloper()) {
+               dialog =
+                     new MessageDialog(
+                           Display.getCurrent().getActiveShell(),
+                           "Commit Failed",
+                           null,
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
+                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
+            } else {
+               dialog =
+                     new MessageDialog(
+                           Display.getCurrent().getActiveShell(),
+                           "Commit Failed",
+                           null,
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
+                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
+
+            }
 
             try {
-               if (dialog.open() == Window.OK) {
-                  Conflict[] transactionArtifactChanges = new Conflict[0];
-                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(fromBranch, toBranch,
-                        TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey()).toArray(
-                        transactionArtifactChanges));
+               int result = dialog.open();
+               if (result == 1) {
+                  MergeView.openViewUpon(fromBranch, toBranch, TransactionIdManager.getInstance().getStartEndPoint(
+                        fromBranch).getKey());
+               } else if (result == 2) {
+                  BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true, true);
                }
             } catch (Exception exc) {
                logger.log(Level.SEVERE, "Commit Branch Failed", exc);

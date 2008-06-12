@@ -125,7 +125,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
                      AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                   }
                } else {
-                  if (!((AttributeConflict) object).setAttributeValue(selection)) {
+                  if (!((AttributeConflict) object).setStringAttributeValue(selection)) {
                      AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                   }
                }

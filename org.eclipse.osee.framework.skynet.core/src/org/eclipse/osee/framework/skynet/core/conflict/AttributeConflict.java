@@ -18,6 +18,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -26,8 +27,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
@@ -149,31 +148,20 @@ public class AttributeConflict extends Conflict {
 
    public Object getSourceObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (sourceObject != null) return sourceObject;
-      if (isWordAttribute) {
-         sourceObject = getSourceAttribute().getValue();
-      } else {
-         sourceObject =
-               AttributeObjectConverter.stringToObject(getDynamicAttributeDescriptor().getBaseAttributeClass(),
-                     sourceValue);
-      }
+      sourceObject = getSourceAttribute().getValue();
       return sourceObject;
    }
 
    public Object getDestObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (destObject != null) return destObject;
-      if (isWordAttribute) {
-         destObject = getDestAttribute().getValue();
-      } else {
-         destObject =
-               AttributeObjectConverter.stringToObject(getDynamicAttributeDescriptor().getBaseAttributeClass(),
-                     destValue);
-      }
+      destObject = getDestAttribute().getValue();
       return destObject;
    }
 
    @Override
    public Image getImage() {
-      return AttributeChangeIcons.getImage(getChangeType(), ModificationType.CHANGE);
+      return SkynetActivator.getInstance().getImage("molecule.gif");
+      //      return AttributeChangeIcons.getImage(getChangeType(), ModificationType.CHANGE);
    }
 
    /*
@@ -242,6 +230,14 @@ public class AttributeConflict extends Conflict {
    @Override
    public boolean sourceEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       return (getSourceObject().equals(getDestObject()));
+   }
+
+   public boolean setStringAttributeValue(String value) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+      if (!okToOverwriteMerge()) return false;
+      markStatusToReflectEdit();
+      getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().persistAttributes();
+      return true;
    }
 
    public boolean setAttributeValue(Object value) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
@@ -373,6 +369,10 @@ public class AttributeConflict extends Conflict {
 
    public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
       return getAttribute().getGammaId();
+   }
+
+   public boolean isWordAttribute() {
+      return isWordAttribute;
    }
 
 }

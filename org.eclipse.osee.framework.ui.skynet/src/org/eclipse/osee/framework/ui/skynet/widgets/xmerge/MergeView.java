@@ -27,8 +27,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -78,7 +80,7 @@ public class MergeView extends ViewPart implements IActionable {
    public MergeView() {
    }
 
-   public static void openViewUpon(final Conflict[] conflicts) {
+   public static void openViewUpon(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -86,15 +88,12 @@ public class MergeView extends ViewPart implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
-                     if (conflicts.length == 0) {
-                        AWorkbench.popup("Attention:", "There are no conflicts between this Branch and it's Parent.");
-                     } else {
-                        IWorkbenchPage page = AWorkbench.getActivePage();
-                        MergeView mergeView =
-                              (MergeView) page.showView(MergeView.VIEW_ID,
-                                    String.valueOf(conflicts[0].getMergeBranchID()), IWorkbenchPage.VIEW_VISIBLE);
-                        mergeView.explore(conflicts);
-                     }
+                     IWorkbenchPage page = AWorkbench.getActivePage();
+                     MergeView mergeView =
+                           (MergeView) page.showView(MergeView.VIEW_ID, String.valueOf(sourceBranch.getBranchId()),
+                                 IWorkbenchPage.VIEW_VISIBLE);
+                     mergeView.explore(sourceBranch, destBranch, tranId);
+                     //                     }
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -125,7 +124,6 @@ public class MergeView extends ViewPart implements IActionable {
        * Create a grid layout object so the text and treeviewer are layed out the way I want.
        */
 
-      //      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
       PlatformUI.getWorkbench().getService(IHandlerService.class);
       handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
@@ -136,10 +134,6 @@ public class MergeView extends ViewPart implements IActionable {
       layout.marginHeight = 0;
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      //      PlatformUI.getWorkbench().getService(IHandlerService.class);
-      //      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
-
       xMergeViewer = new XMergeViewer();
       xMergeViewer.setDisplayLabel(false);
       xMergeViewer.createWidgets(parent, 1);
@@ -310,17 +304,21 @@ public class MergeView extends ViewPart implements IActionable {
       });
    }
 
-   public void explore(Conflict[] conflicts) {
-      this.conflicts = conflicts;
+   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
+      //      this.conflicts = conflicts;
       try {
-         if (conflicts != null) {
-            xMergeViewer.setConflicts(conflicts);
-         }
-         setPartName("Merge Manager: ");
+         //         if (conflicts != null) {
+         xMergeViewer.setInputData(sourceBranch, destBranch, tranId, this);
+         //         }
+         setPartName("Merge Manager: " + sourceBranch.getBranchShortName());
 
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(MergeView.class, ex, true);
       }
+   }
+
+   public void setConflicts(Conflict[] conflicts) {
+      this.conflicts = conflicts;
    }
 
    public String getActionDescription() {

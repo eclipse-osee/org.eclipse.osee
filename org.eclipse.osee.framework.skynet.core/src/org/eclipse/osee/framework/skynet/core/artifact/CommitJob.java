@@ -86,7 +86,7 @@ class CommitJob extends Job {
    private IProgressMonitor monitor;
    private CommitDbTx commitDbTx;
 
-   public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch) throws ConflictDetectionException, SQLException, IOException, Exception {
+   public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch, boolean forceCommit) throws ConflictDetectionException, SQLException, IOException, Exception {
       super("Committing Branch: " + fromBranch.getBranchName());
       boolean conflictsExist = false;
       Collection<Conflict> conflicts = null;
@@ -107,7 +107,7 @@ class CommitJob extends Job {
                      break;
                   }
                }
-               if (!resolved) {
+               if (!resolved && !forceCommit) {
                   throw new ConflictDetectionException(
                         "Trying to commit " + fromBranch.getBranchName() + " into " + toBranch.getBranchName() + " when " + conflicts.size() + " conflicts exist");
                }

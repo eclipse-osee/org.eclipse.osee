@@ -14,18 +14,26 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -54,6 +62,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    private MergeXViewer xCommitViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
+   private static final String LOADING = "Loading ...";
+   private static final String NO_CONFLICTS = "No conflicts were found";
    private Label extraInfoLabel;
    private Conflict[] conflicts;
    private String displayLabelText;
@@ -95,6 +105,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       xCommitViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xCommitViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      xCommitViewer.setSorter(new MergeXViewerSorter(xCommitViewer));
       xCommitViewer.setContentProvider(new XMergeContentProvider(xCommitViewer));
       xCommitViewer.setLabelProvider(new XMergeLabelProvider(xCommitViewer));
       xCommitViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -145,12 +156,28 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
-      item.setToolTipText("Show Change Report");
+      item.setToolTipText("Show Source Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
             if (conflicts.length != 0) {
                try {
                   ChangeView.open(conflicts[0].getSourceBranch());
+               } catch (Exception ex) {
+                  OSEELog.logException(XMergeViewer.class, ex, true);
+               }
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+      item.setToolTipText("Show Source Branch Change Report");
+      item.setToolTipText("Show Destination Branch Change Report");
+      item.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            if (conflicts.length != 0) {
+               try {
+                  ChangeView.open(conflicts[0].getDestBranch());
                } catch (Exception ex) {
                   OSEELog.logException(XMergeViewer.class, ex, true);
                }
@@ -322,6 +349,40 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView) throws IllegalStateException, SQLException {
+      extraInfoLabel.setText(LOADING);
+      Job job = new Job("") {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               conflicts =
+                     RevisionManager.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                           new Conflict[0]);
+
+               Displays.ensureInDisplayThread(new Runnable() {
+                  public void run() {
+                     try {
+                        if (conflicts.length == 0) {
+                           extraInfoLabel.setText(NO_CONFLICTS);
+                        } else {
+                           setConflicts(conflicts);
+                           mergeView.setConflicts(conflicts);
+                           loadTable();
+                        }
+                     } catch (SQLException ex) {
+                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+                     }
+                  }
+               });
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job);
+   }
+
    public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
       this.conflicts = conflicts;
       loadTable();

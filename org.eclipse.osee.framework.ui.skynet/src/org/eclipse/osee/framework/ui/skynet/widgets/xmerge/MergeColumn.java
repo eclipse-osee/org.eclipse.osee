@@ -26,17 +26,17 @@ public enum MergeColumn {
 
    Conflict_Resolved("Conflict Resolved", 23, SWT.LEFT, true, SortDataType.String, false),
 
-   Artifact_Name("Artifact", 200, SWT.LEFT, true, SortDataType.String, false),
+   Artifact_Name("Artifact Name", 200, SWT.LEFT, true, SortDataType.String, false),
 
-   Type("Type", 150, SWT.LEFT, true, SortDataType.String, false),
+   Type("Artifact Type", 150, SWT.LEFT, true, SortDataType.String, false),
 
-   Change_Item("Change Item", 150, SWT.LEFT, true, SortDataType.String, false),
+   Change_Item("Conflicting Item", 150, SWT.LEFT, true, SortDataType.String, false),
 
-   Source("Source", 100, SWT.LEFT, true, SortDataType.String, false),
+   Source("Source Value", 100, SWT.LEFT, true, SortDataType.String, false),
 
-   Destination("Destination", 100, SWT.LEFT, true, SortDataType.String, false),
+   Destination("Destination Value", 100, SWT.LEFT, true, SortDataType.String, false),
 
-   Merged("Merged", 100, SWT.LEFT, true, SortDataType.String, false);
+   Merged("Merged Value", 100, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;
    private final int width;
@@ -47,7 +47,7 @@ public enum MergeColumn {
    private static Map<String, MergeColumn> nameToAtsXColumn = new HashMap<String, MergeColumn>();
    private final boolean multiColumnEditable;
 
-   public static MergeColumn getAtsXColumn(XViewerColumn xCol) {
+   public static MergeColumn getXColumn(XViewerColumn xCol) {
       if (nameToAtsXColumn.size() == 0) {
          for (MergeColumn atsCol : MergeColumn.values())
             nameToAtsXColumn.put(atsCol.getName(), atsCol);

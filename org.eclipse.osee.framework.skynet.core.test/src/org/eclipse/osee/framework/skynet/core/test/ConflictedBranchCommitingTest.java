@@ -44,7 +44,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
    public void CheckCommitWithResolutionErrors() {
       try {
          BranchPersistenceManager.getInstance().commitBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), false).join();
+               ConflictTestManager.getDestBranch(), false, false).join();
       } catch (ConflictDetectionException ex) {
          return;
       } catch (Exception ex) {
@@ -55,7 +55,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
    public void CheckCommitWithoutResolutionErrors() {
       try {
          BranchPersistenceManager.getInstance().commitBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), false).join();
+               ConflictTestManager.getDestBranch(), false, false).join();
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");

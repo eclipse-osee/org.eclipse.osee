@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -111,10 +110,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
                if (object instanceof AttributeConflict) {
                   if (!editor.getEntry().equals("")) {
                      try {
-                        Object obj =
-                              AttributeObjectConverter.stringToObject(((AttributeConflict) object).getAttribute(),
-                                    editor.getEntry());
-                        if (!((AttributeConflict) object).setAttributeValue(obj)) {
+                        if (!((AttributeConflict) object).setStringAttributeValue(editor.getEntry())) {
                            AWorkbench.popup("Attention", MergeUtility.COMMITED_PROMPT);
                         }
                      } catch (Exception ex) {

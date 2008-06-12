@@ -95,7 +95,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      MergeColumn aCol = MergeColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
+      MergeColumn aCol = MergeColumn.getXColumn((XViewerColumn) treeColumn.getData());
       XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
       if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
       return true;

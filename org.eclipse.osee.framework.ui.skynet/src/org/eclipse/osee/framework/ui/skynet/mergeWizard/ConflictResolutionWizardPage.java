@@ -11,10 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.EnumMap;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
@@ -24,7 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -121,7 +124,7 @@ public class ConflictResolutionWizardPage extends WizardPage {
 
    private void createEditButtons(Composite composite, GridData gd) {
 
-      if (!changeType.equals(WordAttribute.CONTENT_NAME)) {
+      if (!conflict.isWordAttribute()) {
          new Label(composite, SWT.NONE).setText(SOURCE_TITLE);
          new Label(composite, SWT.NONE).setText(INDENT + conflict.getSourceDisplayData());
          new Label(composite, SWT.NONE).setText(DEST_TITLE);
@@ -188,7 +191,7 @@ public class ConflictResolutionWizardPage extends WizardPage {
     */
    @Override
    public IWizardPage getNextPage() {
-      if (changeType.equals(WordAttribute.CONTENT_NAME))
+      if (conflict.isWordAttribute())
          return getWizard().getPage(EditWFCAttributeWizardPage.TITLE);
       else
          return getWizard().getPage(EditAttributeWizardPage.TITLE);
@@ -203,20 +206,20 @@ public class ConflictResolutionWizardPage extends WizardPage {
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       if (visible == true) {
-         if (changeType.equals(WordAttribute.CONTENT_NAME)) {
-            //Create a thread for this so it doesn't kill the rest of the app.
-            Display.getDefault().asyncExec(new Runnable() {
-               public void run() {
+         if (conflict.isWordAttribute()) {
+            Job job = new Job("") {
+               public IStatus run(IProgressMonitor mon) {
                   try {
                      MergeUtility.showSourceCompareFile(conflict);
                      MergeUtility.showDestCompareFile(conflict);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
+                  return Status.OK_STATUS;
                }
-            });
+            };
+            Jobs.startJob(job);
          }
       }
    }
-
 }
