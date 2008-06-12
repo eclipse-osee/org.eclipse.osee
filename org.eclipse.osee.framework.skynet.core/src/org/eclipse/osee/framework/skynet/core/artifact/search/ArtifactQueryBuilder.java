@@ -192,7 +192,7 @@ public class ArtifactQueryBuilder {
             sql.append("=? AND ");
             addParameter(SQL3DataType.INTEGER, artifactTypes.iterator().next().getArtTypeId());
          } else {
-            sql.append("IN (");
+            sql.append(" IN (");
             for (ArtifactType artifactType : artifactTypes) {
                sql.append(artifactType.getArtTypeId());
                sql.append(",");
