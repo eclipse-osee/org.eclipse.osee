@@ -48,7 +48,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.TeamWorkflowToReview_Team);
       decisionOptions = new XDecisionOptions(this);
    }
 
@@ -98,16 +97,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
          }
       }
       return users;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.artifact.StateMachineArtifact#isTaskable()
-    */
-   @Override
-   public boolean isTaskable() {
-      return false;
    }
 
    @Override

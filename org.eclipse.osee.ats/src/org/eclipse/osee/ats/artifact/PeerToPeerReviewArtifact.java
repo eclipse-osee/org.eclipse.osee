@@ -51,7 +51,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     */
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.TeamWorkflowToReview_Team);
       defectManager = new DefectManager(this);
    }
 
@@ -105,16 +104,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
          }
       }
       return users;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.artifact.StateMachineArtifact#isTaskable()
-    */
-   @Override
-   public boolean isTaskable() {
-      return false;
    }
 
    @Override

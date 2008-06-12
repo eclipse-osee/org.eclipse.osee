@@ -57,7 +57,6 @@ import org.eclipse.swt.graphics.Image;
 public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public static String ARTIFACT_NAME = "Action";
-
    private XActionableItemsDam actionableItemsDam;
 
    /**

@@ -18,10 +18,7 @@ import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.ActionDebug;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
@@ -122,17 +119,14 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof Collection) return true;
       if (element instanceof String) return false;
       if (((WorldArtifactItem) element).getArtifact() == null) return false;
-      if (((WorldArtifactItem) element).getArtifact() instanceof TaskArtifact) return false;
-      if (((WorldArtifactItem) element).getArtifact() instanceof DecisionReviewArtifact) return false;
-      if (((WorldArtifactItem) element).getArtifact() instanceof PeerToPeerReviewArtifact) return false;
-      if (((WorldArtifactItem) element).getArtifact() instanceof TeamWorkFlowArtifact) {
+      if (((WorldArtifactItem) element).getArtifact().isDeleted()) return false;
+      if (((WorldArtifactItem) element).getArtifact() instanceof StateMachineArtifact) {
          try {
-            return ((WorldArtifactItem) element).getChildren().length > 0;
+            return ((StateMachineArtifact) ((WorldArtifactItem) element).getArtifact()).hasChildren();
          } catch (Exception ex) {
-            return false;
+            // do nothing
          }
       }
-      if (((WorldArtifactItem) element).getArtifact().isDeleted()) return false;
       return true;
    }
 

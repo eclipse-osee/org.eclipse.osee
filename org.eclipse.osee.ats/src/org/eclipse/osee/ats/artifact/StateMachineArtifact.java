@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -93,6 +94,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       else
          preSaveOriginator = smaMgr.getOriginator();
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+   }
+
+   public boolean hasChildren() throws OseeCoreException {
+      for (IRelationEnumeration iRelationEnumeration : smaRelations) {
+         if (getRelatedArtifactsCount(iRelationEnumeration) > 0) return true;
+      }
+      return false;
    }
 
    public String getHelpContext() {

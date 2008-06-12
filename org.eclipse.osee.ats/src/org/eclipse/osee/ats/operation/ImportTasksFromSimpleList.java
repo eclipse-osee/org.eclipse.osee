@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -45,7 +46,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public static String TASK_IMPORT_TITLES = "Task Import Titles";
    public static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    public static String PERSIST = "Persist";
-   private TeamWorkFlowArtifact defaultTeamWorkflowArtifact;
+   private TaskableStateMachineArtifact taskableStateMachineArtifact;
 
    public ImportTasksFromSimpleList() throws IOException {
    }
@@ -132,9 +133,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws Exception {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflowArtifact != null) {
+      if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
-         viewer.setInput(Arrays.asList(defaultTeamWorkflowArtifact));
+         viewer.setInput(Arrays.asList(taskableStateMachineArtifact));
       }
    }
 
@@ -161,17 +162,17 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    /**
-    * @return the defaultTeamWorkflowArtifact
+    * @return the TaskableStateMachineArtifact
     */
-   public TeamWorkFlowArtifact getDefaultTeamWorkflowArtifact() {
-      return defaultTeamWorkflowArtifact;
+   public TaskableStateMachineArtifact getTaskableStateMachineArtifact() {
+      return taskableStateMachineArtifact;
    }
 
    /**
     * @param defaultTeamWorkflowArtifact the defaultTeamWorkflowArtifact to set
     */
-   public void setDefaultTeamWorkflowArtifact(TeamWorkFlowArtifact defaultTeamWorkflowArtifact) {
-      this.defaultTeamWorkflowArtifact = defaultTeamWorkflowArtifact;
+   public void setTaskableStateMachineArtifact(TaskableStateMachineArtifact taskableStateMachineArtifact) {
+      this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 
 }

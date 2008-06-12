@@ -45,14 +45,13 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorldViewArtifact, IBranchArtifact, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implements IWorldViewArtifact, IBranchArtifact, IATSStateMachineArtifact {
 
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
@@ -71,14 +70,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     */
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.SmaToTask_Task);
       registerSMARelation(AtsRelation.TeamWorkflowToReview_Review);
-      registerSMARelation(AtsRelation.TeamWorkflowTargetedForVersion_Version);
-   }
-
-   @Override
-   public boolean showTaskTab() {
-      return (isTaskable() || smaMgr.isCompleted());
    }
 
    /*
@@ -240,8 +232,6 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       super.atsDelete(deleteArts, allRelated);
-      for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
-         taskArt.atsDelete(deleteArts, allRelated);
       for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews())
          reviewArt.atsDelete(deleteArts, allRelated);
    }
@@ -258,13 +248,6 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          throw new IllegalStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
       } else
          return arts.iterator().next();
-   }
-
-   @Override
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
-      super.transitioned(fromPage, toPage, toAssignees, persist);
-      for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
-         taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
    }
 
    public String getWorldViewVersion() throws Exception {

@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
@@ -435,14 +435,14 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    public void handleImportTasksViaList() throws Exception {
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
-      ((ImportTasksFromSimpleList) blamOperation).setDefaultTeamWorkflowArtifact((TeamWorkFlowArtifact) iXTaskViewer.getParentSmaMgr().getSma());
+      ((ImportTasksFromSimpleList) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
    }
 
    public void handleImportTasksViaSpreadsheet() throws Exception {
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
-      ((ImportTasksFromSpreadsheet) blamOperation).setDefaultTeamWorkflowArtifact((TeamWorkFlowArtifact) iXTaskViewer.getParentSmaMgr().getSma());
+      ((ImportTasksFromSpreadsheet) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
    }
@@ -686,8 +686,7 @@ public class XTaskViewer extends XWidget implements IActionable {
                         if (taskArt.getParentSMA() != null) {
                            taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
                         }
-                        taskArt.addRelation(AtsRelation.SmaToTask_Sma,
-                              iXTaskViewer.getParentSmaMgr().getSma());
+                        taskArt.addRelation(AtsRelation.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
                         taskArt.persistRelations();
                      }
                   }

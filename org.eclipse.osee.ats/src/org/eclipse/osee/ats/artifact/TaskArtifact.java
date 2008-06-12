@@ -57,7 +57,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.SmaToTask_Sma);
    }
 
    /*

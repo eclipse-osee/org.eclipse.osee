@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -127,6 +128,18 @@ public class WorldArtifactItem implements IEventReceiver {
          ArrayList<WorldArtifactItem> wais = new ArrayList<WorldArtifactItem>();
          try {
             addArtsToArtifactItems(this, wais, smaMgr.getReviewManager().getReviews());
+            addArtsToArtifactItems(this, wais, smaMgr.getTaskMgr().getTaskArtifacts());
+         } catch (SQLException ex) {
+            // Don't do anything
+         }
+         return (Object[]) ((ArrayList) wais).toArray(new Object[((ArrayList) wais).size()]);
+      }
+      if (artifact instanceof ReviewSMArtifact) {
+         ReviewSMArtifact twf = (ReviewSMArtifact) artifact;
+         SMAManager smaMgr = new SMAManager(twf);
+         // Convert artifacts to WorldArtifactItems
+         ArrayList<WorldArtifactItem> wais = new ArrayList<WorldArtifactItem>();
+         try {
             addArtsToArtifactItems(this, wais, smaMgr.getTaskMgr().getTaskArtifacts());
          } catch (SQLException ex) {
             // Don't do anything

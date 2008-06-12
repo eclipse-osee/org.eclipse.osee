@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 /**
  * @author Donald G. Dunne
  */
-public abstract class ReviewSMArtifact extends StateMachineArtifact {
+public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
 
    protected DefectManager defectManager;
    protected UserRoleManager userRoleManager;
