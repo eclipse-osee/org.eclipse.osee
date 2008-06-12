@@ -27,6 +27,7 @@ public class ConnectionHandlerStatement {
 
    private ResultSet rset;
    private Statement statement;
+   private int updates = 0;
 
    public ConnectionHandlerStatement() {
       super();
@@ -63,6 +64,14 @@ public class ConnectionHandlerStatement {
     */
    public void setStatement(Statement statement) {
       this.statement = statement;
+   }
+
+   public int getUpdates() {
+      return updates;
+   }
+
+   public void setUpdates(int updates) {
+      this.updates = updates;
    }
 
    public void close() {

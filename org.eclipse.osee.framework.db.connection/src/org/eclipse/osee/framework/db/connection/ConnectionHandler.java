@@ -175,17 +175,21 @@ public final class ConnectionHandler {
       }
    }
 
-   public static void runPreparedUpdate(boolean overrideTransaction, String query, Object... data) throws SQLException {
+   public static int runPreparedUpdate(boolean overrideTransaction, String query, Object... data) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = runPreparedUpdateReturnStmt(overrideTransaction, query, data);
       } finally {
          DbUtil.close(chStmt);
       }
+      if (chStmt != null) {
+         return chStmt.getUpdates();
+      }
+      return 0;
    }
 
-   public static void runPreparedUpdate(String query, Object... data) throws SQLException {
-      runPreparedUpdate(false, query, data);
+   public static int runPreparedUpdate(String query, Object... data) throws SQLException {
+      return runPreparedUpdate(false, query, data);
    }
 
    public static int runPreparedUpdateReturnCount(String query, Object... data) throws SQLException {
@@ -212,7 +216,8 @@ public final class ConnectionHandler {
          populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
-         preparedStatement.executeUpdate();
+         int count = preparedStatement.executeUpdate();
+         chStmt.setUpdates(count);
          record.markEnd();
       } catch (SQLException ex) {
          record.setSqlException(ex);
@@ -437,9 +442,9 @@ public final class ConnectionHandler {
       }
    }
 
-   public static void runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws SQLException {
+   public static int runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws SQLException {
       QueryRecord record = new QueryRecord("<batched> " + query, SQL3DataType.INTEGER, datas.size());
-
+      int returnCount = 0;
       if (datas.size() < 1) {
          throw new IllegalArgumentException(
                "The datas list must have at least one element otherwise no sql statements will be run.");
@@ -458,13 +463,15 @@ public final class ConnectionHandler {
             preparedStatement.clearParameters();
             needExecute = true;
             if (count > 2000) {
-               preparedStatement.executeBatch();
+               int[] updates = preparedStatement.executeBatch();
+               returnCount += processBatchUpdateResults(updates);
                count = 0;
                needExecute = false;
             }
          }
          if (needExecute) {
-            preparedStatement.executeBatch();
+            int[] updates = preparedStatement.executeBatch();
+            returnCount += processBatchUpdateResults(updates);
          }
          record.markEnd();
       } catch (SQLException ex) {
@@ -509,6 +516,7 @@ public final class ConnectionHandler {
             preparedStatement.close();
          }
       }
+      return returnCount;
    }
 
    public static void startTransactionLevel(Object key) throws SQLException {
