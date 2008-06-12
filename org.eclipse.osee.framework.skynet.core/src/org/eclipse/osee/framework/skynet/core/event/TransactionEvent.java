@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.util.CoreDebug;
 
 /**
  * @author Jeff C. Phillips
@@ -34,7 +33,6 @@ public abstract class TransactionEvent extends Event {
 
    private Collection<Event> localEvents;
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private CoreDebug debug = new CoreDebug(false, "TE");
    private boolean processedLookups = false;
    private Set<Integer> modified = new HashSet<Integer>();
    private Set<Integer> deleted = new HashSet<Integer>();
@@ -79,19 +77,15 @@ public abstract class TransactionEvent extends Event {
       if (processedLookups) return;
       processedLookups = true;
       for (Event event : localEvents) {
-         debug.report("   event " + event);
          if (event instanceof ArtifactModifiedEvent) {
             Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
             modified.add(artifact.getArtId());
             if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact.getArtId());
             if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact.getArtId());
-            debug.report("   MATCH FOUND ");
          } else if (event instanceof RelationModifiedEvent) {
-            debug.report("   MATCH FOUND ");
             relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
             relChanged.add(((RelationModifiedEvent) event).getLink().getBArtifactId());
          } else if (event instanceof ArtifactVersionIncrementedEvent) {
-            debug.report("   MATCH FOUND ");
             artifactVersionIncrementedEvent.put(((ArtifactVersionIncrementedEvent) event).getOldVersion(),
                   ((ArtifactVersionIncrementedEvent) event));
             artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getOldVersion().getArtId());
