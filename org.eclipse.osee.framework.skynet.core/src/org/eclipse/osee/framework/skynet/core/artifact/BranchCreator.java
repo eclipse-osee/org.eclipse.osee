@@ -516,7 +516,7 @@ public class BranchCreator implements PersistenceManager {
                   sourceBranch.getBranchId()});
          }
          try {
-            ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
+            ArtifactLoader.selectArtifacts(datas);
             String attributeGammas =
                   "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_define_attribute atr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
             String artifactVersionGammas =
