@@ -1044,24 +1044,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Remove artifact from a specific branch in the database
+    * Remove the artifact and all of it's children from the branch it is on and any child branches.
     * 
     * @throws SQLException
     */
-   public void purgeFromBranch() throws Exception {
-      ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
-   }
-
-   /**
-    * Remove artifact from the database
-    * 
-    * @throws SQLException
-    */
-   public void purge() throws SQLException {
-      if (true) {
-         throw new UnsupportedOperationException("Purge has been disabled until further notice.");
+   public void purge() throws OseeCoreException {
+      try {
+         List<Artifact> artifacts = getDescendants();
+         artifacts.add(this);
+         ArtifactPersistenceManager.purgeArtifacts(artifacts);
+      } catch (SQLException ex) {
+         throw new OseeCoreException(ex);
       }
-      ArtifactPersistenceManager.purgeArtifact(this);
    }
 
    public boolean isDeleted() {
