@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -54,8 +55,11 @@ public class BaseTagger extends Tagger {
 
       for (Attribute<?> attribute : artifact.getAttributes()) {
          String attributeTypeName = attribute.getAttributeType().getName();
+         attributeTypeName = AttributeTypeManager.getTypeWithWordContentCheck(artifact, attributeTypeName).getName();
+
          if (!ignoreAttributeNames.contains(attributeTypeName)) {
-            if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+            if (attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                  WordAttribute.CONTENT_NAME).getName())) {
                textString.add(WordUtil.textOnly(attribute.toString()));
             } else {
                textString.add(attribute.toString());

@@ -40,18 +40,6 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeToDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (!Strings.isValid(defaultValue)) {
-         defaultValue = "0.0";
-      }
-      getAttributeDataProvider().setValue(defaultValue);
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
     */
    @Override

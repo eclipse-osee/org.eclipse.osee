@@ -26,8 +26,10 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -71,11 +73,22 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+
+      try {
+         artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+               WordAttribute.CONTENT_NAME).getName());
+      } catch (AttributeDoesNotExist ex) {
+         artifact.createAttribute(
+               AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME), true);
+      }
+
       InputStream stream =
             Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
 
       if (artifact != null) {
-         String content = artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
+         String content =
+               artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                     WordAttribute.CONTENT_NAME).getName());
          String myGuid = artifact.getGuid();
          content = WordUtil.addGUIDToDocument(myGuid, content);
          stream = Streams.convertStringToInputStream(content, "UTF-8");
@@ -145,7 +158,7 @@ public class WholeDocumentRenderer extends FileRenderer {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =

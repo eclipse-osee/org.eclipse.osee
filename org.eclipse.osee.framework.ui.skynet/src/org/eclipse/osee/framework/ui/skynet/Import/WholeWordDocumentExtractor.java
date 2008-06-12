@@ -39,7 +39,7 @@ public class WholeWordDocumentExtractor extends WordExtractor {
       RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.removeExtension(importFile.getName()));
       roughArtifact.setPrimaryDescriptor(primaryDescriptor);
       addRoughArtifact(roughArtifact);
-      roughArtifact.addFileAttribute(WordAttribute.CONTENT_NAME, importFile);
+      roughArtifact.addFileAttribute(WordAttribute.WHOLE_WORD_CONTENT, importFile);
    }
 
    /* (non-Javadoc)

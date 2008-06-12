@@ -37,16 +37,16 @@ public class WordWholeDocumentAttribute extends WordAttribute {
       return emptyDocumentContent;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeToDefaultValue() {
-      String value = getAttributeType().getDefaultValue();
-      if (value == null || value.matches("")) {
-         value = emptyDocumentContent;
-      }
-      subClassSetValue(value);
-   }
+   //   /* (non-Javadoc)
+   //    * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
+   //    */
+   //   @Override
+   //   public void initializeToDefaultValue() {
+   //      String value = getAttributeType().getDefaultValue();
+   //      if (value == null || value.matches("")) {
+   //         value = emptyDocumentContent;
+   //      }
+   //      subClassSetValue(value);
+   //   }
 
 }

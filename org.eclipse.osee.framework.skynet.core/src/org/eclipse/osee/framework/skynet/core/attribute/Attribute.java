@@ -55,7 +55,7 @@ public abstract class Attribute<T> {
 
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
-   public void initializeToDefaultValue() throws OseeCoreException {
+   public final void initializeToDefaultValue() throws OseeCoreException {
       subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
       dirty = true;
    }

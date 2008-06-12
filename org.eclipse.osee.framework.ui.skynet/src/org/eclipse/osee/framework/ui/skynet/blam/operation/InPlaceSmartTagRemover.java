@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -45,7 +46,9 @@ public class InPlaceSmartTagRemover extends AbstractBlam {
       for (Artifact artifactTemp : artifacts) {
          Artifact artifact = artifactManager.getArtifactFromId(artifactTemp.getArtId(), transactionId);
 
-         Collection<Attribute<String>> attributes = artifact.getAttributes(WordAttribute.CONTENT_NAME);
+         Collection<Attribute<String>> attributes =
+               artifact.getAttributes(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                     WordAttribute.CONTENT_NAME).getName());
          for (Attribute<String> attribute : attributes) {
             String currentValue = attribute.getValue();
             String cleanValue = WordUtil.removeWordMarkupSmartTags(currentValue);

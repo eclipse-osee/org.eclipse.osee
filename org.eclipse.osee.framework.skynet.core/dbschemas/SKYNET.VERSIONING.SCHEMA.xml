@@ -129,7 +129,7 @@
 		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
-		<Column id="DEFAULT_VALUE" limits="500" type="VARCHAR" />
+		<Column id="DEFAULT_VALUE" limits="2000" type="VARCHAR" />
 		<Column id="VALIDITY_XML" limits="4000" type="VARCHAR" />
 		<Column id="MIN_OCCURENCE" defaultValue="not null" type="INTEGER" />
 		<Column id="MAX_OCCURENCE" defaultValue="not null" type="INTEGER" />

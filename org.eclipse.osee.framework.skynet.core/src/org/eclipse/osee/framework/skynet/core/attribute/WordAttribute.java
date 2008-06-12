@@ -16,8 +16,10 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class WordAttribute extends StringAttribute {
+public class WordAttribute extends StringAttribute {
    public static final String CONTENT_NAME = "Word Formatted Content";
+   public static final String WORD_TEMPLATE_CONTENT = "Word Template Content";
+   public static final String WHOLE_WORD_CONTENT = "Whole Word Content";
    public static final String OLE_DATA_NAME = "Word Ole Data";
 
    /**

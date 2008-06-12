@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -75,7 +76,8 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       for (String name : possibleTemplateNames) {
          Artifact template = templateMap.get(name);
          if (template != null) {
-            return template.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
+            return template.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(template,
+                  WordAttribute.CONTENT_NAME).getName());
          }
       }
       throw new IllegalStateException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",

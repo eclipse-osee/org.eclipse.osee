@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
@@ -145,11 +146,17 @@ public class HtmlReportJob extends Job {
          try {
             for (AttributeType attributeType : artifact.getAttributeTypes()) {
                String attributeTypeName = attributeType.getName();
+
+               attributeTypeName =
+                     AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME).getName();
+
                if (onlyAttributeNames == null || onlyAttributeNames.contains(attributeTypeName)) {
                   for (String attributeValue : artifact.getAttributesToStringList(attributeTypeName)) {
-                     if (!attributeTypeName.equals("Name") && !attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+                     if (!attributeTypeName.equals("Name") && !attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(
+                           artifact, WordAttribute.CONTENT_NAME).getName())) {
                         sb.append(AHTML.addRowMultiColumnTable(new String[] {attributeTypeName, attributeValue}));
-                     } else if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+                     } else if (attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                           WordAttribute.CONTENT_NAME).getName())) {
                         try {
                            ByteArrayInputStream wordMl =
                                  new ByteArrayInputStream(("<body>" + attributeValue + "</body>").getBytes("UTF-8"));

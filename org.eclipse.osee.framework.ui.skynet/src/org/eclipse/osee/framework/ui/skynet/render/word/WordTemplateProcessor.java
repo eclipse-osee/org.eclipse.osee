@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
@@ -525,6 +526,8 @@ public class WordTemplateProcessor {
          return;
       }
 
+      attributeTypeName = AttributeTypeManager.getTypeWithWordContentCheck(artifact, attributeTypeName).getName();
+
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeTypeName);
 
       if (!attributes.isEmpty()) {
@@ -536,7 +539,8 @@ public class WordTemplateProcessor {
             return;
          }
 
-         if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+         if (attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+               WordAttribute.CONTENT_NAME).getName())) {
             if (attributeElement.label.length() > 0) {
                wordMl.addParagraph(attributeElement.label);
             }

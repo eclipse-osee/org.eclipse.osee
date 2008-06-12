@@ -10,7 +10,7 @@
   <LastAuthor>b1565043</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2007-04-18T01:06:09Z</LastSaved>
+  <LastSaved>2008-06-11T22:38:15Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -18,10 +18,10 @@
   <DoNotRelyOnCSS/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>15375</WindowHeight>
-  <WindowWidth>22455</WindowWidth>
-  <WindowTopX>7155</WindowTopX>
-  <WindowTopY>-150</WindowTopY>
+  <WindowHeight>1065</WindowHeight>
+  <WindowWidth>1980</WindowWidth>
+  <WindowTopX>300</WindowTopX>
+  <WindowTopY>0</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -67,7 +67,7 @@
     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
    </Borders>
    <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat/>
+   <NumberFormat ss:Format="Short Date"/>
   </Style>
   <Style ss:ID="s28">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
@@ -76,7 +76,7 @@
     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
    </Borders>
    <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat ss:Format="Short Date"/>
+   <NumberFormat/>
   </Style>
   <Style ss:ID="s29">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom" ss:WrapText="1"/>
@@ -194,7 +194,7 @@
   <Style ss:ID="s43">
    <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
   </Style>
-  <Style ss:ID="s46">
+  <Style ss:ID="s45">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat ss:Format="@"/>
@@ -202,10 +202,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R58C1:R61C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R61C1:R64C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="66" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="69" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="359.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300.75"/>
@@ -228,22 +228,22 @@
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s26"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:StyleID="s28"/>
+    <Cell ss:StyleID="s27"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.blam.BlamFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Blam Workflow</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Blam Workflow</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Document</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Document</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Folder</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Folder</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -251,18 +251,18 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.NativeArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">General Document</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">NativeArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">General Document</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">NativeArtifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s30"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Heading</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Heading</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Root Artifact</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Root Artifact</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -270,8 +270,8 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Support Document</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Support Document</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -279,8 +279,8 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Universal Group</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Universal Group</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -288,8 +288,8 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Url</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">FileArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Url</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">FileArtifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -321,8 +321,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="11.25">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Name</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Name</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"><Data ss:Type="String">unnamed</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">&lt;not&gt;null&lt;/not&gt;</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -333,8 +333,8 @@
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Content URL</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Content URL</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -345,8 +345,8 @@
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Description</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Description</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
@@ -357,10 +357,10 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BlobWordAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Word Formatted Content</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">xml</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Word Formatted Content</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:StyleID="s37"/>
-    <Cell ss:Index="7" ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="7" ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
     <Cell ss:StyleID="s38"/>
@@ -368,8 +368,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Page Type</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Page Type</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Portrait</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">&lt;Page_Type&gt;&lt;Enum&gt;Portrait&lt;/Enum&gt;&lt;Enum&gt;Landscape&lt;/Enum&gt;&lt;/Page_Type&gt;</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
@@ -380,8 +380,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BlobWordAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Word Ole Data</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">xml</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Word Ole Data</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:StyleID="s37"/>
     <Cell ss:Index="7" ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -391,8 +391,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Workflow Definition</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">vue</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Workflow Definition</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">vue</Data></Cell>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
@@ -403,8 +403,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Extension</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Extension</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -415,8 +415,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Annotation</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Annotation</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
@@ -427,8 +427,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Static Id</Data></Cell>
-    <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Static Id</Data></Cell>
+    <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
@@ -439,8 +439,8 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.JavaObjectAttribute</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Template Map</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">class</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Template Map</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">class</Data></Cell>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -460,7 +460,26 @@
     <Cell ss:StyleID="s40"><Data ss:Type="String">content that will be editing by a native program</Data></Cell>
     <Cell ss:StyleID="s40"/>
    </Row>
-   <Row ss:AutoFitHeight="0"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.Artifact.WordAttribute</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">Word Template Content</Data></Cell>
+    <Cell><Data ss:Type="String">xml</Data></Cell>
+    <Cell><Data ss:Type="String">&lt;w:p xmlns:w=&quot;http://schemas.microsoft.com/office/word/2003/wordml&quot;&gt;&lt;w:r&gt;&lt;w:t&gt;&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:p&gt;</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.Artifact.WordAttribute</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">Whole Word Content</Data></Cell>
+    <Cell><Data ss:Type="String">xml</Data></Cell>
+    <Cell><Data ss:Type="String">&lt;?xml version='1.0' encoding='UTF-8' standalone='yes'?&gt;&lt;?mso-application progid='Word.Document'?&gt;&lt;w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'&gt;&lt;w:body&gt;&lt;/w:body&gt;&lt;/w:wordDocument&gt;</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0">
@@ -477,43 +496,51 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s42"><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Static Id</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Static Id</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Document</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Template Map</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Document</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Template Map</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">FileArtifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Content URL</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">FileArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Content URL</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Universal Group</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Description</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Universal Group</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Description</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Url</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Description</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Url</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Description</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Word Ole Data</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Word Ole Data</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Page Type</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Page Type</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Word Formatted Content</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell><Data ss:Type="String">Word Template Content</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Blam Workflow</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Workflow Definition</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell><Data ss:Type="String">Whole Word Content</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Word Formatted Content</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Blam Workflow</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Workflow Definition</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s27"><Data ss:Type="String">NativeArtifact</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Extension</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">NativeArtifact</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Extension</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="14.25">
     <Cell ss:StyleID="s42"><Data ss:Type="String">NativeArtifact</Data></Cell>
@@ -561,14 +588,14 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">Universal Grouping</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">group</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">contains</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">members</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">group</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">contains</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">members</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">belong to</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Group</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="56" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="59" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s43"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -596,7 +623,7 @@
     <Cell ss:Index="7" ss:StyleID="Default"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data><NamedCell
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Default Hierarchical</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -608,7 +635,7 @@
     <Cell ss:StyleID="Default"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data><NamedCell
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Dependency</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -618,26 +645,26 @@
       ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Supporting Info</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Universal Group</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Universal Group</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Universal Grouping</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Universal Grouping</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s46"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
+    <Cell ss:StyleID="s45"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
@@ -651,11 +678,13 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
+   <TopRowVisible>12</TopRowVisible>
+   <LeftColumnVisible>2</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>60</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>29</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

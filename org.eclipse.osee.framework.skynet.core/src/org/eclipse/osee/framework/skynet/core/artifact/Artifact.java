@@ -46,8 +46,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordTemplateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -417,20 +415,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
 
+         attributeType = AttributeTypeManager.getTypeWithWordContentCheck(this, attributeType.getName());
+
          Object[] params = new Object[] {attributeType, this};
          Class<? extends Attribute<T>> attributeClass =
                (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
-
-         //TODO: JPhillips - This should be removed when the blob attribute conversion is complete
-         if (this instanceof WordArtifact && attributeType.getName().equals("Word Formatted Content")) {
-            WordArtifact wordArtifact = (WordArtifact) this;
-
-            if (wordArtifact.isWholeWordArtifact()) {
-               attributeClass = (Class<? extends Attribute<T>>) WordWholeDocumentAttribute.class;
-            } else {
-               attributeClass = (Class<? extends Attribute<T>>) WordTemplateAttribute.class;
-            }
-         }
 
          Constructor<? extends Attribute<T>> attributeConstructor =
                attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class});
@@ -1044,18 +1033,24 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Remove the artifact and all of it's children from the branch it is on and any child branches.
+    * Remove artifact from a specific branch in the database
     * 
     * @throws SQLException
     */
-   public void purge() throws OseeCoreException {
-      try {
-         List<Artifact> artifacts = getDescendants();
-         artifacts.add(this);
-         ArtifactPersistenceManager.purgeArtifacts(artifacts);
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
+   public void purgeFromBranch() throws Exception {
+      ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
+   }
+
+   /**
+    * Remove artifact from the database
+    * 
+    * @throws SQLException
+    */
+   public void purge() throws SQLException {
+      if (true) {
+         throw new UnsupportedOperationException("Purge has been disabled until further notice.");
       }
+      ArtifactPersistenceManager.purgeArtifact(this);
    }
 
    public boolean isDeleted() {

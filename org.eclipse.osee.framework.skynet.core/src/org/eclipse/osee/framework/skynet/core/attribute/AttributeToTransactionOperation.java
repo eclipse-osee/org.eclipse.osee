@@ -67,8 +67,8 @@ public class AttributeToTransactionOperation {
             if (attribute.isDeleted()) {
                deleteAttribute(attribute, transaction, artifact);
             } else {
-               addAttributeData(artifact, attribute, transaction);
-            }
+            addAttributeData(artifact, attribute, transaction);
+      }
          }
       }
    }
@@ -224,6 +224,8 @@ public class AttributeToTransactionOperation {
    public static void initializeAttribute(Artifact artifact, int atttributeTypeId, String value, String uri, int attributeId, int gamma_id) {
       try {
          AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
+         attributeType = AttributeTypeManager.getTypeWithWordContentCheck(artifact, attributeType.getName());
+
          Attribute<?> attribute = artifact.createAttribute(attributeType, false);
          attribute.getAttributeDataProvider().loadData(value, uri);
          attribute.setIds(attributeId, gamma_id);

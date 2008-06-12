@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -62,7 +64,8 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
 
             if (url != null) {
                templateArtifact.setSoleAttributeValue("Name", name);
-               templateArtifact.setSoleAttributeFromStream("Word Formatted Content", url.openStream());
+               templateArtifact.setSoleAttributeFromStream(AttributeTypeManager.getTypeWithWordContentCheck(
+                     templateArtifact, WordAttribute.CONTENT_NAME).getName(), url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");
                   templateArtifact.addAttribute("Template Match Criteria", match);

@@ -42,7 +42,9 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -221,7 +223,7 @@ public class WordRenderer extends FileRenderer {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
@@ -414,6 +416,16 @@ public class WordRenderer extends FileRenderer {
          boolean isSingleEdit = artifacts.size() == 1;
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType, option);
+
+         for (Artifact artifact : artifacts) {
+            try {
+               artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                     WordAttribute.CONTENT_NAME).getName());
+            } catch (AttributeDoesNotExist ex) {
+               artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                     WordAttribute.CONTENT_NAME), true);
+            }
+         }
 
          if (isSingleEdit) {
             if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {

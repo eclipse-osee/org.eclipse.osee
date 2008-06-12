@@ -26,7 +26,9 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 /**
@@ -149,7 +151,20 @@ public class AttributeTypeManager {
 
          throw new IllegalArgumentException("Attribute type: " + attrTypeId + " is not available.");
       }
+
       return attributeType;
+   }
+
+   //TODO
+   public static AttributeType getTypeWithWordContentCheck(Artifact artifact, String attributeTypeName) throws SQLException {
+      if (attributeTypeName.equals(WordAttribute.CONTENT_NAME) && artifact instanceof WordArtifact) {
+         if (((WordArtifact) artifact).isWholeWordArtifact()) {
+            attributeTypeName = WordAttribute.WHOLE_WORD_CONTENT;
+         } else {
+            attributeTypeName = WordAttribute.WORD_TEMPLATE_CONTENT;
+         }
+      }
+      return getType(attributeTypeName);
    }
 
    /**

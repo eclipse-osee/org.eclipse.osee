@@ -125,7 +125,7 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void updateWholeDocumentArtifact(Artifact artifact) throws MultipleAttributesExist, FileNotFoundException, OseeCoreException, SQLException {
-      artifact.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, new FileInputStream(workingFile));
+      artifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, new FileInputStream(workingFile));
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));
    }
@@ -133,7 +133,8 @@ public class UpdateArtifactJob extends UpdateJob {
    @SuppressWarnings( {"unchecked", "serial"})
    private Collection<Element> getArtifacts(File wordFile) throws ParserConfigurationException, SAXException, IOException {
       final Collection<Element> artifacts = new LinkedList<Element>();
-      final String elementNameForWordAttribute = WordTemplateProcessor.elementNameFor(WordAttribute.CONTENT_NAME);
+      final String elementNameForWordAttribute =
+            WordTemplateProcessor.elementNameFor(WordAttribute.WORD_TEMPLATE_CONTENT);
 
       Document doc = Jaxp.readXmlDocument(wordFile);
       Element rootElement = doc.getDocumentElement();
@@ -223,9 +224,9 @@ public class UpdateArtifactJob extends UpdateJob {
                //Only update if editing a single artifact or if in multi-edit mode only update if
                //the artifact has at least on textual change.
                if (singleArtifact || !WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
+                     artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
                      WordUtil.textOnly(content))) {
-                  artifact.setSoleAttributeValue(WordAttribute.CONTENT_NAME, content);
+                  artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
                }
                if (artifact.isDirty()) {
                   artifact.persistAttributes();

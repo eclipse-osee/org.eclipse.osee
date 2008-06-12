@@ -83,7 +83,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
 
    public void setContent() {
       if (roughArtifact != null) {
-         roughArtifact.addAttribute(WordAttribute.CONTENT_NAME, wordFormattedContent.toString());
+         roughArtifact.addAttribute(WordAttribute.WORD_TEMPLATE_CONTENT, wordFormattedContent.toString());
          wordFormattedContent.setLength(0);
       }
    }
