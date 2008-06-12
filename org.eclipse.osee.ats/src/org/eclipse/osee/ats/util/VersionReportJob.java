@@ -130,7 +130,7 @@ public class VersionReportJob extends Job {
 
    public static String getReleasedString(VersionArtifact verArt) throws IllegalStateException, SQLException, AttributeDoesNotExist, MultipleAttributesExist {
       String released = "";
-      if (verArt.getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName()) != null) {
+      if (verArt.getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null) != null) {
          released =
                " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(
                      ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null, Date.class));
