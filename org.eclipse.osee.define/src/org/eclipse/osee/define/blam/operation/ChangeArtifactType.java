@@ -43,7 +43,8 @@ public class ChangeArtifactType extends AbstractBlam {
 
    @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      processChange(variableMap.getArtifacts("artifact"), variableMap.getArtifactSubtypeDescriptor("New Artifact Type"));
+      processChange(variableMap.getArtifacts("artifacts"),
+            variableMap.getArtifactSubtypeDescriptor("New Artifact Type"));
    }
 
    /**
@@ -178,6 +179,6 @@ public class ChangeArtifactType extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 }
