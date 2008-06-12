@@ -41,7 +41,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          return branches;
       } catch (Exception ex) {
-         OSEELog.logException(TeamBasedDefaultBranchProvider.class, ex, true);
+         OSEELog.logWarning(TeamBasedDefaultBranchProvider.class, ex, false);
       }
 
       return null;
