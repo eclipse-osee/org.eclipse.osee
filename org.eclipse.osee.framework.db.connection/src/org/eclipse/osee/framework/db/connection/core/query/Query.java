@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core.query;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
@@ -78,12 +77,11 @@ public class Query {
    /**
     * Burns exactly one value from a database sequence and returns the value.
     * 
-    * @param connection The connection to use for performing the query.
     * @param sequence The name of the sequence to burn the value from.
     * @return The next value that was available from the sequence.
     * @throws SQLException See {@link Statement#executeQuery(java.lang.String)}
     */
-   public static int getNextSeqVal(Connection connection, String sequence) throws SQLException {
+   public static int getNextSeqVal(String sequence) throws SQLException {
       return (int) OseeSequenceManager.getInstance().getNextSequence(sequence);
    }
 

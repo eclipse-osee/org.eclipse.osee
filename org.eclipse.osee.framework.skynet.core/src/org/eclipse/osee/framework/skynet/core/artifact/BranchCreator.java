@@ -154,7 +154,7 @@ public class BranchCreator implements PersistenceManager {
                   associatedArtifact, branchType);
 
       // insert the new transaction data first.
-      int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
                   "time", "author", "tx_type");
@@ -222,7 +222,7 @@ public class BranchCreator implements PersistenceManager {
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
       List<Object[]> txAddressData = new LinkedList<Object[]>();
       for (Integer parentTransactionNumber : transactions) {
-         int nextTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+         int nextTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
          ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAILS_FOR_HISTORY, SQL3DataType.INTEGER,
                newBranch.getBranchId(), SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
@@ -397,7 +397,7 @@ public class BranchCreator implements PersistenceManager {
          DbUtil.close(chStmt);
       }
 
-      int branchId = Query.getNextSeqVal(null, BRANCH_ID_SEQ);
+      int branchId = Query.getNextSeqVal(BRANCH_ID_SEQ);
       int parentBranchNumber =
             parentBranchId == null ? Branch.NULL_PARENT_BRANCH_ID : parentBranchId.getBranch().getBranchId();
       int associatedArtifactId = -1;

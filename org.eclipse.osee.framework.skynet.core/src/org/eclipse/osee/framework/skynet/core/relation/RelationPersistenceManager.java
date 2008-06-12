@@ -146,7 +146,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             bArtifact.persistAttributes();
          }
 
-         int relationId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
+         int relationId = Query.getNextSeqVal(SkynetDatabase.REL_LINK_ID_SEQ);
          link.setPersistenceIds(relationId, gammaId);
          modType = ModType.Added;
          modId = ModificationType.NEW;

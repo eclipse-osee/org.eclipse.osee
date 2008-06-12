@@ -494,7 +494,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
-      int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = "Commit Branch " + childBranch.getBranchName();
@@ -516,7 +516,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
-      int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
       ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER,
             TransactionDetailsType.NonBaselined.getId(), SQL3DataType.INTEGER, toBranch.getBranchId(),

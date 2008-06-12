@@ -82,9 +82,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
       TagDescriptor tagDescriptor = null;
 
       try {
-         tagDescriptor =
-               new TagDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
-                     SkynetDatabase.TAG_TYPE_ID_SEQ));
+         tagDescriptor = new TagDescriptor(descriptorName, Query.getNextSeqVal(SkynetDatabase.TAG_TYPE_ID_SEQ));
          ConnectionHandler.runPreparedUpdate(true, INSERT_TAG_TYPE, SQL3DataType.VARCHAR, tagDescriptor.getName(),
                SQL3DataType.INTEGER, tagDescriptor.getTagTypeId());
 

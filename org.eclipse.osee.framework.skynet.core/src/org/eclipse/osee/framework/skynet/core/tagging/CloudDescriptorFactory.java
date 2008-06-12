@@ -82,9 +82,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
       CloudDescriptor cloudDescriptor = null;
 
       try {
-         cloudDescriptor =
-               new CloudDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
-                     SkynetDatabase.CLOUD_TYPE_ID_SEQ));
+         cloudDescriptor = new CloudDescriptor(descriptorName, Query.getNextSeqVal(SkynetDatabase.CLOUD_TYPE_ID_SEQ));
          ConnectionHandler.runPreparedQuery(INSERT_CLOUD_TYPE, SQL3DataType.VARCHAR, cloudDescriptor.getName(),
                SQL3DataType.INTEGER, cloudDescriptor.getCloudTypeId());
 

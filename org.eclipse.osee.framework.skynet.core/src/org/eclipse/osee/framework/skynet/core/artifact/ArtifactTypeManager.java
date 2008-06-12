@@ -239,7 +239,7 @@ public class ArtifactTypeManager {
    public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException, IllegalStateException, OseeDataStoreException {
       ArtifactType artifactType;
       if (!typeExists(namespace, artifactTypeName)) {
-         int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
+         int artTypeId = Query.getNextSeqVal(SkynetDatabase.ART_TYPE_ID_SEQ);
          InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
          ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 

@@ -152,7 +152,7 @@ public class AttributeToTransactionOperation {
       }
       int gammaId = SkynetDatabase.getNextGammaId();
       if (attrId < 1) {
-         attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
+         attrId = Query.getNextSeqVal(SkynetDatabase.ATTR_ID_SEQ);
       }
       attribute.setIds(attrId, gammaId);
    }

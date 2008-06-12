@@ -54,7 +54,7 @@ class TagFactory {
          if (rset.next()) {
             return rset.getInt("tag_id");
          } else {
-            int tagId = Query.getNextSeqVal(null, TAG_ID_SEQ);
+            int tagId = Query.getNextSeqVal(TAG_ID_SEQ);
             ConnectionHandler.runPreparedUpdate(true, INSERT_TAG, SQL3DataType.VARCHAR, tag.toLowerCase(),
                   SQL3DataType.VARCHAR, tag, SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER,
                   tagDescriptor.getTagTypeId(), SQL3DataType.INTEGER, tagId);

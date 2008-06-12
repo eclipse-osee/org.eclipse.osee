@@ -210,7 +210,7 @@ public class RelationTypeManager {
             "The shortName can not be null or empty");
 
       try {
-         int relationTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
+         int relationTypeId = Query.getNextSeqVal(REL_LINK_TYPE_ID_SEQ);
 
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
                SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR,

@@ -216,7 +216,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       }
 
       monitor.subTask("Transaction " + ++transactionOnBranchCount);
-      currentTransactionId = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+      currentTransactionId = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
       Integer authorId = artifactGuidCache.getId(author);
 
       ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
@@ -253,7 +253,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          if (deleted) {
             logger.log(Level.WARNING, "Initial creation of artifact " + hrid + " was a delete version");
          }
-         currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
+         currentArtifactId = Query.getNextSeqVal(ART_ID_SEQ);
 
          ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
          int artTypeId = artifactType.getArtTypeId();
@@ -262,7 +262,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                SQL3DataType.VARCHAR, hrid, SQL3DataType.INTEGER, artTypeId, SQL3DataType.VARCHAR, guid);
       }
 
-      int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
+      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
       ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
@@ -287,14 +287,14 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (attrId == null) {
          modified = false;
 
-         attrId = Query.getNextSeqVal(null, ATTR_ID_SEQ);
+         attrId = Query.getNextSeqVal(ATTR_ID_SEQ);
          attributeGuidCache.map(attrId, attributeGuid);
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, SQL3DataType.INTEGER, attrId, SQL3DataType.VARCHAR,
                attributeGuid);
       }
 
       int attrTypeId = AttributeTypeManager.getType(attributeTypeName).getAttrTypeId();
-      int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
+      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
       String uriToStore = null;
@@ -338,7 +338,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (relLinkId == null) {
          modified = false;
 
-         relLinkId = Query.getNextSeqVal(null, REL_LINK_ID_SEQ);
+         relLinkId = Query.getNextSeqVal(REL_LINK_ID_SEQ);
          linkGuidCache.map(relLinkId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_GUID, SQL3DataType.INTEGER, relLinkId,
                SQL3DataType.VARCHAR, guid);
@@ -358,7 +358,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                "Link " + guid + " side B guid " + bguid + " could not be resolved to an artId. Link not imported");
          return;
       }
-      int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
+      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
       ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK, SQL3DataType.INTEGER, relLinkId, SQL3DataType.INTEGER,

@@ -186,7 +186,7 @@ public class AttributeTypeManager {
       Class<? extends IAttributeDataProvider> providerAttributeClass =
             extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
 
-      int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
+      int attrTypeId = Query.getNextSeqVal(ATTR_TYPE_ID_SEQ);
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
@@ -213,7 +213,7 @@ public class AttributeTypeManager {
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_provider_type_id");
          } else {
-            attrBaseTypeId = Query.getNextSeqVal(null, ATTR_PROVIDER_TYPE_ID_SEQ);
+            attrBaseTypeId = Query.getNextSeqVal(ATTR_PROVIDER_TYPE_ID_SEQ);
 
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
                   SQL3DataType.VARCHAR, attrProviderExtension);
@@ -234,7 +234,7 @@ public class AttributeTypeManager {
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_base_type_id");
          } else {
-            attrBaseTypeId = Query.getNextSeqVal(null, ATTR_BASE_TYPE_ID_SEQ);
+            attrBaseTypeId = Query.getNextSeqVal(ATTR_BASE_TYPE_ID_SEQ);
 
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
                   SQL3DataType.VARCHAR, attrBaseExtension);

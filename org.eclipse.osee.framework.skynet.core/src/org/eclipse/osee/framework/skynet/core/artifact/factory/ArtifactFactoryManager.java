@@ -140,7 +140,7 @@ public class ArtifactFactoryManager {
          for (String factoryClassName : factoryBundleMap.keySet()) {
             if (!factoryNameMap.containsKey(factoryClassName)) {
 
-               int factoryId = Query.getNextSeqVal(null, FACTORY_ID_SEQ);
+               int factoryId = Query.getNextSeqVal(FACTORY_ID_SEQ);
 
                ConnectionHandler.runPreparedUpdate(
                      "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", SQL3DataType.INTEGER,
