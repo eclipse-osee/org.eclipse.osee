@@ -161,6 +161,11 @@ public abstract class Attribute<T> {
       getAttributeDataProvider().purge();
    }
 
+   public void markAsPurged() {
+      deleted = true;
+      dirty = false;
+   }
+
    /**
     * @return
     */
