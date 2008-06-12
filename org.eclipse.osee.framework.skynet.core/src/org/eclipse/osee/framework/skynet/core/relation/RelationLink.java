@@ -145,7 +145,7 @@ public class RelationLink {
       deleted = true;
    }
 
-   void markAsPurged() {
+   public void markAsPurged() {
       markAsDeleted();
       dirty = false;
    }

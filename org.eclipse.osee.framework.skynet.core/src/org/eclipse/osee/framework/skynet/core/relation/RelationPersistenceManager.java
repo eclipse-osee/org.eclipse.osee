@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransacti
 public class RelationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
    private static final String UPDATE_RELATION_ORDERS =
-         "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
+         "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order=?, b_order=? WHERE gamma_id=?";
    private ArtifactPersistenceManager artifactManager;
 
    // This must be declared here cause it can't be declared in enum RelationSide
