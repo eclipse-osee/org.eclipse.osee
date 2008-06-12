@@ -10,34 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
  */
 public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
 
-   private final Collection<String> artifactTypes;
+   private final String artifactTypeName;
    private final boolean showFinished;
    private final boolean showWorkflow;
 
-   public ShowOpenWorkflowsByArtifactType(String displayName, Collection<String> artifactTypes, boolean showFinished, boolean showWorkflow) {
+   public ShowOpenWorkflowsByArtifactType(String displayName, String artifactTypeName, boolean showFinished, boolean showWorkflow) {
       super(displayName);
-      this.artifactTypes = artifactTypes;
+      this.artifactTypeName = artifactTypeName;
       this.showFinished = showFinished;
       this.showWorkflow = showWorkflow;
    }
@@ -45,40 +43,23 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
 
-      List<ISearchPrimitive> artTypeNameCriteria = new LinkedList<ISearchPrimitive>();
-      for (String artType : artifactTypes)
-         artTypeNameCriteria.add(new ArtifactTypeSearch(artType, DepricatedOperator.EQUAL));
-      FromArtifactsSearch artTypeNameSearch = new FromArtifactsSearch(artTypeNameCriteria, false);
-
-      List<ISearchPrimitive> allReviewCriteria = new LinkedList<ISearchPrimitive>();
-      allReviewCriteria.add(artTypeNameSearch);
+      List<Artifact> artifacts = null;
       if (!showFinished) {
-         allReviewCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
-         allReviewCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
-      }
-      FromArtifactsSearch allReviews = new FromArtifactsSearch(allReviewCriteria, true);
-
-      if (!showWorkflow) {
-         if (isCancelled()) return EMPTY_SET;
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(allReviewCriteria, true,
-                     BranchPersistenceManager.getAtsBranch());
-         if (isCancelled()) return EMPTY_SET;
-         return arts;
+         List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
+         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
+         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
+               Operator.NOT_EQUAL));
+         artifacts = ArtifactQuery.getArtifactsFromTypeAnd(artifactTypeName, AtsPlugin.getAtsBranch(), 500, criteria);
+      } else {
+         artifacts = ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsPlugin.getAtsBranch());
       }
 
-      List<ISearchPrimitive> teamCriteria = new LinkedList<ISearchPrimitive>();
-      teamCriteria.add(new InRelationSearch(allReviews, AtsRelation.TeamWorkflowToReview_Team));
-
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(teamCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      if (showWorkflow) {
+         return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.TeamWorkflowToReview_Team);
+      } else {
+         return artifacts;
+      }
    }
-
 }
