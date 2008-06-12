@@ -75,7 +75,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final String INSERT_NEW_ARTIFACT =
          "INSERT INTO " + ARTIFACT_TABLE + " (art_id, human_readable_id, art_type_id, guid) VALUES (?,?,?,?)";
    private static final String INSERT_RELATION_LINK =
-         "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, a_order_value, b_order_value, rationale, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, a_order, b_order, rationale, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_RELATION_LINK_GUID =
          "INSERT INTO " + RELATION_LINK_TABLE + " (rel_link_id, guid) VALUES (?,?)";
    private static final String INSERT_TX_ADDRESS =

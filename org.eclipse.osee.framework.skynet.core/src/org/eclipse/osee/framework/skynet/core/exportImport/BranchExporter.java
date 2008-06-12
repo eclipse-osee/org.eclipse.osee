@@ -93,7 +93,7 @@ public class BranchExporter {
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE,
                "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_LINKS =
-         "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id", "a_order_value", "b_order_value", "rationale",
+         "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id", "a_order", "b_order", "rationale",
                "modification_id") + "," + RELATION_LINK_TYPE_TABLE.columns("type_name") + "," + ARTIFACT_ALIAS_1.column("guid as a_guid") + "," + ARTIFACT_ALIAS_2.column("guid as b_guid") + "," + TRANSACTION_DETAIL_TABLE.columns(
                "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(RELATION_LINK_VERSION_TABLE,
@@ -828,8 +828,8 @@ public class BranchExporter {
 
       public LinkData process(ResultSet set) throws SQLException {
          return new LinkData(set.getString("type_name"), set.getInt("rel_link_id"), set.getString("a_guid"),
-               set.getString("b_guid"), set.getInt("a_order_value"), set.getInt("b_order_value"),
-               set.getString("rationale"), set.getInt("modification_id") == ModificationType.DELETED.getValue());
+               set.getString("b_guid"), set.getInt("a_order"), set.getInt("b_order"), set.getString("rationale"),
+               set.getInt("modification_id") == ModificationType.DELETED.getValue());
       }
 
       public boolean validate(LinkData item) {
