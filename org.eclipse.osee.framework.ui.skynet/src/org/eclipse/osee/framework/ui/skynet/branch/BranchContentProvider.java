@@ -120,9 +120,8 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       @SuppressWarnings("unchecked")
       public Object[] run(Object parentElement) throws Exception {
          if (parentElement instanceof BranchPersistenceManager) {
-            BranchPersistenceManager branchManager = (BranchPersistenceManager) parentElement;
             try {
-               Collection<Branch> branches = branchManager.refreshBranches();
+               Collection<Branch> branches = BranchPersistenceManager.getBranches();
                if (!showChildBranchesAtMainLevel) {
                   Iterator<Branch> iter = branches.iterator();
                   while (iter.hasNext()) {

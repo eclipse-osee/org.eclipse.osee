@@ -244,36 +244,38 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    @Override
    public void createPartControl(Composite parent) {
+      try {
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
-      PlatformUI.getWorkbench().getService(IHandlerService.class);
-      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+         PlatformUI.getWorkbench().getService(IHandlerService.class);
+         handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-      parent.setLayout(new GridLayout());
-      parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         parent.setLayout(new GridLayout());
+         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      createTableViewer(parent);
-      createColumns();
-      createFilter(parent);
+         createTableViewer(parent);
+         createColumns();
+         createFilter(parent);
 
-      createActions();
+         createActions();
 
-      SkynetContributionItem.addTo(this, true);
+         SkynetContributionItem.addTo(this, true);
+         setHelpContexts();
+         myTreeEditor = new TreeEditor(branchTable.getTree());
+         myTreeEditor.horizontalAlignment = SWT.LEFT;
+         myTreeEditor.grabHorizontal = true;
+         myTreeEditor.minimumWidth = 50;
 
-      forcePopulateView();
+         forcePopulateView();
 
-      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
-      SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
-
-      setHelpContexts();
-      myTreeEditor = new TreeEditor(branchTable.getTree());
-      myTreeEditor.horizontalAlignment = SWT.LEFT;
-      myTreeEditor.grabHorizontal = true;
-      myTreeEditor.minimumWidth = 50;
-
+         SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
+         SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    protected void createActions() {
@@ -282,7 +284,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
          @Override
          public void run() {
-            forcePopulateView();
+            try {
+               forcePopulateView();
+            } catch (SQLException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
          }
       };
       refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
@@ -1583,8 +1589,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       }
    }
 
-   public void forcePopulateView() {
+   public void forcePopulateView() throws SQLException {
       if (branchTable != null && !branchTable.getTree().isDisposed()) {
+         BranchPersistenceManager.refreshBranches();
          branchTable.setInput(BranchPersistenceManager.getInstance());
       }
    }

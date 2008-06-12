@@ -169,8 +169,8 @@ public class BranchPersistenceManager implements PersistenceManager {
       return branches;
    }
 
-   public Collection<Branch> refreshBranches() throws SQLException {
-      ensurePopulatedCache(true);
+   public static Collection<Branch> refreshBranches() throws SQLException {
+      instance.ensurePopulatedCache(true);
       return getBranches();
    }
 
