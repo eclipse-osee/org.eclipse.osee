@@ -5,8 +5,10 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +53,7 @@ public class WorkRuleDefinition extends WorkItemDefinition {
       if (value != null) setData(value);
    }
 
-   public WorkRuleDefinition(Artifact artifact) throws Exception {
+   public WorkRuleDefinition(Artifact artifact) throws OseeCoreException, SQLException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null);
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
@@ -71,7 +73,7 @@ public class WorkRuleDefinition extends WorkItemDefinition {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition#toArtifact()
     */
    @Override
-   public Artifact toArtifact(WriteType writeType) throws Exception {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
       Artifact ruleArt = super.toArtifact(writeType);
       if (get() != null) ruleArt.setSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), get());
       return ruleArt;

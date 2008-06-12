@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 
 /**
@@ -39,7 +40,7 @@ public final class Artifacts {
       return toTextList(artifacts, ", ");
    }
 
-   public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws Exception {
+   public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws OseeCoreException, SQLException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, branch);
       } catch (ArtifactDoesNotExist ex) {

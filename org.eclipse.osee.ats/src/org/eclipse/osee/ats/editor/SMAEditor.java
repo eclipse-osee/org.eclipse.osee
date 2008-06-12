@@ -11,9 +11,8 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -53,8 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
@@ -384,17 +382,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
     */
-   public List<TaskResOptionDefinition> getResOptions() throws Exception {
-      List<WorkItemDefinition> wids =
-            smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
-      if (wids.size() == 0) return Collections.emptyList();
-      if (wids.size() > 1) throw new IllegalArgumentException(
-            "Expected on 1 " + TaskResolutionOptionRule.WORK_TYPE + ", found " + wids.size());
-      WorkItemDefinition workItemDefinition = wids.iterator().next();
-      if (workItemDefinition != null) {
-         return TaskResolutionOptionRule.getOptions((WorkRuleDefinition) workItemDefinition);
-      }
-      return new ArrayList<TaskResOptionDefinition>();
+   public List<TaskResOptionDefinition> getResOptions() throws SQLException, OseeCoreException {
+      return TaskResolutionOptionRule.getTaskResolutionOptions(smaMgr.getWorkPageDefinition());
    }
 
    /*

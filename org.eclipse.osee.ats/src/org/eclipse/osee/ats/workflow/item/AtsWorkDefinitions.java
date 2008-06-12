@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider;
@@ -59,7 +60,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsRequireTargetedVersion
    }
 
-   public static void relatePageToBranchCommitRules(String pageId) throws SQLException {
+   public static void relatePageToBranchCommitRules(String pageId) throws OseeCoreException, SQLException {
       WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCommitBranch.name());
       WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCreateBranch.name());
    }
@@ -126,7 +127,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getDynamicWorkItemDefinitionsForPage()
     */
    @Override
-   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws Exception {
+   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException, SQLException {
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       if (data instanceof SMAManager) {
          SMAManager smaMgr = (SMAManager) data;
@@ -142,7 +143,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    @Override
-   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws Exception {
+   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException, SQLException {
       return new ArrayList<WorkItemDefinition>();
    }
 
@@ -150,7 +151,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getWorkFlowDefinition(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws Exception {
+   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException, SQLException {
       if (artifact instanceof TeamWorkFlowArtifact) {
          // return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TeamWorkflowDefinition.ID);
          return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
@@ -161,46 +162,46 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return null;
    }
 
-   public static boolean isValidatePage(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isValidatePage(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null) return true;
       if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()) != null) return true;
       return false;
    }
 
-   public static boolean isValidateReviewBlocking(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isValidateReviewBlocking(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null);
    }
 
-   public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null);
    }
 
-   public static boolean isRequireTargetedVersion(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isRequireTargetedVersion(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) != null);
    }
 
-   public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()) != null);
    }
 
-   public static boolean isRequireStateHoursSpentPrompt(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isRequireStateHoursSpentPrompt(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireStateHourSpentPrompt.name()) != null);
    }
 
-   public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCreateBranch.name()) != null);
    }
 
-   public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws Exception {
+   public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCommitBranch.name()) != null);
    }
 
-   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws Exception {
+   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws OseeCoreException, SQLException {
       importWorkItemDefinitionsIntoDb(writeType, resultData,
             Arrays.asList(new WorkItemDefinition[] {workItemDefinition}));
    }
 
-   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, Collection<? extends WorkItemDefinition> workItemDefinitions) throws Exception {
+   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException, SQLException {
       // Items must be imported in order due to the relations that are created between items
       for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
             WorkPageDefinition.class, WorkFlowDefinition.class}) {
@@ -235,7 +236,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       }
    }
 
-   private static void relateIfNotRelated(Artifact parent, Artifact child) throws Exception {
+   private static void relateIfNotRelated(Artifact parent, Artifact child) throws OseeCoreException, SQLException {
       if (!parent.getArtifacts(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, Artifact.class).contains(child)) {
          parent.addChild(child);
       }

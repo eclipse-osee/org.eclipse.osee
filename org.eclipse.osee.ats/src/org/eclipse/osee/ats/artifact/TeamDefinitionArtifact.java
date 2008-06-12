@@ -247,7 +247,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return getManDayHrsFromItemAndChildren(this);
    }
 
-   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+   public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException, SQLException {
       Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
       if (teamDef == null) return null;
       Artifact workFlowArt =

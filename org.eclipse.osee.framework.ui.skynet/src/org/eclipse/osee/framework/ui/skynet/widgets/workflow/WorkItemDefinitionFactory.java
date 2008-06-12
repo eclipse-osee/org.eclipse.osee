@@ -14,6 +14,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -29,7 +30,7 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact = null;
    }
 
-   private synchronized static void loadDefinitions() throws Exception {
+   private synchronized static void loadDefinitions() throws OseeCoreException, SQLException {
       if (itemIdToDefinition == null) {
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
@@ -60,7 +61,7 @@ public class WorkItemDefinitionFactory {
       }
    }
 
-   public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws SQLException {
+   public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException, SQLException {
       Artifact parentArt =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                   parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
@@ -87,7 +88,7 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact.put(workItemDefinition.id, artifact);
    }
 
-   public static void loadDefinitions(Collection<Artifact> arts) throws Exception {
+   public static void loadDefinitions(Collection<Artifact> arts) throws OseeCoreException, SQLException {
       for (Artifact art : arts) {
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
@@ -108,7 +109,7 @@ public class WorkItemDefinitionFactory {
       }
    }
 
-   public static WorkItemDefinition getWorkItemDefinition(String id) throws Exception {
+   public static WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException, SQLException {
       if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       WorkItemDefinition wid = itemIdToDefinition.get(id);
@@ -120,7 +121,7 @@ public class WorkItemDefinitionFactory {
       return itemIdToDefinition.get(id);
    }
 
-   public static Artifact getWorkItemDefinitionArtifact(String id) throws Exception {
+   public static Artifact getWorkItemDefinitionArtifact(String id) throws OseeCoreException, SQLException {
       if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       Artifact art = itemIdToWidArtifact.get(id);
@@ -132,7 +133,7 @@ public class WorkItemDefinitionFactory {
       return itemIdToWidArtifact.get(id);
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) throws Exception {
+   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) throws OseeCoreException, SQLException {
       loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String id : ids) {
@@ -150,7 +151,7 @@ public class WorkItemDefinitionFactory {
     * @param data
     * @return
     */
-   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws Exception {
+   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException, SQLException {
       List<WorkItemDefinition> dynamicDefinitions = new ArrayList<WorkItemDefinition>();
       for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
          dynamicDefinitions.addAll(provider.getDynamicWorkItemDefinitionsForPage(workFlowDefinition,
@@ -159,7 +160,7 @@ public class WorkItemDefinitionFactory {
       return dynamicDefinitions;
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws Exception {
+   public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws OseeCoreException, SQLException {
       loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String itemId : pageids) {
@@ -170,7 +171,7 @@ public class WorkItemDefinitionFactory {
       return defs;
    }
 
-   public static Collection<WorkItemDefinition> getWorkItemDefinitions() throws Exception {
+   public static Collection<WorkItemDefinition> getWorkItemDefinitions() throws OseeCoreException, SQLException {
       loadDefinitions();
       return itemIdToDefinition.values();
    }

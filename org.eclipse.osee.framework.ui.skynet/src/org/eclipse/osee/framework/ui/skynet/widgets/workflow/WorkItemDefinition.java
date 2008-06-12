@@ -5,12 +5,14 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * Definition of WorkItem. Once created, nothing in this class, or any subclasses, should be modified as these
@@ -52,8 +54,9 @@ public abstract class WorkItemDefinition {
     * 
     * @param pageId
     * @return
+    * @throws OseeCoreException TODO
     */
-   public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws Exception {
+   public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException, SQLException {
       // Collect all ids already visited
       Set<String> visitedIds = new HashSet<String>();
       for (String visitedId : visitedPageIds)
@@ -79,7 +82,7 @@ public abstract class WorkItemDefinition {
       return (getParentId() != null);
    }
 
-   public WorkItemDefinition getParent() throws Exception {
+   public WorkItemDefinition getParent() throws OseeCoreException, SQLException {
       if (!hasParent()) return null;
       return WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
    }
@@ -130,7 +133,7 @@ public abstract class WorkItemDefinition {
       this.data = data;
    }
 
-   public Artifact toArtifact(WriteType writeType) throws Exception {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
       Artifact artifact = null;
       if (writeType == WriteType.Update) {
          artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());

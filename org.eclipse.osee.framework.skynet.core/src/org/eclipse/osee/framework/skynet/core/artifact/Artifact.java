@@ -726,9 +726,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param attributeTypeName
     * @param dataStrs
+    * @throws OseeCoreException TODO
+    * @throws SQLException TODO
     * @throws SQLException
     */
-   public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws Exception {
+   public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws OseeCoreException, SQLException {
       ensureAttributesLoaded();
 
       ArrayList<String> storedNames = new ArrayList<String>();

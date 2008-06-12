@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.config;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -45,7 +47,7 @@ public class AtsConfig {
       return instance;
    }
 
-   public Artifact getOrCreateWorkRulesFolderArtifact() throws Exception {
+   public Artifact getOrCreateWorkRulesFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
       if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
@@ -54,7 +56,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkPagesFolderArtifact() throws Exception {
+   public Artifact getOrCreateWorkPagesFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
       if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
@@ -63,7 +65,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkWidgetsFolderArtifact() throws Exception {
+   public Artifact getOrCreateWorkWidgetsFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
       if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
@@ -72,7 +74,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkFlowsFolderArtifact() throws Exception {
+   public Artifact getOrCreateWorkFlowsFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
       if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
@@ -81,7 +83,7 @@ public class AtsConfig {
       return art;
    }
 
-   public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws Exception {
+   public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws OseeCoreException, SQLException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), ActionableItemArtifact.ARTIFACT_NAME,
                   ACTIONABLE_ITEMS_HEADING);
@@ -93,7 +95,7 @@ public class AtsConfig {
       return (ActionableItemArtifact) art;
    }
 
-   public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws Exception {
+   public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws OseeCoreException, SQLException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
       if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
@@ -117,7 +119,7 @@ public class AtsConfig {
       }
    }
 
-   public Artifact getOrCreateAtsHeadingArtifact() throws Exception {
+   public Artifact getOrCreateAtsHeadingArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, ATS_HEADING);
       if (art.getParent() == null) {
          try {
@@ -132,7 +134,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateMsaToolsHeadingArtifact() throws Exception {
+   public Artifact getOrCreateMsaToolsHeadingArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
       if (art.getParent() == null) {
          try {

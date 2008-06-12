@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -55,7 +56,7 @@ public class XWidgetParser {
       return layoutDatas;
    }
 
-   public static String toXml(DynamicXWidgetLayoutData data) throws Exception {
+   public static String toXml(DynamicXWidgetLayoutData data) throws OseeCoreException, ParserConfigurationException {
       Document doc = Jaxp.newDocument();
       Element element = doc.createElement(DynamicXWidgetLayout.XWIDGET);
       element.setAttribute("displayName", data.getName());

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -41,24 +44,25 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
     * @param artifact
     * @throws Exception
     */
-   public TaskResolutionOptionRule(Artifact artifact) throws Exception {
+   public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException, SQLException {
       super(artifact);
       fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
    }
 
-   public static TaskResolutionOptionRule getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws Exception {
-      WorkItemDefinition workItemDefinition = workPageDefinition.getWorkItemDefinition(ATS_TASK_OPTIONS_TAG);
-      if (workItemDefinition instanceof TaskResolutionOptionRule) {
-         return (TaskResolutionOptionRule) workItemDefinition;
+   public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws SQLException, OseeCoreException {
+      List<WorkItemDefinition> wids =
+            workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
+      if (wids.size() == 0) return Collections.emptyList();
+      if (wids.size() > 1) throw new IllegalArgumentException(
+            "Expected on 1 " + TaskResolutionOptionRule.WORK_TYPE + ", found " + wids.size());
+      WorkItemDefinition workItemDefinition = wids.iterator().next();
+      if (workItemDefinition != null) {
+         TaskResolutionOptionRule taskResolutionOptionRule =
+               new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
+         taskResolutionOptionRule.fromXml((String) workItemDefinition.getData());
+         return taskResolutionOptionRule.getOptions();
       }
-      return null;
-   }
-
-   public static List<TaskResOptionDefinition> getOptions(WorkRuleDefinition workRuleDefinition) throws Exception {
-      TaskResolutionOptionRule taskResolutionOptionRule =
-            new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
-      taskResolutionOptionRule.fromXml((String) workRuleDefinition.getData());
-      return taskResolutionOptionRule.getOptions();
+      return new ArrayList<TaskResOptionDefinition>();
    }
 
    public void setFromDoc(Document doc) {
@@ -73,8 +77,12 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       }
    }
 
-   public void fromXml(String xmlStr) throws Exception {
-      setFromDoc(Jaxp.readXmlDocument(xmlStr));
+   public void fromXml(String xmlStr) throws OseeCoreException, SQLException {
+      try {
+         setFromDoc(Jaxp.readXmlDocument(xmlStr));
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    public String toXml() {

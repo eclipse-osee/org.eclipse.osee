@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -126,16 +127,16 @@ public class SMAManager {
       return Result.FalseResult;
    }
 
-   public WorkPageDefinition getWorkPageDefinition() throws Exception {
+   public WorkPageDefinition getWorkPageDefinition() throws OseeCoreException, SQLException {
       if (getStateMgr().getCurrentStateName() == null) return null;
       return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
    }
 
-   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws Exception {
+   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException, SQLException {
       return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(name);
    }
 
-   public WorkPageDefinition getWorkPageDefinitionById(String id) throws Exception {
+   public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException, SQLException {
       return sma.getWorkFlowDefinition().getWorkPageDefinitionById(id);
    }
 
@@ -143,15 +144,15 @@ public class SMAManager {
       return sma.isHistorical();
    }
 
-   public List<WorkPageDefinition> getToWorkPages() throws Exception {
+   public List<WorkPageDefinition> getToWorkPages() throws OseeCoreException, SQLException {
       return getWorkFlowDefinition().getToPages(getWorkPageDefinition());
    }
 
-   public List<WorkPageDefinition> getReturnPages() throws Exception {
+   public List<WorkPageDefinition> getReturnPages() throws OseeCoreException, SQLException {
       return getWorkFlowDefinition().getReturnPages(getWorkPageDefinition());
    }
 
-   public boolean isReturnPage(WorkPageDefinition workPageDefinition) throws Exception {
+   public boolean isReturnPage(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return getWorkFlowDefinition().isReturnPage(getWorkPageDefinition(), workPageDefinition);
    }
 
@@ -641,7 +642,7 @@ public class SMAManager {
       return false;
    }
 
-   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+   public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException, SQLException {
       return sma.getWorkFlowDefinition();
    }
 

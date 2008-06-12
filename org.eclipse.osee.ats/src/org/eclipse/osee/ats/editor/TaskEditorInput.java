@@ -15,7 +15,10 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -64,13 +67,11 @@ public class TaskEditorInput implements IEditorInput {
    /**
     * @return the resOptions
     */
-   public List<TaskResOptionDefinition> getResOptions() throws SQLException {
+   public List<TaskResOptionDefinition> getResOptions() throws SQLException, OseeCoreException {
       if (resOptions == null) {
-         //         resOptions =
-         //               taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPageDefinitionByName(
-         //                     DefaultTeamState.Implement.name()).getTaskResDef() != null ? taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
-         //                     DefaultTeamState.Implement.name()).getTaskResDef().getOptions() : null;
-         System.err.println("fix this TaskEditorInput.getResOptions");
+         resOptions =
+               TaskResolutionOptionRule.getTaskResolutionOptions(taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPageDefinitionByName(
+                     DefaultTeamState.Implement.name()));
       }
       return resOptions;
    }

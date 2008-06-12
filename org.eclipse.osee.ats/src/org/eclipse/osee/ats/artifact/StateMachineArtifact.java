@@ -329,7 +329,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    /**
     * @return
     */
-   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+   public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException, SQLException {
       if (workFlowDefinition == null) {
          try {
             workFlowDefinition = WorkFlowDefinitionFactory.getWorkFlowDefinition(this);
