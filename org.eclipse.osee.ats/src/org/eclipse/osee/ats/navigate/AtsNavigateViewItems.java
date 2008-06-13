@@ -98,7 +98,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
    }
 
    public WorldSearchItem getMyWorldSearchItem() {
-      return new MyWorldSearchItemOld("My World", SkynetAuthentication.getUser());
+      return new MyWorldSearchItem("My World", SkynetAuthentication.getUser());
    }
 
    public List<XNavigateItem> getSearchNavigateItems() {
