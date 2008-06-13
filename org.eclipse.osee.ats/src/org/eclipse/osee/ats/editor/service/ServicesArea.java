@@ -108,8 +108,10 @@ public class ServicesArea {
                services.addAll(item.getServices(smaMgr));
             }
          // If page is null, this is a toolbar request for services, load all state items
-         else if (page == null) for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
-            services.addAll(item.getServices(smaMgr));
+         else if (page == null) {
+            for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
+               services.addAll(item.getServices(smaMgr));
+            }
          }
       }
    }
@@ -123,7 +125,7 @@ public class ServicesArea {
 
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : services) {
-         categories.add(service.getSidebarCategory());
+         if (service.getSidebarCategory() != null) categories.add(service.getSidebarCategory());
       }
       createServicesArea(comp, STATISTIC_CATEGORY, page, toolkit, section);
       categories.remove(STATISTIC_CATEGORY);
