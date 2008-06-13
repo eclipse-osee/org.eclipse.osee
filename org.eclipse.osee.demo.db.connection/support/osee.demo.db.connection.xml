@@ -20,7 +20,7 @@
 
 		<Server id="osee.microdoc" dbInfo="postgresqlInfo"
 			hostAddress="78.46.71.230" port="5432"
-			connectsWith="postgresql" applicationServer="http://osee.microdoc.com:8089/" />
+			connectsWith="postgresql" applicationServer="http://78.46.71.230:8089/" />
 
 		<Server id="postgresqlLocalhost" dbInfo="postgresqlInfo"
 			hostAddress="localhost" port="5432"
