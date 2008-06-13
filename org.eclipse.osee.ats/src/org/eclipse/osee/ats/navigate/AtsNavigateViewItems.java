@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
 import org.eclipse.osee.ats.world.search.MyTeamWFSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
-import org.eclipse.osee.ats.world.search.MyWorldSearchItemOld;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
@@ -110,7 +109,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       User user = SkynetAuthentication.getUser();
 
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
-      items.add(new SearchNavigateItem(null, new MyWorldSearchItemOld("My World - Old", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
       items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
 

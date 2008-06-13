@@ -654,6 +654,10 @@ public class SMAManager {
       return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
    }
 
+   public boolean isCancelledOrCompleted() {
+      return isCompleted() || isCancelled();
+   }
+
    public boolean isCurrentSectionExpanded(String stateName) {
       return sma.isCurrentSectionExpanded(stateName);
    }

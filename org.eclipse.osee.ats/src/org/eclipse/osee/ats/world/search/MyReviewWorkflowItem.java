@@ -11,21 +11,19 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import java.util.Set;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
@@ -46,33 +44,24 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
 
-      // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
-      if (reviewState == ReviewState.All) {
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.ROLE_ATTRIBUTE.getStoreName(),
-               "userId>" + user.getUserId() + "</userId", DepricatedOperator.CONTAINS));
+      Set<Artifact> assigned =
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
+
+      Set<Artifact> artifacts = RelationManager.getRelatedArtifacts(assigned, 1, AtsRelation.SmaToTask_Sma);
+
+      // Because user can be assigned directly to review or through being assigned to task, add in
+      // all the original artifacts.
+      artifacts.addAll(assigned);
+
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof ReviewSMArtifact) {
+            if (reviewState == ReviewState.All || (reviewState == ReviewState.InWork && !((StateMachineArtifact) artifact).getSmaMgr().isCancelledOrCompleted())) {
+               artifactsToReturn.add(artifact);
+            }
+         }
       }
-      FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> reviewTypeCriteria = new LinkedList<ISearchPrimitive>();
-      for (String reviewArtName : ReviewManager.getAllReviewArtifactTypeNames())
-         reviewTypeCriteria.add(new ArtifactTypeSearch(reviewArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch reviewArtSearch = new FromArtifactsSearch(reviewTypeCriteria, false);
-
-      List<ISearchPrimitive> allCriteria = new LinkedList<ISearchPrimitive>();
-      allCriteria.add(currentStateSearch);
-      allCriteria.add(reviewArtSearch);
-
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return artifactsToReturn;
    }
 }

@@ -11,21 +11,17 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+import java.util.Set;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
@@ -43,21 +39,16 @@ public class MyTaskSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
-      // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
-      FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
+      Set<Artifact> assigned =
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
 
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      teamWorkflowCriteria.add(currentStateSearch);
-      teamWorkflowCriteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
+      for (Artifact artifact : assigned) {
+         if (artifact instanceof TaskArtifact) {
+            artifactsToReturn.add(artifact);
+         }
+      }
 
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(teamWorkflowCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return artifactsToReturn;
    }
 }

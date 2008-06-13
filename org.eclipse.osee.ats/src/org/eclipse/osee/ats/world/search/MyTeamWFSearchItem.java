@@ -11,23 +11,18 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import java.util.Set;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
@@ -49,33 +44,24 @@ public class MyTeamWFSearchItem extends UserSearchItem {
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
 
-      // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
-      FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
+      Set<Artifact> assigned =
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
 
-      // Add all the Team Workflow's related to assigned Tasks
-      List<ISearchPrimitive> teamAndTaskCriteria = new LinkedList<ISearchPrimitive>();
-      teamAndTaskCriteria.add(currentStateSearch);
-      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, AtsRelation.SmaToTask_Sma));
-      FromArtifactsSearch teamAndTaskSearch = new FromArtifactsSearch(teamAndTaskCriteria, false);
+      Set<Artifact> artifacts =
+            RelationManager.getRelatedArtifacts(assigned, 3, AtsRelation.SmaToTask_Sma,
+                  AtsRelation.TeamWorkflowToReview_Team);
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
+      // Because user can be assigned directly to workflow or through being assigned to task, add in
+      // all the original artifacts to search through also.
+      artifacts.addAll(assigned);
 
-      List<ISearchPrimitive> allCriteria = new LinkedList<ISearchPrimitive>();
-      allCriteria.add(teamAndTaskSearch);
-      allCriteria.add(teamWorkflowSearch);
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            artifactsToReturn.add(artifact);
+         }
+      }
 
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return artifactsToReturn;
    }
 }

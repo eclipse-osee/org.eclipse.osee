@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -188,11 +190,11 @@ public class RelationManager {
       }
    }
 
-   public static List<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws SQLException {
+   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
-      List<Artifact> relatedArtifacts = new ArrayList<Artifact>(artifacts.size() * 8);
+      Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<? extends Artifact> newArtifacts = artifacts;
       for (int i = 0; i < depth && newArtifacts.size() > 0; i++) {
 

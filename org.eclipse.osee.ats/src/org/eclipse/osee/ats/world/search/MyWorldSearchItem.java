@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -42,11 +42,10 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    public Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
-      List<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(SkynetAuthentication.getUser()), 1,
-                  CoreRelationEnumeration.Users_Artifact);
+      Set<Artifact> assigned =
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
 
-      List<Artifact> artifacts =
+      Set<Artifact> artifacts =
             RelationManager.getRelatedArtifacts(assigned, 4, AtsRelation.SmaToTask_Sma,
                   AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action);
 
