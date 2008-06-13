@@ -110,7 +110,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       User user = SkynetAuthentication.getUser();
 
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
-      items.add(new SearchNavigateItem(null, new MyWorldSearchItemOld("My World - New", user)));
+      items.add(new SearchNavigateItem(null, new MyWorldSearchItemOld("My World - Old", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
       items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
 
@@ -128,7 +128,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(otherItems);
 
       otherItems = new XNavigateItem(null, "Other User Searches");
-      new SearchNavigateItem(otherItems, new MyWorldSearchItemOld("User's World"));
+      new SearchNavigateItem(otherItems, new MyWorldSearchItem("User's World"));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - InWork", null, true));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null, false));
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
