@@ -7,7 +7,6 @@ Bundle-Activator: org.eclipse.osee.ats.AtsPlugin
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.jdk.core,
- javax.mail,
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.skynet.core,
@@ -52,6 +51,8 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.workflow.vue,
  org.eclipse.osee.ats.world,
  org.eclipse.osee.ats.world.search
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: javax.mail,
+ javax.mail.internet,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
