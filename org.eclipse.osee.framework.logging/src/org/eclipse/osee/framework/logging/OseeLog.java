@@ -25,7 +25,6 @@ public class OseeLog {
    static void makevalid() {
       sm = Activator.getInstance().getStatusManager();
       log = Activator.getInstance().getLogger();
-      System.err.println("Registering OseeLog listener");
       register(new IStatusListener() {
 
          @Override
@@ -56,6 +55,10 @@ public class OseeLog {
 
    public static void log(String loggerName, Level level, String message, Throwable th) {
       log.log(loggerName, loggerName, level, message, th);
+   }
+
+   public static void log(Class<?> loggerName, Level level, String message, Throwable th) {
+      log.log(loggerName.getName(), loggerName.getName(), level, message, th);
    }
 
    public static void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
