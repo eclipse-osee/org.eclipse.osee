@@ -86,4 +86,8 @@ public class BrowserComposite extends Composite {
    protected ToolBar getToolBar() {
       return toolBar;
    }
+
+   protected String getUrl() {
+      return previewBrowser.getUrl();
+   }
 }

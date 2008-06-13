@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -429,6 +432,30 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             previewComposite.refresh();
          }
       });
+
+      if (OseeProperties.isDeveloper()) {
+         ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
+         snapshotSave.setImage(skynetGuiPlugin.getImage("snashotSave.gif"));
+         snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
+         snapshotSave.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+               final String oldUrl = previewComposite.getUrl();
+               if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
+                  previewComposite.setUrl(oldUrl + "&force=true");
+                  Job job = new Job("Update Preview") {
+                     @Override
+                     protected IStatus run(IProgressMonitor monitor) {
+                        renderPreviewPage();
+                        return Status.OK_STATUS;
+                     }
+                  };
+                  job.setUser(false);
+                  job.setPriority(Job.SHORT);
+                  job.schedule(2000);
+               }
+            }
+         });
+      }
 
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
