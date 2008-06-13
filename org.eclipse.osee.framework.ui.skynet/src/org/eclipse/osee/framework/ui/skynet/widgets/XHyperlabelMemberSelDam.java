@@ -48,7 +48,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
          Matcher m =
                Pattern.compile("<userId>(.*?)</userId>").matcher(artifact.getSoleAttributeValue(attributeTypeName, ""));
          while (m.find()) {
-            users.add(SkynetAuthentication.getUserByIdWithError(m.group(1)));
+            users.add(SkynetAuthentication.getUserByUserId(m.group(1)));
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);

@@ -207,7 +207,7 @@ public class XMembersCombo extends XWidget {
          String userId = matcher.group(1);
          User user = null;
          try {
-            user = SkynetAuthentication.getUserByIdWithError(userId);
+            user = SkynetAuthentication.getUserByUserId(userId);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }

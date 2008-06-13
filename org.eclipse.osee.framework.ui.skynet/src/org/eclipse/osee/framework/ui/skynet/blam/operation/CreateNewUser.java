@@ -64,7 +64,7 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       try {
-         User existingUser = SkynetAuthentication.getUserByIdWithError(userId);
+         User existingUser = SkynetAuthentication.getUserByUserId(userId);
          if (existingUser != null) {
             AWorkbench.popup("ERROR", "User with userId \"" + userId + "\" already exists.");
             monitor.done();

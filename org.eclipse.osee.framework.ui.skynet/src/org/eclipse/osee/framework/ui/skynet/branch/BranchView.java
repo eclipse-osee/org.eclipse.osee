@@ -1600,13 +1600,13 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       if (event instanceof DefaultBranchChangedEvent) {
          refresh();
       } else if (event instanceof BranchEvent) {
-         BranchContentProvider contentProvider = (BranchContentProvider) branchTable.getContentProvider();
-         if (contentProvider != null) {
-            contentProvider.refresh();
+         try {
+            BranchPersistenceManager.refreshBranches();
+            refresh();
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
-         refresh();
-      } else if (event instanceof AuthenticationEvent) {
-         refresh();
+
       }
    }
 

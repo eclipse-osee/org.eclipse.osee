@@ -160,7 +160,7 @@ public class SMAState {
             String userId = m.group(1);
             if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
             try {
-               User u = SkynetAuthentication.getUserByIdWithError(m.group(1));
+               User u = SkynetAuthentication.getUserByUserId(m.group(1));
                assignees.add(u);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);

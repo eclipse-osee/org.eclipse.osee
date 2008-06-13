@@ -53,10 +53,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
@@ -560,7 +560,7 @@ public class BranchExporter {
 
    private static class TransactionData {
       private final int transactionId;
-      private final String authorGuid;
+      private String authorGuid;
       private final Timestamp time;
       private final String comment;
       private final RSetHelper artSet;
@@ -587,9 +587,14 @@ public class BranchExporter {
             // Should never happen due to the way transactionId is determined
             throw new IllegalStateException("Transaction does not line up to any of the feeding queries");
          }
-         User author = SkynetAuthentication.getUserByArtId(linedUpSet.getInt("author"));
+         try {
+            this.authorGuid = SkynetAuthentication.getUserByArtId(linedUpSet.getInt("author")).getGuid();
+         } catch (UserNotInDatabase ex) {
+            this.authorGuid = "";
+         }
+
          this.transactionId = transactionId;
-         this.authorGuid = author == null ? "" : author.getGuid();
+
          this.time = linedUpSet.getTimestamp("time");
 
          String comment = linedUpSet.getString("osee_comment");

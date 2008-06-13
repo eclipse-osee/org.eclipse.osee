@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -47,9 +48,9 @@ public class TransactionData {
 
       try {
          User user = SkynetAuthentication.getUserByArtId(authorId);
-         name = user == null ? "" : user.getDescriptiveName();
-      } catch (IllegalStateException ex) {
-         name = "Could not resolve artId: " + (authorId);
+         name = user.getDescriptiveName();
+      } catch (UserNotInDatabase ex) {
+         name = "Could not resolve artId: " + authorId;
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }

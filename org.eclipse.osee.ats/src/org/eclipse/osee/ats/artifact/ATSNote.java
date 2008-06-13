@@ -63,7 +63,7 @@ public class ATSNote {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
-               User user = SkynetAuthentication.getUserByIdWithError(element.getAttribute("userId"));
+               User user = SkynetAuthentication.getUserByUserId(element.getAttribute("userId"));
                NoteItem item =
                      new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
                            element.getAttribute("date"), user, element.getAttribute("msg"));

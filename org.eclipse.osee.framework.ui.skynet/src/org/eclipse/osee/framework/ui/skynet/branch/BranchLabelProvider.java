@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -170,15 +169,14 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          if (columnIndex == 0) {
             return (OseeProperties.isDeveloper() ? "(" + branch.getBranchId() + ") " : "") + branch.getBranchName();
          } else if (columnIndex == 1) {
-            return String.valueOf(branch.getDisplayName());
+            return branch.getDisplayName();
          } else if (columnIndex == 2) {
             return String.valueOf(branch.getCreationDate());
          } else if (columnIndex == 3) {
             try {
-               User user = SkynetAuthentication.getUserByArtId(branch.getAuthorId());
-               return user == null ? "" : user.getDescriptiveName();
+               return SkynetAuthentication.getUserByArtId(branch.getAuthorId()).getDescriptiveName();
             } catch (Exception ex) {
-               return ex.getLocalizedMessage();
+               return "";
             }
          } else if (columnIndex == 4) {
             return branch.getCreationComment();

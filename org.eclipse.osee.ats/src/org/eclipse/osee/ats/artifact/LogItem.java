@@ -45,7 +45,7 @@ public class LogItem {
       this.msg = msg;
       this.state = state;
       try {
-         this.user = SkynetAuthentication.getUserByIdWithError(userId);
+         this.user = SkynetAuthentication.getUserByUserId(userId);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

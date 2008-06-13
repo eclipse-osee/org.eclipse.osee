@@ -168,7 +168,7 @@ public class SkynetAuthentication {
                String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
                if (currentUser == null || !currentUser.getUserId().equals(userId)) {
                   try {
-                     currentUser = getUserByIdWithError(userId);
+                     currentUser = getUserByUserId(userId);
                   } catch (UserNotInDatabase ex) {
                      if (createUserWhenNotInDatabase) {
                         currentUser =
@@ -217,7 +217,7 @@ public class SkynetAuthentication {
       instance.loadUsersCache();
       User user = instance.enumeratedUserCache.get(userEnum);
       if (user == null) {
-         user = getUserByIdWithError(userEnum.getUserID());
+         user = getUserByUserId(userEnum.getUserID());
          if (user == null) throw new UserNotInDatabase("UserEnum \"" + userEnum + "\" not in database.");
          instance.enumeratedUserCache.put(userEnum, user);
       }
@@ -252,11 +252,12 @@ public class SkynetAuthentication {
       return (ArrayList<User>) instance.activeUserCache.clone();
    }
 
-   public static User getUserByIdWithError(String userId) throws OseeCoreException, SQLException {
-      instance.loadUsersCache();
+   public static User getUserByUserId(String userId) throws OseeCoreException, SQLException {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
+
+      instance.loadUsersCache();
       User user = instance.userIdToUserCache.get(userId);
       if (user == null) throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.");
       return user;

@@ -135,7 +135,7 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(2));
          while (m.find()) {
             try {
-               assignees.add(SkynetAuthentication.getUserByIdWithError(m.group(3)));
+               assignees.add(SkynetAuthentication.getUserByUserId(m.group(3)));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }

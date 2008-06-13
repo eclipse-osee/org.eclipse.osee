@@ -81,7 +81,7 @@ public class UserRole {
    public void fromXml(String xml) {
       try {
          this.role = Role.valueOf(AXml.getTagData(xml, "role"));
-         this.user = SkynetAuthentication.getUserByIdWithError(AXml.getTagData(xml, "userId"));
+         this.user = SkynetAuthentication.getUserByUserId(AXml.getTagData(xml, "userId"));
          this.hoursSpent =
                AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
          String completedStr = AXml.getTagData(xml, "completed");
