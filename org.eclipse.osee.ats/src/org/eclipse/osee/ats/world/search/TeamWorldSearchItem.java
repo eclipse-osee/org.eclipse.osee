@@ -135,7 +135,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
             teamDefinitionGuids));
 
-      if (!selectedShowFinished) {
+      if (!showFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
@@ -149,7 +149,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (selectedShowAction) {
+      if (showAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
       } else {
          return artifacts;
