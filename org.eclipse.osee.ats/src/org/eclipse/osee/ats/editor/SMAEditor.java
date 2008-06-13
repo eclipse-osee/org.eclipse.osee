@@ -309,12 +309,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             if (ed.isRemoved()) {
                smaMgr.closeEditors(false);
                return;
-            } else if (ed.getAvie() != null) {
-               System.err.println(String.format("VERSION INC switching %d to %d for artifact %s",
-                     smaMgr.getSma().getArtId(), ed.getAvie().getNewVersion().getArtId(),
-                     smaMgr.getSma().getDescriptiveName()));
-               ((SMAEditorInput) getEditorInput()).setArtifact(ed.getAvie().getNewVersion());
-               redrawPages();
             } else if (ed.isHasEvent()) {
                setTitleImage(smaMgr.getSma().getImage());
                redrawPages();

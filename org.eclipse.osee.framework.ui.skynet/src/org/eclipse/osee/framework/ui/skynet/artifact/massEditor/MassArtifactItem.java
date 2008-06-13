@@ -95,9 +95,6 @@ public class MassArtifactItem implements IEventReceiver {
          EventData ed = ((TransactionEvent) event).getEventData(artifact);
          if (ed.isRemoved()) {
             xViewer.remove(wai);
-         } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(artifact)) {
-            artifact = (Artifact) ed.getAvie().getNewVersion();
-            xViewer.update(wai, null);
          } else if (ed.isModified() || ed.isRelChange()) {
             xViewer.update(wai, null);
          }

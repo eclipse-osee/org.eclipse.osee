@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -300,10 +299,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          EventData ed = ((TransactionEvent) event).getEventData(currentArtifact);
          if (ed.isRemoved()) {
             clear();
-         } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(currentArtifact)) {
-            currentArtifact = (StateMachineArtifact) ed.getAvie().getNewVersion();
-            display();
-         } else if (ed.getAvie() != null || ed.isModified() || ed.isRelChange()) {
+         } else if (ed.isModified() || ed.isRelChange()) {
             display();
          }
       } else

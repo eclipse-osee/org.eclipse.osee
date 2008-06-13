@@ -143,12 +143,6 @@ public class GroupExplorerItem implements IEventReceiver {
          if (ed.isRemoved()) {
             treeViewer.refresh();
             groupExplorer.restoreSelection();
-         } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(artifact)) {
-            if (artifact == ed.getAvie().getOldVersion()) {
-               artifact = ed.getAvie().getNewVersion();
-               treeViewer.refresh(tai);
-               groupExplorer.restoreSelection();
-            }
          } else if (ed.isModified()) {
             treeViewer.update(tai, null);
          } else if (ed.isRelChange()) {

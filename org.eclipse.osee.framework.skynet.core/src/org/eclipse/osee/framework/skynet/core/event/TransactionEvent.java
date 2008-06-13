@@ -14,11 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
@@ -38,9 +35,6 @@ public abstract class TransactionEvent extends Event {
    private Set<Integer> deleted = new HashSet<Integer>();
    private Set<Integer> purged = new HashSet<Integer>();
    private Set<Integer> relChanged = new HashSet<Integer>();
-   private Set<Integer> artifactVersionIncremented = new HashSet<Integer>();
-   private Map<Artifact, ArtifactVersionIncrementedEvent> artifactVersionIncrementedEvent =
-         new HashMap<Artifact, ArtifactVersionIncrementedEvent>();
    public enum TransactionChangeType {
       Modified, Deleted, Purged, RelChanged
    };
@@ -85,11 +79,6 @@ public abstract class TransactionEvent extends Event {
          } else if (event instanceof RelationModifiedEvent) {
             relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
             relChanged.add(((RelationModifiedEvent) event).getLink().getBArtifactId());
-         } else if (event instanceof ArtifactVersionIncrementedEvent) {
-            artifactVersionIncrementedEvent.put(((ArtifactVersionIncrementedEvent) event).getOldVersion(),
-                  ((ArtifactVersionIncrementedEvent) event));
-            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getOldVersion().getArtId());
-            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getNewVersion().getArtId());
          }
       }
    }
@@ -126,8 +115,6 @@ public abstract class TransactionEvent extends Event {
       ed.setModified(modified.contains(artifact.getArtId()));
       ed.setRelChange(relChanged.contains(artifact.getArtId()));
       ed.setPurged(purged.contains(artifact.getArtId()));
-      ed.setArtifactVersionIncremented(artifactVersionIncremented.contains(artifact.getArtId()));
-      ed.setAvie(artifactVersionIncrementedEvent.get(artifact.getArtId()));
       ed.setHasEvent(ed.isRelChange() || ed.isDeleted() || ed.isModified() || ed.isPurged());
       return ed;
    }
@@ -138,24 +125,6 @@ public abstract class TransactionEvent extends Event {
       private boolean modified;
       private boolean relChange;
       private boolean artifactVersionIncremented;
-      private ArtifactVersionIncrementedEvent avie = null;
-
-      public EventData() {
-      }
-
-      /**
-       * Avie will be set if version inc event exists for the given artifact AND the artifact matches the old version in
-       * the event
-       * 
-       * @return ArtifactVersionIncrementedEvent or null if none available
-       */
-      public ArtifactVersionIncrementedEvent getAvie() {
-         return avie;
-      }
-
-      public void setAvie(ArtifactVersionIncrementedEvent avie) {
-         this.avie = avie;
-      }
 
       /**
        * @return true if any event was found

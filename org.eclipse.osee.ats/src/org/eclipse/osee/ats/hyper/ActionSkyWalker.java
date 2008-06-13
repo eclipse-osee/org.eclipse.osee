@@ -211,9 +211,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          EventData ed = ((TransactionEvent) event).getEventData(getOptions().getArtifact());
          if (ed.isRemoved()) {
             clear();
-         } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(getOptions().getArtifact())) {
-            explore((StateMachineArtifact) ed.getAvie().getNewVersion());
-         } else if (ed.getAvie() != null || ed.isModified() || ed.isRelChange()) {
+         } else if (ed.isModified() || ed.isRelChange()) {
             explore(getOptions().getArtifact());
          }
       }

@@ -259,10 +259,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          EventData ed = ((TransactionEvent) event).getEventData(currentArtifact);
          if (ed.isRemoved()) {
             clear();
-         } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(currentArtifact)) {
-            currentArtifact = (StateMachineArtifact) ed.getAvie().getNewVersion();
-            display();
-         } else if (ed.getAvie() != null || ed.isModified() || ed.isRelChange()) {
+         } else if (ed.isModified() || ed.isRelChange()) {
             display();
          }
       } else
