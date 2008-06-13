@@ -82,7 +82,7 @@ public class BranchCreation implements IBranchCreation {
          branchId =
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,
                      creationComment, associatedArtifactId);
-         int newTransactionNumber = Query.getNextSeqVal(null, SkynetDatabase.TRANSACTION_ID_SEQ);
+         int newTransactionNumber = Query.getNextSeqVal(SkynetDatabase.TRANSACTION_ID_SEQ);
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, SQL3DataType.INTEGER, branchId,
                SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, creationComment,
                SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, 1);
@@ -96,7 +96,7 @@ public class BranchCreation implements IBranchCreation {
          if (checkAlreadyHasBranchName(branchName)) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
-         int branchId = Query.getNextSeqVal(null, SkynetDatabase.BRANCH_ID_SEQ);
+         int branchId = Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ);
          ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, SQL3DataType.INTEGER, branchId,
                SQL3DataType.VARCHAR, branchShortName, SQL3DataType.VARCHAR, branchName, SQL3DataType.INTEGER,
                parentBranchId, SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER, associatedArtifactId);
