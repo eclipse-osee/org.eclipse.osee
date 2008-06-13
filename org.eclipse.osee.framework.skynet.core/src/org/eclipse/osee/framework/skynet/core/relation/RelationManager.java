@@ -190,12 +190,12 @@ public class RelationManager {
       }
    }
 
-   public static List<Artifact> getRelatedArtifacts(Collection<Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws SQLException {
+   public static List<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(artifacts.size() * 8);
-      Collection<Artifact> newArtifacts = artifacts;
+      Collection<? extends Artifact> newArtifacts = artifacts;
       for (int i = 0; i < depth && newArtifacts.size() > 0; i++) {
 
          insertParameters.clear();

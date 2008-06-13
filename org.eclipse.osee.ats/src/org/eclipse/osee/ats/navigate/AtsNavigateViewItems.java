@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
 import org.eclipse.osee.ats.world.search.MyTeamWFSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
+import org.eclipse.osee.ats.world.search.MyWorldSearchItemOld;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
@@ -97,7 +98,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
    }
 
    public WorldSearchItem getMyWorldSearchItem() {
-      return new MyWorldSearchItem("My World", SkynetAuthentication.getUser());
+      return new MyWorldSearchItemOld("My World", SkynetAuthentication.getUser());
    }
 
    public List<XNavigateItem> getSearchNavigateItems() {
@@ -108,9 +109,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new XNavigateItemAction(null, new NewAction()));
       User user = SkynetAuthentication.getUser();
 
-      LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
+      items.add(new SearchNavigateItem(null, new MyWorldSearchItemOld("My World - New", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
       items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
 
@@ -128,7 +128,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(otherItems);
 
       otherItems = new XNavigateItem(null, "Other User Searches");
-      new SearchNavigateItem(otherItems, new MyWorldSearchItem("User's World"));
+      new SearchNavigateItem(otherItems, new MyWorldSearchItemOld("User's World"));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - InWork", null, true));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null, false));
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
@@ -158,7 +158,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       XNavigateItem teamItem = new XNavigateItem(null, "Teams");
       new SearchNavigateItem(teamItem, new TeamWorldSearchItem("Team Actions", null, false, true, false, null));
       new SearchNavigateItem(teamItem, new TeamVersionWorldSearchItem("Team Actions by Version", (String[]) null,
-            false, false, false, null));
+            false, false, false));
       new SearchNavigateItem(teamItem, new UnReleasedTeamWorldSearchItem("Un-Released Team Actions", (String[]) null,
             true, true, false));
       new MassEditTeamVersionItem("Show Team Versions", teamItem, "");
@@ -241,8 +241,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem adminItems = new XNavigateItem(null, "Admin");
 
          new UpdateAtsWorkItemDefinitions(adminItems);
+         new UpdateAssigneesRelations(adminItems);
 
-         criteria = new LinkedList<ISearchPrimitive>();
+         LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Actions", criteria, true));
 

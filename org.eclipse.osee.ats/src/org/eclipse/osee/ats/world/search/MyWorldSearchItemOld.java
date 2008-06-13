@@ -11,50 +11,48 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class MyWorldSearchItem extends UserSearchItem {
+public class MyWorldSearchItemOld extends UserSearchItem {
 
-   public MyWorldSearchItem(String name) {
+   public MyWorldSearchItemOld(String name) {
       this(name, null);
    }
 
-   public MyWorldSearchItem() {
-      super("My World", null);
+   public MyWorldSearchItemOld() {
+      super("My World - Old", null);
    }
 
-   public MyWorldSearchItem(String name, User user) {
+   public MyWorldSearchItemOld(String name, User user) {
       super(name, user);
    }
 
    public Collection<Artifact> searchIt(User user) throws Exception {
-      List<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(SkynetAuthentication.getUser()), 1,
-                  CoreRelationEnumeration.Users_Artifact);
-
       List<Artifact> artifacts =
-            RelationManager.getRelatedArtifacts(assigned, 4, AtsRelation.SmaToTask_Sma,
-                  AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action);
+            ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+                  "%<" + user.getUserId() + ">%", BranchPersistenceManager.getAtsBranch());
+      artifacts.addAll(RelationManager.getRelatedArtifacts(artifacts, 4, AtsRelation.SmaToTask_Sma,
+            AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action));
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
+
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof ActionArtifact) {
+         if (artifact.isOfType(ActionArtifact.ARTIFACT_NAME)) {
             artifactsToReturn.add(artifact);
          }
       }
-
       return artifactsToReturn;
    }
 }
