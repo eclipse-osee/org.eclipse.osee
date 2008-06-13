@@ -9,21 +9,20 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.user;
+package org.eclipse.osee.framework.skynet.core.exception;
 
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public class UserNotInDatabase extends OseeCoreException {
+public class UserInDatabaseMultipleTimes extends OseeCoreException {
    private static final long serialVersionUID = 1L;
 
    /**
     * @param message
     */
-   public UserNotInDatabase(String message) {
+   public UserInDatabaseMultipleTimes(String message) {
       super(message);
    }
 
@@ -31,7 +30,7 @@ public class UserNotInDatabase extends OseeCoreException {
     * @param message
     * @param cause
     */
-   public UserNotInDatabase(String message, Throwable cause) {
+   public UserInDatabaseMultipleTimes(String message, Throwable cause) {
       super(message, cause);
    }
 }

@@ -19,20 +19,24 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
+import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -44,7 +48,7 @@ import org.eclipse.swt.widgets.Display;
 public class SkynetAuthentication {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private int noOneArtifactId;
-   private boolean createUserWhenNotInDatabase = true;
+   private boolean createUserWhenNotInDatabase = false;
 
    public static enum UserStatusEnum {
       Active, InActive, Both
@@ -52,7 +56,6 @@ public class SkynetAuthentication {
    private boolean firstTimeThrough;
    private Map<String, User> userIdToUserCache;
    private Map<String, User> nameToUserCache;
-   private Map<Integer, User> artIdToUserCache;
    private ArrayList<User> activeUserCache;
    private Map<OseeUser, User> enumeratedUserCache;
    private String[] sortedActiveUserNameCache;
@@ -65,33 +68,55 @@ public class SkynetAuthentication {
       firstTimeThrough = true;
    }
 
-   private boolean isInLoadUsersCache = false;
+   // Needed so an external call to cacheUser() can load the cache first without an infinite loop
+   private boolean isLoadingUsersCache = false;
+   private boolean userCacheIsLoaded = false;
 
    private synchronized void loadUsersCache() throws OseeCoreException, SQLException {
-      if (activeUserCache == null) {
-         isInLoadUsersCache = true;
-         enumeratedUserCache = new HashMap<OseeUser, User>(30);
-         nameToUserCache = new HashMap<String, User>(800);
-         userIdToUserCache = new HashMap<String, User>(800);
-         artIdToUserCache = new HashMap<Integer, User>(800);
-         activeUserCache = new ArrayList<User>(700);
-         Collection<Artifact> dbUsers =
-               ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
-         for (Artifact a : dbUsers) {
-            User user = (User) a;
-            cacheUser(user, null);
+      try {
+         if (!userCacheIsLoaded) {
+            isLoadingUsersCache = true;
+            enumeratedUserCache = new HashMap<OseeUser, User>(30);
+            nameToUserCache = new HashMap<String, User>(800);
+            userIdToUserCache = new HashMap<String, User>(800);
+            activeUserCache = new ArrayList<User>(700);
+            Collection<Artifact> dbUsers =
+                  ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
+            for (Artifact a : dbUsers) {
+               User user = (User) a;
+               cacheUser(user, null);
+            }
+            isLoadingUsersCache = false;
+            userCacheIsLoaded = true;
          }
-         isInLoadUsersCache = false;
+      } catch (OseeCoreException ex) {
+         // If exception, want to return to the state where cache is not loaded
+         userCacheIsLoaded = false;
+         throw ex;
+      } catch (SQLException ex) {
+         // If exception, want to return to the state where cache is not loaded
+         userCacheIsLoaded = false;
+         throw ex;
       }
    }
 
    private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException, SQLException {
       // If cacheUser is called outside of the main loadUserCache, then load cache first
-      if (!isInLoadUsersCache) loadUsersCache();
+      if (!isLoadingUsersCache) loadUsersCache();
+      // Check to make sure user is not in databaes more than once
+      if (userIdToUserCache.put(user.getUserId(), user) != null) {
+         UserInDatabaseMultipleTimes exception =
+               new UserInDatabaseMultipleTimes(
+                     "User of userId \"" + user.getUserId() + "\" in datastore more than once");
+         if (user.getUserId().equals(OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id))) {
+            throw exception;
+         } else {
+            OseeLog.log(SkynetAuthentication.class, Level.SEVERE, exception);
+         }
+      }
       if (user.isActive()) activeUserCache.add(user);
       nameToUserCache.put(user.getDescriptiveName(), user);
-      userIdToUserCache.put(user.getUserId(), user);
-      if (user.isInDb()) artIdToUserCache.put(user.getArtId(), user);
+
       if (userEnum != null) enumeratedUserCache.put(userEnum, user);
    }
 
@@ -136,23 +161,24 @@ public class SkynetAuthentication {
             if (firstTimeThrough) {
                forceAuthenticationRoutine();
             }
-
-            OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
-            if (!oseeAuthentication.isAuthenticated()) {
+            if (!OseeAuthentication.getInstance().isAuthenticated()) {
                currentUser = getUser(UserEnum.Guest);
             } else {
-               String userId = oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id);
+               String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
                if (currentUser == null || !currentUser.getUserId().equals(userId)) {
                   try {
                      currentUser = getUserByIdWithError(userId);
                   } catch (UserNotInDatabase ex) {
                      if (createUserWhenNotInDatabase) {
                         currentUser =
-                              createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
-                                    "spawnedBySkynet", userId, true);
+                              createUser(OseeAuthentication.getInstance().getCredentials().getField(
+                                    UserCredentialEnum.Name), "spawnedBySkynet", userId, true);
                         persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
-                     } else
+                     } else {
+                        AWorkbench.popup("Logged in as Guest",
+                              "If you do not expect to be logged in as Guest, please report this immediately.");
                         currentUser = getUser(UserEnum.Guest);
+                     }
                   }
                }
             }
@@ -271,10 +297,10 @@ public class SkynetAuthentication {
       return user;
    }
 
-   public static User getUserByArtId(int authorId) throws OseeCoreException, SQLException {
+   public static User getUserByArtId(int userArtifactId) throws OseeCoreException, SQLException {
       instance.loadUsersCache();
-      User user = instance.artIdToUserCache.put(authorId, null);
-      if (user == null) throw new UserNotInDatabase("User requested by artId \"" + authorId + "\" was not found.");
+      User user = (User) ArtifactCache.getActive(userArtifactId, BranchPersistenceManager.getCommonBranch());
+      if (user == null) throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");
       return user;
    }
 
