@@ -202,10 +202,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R61C1:R64C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R58C1:R61C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="69" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="66" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="359.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300.75"/>
@@ -233,11 +233,6 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.blam.BlamFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Blam Workflow</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Document</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
@@ -436,18 +431,6 @@
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
    </Row>
-   <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.JavaObjectAttribute</Data></Cell>
-    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Template Map</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">class</Data></Cell>
-    <Cell ss:StyleID="s37"/>
-    <Cell ss:StyleID="s37"/>
-    <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s39"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s37"><Data ss:Type="String">hashmap that maps a template name to a temple definition</Data></Cell>
-    <Cell ss:StyleID="s37"/>
-   </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s40"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.CompressedContentAttribute</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
@@ -499,10 +482,6 @@
     <Cell ss:StyleID="s28"><Data ss:Type="String">Static Id</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Document</Data></Cell>
-    <Cell ss:StyleID="s28"><Data ss:Type="String">Template Map</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">FileArtifact</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Content URL</Data></Cell>
    </Row>
@@ -524,11 +503,11 @@
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell><Data ss:Type="String">Word Template Content</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Word Template Content</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
-    <Cell><Data ss:Type="String">Whole Word Content</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Whole Word Content</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s28"><Data ss:Type="String">WordArtifact</Data></Cell>
@@ -595,7 +574,7 @@
     <Cell ss:StyleID="s37"><Data ss:Type="String">Group</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="59" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="56" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s43"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -678,13 +657,10 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>12</TopRowVisible>
-   <LeftColumnVisible>2</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>29</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>41</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
