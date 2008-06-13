@@ -169,8 +169,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          }
       }
 
-      // If a prior didn't pan out, then default to index based
-      radIndexSearch.setSelection(true);
+      // If a prior didn't pan out, then default to name based search
+      radNameSearch.setSelection(true);
    }
 
    private void createSearchTextArea(Composite parent) {
