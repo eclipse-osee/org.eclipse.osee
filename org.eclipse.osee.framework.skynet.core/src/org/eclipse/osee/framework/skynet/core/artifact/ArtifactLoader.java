@@ -109,6 +109,7 @@ public final class ArtifactLoader {
     * @throws SQLException
     */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
+      int numberLoaded = 0;
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
          try {
@@ -132,13 +133,15 @@ public final class ArtifactLoader {
             if (confirmer == null || confirmer.canProceed(insertParameters.size())) {
                loadArtifactsData(queryId, artifacts, loadLevel, reload);
             }
+            numberLoaded = artifacts.size();
             return artifacts;
          } catch (OseeCoreException ex) {
             throw new SQLException(ex);
          } finally {
             clearQuery(queryId);
-            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Artifact Load Time: %s",
-                  Lib.getElapseString(time)));
+            OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                  "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), numberLoaded),
+                  new Exception());
          }
       }
       return Collections.emptyList();
@@ -182,8 +185,9 @@ public final class ArtifactLoader {
       } finally {
          DbUtil.close(chStmt);
       }
-      OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Artifact Selection Time: %s",
-            Lib.getElapseString(time)));
+      OseeLog.log(SkynetActivator.class, Level.FINE,
+            String.format("Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time),
+                  insertParameters.size()), new Exception());
    }
 
    private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws BranchDoesNotExist, SQLException {

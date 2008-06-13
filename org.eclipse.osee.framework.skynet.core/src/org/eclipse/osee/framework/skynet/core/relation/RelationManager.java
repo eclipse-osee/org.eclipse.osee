@@ -99,8 +99,6 @@ public class RelationManager {
             artifactToRelations.put(artifact, artifactsRelations);
          }
          if (artifactsRelations.contains(relation)) {
-            System.out.printf("%s  Rel: %d, artA: %d, artB: %d, \n", relation.getRelationType().getTypeName(),
-                  relation.getRelationId(), relation.getAArtifactId(), relation.getBArtifactId());
             return;
          }
 
