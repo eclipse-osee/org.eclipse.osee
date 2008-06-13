@@ -101,6 +101,7 @@ public class SkynetAuthentication {
    }
 
    private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException, SQLException {
+      // System.out.println("caching User " + user.getUserId());
       // If cacheUser is called outside of the main loadUserCache, then load cache first
       if (!isLoadingUsersCache) loadUsersCache();
       // Check to make sure user is not in databaes more than once
@@ -205,6 +206,7 @@ public class SkynetAuthentication {
    }
 
    public static User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
       User user =
             instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
       instance.persistUser(user);
@@ -287,7 +289,7 @@ public class SkynetAuthentication {
    public static User getUserByName(String name, boolean create) throws OseeCoreException, SQLException {
       instance.loadUsersCache();
       User user = instance.nameToUserCache.get(name);
-      if (create) {
+      if (user == null && create) {
          instance.persistUser(instance.createUser(name, "", name, true));
          user = instance.nameToUserCache.get(name);
          if (user == null) throw new UserNotInDatabase(
