@@ -70,6 +70,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "update osee_define_txs set tx_current = 1 where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT =
          "update osee_define_txs set tx_current = ? where gamma_id = ? and transaction_id = ?";
+   private static final String UPDATE_TXS_CURRENT_FROM_NULL =
+         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE tx_current IS null";
 
    private static final String SELECT_BASELINED_TRANSACTIONS =
          "SELECT txs1.gamma_id, txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
@@ -464,6 +466,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          if (monitor.isCanceled() != true) {
             update = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT, batchArgs);
          }
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_FROM_NULL);
+
          monitor.worked(1);
          return update;
       }
