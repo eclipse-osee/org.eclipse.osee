@@ -148,7 +148,7 @@ public class BranchManager {
    /**
     * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
     */
-   public void showChangeReport() {
+   public void showChangeReportOld() {
       try {
          if (isWorkingBranch()) {
             ChangeReportView.openViewUpon(getWorkingBranch());
@@ -166,7 +166,7 @@ public class BranchManager {
    /**
     * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
     */
-   public void showChangeReportNew() {
+   public void showChangeReport() {
       try {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());

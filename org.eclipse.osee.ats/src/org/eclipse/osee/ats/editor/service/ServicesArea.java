@@ -26,9 +26,8 @@ import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
-import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportServiceNew;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarService;
-import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarServiceNew;
+import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarServiceOld;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -82,8 +81,8 @@ public class ServicesArea {
          services.add(new AddPeerToPeerReviewService(smaMgr));
          services.add(new BlockingReview(smaMgr));
          // Toolbar Services
-         services.add(new ShowChangeReportToolbarServiceNew(smaMgr));
          services.add(new ShowChangeReportToolbarService(smaMgr));
+         services.add(new ShowChangeReportToolbarServiceOld(smaMgr));
          services.add(new OpenParent(smaMgr));
          services.add(new EmailActionService(smaMgr));
          services.add(new AddNoteOperation(smaMgr));
@@ -99,7 +98,6 @@ public class ServicesArea {
             if (page.isAllowCreateBranch()) services.add(new CreateWorkingBranchService(smaMgr));
             services.add(new ShowWorkingBranchService(smaMgr));
             services.add(new ShowChangeReportService(smaMgr));
-            services.add(new ShowChangeReportServiceNew(smaMgr));
             if (page.isAllowCommitBranch()) services.add(new CommitWorkingBranchService(smaMgr, false));
             if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, true));
             services.add(new DeleteWorkingBranch(smaMgr));
