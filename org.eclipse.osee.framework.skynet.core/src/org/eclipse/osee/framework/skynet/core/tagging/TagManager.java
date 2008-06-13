@@ -57,6 +57,10 @@ public class TagManager implements IAttributeSaveListener {
 
    private static final TagManager instance = new TagManager();
 
+   public static TagManager getInstance() {
+      return instance;
+   }
+
    private TagManager() {
       this.cloudDescriptorFactory = new CloudDescriptorFactory();
       this.tagFactory = new TagFactory();
