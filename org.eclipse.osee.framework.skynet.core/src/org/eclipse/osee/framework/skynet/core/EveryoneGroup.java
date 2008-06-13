@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 public class EveryoneGroup extends Group {
    private static final String GROUP_NAME = "Everyone";
    private static final EveryoneGroup instance = new EveryoneGroup();
-   private Artifact everyoneGroup;
+   private static Artifact everyoneGroup;
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(EveryoneGroup.class);
 
    private EveryoneGroup() {
@@ -73,6 +73,6 @@ public class EveryoneGroup extends Group {
     * @throws SQLException
     */
    public static void addGroupMember(User user) throws SQLException {
-      instance.everyoneGroup.addRelation(CoreRelationEnumeration.Users_User, user);
+      getEveryoneGroup().addRelation(CoreRelationEnumeration.Users_User, user);
    }
 }

@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -22,7 +25,7 @@ import org.xml.sax.SAXException;
  * @author Robert A. Fisher
  */
 public abstract class BranchSaxHandler extends AbstractSaxHandler {
-
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchSaxHandler.class);
    private static final String ARTIFACT = "artifact";
    private static final String ATTRIBUTE = "attribute";
    private static final String BRANCH = "branch";
@@ -239,9 +242,13 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    }
 
    private void finishAttribute() throws Exception {// Skip this attribute if the artifact is not being included
-
-      processAttribute(currentArtifactHrid, currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
-            currentAttributeContentValue, currentAttributeDeleted);
+      try {
+         processAttribute(currentArtifactHrid, currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
+               currentAttributeContentValue, currentAttributeDeleted);
+      }// catch Illegal argument exception so import does not fail if attribute type does not exist
+      catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
 
       currentAttributeType = null;
       currentAttributeGuid = null;
