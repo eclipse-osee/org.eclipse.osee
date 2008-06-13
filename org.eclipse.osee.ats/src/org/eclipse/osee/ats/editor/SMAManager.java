@@ -332,7 +332,8 @@ public class SMAManager {
       VersionArtifact newVersion = (VersionArtifact) obj;
 
       for (TeamWorkFlowArtifact teamArt : smas) {
-         teamArt.setTargetedForVersion(newVersion, persist);
+         teamArt.setSoleRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, newVersion);
+         if (persist) teamArt.persistRelations();
       }
    }
 

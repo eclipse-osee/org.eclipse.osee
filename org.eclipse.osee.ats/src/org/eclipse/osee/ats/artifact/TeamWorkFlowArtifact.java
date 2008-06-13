@@ -270,13 +270,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return verArt.getDescriptiveName();
    }
 
-   public void setTargetedForVersion(VersionArtifact version, boolean persist) throws SQLException {
-      setRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, version);
-      if (persist) {
-         persistRelations();
-      }
-   }
-
    public VersionArtifact getTargetedForVersion() throws SQLException {
       try {
          return (VersionArtifact) getRelatedArtifact(AtsRelation.TeamWorkflowTargetedForVersion_Version);

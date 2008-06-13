@@ -70,8 +70,11 @@ public class SkynetAuthentication implements PersistenceManager {
       return instance;
    }
 
+   private boolean isInLoadUsersCache = false;
+
    private synchronized void loadUsersCache() throws OseeCoreException, SQLException {
       if (activeUserCache == null) {
+         isInLoadUsersCache = true;
          enumeratedUserCache = new HashMap<OseeUser, User>(30);
          nameToUserCache = new HashMap<String, User>(800);
          userIdToUserCache = new HashMap<String, User>(800);
@@ -83,10 +86,13 @@ public class SkynetAuthentication implements PersistenceManager {
             User user = (User) a;
             cacheUser(user, null);
          }
+         isInLoadUsersCache = false;
       }
    }
 
    private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException, SQLException {
+      // If cacheUser is called outside of the main loadUserCache, then load cache first
+      if (!isInLoadUsersCache) loadUsersCache();
       if (user.isActive()) activeUserCache.add(user);
       nameToUserCache.put(user.getDescriptiveName(), user);
       userIdToUserCache.put(user.getUserId(), user);
@@ -188,7 +194,6 @@ public class SkynetAuthentication implements PersistenceManager {
    public User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
       User user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
       persistUser(user);
-      cacheUser(user, userEnum);
       return user;
    }
 
@@ -209,7 +214,6 @@ public class SkynetAuthentication implements PersistenceManager {
          user.setActive(active);
          user.setUserID(userID);
          user.setEmail(email);
-         cacheUser(user, null);
          // this is here in case a user is created at an unexpected time
          if (!SkynetDbInit.isDbInit()) logger.log(Level.INFO, "Created user " + user, new Exception(
                "just wanted the stack trace"));
@@ -265,6 +269,12 @@ public class SkynetAuthentication implements PersistenceManager {
    public static User getUserByName(String name, boolean create) throws OseeCoreException, SQLException {
       instance.loadUsersCache();
       User user = instance.nameToUserCache.get(name);
+      if (create) {
+         instance.persistUser(instance.createUser(name, "", name, true));
+         user = instance.nameToUserCache.get(name);
+         if (user == null) throw new UserNotInDatabase(
+               "Error creating and caching user \"" + name + "\" was not found.");
+      }
       if (user == null) throw new UserNotInDatabase("User requested by name \"" + name + "\" was not found.");
       return user;
    }

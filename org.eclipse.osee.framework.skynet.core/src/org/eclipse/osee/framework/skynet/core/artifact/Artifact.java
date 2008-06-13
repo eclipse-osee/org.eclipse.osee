@@ -1148,7 +1148,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param artifact
     * @throws SQLException
     */
-   public void setRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      // Delete all existing relations
+      for (RelationLink relationLink : getRelations(relationSide)) {
+         relationLink.delete();
+      }
       setRelations(relationSide, Arrays.asList(artifact));
    }
 

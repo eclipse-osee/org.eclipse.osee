@@ -35,7 +35,7 @@ public class ArtIdSearchItem extends WorldSearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, OseeCoreException {
       return ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-            BranchPersistenceManager.getAtsBranch(), false);
+            BranchPersistenceManager.getInstance().getDefaultBranch(), false);
    }
 
    @Override
