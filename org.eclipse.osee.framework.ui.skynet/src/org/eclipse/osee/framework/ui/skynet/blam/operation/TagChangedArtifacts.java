@@ -30,8 +30,6 @@ public class TagChangedArtifacts extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      TagManager tagManager = TagManager.getInstance();
-
       List<Branch> branches = BranchPersistenceManager.getInstance().getChangeManagedBranches();
       monitor.beginTask("Tag change managed branches", branches.size());
 
@@ -48,7 +46,7 @@ public class TagChangedArtifacts extends AbstractBlam {
             monitor.subTask("Tagging change on branch " + branch.getBranchShortestName() + " for artifact " + ++count + " of " + total);
             Artifact artifact = change.getArtifact();
             if (!artifact.isDeleted()) {
-               tagManager.autoTag(true, artifact);
+               TagManager.autoTag(true, artifact);
             }
          }
          monitor.worked(1);

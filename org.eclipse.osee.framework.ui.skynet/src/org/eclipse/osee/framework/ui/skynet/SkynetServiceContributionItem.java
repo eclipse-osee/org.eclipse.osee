@@ -27,7 +27,6 @@ public class SkynetServiceContributionItem extends SkynetContributionItem {
 
    public static final String ID = "skynet.service";
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
-   private static final RemoteEventManager remoteManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final Image ENABLED =
          new OverlayImage(skynetGuiPlugin.getImage("gear.gif"), skynetGuiPlugin.getImageDescriptor("laser_8_8.gif")).createImage();
@@ -53,7 +52,7 @@ public class SkynetServiceContributionItem extends SkynetContributionItem {
    }
 
    private void init() {
-      updateStatus(remoteManager.isConnected());
+      updateStatus(RemoteEventManager.isConnected());
       eventManager.register(SkynetServiceEvent.class, this);
    }
 

@@ -47,7 +47,7 @@ public class UserListDialog extends ListDialog {
             return "Unknown Object";
          }
       });
-      setInput(SkynetAuthentication.getInstance().getUsers());
+      setInput(SkynetAuthentication.getUsers());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 

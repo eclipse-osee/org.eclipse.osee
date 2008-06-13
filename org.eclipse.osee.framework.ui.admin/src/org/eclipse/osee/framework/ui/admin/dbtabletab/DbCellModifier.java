@@ -71,7 +71,7 @@ public class DbCellModifier implements ICellModifier {
          return stringValue;
       } else if (dbItem.isBems(property)) {
          try {
-            enumeratedValue.setChocies(SkynetAuthentication.getInstance().getUserNames());
+            enumeratedValue.setChocies(SkynetAuthentication.getUserNames());
             User u = null;
             u = SkynetAuthentication.getUserByIdWithError((String) obj);
             if (u != null) enumeratedValue.setValue(u.getName());

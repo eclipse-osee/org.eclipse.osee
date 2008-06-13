@@ -114,7 +114,7 @@ public class XMembersCombo extends XWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : SkynetAuthentication.getInstance().getUsers()) {
+         for (User user : SkynetAuthentication.getUsers()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }

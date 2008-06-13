@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 public class OseeClientsTab {
-   private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
 
    private User whoAmI;
@@ -58,7 +57,7 @@ public class OseeClientsTab {
 
    public OseeClientsTab(TabFolder tabFolder) throws OseeCoreException, SQLException {
       super();
-      this.users = SkynetAuthentication.getInstance().getUsers();
+      this.users = SkynetAuthentication.getUsers();
       this.whoAmI = SkynetAuthentication.getUser();
       users.remove(whoAmI);
       this.mainComposite = null;
@@ -150,7 +149,7 @@ public class OseeClientsTab {
                MessageDialog.openConfirm(mainComposite.getShell(), "Disconnect OSEE Clients",
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
-            remoteEventManager.kick(new SkynetDisconnectClientsEvent(selectedUsers, 0, 0, reason,
+            RemoteEventManager.kick(new SkynetDisconnectClientsEvent(selectedUsers, 0, 0, reason,
                   SkynetAuthentication.getUser().getArtId()));
             AWorkbench.popup("Success", "Shutdown request sent.");
          }

@@ -419,8 +419,8 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
-      return getArtifacts(searchCriteria, all, branch, null);
+   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
+      return instance.getArtifacts(searchCriteria, all, branch, null);
    }
 
    /**
@@ -543,7 +543,7 @@ public class ArtifactPersistenceManager {
       RelationManager.deleteRelationsAll(artifact);
       artifact.deleteAttributes();
       artifact.persistRelations();
-      TagManager.getInstance().clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
+      TagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 
    public void purgeArtifactFromBranch(Artifact artifact) throws Exception {

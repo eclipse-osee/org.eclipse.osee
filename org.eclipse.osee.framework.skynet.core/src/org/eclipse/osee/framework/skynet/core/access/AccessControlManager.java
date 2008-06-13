@@ -29,8 +29,6 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,7 +47,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Jeff C. Phillips
  */
 
-public class AccessControlManager implements PersistenceManager {
+public class AccessControlManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AccessControlManager.class);
    private static final String INSERT_INTO_ARTIFACT_ACL =
          "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
@@ -94,13 +92,9 @@ public class AccessControlManager implements PersistenceManager {
    // subject, permission
    private HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
 
-   private SkynetEventManager eventManager;
-   private SkynetAuthentication skynetAuth;
-
    private static final AccessControlManager instance = new AccessControlManager();
 
    public static AccessControlManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
       return instance;
    }
 
@@ -110,12 +104,10 @@ public class AccessControlManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
     */
    public void onManagerWebInit() throws Exception {
-      eventManager = SkynetEventManager.getInstance();
-      skynetAuth = SkynetAuthentication.getInstance();
 
       // This can result in a call to SkynetAuthentication, so it must be here (instead of in the
       // constructor) to stop a cycle from occurring.
-      populateAccessControlLists();
+
    }
 
    private AccessControlManager() {
@@ -128,6 +120,12 @@ public class AccessControlManager implements PersistenceManager {
       this.objectToBranchLockCache = new HashMap<Integer, Integer>();
       this.lockedObjectToSubject = new HashMap<Integer, Integer>();
       this.subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
+
+      try {
+         populateAccessControlLists();
+      } catch (SQLException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
    }
 
    /**
@@ -311,8 +309,8 @@ public class AccessControlManager implements PersistenceManager {
     * @return true if the subject has permission for an object else false.
     */
    public static boolean checkObjectPermission(Object object, PermissionEnum permission) {
-      return SkynetAuthentication.getInstance().duringUserCreation() || checkObjectPermission(
-            SkynetAuthentication.getUser(), object, permission);
+      return SkynetAuthentication.duringUserCreation() || checkObjectPermission(SkynetAuthentication.getUser(), object,
+            permission);
    }
 
    public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
@@ -716,7 +714,7 @@ public class AccessControlManager implements PersistenceManager {
          objectToBranchLockCache.put(objectArtId, objectBranchId);
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
-         eventManager.kick(new ArtifactLockStatusChanged(this, object));
+         SkynetEventManager.getInstance().kick(new ArtifactLockStatusChanged(this, object));
       }
    }
 
@@ -734,7 +732,7 @@ public class AccessControlManager implements PersistenceManager {
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            eventManager.kick(new ArtifactLockStatusChanged(this, object));
+            SkynetEventManager.getInstance().kick(new ArtifactLockStatusChanged(this, object));
          }
       }
    }

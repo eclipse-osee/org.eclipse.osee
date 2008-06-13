@@ -39,7 +39,7 @@ public class XMembersList extends XListViewer {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
-      super.setInputArtifacts(SkynetAuthentication.getInstance().getUsers());
+      super.setInputArtifacts(SkynetAuthentication.getUsers());
       super.setSorter(new ArtifactViewerSorter());
    }
 

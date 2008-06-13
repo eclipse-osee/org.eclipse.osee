@@ -65,7 +65,6 @@ class DeleteBranchJob extends Job {
          "DELETE FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("branch_id") + " = ?";
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private final Branch branch;
@@ -157,7 +156,7 @@ class DeleteBranchJob extends Job {
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
             eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));
-            remoteEventManager.kick(new NetworkDeletedBranchEvent(branch.getBranchId(),
+            RemoteEventManager.kick(new NetworkDeletedBranchEvent(branch.getBranchId(),
                   SkynetAuthentication.getUser().getArtId()));
          }
       }

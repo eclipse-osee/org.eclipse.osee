@@ -164,9 +164,6 @@ public class BranchExporter {
             new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "UTF-8"), (int) Math.pow(2, 24));
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 
-      // Force all users to be mapped
-      SkynetAuthentication.getInstance().getUsers();
-
       processBranch(rootDirectory, writer, new BranchData(branch), true, !descendantsOnly);
 
       writer.close();

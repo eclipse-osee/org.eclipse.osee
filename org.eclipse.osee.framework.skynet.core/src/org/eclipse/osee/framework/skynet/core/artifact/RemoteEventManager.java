@@ -53,8 +53,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLi
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -83,7 +81,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Jeff C. Phillips
  */
-public class RemoteEventManager implements IServiceLookupListener, PersistenceManager {
+public class RemoteEventManager implements IServiceLookupListener {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RemoteEventManager.class);
    private static String ACCEPTABLE_SERVICE;
@@ -116,31 +114,19 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
       }
    }
 
-   /**
-    * Returns a RemoteEventManager reference;
-    */
-   public static RemoteEventManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
-      return instance;
-   }
-
-   public void onManagerWebInit() throws Exception {
-      branchPersistenceManager = BranchPersistenceManager.getInstance();
-   }
-
-   public void kick(final ISkynetEvent... events) {
-      if (skynetEventService != null) {
+   public static void kick(final ISkynetEvent... events) {
+      if (instance.skynetEventService != null) {
 
          Job job = new Job("Send Event") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                try {
-                  skynetEventService.kick(events, myReference);
+                  instance.skynetEventService.kick(events, instance.myReference);
                } catch (ExportException e) {
                   logger.log(Level.SEVERE, e.toString(), e);
                } catch (RemoteException e) {
-                  disconnectService(e);
+                  instance.disconnectService(e);
                }
                return Status.OK_STATUS;
             }
@@ -424,9 +410,9 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
       }
    }
 
-   public boolean isConnected() {
+   public static boolean isConnected() {
       try {
-         return skynetEventService != null && skynetEventService.isAlive();
+         return instance.skynetEventService != null && instance.skynetEventService.isAlive();
       } catch (Throwable th) {
          logger.log(Level.SEVERE, th.toString(), th);
          return false;

@@ -119,8 +119,7 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(taskCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(taskCriteria, true, BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

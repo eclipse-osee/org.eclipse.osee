@@ -183,7 +183,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       if (!showAction) {
          if (isCancelled()) return EMPTY_SET;
          Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(unReleasedAndUntargetedTeamsCriteria, false,
+               ArtifactPersistenceManager.getArtifacts(unReleasedAndUntargetedTeamsCriteria, false,
                      BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          return arts;
@@ -195,8 +195,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(actionCriteria, true, BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

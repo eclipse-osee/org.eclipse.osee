@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public class SkynetTransaction {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransaction.class);
-   private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
@@ -270,7 +269,7 @@ public class SkynetTransaction {
       }
 
       if (remoteEvents != null) {
-         remoteEventManager.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
+         RemoteEventManager.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
          remoteEvents.clear();
       }
    }

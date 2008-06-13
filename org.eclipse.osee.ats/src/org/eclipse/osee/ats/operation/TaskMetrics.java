@@ -75,7 +75,7 @@ public class TaskMetrics extends AbstractBlam {
       relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, AtsRelation.SmaToTask_Task));
 
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
       for (Artifact artifact : artifacts) {
          tallyState((TaskArtifact) artifact);
       }

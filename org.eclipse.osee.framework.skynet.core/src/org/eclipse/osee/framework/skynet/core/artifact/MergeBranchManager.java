@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class MergeBranchManager {
    private static ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static BranchCreator branchCreator = BranchCreator.getInstance();
 
    private static final String GET_ART_IDS_FOR_ART_VER_TABLE =
          "SELECT t1.art_id FROM " + ARTIFACT_VERSION_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2, " + TRANSACTIONS_TABLE + " t3 where t2.transaction_id = t3.transaction_id and t3.gamma_id = t1.gamma_id and t2.branch_id = ?";
@@ -70,8 +69,8 @@ public class MergeBranchManager {
       for (Artifact artifact : goodMergeBranchArtifacts) {
          expectedArtIds.remove(new Integer(artifact.getArtId()));
       }
-      if (!expectedArtIds.isEmpty()) branchCreator.addArtifactsToBranch(sourceBranch, destBranch, mergeBranch,
-            expectedArtIds);
+      if (!expectedArtIds.isEmpty()) BranchCreator.getInstance().addArtifactsToBranch(sourceBranch, destBranch,
+            mergeBranch, expectedArtIds);
 
    }
 

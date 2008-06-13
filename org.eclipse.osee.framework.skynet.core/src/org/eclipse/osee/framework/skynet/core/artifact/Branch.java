@@ -160,9 +160,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private void kickRenameEvents() {
       SkynetEventManager.getInstance().kick(
             new LocalRenameBranchEvent(this, branchId, branchName, getBranchShortName()));
-      RemoteEventManager.getInstance().kick(
-            new NetworkRenameBranchEvent(branchId, SkynetAuthentication.getUser().getArtId(), branchName,
-                  getBranchShortName()));
+      RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, SkynetAuthentication.getUser().getArtId(),
+            branchName, getBranchShortName()));
    }
 
    /**

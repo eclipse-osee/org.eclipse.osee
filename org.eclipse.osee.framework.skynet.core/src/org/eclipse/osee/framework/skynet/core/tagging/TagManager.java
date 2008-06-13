@@ -26,8 +26,6 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
@@ -37,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
  * 
  * @author Robert A. Fisher
  */
-public class TagManager implements PersistenceManager, IAttributeSaveListener {
+public class TagManager implements IAttributeSaveListener {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TagManager.class);
 
    private final CloudDescriptorFactory cloudDescriptorFactory;
@@ -57,27 +55,12 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
                TAG_ALIAS_1, "tag_id") + " AND " + TAG_MAP_ALIAS_1.column("art_id") + "=? AND " + TAG_MAP_ALIAS_1.column("branch_id") + "=? AND " + TAG_ALIAS_1.column("tag_type_id") + "=?)";
    private static final SkynetActivator plugin = SkynetActivator.getInstance();
 
-   private TaggerManager taggerManager;
    private static final TagManager instance = new TagManager();
 
    private TagManager() {
       this.cloudDescriptorFactory = new CloudDescriptorFactory();
       this.tagFactory = new TagFactory();
       this.tagDescriptorFactory = new TagDescriptorFactory();
-   }
-
-   public static TagManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
-      return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
-    */
-   public void onManagerWebInit() throws Exception {
-      taggerManager = TaggerManager.getInstance();
    }
 
    /**
@@ -88,7 +71,7 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * @param tagDescriptor The type of tags to clear.
     * @throws SQLException
     */
-   public void clearTags(Artifact artifact, TagDescriptor tagDescriptor) throws SQLException {
+   public static void clearTags(Artifact artifact, TagDescriptor tagDescriptor) throws SQLException {
       ConnectionHandler.runPreparedUpdate(false, DROP_TAGS_FROM_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(),
             SQL3DataType.INTEGER, artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
             tagDescriptor.getTagTypeId());
@@ -103,10 +86,10 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * @param artifacts
     * @throws SQLException
     */
-   public synchronized void autoTag(boolean forceTagging, Artifact artifact) throws SQLException {
+   public static synchronized void autoTag(boolean forceTagging, Artifact artifact) throws SQLException {
       if (forceTagging || plugin.isAutoTaggingEnabled()) {
          List<Object[]> tagData = new LinkedList<Object[]>();
-         Tagger tagger = taggerManager.getBestTagger(artifact);
+         Tagger tagger = TaggerManager.getInstance().getBestTagger(artifact);
          Set<Integer> tagIds = new HashSet<Integer>(); // use a set to force unqiueness on the tag ids
 
          if (tagger == null) {
@@ -116,11 +99,11 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
             clearTags(artifact, AUTO_INDEXED.getDescriptor());
 
             for (String tag : tagger.getTags(artifact)) {
-               tagIds.add(tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
+               tagIds.add(instance.tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
             }
 
             for (String tag : tagger.getTags(artifact)) {
-               tagIds.add(tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
+               tagIds.add(instance.tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
             }
 
             for (Integer tagId : tagIds) {
@@ -131,17 +114,6 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
          }
          ConnectionHandler.runPreparedUpdateBatch(ADD_TAG_TO_ARTIFACT, tagData);
       }
-   }
-
-   /**
-    * Perform system level tagging for a set of artifacts if autoTagging is enabled. If autoTagging is disabled then the
-    * artifact will just be marked as having stale tag data.
-    * 
-    * @param artifacts The artifacts to tag.
-    * @throws SQLException
-    */
-   public void autoTag(Artifact artifact) throws SQLException {
-      autoTag(false, artifact);
    }
 
    /**
@@ -163,8 +135,8 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
    /**
     * Get a collection of all the available tag descriptors.
     */
-   public Collection<TagDescriptor> getTagDescriptors() {
-      return tagDescriptorFactory.getDescriptors();
+   public static Collection<TagDescriptor> getTagDescriptors() {
+      return instance.tagDescriptorFactory.getDescriptors();
    }
 
    /**
@@ -172,14 +144,14 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * 
     * @return The created tag descriptor.
     */
-   public TagDescriptor makeTagType(String tagTypeName) {
-      return tagDescriptorFactory.createDescriptor(tagTypeName);
+   public static TagDescriptor makeTagType(String tagTypeName) {
+      return instance.tagDescriptorFactory.createDescriptor(tagTypeName);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener#notifyOnAttributeSave(org.eclipse.osee.framework.skynet.core.artifact.Artifact[])
     */
    public void notifyOnAttributeSave(Artifact artifact) throws SQLException {
-      autoTag(artifact);
+      autoTag(false, artifact);
    }
 }

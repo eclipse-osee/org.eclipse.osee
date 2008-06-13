@@ -60,7 +60,6 @@ public class AdminView extends ViewPart implements IActionable {
    private TabFolder tabFolder;
    private ArrayList<DbItem> dbItems;
    private Cursor handCursor;
-   private static final RemoteEventManager rem = RemoteEventManager.getInstance();
 
    /**
     * The constructor.
@@ -134,7 +133,7 @@ public class AdminView extends ViewPart implements IActionable {
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
                remoteEvents.add(new NetworkBroadcastEvent(0, 0, message, SkynetAuthentication.getUser().getArtId()));
-               rem.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
+               RemoteEventManager.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
                AWorkbench.popup("Success", "Message sent.");
             }
          }

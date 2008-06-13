@@ -242,8 +242,8 @@ class CommitJob extends Job {
          super.handleTxFinally();
          if (success) {
             eventManager.kick(new LocalCommitBranchEvent(this, fromBranchId));
-            RemoteEventManager.getInstance().kick(
-                  new NetworkCommitBranchEvent(fromBranchId, SkynetAuthentication.getUser().getArtId()));
+            RemoteEventManager.kick(new NetworkCommitBranchEvent(fromBranchId,
+                  SkynetAuthentication.getUser().getArtId()));
          }
       }
 

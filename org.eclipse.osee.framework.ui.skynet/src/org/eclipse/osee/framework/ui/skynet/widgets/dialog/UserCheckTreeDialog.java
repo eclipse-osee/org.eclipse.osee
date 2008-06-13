@@ -43,7 +43,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
    }
 
    public UserCheckTreeDialog(Shell parent) throws OseeCoreException, SQLException {
-      this(parent, SkynetAuthentication.getInstance().getUsers());
+      this(parent, SkynetAuthentication.getUsers());
    }
 
    public void setInitialSelections(Collection<User> initialSel) {

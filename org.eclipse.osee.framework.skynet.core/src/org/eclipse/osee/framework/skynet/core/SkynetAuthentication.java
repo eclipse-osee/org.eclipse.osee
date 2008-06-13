@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Roberto E. Escobar
  */
-public class SkynetAuthentication implements PersistenceManager {
+public class SkynetAuthentication {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private int noOneArtifactId;
    private boolean createUserWhenNotInDatabase = true;
@@ -63,11 +63,6 @@ public class SkynetAuthentication implements PersistenceManager {
 
    private SkynetAuthentication() {
       firstTimeThrough = true;
-   }
-
-   public static SkynetAuthentication getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
-      return instance;
    }
 
    private boolean isInLoadUsersCache = false;
@@ -98,14 +93,6 @@ public class SkynetAuthentication implements PersistenceManager {
       userIdToUserCache.put(user.getUserId(), user);
       if (user.isInDb()) artIdToUserCache.put(user.getArtId(), user);
       if (userEnum != null) enumeratedUserCache.put(userEnum, user);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
-    */
-   public void onManagerWebInit() throws Exception {
    }
 
    public boolean isAuthenticated() {
@@ -191,9 +178,10 @@ public class SkynetAuthentication implements PersistenceManager {
       }
    }
 
-   public User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
-      User user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
-      persistUser(user);
+   public static User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
+      User user =
+            instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
+      instance.persistUser(user);
       return user;
    }
 
@@ -208,7 +196,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return instance.enumeratedUserCache.get(userEnum);
    }
 
-   public User createUser(String name, String email, String userID, boolean active) throws OseeCoreException, SQLException {
+   private User createUser(String name, String email, String userID, boolean active) throws OseeCoreException, SQLException {
       duringUserCreation = true;
       User user = null;
       try {
@@ -231,9 +219,9 @@ public class SkynetAuthentication implements PersistenceManager {
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
    @SuppressWarnings("unchecked")
-   public ArrayList<User> getUsers() throws OseeCoreException, SQLException {
-      loadUsersCache();
-      return (ArrayList<User>) activeUserCache.clone();
+   public static ArrayList<User> getUsers() throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
+      return (ArrayList<User>) instance.activeUserCache.clone();
    }
 
    public static User getUserByIdWithError(String userId) throws OseeCoreException, SQLException {
@@ -251,18 +239,18 @@ public class SkynetAuthentication implements PersistenceManager {
     * 
     * @return String[]
     */
-   public String[] getUserNames() throws OseeCoreException, SQLException {
-      loadUsersCache();
+   public static String[] getUserNames() throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
       // Sort if null or new names added since last sort
-      if (sortedActiveUserNameCache == null || sortedActiveUserNameCache.length != userIdToUserCache.size()) {
-         Collections.sort(activeUserCache);
+      if (instance.sortedActiveUserNameCache == null || instance.sortedActiveUserNameCache.length != instance.userIdToUserCache.size()) {
+         Collections.sort(instance.activeUserCache);
          int i = 0;
-         sortedActiveUserNameCache = new String[activeUserCache.size()];
-         for (User user : activeUserCache) {
-            sortedActiveUserNameCache[i++] = user.getName();
+         instance.sortedActiveUserNameCache = new String[instance.activeUserCache.size()];
+         for (User user : instance.activeUserCache) {
+            instance.sortedActiveUserNameCache[i++] = user.getName();
          }
       }
-      return sortedActiveUserNameCache;
+      return instance.sortedActiveUserNameCache;
    }
 
    /**
@@ -293,8 +281,8 @@ public class SkynetAuthentication implements PersistenceManager {
    /**
     * @return whether the Authentication manager is in the middle of creating a user
     */
-   public boolean duringUserCreation() {
-      return duringUserCreation;
+   public static boolean duringUserCreation() {
+      return instance.duringUserCreation;
    }
 
    public static int getNoOneArtifactId() {

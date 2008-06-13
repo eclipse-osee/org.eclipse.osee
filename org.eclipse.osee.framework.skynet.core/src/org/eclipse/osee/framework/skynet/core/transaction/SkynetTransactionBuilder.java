@@ -32,8 +32,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
  * @author Robert A. Fisher
  */
 public class SkynetTransactionBuilder {
-   private ArtifactPersistenceManager artifactManager;
-   private RelationPersistenceManager relationManager;
    private Collection<SkynetTransaction> transactions;
    private SkynetTransaction versionedTransaction;
    private Branch branch;
@@ -51,8 +49,6 @@ public class SkynetTransactionBuilder {
    protected SkynetTransactionBuilder(Branch branch, IProgressMonitor monitor) throws SQLException {
       this.transactions = new LinkedList<SkynetTransaction>();
       this.versionedTransaction = null;
-      this.artifactManager = ArtifactPersistenceManager.getInstance();
-      this.relationManager = RelationPersistenceManager.getInstance();
       this.branch = branch;
       this.finished = false;
       this.monitor = monitor;
@@ -62,11 +58,11 @@ public class SkynetTransactionBuilder {
    }
 
    public void addArtifactToPersist(Artifact artifact) throws Exception {
-      artifactManager.persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
+      ArtifactPersistenceManager.getInstance().persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
    }
 
    public void addLinkToPersist(RelationLink link) throws SQLException, ArtifactDoesNotExist {
-      relationManager.persist(link, getTransaction(link.isVersionControlled()));
+      RelationPersistenceManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 
    public void deleteArtifact(Artifact artifact) throws Exception {
@@ -74,7 +70,7 @@ public class SkynetTransactionBuilder {
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work
       monitor.subTask("Deleting " + artifact.getDescriptiveName());
-      artifactManager.doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
+      ArtifactPersistenceManager.getInstance().doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
    }
 
    /**

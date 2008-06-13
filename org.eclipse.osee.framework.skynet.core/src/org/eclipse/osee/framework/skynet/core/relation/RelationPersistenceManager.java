@@ -26,11 +26,8 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelatio
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
@@ -48,11 +45,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransacti
  * @see org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager
  * @author Robert A. Fisher
  */
-public class RelationPersistenceManager implements PersistenceManager {
+public class RelationPersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
    private static final String UPDATE_RELATION_ORDERS =
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order=?, b_order=? WHERE gamma_id=?";
-   private ArtifactPersistenceManager artifactManager;
 
    // This must be declared here cause it can't be declared in enum RelationSide
    public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =
@@ -66,23 +62,6 @@ public class RelationPersistenceManager implements PersistenceManager {
    private static final RelationPersistenceManager instance = new RelationPersistenceManager();
 
    private RelationPersistenceManager() {
-   }
-
-   /**
-    * Acquire an instance of the <code>RelationPeristenceManager</code>.
-    */
-   public static RelationPersistenceManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
-      return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
-    */
-   public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
    }
 
    /**
@@ -105,7 +84,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void persist(RelationLink link, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
+   public static void persist(RelationLink link, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
       // The relation will be clean by the end of this, so mark it early so that this relation won't be
       // persisted by its other artifact
       link.setNotDirty();
@@ -161,7 +140,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             modId, transaction.getBranch()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
-            link.getRelationType().getTypeName(), link.getASideName(), modType, this));
+            link.getRelationType().getTypeName(), link.getASideName(), modType, instance));
    }
 
    /**

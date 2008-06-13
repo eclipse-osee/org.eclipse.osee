@@ -47,8 +47,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -96,7 +94,7 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * 
  * @author Jeff C. Phillips
  */
-public class RevisionManager implements PersistenceManager, IEventReceiver {
+public class RevisionManager implements IEventReceiver {
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
@@ -150,9 +148,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_attribute atr1, osee_define_attribute atr2 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
-   private ArtifactPersistenceManager artifactManager;
-   private BranchPersistenceManager branchManager;
-   private TransactionIdManager transactionIdManager;
    private static final Pair<String, ArtifactType> UNKNOWN_DATA = new Pair<String, ArtifactType>(null, null);
 
    private Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
@@ -167,19 +162,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    }
 
    public static RevisionManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
       return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
-    */
-   public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
-      branchManager = BranchPersistenceManager.getInstance();
-      transactionIdManager = TransactionIdManager.getInstance();
    }
 
    public List<TransactionData> getTransactionsPerBranch(Branch branch) throws OseeCoreException, SQLException {
@@ -357,9 +340,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist {
 
       TransactionId fromTransactionId =
-            transactionIdManager.getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
+            TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
       TransactionId toTransactionId =
-            transactionIdManager.getPossiblyEditableTransactionIfFromCache(toTransactionNumber);
+            TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(toTransactionNumber);
 
       Collection<RevisionChange> changes =
             getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId, artifactNameDescriptorResolver);
@@ -561,7 +544,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                         sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                  transactionIdManager.getStartEndPoint(sourceBranch);
+                  TransactionIdManager.getInstance().getStartEndPoint(sourceBranch);
 
             sourceHeadTransactionId = branchStartEndTransaction.getKey();
             sourceEndTransactionId = branchStartEndTransaction.getValue();
@@ -571,8 +554,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
                         transactionNumber);
 
-            sourceHeadTransactionId = transactionIdManager.getPossiblyEditableTransactionId(transactionNumber);
-            sourceEndTransactionId = transactionIdManager.getPossiblyEditableTransactionId(transactionNumber);
+            sourceHeadTransactionId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
+            sourceEndTransactionId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
          AttributeChanged attributeChanged;
@@ -645,7 +630,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       if (artIdSet.isEmpty()) return conflicts;
 
       Branch mergeBranch =
-            branchManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(artIdSet));
+            BranchPersistenceManager.getInstance().getOrCreateMergeBranch(sourceBranch, destinationBranch,
+                  new ArrayList<Integer>(artIdSet));
 
       if (mergeBranch == null) throw new Exception("Could not create the Merge Branch.");
 
@@ -700,7 +686,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                      SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
                      destinationBranch.getBranchId());
 
-         TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
+         TransactionId sourceHeadTransactionId =
+               TransactionIdManager.getInstance().getEditableTransactionId(sourceBranch);
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          if (!resultSet.next()) return;
@@ -758,7 +745,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                      sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
                      SQL3DataType.INTEGER, destinationBranch.getBranchId());
 
-         TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
+         TransactionId sourceHeadTransactionId =
+               TransactionIdManager.getInstance().getEditableTransactionId(sourceBranch);
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          if (!resultSet.next()) return;
@@ -926,8 +914,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      return getDeletedArtifactChanges(null, null, transactionIdManager.getPriorTransaction(transactionId),
-            transactionId, null);
+      return getDeletedArtifactChanges(null, null,
+            TransactionIdManager.getInstance().getPriorTransaction(transactionId), transactionId, null);
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
@@ -966,13 +954,13 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       if (includeRelationOnlyChanges) {
          criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       }
-      return artifactManager.getArtifacts(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifacts(criteria, false, toTransaction.getBranch());
    }
 
    public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      return artifactManager.getArtifacts(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifacts(criteria, false, toTransaction.getBranch());
    }
 
    /**
@@ -1023,7 +1011,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                ResultSet rset = chStmt.getRset();
                while (rset.next()) {
                   artIdToMinOver.put(rset.getInt("art_id"),
-                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+                        TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                              rset.getInt("base_tx")));
                }
             } finally {
                DbUtil.close(chStmt);
@@ -1042,7 +1031,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                ResultSet rset = chStmt1.getRset();
                while (rset.next()) {
                   artIdToMaxUnder.put(rset.getInt("art_id"),
-                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+                        TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                              rset.getInt("base_tx")));
                }
             } finally {
                DbUtil.close(chStmt1);
@@ -1147,7 +1137,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                      TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
                            set.getInt("transaction_id"));
                int artId = set.getInt("art_id");
-               Artifact artifact = artifactManager.getArtifactFromId(artId, transactionId);
+               Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, transactionId);
 
                if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(artId,
                      artifact.getDescriptiveName(), artifact.getArtifactType());
@@ -1265,7 +1255,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    }
 
    public boolean branchHasChanges(Branch branch) throws IllegalStateException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      Pair<TransactionId, TransactionId> transactions = transactionIdManager.getStartEndPoint(branch);
+      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getInstance().getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
    }
 
@@ -1294,7 +1284,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             ResultSet rset = chStmt.getRset();
 
             while (rset.next()) {
-               otherBranches.add(branchManager.getBranch(rset.getInt("branch_id")));
+               otherBranches.add(BranchPersistenceManager.getInstance().getBranch(rset.getInt("branch_id")));
             }
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);

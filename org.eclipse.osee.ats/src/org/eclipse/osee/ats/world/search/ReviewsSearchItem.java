@@ -63,8 +63,7 @@ public class ReviewsSearchItem extends UserSearchItem {
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(allCriteria, true, BranchPersistenceManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }

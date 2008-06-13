@@ -51,8 +51,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEve
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetEventBase;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -76,7 +74,7 @@ import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
-public class BranchPersistenceManager implements PersistenceManager {
+public class BranchPersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
    private static final String READ_BRANCH_TABLE =
@@ -104,8 +102,6 @@ public class BranchPersistenceManager implements PersistenceManager {
    private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
 
-   private BranchCreator branchCreator;
-
    // This hash is keyed on the branchId
    private TreeMap<Integer, Branch> branchCache;
    //This hash is keyed in the source branch id and destination branch id
@@ -121,17 +117,7 @@ public class BranchPersistenceManager implements PersistenceManager {
    }
 
    public static BranchPersistenceManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
       return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
-    */
-   public void onManagerWebInit() throws Exception {
-      branchCreator = BranchCreator.getInstance();
    }
 
    public Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws SQLException {
@@ -273,7 +259,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
 
       if (mergeBranch == null) {
-         mergeBranch = branchCreator.createMergeBranch(sourceBranch, destBranch, expectedArtIds);
+         mergeBranch = BranchCreator.getInstance().createMergeBranch(sourceBranch, destBranch, expectedArtIds);
       } else {
          MergeBranchManager.updateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
       }
@@ -732,7 +718,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Collection<ArtifactType> compressArtTypes =
             ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
-      return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
+      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, compressArtTypes, null);
    }
 
@@ -747,7 +733,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Collection<ArtifactType> preserveArtTypes =
             ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
-      return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
+      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, null, preserveArtTypes);
    }
 
@@ -773,7 +759,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Set<ArtifactType> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames);
       Set<ArtifactType> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames);
 
-      return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
+      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, true, compressArtTypes, preserveArtTypes);
    }
 
@@ -795,7 +781,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     */
    public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initialize) throws Exception {
       // Create branch with name and static name; short name will be computed from full name
-      Branch branch = branchCreator.createRootBranch(null, branchName, staticBranchName);
+      Branch branch = BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName);
       // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
          KeyedBranchCache.getInstance().createKeyedBranch(staticBranchName, branch);

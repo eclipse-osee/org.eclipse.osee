@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Donald G. Dunne
  */
 public class TagBranchesJob extends Job {
-
-   private static final TagManager tagManager = TagManager.getInstance();
    private Collection<Branch> branches;
 
    public TagBranchesJob(Collection<Branch> branches) {
@@ -45,7 +43,7 @@ public class TagBranchesJob extends Job {
             monitor.subTask("Tagging " + arts.size() + " artifacts from " + branch.getBranchName());
             for (Artifact artifact : arts) {
                try {
-                  tagManager.autoTag(true, artifact);
+                  TagManager.autoTag(true, artifact);
                } catch (Exception ex) {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, false);
                }

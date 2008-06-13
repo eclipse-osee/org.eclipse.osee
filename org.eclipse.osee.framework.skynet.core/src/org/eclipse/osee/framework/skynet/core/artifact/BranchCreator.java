@@ -44,8 +44,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
@@ -63,7 +61,7 @@ import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 /**
  * @author Ryan D. Brooks
  */
-public class BranchCreator implements PersistenceManager {
+public class BranchCreator {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
    public static final String NEW_MERGE_BRANCH_COMMENT = "New Merge Branch from ";
@@ -127,17 +125,7 @@ public class BranchCreator implements PersistenceManager {
    }
 
    public static BranchCreator getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
       return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
-    */
-   public void onManagerWebInit() throws Exception {
-      SkynetAuthentication.getInstance();
    }
 
    private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException, SQLException {

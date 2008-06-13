@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 public class HttpBranchCreation {
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
 
    public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
@@ -97,7 +96,7 @@ public class HttpBranchCreation {
          throw new OseeCoreException(ex);
       }
       eventManager.kick(new LocalNewBranchEvent(new Object(), branch.getBranchId()));
-      remoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(), SkynetAuthentication.getUser().getArtId()));
+      RemoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(), SkynetAuthentication.getUser().getArtId()));
       return branch;
    }
 

@@ -94,7 +94,7 @@ public class PolicyDialog extends Dialog {
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       try {
-         subjectList.addAll(SkynetAuthentication.getInstance().getUsers());
+         subjectList.addAll(SkynetAuthentication.getUsers());
          subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);

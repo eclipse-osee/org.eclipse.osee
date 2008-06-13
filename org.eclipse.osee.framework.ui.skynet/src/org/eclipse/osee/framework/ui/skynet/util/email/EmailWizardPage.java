@@ -91,7 +91,7 @@ public class EmailWizardPage extends WizardPage {
       }
 
       try {
-         names.addAll(SkynetAuthentication.getInstance().getUsers());
+         names.addAll(SkynetAuthentication.getUsers());
          names.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
          names.remove(SkynetAuthentication.getUser(UserEnum.NoOne));
       } catch (Exception ex) {

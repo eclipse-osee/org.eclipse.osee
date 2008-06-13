@@ -17,9 +17,6 @@ package org.eclipse.osee.framework.skynet.core.tagging;
  */
 public enum SystemTagDescriptor {
    AUTO_INDEXED("System Index");
-
-   private static final TagManager tagManager = TagManager.getInstance();
-
    private final String name;
    private TagDescriptor descriptor;
 
@@ -34,7 +31,7 @@ public enum SystemTagDescriptor {
    public TagDescriptor getDescriptor() {
       if (descriptor == null) {
          // Look for the descriptor already in the system
-         for (TagDescriptor tagDescriptor : tagManager.getTagDescriptors()) {
+         for (TagDescriptor tagDescriptor : TagManager.getTagDescriptors()) {
             if (tagDescriptor.getName().equals(name)) {
                descriptor = tagDescriptor;
                break;
@@ -43,7 +40,7 @@ public enum SystemTagDescriptor {
 
          // If the descriptor was not found, then make it
          if (descriptor == null) {
-            descriptor = tagManager.makeTagType(name);
+            descriptor = TagManager.makeTagType(name);
          }
       }
       return descriptor;

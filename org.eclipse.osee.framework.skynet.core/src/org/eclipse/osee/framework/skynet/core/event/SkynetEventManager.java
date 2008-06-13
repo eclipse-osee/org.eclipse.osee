@@ -32,13 +32,13 @@ public class SkynetEventManager extends EventManager {
    // Guid, Event, IEventReceiver
    private final DoubleKeyHashMap<Class<?>, String, Set<IEventReceiver>> guidReceiverMap;
    private final Map<Class<?>, Set<IEventReceiver>> receiverMap;
-   private final static SkynetEventManager reference = new SkynetEventManager();
+   private final static SkynetEventManager instance = new SkynetEventManager();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetEventManager.class);
    private boolean localCallbacksEnabled = true;
    private Set<IEventReceiver> subscribeAll;
 
    public static SkynetEventManager getInstance() {
-      return reference;
+      return instance;
    }
 
    private SkynetEventManager() {

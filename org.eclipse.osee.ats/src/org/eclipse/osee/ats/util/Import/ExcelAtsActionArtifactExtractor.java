@@ -178,7 +178,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          // Else if assignees, confirm that they are valid
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
-               User user = SkynetAuthentication.getInstance().getUserByName(assignee, false);
+               User user = SkynetAuthentication.getUserByName(assignee, false);
                if (user == null)
                   rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                else

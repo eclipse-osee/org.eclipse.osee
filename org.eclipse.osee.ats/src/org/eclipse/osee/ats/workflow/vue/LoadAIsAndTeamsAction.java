@@ -192,12 +192,12 @@ public class LoadAIsAndTeamsAction extends Action {
                else if (line.startsWith(LEAD)) {
                   String name = line.replaceFirst(LEAD, "");
                   // Get user or create temp user if not on production DB
-                  User u = SkynetAuthentication.getInstance().getUserByName(name, !AtsPlugin.isProductionDb());
+                  User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
                   leads.add(u);
                } else if (line.startsWith(MEMBER)) {
                   String name = line.replaceFirst(MEMBER, "");
                   // Get user or create temp user if not on production DB
-                  User u = SkynetAuthentication.getInstance().getUserByName(name, !AtsPlugin.isProductionDb());
+                  User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
                   members.add(u);
                } else
                   throw new IllegalArgumentException(
@@ -284,7 +284,7 @@ public class LoadAIsAndTeamsAction extends Action {
             else if (line.startsWith(LEAD)) {
                String name = line.replaceFirst(LEAD, "");
                // Get user or create temp user if not on production DB
-               User u = SkynetAuthentication.getInstance().getUserByName(name, !AtsPlugin.isProductionDb());
+               User u = SkynetAuthentication.getUserByName(name, !AtsPlugin.isProductionDb());
                leads.add(u);
             } else if (line.startsWith(STATIC_ID)) staticIds.add(line.replaceFirst(STATIC_ID, ""));
          }

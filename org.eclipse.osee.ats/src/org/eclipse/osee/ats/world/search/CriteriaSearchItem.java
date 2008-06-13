@@ -37,8 +37,7 @@ public class CriteriaSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       if (criteria == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
       Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(criteria, all,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactPersistenceManager.getArtifacts(criteria, all, BranchPersistenceManager.getAtsBranch());
       if (cancelled) return EMPTY_SET;
       return artifacts;
    }
