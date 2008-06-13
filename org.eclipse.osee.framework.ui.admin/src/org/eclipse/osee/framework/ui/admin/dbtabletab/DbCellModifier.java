@@ -70,14 +70,14 @@ public class DbCellModifier implements ICellModifier {
          stringValue.setValue(((Long) obj).toString());
          return stringValue;
       } else if (dbItem.isBems(property)) {
-         enumeratedValue.setChocies(SkynetAuthentication.getInstance().getUserNames());
-         User u = null;
          try {
+            enumeratedValue.setChocies(SkynetAuthentication.getInstance().getUserNames());
+            User u = null;
             u = SkynetAuthentication.getUserByIdWithError((String) obj);
+            if (u != null) enumeratedValue.setValue(u.getName());
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
-         if (u != null) enumeratedValue.setValue(u.getName());
          return enumeratedValue;
       } else if (obj instanceof String) {
          stringValue.setValue(((String) obj));
@@ -108,10 +108,10 @@ public class DbCellModifier implements ICellModifier {
             dbModel.setColumnChanged(property);
          }
       } else if (dbItem.isBems(property)) {
-         String newName = (String) value;
-         User newUser = SkynetAuthentication.getInstance().getUserByName(newName, false);
-         String oldBems = (String) wasObj;
          try {
+            String newName = (String) value;
+            User newUser = SkynetAuthentication.getUserByName(newName, false);
+            String oldBems = (String) wasObj;
             if (!newUser.getUserId().equals(oldBems)) {
                dbModel.setColumn(columnIndex, newUser.getUserId());
                dbModel.setNeedSave(true);

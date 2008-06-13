@@ -14,8 +14,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -65,25 +68,25 @@ public abstract class WorldSearchItem {
       return getName();
    }
 
-   public abstract Collection<Artifact> performSearch(SearchType searchType) throws Exception;
+   public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException;
 
    public Collection<Artifact> performReSearch() throws SQLException, IllegalArgumentException {
       return EMPTY_SET;
    }
 
-   public Collection<Artifact> performSearchGetResults() throws Exception {
+   public Collection<Artifact> performSearchGetResults() throws OseeCoreException, SQLException {
       return performSearchGetResults(false, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException, SQLException {
       return performSearchGetResults(false, searchType);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi) throws Exception {
+   public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException, SQLException {
       return performSearchGetResults(performUi, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException, SQLException {
       cancelled = false;
       if (performUi) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -91,7 +94,11 @@ public abstract class WorldSearchItem {
              * @see java.lang.Runnable#run()
              */
             public void run() {
-               performUI(searchType);
+               try {
+                  performUI(searchType);
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
          }, true);
 
@@ -100,7 +107,7 @@ public abstract class WorldSearchItem {
       return performSearch(searchType);
    }
 
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       cancelled = false;
    }
 

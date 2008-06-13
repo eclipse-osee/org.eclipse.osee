@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -39,7 +40,7 @@ public class ModificationReportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException, CoreException, IOException, SQLException {
       matrix.clear();
 
       int columnIndex = 2;
@@ -52,7 +53,7 @@ public class ModificationReportJob extends ReportJob {
       writeMatrix();
    }
 
-   private void processArtifact(Artifact artifact, IProgressMonitor monitor) throws SQLException {
+   private void processArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       monitor.subTask("Processing " + artifact.getDescriptiveName());
 
       String[] row = new String[3];

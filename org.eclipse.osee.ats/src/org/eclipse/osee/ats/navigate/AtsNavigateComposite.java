@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -70,7 +69,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       try {
          WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
          worldView.loadTable(searchItem, tableLoadOptions);
-      } catch (PartInitException e1) {
+      } catch (Exception e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
                "Couldn't Launch Search View " + e1.getMessage());
       }

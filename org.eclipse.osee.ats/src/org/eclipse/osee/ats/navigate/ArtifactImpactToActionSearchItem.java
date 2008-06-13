@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -88,7 +87,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          }
       }
 
-      private void getMatrixItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      private void getMatrixItems() throws OseeCoreException, SQLException {
          Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactsFromName("%" + artifactName + "%",
                      BranchPersistenceManager.getInstance().getDefaultBranch());

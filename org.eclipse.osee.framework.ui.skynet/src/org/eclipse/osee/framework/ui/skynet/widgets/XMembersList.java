@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 
@@ -26,15 +27,15 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
  */
 public class XMembersList extends XListViewer {
 
-   public XMembersList() {
+   public XMembersList() throws OseeCoreException, SQLException {
       this("MList", "", "");
    }
 
-   public XMembersList(String displayLabel) {
+   public XMembersList(String displayLabel) throws OseeCoreException, SQLException {
       this(displayLabel, "", "");
    }
 
-   public XMembersList(String displayLabel, String xmlRoot, String xmlSubRoot) {
+   public XMembersList(String displayLabel, String xmlRoot, String xmlSubRoot) throws OseeCoreException, SQLException {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());

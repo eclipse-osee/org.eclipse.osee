@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -164,7 +165,11 @@ public class AdminView extends ViewPart implements IActionable {
 
       // ModeChecker.check(parent);
       new AutoRunTab(tabFolder);
-      new OseeClientsTab(tabFolder);
+      try {
+         new OseeClientsTab(tabFolder);
+      } catch (Exception ex) {
+         OSEELog.logException(AdminPlugin.class, ex, false);
+      }
       new DbTableTab(tabFolder);
 
       parent.layout();

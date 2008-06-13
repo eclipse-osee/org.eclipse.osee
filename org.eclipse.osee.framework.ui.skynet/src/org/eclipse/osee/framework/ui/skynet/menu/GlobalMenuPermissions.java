@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -17,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +41,7 @@ public class GlobalMenuPermissions {
     * 
     * @param globalMenuHelper
     */
-   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) {
+   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException, SQLException {
       this(globalMenuHelper.getArtifacts());
    }
 
@@ -48,7 +50,7 @@ public class GlobalMenuPermissions {
     * 
     * @param artifact
     */
-   public GlobalMenuPermissions(Artifact artifact) {
+   public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException, SQLException {
       this(Arrays.asList(artifact));
    }
 
@@ -57,7 +59,7 @@ public class GlobalMenuPermissions {
     * 
     * @param artifacts
     */
-   public GlobalMenuPermissions(Collection<Artifact> artifacts) {
+   public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
       hasArtifacts = artifacts.size() > 0;
       writePermission = true;
       readPermission = true;

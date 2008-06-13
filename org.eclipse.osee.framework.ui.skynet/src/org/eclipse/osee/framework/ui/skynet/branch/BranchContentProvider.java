@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
@@ -170,7 +171,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          return EMPTY_ARRAY;
       }
 
-      private Collection<Object> getTransactions(Branch branch) {
+      private Collection<Object> getTransactions(Branch branch) throws OseeCoreException, SQLException {
          if (!showTransactions) return Collections.emptyList();
          List<TransactionData> transactions = revisionManager.getTransactionsPerBranch(branch);
          Collections.sort(transactions, new Comparator<TransactionData>() {

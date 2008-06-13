@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -142,7 +143,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       actionDatas.add(aData);
    }
 
-   public boolean dataIsValid() {
+   public boolean dataIsValid() throws OseeCoreException, SQLException {
       System.out.println("Validating...");
       XResultData rd = new XResultData(AtsPlugin.getLogger());
       int rowNum = 1; // Header is row 1

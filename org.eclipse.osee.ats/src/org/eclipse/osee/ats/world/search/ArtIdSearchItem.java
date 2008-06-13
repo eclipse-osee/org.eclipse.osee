@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -32,13 +33,13 @@ public class ArtIdSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, OseeCoreException {
       return ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
             BranchPersistenceManager.getAtsBranch(), false);
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null, "Enter ArtId(s) (comma separated)",

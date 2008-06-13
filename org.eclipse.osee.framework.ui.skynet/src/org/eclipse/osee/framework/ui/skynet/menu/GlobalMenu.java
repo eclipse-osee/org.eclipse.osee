@@ -96,11 +96,14 @@ public class GlobalMenu {
       }
 
       public void menuShown(MenuEvent e) {
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
-
-         if (deleteMenuItem != null) deleteMenuItem.setEnabled(permiss.isFullAccess());
-         if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && OseeProperties.isDeveloper());
-         if (tagMenuItem != null) tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
+         try {
+            GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+            if (deleteMenuItem != null) deleteMenuItem.setEnabled(permiss.isFullAccess());
+            if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && OseeProperties.isDeveloper());
+            if (tagMenuItem != null) tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
    }
 

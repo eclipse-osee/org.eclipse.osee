@@ -27,6 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -75,19 +78,23 @@ public class PolicyDialog extends Dialog {
       mainComposite.setLayout(new GridLayout(1, false));
 
       addDialogContols(mainComposite);
-      setInputs();
+      try {
+         setInputs();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
       addListeners();
       checkEnabled();
 
       return mainComposite;
    }
 
-   private void setInputs() {
+   private void setInputs() throws OseeCoreException, SQLException {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
-      subjectList.addAll(SkynetAuthentication.getInstance().getUsers());
       try {
+         subjectList.addAll(SkynetAuthentication.getInstance().getUsers());
          subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);

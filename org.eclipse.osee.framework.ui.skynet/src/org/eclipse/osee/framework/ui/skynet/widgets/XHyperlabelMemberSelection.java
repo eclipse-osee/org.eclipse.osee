@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -50,15 +52,20 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelSelection {
 
    @Override
    public boolean handleSelection() {
-      UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
-      uld.setMessage("Select to assign.\nDeSelect to un-assign.");
-      uld.setInitialSelections(selectedUsers);
-      if (uld.open() != 0) return false;
-      selectedUsers.clear();
-      for (Artifact art : uld.getSelection()) {
-         selectedUsers.add((User) art);
+      try {
+         UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+         uld.setMessage("Select to assign.\nDeSelect to un-assign.");
+         uld.setInitialSelections(selectedUsers);
+         if (uld.open() != 0) return false;
+         selectedUsers.clear();
+         for (Artifact art : uld.getSelection()) {
+            selectedUsers.add((User) art);
+         }
+         return true;
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      return true;
+      return false;
    }
 
 }

@@ -246,11 +246,11 @@ public class SMAManager {
       return true;
    }
 
-   public boolean promptChangeOriginator() throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public boolean promptChangeOriginator() throws OseeCoreException, SQLException {
       return promptChangeOriginator(Arrays.asList(sma));
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException, SQLException {
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New Originator");
       int result = ld.open();
       if (result == 0) {

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.swt.widgets.Display;
@@ -58,7 +60,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
       Collection<Artifact> arts =
@@ -74,7 +76,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (groupName != null) return;
       if (group != null) return;

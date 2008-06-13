@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -95,7 +96,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getTeamDefs() throws Exception {
+   public void getTeamDefs() throws OseeCoreException, SQLException {
       if (teamDefNames == null) return;
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
@@ -113,7 +114,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws Exception {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException, SQLException {
       getTeamDefs();
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
@@ -127,7 +128,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       getTeamDefs();
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())
@@ -203,7 +204,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (teamDefNames != null) return;
       if (teamDefs != null) return;

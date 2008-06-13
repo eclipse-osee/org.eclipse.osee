@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectC
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -54,9 +56,8 @@ public class OseeClientsTab {
    private Composite mainComposite;
    private Text text;
 
-   public OseeClientsTab(TabFolder tabFolder) {
+   public OseeClientsTab(TabFolder tabFolder) throws OseeCoreException, SQLException {
       super();
-      this.users = new ArrayList<User>();
       this.users = SkynetAuthentication.getInstance().getUsers();
       this.whoAmI = SkynetAuthentication.getUser();
       users.remove(whoAmI);

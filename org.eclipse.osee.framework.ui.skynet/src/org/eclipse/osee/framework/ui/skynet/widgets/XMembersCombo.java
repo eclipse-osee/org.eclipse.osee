@@ -113,9 +113,13 @@ public class XMembersCombo extends XWidget {
       dataCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
-      for (User user : SkynetAuthentication.getInstance().getUsers()) {
-         dataCombo.add(user.getName());
-         dataCombo.setData(user.getName(), user);
+      try {
+         for (User user : SkynetAuthentication.getInstance().getUsers()) {
+            dataCombo.add(user.getName());
+            dataCombo.setData(user.getName(), user);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       searchControl = new Search(dataCombo.getItems());
 

@@ -96,9 +96,13 @@ public class XWidgetFactory {
          xWidget = new XTextDam(name);
       else if (xWidgetName.equals("XLabelDam"))
          xWidget = new XLabelDam(name);
-      else if (xWidgetName.equals("XMembersList"))
-         xWidget = new XMembersList(name);
-      else if (xWidgetName.equals("XMembersCombo"))
+      else if (xWidgetName.equals("XMembersList")) {
+         try {
+            xWidget = new XMembersList(name);
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         }
+      } else if (xWidgetName.equals("XMembersCombo"))
          xWidget = new XMembersCombo(name);
       else if (xWidgetName.equals("XDate"))
          xWidget = new XDate(name);

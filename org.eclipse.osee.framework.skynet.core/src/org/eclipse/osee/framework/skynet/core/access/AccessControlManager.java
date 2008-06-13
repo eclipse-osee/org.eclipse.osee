@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -777,14 +778,14 @@ public class AccessControlManager implements PersistenceManager {
    /**
     * @return - Returns the subject who has the artifact locked or null if the object is not locked.
     */
-   public static Artifact getSubjectFromLockedObject(Object object) {
+   public static Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException, SQLException {
       Artifact subject = null;
 
       if (object instanceof Artifact) {
          Integer subjectArtId = instance.lockedObjectToSubject.get(((Artifact) object).getArtId());
 
          if (subjectArtId != null) {
-            subject = SkynetAuthentication.getInstance().getUserByArtId(subjectArtId);
+            subject = SkynetAuthentication.getUserByArtId(subjectArtId);
          }
       }
       return subject;

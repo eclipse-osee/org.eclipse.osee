@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -354,7 +355,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void handleChangeTransitionAssignees() {
+   private void handleChangeTransitionAssignees() throws OseeCoreException, SQLException {
       WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
          AWorkbench.popup("ERROR", "No Transition State Selected");
@@ -447,7 +448,11 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            handleChangeTransitionAssignees();
+            try {
+               handleChangeTransitionAssignees();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
 
       });

@@ -72,9 +72,6 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
 
    public BranchLabelProvider(ShowAttributeAction attributeAction) {
       this.attributeAction = attributeAction;
-
-      // Make sure all of the users are mapped so we don't incur many single hits for users
-      SkynetAuthentication.getInstance().getUsers();
    }
 
    @SuppressWarnings("unchecked")
@@ -177,8 +174,12 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          } else if (columnIndex == 2) {
             return String.valueOf(branch.getCreationDate());
          } else if (columnIndex == 3) {
-            User user = SkynetAuthentication.getInstance().getUserByArtId(branch.getAuthorId());
-            return user == null ? "" : user.getDescriptiveName();
+            try {
+               User user = SkynetAuthentication.getUserByArtId(branch.getAuthorId());
+               return user == null ? "" : user.getDescriptiveName();
+            } catch (Exception ex) {
+               return ex.getLocalizedMessage();
+            }
          } else if (columnIndex == 4) {
             return branch.getCreationComment();
          }

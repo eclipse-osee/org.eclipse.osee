@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -63,7 +65,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       if (isCancelled()) return EMPTY_SET;
 
       // Find all Team Workflows artifact types
@@ -91,7 +93,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (userCommName != null) return;
       if (userComm != null) return;

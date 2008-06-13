@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
@@ -75,7 +76,7 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
          return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getTeamDefs() throws Exception {
+   public void getTeamDefs() throws OseeCoreException, SQLException {
       if (teamDefNames == null) return;
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
@@ -93,7 +94,7 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws Exception {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException, SQLException {
       getTeamDefs();
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
@@ -107,7 +108,7 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       getTeamDefs();
 
       FromArtifactsSearch versionWorkflowSearch = null;
@@ -141,7 +142,7 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
    boolean selectedRecurseChildren = false;
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (teamDefNames != null) return;
       if (teamDefs != null) return;

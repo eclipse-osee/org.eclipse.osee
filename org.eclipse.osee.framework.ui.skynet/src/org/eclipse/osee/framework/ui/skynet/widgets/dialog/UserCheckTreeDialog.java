@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -40,7 +42,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
       super.setInput(artifacts);
    }
 
-   public UserCheckTreeDialog(Shell parent) {
+   public UserCheckTreeDialog(Shell parent) throws OseeCoreException, SQLException {
       this(parent, SkynetAuthentication.getInstance().getUsers());
    }
 

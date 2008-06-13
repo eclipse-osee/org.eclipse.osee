@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -71,7 +73,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch()
     */
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       if (isCancelled()) return EMPTY_SET;
       if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
@@ -85,7 +87,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (teamDefHoldingVersions != null) return;
       if (searchType == SearchType.ReSearch && selectedTeamDef != null) return;

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -35,7 +36,7 @@ public class TransactionData {
    private String name;
    private Branch branch;
 
-   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) {
+   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) throws OseeCoreException, SQLException {
       super();
       this.comment = comment == null ? "" : comment;
       this.timeStamp = timeStamp;
@@ -45,7 +46,7 @@ public class TransactionData {
       this.branch = branch;
 
       try {
-         User user = SkynetAuthentication.getInstance().getUserByArtId(authorId);
+         User user = SkynetAuthentication.getUserByArtId(authorId);
          name = user == null ? "" : user.getDescriptiveName();
       } catch (IllegalStateException ex) {
          name = "Could not resolve artId: " + (authorId);

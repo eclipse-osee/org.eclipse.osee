@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 
@@ -34,7 +36,7 @@ final class ArtifactSnapshot implements Serializable {
    private Timestamp createdOn;
    private Map<String, byte[]> binaryData;
 
-   protected ArtifactSnapshot(String namespace, String key, Artifact artifact) {
+   protected ArtifactSnapshot(String namespace, String key, Artifact artifact) throws OseeCoreException, SQLException {
       this.namespace = namespace;
       this.key = key;
       this.gammaId = getGamma(artifact);
@@ -90,7 +92,7 @@ final class ArtifactSnapshot implements Serializable {
     * @param artifact The artifact in question
     * @return isStale <b>true</b> if the snapshot is stale, otherwise <b>false</b>
     */
-   public boolean isStaleComparedTo(Artifact artifact) {
+   public boolean isStaleComparedTo(Artifact artifact) throws OseeCoreException, SQLException {
       boolean snapshotGammaLessThanArts = this.getGamma() < getGamma(artifact);
       boolean snapshotCreationAfterArtifacts = this.getCreatedOn().before(getCreationDate(artifact));
       return snapshotGammaLessThanArts || snapshotCreationAfterArtifacts;
@@ -102,7 +104,7 @@ final class ArtifactSnapshot implements Serializable {
     * @param artifact The artifact in question
     * @return isValid <b>true</b> if the snapshot pertains to this version of the artifact, otherwise <b>false</b>
     */
-   public boolean isValidFor(Artifact artifact) {
+   public boolean isValidFor(Artifact artifact) throws OseeCoreException, SQLException {
       boolean gammasAreEqual = this.getGamma() == getGamma(artifact);
       long snapTime = this.getCreatedOn().getTime();
       long artTime = getCreationDate(artifact).getTime();
@@ -114,7 +116,7 @@ final class ArtifactSnapshot implements Serializable {
       return artifact.getGammaId();
    }
 
-   private Timestamp getCreationDate(Artifact artifact) {
+   private Timestamp getCreationDate(Artifact artifact) throws OseeCoreException, SQLException {
       List<TransactionData> txData =
             new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
       for (TransactionData data : txData) {

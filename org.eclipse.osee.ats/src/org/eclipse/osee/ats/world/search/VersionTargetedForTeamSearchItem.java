@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -57,7 +59,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
 
       if (getSearchVersionArtifact() == null) throw new IllegalArgumentException("Invalid release version");
 
@@ -72,7 +74,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (searchType == SearchType.ReSearch && selectedVersionArt != null) return;
       if (versionArt != null) return;

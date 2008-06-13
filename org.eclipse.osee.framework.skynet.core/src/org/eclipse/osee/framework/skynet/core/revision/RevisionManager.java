@@ -182,7 +182,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       transactionIdManager = TransactionIdManager.getInstance();
    }
 
-   public List<TransactionData> getTransactionsPerBranch(Branch branch) {
+   public List<TransactionData> getTransactionsPerBranch(Branch branch) throws OseeCoreException, SQLException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
       ConnectionHandlerStatement chStmt = null;
@@ -255,7 +255,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param artifact
     * @return - Collection<TransactionData>
     */
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact) {
+   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact) throws OseeCoreException, SQLException {
       return getTransactionsPerArtifact(artifact, false);
    }
 
@@ -266,7 +266,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param includeAncestry - indicate whether or not history from ancestor branches should be included
     * @return - Collection<TransactionData>
     */
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) {
+   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException, SQLException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
       ConnectionHandlerStatement chStmt = null;
@@ -945,7 +945,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       return deletedArtifacts;
    }
 
-   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws SQLException, BranchDoesNotExist {
+   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws OseeCoreException, SQLException {
       List<TransactionData> transactionDataSet = getTransactionsPerBranch(branch);
       if (transactionDataSet.size() == 0) return new ArrayList<Artifact>();
       return getNewAndModifiedArtifacts(transactionDataSet.get(transactionDataSet.size() - 1).getTransactionId(),

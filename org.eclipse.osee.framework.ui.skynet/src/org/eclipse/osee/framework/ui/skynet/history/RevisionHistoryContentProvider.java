@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -39,10 +40,14 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
 
-         Collection<TransactionData> transactions =
-               RevisionManager.getInstance().getTransactionsPerArtifact(parentItem, true);
-         if (transactions != null) {
-            return transactions.toArray();
+         try {
+            Collection<TransactionData> transactions =
+                  RevisionManager.getInstance().getTransactionsPerArtifact(parentItem, true);
+            if (transactions != null) {
+               return transactions.toArray();
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
       } else if (parentElement instanceof TransactionData) {
          TransactionData parentItem = (TransactionData) parentElement;

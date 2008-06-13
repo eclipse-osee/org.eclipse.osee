@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
@@ -576,7 +577,7 @@ public class BranchExporter {
        * @param comment
        * @throws SQLException
        */
-      public TransactionData(int transactionId, RSetHelper artSet, RSetHelper attrSet, RSetHelper linkSet) throws SQLException {
+      public TransactionData(int transactionId, RSetHelper artSet, RSetHelper attrSet, RSetHelper linkSet) throws OseeCoreException, SQLException {
 
          ResultSet linedUpSet;
          if (artSet.onTransaction(transactionId)) {
@@ -589,7 +590,7 @@ public class BranchExporter {
             // Should never happen due to the way transactionId is determined
             throw new IllegalStateException("Transaction does not line up to any of the feeding queries");
          }
-         User author = SkynetAuthentication.getInstance().getUserByArtId(linedUpSet.getInt("author"));
+         User author = SkynetAuthentication.getUserByArtId(linedUpSet.getInt("author"));
          this.transactionId = transactionId;
          this.authorGuid = author == null ? "" : author.getGuid();
          this.time = linedUpSet.getTimestamp("time");

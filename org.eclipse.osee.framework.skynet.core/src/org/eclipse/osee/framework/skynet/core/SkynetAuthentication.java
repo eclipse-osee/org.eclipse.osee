@@ -26,9 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
@@ -53,27 +50,48 @@ public class SkynetAuthentication implements PersistenceManager {
       Active, InActive, Both
    }
    private boolean firstTimeThrough;
-   private final Map<String, User> nameOrIdToUserCache;
-   private final Map<Integer, User> artIdToUserCache;
-   private final ArrayList<User> activeUserCache;
-   private String[] activeUserNameCache;
+   private Map<String, User> userIdToUserCache;
+   private Map<String, User> nameToUserCache;
+   private Map<Integer, User> artIdToUserCache;
+   private ArrayList<User> activeUserCache;
+   private Map<OseeUser, User> enumeratedUserCache;
+   private String[] sortedActiveUserNameCache;
    private User currentUser;
-   private final Map<OseeUser, User> enumeratedUserCache;
    private boolean duringUserCreation;
 
    private static final SkynetAuthentication instance = new SkynetAuthentication();
 
    private SkynetAuthentication() {
       firstTimeThrough = true;
-      enumeratedUserCache = new HashMap<OseeUser, User>(30);
-      nameOrIdToUserCache = new HashMap<String, User>(800);
-      artIdToUserCache = new HashMap<Integer, User>(800);
-      activeUserCache = new ArrayList<User>(700);
    }
 
    public static SkynetAuthentication getInstance() {
       PersistenceManagerInit.initManagerWeb(instance);
       return instance;
+   }
+
+   private synchronized void loadUsersCache() throws OseeCoreException, SQLException {
+      if (activeUserCache == null) {
+         enumeratedUserCache = new HashMap<OseeUser, User>(30);
+         nameToUserCache = new HashMap<String, User>(800);
+         userIdToUserCache = new HashMap<String, User>(800);
+         artIdToUserCache = new HashMap<Integer, User>(800);
+         activeUserCache = new ArrayList<User>(700);
+         Collection<Artifact> dbUsers =
+               ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
+         for (Artifact a : dbUsers) {
+            User user = (User) a;
+            cacheUser(user, null);
+         }
+      }
+   }
+
+   private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException, SQLException {
+      if (user.isActive()) activeUserCache.add(user);
+      nameToUserCache.put(user.getDescriptiveName(), user);
+      userIdToUserCache.put(user.getUserId(), user);
+      if (user.isInDb()) artIdToUserCache.put(user.getArtId(), user);
+      if (userEnum != null) enumeratedUserCache.put(userEnum, user);
    }
 
    /*
@@ -156,33 +174,32 @@ public class SkynetAuthentication implements PersistenceManager {
       return currentUser;
    }
 
-   private void persistUser(User user) {
+   private void persistUser(User user) throws OseeCoreException, SQLException {
       duringUserCreation = true;
       try {
          user.persistAttributesAndRelations();
+         cacheUser(user, null);
       } catch (SQLException ex) {
          duringUserCreation = false;
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
    }
 
-   public User createUser(OseeUser userEnum) {
+   public User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
       User user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
       persistUser(user);
-      enumeratedUserCache.put(userEnum, user);
+      cacheUser(user, userEnum);
       return user;
    }
 
-   public static User getUser(OseeUser userEnum) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
+   public static User getUser(OseeUser userEnum) throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
       User user = instance.enumeratedUserCache.get(userEnum);
-      if (user == null) {
-         user = getUserByIdWithError(userEnum.getUserID());
-         instance.enumeratedUserCache.put(userEnum, user);
-      }
+      if (user == null) throw new UserNotInDatabase("User \"" + userEnum + "\" not in database.");
       return user;
    }
 
-   public User createUser(String name, String email, String userID, boolean active) {
+   public User createUser(String name, String email, String userID, boolean active) throws OseeCoreException, SQLException {
       duringUserCreation = true;
       User user = null;
       try {
@@ -192,12 +209,10 @@ public class SkynetAuthentication implements PersistenceManager {
          user.setActive(active);
          user.setUserID(userID);
          user.setEmail(email);
-         addUserToMap(user);
+         cacheUser(user, null);
          // this is here in case a user is created at an unexpected time
          if (!SkynetDbInit.isDbInit()) logger.log(Level.INFO, "Created user " + user, new Exception(
                "just wanted the stack trace"));
-      } catch (Exception ex) {
-         logger.log(Level.WARNING, "Error Creating User.\n", ex);
       } finally {
          duringUserCreation = false;
       }
@@ -208,49 +223,18 @@ public class SkynetAuthentication implements PersistenceManager {
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
    @SuppressWarnings("unchecked")
-   public ArrayList<User> getUsers() {
-      if (activeUserCache.size() == 0) {
-         try {
-            Collection<Artifact> dbUsers =
-                  ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
-            for (Artifact a : dbUsers) {
-               User user = (User) a;
-               if (user.isActive()) {
-                  activeUserCache.add(user);
-               }
-               addUserToMap(user);
-            }
-            Collections.sort(activeUserCache);
-            int i = 0;
-            activeUserNameCache = new String[activeUserCache.size()];
-            for (User user : activeUserCache) {
-               activeUserNameCache[i++] = user.getName();
-            }
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Error Searching for User in DB.\n", ex);
-         }
-      }
-
+   public ArrayList<User> getUsers() throws OseeCoreException, SQLException {
+      loadUsersCache();
       return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public static User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
+   public static User getUserByIdWithError(String userId) throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
-      User user = instance.nameOrIdToUserCache.get(userId);
-
-      if (user == null) {
-         try {
-            user =
-                  (User) ArtifactQuery.getArtifactFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName,
-                        userId, BranchPersistenceManager.getCommonBranch());
-            instance.addUserToMap(user);
-         } catch (ArtifactDoesNotExist ex) {
-            // Note this is normal for the creation of this user (i.e. db init)
-            throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.", ex);
-         }
-      }
+      User user = instance.userIdToUserCache.get(userId);
+      if (user == null) throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.");
       return user;
    }
 
@@ -259,9 +243,18 @@ public class SkynetAuthentication implements PersistenceManager {
     * 
     * @return String[]
     */
-   public String[] getUserNames() {
-      getUsers(); // ensure users are cached
-      return activeUserNameCache;
+   public String[] getUserNames() throws OseeCoreException, SQLException {
+      loadUsersCache();
+      // Sort if null or new names added since last sort
+      if (sortedActiveUserNameCache == null || sortedActiveUserNameCache.length != userIdToUserCache.size()) {
+         Collections.sort(activeUserCache);
+         int i = 0;
+         sortedActiveUserNameCache = new String[activeUserCache.size()];
+         for (User user : activeUserCache) {
+            sortedActiveUserNameCache[i++] = user.getName();
+         }
+      }
+      return sortedActiveUserNameCache;
    }
 
    /**
@@ -269,62 +262,18 @@ public class SkynetAuthentication implements PersistenceManager {
     * @param create if true, will create a temp user artifact; should only be used for dev purposes
     * @return user
     */
-   public User getUserByName(String name, boolean create) {
-      User user = nameOrIdToUserCache.get(name);
-      if (user == null) {
-         try {
-            user =
-                  (User) ArtifactQuery.getArtifactFromTypeAndName(User.ARTIFACT_NAME, name,
-                        BranchPersistenceManager.getCommonBranch());
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         } catch (MultipleArtifactsExist ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         } catch (ArtifactDoesNotExist ex) {
-            if (create) {
-               user = createUser(name, "", name, true);
-               try {
-                  user.persistAttributes();
-               } catch (SQLException ex2) {
-                  logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex2);
-               }
-            } else
-               logger.log(Level.SEVERE, ex.toString(), ex);
-         }
-         try {
-            if (user != null) addUserToMap(user);
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         }
-      }
+   public static User getUserByName(String name, boolean create) throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
+      User user = instance.nameToUserCache.get(name);
+      if (user == null) throw new UserNotInDatabase("User requested by name \"" + name + "\" was not found.");
       return user;
    }
 
-   public User getUserByArtId(int authorId) {
-      User user = null;
-      // Anything under 1 will never be acquirable
-      if (authorId < 1) {
-         return null;
-      } else if (artIdToUserCache.containsKey(authorId)) {
-         user = artIdToUserCache.get(authorId);
-      } else {
-         try {
-            user = (User) ArtifactQuery.getArtifactFromId(authorId, BranchPersistenceManager.getCommonBranch());
-            addUserToMap(user);
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            artIdToUserCache.put(authorId, null);
-         }
-      }
+   public static User getUserByArtId(int authorId) throws OseeCoreException, SQLException {
+      instance.loadUsersCache();
+      User user = instance.artIdToUserCache.put(authorId, null);
+      if (user == null) throw new UserNotInDatabase("User requested by artId \"" + authorId + "\" was not found.");
       return user;
-   }
-
-   private void addUserToMap(User user) throws SQLException, MultipleAttributesExist {
-      nameOrIdToUserCache.put(user.getDescriptiveName(), user);
-      nameOrIdToUserCache.put(user.getUserId(), user);
-      if (user.isInDb()) {
-         artIdToUserCache.put(user.getArtId(), user);
-      }
    }
 
    /**

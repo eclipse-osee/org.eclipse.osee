@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -51,7 +53,7 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       if (isCancelled()) return EMPTY_SET;
       if (user != null)
          return searchIt(user);
@@ -59,18 +61,18 @@ public abstract class UserSearchItem extends WorldSearchItem {
          return searchIt();
    }
 
-   protected Collection<Artifact> searchIt(User user) throws Exception {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
       return EMPTY_SET;
    }
 
-   private Collection<Artifact> searchIt() throws Exception {
+   private Collection<Artifact> searchIt() throws OseeCoreException, SQLException {
       if (isCancelled()) return EMPTY_SET;
       if (selectedUser != null) return searchIt(selectedUser);
       return EMPTY_SET;
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (user != null) return;
       if (searchType == SearchType.ReSearch && selectedUser != null) return;

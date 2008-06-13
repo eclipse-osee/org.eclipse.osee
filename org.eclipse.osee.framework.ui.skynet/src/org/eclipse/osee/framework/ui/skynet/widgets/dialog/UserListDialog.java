@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.sql.SQLException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -27,11 +29,11 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class UserListDialog extends ListDialog {
 
-   public UserListDialog(Shell parent) {
+   public UserListDialog(Shell parent) throws OseeCoreException, SQLException {
       this(parent, "Select User");
    }
 
-   public UserListDialog(Shell parent, String title) {
+   public UserListDialog(Shell parent, String title) throws OseeCoreException, SQLException {
       super(parent);
       setTitle(title);
       setMessage(title);

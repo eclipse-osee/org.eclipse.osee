@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +37,7 @@ public class MyCompletedSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws Exception {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
       if (isCancelled()) return EMPTY_SET;
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       String valueToMatch =

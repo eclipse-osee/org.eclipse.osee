@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.osgi.framework.Bundle;
 
@@ -158,7 +159,7 @@ public class ArtifactSnapshotManager {
     * @return The artifact snapshot
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws UnsupportedEncodingException {
+   private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
       Pair<String, String> snapshotKey = keyGenerator.getKeyPair(artifact);
       ArtifactSnapshot currentSnapshot = getSnapshotFromRemoteStorage(snapshotKey);
       if (currentSnapshot == null) {
@@ -212,7 +213,7 @@ public class ArtifactSnapshotManager {
     * @return snapshot from local cache
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getSnapshotFromLocalCacheAndUpdateIfNeeded(Artifact artifact) throws UnsupportedEncodingException {
+   private ArtifactSnapshot getSnapshotFromLocalCacheAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
       Pair<String, String> key = keyGenerator.getKeyPair(artifact);
       String localCacheKey = keyGenerator.toLocalCacheKey(key);
       ArtifactSnapshot toReturn = snapshotLocalCache.get(localCacheKey);
@@ -236,7 +237,7 @@ public class ArtifactSnapshotManager {
     * @return snapshot
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getSnapshotForRenderRetrieval(Artifact artifact) throws UnsupportedEncodingException {
+   private ArtifactSnapshot getSnapshotForRenderRetrieval(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
       ArtifactSnapshot data = null;
       try {
          data = getRemoteSnapshotAndUpdateIfNeeded(artifact);

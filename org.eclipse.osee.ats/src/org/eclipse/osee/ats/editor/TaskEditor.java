@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -260,7 +262,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return true;
    }
 
-   public static void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
+   public static void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);
@@ -275,15 +277,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       if (searchItem.isCancelled()) return;
 
       LoadTableJob job = null;
-      try {
-         job = new LoadTableJob(searchItem, SearchType.Search, tableLoadOptions);
-         job.setUser(false);
-         job.setPriority(Job.LONG);
-         job.schedule();
-         if (options.contains(TableLoadOption.ForcePend)) job.join();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
-      }
+      job = new LoadTableJob(searchItem, SearchType.Search, tableLoadOptions);
+      job.setUser(false);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (options.contains(TableLoadOption.ForcePend)) job.join();
    }
 
    private static class LoadTableJob extends Job {

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
@@ -80,7 +81,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getActionableItems() throws Exception {
+   public void getActionableItems() throws OseeCoreException, SQLException {
       if (actionItemNames != null && actionItems == null) {
          actionItems =
                Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(ActionableItemArtifact.ARTIFACT_NAME,
@@ -92,7 +93,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   private Set<ActionableItemArtifact> getSearchActionableItems() throws Exception {
+   private Set<ActionableItemArtifact> getSearchActionableItems() throws OseeCoreException, SQLException {
       getActionableItems();
       Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
       for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems))
@@ -106,7 +107,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       Set<ActionableItemArtifact> items = getSearchActionableItems();
       List<String> actionItemGuids = new ArrayList<String>(items.size());
       for (ActionableItemArtifact ai : items) {
@@ -135,7 +136,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) {
+   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
       super.performUI(searchType);
       if (actionItemNames != null) return;
       if (actionItems != null) return;

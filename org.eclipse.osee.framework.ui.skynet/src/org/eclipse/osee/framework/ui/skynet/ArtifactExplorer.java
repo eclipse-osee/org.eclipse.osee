@@ -222,7 +222,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       return composite;
    }
 
-   private void checkBranchReadable() {
+   private void checkBranchReadable() throws OseeCoreException, SQLException {
       Control control = branchUnreadableWarning;
       if (false != (new GlobalMenuPermissions(globalMenuHelper)).isDefaultBranchReadable()) {
          control = treeViewer.getTree();
@@ -302,7 +302,11 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       updateEnablementsEtAl();
       trees.add(tree);
       setHelpContexts();
-      checkBranchReadable();
+      try {
+         checkBranchReadable();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    /**
@@ -848,11 +852,15 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             Iterator<?> iterator = selection.iterator();
 
             while (iterator.hasNext()) {
-               Artifact object = (Artifact) iterator.next();
-               if ((new GlobalMenuPermissions(object)).isLocked()) {
-                  AccessControlManager.getInstance().unLockObject(object, SkynetAuthentication.getUser());
-               } else {
-                  AccessControlManager.getInstance().lockObject(object, SkynetAuthentication.getUser());
+               try {
+                  Artifact object = (Artifact) iterator.next();
+                  if ((new GlobalMenuPermissions(object)).isLocked()) {
+                     AccessControlManager.getInstance().unLockObject(object, SkynetAuthentication.getUser());
+                  } else {
+                     AccessControlManager.getInstance().lockObject(object, SkynetAuthentication.getUser());
+                  }
+               } catch (Exception ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                }
             }
          }
@@ -1133,17 +1141,22 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       public void menuShown(MenuEvent e) {
          // Use this menu listener until all menu items can be moved to
          // GlobaMenu
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+         try {
+            GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
-         lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
+            lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
 
-         lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
-         editMenuItem.setEnabled(permiss.isWritePermission());
-         createMenuItem.setEnabled(permiss.isWritePermission());
-         openMenuItem.setEnabled(permiss.isWritePermission());
-         goIntoMenuItem.setEnabled(permiss.isReadPermission());
-         copyMenuItem.setEnabled(permiss.isReadPermission());
-         pasteMenuItem.setEnabled(permiss.isWritePermission());
+            lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
+            editMenuItem.setEnabled(permiss.isWritePermission());
+            createMenuItem.setEnabled(permiss.isWritePermission());
+            openMenuItem.setEnabled(permiss.isWritePermission());
+            goIntoMenuItem.setEnabled(permiss.isReadPermission());
+            copyMenuItem.setEnabled(permiss.isReadPermission());
+            pasteMenuItem.setEnabled(permiss.isWritePermission());
+
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
 
       }
    }
@@ -1239,22 +1252,26 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+         try {
+            GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
-         if (e.keyCode == SWT.DEL && permiss.isWritePermission() && e.stateMask == 0) {
-            (new GlobalMenu(new ArtifactTreeViewerGlobalMenuHelper(treeViewer))).getDeleteArtifactAction().run();
-         }
-         if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
-            treeViewer.getTree().selectAll();
-         }
-         if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
-            expandAll((IStructuredSelection) treeViewer.getSelection());
-         }
-         if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
-            performCopy();
-         }
-         if (e.keyCode == 'v' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
-            performPaste();
+            if (e.keyCode == SWT.DEL && permiss.isWritePermission() && e.stateMask == 0) {
+               (new GlobalMenu(new ArtifactTreeViewerGlobalMenuHelper(treeViewer))).getDeleteArtifactAction().run();
+            }
+            if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
+               treeViewer.getTree().selectAll();
+            }
+            if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL && permiss.isReadPermission()) {
+               expandAll((IStructuredSelection) treeViewer.getSelection());
+            }
+            if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
+               performCopy();
+            }
+            if (e.keyCode == 'v' && e.stateMask == SWT.CONTROL && permiss.isWritePermission()) {
+               performPaste();
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -39,7 +41,7 @@ public class MyWorldSearchItemOld extends UserSearchItem {
       super(name, user);
    }
 
-   public Collection<Artifact> searchIt(User user) throws Exception {
+   public Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                   "%<" + user.getUserId() + ">%", BranchPersistenceManager.getAtsBranch());

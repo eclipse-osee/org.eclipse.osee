@@ -23,14 +23,11 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 
 /**
  * @author b1528444
@@ -104,7 +101,7 @@ public class HttpBranchCreation {
       return branch;
    }
 
-   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
+   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException, SQLException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
          associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
@@ -115,7 +112,7 @@ public class HttpBranchCreation {
       return associatedArtifactId;
    }
 
-   private static int getAuthorId() throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
+   private static int getAuthorId() throws OseeCoreException, SQLException {
       if (SkynetDbInit.isDbInit()) {
          return -1;
       }

@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -372,12 +373,12 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
    }
 
-   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
+   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
       searchItem.setCancelled(false);
       loadTable(searchItem, SearchType.Search, tableLoadOptions);
    }
 
-   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
+   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
       AtsPlugin.bulkLoadAtsConfigArtifacts();
@@ -396,15 +397,11 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       if (searchItem.isCancelled()) return;
 
       LoadTableJob job = null;
-      try {
-         job = new LoadTableJob(searchItem, SearchType.Search, this);
-         job.setUser(false);
-         job.setPriority(Job.LONG);
-         job.schedule();
-         if (options.contains(TableLoadOption.ForcePend)) job.join();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
-      }
+      job = new LoadTableJob(searchItem, SearchType.Search, this);
+      job.setUser(false);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (options.contains(TableLoadOption.ForcePend)) job.join();
    }
 
    private class LoadTableJob extends Job {
@@ -498,7 +495,11 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       Action myWorldAction = new Action("My World") {
 
          public void run() {
-            loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem());
+            try {
+               loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem());
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       };
       myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
@@ -530,7 +531,11 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       Action refreshAction = new Action("Refresh") {
 
          public void run() {
-            if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch);
+            try {
+               if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       };
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
