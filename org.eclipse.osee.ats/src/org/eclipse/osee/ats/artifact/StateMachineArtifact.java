@@ -353,7 +353,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void addSubscribed(User user) throws SQLException {
-      relate(AtsRelation.SubscribedUser_User, user, true);
+      if (!getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user)) addRelation(
+            AtsRelation.SubscribedUser_User, user);
+      persistRelations();
    }
 
    public void removeSubscribed(User user) throws SQLException {
@@ -373,7 +375,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void addFavorite(User user) throws SQLException {
-      relate(AtsRelation.FavoriteUser_User, user, true);
+      if (!getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user)) addRelation(
+            AtsRelation.FavoriteUser_User, user);
+      persistRelations();
    }
 
    public void removeFavorite(User user) throws SQLException {
