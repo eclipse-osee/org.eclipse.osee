@@ -200,8 +200,12 @@ public class SkynetAuthentication implements PersistenceManager {
    public static User getUser(OseeUser userEnum) throws OseeCoreException, SQLException {
       instance.loadUsersCache();
       User user = instance.enumeratedUserCache.get(userEnum);
-      if (user == null) throw new UserNotInDatabase("User \"" + userEnum + "\" not in database.");
-      return user;
+      if (user == null) {
+         user = getUserByIdWithError(userEnum.getUserID());
+         if (user == null) throw new UserNotInDatabase("UserEnum \"" + userEnum + "\" not in database.");
+         instance.enumeratedUserCache.put(userEnum, user);
+      }
+      return instance.enumeratedUserCache.get(userEnum);
    }
 
    public User createUser(String name, String email, String userID, boolean active) throws OseeCoreException, SQLException {
