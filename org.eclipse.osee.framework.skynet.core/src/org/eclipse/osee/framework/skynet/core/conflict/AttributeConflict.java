@@ -57,8 +57,6 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> destAttribute = null;
    private AttributeType dynamicAttributeDescriptor;
    private final boolean isWordAttribute;
-   private final String sourceValue;
-   private final String destValue;
 
    /**
     * @param sourceGamma
@@ -82,8 +80,6 @@ public class AttributeConflict extends Conflict {
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
       this.status = Status.EDITED;
-      this.sourceValue = sourceValue;
-      this.destValue = destValue;
       isWordAttribute = sourceValue == null;
    }
 
@@ -141,7 +137,9 @@ public class AttributeConflict extends Conflict {
     */
    public AttributeType getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
+         dynamicAttributeDescriptor =
+               AttributeTypeManager.getTypeWithWordContentCheck(getArtifact(),
+                     AttributeTypeManager.getType(attrTypeId).getName());
       }
       return dynamicAttributeDescriptor;
    }
