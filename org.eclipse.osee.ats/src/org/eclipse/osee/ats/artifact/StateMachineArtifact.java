@@ -989,6 +989,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return getHoursSpentSMAState(stateName) + getHoursSpentSMAStateTasks(stateName) + getHoursSpentSMAStateReviews(stateName);
    }
 
+   @Override
+   public double getWorldViewHoursSpentStateTotal() throws Exception {
+      return getHoursSpentSMAStateTotal(smaMgr.getStateMgr().getCurrentStateName());
+   }
+
    /**
     * Return hours spent working on all things (including children SMAs) for this SMA
     * 

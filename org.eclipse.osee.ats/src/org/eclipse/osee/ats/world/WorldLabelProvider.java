@@ -118,7 +118,10 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
          if (aCol == AtsXColumn.Hours_Spent_State_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentState());
          if (aCol == AtsXColumn.Hours_Spent_State_Task_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTask());
          if (aCol == AtsXColumn.Hours_Spent_State_Review_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateReview());
-         if (aCol == AtsXColumn.Hours_Spent_Total_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentTotal());
+         if (aCol == AtsXColumn.Hours_Spent_Total_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTotal());
+
+         if (aCol == AtsXColumn.Total_Hours_Spent_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentTotal());
+
          if (aCol == AtsXColumn.Notes_Col) return wva.getWorldViewNotes();
          if (aCol == AtsXColumn.Percent_Rework_Col) return wva.getWorldViewPercentReworkStr();
          if (aCol == AtsXColumn.Estimated_Release_Date_Col) return wva.getWorldViewEstimatedReleaseDateStr();

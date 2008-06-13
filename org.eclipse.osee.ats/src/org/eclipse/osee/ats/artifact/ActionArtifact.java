@@ -1304,6 +1304,17 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return hours;
    }
 
+   @Override
+   public double getWorldViewHoursSpentStateTotal() throws Exception {
+      double hours = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            hours += team.getWorldViewHoursSpentStateTotal();
+         }
+      }
+      return hours;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentTotal()
     */

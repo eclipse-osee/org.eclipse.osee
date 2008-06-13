@@ -69,6 +69,8 @@ public interface IWorldViewArtifact {
 
    public double getWorldViewHoursSpentStateTask() throws Exception;
 
+   public double getWorldViewHoursSpentStateTotal() throws Exception;
+
    public double getWorldViewHoursSpentTotal() throws Exception;
 
    public String getWorldViewID() throws Exception;
