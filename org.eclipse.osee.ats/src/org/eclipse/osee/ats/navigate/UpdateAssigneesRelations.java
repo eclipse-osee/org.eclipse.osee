@@ -56,6 +56,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
          for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
             if (art instanceof StateMachineArtifact) {
                ((StateMachineArtifact) art).updateAssigneeRelations();
+               art.persistRelations();
             }
          }
       }

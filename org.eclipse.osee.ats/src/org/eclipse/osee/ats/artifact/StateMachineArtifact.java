@@ -99,18 +99,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    /**
     * This method will create an assignee relation for each current assignee. Assignees are related to user artifacts to
-    * speed up ATS searching.
+    * speed up ATS searching. This does not persist the artifact.
     * 
     * @throws OseeCoreException
     * @throws SQLException
     */
    public void updateAssigneeRelations() throws OseeCoreException, SQLException {
-      for (User assignee : getSmaMgr().getStateMgr().getAssignees()) {
-         if (!getArtifacts(CoreRelationEnumeration.Users_User, Artifact.class).contains(assignee)) {
-            addRelation(CoreRelationEnumeration.Users_User, assignee);
-         }
-      }
-      persistRelations();
+      setRelations(CoreRelationEnumeration.Users_User, getSmaMgr().getStateMgr().getAssignees());
    }
 
    public boolean hasChildren() throws OseeCoreException {
