@@ -41,14 +41,14 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
  */
 public class SnapshotPersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SnapshotPersistenceManager.class);
-   private static final String DROP_SNAPSHOT = "DELETE FROM " + SNAPSHOT_TABLE + " WHERE namespace=? and key=?";
+   private static final String DROP_SNAPSHOT = "DELETE FROM " + SNAPSHOT_TABLE + " WHERE namespace=? and key_id=?";
    private static final String INSERT_SNAPSHOT =
-         "INSERT INTO " + SNAPSHOT_TABLE + " (NAMESPACE, KEY, LAST_UPDATED, LAST_ACCESSED, OBJECT) VALUES (?,?,?,?,?)";
+         "INSERT INTO " + SNAPSHOT_TABLE + " (NAMESPACE, key_id, LAST_UPDATED, LAST_ACCESSED, OBJECT) VALUES (?,?,?,?,?)";
    private static final String UPDATE_LAST_ACCESSED =
-         "UPDATE " + SNAPSHOT_TABLE + " SET last_accessed=? WHERE namespace=? AND key=?";
+         "UPDATE " + SNAPSHOT_TABLE + " SET last_accessed=? WHERE namespace=? AND key_id=?";
    private static final String SELECT_SNAPSHOT =
-         "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key=?";
-   private static final String SELECT_KEYS = "SELECT key FROM " + SNAPSHOT_TABLE + " WHERE namespace=?";
+         "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key_id=?";
+   private static final String SELECT_KEYS = "SELECT key_id FROM " + SNAPSHOT_TABLE + " WHERE namespace=?";
    private static final SnapshotPersistenceManager instance = new SnapshotPersistenceManager();
 
    private SnapshotPersistenceManager() {
