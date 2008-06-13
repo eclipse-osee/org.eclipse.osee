@@ -67,8 +67,8 @@ public class AttributeToTransactionOperation {
             if (attribute.isDeleted()) {
                deleteAttribute(attribute, transaction, artifact);
             } else {
-            addAttributeData(artifact, attribute, transaction);
-      }
+               addAttributeData(artifact, attribute, transaction);
+            }
          }
       }
    }
@@ -180,8 +180,9 @@ public class AttributeToTransactionOperation {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
             for (int i = 0; i < missingCount; i++) {
-               artifact.createAttribute(attributeType, true);
+               Attribute<?> attribute = artifact.createAttribute(attributeType, true);
                if (!isNewArtifact) {
+                  attribute.setNotDirty();
                   OseeLog.log(SkynetActivator.class, Level.FINER, String.format("%s [%d]- %s was created",
                         artifact.toString(), artifact.getArtId(), attributeType.toString()));
                }
