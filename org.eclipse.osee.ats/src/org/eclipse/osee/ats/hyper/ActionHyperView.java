@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -178,8 +179,10 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          if (parentArtifact instanceof StateMachineArtifact) {
             if (parentArtifact instanceof TeamWorkFlowArtifact)
                artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
+            else if (parentArtifact instanceof ReviewSMArtifact)
+               artifact = ((ReviewSMArtifact) parentArtifact).getParentActionArtifact();
             else
-               OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), true);
+               OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), false);
          }
       }
       return artifact;

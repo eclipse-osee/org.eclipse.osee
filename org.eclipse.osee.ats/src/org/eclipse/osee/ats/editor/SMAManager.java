@@ -824,8 +824,6 @@ public class SMAManager {
       job.setPriority(Job.SHORT);
       job.schedule();
 
-      sma.updateAssigneeRelations();
-
       // Persist
       if (persist) {
          getSma().persistAttributesAndRelations();

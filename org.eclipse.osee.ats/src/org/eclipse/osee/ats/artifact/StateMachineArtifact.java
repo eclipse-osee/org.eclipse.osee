@@ -180,6 +180,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       // Since multiple ways exist to change the assignees, notification is performed on the persist
       notifyNewAssigneesAndReset();
       notifyOriginatorAndReset();
+      try {
+         updateAssigneeRelations();
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
    /**
@@ -689,7 +694,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public void saveSMA() {
       try {
-         updateAssigneeRelations();
          saveArtifactsFromRelations(smaRelations);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't save artifact " + getHumanReadableId(), ex, true);

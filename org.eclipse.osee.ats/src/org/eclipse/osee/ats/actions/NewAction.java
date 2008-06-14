@@ -51,6 +51,7 @@ public class NewAction extends Action {
    @Override
    public void run() {
       super.run();
+      AtsPlugin.bulkLoadAtsConfigArtifacts();
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {
