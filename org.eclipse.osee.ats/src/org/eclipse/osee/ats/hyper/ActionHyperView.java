@@ -83,6 +83,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);
       AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID);
+      eventManager.register(RemoteTransactionEvent.class, this);
+      eventManager.register(LocalTransactionEvent.class, this);
    }
 
    public static ActionHyperView getArtifactHyperView() {
@@ -111,6 +113,9 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void handleItemDoubleClick(HyperViewItem hvi) {
       Artifact art = ((ActionHyperItem) hvi).getArtifact();
+      if (art == null) {
+         ((ActionHyperItem) hvi).handleDoubleClick(hvi);
+      }
       if (art.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
@@ -119,72 +124,88 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
    }
 
+   private boolean reviewsCreated = false;
+   private boolean tasksReviewsCreated = false;
+
    @Override
    public void display() {
       try {
          getContainer().setCursor(new Cursor(null, SWT.NONE));
          debug.report("display");
-         eventManager.unRegisterAll(this);
-         if (currentArtifact == null || currentArtifact.isDeleted()) return;
-         eventManager.register(RemoteTransactionEvent.class, this);
-         eventManager.register(LocalTransactionEvent.class, this);
+         if (currentArtifact == null || currentArtifact.isDeleted()) {
+            eventManager.unRegisterAll(this);
+            return;
+         }
+         reviewsCreated = false;
+         tasksReviewsCreated = false;
          ATSArtifact topArt = getTopArtifact(currentArtifact);
          if (topArt == null || topArt.isDeleted()) return;
          topAHI = new ActionHyperItem(topArt);
          if (topArt instanceof ActionArtifact) {
-            for (TeamWorkFlowArtifact pia : ((ActionArtifact) topArt).getTeamWorkFlowArtifacts()) {
-               ActionHyperItem productAHI = new ActionHyperItem(pia);
-               productAHI.setRelationToolTip("Team");
-               topAHI.addBottom(productAHI);
+            for (TeamWorkFlowArtifact team : ((ActionArtifact) topArt).getTeamWorkFlowArtifacts()) {
+               ActionHyperItem teamAHI = new ActionHyperItem(team);
+               teamAHI.setRelationToolTip("Team");
+               topAHI.addBottom(teamAHI);
+               for (ReviewSMArtifact rev : team.getSmaMgr().getReviewManager().getReviews()) {
+                  reviewsCreated = true;
+                  ActionHyperItem reviewAHI = new ActionHyperItem(rev);
+                  reviewAHI.setRelationToolTip("Review");
+                  teamAHI.addBottom(reviewAHI);
+                  addTasksAHIs(reviewAHI, rev);
+               }
+               addTasksAHIs(teamAHI, team);
             }
          }
+         if (topArt instanceof ReviewSMArtifact) {
+            addTasksAHIs(topAHI, topArt);
+         }
 
-         if (activeEditorIsActionEditor()) setCurrentArtifact();
+         if (activeEditorIsActionEditor()) {
+            setCurrentArtifact(topAHI);
+         }
+         if (tasksReviewsCreated)
+            setVerticalSelection(50);
+         else if (reviewsCreated)
+            setVerticalSelection(47);
+         else
+            setVerticalSelection(45);
          create(topAHI);
       } catch (SQLException ex) {
          clear();
       }
    }
 
-   public void setCurrentArtifact() {
-      debug.report("setCurrentArtifact");
-      if (currentArtifact.equals(topAHI.getArtifact()))
-         topAHI.setCurrent(true);
-      else {
-         topAHI.setCurrent(false);
+   private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws SQLException {
+      if (!(artifact instanceof StateMachineArtifact)) return;
+      if (((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts().size() > 0) {
+         if (artifact instanceof ReviewSMArtifact) tasksReviewsCreated = true;
+         parentAHI.addBottom(new TasksActionHyperItem(
+               ((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts()));
       }
-      for (ActionHyperItem child : topAHI.getChildren()) {
-         if (child.getArtifact().equals(currentArtifact))
-            child.setCurrent(true);
-         else
-            child.setCurrent(false);
-         for (ActionHyperItem childChild : child.getChildren()) {
-            if (childChild.getArtifact().equals(currentArtifact))
-               childChild.setCurrent(true);
-            else
-               childChild.setCurrent(false);
-         }
+   }
+
+   private void setCurrentArtifact(ActionHyperItem actionHyperItem) {
+      actionHyperItem.setCurrent(currentArtifact.equals(actionHyperItem.getArtifact()));
+      for (ActionHyperItem childHyperItem : actionHyperItem.getChildren()) {
+         setCurrentArtifact(childHyperItem);
       }
    }
 
    public ATSArtifact getTopArtifact(ATSArtifact art) throws SQLException {
       debug.report("getTopArtifact");
-      ATSArtifact artifact = null;
-      if (art instanceof ActionArtifact)
-         artifact = art;
-      else if (art instanceof TeamWorkFlowArtifact) {
+      ATSArtifact artifact = art;
+      if (artifact instanceof TaskArtifact) {
+         artifact = ((TaskArtifact) artifact).getParentSMA();
+      }
+      if (art instanceof TeamWorkFlowArtifact) {
          artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
-      } else if (art instanceof TaskArtifact) {
-         Artifact parentArtifact = ((TaskArtifact) art).getParentSMA();
-         if (parentArtifact instanceof StateMachineArtifact) {
-            if (parentArtifact instanceof TeamWorkFlowArtifact)
-               artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
-            else if (parentArtifact instanceof ReviewSMArtifact)
-               artifact = ((ReviewSMArtifact) parentArtifact).getParentActionArtifact();
-            else
-               OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), false);
+      }
+      if (artifact instanceof ReviewSMArtifact) {
+         if (((ReviewSMArtifact) artifact).getParentActionArtifact() != null) {
+            artifact = ((ReviewSMArtifact) artifact).getParentActionArtifact();
          }
       }
+      if (artifact == null) OSEELog.logSevere(AtsPlugin.class, "Unknown parent " + art.getHumanReadableId(), false);
       return artifact;
    }
 

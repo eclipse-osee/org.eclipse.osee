@@ -646,7 +646,7 @@ public class HyperView extends ViewPart implements IPartListener {
       NodeFigure figure = new NodeFigure(nameLabel, infoLabel, hvi, center);
       // System.out.println(title + " " + figure.hashCode());
       container.add(figure);
-      figure.setToolTip(new Label(hvi.getToolTip() + " " + figure.hashCode()));
+      figure.setToolTip(new Label(hvi.getToolTip()));
       return figure;
    }
 
@@ -693,22 +693,6 @@ public class HyperView extends ViewPart implements IPartListener {
          }
 
          public void mousePressed(MouseEvent e) {
-            // System.out.println("mousePressed");
-            // if (e.getSource() instanceof NodeFigure) {
-            // NodeFigure nf = (NodeFigure) e.getSource();
-            // switch (e.button) {
-            // case 1:
-            // if (nf == centerFigure) {
-            // hCursor = new Cursor(null, SWT.CURSOR_HAND);
-            // container.setCursor(hCursor);
-            // nf.setCursor(hCursor);
-            // dragCenter = true;
-            // }
-            // break;
-            // case 3:
-            // break;
-            // }
-            // }
          }
 
          public void mouseReleased(MouseEvent e) {
@@ -1016,6 +1000,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    public void setVerticalSelection(int verticalSelection) {
       this.verticalSelection = verticalSelection;
+      if (vsb != null) vsb.setSelection(verticalSelection);
    }
 
    public void dispose() {

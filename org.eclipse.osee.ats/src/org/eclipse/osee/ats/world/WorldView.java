@@ -137,9 +137,9 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       if (artifact instanceof IWorldViewArtifact) xViewer.refresh(artifact);
    }
 
-   public static void loadIt(final String name, final Collection<? extends Artifact> arts, final TableLoadOption... tableLoadOptions) {
+   public static void loadIt(final String name, final Collection<? extends Artifact> arts, final TableLoadOption... tableLoadOption) {
       final Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
+      options.addAll(Arrays.asList(tableLoadOption));
       options.add(TableLoadOption.ClearLastSearchItem);
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
@@ -157,15 +157,15 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }, options.contains(TableLoadOption.ForcePend));
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
+   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
-      options.addAll(Arrays.asList(tableLoadOptions));
+      options.addAll(Arrays.asList(tableLoadOption));
       options.add(TableLoadOption.ClearLastSearchItem);
-      load(null, name, arts, tableLoadOptions);
+      load(null, name, arts, tableLoadOption);
    }
 
-   public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
-      List<TableLoadOption> options = Collections.getAggregate(tableLoadOptions);
+   public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
+      List<TableLoadOption> options = Collections.getAggregate(tableLoadOption);
       if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
       AtsPlugin.bulkLoadAtsConfigArtifacts();
       Displays.ensureInDisplayThread(new Runnable() {

@@ -624,7 +624,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperType()
     */
    public String getHyperType() {
-      return "Team";
+      try {
+         return getArtifactTypeName();
+      } catch (Exception ex) {
+         return ex.getLocalizedMessage();
+      }
    }
 
    /*

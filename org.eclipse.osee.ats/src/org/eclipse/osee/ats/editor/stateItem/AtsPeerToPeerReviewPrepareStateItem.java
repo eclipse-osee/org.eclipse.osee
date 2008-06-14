@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -51,7 +51,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       try {
          if ((art instanceof ReviewSMArtifact) && ((ReviewSMArtifact) art).getParentSMA() == null) {
             if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName())) {
-               XComboDam decisionComboDam = (XComboDam) widget;
+               XComboBooleanDam decisionComboDam = (XComboBooleanDam) widget;
                decisionComboDam.setEnabled(false);
                decisionComboDam.setRequiredEntry(false);
             }

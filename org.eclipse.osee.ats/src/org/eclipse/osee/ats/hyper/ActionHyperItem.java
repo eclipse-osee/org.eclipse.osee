@@ -18,42 +18,49 @@ import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
 
-   private final IHyperArtifact artifact;
+   private final IHyperArtifact iHyperartifact;
 
-   public ActionHyperItem(IHyperArtifact artifact) {
-      super(artifact.getHyperName());
-      this.artifact = artifact;
-      setGuid(artifact.getGuid());
+   public ActionHyperItem(IHyperArtifact iHyperartifact) {
+      super(iHyperartifact.getHyperName());
+      this.iHyperartifact = iHyperartifact;
+      setGuid(iHyperartifact.getGuid());
+   }
+
+   public String toString() {
+      return iHyperartifact.getHyperType() + " - " + iHyperartifact.getHyperName();
+   }
+
+   public void handleDoubleClick(HyperViewItem hyperViewItem) {
    }
 
    public Image getImage() {
-      if (artifact.isDeleted()) return null;
-      return artifact.getHyperImage();
+      if (iHyperartifact.isDeleted()) return null;
+      return iHyperartifact.getHyperImage();
    }
 
    @Override
    public String getTitle() {
-      if (artifact.isDeleted()) return "Deleted";
-      return artifact.getHyperName();
+      if (iHyperartifact.isDeleted()) return "Deleted";
+      return iHyperartifact.getHyperName();
    }
 
    @Override
    public String getToolTip() {
-      if (artifact.isDeleted()) return "";
+      if (iHyperartifact.isDeleted()) return "";
       StringBuilder builder = new StringBuilder();
-      builder.append("Type: " + ((IHyperArtifact) artifact).getHyperType());
-      if (artifact instanceof IHyperArtifact) {
-         builder.append("\nState: " + ((IHyperArtifact) artifact).getHyperState());
-         builder.append("\nAssignee: " + ((IHyperArtifact) artifact).getHyperAssignee());
+      builder.append("Type: " + ((IHyperArtifact) iHyperartifact).getHyperType());
+      if (iHyperartifact instanceof IHyperArtifact) {
+         if (((IHyperArtifact) iHyperartifact).getHyperState() != null) builder.append("\nState: " + ((IHyperArtifact) iHyperartifact).getHyperState());
+         if (((IHyperArtifact) iHyperartifact).getHyperAssignee() != null) builder.append("\nAssignee: " + ((IHyperArtifact) iHyperartifact).getHyperAssignee());
       }
       return builder.toString();
    }
 
    @Override
    public Image getMarkImage() {
-      if (artifact.isDeleted()) return null;
+      if (iHyperartifact.isDeleted()) return null;
       try {
-         if (artifact instanceof IHyperArtifact) return ((IHyperArtifact) artifact).getHyperAssigneeImage();
+         if (iHyperartifact instanceof IHyperArtifact) return ((IHyperArtifact) iHyperartifact).getHyperAssigneeImage();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
@@ -78,11 +85,11 @@ public class ActionHyperItem extends HyperViewItem {
    }
 
    public IHyperArtifact getHyperArtifact() {
-      return artifact;
+      return iHyperartifact;
    }
 
    public Artifact getArtifact() {
-      return artifact.getHyperArtifact();
+      return iHyperartifact.getHyperArtifact();
    }
 
 }

@@ -91,4 +91,12 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    public XActionableItemsDam getActionableItemsDam() {
       return actionableItemsDam;
    }
+
+   public ActionArtifact getParentActionArtifact() throws SQLException {
+      if (getParentSMA() != null) {
+         return ((TeamWorkFlowArtifact) getParentSMA()).getParentActionArtifact();
+      }
+      return null;
+   }
+
 }
