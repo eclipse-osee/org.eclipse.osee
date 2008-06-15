@@ -111,13 +111,13 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       Artifact art = ((ActionHyperItem) hvi).getArtifact();
       if (art == null) {
          ((ActionHyperItem) hvi).handleDoubleClick(hvi);
-      }
-      if (art.isDeleted()) {
+
+      } else if (art.isDeleted()) {
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
+      } else {
+         AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
       }
-      getContainer().setCursor(new Cursor(null, SWT.CURSOR_WAIT));
-      AtsLib.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
    }
 
    private boolean reviewsCreated = false;
