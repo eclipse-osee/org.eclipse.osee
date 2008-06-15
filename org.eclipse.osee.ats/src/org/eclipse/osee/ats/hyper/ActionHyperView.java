@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.hyper;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -58,11 +57,9 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    private static ActionHyperItem topAHI;
    private static ATSArtifact currentArtifact;
    private SkynetEventManager eventManager;
-   private ActionDebug debug = new ActionDebug(false, "ActionHyperView");
 
    public ActionHyperView() {
       super();
-      debug.report("ActionHyperView");
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(this);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
       setNodeColor(whiteColor);
@@ -73,7 +70,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
 
    @Override
    public void createPartControl(Composite top) {
-      debug.report("createPartControl");
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(top)) {
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().removePartListener(this);
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
@@ -131,7 +127,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    public void display() {
       try {
          getContainer().setCursor(new Cursor(null, SWT.NONE));
-         debug.report("display");
          if (currentArtifact == null || currentArtifact.isDeleted()) {
             eventManager.unRegisterAll(this);
             return;
@@ -192,7 +187,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    }
 
    public ATSArtifact getTopArtifact(ATSArtifact art) throws SQLException {
-      debug.report("getTopArtifact");
       ATSArtifact artifact = art;
       if (artifact instanceof TaskArtifact) {
          artifact = ((TaskArtifact) artifact).getParentSMA();
@@ -278,7 +272,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
     * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#onEvent(org.eclipse.osee.framework.jdk.core.event.Event)
     */
    public void onEvent(Event event) {
-      debug.report("onEvent");
+      if (currentArtifact == null) return;
       if (event instanceof TransactionEvent) {
          EventData ed = ((TransactionEvent) event).getEventData(currentArtifact);
          if (ed.isRemoved()) {
