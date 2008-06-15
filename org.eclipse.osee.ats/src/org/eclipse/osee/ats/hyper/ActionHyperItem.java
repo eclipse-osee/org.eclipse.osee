@@ -33,6 +33,13 @@ public class ActionHyperItem extends HyperViewItem {
    public void handleDoubleClick(HyperViewItem hyperViewItem) {
    }
 
+   public void calculateCurrent(Artifact currentArtifact) {
+      setCurrent(currentArtifact.equals(getArtifact()));
+      for (ActionHyperItem childHyperItem : getChildren()) {
+         childHyperItem.calculateCurrent(currentArtifact);
+      }
+   }
+
    public Image getImage() {
       if (iHyperartifact.isDeleted()) return null;
       return iHyperartifact.getHyperImage();

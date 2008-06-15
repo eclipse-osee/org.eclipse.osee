@@ -156,7 +156,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          }
 
          if (activeEditorIsActionEditor()) {
-            setCurrentArtifact(topAHI);
+            topAHI.calculateCurrent(currentArtifact);
          }
          if (tasksReviewsCreated)
             setVerticalSelection(50);
@@ -179,20 +179,13 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       }
    }
 
-   private void setCurrentArtifact(ActionHyperItem actionHyperItem) {
-      actionHyperItem.setCurrent(currentArtifact.equals(actionHyperItem.getArtifact()));
-      for (ActionHyperItem childHyperItem : actionHyperItem.getChildren()) {
-         setCurrentArtifact(childHyperItem);
-      }
-   }
-
    public ATSArtifact getTopArtifact(ATSArtifact art) throws SQLException {
       ATSArtifact artifact = art;
       if (artifact instanceof TaskArtifact) {
          artifact = ((TaskArtifact) artifact).getParentSMA();
       }
-      if (art instanceof TeamWorkFlowArtifact) {
-         artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+      if (artifact instanceof TeamWorkFlowArtifact) {
+         artifact = ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
       }
       if (artifact instanceof ReviewSMArtifact) {
          if (((ReviewSMArtifact) artifact).getParentActionArtifact() != null) {
