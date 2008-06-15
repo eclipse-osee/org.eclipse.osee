@@ -29,8 +29,10 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -61,8 +63,18 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
-      for (TaskArtifact taskArt : tasks)
-         taskArt.saveSMA();
+      try {
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            @Override
+            protected void handleTxWork() throws Exception {
+               for (TaskArtifact taskArt : tasks)
+                  taskArt.saveSMA();
+            }
+         };
+         txWrapper.execute();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
       onDirtied();
    }
 
