@@ -254,9 +254,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             final Change[] changes;
+            final boolean hasBranch = branch != null;
 
             try {
-               if (branch != null) {
+               if (hasBranch) {
                   changes = RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
                } else {
                   changes =
@@ -269,7 +270,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                         if (changes.length == 0) {
                            extraInfoLabel.setText(NOT_CHANGES);
                         } else {
-                           extraInfoLabel.setText("");
+                           extraInfoLabel.setText(hasBranch ? "Changes made to branch " + branch.getBranchName() : "Changes made on transaction " + transactionNumber);
                            xChangeViewer.setChanges(changes);
                            loadTable();
                         }
@@ -341,13 +342,5 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
          }
          return artifacts.toArray(new Artifact[artifacts.size()]);
       }
-
-      //      @Override
-      //      public void performDrop(DropTargetEvent event) {
-      //         if (TextTransfer.getInstance().isSupportedType(event.currentDataType) || ArtifactTransfer.getInstance().isSupportedType(
-      //               event.currentDataType)) {
-      //            event.detail = DND.DROP_MOVE;
-      //         }
-      //      }
    }
 }

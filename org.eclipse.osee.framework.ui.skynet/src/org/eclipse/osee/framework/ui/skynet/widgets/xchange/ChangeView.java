@@ -22,6 +22,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -139,12 +140,13 @@ public class ChangeView extends ViewPart implements IActionable {
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
    }
 
-   private void explore(final Branch branch, final int transactionNumber) throws SQLException {
+   private void explore(final Branch branch, final int transactionNumber) throws SQLException, BranchDoesNotExist {
       if (xChangeViewer != null) {
          this.branch = branch;
          this.transactionNumber = transactionNumber;
          xChangeViewer.setInputData(branch, transactionNumber);
-         setPartName(branch != null ? "Change Report: " + branch.getBranchShortName() : "Change Report: " + String.valueOf(transactionNumber));
+         setPartName(branch != null ? "Change Report " + branch.getBranchShortName() : "Change Report: " + BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
+               transactionNumber));
       }
    }
 
