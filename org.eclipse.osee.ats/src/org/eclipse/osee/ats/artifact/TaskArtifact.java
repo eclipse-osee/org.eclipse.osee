@@ -145,7 +145,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public Boolean isInWork() {
-      return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork));
+      return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name()));
    }
 
    public Boolean isCompleted() {
@@ -175,7 +175,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public void transitionToInWork(User toUser, boolean persist) throws Exception {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork)) return;
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
       Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false);
       if (smaMgr.getStateMgr().getPercentComplete() == 100) smaMgr.getStateMgr().setPercentComplete(99);
       if (persist) smaMgr.getSma().saveSMA();
