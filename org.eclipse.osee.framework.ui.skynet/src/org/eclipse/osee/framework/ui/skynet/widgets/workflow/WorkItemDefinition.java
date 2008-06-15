@@ -134,12 +134,10 @@ public abstract class WorkItemDefinition {
    }
 
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
-      Artifact artifact = null;
-      if (writeType == WriteType.Update) {
-         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
-      } else {
-         // Ensure doesn't already exist
-         if (ArtifactQuery.getArtifactsFromTypeAndName(getArtifactTypeName(), getId(),
+      Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
+      if (writeType == WriteType.New) {
+         // Double-check that doesn't already exist in db.  If so, exception cause duplicates
+         if (ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId(),
                BranchPersistenceManager.getCommonBranch()).size() > 0) {
             throw new IllegalStateException(
                   "WorkItemDefinition artifact creation failed.  \"" + getId() + "\" already exists.");
@@ -155,6 +153,7 @@ public abstract class WorkItemDefinition {
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
       if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
             getType());
+      WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(this, artifact);
       return artifact;
    }
 

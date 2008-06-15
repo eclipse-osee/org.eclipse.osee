@@ -25,8 +25,10 @@ import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -201,38 +203,46 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             Arrays.asList(new WorkItemDefinition[] {workItemDefinition}));
    }
 
-   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException, SQLException {
-      // Items must be imported in order due to the relations that are created between items
-      for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
-            WorkPageDefinition.class, WorkFlowDefinition.class}) {
-         if (writeType == WriteType.New) {
-            WorkItemDefinitionFactory.clearCache();
-         }
-         for (WorkItemDefinition wid : workItemDefinitions) {
-            if (clazz.isInstance(wid)) {
-               // System.out.println("Adding " + wid.getId() + " as class " + clazz);
-               Artifact art = wid.toArtifact(writeType);
-               // Relate if not already related
-               if (art.getArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
-                  if (wid instanceof WorkPageDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(), art);
-                  }
-                  if (wid instanceof WorkRuleDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(), art);
-                  }
-                  if (wid instanceof WorkWidgetDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(), art);
-                  }
-                  if (wid instanceof WorkFlowDefinition) {
-                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(), art);
+   public static void importWorkItemDefinitionsIntoDb(final WriteType writeType, final XResultData resultData, final Collection<? extends WorkItemDefinition> workItemDefinitions) throws OseeCoreException, SQLException {
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+
+         @Override
+         protected void handleTxWork() throws Exception {
+            // Items must be imported in order due to the relations that are created between items
+            for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
+                  WorkPageDefinition.class, WorkFlowDefinition.class}) {
+               for (WorkItemDefinition wid : workItemDefinitions) {
+                  if (clazz.isInstance(wid)) {
+                     // System.out.println("Adding " + wid.getId() + " as class " + clazz);
+                     Artifact art = wid.toArtifact(writeType);
+                     // Relate if not already related
+                     if (art.getArtifacts(AtsRelation.WorkItem__Parent, Artifact.class).size() == 0) {
+                        if (wid instanceof WorkPageDefinition) {
+                           relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(), art);
+                        }
+                        if (wid instanceof WorkRuleDefinition) {
+                           relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(), art);
+                        }
+                        if (wid instanceof WorkWidgetDefinition) {
+                           relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(), art);
+                        }
+                        if (wid instanceof WorkFlowDefinition) {
+                           relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(), art);
+                        }
+                     }
+                     if (art.isDirty(true) && resultData != null) {
+                        resultData.log("Updated artifact " + art);
+                     }
+                     art.persistAttributesAndRelations();
                   }
                }
-               if (art.isDirty(true) && resultData != null) {
-                  resultData.log("Updated artifact " + art);
-               }
-               art.persistAttributesAndRelations();
             }
          }
+      };
+      try {
+         newActionTx.execute();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
    }
 

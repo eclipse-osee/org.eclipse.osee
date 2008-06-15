@@ -61,6 +61,17 @@ public class WorkItemDefinitionFactory {
       }
    }
 
+   /**
+    * This should only be called on database initialization or when new work item definitions are created during
+    * run-time.
+    * 
+    * @param workItemDefinition
+    * @param artifact
+    */
+   public static void cacheWorkItemDefinitionArtifact(WorkItemDefinition workItemDefinition, Artifact artifact) {
+      addItemDefinition(workItemDefinition, artifact);
+   }
+
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException, SQLException {
       Artifact parentArt =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
