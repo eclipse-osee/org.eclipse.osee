@@ -68,16 +68,42 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class BranchManager {
+public class AtsBranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
    private final ATSBranchMetrics atsBranchMetrics;
    public static String BRANCH_CATEGORY = "Branch Changes";
 
-   public BranchManager(SMAManager smaMgr) {
+   public AtsBranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
       atsBranchMetrics = new ATSBranchMetrics(this);
+   }
+
+   public void setAsDefaultBranch() {
+      try {
+         if (!isWorkingBranch()) {
+            AWorkbench.popup("ERROR", "No Current Working Branch");
+            return;
+         }
+         BranchPersistenceManager.getInstance().setDefaultBranch(getWorkingBranch());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+   }
+
+   public void showMergeManager() {
+      try {
+         if (!isWorkingBranch()) {
+            AWorkbench.popup("ERROR", "No Current Working Branch");
+            return;
+         }
+         Branch branch = getParentBranchForWorkingBranchCreation();
+         MergeView.openViewUpon(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
+               getWorkingBranch()).getKey());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
    }
 
    /**

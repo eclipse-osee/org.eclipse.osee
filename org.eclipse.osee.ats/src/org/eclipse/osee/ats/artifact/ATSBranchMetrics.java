@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.ats.util.BranchManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,9 +24,9 @@ public class ATSBranchMetrics {
    private Integer numDeletedArtifacts;
    private Integer numModifiedArtifacts;
    private Integer numNonRelationModifiedArtifacts;
-   private final BranchManager branchMgr;
+   private final AtsBranchManager branchMgr;
 
-   public ATSBranchMetrics(BranchManager branchMgr) {
+   public ATSBranchMetrics(AtsBranchManager branchMgr) {
       this.branchMgr = branchMgr;
    }
 

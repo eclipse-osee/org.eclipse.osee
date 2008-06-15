@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.BranchManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.ats.util.StateManager;
@@ -80,7 +80,7 @@ public class SMAManager {
    private static String SEPERATOR = ";  ";
    private TaskManager taskMgr;
    private ReviewManager reviewMgr;
-   private BranchManager branchMgr;
+   private AtsBranchManager branchMgr;
    private StateManager stateMgr;
    private DeadlineManager deadlineMgr;
    private SMAEditor editor;
@@ -94,7 +94,7 @@ public class SMAManager {
       stateMgr = new StateManager(this);
       reviewMgr = new ReviewManager(this);
       taskMgr = new TaskManager(this);
-      branchMgr = new BranchManager(this);
+      branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
       stateItems = new AtsStateItems();
    }
@@ -857,7 +857,7 @@ public class SMAManager {
    /**
     * @return Returns the branchMgr.
     */
-   public BranchManager getBranchMgr() {
+   public AtsBranchManager getBranchMgr() {
       return branchMgr;
    }
 

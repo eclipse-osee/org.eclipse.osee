@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor.service.branch;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.util.BranchManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
@@ -84,7 +84,7 @@ public class ShowWorkingBranchService extends WorkPageService implements IEventR
     */
    @Override
    public String getSidebarCategory() {
-      return BranchManager.BRANCH_CATEGORY;
+      return AtsBranchManager.BRANCH_CATEGORY;
    }
 
    @Override

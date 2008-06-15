@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor.service.branch;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.util.BranchManager;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
@@ -37,7 +37,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * @author Donald G. Dunne
  */
 public class ShowChangeReportService extends WorkPageService implements IEventReceiver {
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private Hyperlink link;
 
@@ -94,7 +93,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
     */
    @Override
    public String getSidebarCategory() {
-      return BranchManager.BRANCH_CATEGORY;
+      return AtsBranchManager.BRANCH_CATEGORY;
    }
 
    /*
@@ -117,7 +116,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       try {
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
             Pair<TransactionId, TransactionId> transactionToFrom =
-                  transactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
+                  TransactionIdManager.getInstance().getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
             enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
          } else {
             enabled = smaMgr.getBranchMgr().getTransactionId() != null;
