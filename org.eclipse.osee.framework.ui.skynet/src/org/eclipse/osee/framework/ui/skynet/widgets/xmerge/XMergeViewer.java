@@ -155,7 +155,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change_source.gif"));
       item.setToolTipText("Show Source Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
@@ -170,7 +170,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change_dest.gif"));
       item.setToolTipText("Show Source Branch Change Report");
       item.setToolTipText("Show Destination Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
