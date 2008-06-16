@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -25,15 +23,9 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
 /**
- * @author b1528444
+ * @author Finkbeiner M. Andrew
  */
 public final class WordAttributeTypeAttributeHandler implements ITemplateAttributeHandler {
-
-   private final Set<String> ignoreAttributeExtensions;
-
-   public WordAttributeTypeAttributeHandler() {
-      this.ignoreAttributeExtensions = new HashSet<String>();
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
@@ -45,11 +37,6 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
          AttributeType attributeType = attribute.getAttributeType();
-
-         // check if the attribute descriptor name is in the ignore list.
-         if (ignoreAttributeExtensions.contains(attributeType.getName())) {
-            return;
-         }
 
          if (templateAttribute.hasLabel()) {
             wordMl.addParagraph(templateAttribute.getLabel());
