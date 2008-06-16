@@ -191,6 +191,8 @@ public class AttributeTypeManager {
    }
 
    public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws Exception {
+      if (minOccurrences > 0 && defaultValue == null) throw new IllegalArgumentException(
+            "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
       if (typeExists(namespace, name)) {
          return getType(namespace, name);
       }

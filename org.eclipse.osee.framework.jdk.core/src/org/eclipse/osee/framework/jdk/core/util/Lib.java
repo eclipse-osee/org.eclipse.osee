@@ -325,12 +325,12 @@ public final class Lib {
       return out.toByteArray();
    }
 
-   public static void inputStreamToFile(InputStream in, File outFile) throws IOException {
+   public static void inputStreamToFile(InputStream inputStream, File outFile) throws IOException {
       byte[] bytes = new byte[2024];
       FileOutputStream out = new FileOutputStream(outFile);
 
       int numBytesRead;
-      while ((numBytesRead = in.read(bytes)) != -1) {
+      while ((numBytesRead = inputStream.read(bytes)) != -1) {
          out.write(bytes, 0, numBytesRead);
       }
       out.close();

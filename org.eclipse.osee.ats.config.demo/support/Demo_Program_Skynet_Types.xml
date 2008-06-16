@@ -388,7 +388,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s24"/>
@@ -520,7 +520,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Date script was executed</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -532,7 +532,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"><Data ss:Type="String">&lt;TestRunStatus&gt;&lt;Enum&gt;Pass&lt;/Enum&gt;&lt;Enum&gt;Fail&lt;/Enum&gt;&lt;Enum&gt;Aborted&lt;/Enum&gt;&lt;Enum&gt;Exception&lt;/Enum&gt;&lt;/TestRunStatus&gt;</Data></Cell>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Test Status</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -568,7 +568,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Version</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -580,7 +580,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Repository Type</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -592,7 +592,7 @@
     <Cell ss:StyleID="s24"/>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">File Modification Flag from Repository</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -604,7 +604,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:StyleID="s25"/>
     <Cell ss:StyleID="s25"/>
-    <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Compressed Data</Data></Cell>
     <Cell ss:StyleID="s24"/>
@@ -1522,11 +1522,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
+   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>47</ActiveRow>
-     <ActiveCol>3</ActiveCol>
+     <ActiveRow>41</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -60,7 +60,7 @@ public class DebugOperations extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            Result result = smaMgr.getSma().isSMADirty();
+            Result result = smaMgr.getEditor().isDirtyResult();
             result.popup(true);
          }
 

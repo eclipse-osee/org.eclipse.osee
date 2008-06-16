@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.swt.SWT;
@@ -119,6 +120,7 @@ public class NewActionPage1 extends WizardPage {
          setControl(comp);
          setHelpContexts();
          if (wizard.getInitialAias() != null) treeViewer.setInitalChecked(wizard.getInitialAias());
+         ((XText) getXWidget("Title")).setFocus();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

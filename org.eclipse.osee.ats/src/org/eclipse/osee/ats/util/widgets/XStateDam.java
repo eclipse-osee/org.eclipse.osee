@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 
 /**
@@ -18,7 +19,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 public class XStateDam extends XStateAssigneesDam {
 
    public XStateDam(StateMachineArtifact sma) {
-      super(sma, "ats.State");
+      super(sma, ATSAttributes.STATE_ATTRIBUTE.getStoreName());
    }
 
 }

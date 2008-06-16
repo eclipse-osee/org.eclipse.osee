@@ -72,7 +72,11 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
-               runDbInitTasks(extension, connection);
+               boolean success = runDbInitTasks(extension, connection);
+               if (!success) {
+                  logger.log(Level.SEVERE, "Aborting due to errors.");
+                  break;
+               }
             } else {
                logger.log(Level.SEVERE,
                      "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
@@ -85,7 +89,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
     * @param skynetDbTypesExtensions
     * @param extensionIds
     */
-   private void runDbInitTasks(IExtension extension, Connection connection) {
+   private boolean runDbInitTasks(IExtension extension, Connection connection) {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -106,10 +110,13 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
             // logger.log(Level.INFO, "Completed [" + extension.getUniqueIdentifier() + "]");
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            return false;
          } catch (NoClassDefFoundError er) {
             logger.log(Level.SEVERE, er.getLocalizedMessage(), er);
+            return false;
          }
       }
+      return true;
    }
 
    private static String waitForUserResponse() {

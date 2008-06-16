@@ -7,10 +7,10 @@
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
   <Author>Robert Fisher</Author>
-  <LastAuthor>b1122182</LastAuthor>
+  <LastAuthor>Donald G. Dunne</LastAuthor>
   <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
   <Created>2005-07-01T21:31:12Z</Created>
-  <LastSaved>2008-04-24T23:55:16Z</LastSaved>
+  <LastSaved>2008-06-16T19:04:02Z</LastSaved>
   <Company>The Boeing Company</Company>
   <Version>11.9999</Version>
  </DocumentProperties>
@@ -18,10 +18,10 @@
   <DoNotRelyOnCSS/>
  </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
-  <WindowHeight>12240</WindowHeight>
-  <WindowWidth>21675</WindowWidth>
+  <WindowHeight>5565</WindowHeight>
+  <WindowWidth>16650</WindowWidth>
   <WindowTopX>-15</WindowTopX>
-  <WindowTopY>0</WindowTopY>
+  <WindowTopY>-15</WindowTopY>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -197,10 +197,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R98C1:R103C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R97C1:R102C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="108" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="107" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="314.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="303"/>
@@ -301,7 +301,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
@@ -385,19 +385,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s27"><Data ss:Type="String">Content URL</Data></Cell>
-    <Cell ss:StyleID="s27"/>
-    <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
@@ -547,7 +535,7 @@
     <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">osee.wi.Work Id</Data></Cell>
-    <Cell ss:Index="7"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="10"><Data ss:Type="String">Yes</Data></Cell>
    </Row>
@@ -604,6 +592,7 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:StyleID="Default">
     <Cell ss:StyleID="s27"><Data ss:Type="String">Work Rule Definition</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">osee.wi.Work Type</Data></Cell>
+    <Cell ss:Index="7" ss:StyleID="s38"><Data ss:Type="String">, &quot;</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:StyleID="Default">
     <Cell ss:StyleID="s27"><Data ss:Type="String">Work Rule Definition</Data></Cell>
@@ -806,7 +795,7 @@
     <Cell ss:StyleID="s38"><Data ss:Type="String">Sprcds</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="95" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="94" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -909,11 +898,11 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>30</TopRowVisible>
+   <TopRowVisible>9</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>51</ActiveRow>
+     <ActiveRow>22</ActiveRow>
      <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>

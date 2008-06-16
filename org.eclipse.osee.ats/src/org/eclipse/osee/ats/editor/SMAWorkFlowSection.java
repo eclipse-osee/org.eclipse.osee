@@ -200,6 +200,10 @@ public class SMAWorkFlowSection extends SectionPart {
       return Result.TrueResult;
    }
 
+   public String toString() {
+      return atsWorkPage + " for " + getSmaMgr().getSma();
+   }
+
    public Result isXWidgetDirty() throws Exception {
       if (dynamicXWidgetLayout == null) return Result.FalseResult;
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {

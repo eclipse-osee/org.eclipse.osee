@@ -11,21 +11,9 @@
 package org.eclipse.osee.ats.workflow.vue;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 
 /**
  * @author Donald G. Dunne
@@ -42,57 +30,6 @@ public class DiagramFactory {
 
    public static DiagramFactory getInstance() {
       return instance;
-   }
-
-   /**
-    * Create, import and relate to in default hierarchy the given vue workflow
-    * 
-    * @param pluginVueFilename
-    * @param name
-    * @return NativeArtifact created
-    * @throws MultipleAttributesExist
-    */
-   public NativeArtifact importDiagramToSkynet(InputStream inputStream, String name) throws Exception {
-      NativeArtifact art = null;
-      // System.out.println("Importing diagram " + name);
-      art =
-            (NativeArtifact) ArtifactTypeManager.addArtifact(GENERAL_DOCUMENT_ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch(), name);
-      art.setSoleAttributeValue("Extension", "vue");
-      art.setNativeContent(inputStream);
-      art.persistAttributes();
-
-      Artifact diagHeadArt = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
-      diagHeadArt.addChild(art);
-      diagHeadArt.persistAttributesAndRelations();
-      return art;
-   }
-
-   public Diagram getAtsWorkflowFromSkynet(String diagramName) throws Exception {
-      Artifact workflowDiagArt = getAtsWorkflowArtifact(diagramName);
-      return getAtsWorkflowFromArtifact(workflowDiagArt);
-   }
-
-   public NativeArtifact getAtsWorkflowArtifact(String diagramName) throws Exception {
-      return (NativeArtifact) ArtifactQuery.getArtifactFromTypeAndName(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-            AtsPlugin.getAtsBranch());
-
-   }
-
-   public boolean atsWorkflowArtifactExists(String diagramName) throws SQLException {
-      return ArtifactQuery.getArtifactsFromTypeAndName(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-            AtsPlugin.getAtsBranch()).size() == 1;
-   }
-
-   public Diagram getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      if (!objToAtsWorkFlowXml.containsKey(artifact)) {
-         NativeArtifact nativeArtifact = (NativeArtifact) artifact;
-         InputStream is = nativeArtifact.getNativeContent();
-         String vueXml = AFile.readFile(is);
-         objToAtsWorkFlowXml.put(artifact, vueXml);
-      }
-      return (Diagram) (new VueDiagram(artifact.getDescriptiveName() + " - " + artifact.getHumanReadableId(),
-            objToAtsWorkFlowXml.get(artifact))).getWorkflow();
    }
 
    public Diagram getWorkFlowFromFilename(String workFlowFilename) {

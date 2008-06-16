@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.vue;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -28,75 +22,15 @@ public class VueDiagram {
    private ArrayList<VueLink> links = new ArrayList<VueLink>();
    private ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
    private Diagram workflow;
-   private static String INHERITED_WORKFLOW_TAG = "InheritedWorkflow";
-   private static String PAGE_REPLACE_ALL_TAG = "PageIdReplaceAll";
-   private static Pattern inheritedPattern =
-         Pattern.compile("&lt;" + INHERITED_WORKFLOW_TAG + " workflowId=\"(.*?)\"/&gt;",
-               Pattern.DOTALL | Pattern.MULTILINE);
    private static Pattern childPattern =
          Pattern.compile("<child(.*?)>(.*?)</child>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static Pattern replaceAllPageIdsPattern =
-         Pattern.compile("&lt;" + PAGE_REPLACE_ALL_TAG + " search=\"(.*?)\" replace=\"(.*?)\"/&gt;",
-               Pattern.DOTALL | Pattern.MULTILINE);
-   private static Pattern inheritedDataPattern = Pattern.compile("<notes>(&lt;InheritedWorkflow .*?)</notes>");
 
    /**
     * @param vueXml
     */
    public VueDiagram(String workflowId, String vueXml) {
       workflow = new Diagram(workflowId);
-      String inheritedVueXml = getInheritedVueXml(workflowId, vueXml);
-      if (inheritedVueXml != null) {
-         processXml(inheritedVueXml);
-         replacePageIds(workflowId, vueXml);
-         storeInheritData(vueXml);
-      } else
-         processXml(vueXml);
-   }
-
-   private void storeInheritData(String vueXml) {
-      Matcher m = inheritedDataPattern.matcher(vueXml);
-      if (m.find())
-         workflow.setInheritData(AXml.xmlToText(m.group(1)).replaceAll("%nl;", "\r\n"));
-      else
-         workflow.setInheritData("Unable to extract just inherit block => " + vueXml);
-   }
-
-   private void replacePageIds(String workflowId, String xml) {
-      String srchValue = null;
-      String replaceValue = null;
-      Matcher m = replaceAllPageIdsPattern.matcher(xml);
-      if (!m.find()) {
-         if (xml.contains(PAGE_REPLACE_ALL_TAG)) throw new IllegalArgumentException(
-               PAGE_REPLACE_ALL_TAG + " tag found, but format is invalid in workflowId " + workflowId);
-      }
-      srchValue = m.group(1);
-      replaceValue = m.group(2);
-      for (VueNode page : vuePages) {
-         page.getWorkPage().setId(page.getWorkPage().getId().replaceFirst(srchValue, replaceValue));
-      }
-   }
-
-   private String getInheritedVueXml(String workflowId, String xml) {
-      String workflowName = null;
-      try {
-         Matcher m = inheritedPattern.matcher(xml);
-         if (!m.find()) {
-            if (xml.contains(INHERITED_WORKFLOW_TAG)) throw new IllegalArgumentException(
-                  INHERITED_WORKFLOW_TAG + " tag found, but format is invalid in workflowId " + workflowId);
-            return null;
-         }
-         workflowName = m.group(1);
-         NativeArtifact nativeArtifact = DiagramFactory.getInstance().getAtsWorkflowArtifact(workflowName);
-         InputStream is = nativeArtifact.getNativeContent();
-         String vueXml = AFile.readFile(is);
-         return vueXml;
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class,
-               "Can't load inherited workflow artifact \"" + workflowName + "\"specified in workflowId " + workflowId,
-               ex, true);
-      }
-      return null;
+      processXml(vueXml);
    }
 
    private void processXml(String xml) {

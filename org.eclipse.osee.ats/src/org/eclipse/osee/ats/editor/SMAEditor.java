@@ -142,22 +142,23 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public boolean isDirty() {
-      if (smaMgr.getSma().isDeleted()) return false;
+      return isDirtyResult().isTrue();
+   }
+
+   public Result isDirtyResult() {
+      if (smaMgr.getSma().isDeleted()) return Result.FalseResult;
       try {
          Result result = workFlowTab.isXWidgetDirty();
-         if (result.isTrue()) {
-            //            System.err.println("SMAEditor: " + result.getText());
-            return true;
-         }
+         if (result.isTrue()) return result;
+
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMADirty();
-         if (result.isTrue()) {
-            //            System.err.println("SMAEditor: " + result.getText());
-            return true;
-         }
+         if (result.isTrue()) return result;
+
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
+         return new Result(true, ex.getLocalizedMessage());
       }
-      return false;
+      return Result.FalseResult;
    }
 
    public String toString() {

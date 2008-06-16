@@ -65,7 +65,7 @@ public class BinaryContentUtils {
          try {
             fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension");
          } catch (Exception ex) {
-            // Do Nothing - not important
+            fileTypeExtension = attributeType.getFileTypeExtension();
          }
       } else {
          fileTypeExtension = attributeType.getFileTypeExtension();
