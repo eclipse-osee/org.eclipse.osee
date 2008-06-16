@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -43,7 +42,6 @@ public class AtsNotifyUsers {
 
    public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws IllegalArgumentException, SQLException {
       if (!AtsPlugin.isEmailEnabled()) {
-         OSEELog.logInfo(AtsPlugin.class, "ATS Notify Users Disabled", false);
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
