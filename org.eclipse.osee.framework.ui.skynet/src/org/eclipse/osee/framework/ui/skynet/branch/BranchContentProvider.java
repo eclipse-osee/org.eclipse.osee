@@ -281,7 +281,13 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    }
 
    private static Object[] getArtifactChanges(TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      return getArtifactChanges(null, transactionIdManager.getPriorTransaction(toTransaction), toTransaction);
+      TransactionId priorTransaction;
+      try {
+         priorTransaction = transactionIdManager.getPriorTransaction(toTransaction);
+      } catch (TransactionDoesNotExist ex) {
+         priorTransaction = null;
+      }
+      return getArtifactChanges(null, priorTransaction, toTransaction);
    }
 
    private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
