@@ -442,11 +442,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private String addMergeViewCommand(MenuManager menuManager) {
-      CommandContributionItem accessControlCommand =
+      CommandContributionItem mergeViewCommand =
             Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Merge Manager", null, null, null, "M",
                   null, null);
-      menuManager.add(accessControlCommand);
-      return accessControlCommand.getId();
+      menuManager.add(mergeViewCommand);
+      return mergeViewCommand.getId();
    }
 
    private void createMergeViewCommand(MenuManager menuManager) {
@@ -459,7 +459,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
             try {
-               if (selectedBranch != null) {
+               if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null) {
                   MergeView.openViewUpon(selectedBranch, selectedBranch.getParentBranch(),
                         TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey());
                }
@@ -472,7 +472,14 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
          @Override
          public boolean isEnabled() {
-            return true;
+            try {
+               IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+               Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+               return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+            return false;
          }
       });
    }
