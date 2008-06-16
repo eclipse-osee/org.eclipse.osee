@@ -20,17 +20,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
@@ -303,7 +305,7 @@ public class RelationManager {
          return false;
       }
       for (RelationLink relation : selectedRelations) {
-         if (relation.isDirty() && !relation.isDeleted()) {
+         if (relation.isDirty()) {
             return true;
          }
       }
@@ -478,79 +480,6 @@ public class RelationManager {
    }
 
    /**
-    * @param targetLink
-    * @param dropLink
-    * @throws SQLException
-    */
-   private static void addRelationAndModifyOrder(Artifact sourceArtifact, Artifact movedArtifact, RelationLink targetLink, boolean infront) throws SQLException {
-
-      RelationSide side = targetLink.getSide(sourceArtifact);
-      Artifact artA = null;
-      Artifact artB = null;
-      if (RelationSide.SIDE_A == side) {
-         artA = sourceArtifact;
-         artB = movedArtifact;
-      } else {
-         artA = movedArtifact;
-         artB = sourceArtifact;
-      }
-
-      RelationLink relationToModify =
-            getLoadedRelation(targetLink.getRelationType(), artA.getArtId(), artB.getArtId(), artA.getBranch(),
-                  artB.getBranch());
-      if (relationToModify == null) {
-         RelationManager.addRelation(targetLink.getRelationType(), artA, artB, "");
-         relationToModify =
-               getLoadedRelation(targetLink.getRelationType(), artA.getArtId(), artB.getArtId(), artA.getBranch(),
-                     artB.getBranch());
-      }
-      if (relationToModify == targetLink) {
-         return;
-      }
-      List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, targetLink.getRelationType());
-      selectedRelations.remove(relationToModify);
-      selectedRelations.add(
-            infront ? selectedRelations.indexOf(targetLink) : selectedRelations.indexOf(targetLink) + 1,
-            relationToModify);
-
-      int lastArtId = LINKED_LIST_KEY;
-      for (RelationLink link : selectedRelations) {
-         if (!link.isDeleted() && link.getSide(sourceArtifact) == side) {
-            if (link.getOrder(side.oppositeSide()) != lastArtId) {
-               link.setOrder(side.oppositeSide(), lastArtId);
-            }
-            lastArtId = link.getArtifactId(side.oppositeSide());
-         }
-      }
-      SkynetEventManager.getInstance().kick(
-            new CacheArtifactModifiedEvent(sourceArtifact,
-                  org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType.Changed, null));
-   }
-
-   /**
-    * @param targetLink
-    * @param dropLink
-    * @throws SQLException
-    */
-   public static void addRelationAndModifyOrder(Artifact parentArtifact, Artifact targetArtifact, Artifact[] movedArts, RelationType type, boolean infront) throws SQLException {
-      RelationLink targetRelation =
-            getLoadedRelation(parentArtifact, parentArtifact.getArtId(), targetArtifact.getArtId(), type);
-      if (targetRelation == null) {
-         targetRelation = getLoadedRelation(parentArtifact, targetArtifact.getArtId(), parentArtifact.getArtId(), type);
-         if (targetRelation == null) {
-            throw new IllegalArgumentException(
-                  String.format(
-                        "Unable to locate a valid relation using that has [%s] on one side and [%s] on the other of type [%s]",
-                        parentArtifact.toString(), targetArtifact.toString(), type.toString()));
-         }
-      }
-
-      for (int i = movedArts.length - 1; i >= 0; i--) {
-         addRelationAndModifyOrder(parentArtifact, movedArts[i], targetRelation, infront);
-      }
-   }
-
-   /**
     * @param sideA
     * @param targetArtifact
     * @param insertAfterTarget
@@ -690,6 +619,11 @@ public class RelationManager {
                   sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
                   relation = newRelation;
                }
+               if (sideB.values().size() > 0) {
+                  OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                        "Artifact [%d][%s] is unsorted for relations type [%d][%s]. (missing a relation)",
+                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               }
                relations.addAll(sideB.values());
                //now side a
                relation = sideA.remove(LINKED_LIST_KEY);
@@ -698,6 +632,10 @@ public class RelationManager {
                   relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
                }
                relations.addAll(sideA.values());
+            } else {
+               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                     "Artifact [%d][%s] is unsorted for relations type [%d][%s]. (duplicate relation)",
+                     artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
             }
          }
       }
