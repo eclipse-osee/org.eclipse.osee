@@ -88,6 +88,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       smaMgr = new SMAManager(this);
       atsLog = new ATSLog(this);
       atsNote = new ATSNote(this);
+      try {
+         addAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), (String) "");
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
       preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
       if (smaMgr.getOriginator() == null)
          preSaveOriginator = SkynetAuthentication.getUser();
