@@ -51,7 +51,7 @@ public class TransactionData {
          name = user.getDescriptiveName();
       } catch (UserNotInDatabase ex) {
          name = "Could not resolve artId: " + authorId;
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.FINE, ex.getLocalizedMessage(), ex);
       }
    }
 
