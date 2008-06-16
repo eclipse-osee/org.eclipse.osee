@@ -90,14 +90,10 @@ public class NewActionPage1 extends WizardPage {
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
          try {
-            // Load all AIs due to performance
-            ActionableItemArtifact.getActionableItems();
             treeViewer.getViewer().setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
          }
-         //         nameFilter = new ActionableItemFilter(treeViewer);
-         //         treeViewer.getViewer().addFilter(nameFilter);
          treeViewer.getViewer().setSorter(new ArtifactNameSorter());
          treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
