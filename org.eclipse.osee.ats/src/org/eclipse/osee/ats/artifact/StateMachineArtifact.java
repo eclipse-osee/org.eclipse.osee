@@ -83,21 +83,33 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    @Override
+   public void onBirth() throws OseeCoreException {
+      super.onBirth();
+      try {
+         addAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), (String) "");
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+   }
+
+   @Override
    public void onInitializationComplete() {
       super.onInitializationComplete();
       smaMgr = new SMAManager(this);
       atsLog = new ATSLog(this);
       atsNote = new ATSNote(this);
       try {
-         addAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), (String) "");
+         // If SMA just created, don't store off pre-save values
+         if (getSoleAttributeValue(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), (String) null) != null) {
+            preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+            if (smaMgr.getOriginator() == null)
+               preSaveOriginator = SkynetAuthentication.getUser();
+            else
+               preSaveOriginator = smaMgr.getOriginator();
+         }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
-      preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
-      if (smaMgr.getOriginator() == null)
-         preSaveOriginator = SkynetAuthentication.getUser();
-      else
-         preSaveOriginator = smaMgr.getOriginator();
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
    }
 
