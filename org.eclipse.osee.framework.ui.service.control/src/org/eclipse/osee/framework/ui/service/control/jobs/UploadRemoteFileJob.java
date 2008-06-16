@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.service.control.jobs;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -163,6 +165,20 @@ public class UploadRemoteFileJob extends Job {
       }
    }
 
+   public File getFile(Bundle bundle, String path) throws FileNotFoundException, IOException {
+      URL url = bundle.getEntry(path);
+      if (url == null) {
+         throw new FileNotFoundException("Could not locate the file " + path);
+      }
+      try {
+         url = FileLocator.toFileURL(url);
+         File file = new File(url.getFile());
+         return file;
+      } catch (Throwable e) {
+         throw new IOException("Invalid URL format for the URL " + url.toString(), e);
+      }
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
     */
@@ -177,9 +193,7 @@ public class UploadRemoteFileJob extends Job {
             }
          });
          Bundle bundle = Platform.getBundle(serviceInfo.getServiceItem().getPlugin());
-         URL url = bundle.getEntry(serviceInfo.getServiceItem().getZipName());
-         URL resolvedURL = FileLocator.resolve(url);
-         File zipLocation = new File(resolvedURL.getFile());
+         File zipLocation = getFile(bundle, serviceInfo.getServiceItem().getZipName());
 
          displayInitMessage(zipLocation);
 
