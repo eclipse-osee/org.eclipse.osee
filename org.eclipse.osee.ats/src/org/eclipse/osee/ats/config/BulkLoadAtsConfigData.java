@@ -1,0 +1,61 @@
+/*
+ * Created on Jun 16, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.ats.config;
+
+import java.util.Arrays;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class BulkLoadAtsConfigData extends org.eclipse.core.runtime.jobs.Job {
+
+   private BulkLoadAtsConfigData() {
+      super("Bulk Loading ATS Config Artifacts");
+   }
+
+   private static boolean atsTypeDataLoaded = false;
+
+   public static void run(boolean forcePend) {
+      if (atsTypeDataLoaded) return;
+      atsTypeDataLoaded = true;
+      BulkLoadAtsConfigData job = new BulkLoadAtsConfigData();
+      job.setPriority(Job.SHORT);
+      job.schedule();
+      try {
+         if (forcePend) job.join();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   protected IStatus run(IProgressMonitor monitor) {
+      OSEELog.logInfo(AtsPlugin.class, getName(), false);
+      try {
+         RelationManager.getRelatedArtifacts(Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+         ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+      monitor.done();
+      return Status.OK_STATUS;
+   }
+
+}

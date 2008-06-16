@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -167,7 +168,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
       List<TableLoadOption> options = Collections.getAggregate(tableLoadOption);
       if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
-      AtsPlugin.bulkLoadAtsConfigArtifacts();
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -205,6 +205,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       debug.report("createPartControl");
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      BulkLoadAtsConfigData.run(false);
 
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
@@ -381,7 +382,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
-      AtsPlugin.bulkLoadAtsConfigArtifacts();
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
       debug.report("loadTable", true);

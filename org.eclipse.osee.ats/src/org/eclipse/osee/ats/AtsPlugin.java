@@ -11,20 +11,14 @@
 
 package org.eclipse.osee.ats;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -53,21 +47,6 @@ public class AtsPlugin extends OseeUiActivator {
       super();
       pluginInstance = this;
       AtsBranchAccessHandler.getInstance();
-   }
-
-   private static boolean atsTypeDataLoaded = false;
-
-   public static void bulkLoadAtsConfigArtifacts() {
-      if (atsTypeDataLoaded) return;
-      OSEELog.logInfo(AtsPlugin.class, "Bulk Loading ATS Config Artifacts", false);
-      try {
-         RelationManager.getRelatedArtifacts(Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
-         ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, getAtsBranch());
-         atsTypeDataLoaded = true;
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
    }
 
    public static boolean isEmailEnabled() {
