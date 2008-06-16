@@ -33,6 +33,7 @@ public class BulkLoadAtsConfigData extends org.eclipse.core.runtime.jobs.Job {
       atsTypeDataLoaded = true;
       BulkLoadAtsConfigData job = new BulkLoadAtsConfigData();
       job.setPriority(Job.SHORT);
+      job.setSystem(true);
       job.schedule();
       try {
          if (forcePend) job.join();
