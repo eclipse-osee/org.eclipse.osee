@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  * @author Donald G. Dunne
  */
 public class OseeNotifyUsersJob extends Job {
-   private boolean testing = true;
+   private boolean testing = false;
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
 
    public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException, SQLException {
