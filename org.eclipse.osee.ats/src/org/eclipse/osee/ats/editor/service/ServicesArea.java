@@ -83,8 +83,8 @@ public class ServicesArea {
          services.add(new AddPeerToPeerReviewService(smaMgr));
          services.add(new BlockingReview(smaMgr));
          // Toolbar Services
-         services.add(new ShowChangeReportToolbarServiceOld(smaMgr));
          services.add(new ShowChangeReportToolbarService(smaMgr));
+         services.add(new ShowChangeReportToolbarServiceOld(smaMgr));
          services.add(new OpenParent(smaMgr));
          services.add(new EmailActionService(smaMgr));
          services.add(new AddNoteOperation(smaMgr));

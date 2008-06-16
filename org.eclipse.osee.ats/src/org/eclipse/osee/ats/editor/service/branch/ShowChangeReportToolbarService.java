@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class ShowChangeReportToolbarService extends WorkPageService implements IEventReceiver {
    private Action action;
 
-   // Since this service is only going to be added for the Implement state, Location.AllState will
-   // work
    public ShowChangeReportToolbarService(SMAManager smaMgr) {
       super(smaMgr);
    }
@@ -57,7 +55,7 @@ public class ShowChangeReportToolbarService extends WorkPageService implements I
     */
    @Override
    public String getName() {
-      return "Show OLD Change Report";
+      return "Show Change Report";
    }
 
    private boolean isEnabled() {

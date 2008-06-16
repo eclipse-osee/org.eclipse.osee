@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * 
  * @author Donald G. Dunne
  */
-public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
+public class DemoDatabaseConfig extends DbInitializationTask {
    public void run(Connection connection) throws Exception {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);

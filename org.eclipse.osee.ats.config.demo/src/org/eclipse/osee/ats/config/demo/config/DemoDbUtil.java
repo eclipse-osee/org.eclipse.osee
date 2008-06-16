@@ -11,7 +11,7 @@ import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
-import org.eclipse.osee.ats.config.demo.config.AtsConfigDemoDatabaseConfig.SawBuilds;
+import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -83,14 +83,14 @@ public class DemoDbUtil {
       return arts;
    }
    public static enum SoftwareRequirementStrs {
-      Robot, CISST, daVinci, Functional, Event
+      Robot, CISST, daVinci, Functional, Event, Haptic
    };
+   public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
    public static Artifact getInterfaceInitializationSoftwareRequirement() throws Exception {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.", false);
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
             BranchPersistenceManager.getInstance().getDefaultBranch());
-
    }
 
 }

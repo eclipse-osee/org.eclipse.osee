@@ -76,6 +76,9 @@ public class DemoDbActionData {
             "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Code.getAIName(),
                   DemoDbAIs.SAW_SW_Design.getAIName(), DemoDbAIs.SAW_Requirements.getAIName(),
                   DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
+      actionDatas.add(new DemoDbActionData(new String[] {"SAW More Requirement (uncommitted-conflicted) Changes for"},
+            "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Requirements.getAIName()},
+            new Integer[] {1}, DefaultTeamState.Implement));
       return actionDatas;
    }
 

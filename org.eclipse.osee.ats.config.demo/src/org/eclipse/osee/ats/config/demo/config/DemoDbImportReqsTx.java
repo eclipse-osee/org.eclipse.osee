@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.io.File;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
-import org.eclipse.osee.ats.config.demo.config.AtsConfigDemoDatabaseConfig.SawBuilds;
+import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;

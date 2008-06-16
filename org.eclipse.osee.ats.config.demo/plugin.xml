@@ -12,7 +12,7 @@
          name="AtsConfigDemoDatabaseConfig"
          point="org.eclipse.osee.framework.database.IDbInitializationTask">
       <DatabaseTask
-            classname="org.eclipse.osee.ats.config.demo.config.AtsConfigDemoDatabaseConfig">
+            classname="org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig">
       </DatabaseTask>
    </extension>
    <extension

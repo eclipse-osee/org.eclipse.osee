@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.config.demo.workflow;
 
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
@@ -24,6 +25,7 @@ public class DemoReqWorkFlowDefinition extends TeamWorkflowDefinition {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
             TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoReqWorkFlowDefinition());
+      AtsWorkDefinitions.relatePageToBranchCommitRules(ID + "." + DefaultTeamState.Implement.name());
    }
 
 }

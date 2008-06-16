@@ -57,7 +57,7 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
     */
    @Override
    public String getName() {
-      return "Show Change Report (New)";
+      return "Show OLD Change Report";
    }
 
    private boolean isEnabled() {

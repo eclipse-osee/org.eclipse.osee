@@ -85,7 +85,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
     */
    @Override
    public String getName() {
-      return "Show Change Report";
+      return "Show Merge Manger";
    }
 
    /* (non-Javadoc)
@@ -105,7 +105,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
    public void refresh() {
       if (link != null && !link.isDisposed()) {
          boolean enabled = isEnabled();
-         link.setText(enabled ? "Show Merge Maanger" : "Show MergeManager\n(no changes)");
+         link.setText(enabled ? "Show Merge Manger" : "Show MergeManager\n(no changes)");
          link.setEnabled(enabled);
          link.setUnderlined(enabled);
       }
