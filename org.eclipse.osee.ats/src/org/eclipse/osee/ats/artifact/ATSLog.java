@@ -144,7 +144,7 @@ public class ATSLog {
     * @return
     */
    public User getOriginator() {
-      LogItem logItem = getEvent(LogType.Originated);
+      LogItem logItem = getLastEvent(LogType.Originated);
       if (logItem == null) return null;
       return logItem.getUser();
    }

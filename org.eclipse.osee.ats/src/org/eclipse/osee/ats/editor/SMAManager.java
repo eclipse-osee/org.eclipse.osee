@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -30,10 +29,10 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.DeadlineManager;
-import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.TaskManager;
@@ -58,6 +57,7 @@ import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
@@ -791,6 +791,8 @@ public class SMAManager {
 
             };
             txWrapper.execute();
+            // This should only send subscribed notifications as saveSMA() done before 
+            OseeNotificationManager.sendNotifications();
          } else {
             transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
                   cancelReason);
@@ -817,12 +819,8 @@ public class SMAManager {
          getReviewManager().createValidateReview(false);
       }
 
-      // Notify Users; NOTE: Assignees are notified as part of
-      // StateMachineArtifact.persist
-      NotifyUsersJob job =
-            new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Subscribers, NotifyUsersJob.NotifyType.Completed);
-      job.setPriority(Job.SHORT);
-      job.schedule();
+      AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Subscribed, AtsNotifyUsers.NotifyType.Completed,
+            AtsNotifyUsers.NotifyType.Completed);
 
       // Persist
       if (persist) {

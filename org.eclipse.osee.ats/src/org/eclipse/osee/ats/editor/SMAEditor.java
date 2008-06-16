@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -108,6 +109,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
          onDirtied();
+      }
+      try {
+         OseeNotificationManager.sendNotifications();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
 

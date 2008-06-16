@@ -18,14 +18,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -207,9 +206,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
       if (newAssignees.size() == 0) return;
       try {
-         NotifyUsersJob job = new NotifyUsersJob(this, newAssignees, NotifyUsersJob.NotifyType.Assignee);
-         job.setPriority(Job.SHORT);
-         job.schedule();
+         // These will be processed upon save
+         AtsNotifyUsers.notify(this, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -219,11 +217,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       if (preSaveOriginator != null && smaMgr.getOriginator() != null && !smaMgr.getOriginator().equals(
             preSaveOriginator)) {
          try {
-            Set<User> originators = new HashSet<User>();
-            originators.add(smaMgr.getOriginator());
-            NotifyUsersJob job = new NotifyUsersJob(this, originators, NotifyUsersJob.NotifyType.Originator);
-            job.setPriority(Job.SHORT);
-            job.schedule();
+            AtsNotifyUsers.notify(this, AtsNotifyUsers.NotifyType.Originator);
          } catch (SQLException ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }

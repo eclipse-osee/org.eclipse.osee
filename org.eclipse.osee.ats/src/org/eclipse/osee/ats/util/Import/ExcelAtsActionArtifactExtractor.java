@@ -17,16 +17,15 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -225,9 +224,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          AtsPlugin.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact team : teamWfs) {
-               NotifyUsersJob job = new NotifyUsersJob(team, NotifyUsersJob.NotifyType.Assignee);
-               job.setPriority(Job.SHORT);
-               job.schedule();
+               AtsNotifyUsers.notify(team, AtsNotifyUsers.NotifyType.Assigned);
             }
          }
       } catch (Exception ex) {

@@ -44,6 +44,7 @@ public class XResultPage {
       HTML_MANIPULATIONS, // Do all except converting newlines
       RAW_HTML, // Just display in simple html page
       ERROR_WARNING_HEADER, // Shows Errors: 4 Warnings: 23 count at top of page
+      NO_POPUP, // No dialog will show at the end of the display of the result page
       ALL
    };
    public enum HyperType {

@@ -19,14 +19,13 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.NotifyUsersJob;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -201,9 +200,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          if (taskArt.isCompleted()) taskArt.transitionToCompleted(false);
          if (persist) taskArt.persistAttributesAndRelations();
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-            NotifyUsersJob job = new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Assignee);
-            job.setPriority(Job.SHORT);
-            job.schedule();
+            AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

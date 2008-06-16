@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -119,11 +119,13 @@ public class XResultData {
       report(title, Manipulations.ALL);
    }
 
-   public void report(final String title, final Manipulations manipulation, final Manipulations... manipulations) {
+   public void report(final String title, final Manipulations... manipulations) {
+      final List<Manipulations> manips = Collections.getAggregate(manipulations);
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
-            XResultView.getResultView().addResultPage(getReport(title, manipulation, manipulations));
-            AWorkbench.popup("Complete", title + " Complete...Results in Result View");
+            XResultView.getResultView().addResultPage(getReport(title, manipulations));
+            if (!manips.contains(Manipulations.NO_POPUP)) AWorkbench.popup("Complete",
+                  title + " Complete...Results in Result View");
          }
       });
    }
@@ -132,14 +134,8 @@ public class XResultData {
       return getReport(title, Manipulations.ALL);
    }
 
-   public XResultPage getReport(final String title, Manipulations manipulation, Manipulations... manipulations) {
-      final Set<Manipulations> manips = new HashSet<Manipulations>();
-      manips.add(manipulation);
-      for (Manipulations manip : manipulations)
-         manips.add(manip);
+   public XResultPage getReport(final String title, Manipulations... manipulations) {
       return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
-            (sb.toString().equals("") ? "Nothing Logged" : sb.toString()),
-            manips.toArray(new Manipulations[manips.size()]));
+            (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
    }
-
 }
