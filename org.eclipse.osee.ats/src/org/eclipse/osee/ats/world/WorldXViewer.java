@@ -657,7 +657,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
       try {
          ArrayList<Artifact> delArts = new ArrayList<Artifact>();
          StringBuilder artBuilder = new StringBuilder();
-         ArrayList<Artifact> items = getSelectedArtifactItems();
          ArrayList<Artifact> selectedArts = getSelectedArtifacts();
 
          for (Artifact art : selectedArts) {
@@ -715,7 +714,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                         }
                      };
                txWrapper.execute();
-               remove(items);
             }
          }
       } catch (Exception ex) {
@@ -874,7 +872,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
             Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
             if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
          }
-         if (modArts.size() > 0) remove(modArts.toArray(), null);
+         if (modArts.size() > 0) remove(modArts.toArray());
 
          artIds = transEvent.getArtIds(TransactionChangeType.RelChanged);
          modArts.clear();
@@ -883,11 +881,10 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
             if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
          }
          if (modArts.size() > 0) {
-            for (Artifact art: modArts) {
+            for (Artifact art : modArts) {
                refresh(art);
             }
          }
-
       } else
          OSEELog.logSevere(AtsPlugin.class, "Unexpected event => " + event, true);
    }
