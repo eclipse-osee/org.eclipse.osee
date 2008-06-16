@@ -35,11 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class UpdateCurrentColumn extends AbstractBlam {
 
    private enum Operations {
-      Update_Tx_Current,
-      Update_Tx_Mod_Type,
-      Update_Relations_Sort_Order,
-      Run_Tx_Current_Verification,
-      Run_Tx_Mod_Type_Verification;
+      Update_Tx_Current, Update_Tx_Mod_Type, Run_Tx_Current_Verification, Run_Tx_Mod_Type_Verification;
 
       public String asLabel() {
          return this.name().replaceAll("_", " ");
@@ -98,13 +94,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
    private static final String UPDATE_TXS_MOD_TYPE_SINGLE_CALL =
          "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
 
-   private static final String UPDATE_B_ORDER = "update osee_define_rel_link set b_order = ? where gamma_id = ?";
-   private static final String SELECT_B_RELATION_ORDER =
-         "select rel1.rel_link_type_id,  rel1.a_art_id, txd1.branch_id, rel1.b_order, txs1.gamma_id, rel1.b_art_id, rel1.a_order_value from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.a_order_value";
-   private static final String SELECT_A_RELATION_ORDER =
-         "select rel1.rel_link_type_id,  rel1.b_art_id, txd1.branch_id, rel1.a_order, txs1.gamma_id, rel1.a_art_id, rel1.b_order_value    from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
-   private static final String UPDATE_A_ORDER = "update osee_define_rel_link set a_order = ? where gamma_id = ?";
-
    private static final String VERIFY_TX_CURRENT =
          "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, artv1.modification_id, art1.art_type_id FROM osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact art1, osee_define_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
 
@@ -123,40 +112,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
          this.gamma_id = resultSet.getLong(3);
          this.id = resultSet.getInt(4);
          this.modification_id = resultSet.getInt(5);
-      }
-   }
-
-   private final class RelationOrderTracker {
-      int rel_link_type, art_id, branch_id, order;
-      int rel_link_type_old = -1, art_id_old = -1, branch_id_old = -1;
-      int new_order;
-      int other_side_art_id = -1;
-      long gammaId = -1;
-
-      void processRow(ResultSet resultSet) throws SQLException {
-         rel_link_type = resultSet.getInt(1);
-         art_id = resultSet.getInt(2);
-         branch_id = resultSet.getInt(3);
-         order = resultSet.getInt(4);
-         gammaId = resultSet.getLong(5);
-         if ((rel_link_type != rel_link_type_old || art_id != art_id_old || branch_id != branch_id_old)) {//then it's a new start of ordering
-            new_order = -1;
-         } else {
-            new_order = other_side_art_id;
-         }
-
-         rel_link_type_old = rel_link_type;
-         art_id_old = art_id;
-         branch_id_old = branch_id;
-         other_side_art_id = resultSet.getInt(6);
-      }
-
-      boolean isUpdateRequired() {
-         return new_order != order;
-      }
-
-      Object[] getUpdateData() {
-         return new Object[] {SQL3DataType.INTEGER, new_order, SQL3DataType.BIGINT, gammaId};
       }
    }
 
@@ -237,9 +192,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
          case Update_Tx_Mod_Type:
             toReturn = new UpdateTxModTypeSingleCallOperation();
             break;
-         case Update_Relations_Sort_Order:
-            toReturn = new UpdateRelationsSortOrder();
-            break;
          case Run_Tx_Current_Verification:
             toReturn = new VerifyTxCurrentOperation();
             break;
@@ -255,62 +207,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
       int getTotalWork();
 
       void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception;
-   }
-
-   private final class UpdateRelationsSortOrder implements IOperation {
-      int totalModCount = 0;
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(java.sql.Connection, int)
-       */
-      @Override
-      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
-         IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
-         totalModCount = 0;
-         subMonitor.beginTask("Update Relation Sort Order", getTotalWork());
-         updateRelationsSortOrder(subMonitor, connection, "B side", SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
-         updateRelationsSortOrder(subMonitor, connection, "A side", SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
-         subMonitor.done();
-      }
-
-      private void updateRelationsSortOrder(final IProgressMonitor monitor, final Connection connection, String name, String query, final String update) throws Exception {
-         final List<Object[]> batchArgs = new ArrayList<Object[]>();
-         final RelationOrderTracker relationOrderTracker = new RelationOrderTracker();
-
-         monitor.subTask(String.format("Updating [%s] sort order", name));
-         executeQuery(monitor, connection, new IRowProcessor() {
-            public void processRow(ResultSet resultSet) throws Exception {
-               relationOrderTracker.processRow(resultSet);
-               if (relationOrderTracker.isUpdateRequired()) {
-                  if (monitor.isCanceled() != true && batchArgs.size() >= 100000) {
-                     writeToDb(monitor, connection, update, batchArgs);
-                     batchArgs.clear();
-                  }
-                  batchArgs.add(relationOrderTracker.getUpdateData());
-               }
-            }
-         }, 5000, query);
-         if (monitor.isCanceled() != true) {
-            writeToDb(monitor, connection, update, batchArgs);
-         }
-         appendResultLine(String.format("Updated [%d] relation [%s] orders.\n", totalModCount, name));
-         monitor.worked(1);
-      }
-
-      private void writeToDb(IProgressMonitor monitor, Connection connection, String update, List<Object[]> data) throws SQLException {
-         int count = ConnectionHandler.runPreparedUpdate(connection, update, data);
-         totalModCount += count;
-         monitor.subTask(String.format("Updated [%d of %d] relation orders - overall [%d]", count, data.size(),
-               totalModCount));
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#getTotalWork()
-       */
-      @Override
-      public int getTotalWork() {
-         return 2;
-      }
    }
 
    private final class UpdateTxCurrentOperation implements IOperation {
