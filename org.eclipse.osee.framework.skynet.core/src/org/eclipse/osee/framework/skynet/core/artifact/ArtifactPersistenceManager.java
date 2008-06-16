@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -120,7 +122,7 @@ public class ArtifactPersistenceManager {
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
    public static final String INSERT_TRANSACTION_HOLDER =
-         "INSERT INTO osee_join_transaction (query_id, gamma_id, transaction_id) VALUES (?, ?, ?)";
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
 
    private static final String SELECT_ARTIFACT_START =
          "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
@@ -666,9 +668,12 @@ public class ArtifactPersistenceManager {
          if (!gammaIdsModifications.isEmpty()) {
             List<Object[]> datas = new LinkedList<Object[]>();
             int queryId = ArtifactLoader.getNewQueryId();
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
             for (GammaTransaction gammaTransaction : gammaIdsModifications) {
-               datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, gammaTransaction.gammaId,
-                     SQL3DataType.INTEGER, gammaTransaction.transactionId});
+               datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                     SQL3DataType.INTEGER, gammaTransaction.gammaId, SQL3DataType.INTEGER,
+                     gammaTransaction.transactionId});
             }
             selectTempTransactions(datas);
 
@@ -683,9 +688,12 @@ public class ArtifactPersistenceManager {
                if (!gammaIdsBaseline.isEmpty()) {
                   datas = new LinkedList<Object[]>();
                   queryId = ArtifactLoader.getNewQueryId();
+                  insertTime = GlobalTime.GreenwichMeanTimestamp();
+
                   for (GammaTransaction gammaTransaction : gammaIdsBaseline) {
-                     datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
-                           gammaTransaction.gammaId, SQL3DataType.INTEGER, gammaTransaction.transactionId});
+                     datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                           SQL3DataType.INTEGER, gammaTransaction.gammaId, SQL3DataType.INTEGER,
+                           gammaTransaction.transactionId});
                   }
                   selectTempTransactions(datas);
                   ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, SQL3DataType.INTEGER, queryId);
@@ -774,13 +782,13 @@ public class ArtifactPersistenceManager {
    }
 
    private static final String INSERT_SELECT_RELATIONS =
-         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
    private static final String INSERT_SELECT_ATTRIBUTES =
-         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
 
    private static final String INSERT_SELECT_ARTIFACTS =
-         "INSERT INTO  osee_join_transaction (query_id, gamma_id, transaction_id) SELECT ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
+         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) SELECT ?, ?, txs1.gamma_id, txs1.transaction_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
          "SELECT art1.art_id, txd1.branch_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id";
@@ -805,10 +813,12 @@ public class ArtifactPersistenceManager {
       //first determine if the purge is legal.
       List<Object[]> batchParameters = new ArrayList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
       for (Artifact art : artifactsToPurge) {
          for (Branch branch : art.getBranch().getChildBranches(true)) {
-            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, art.getArtId(),
-                  SQL3DataType.INTEGER, branch.getBranchId()});
+            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, branch.getBranchId()});
          }
       }
       if (batchParameters.size() > 0) {
@@ -839,21 +849,23 @@ public class ArtifactPersistenceManager {
       // now load the artifacts to be purged
       batchParameters.clear();
       queryId = ArtifactLoader.getNewQueryId();
+      insertTime = GlobalTime.GreenwichMeanTimestamp();
+
       // insert into the artifact_join_table
       for (Artifact art : artifactsToPurge) {
-         batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, art.getArtId(),
-               SQL3DataType.INTEGER, art.getBranch().getBranchId()});
+         batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+               SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, art.getBranch().getBranchId()});
       }
       int returnCount = ArtifactLoader.selectArtifacts(batchParameters);
 
       //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
       int transactionJoinId = ArtifactLoader.getNewQueryId();
       ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.INTEGER, queryId);
+            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
       ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.INTEGER, queryId);
+            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
       ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.INTEGER, queryId);
+            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
 
       //delete from the txs table
       int txsDeletes =

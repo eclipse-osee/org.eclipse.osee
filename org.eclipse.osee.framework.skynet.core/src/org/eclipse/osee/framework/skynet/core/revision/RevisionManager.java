@@ -25,6 +25,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -425,11 +427,12 @@ public class RevisionManager implements IEventReceiver {
 
       if (!artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
          List<Object[]> datas = new LinkedList<Object[]>();
          for (int artId : artIds) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  branch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branch.getBranchId()});
          }
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, false);
       }
@@ -655,15 +658,16 @@ public class RevisionManager implements IEventReceiver {
    private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws SQLException {
       if (artIdSet != null && !artIdSet.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
          List<Object[]> datas = new LinkedList<Object[]>();
          for (int artId : artIdSet) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  sourceBranch.getBranchId()});
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  destinationBranch.getBranchId()});
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  mergeBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, destinationBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, mergeBranch.getBranchId()});
          }
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true);
       }

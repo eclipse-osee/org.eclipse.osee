@@ -496,11 +496,13 @@ public class BranchCreator {
                   new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
          }
 
-         int queryId = ArtifactLoader.getNewQueryId();
          List<Object[]> datas = new LinkedList<Object[]>();
+         int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
          for (int artId : artIds) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  sourceBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
          }
          try {
             ArtifactLoader.selectArtifacts(datas);

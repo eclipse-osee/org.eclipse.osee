@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELAT
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
@@ -57,7 +59,7 @@ public final class ArtifactLoader {
          "SELECT al1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id, art_type_id, guid, human_readable_id, mod_type FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    private static final String INSERT_INTO_LOADER =
-         "INSERT INTO osee_join_artifact (query_id, art_id, branch_id) VALUES (?, ?, ?)";
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
 
    private static final String DELETE_FROM_LOADER = "DELETE FROM osee_join_artifact WHERE query_id = ?";
 
@@ -175,12 +177,13 @@ public final class ArtifactLoader {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          ResultSet rSet = chStmt.getRset();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
          while (rSet.next()) {
             int artId = rSet.getInt("art_id");
             int branchId = rSet.getInt("branch_id");
-            insertParameters.put(artId, branchId, new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
-                  artId, SQL3DataType.INTEGER, branchId});
+            insertParameters.put(artId, branchId, new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP,
+                  insertTime, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId});
          }
       } finally {
          DbUtil.close(chStmt);
@@ -212,9 +215,12 @@ public final class ArtifactLoader {
 
    static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws OseeCoreException {
       int queryId = getNewQueryId();
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
       try {
-         ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
-               artifact.getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+         ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP,
+               insertTime, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
+               artifact.getBranch().getBranchId());
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }

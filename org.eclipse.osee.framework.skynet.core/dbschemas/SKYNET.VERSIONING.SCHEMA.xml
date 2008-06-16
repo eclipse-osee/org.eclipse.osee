@@ -32,12 +32,14 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_ARTIFACT_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
 	</Table>
 	
 	<Table name="OSEE_JOIN_ATTRIBUTE" schema="OSEE">
 		<Column id="ATTR_QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="VALUE" defaultValue="not null" limits="4000" type="VARCHAR" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ATTRIBUTE_A_IDX">
 			<AppliesTo id="ATTR_QUERY_ID"/>
 		</Index>
@@ -600,6 +602,7 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Column id="GAMMA_ID" type="INTEGER" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>

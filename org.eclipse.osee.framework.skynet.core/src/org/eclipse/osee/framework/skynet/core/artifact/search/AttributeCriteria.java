@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -27,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public class AttributeCriteria extends AbstractArtifactSearchCriteria {
 
    public static final String INSERT_INTO_ATTRIBUTE_SEARCH =
-         "INSERT INTO osee_join_attribute (attr_query_id, value) VALUES (?, ?)";
+         "INSERT INTO osee_join_attribute (attr_query_id, start_time, value) VALUES (?, ?, ?)";
    public static final String DELETE_FROM_ATTRIBUTE_SEARCH = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
 
    private AttributeType attributeType;
@@ -117,10 +119,12 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
          } else {
             this.values = values;
             this.attrQueryId = ArtifactLoader.getNewQueryId();
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
             List<Object[]> data = new ArrayList<Object[]>();
             for (String str : values) {
-               data.add(new Object[] {SQL3DataType.INTEGER, this.attrQueryId, SQL3DataType.VARCHAR, str});
+               data.add(new Object[] {SQL3DataType.INTEGER, this.attrQueryId, SQL3DataType.TIMESTAMP, insertTime,
+                     SQL3DataType.VARCHAR, str});
             }
             ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_ATTRIBUTE_SEARCH, data);
          }

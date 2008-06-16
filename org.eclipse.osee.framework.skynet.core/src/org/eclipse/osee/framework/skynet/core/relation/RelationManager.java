@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -165,6 +167,8 @@ public class RelationManager {
       if (relations == null) {
          return;
       }
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
       for (RelationLink relation : relations) {
          if (!relation.isDeleted()) {
             RelationSide resolvedSide = null;
@@ -180,8 +184,9 @@ public class RelationManager {
                int branchId = relation.getBranch(resolvedSide).getBranchId();
                Artifact relatedArtifact = ArtifactCache.getActive(artId, branchId);
                if (relatedArtifact == null) {
-                  insertParameters.put(artId, branchId, new Object[] {SQL3DataType.INTEGER, queryId,
-                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId});
+                  insertParameters.put(artId, branchId,
+                        new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                              SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId});
                } else {
                   relatedArtifacts.add(relatedArtifact);
                }
