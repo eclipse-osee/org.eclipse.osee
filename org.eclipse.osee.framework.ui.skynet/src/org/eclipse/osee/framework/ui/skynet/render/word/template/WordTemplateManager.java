@@ -214,10 +214,6 @@ public class WordTemplateManager {
       tasks.add(new AddTemplateText(last, template.length(), template));
    }
 
-   //
-   //	/**
-   //	 * @return
-   //	 */
    public String getArtifactSet() {
       return this.artifactSetName;
    }
