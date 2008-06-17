@@ -382,7 +382,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       addOpenArtifactsMenuItem(menuManager);
       menuManager.add(new Separator());
       addSetDefaultCommand(menuManager);
-      addChangeReportCommand(menuManager);
+      addChangeViewCommand(menuManager);
+      addMergeViewCommand(menuManager);
       addBranchCommand(menuManager);
       addSelectivelyBranchCommand(menuManager);
       addCommitCommand(menuManager);
@@ -406,8 +407,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       addViewTableMenuItem(menuManager);
       menuManager.add(new Separator());
       addAccessControlCommand(menuManager);
-      addMergeViewCommand(menuManager);
-      addChangeViewCommand(menuManager);
+      addChangeReportCommand(menuManager);
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
    }
@@ -474,7 +474,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             try {
                IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-               if (!selection.isEmpty() || selection.getFirstElement() == null) return false;
                Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
                return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
             } catch (Exception ex) {
@@ -486,11 +485,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private String addChangeViewCommand(MenuManager menuManager) {
-      CommandContributionItem accessControlCommand =
-            Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "New Change Report", null, null,
-                  null, "M", null, null);
-      menuManager.add(accessControlCommand);
-      return accessControlCommand.getId();
+      CommandContributionItem changeViewCommand =
+            Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "Change Report", null, null, null,
+                  "M", null, null);
+      menuManager.add(changeViewCommand);
+      return changeViewCommand.getId();
    }
 
    private void createChangeViewCommand(MenuManager menuManager) {
@@ -1139,7 +1138,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    private String addChangeReportCommand(MenuManager menuManager) {
       CommandContributionItem showChangeReportCommand =
-            Commands.getLocalCommandContribution(getSite(), "createChangeReportCommand", "Show Change Report", null,
+            Commands.getLocalCommandContribution(getSite(), "createChangeReportCommand", "Old Change Report", null,
                   null, null, "C", null, "branch_manager_show_change_report_menu");
       menuManager.add(showChangeReportCommand);
       return showChangeReportCommand.getId();
