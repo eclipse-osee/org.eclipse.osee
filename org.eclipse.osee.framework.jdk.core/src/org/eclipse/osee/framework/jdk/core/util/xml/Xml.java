@@ -182,13 +182,15 @@ public class Xml {
       return resultString;
    }
 
-   public static final Element appendNewElementWithText(Node parentElementName, String newElementTagName, String newText) {
+   public static final Element appendNewElementWithText(Node parentNode, String newElementTagName, String newText) {
       Element newElement = null;
       try {
-         newElement = parentElementName.getOwnerDocument().createElement(newElementTagName);
-         parentElementName.appendChild(newElement);
+         Document ownerDocument =
+               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+         newElement = ownerDocument.createElement(newElementTagName);
+         parentNode.appendChild(newElement);
          if (newText != null) {
-            Node newTextNode = parentElementName.getOwnerDocument().createTextNode(newText);
+            Node newTextNode = ownerDocument.createTextNode(newText);
             newElement.appendChild(newTextNode);
          }
       } catch (Exception e) {
@@ -198,13 +200,15 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element appendNewElementWithTextCData(Node parentElementName, String newElementTagName, String newText) {
+   public static final Element appendNewElementWithTextCData(Node parentNode, String newElementTagName, String newText) {
       Element newElement = null;
       try {
-         newElement = parentElementName.getOwnerDocument().createElement(newElementTagName);
-         parentElementName.appendChild(newElement);
+         Document ownerDocument =
+               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+         newElement = ownerDocument.createElement(newElementTagName);
+         parentNode.appendChild(newElement);
          if (newText != null) {
-            Node newTextNode = parentElementName.getOwnerDocument().createCDATASection(newText);
+            Node newTextNode = ownerDocument.createCDATASection(newText);
             newElement.appendChild(newTextNode);
          }
       } catch (Exception e) {
@@ -214,13 +218,15 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element appendNewElementWithTextAndAttributes(Node parentElementName, String newElementTagName, String newText, String[][] attributes) {
+   public static final Element appendNewElementWithTextAndAttributes(Node parentNode, String newElementTagName, String newText, String[][] attributes) {
       Element newElement = null;
       try {
-         newElement = parentElementName.getOwnerDocument().createElement(newElementTagName);
-         parentElementName.appendChild(newElement);
+         Document ownerDocument =
+               (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
+         newElement = ownerDocument.createElement(newElementTagName);
+         parentNode.appendChild(newElement);
          if (newText != null) {
-            Node newTextNode = parentElementName.getOwnerDocument().createTextNode(newText);
+            Node newTextNode = ownerDocument.createTextNode(newText);
             newElement.appendChild(newTextNode);
          }
          if (attributes != null) {
@@ -234,16 +240,18 @@ public class Xml {
       return newElement;
    }
 
-   public static final Element[] appendNewElementsWithText(Node parentElementName, String newElementsTagName, String[] textInstances) {
+   public static final Element[] appendNewElementsWithText(Node parentNode, String newElementsTagName, String[] textInstances) {
       Element[] newElements = new Element[textInstances.length];
       try {
          if (textInstances != null) {
+            Document ownerDocument =
+                  (parentNode.getNodeType() == Node.DOCUMENT_NODE) ? (Document) parentNode : parentNode.getOwnerDocument();
             for (int i = 0; i < textInstances.length; i++) {
-               newElements[i] = parentElementName.getOwnerDocument().createElement(newElementsTagName);
-               parentElementName.appendChild(newElements[i]);
+               newElements[i] = ownerDocument.createElement(newElementsTagName);
+               parentNode.appendChild(newElements[i]);
                String textInstance = (textInstances[i] == null) ? "null" : textInstances[i];
                textInstance = (textInstance.length() == 0) ? "null" : textInstance;
-               newElements[i].appendChild(parentElementName.getOwnerDocument().createTextNode(textInstance));
+               newElements[i].appendChild(ownerDocument.createTextNode(textInstance));
             }
          }
       } catch (Exception e) {
@@ -252,10 +260,10 @@ public class Xml {
       return newElements;
    }
 
-   public static final Element appendNewElementWithTextAndOneAttribute(Node parentElementName, String newElementTagName, String newText, String attributeName, String attributeValue) {
+   public static final Element appendNewElementWithTextAndOneAttribute(Node parentNode, String newElementTagName, String newText, String attributeName, String attributeValue) {
       Element newElement = null;
       try {
-         newElement = appendNewElementWithText(parentElementName, newElementTagName, newText);
+         newElement = appendNewElementWithText(parentNode, newElementTagName, newText);
          newElement.setAttribute(attributeName, attributeValue);
       } catch (Exception e) {
          e.printStackTrace();
@@ -393,7 +401,7 @@ public class Xml {
          }
       } else {
          Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
-         if (selectedNodes.length == 1) {
+         if (selectedNodes.length > 0) {
             resultString = selectNodesText((Element) selectedNodes[0]).trim();
          }
       }
