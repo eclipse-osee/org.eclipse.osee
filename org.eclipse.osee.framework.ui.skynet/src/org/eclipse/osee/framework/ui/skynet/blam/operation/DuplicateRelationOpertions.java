@@ -11,13 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -30,7 +36,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
    private static final String update_version =
          "update osee_define_rel_link set modification_id = ? where gamma_id = ?";
    private static final String SELECT_DUPLICATE_RELATIONS =
-         "select rel1.a_art_id, rel1.b_art_id, rel1.rel_link_type_id, txd1.branch_id, rel1.REL_LINK_ID, rel1.gamma_id, txd1.transaction_id from osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 , (select rel2.*, txd2.branch_id, txd2.transaction_id from osee_define_rel_link rel2, osee_define_txs txs2, osee_define_tx_details txd2 where txs2.transaction_id = txd2.transaction_id and txs2.tx_current = 1 and txs2.gamma_id = rel2.gamma_id) other_rel_link where txs1.transaction_id = txd1.transaction_id and txs1.tx_current = 1 and txd1.tx_type = 0 and txs1.gamma_id = rel1.gamma_id and txd1.branch_id = other_rel_link.branch_id and rel1.a_art_id = other_rel_link.a_art_id and rel1.b_art_id = other_rel_link.b_art_id and rel1.REL_LINK_TYPE_ID = other_rel_link.rel_link_type_id and rel1.REL_LINK_ID <> other_rel_link.rel_link_id order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rel_link_id";
+         "select rel1.a_art_id, rel1.b_art_id, rel1.rel_link_type_id, txd1.branch_id, rel1.REL_LINK_ID, rel1.gamma_id, txd1.transaction_id from osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 , (select rel2.*, txd2.branch_id, txd2.transaction_id from osee_define_rel_link rel2, osee_define_txs txs2, osee_define_tx_details txd2 where txs2.transaction_id = txd2.transaction_id and txs2.tx_current = 1 and txs2.gamma_id = rel2.gamma_id) other_rel_link where txs1.transaction_id = txd1.transaction_id and txs1.tx_current = 1 and txs1.gamma_id = rel1.gamma_id and txd1.branch_id = other_rel_link.branch_id and rel1.a_art_id = other_rel_link.a_art_id and rel1.b_art_id = other_rel_link.b_art_id and rel1.REL_LINK_TYPE_ID = other_rel_link.rel_link_type_id and rel1.REL_LINK_ID <> other_rel_link.rel_link_id order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rel_link_id";
    private CompositeKeyQuadHashMap<Integer, Integer, Integer, Integer, RelationInfo> relationInfo =
          new CompositeKeyQuadHashMap<Integer, Integer, Integer, Integer, RelationInfo>(1000);
 
@@ -47,17 +53,17 @@ public class DuplicateRelationOpertions extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      Branch branch = variableMap.getBranch("Parent Branch");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, false);
-      int count = 0;
-      for (Artifact art : artifacts) {
-         if (art.isDirty(true)) {
-            count++;
-         }
-         art.persistRelations();
-      }
-      System.out.println(count);
-      /*
+      //      Branch branch = variableMap.getBranch("Parent Branch");
+      //      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, false);
+      //      int count = 0;
+      //      for (Artifact art : artifacts) {
+      //         if (art.isDirty(true)) {
+      //            count++;
+      //         }
+      //         art.persistRelations();
+      //      }
+      //      System.out.println(count);
+      //*
       ConnectionHandlerStatement stmt = null;
       try {
          stmt = ConnectionHandler.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
@@ -100,34 +106,41 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          }
       }
 
-      List<Object[]> batchedTxsUpdates = new ArrayList<Object[]>();
-      List<Object[]> batchedVersionUpdates = new ArrayList<Object[]>();
+      //      List<Object[]> batchedTxsUpdates = new ArrayList<Object[]>();
+      //      List<Object[]> batchedVersionUpdates = new ArrayList<Object[]>();
+      HashSet<Long> gammas = new HashSet<Long>();
 
       //ModificationType.DELETED;/
       //      TxChange.DELETED;
-      FileOutputStream fos = new FileOutputStream(new File("DuplicateRelationRecovery.txt"));
+      //      FileOutputStream fos = new FileOutputStream(new File("DuplicateRelationRecovery.txt"));
       for (RelationInfo info : values) {
          for (int i = 1; i < info.relLinksToGammas.size(); i++) {
             if (info.art_a == 81891 && info.art_b == 107083) {
                System.out.println("look at me");
             }
-            fos.write(String.format("%d, %d\n", info.relLinksToGammas.get(i).getKey(),
-                  info.relLinksToGammas.get(i).getValue()).getBytes());
-            batchedTxsUpdates.add(new Object[] {SQL3DataType.INTEGER, TxChange.DELETED.getValue(),
-                  SQL3DataType.INTEGER, ModificationType.DELETED.getValue(), SQL3DataType.BIGINT,
-                  info.relLinksToGammas.get(i).getKey(), SQL3DataType.INTEGER, info.relLinksToGammas.get(i).getValue()});
-            batchedVersionUpdates.add(new Object[] {SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
-                  SQL3DataType.BIGINT, info.relLinksToGammas.get(i).getKey()});
+            gammas.add(info.relLinksToGammas.get(i).getKey());
+            //            fos.write(String.format("%d, %d\n", info.relLinksToGammas.get(i).getKey(),
+            //                  info.relLinksToGammas.get(i).getValue()).getBytes());
+            //            batchedTxsUpdates.add(new Object[] {SQL3DataType.INTEGER, TxChange.DELETED.getValue(),
+            //                  SQL3DataType.INTEGER, ModificationType.DELETED.getValue(), SQL3DataType.BIGINT,
+            //                  info.relLinksToGammas.get(i).getKey(), SQL3DataType.INTEGER, info.relLinksToGammas.get(i).getValue()});
+            //            batchedVersionUpdates.add(new Object[] {SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
+            //                  SQL3DataType.BIGINT, info.relLinksToGammas.get(i).getKey()});
          }
       }
-      fos.close();
-      System.out.println("here we go.");
-      System.out.println("wait here");
+      //      fos.close();
+      //      System.out.println("here we go.");
+      //      System.out.println("wait here");
+
+      System.out.println(String.format("%d gamma id's that should be modified.", gammas.size()));
+
+      System.out.println(Arrays.deepToString(gammas.toArray()));
+
       //      ConnectionHandler.runPreparedUpdateBatch(this.update_txs, batchedTxsUpdates);
       //      ConnectionHandler.runPreparedUpdateBatch(this.update_version, batchedVersionUpdates);
 
-      System.out.println(values.size());
-      */
+      //      System.out.println(values.size());
+      //*/
    }
 
    public String getXWidgetsXml() {
