@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class UpdateCurrentColumn extends AbstractBlam {
 
    private enum Operations {
-      Update_Tx_Current, Update_Tx_Mod_Type, Run_Tx_Current_Verification, Run_Tx_Mod_Type_Verification;
+      Update_Tx_Mod_Type, Update_Tx_Current, Run_Tx_Current_Verification, Run_Tx_Mod_Type_Verification;
 
       public String asLabel() {
          return this.name().replaceAll("_", " ");
