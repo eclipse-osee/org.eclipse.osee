@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -35,31 +36,12 @@ public class SortRelationsByBranch extends AbstractBlam {
    private static final String SELECT_A_RELATION_ORDER =
          "select rel1.rel_link_type_id,  rel1.b_art_id, txd1.branch_id, rel1.a_order, txs1.gamma_id, rel1.a_art_id, rel1.b_order_value    from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
    private static final String UPDATE_A_ORDER = "update osee_define_rel_link set a_order = ? where gamma_id = ?";
-   private Branch branchToSort;
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
-    */
-   @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
-      return variableMap.getBranch("Parent Branch");
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      this.branchToSort = variableMap.getBranch("Parent Branch");
-      int startAtTxNumber = 0;
-      try {
-         startAtTxNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
-      } catch (NumberFormatException ex) {
-         appendResultLine(String.format("Failed to parse string [%s], specify an integer",
-               variableMap.getString("From Transaction Number")));
-         return;
-      }
-      appendResultLine(String.format("Processing from transaction id [%d].\n", startAtTxNumber));
       Connection connection = null;
       try {
          connection = OseeDbConnection.getConnection();
@@ -68,10 +50,29 @@ public class SortRelationsByBranch extends AbstractBlam {
 
          monitor.beginTask(getName(), totalWork);
 
-         IOperation op = new UpdateRelationsSortOrder();
-         monitor.setTaskName("Executing: [UpdateRelationsSortOrder]");
-         op.execute(monitor, connection, startAtTxNumber);
-         monitor.setTaskName("");
+         List<Branch> branches = BranchPersistenceManager.getBranches();
+         List<Branch> branchesToSort = new ArrayList<Branch>(branches.size());
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Common"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Block III - FTB0"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Block III - FTB2"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("MYII V11"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("AH-64 MSA PDSP"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("LBA Help - FAQs - Instructions"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("MYII V13"));
+         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("V11_REU"));
+
+         for (Branch branch : branches) {
+            if (!branchesToSort.contains(branch)) {
+               branchesToSort.add(branch);
+            }
+         }
+
+         for (Branch branch : branchesToSort) {
+            IOperation op = new UpdateRelationsSortOrder(branch);
+            monitor.setTaskName("Executing: [UpdateRelationsSortOrder] " + branch.getBranchName());
+            op.execute(monitor, connection, 0);
+            monitor.setTaskName("");
+         }
 
       } finally {
          if (connection != null) {
@@ -86,11 +87,17 @@ public class SortRelationsByBranch extends AbstractBlam {
       void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception;
    }
 
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Branch List\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Parent Branch\" /></xWidgets>";
-   }
    private final class UpdateRelationsSortOrder implements IOperation {
       int totalModCount = 0;
+
+      Branch branchToSort;
+
+      /**
+       * @param branch
+       */
+      public UpdateRelationsSortOrder(Branch branch) {
+         branchToSort = branch;
+      }
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(java.sql.Connection, int)
@@ -170,7 +177,7 @@ public class SortRelationsByBranch extends AbstractBlam {
       }
 
       boolean isUpdateRequired() {
-         return new_order != order;
+         return order == 0;
       }
 
       Object[] getUpdateData() {
