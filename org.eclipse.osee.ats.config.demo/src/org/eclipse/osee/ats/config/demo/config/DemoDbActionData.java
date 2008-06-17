@@ -64,19 +64,19 @@ public class DemoDbActionData {
 
    public static Set<DemoDbActionData> getReqSawActionsData() {
       Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW Requirement (committed) Changes for"}, "Diagram View",
+      actionDatas.add(new DemoDbActionData(new String[] {"SAW (committed) Reqt Changes for"}, "Diagram View",
             PriorityType.Priority_1, new String[] {DemoDbAIs.SAW_Requirements.getAIName(),
                   DemoDbAIs.SAW_Code.getAIName(), DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1},
             DefaultTeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW More Requirement (uncommitted) Changes for"},
+      actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted) More Reqt Changes for"}, "Diagram View",
+            PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Code.getAIName(), DemoDbAIs.SAW_SW_Design.getAIName(),
+                  DemoDbAIs.SAW_Requirements.getAIName(), DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1},
+            DefaultTeamState.Implement));
+      actionDatas.add(new DemoDbActionData(new String[] {"SAW (no-branch) Even More Requirement Changes for"},
             "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Code.getAIName(),
                   DemoDbAIs.SAW_SW_Design.getAIName(), DemoDbAIs.SAW_Requirements.getAIName(),
                   DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW Even More Requirement (no-branch) Changes for"},
-            "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Code.getAIName(),
-                  DemoDbAIs.SAW_SW_Design.getAIName(), DemoDbAIs.SAW_Requirements.getAIName(),
-                  DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
-      actionDatas.add(new DemoDbActionData(new String[] {"SAW More Requirement (uncommitted-conflicted) Changes for"},
+      actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted-conflicted) More Requirement Changes for"},
             "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Requirements.getAIName()},
             new Integer[] {1}, DefaultTeamState.Implement));
       return actionDatas;
@@ -85,27 +85,22 @@ public class DemoDbActionData {
    public static Set<DemoDbActionData> getNonReqSawActionData() {
       Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
       actionDatas.add(new DemoDbActionData(new String[] {"Workaround for"}, "Graph View", PriorityType.Priority_1,
-            new String[] {DemoDbAIs.Adapter.getAIName(), DemoDbAIs.SAW_Code.getAIName()}, new Integer[] {1},
-            DefaultTeamState.Implement));
+            new String[] {DemoDbAIs.Adapter.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Working with"}, "Diagram Tree", PriorityType.Priority_3,
-            new String[] {DemoDbAIs.SAW_Code.getAIName(), DemoDbAIs.SAW_SW_Design.getAIName(),
-                  DemoDbAIs.SAW_Requirements.getAIName(), DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {0, 2},
-            DefaultTeamState.Endorse));
+            new String[] {DemoDbAIs.SAW_SW_Design.getAIName()}, new Integer[] {0, 2}, DefaultTeamState.Endorse));
       return actionDatas;
    }
 
    public static Set<DemoDbActionData> getGenericActionData() {
       Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
       actionDatas.add(new DemoDbActionData(new String[] {"Problem with the", "Can't see the"}, "Graph View",
-            PriorityType.Priority_1, new String[] {DemoDbAIs.Adapter.getAIName(), DemoDbAIs.SAW_Code.getAIName()},
-            new Integer[] {1}, DefaultTeamState.Implement));
+            PriorityType.Priority_1, new String[] {DemoDbAIs.Adapter.getAIName()}, new Integer[] {1},
+            DefaultTeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Problem in", "Can't load"}, "Diagram Tree",
-            PriorityType.Priority_3, new String[] {DemoDbAIs.CIS_Code.getAIName(), DemoDbAIs.CIS_SW_Design.getAIName(),
-                  DemoDbAIs.CIS_Requirements.getAIName(), DemoDbAIs.CIS_Test.getAIName()}, new Integer[] {0, 2},
+            PriorityType.Priority_3, new String[] {DemoDbAIs.CIS_Test.getAIName()}, new Integer[] {0, 2},
             DefaultTeamState.Endorse));
       actionDatas.add(new DemoDbActionData(new String[] {"Button W doesn't work on"}, "Situation Page",
-            PriorityType.Priority_3, new String[] {DemoDbAIs.CIS_Code.getAIName(), DemoDbAIs.CIS_SW_Design.getAIName(),
-                  DemoDbAIs.CIS_Requirements.getAIName(), DemoDbAIs.CIS_Test.getAIName()}, new Integer[] {0, 2},
+            PriorityType.Priority_3, new String[] {DemoDbAIs.CIS_Test.getAIName()}, new Integer[] {0, 2},
             DefaultTeamState.Analyze));
       actionDatas.add(new DemoDbActionData(new String[] {"Problem with the"}, "user window", PriorityType.Priority_4,
             new String[] {DemoDbAIs.Timesheet.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));

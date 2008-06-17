@@ -218,7 +218,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
 
-      DemoDbUtil.sleep(40000);
+      DemoDbUtil.sleep(5000);
 
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
@@ -275,7 +275,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error committing working branch: ")).append(result.getText()).toString());
 
-      DemoDbUtil.sleep(40000);
+      DemoDbUtil.sleep(5000);
 
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Completing Action", false);
    }
@@ -292,7 +292,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
 
-      DemoDbUtil.sleep(40000);
+      DemoDbUtil.sleep(5000);
 
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
@@ -306,11 +306,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                   BranchPersistenceManager.getInstance().getDefaultBranch());
-
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
       branchArtifact.persistAttributesAndRelations();
 
-      // Set to parent branch to make conflicting changes
+      // Set to parent branch to make some conflicting changes
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch().getParentBranch());
 
       Artifact parentArtifact =
@@ -337,7 +336,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (result.isFalse()) throw new IllegalArgumentException(
             (new StringBuilder("Error creating working branch: ")).append(result.getText()).toString());
 
-      DemoDbUtil.sleep(40000);
+      DemoDbUtil.sleep(5000);
 
       DemoDbUtil.setDefaultBranch(reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
