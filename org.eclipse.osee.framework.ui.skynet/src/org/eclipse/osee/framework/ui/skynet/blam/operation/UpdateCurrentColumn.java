@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -70,7 +72,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE tx_current IS null";
 
    private static final String SELECT_BASELINED_TRANSACTIONS =
-         "SELECT txs1.gamma_id, txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
+         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.mod_type from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
 
    private static final String UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0 =
          "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type IS NULL"; // Changed tx_type <> 1 to account for null case
@@ -277,18 +279,23 @@ public class UpdateCurrentColumn extends AbstractBlam {
          final List<Object[]> batchArgs = new ArrayList<Object[]>(batchSize);
          executeQuery(monitor, connection, new IRowProcessor() {
             public void processRow(ResultSet resultSet) throws Exception {
-               batchArgs.add(new Object[] {SQL3DataType.BIGINT, resultSet.getLong(1), SQL3DataType.INTEGER,
-                     resultSet.getInt(2)});
+               int modType = resultSet.getInt(3);
+               int tx_current_value = 1;
+               if (modType == ModificationType.DELETED.getValue()) {
+                  tx_current_value = TxChange.DELETED.getValue();
+               }
+               batchArgs.add(new Object[] {SQL3DataType.INTEGER, tx_current_value, SQL3DataType.BIGINT,
+                     resultSet.getLong(1), SQL3DataType.INTEGER, resultSet.getInt(2)});
 
                if (monitor.isCanceled() != true && batchArgs.size() >= batchSize) {
-                  writeToDb(monitor, connection, UPDATE_TXS_CURRENT_TO_1, "baselined txs", batchArgs);
+                  writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
                   batchArgs.clear();
                }
             }
          }, 0, SELECT_BASELINED_TRANSACTIONS, SQL3DataType.INTEGER, txNumber);
 
          if (monitor.isCanceled() != true && batchArgs.size() > 0) {
-            writeToDb(monitor, connection, UPDATE_TXS_CURRENT_TO_1, "baselined txs", batchArgs);
+            writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
          }
          monitor.worked(1);
       }
