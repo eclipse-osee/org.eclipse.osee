@@ -1,11 +1,11 @@
-#Wed Dec 12 13:30:57 MST 2007
+#Tue Jun 17 11:43:46 MST 2008
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_missing_annotations=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.indent_parameter_description=true
-@org.eclipse.ui.editors=3.3.0.v20070606-0010
+@org.eclipse.ui.editors=3.3.1.r331_v20070629
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_at_in_annotation_type_declaration=do not insert
-@org.eclipse.debug.ui=3.3.0.v20070607-1800
+@org.eclipse.debug.ui=3.3.1.v20070731_r331
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_enum_constant=end_of_line
-@org.eclipse.core.net=1.0.0.I20070531
+@org.eclipse.core.net=1.0.1.r33x_20070709
 /instance/org.eclipse.ui/PROJECT_OPEN_NEW_PERSPECTIVE=NO_NEW_PERSPECTIVE
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_binary_operator=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_method_invocation_arguments=insert
@@ -22,7 +22,6 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance=1.6
 /instance/org.eclipse.team.core/file_types=jtpl\n1\nxls\n2\ncom\n2\njpeg\n2\ntif\n2\ntag\n1\npdf\n2\nemof\n1\ndadx\n1\njpage\n1\njavajet\n1\nMF\n1\ncxx\n1\njar\n2\nwml\n1\nphp\n1\ntmo\n1\njetinc\n1\ndtd\n1\nhtm\n1\nhpp\n1\ntiff\n2\njsp\n1\ncpp\n1\nso\n2\ncvsignore\n1\nmod\n1\nxmi\n1\njsv\n1\nclass\n2\nxsd2ecore\n1\nxml\n1\necore2ecore\n1\nproperties\n1\nppt\n2\nini\n1\nclasspath\n1\njspx\n1\nbmp\n2\nproject\n1\noverride\n1\nnst\n1\njardesc\n1\nshtml\n1\ndll\n2\necore\n1\nhtpl\n1\ncss\n1\ncc\n1\nexe\n2\ngif\n2\ncdtbuild\n1\npropertiesjet\n1\njspf\n1\nwsdl\n1\nxhtml\n1\nexsd\n1\nlaunch\n1\nico\n2\nhh\n1\ncdtproject\n1\ntxt\n1\necore2xml\n1\nprefs\n1\nmxsd\n1\njsf\n1\noptions\n1\nxsl\n1\nzip\n2\nc\n1\ntagx\n1\na\n2\nbeaninfoConfig\n1\no\n2\nshtm\n1\nent\n1\nxmljet\n1\nh\n1\njpg\n2\nproduct\n1\ngenmodel\n1\ntagf\n1\nxslt\n1\npng\n2\nxsd\n1\ndoc\n2\ndatagraph\n1\njava\n1\nhtml\n1\ntld\n1\n
 /instance/org.eclipse.ui.ide/EXIT_PROMPT_ON_CLOSE_LAST_WINDOW=false
-@org.eclipse.jst.j2ee.webservice.ui=1.1.101.v200706121000
 /instance/org.eclipse.debug.ui/Console.highWaterMark=808000
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_switchstatements_compare_to_cases=true
 /instance/org.eclipse.jdt.ui/sp_cleanup.convert_to_enhanced_for_loop=false
@@ -52,17 +51,17 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_angle_bracket_in_parameterized_type_reference=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_enum_constant=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.insert_new_line_before_root_tags=insert
-@org.eclipse.ui=3.3.0.I20070614-0800
+@org.eclipse.ui=3.3.1.M20070910-0800b
 /instance/org.polarion.team.svn.ui/history.repositoryUser=cmJyb29rcw\=\=;cnlhbi5kLmJyb29rcw\=\=
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.exception.name=ex
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_compact_if=0
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_missing_nls_tags=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
-@org.eclipse.wst.server.core=1.0.204.v200706111751
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_before_else_in_if_statement=do not insert
 /instance/org.eclipse.pde.runtime/orderValue=-1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_reference=do not insert
 /instance/org.eclipse.team.ui/org.eclipse.team.ui.sychronizing_default_participant_sec_id=1197473737700
+/instance/org.eclipse.team.svn.ui/preference.repository.repositoryBrowser=false
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_this_for_non_static_method_access=false
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_serial_version_id=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_paren_in_cast=insert
@@ -91,7 +90,6 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_catch=insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.organize_imports=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_enum_declaration=insert
-@org.polarion.team.svn.ui=1.1.9
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_switchstatements_compare_to_switch=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_package=0
 /instance/org.eclipse.help.ui/browser.maximized=false
@@ -106,12 +104,13 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.keep_empty_array_initializer_on_one_line=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_ellipsis=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.tabulation.char=space
-@org.eclipse.jdt.debug.ui=3.2.100.v20070531-1800
+@org.eclipse.jdt.debug.ui=3.2.101.v20070718_r331
 /instance/org.eclipse.jdt.ui/MemberFilterActionGroup.org.eclipse.jdt.ui.JavaOutlinePage.1=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_array_initializer=end_of_line
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_trailing_whitespaces_all=true
 /instance/org.polarion.team.svn.ui/history.repositoryURL=aHR0cHM6Ly9zdW44MDEubXNjLmF6LmJvZWluZy5jb20vbGJhX3N2bi9vc2Vl;aHR0cHM6Ly9kZXYuZWNsaXBzZS5vcmcvc3Zucm9vdC90ZWNobm9sb2d5;aHR0cHM6Ly9kZXYuZWNsaXBzZS5vcmcvc3ZudGVjaC8\=;c3ZuOi8vMTI3LjAuMC4xOjM2OTAvc3Zucm9vdC90ZWNobm9sb2d5;c3ZuK3NzaDovLzEyNy4wLjAuMTozNjkwL3N2bnJvb3QvdGVjaG5vbG9neQ\=\=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.align_type_members_on_columns=false
+@org.eclipse.team.svn.ui=0.7.0.v20080116
 /configuration/org.eclipse.ui.ide/RECENT_WORKSPACES=C\:\\UserData\\workspace,C\:\\UserData\\workspaceLocal,C\:\\UserData\\workspaceRel,C\:\\UserData\\workspace2,C\:\\UserData\\workspace1
 /instance/org.eclipse.team.ui/org.eclipse.team.ui.sychronizing_default_participant=org.polarion.team.svn.ui.synchronize.update.SynchronizeParticipant
 /instance/org.polarion.team.svn.ui/history.comment=QXBwbGllZCB1cGRhdGVkIGphdmEgY29kZSBmb3JtYXR0aW5nIHN0YW5kYXJk;W0NRIDE3Mjld;U2hhcmUgcHJvamVjdCAnamFrYXJ0YS5jb21tb25zLm5ldCcgaW50byAnaHR0cHM6Ly9kZXYuZWNsaXBzZS5vcmcvc3Zucm9vdC90ZWNobm9sb2d5Jw\=\=;W0NRIDE4NzNd;U2hhcmUgcHJvamVjdCAnb3JnLmFwYWNoZS5jb21tb25zLmxhbmcnIGludG8gJ2h0dHBzOi8vZGV2LmVjbGlwc2Uub3JnL3N2bnJvb3QvdGVjaG5vbG9neSc\=
@@ -148,9 +147,9 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_block=insert
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.switch_perspective_on_suspend=always
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
-@org.eclipse.team.cvs.ui=3.3.0.I20070607
+@org.eclipse.team.cvs.ui=3.3.1.r33x_20070807
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.wrap_before_binary_operator=true
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source=1.5
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source=1.6
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.JavaOutlinePage.ImportDeclarationFilter=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_imports=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation=0
@@ -166,9 +165,10 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_while=insert
 /instance/org.eclipse.ui.ide/platformState=1187063531565
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_for=insert
-@org.eclipse.team.cvs.core=3.3.0.I20070607
+@org.eclipse.team.cvs.core=3.3.1.r33x_20070724
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.argumentSuffixes=
-@org.eclipse.ant.ui=3.2.100.v20070511
+@org.eclipse.ant.ui=3.2.200.v20070825_r331
+/instance/org.eclipse.team.svn.ui/history.repositoryURL=aHR0cHM6Ly9kZXYuZWNsaXBzZS5vcmcvc3Zucm9vdC90ZWNobm9sb2d5L29yZy5lY2xpcHNlLm9zZWU\=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_constructor_declaration=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_semicolon_in_for=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_enum_constant=do not insert
@@ -188,11 +188,11 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_prefix_operator=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.format_guardian_clause_on_one_line=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_at_end_of_file_if_missing=do not insert
-@org.eclipse.jdt.core=3.3.0.v_771
+@org.eclipse.jdt.core=3.3.1.v_780_R33x
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_parenthesized_expression=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_allocation_expression=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_cast=do not insert
-@org.eclipse.pde.core=3.3.0.v20070608-1300
+@org.eclipse.pde.core=3.3.1.v20070912-0800
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_annotation=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_and_in_type_parameter=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_question_in_wildcard=do not insert
@@ -201,8 +201,9 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_type_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_enum_constant=do not insert
+/instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.callback.PromptCredentialsPanel.width=470
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_private_constructors=true
-@org.eclipse.debug.core=3.3.0.v20070607-1800
+@org.eclipse.debug.core=3.3.1.v20070731_r331
 /instance/org.eclipse.jst.j2ee.webservice.ui/areThereWebServices=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_constructor_declaration=0
 /instance/org.eclipse.ui/showIntro=false
@@ -211,7 +212,7 @@
 @org.eclipse.jsch.core=1.0.0.I20070426
 /instance/org.eclipse.ant.ui/useQuickDiffPrefPage=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_question_in_conditional=insert
-@org.eclipse.team.ui=3.3.0.I20070607
+@org.eclipse.team.ui=3.3.1.r33x_20070730
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.staticFieldPrefixes=
 /instance/org.eclipse.pde.runtime/activate=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_enum_constant_arguments=do not insert
@@ -223,7 +224,8 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_increments=insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.make_parameters_final=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments=do not insert
-@org.eclipse.ui.navigator=3.3.0.I20070605-0010
+@org.eclipse.ui.navigator=3.3.2.M20071022-1600a
+/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1213726052145">\r\n<vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n<vm id\="1213726052145" javadocURL\="http\://java.sun.com/javase/6/docs/api/" name\="eclipse" path\="C\:\\UserData\\eclipse"/>\r\n</vmType>\r\n</vmSettings>\r\n
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_generated_serial_version_id=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.staticFieldSuffixes=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_at_in_annotation_type_declaration=insert
@@ -239,9 +241,9 @@
 /instance/org.eclipse.jdt.ui/sp_cleanup.always_use_this_for_non_static_method_access=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_angle_bracket_in_type_arguments=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.fieldPrefixes=
-@org.eclipse.help.ui=3.3.0.v20070530
+@org.eclipse.help.ui=3.3.1.v20070726_33x
 /instance/org.eclipse.core.net/proxyData/HTTPS/host=www-slb-proxy.boeing.com
-@org.eclipse.ui.ide=3.3.0.I20070620
+@org.eclipse.ui.ide=3.3.1.M20070910-0800b
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_method=1
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.editor.tab.width=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_method_declaration=do not insert
@@ -263,7 +265,7 @@
 /instance/org.eclipse.jdt.debug.ui/org.eclipse.debug.ui.ExpressionView.org.eclipse.jdt.debug.ui.show_null_entries=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_type_parameters=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_body_declarations_compare_to_annotation_declaration_header=true
-@org.eclipse.pde.ui=3.3.0.v20070608-1300
+@org.eclipse.pde.ui=3.3.1.v20070912-0800
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_arguments=do not insert
 /instance/org.eclipse.help.ui/browser.y=5
 /instance/org.eclipse.help.ui/browser.x=2
@@ -279,7 +281,7 @@
 /instance/org.eclipse.help.ui/browser.h=844
 /instance/org.eclipse.jdt.ui/sp_cleanup.qualify_static_method_accesses_with_declaring_class=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_type_reference=do not insert
-@org.eclipse.team.core=3.3.0.I20070607
+@org.eclipse.team.core=3.3.1.r33x_20070807
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_switch=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_colon_in_assert=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_enum_constant=insert
@@ -306,7 +308,7 @@
 /instance/org.eclipse.jdt.ui/sp_cleanup.make_variable_declarations_final=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_annotation_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_colon_in_labeled_statement=do not insert
-/instance/org.eclipse.ui.workbench/ENABLED_DECORATORS=org.eclipse.ajdt.ui.decorator\:true,org.eclipse.wst.server.ui.decorator\:false,org.eclipse.ajdt.ui.advicedecorator\:true,org.eclipse.datatools.connectivity.sqm.core.internal.ui.explorer.DependencyDecoration\:true,org.eclipse.datatools.connectivity.sqm.core.internal.ui.explorer.ColumnDecoration\:true,org.eclipse.datatools.connectivity.sqm.core.internal.ui.explorer.ForeignKeyDecoration\:true,org.eclipse.datatools.connectivity.sqm.internal.core.ui.bookmarkDecoration\:true,org.eclipse.datatools.connectivity.ui.decorator.contentextension\:false,org.eclipse.jdt.ui.override.decorator\:true,org.eclipse.jdt.ui.interface.decorator\:false,org.eclipse.jst.j2ee.internal.ui.util.AnnotationIconDecorator_ejb\:true,org.eclipse.jst.j2ee.navigator.internal.J2EEProjectDecorator\:true,org.eclipse.jst.j2ee.internal.ui.util.AnnotationIconDecorator_servlet\:true,org.eclipse.pde.ui.binaryProjectDecorator\:false,org.eclipse.team.cvs.ui.decorator\:true,org.eclipse.ui.LinkedResourceDecorator\:true,org.polarion.team.svn.ui.decorator.wrapper.ProjectDecoratorWrapper\:true,org.polarion.team.svn.ui.decorator.wrapper.ResourceDecoratorWrapper\:true,org.polarion.team.svn.ui.decorator.wrapper.WorkingSetDecoratorWrapper\:true,
+/instance/org.eclipse.ui.workbench/ENABLED_DECORATORS=org.eclipse.jdt.ui.override.decorator\:true,org.eclipse.jdt.ui.interface.decorator\:false,org.eclipse.pde.ui.binaryProjectDecorator\:false,org.eclipse.team.cvs.ui.decorator\:true,org.eclipse.team.svn.ui.decorator.wrapper.ProjectDecoratorWrapper\:true,org.eclipse.team.svn.ui.decorator.wrapper.ResourceDecoratorWrapper\:true,org.eclipse.team.svn.ui.decorator.wrapper.WorkingSetDecoratorWrapper\:true,org.eclipse.ui.LinkedResourceDecorator\:true,
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_catch=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_array_initializer=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_body_declarations_compare_to_enum_constant_header=true
@@ -318,14 +320,15 @@
 /instance/org.eclipse.jdt.ui/lastRecentlyUsedFilters=org.eclipse.ajdt.ui.editor.outline.DeclarationFilter,org.eclipse.jdt.ui.JavaOutlinePage.ImportDeclarationFilter,
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.insert_new_line_for_parameter=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_type_declaration=0
+/instance/org.eclipse.pde.core/platform_path=C\:\\UserData\\eclipse
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_type_arguments=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_enum_constant_arguments=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_colon_in_case=insert
 /instance/org.eclipse.core.net/proxyData/HTTP/host=www-slb-proxy.boeing.com
-@org.eclipse.wst.xml.ui=1.0.300.v200705302225
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_switch=end_of_line
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_before_catch_in_try_statement=do not insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.sort_members_all=false
+/instance/org.eclipse.team.svn.ui/org.eclipse.team.svn.ui.panel.callback.PromptCredentialsPanel.height=231
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_bracket_in_array_reference=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_anonymous_type_declaration=insert
 /instance/org.polarion.team.svn.ui/preference.annotate.useQuickDiff=0
@@ -338,7 +341,6 @@
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.formatterprofiles.version=11
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_enum_constant=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_colon_in_for=insert
-@org.eclipse.wst.sse.core=1.1.201.v200706212223
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_multiple_local_declarations=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_question_in_wildcard=do not insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.on_save_use_additional_actions=false
@@ -348,7 +350,7 @@
 /instance/org.eclipse.ajdt.ui/ajde.version.at.previous.startup=@AJDEVERSION@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_statements_compare_to_block=true
 /instance/org.eclipse.debug.ui/preferredDetailPanes=DefaultDetailPane\:DefaultDetailPane|
-@org.eclipse.ui.workbench=3.3.0.I20070608-1100
+@org.eclipse.ui.workbench=3.3.1.M20070921-1200
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_anonymous_type_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_brackets_in_array_allocation_expression=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_switch=do not insert
@@ -361,7 +363,7 @@
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.javadoc=true
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_default_serial_version_id=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_enum_declarations=do not insert
-@org.eclipse.jdt.ui=3.3.0.v20070607-0010
+@org.eclipse.jdt.ui=3.3.1.r331_v20070906
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.line_length=120
 /instance/org.eclipse.jdt.ui/spelling_user_dictionary_encoding=
 /instance/org.eclipse.core.net/proxiesEnabled=false
@@ -377,6 +379,7 @@
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_trailing_whitespaces=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_superinterfaces=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference=do not insert
+/instance/org.eclipse.team.svn.ui/history.proxyHost=d3d3LXNsYi1wcm94eS5ib2VpbmcuY29t
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_colon_in_case=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_while=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.builder.resourceCopyExclusionFilter=*.launch
@@ -395,7 +398,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_semicolon=do not insert
 file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.clear_blank_lines_in_block_comment=true
-@org.eclipse.jdt.launching=3.3.0.v20070510
+@org.eclipse.jdt.launching=3.3.1.v20070808_r331
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_constructor_declaration=end_of_line
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_constructor_declaration_throws=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_colon_in_conditional=insert
@@ -409,21 +412,18 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_enum_constant=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.localPrefixes=
 /instance/org.eclipse.core.resources/description.snapshotinterval=120000
-@org.eclipse.wst.sse.ui=1.0.302.v200706192034
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_constructor_declaration_throws=do not insert
 /instance/org.eclipse.ui.ide/PROBLEMS_FILTERS=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<filters>\r\n<filter IMemento.internal.id\="Default" contains\="true" description\="" enabled\="true" onResource\="3" selectBySeverity\="false" selectionStatus\="org.eclipse.core.resources.problemmarker\:true\:org.eclipse.osee.ote.ui.output.errorMarker\:true\:org.eclipse.jdt.core.buildpath_problem\:true\:org.eclipse.jdt.apt.core.configproblem\:true\:org.eclipse.wst.common.project.facet.core.validation.marker\:true\:org.eclipse.jst.common.frameworks.javaVersionMismatch\:true\:org.eclipse.jst.j2ee.differentRuntimesDetected\:true\:org.eclipse.osee.ote.ui.test.output.errorMarker\:true\:org.eclipse.jdt.apt.core.buildproblem\:true\:org.eclipse.jst.j2ee.ejb.annotations.xdoclet.xdoclet.marker\:true\:org.eclipse.wst.validation.problemmarker\:true\:org.eclipse.jst.j2ee.ejb.EJBValidatorMarker\:true\:org.eclipse.wst.common.modulecore.ModuleCoreValidatorMarker\:true\:org.eclipse.jpt.core.jpaProblemMarker\:true\:org.eclipse.jst.jsf.core.JSPSemanticsValidatorMarker\:true\:org.eclipse.wst.wsdl.validation.validationMarker\:true\:org.eclipse.jst.j2ee.ClasspathDependencyValidatorMarker\:true\:org.eclipse.jst.j2ee.EARValidatorMarker\:true\:org.eclipse.jdt.core.problem\:true\:org.eclipse.osee.ote.ui.test.output.manualTestPointMarker\:true\:org.eclipse.xsd.diagnostic\:true\:org.eclipse.datatools.sqltools.sqleditor.syntaxproblem\:true\:org.eclipse.pde.core.problem\:true\:org.eclipse.ant.ui.buildFileProblem\:true\:org.eclipse.emf.ecore.diagnostic\:true\:org.eclipse.osee.ote.ui.test.output.tracabilityMarker\:true\:org.eclipse.jdt.launching.jreContainerMarker\:true\:org.eclipse.jdt.apt.core.compile.problem\:true\:org.eclipse.ajdt.ui.problemmarker\:true\:org.eclipse.datatools.connectivity.ui.profileFailure\:true\:" severity\="0"/>\r\n</filters>
+/instance/org.eclipse.team.svn.ui/history.repositoryUser=cmJyb29rcw\=\=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.comment.clear_blank_lines_in_javadoc_comment=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_while=do not insert
 /instance/org.eclipse.ui.ide/tipsAndTricks=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.localSuffixes=
-@org.eclipse.osee.framework.skynet.core=0.1.0.200712041713
 /instance/org.eclipse.jdt.ui/sp_cleanup.never_use_parentheses_in_expressions=true
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.PREF_LAUNCH_PERSPECTIVES=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<launchPerspectives/>\r\n
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_and_in_type_parameter=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_superinterfaces_in_enum_declaration=0
-@org.eclipse.ajdt.ui=1.5.0.200706070619
-@org.eclipse.jst.jsp.core=1.2.0.v200706120811
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_enum_declaration=end_of_line
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_missing_deprecated_annotations=true
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_unused_private_members=false
@@ -435,7 +435,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.number_of_empty_lines_to_preserve=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_constructor_declaration=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_colon_in_assert=insert
-@org.eclipse.search=3.3.0.v20070606-0010
+@org.eclipse.search=3.3.1.r331_v20070831-0800
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_invocation=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_method_invocation_arguments=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_enum_declaration=insert
@@ -451,7 +451,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_method_declaration=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_type_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression=16
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_multiple_fields=16
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_inits=insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_this_for_non_static_field_access_only_if_necessary=true
@@ -466,7 +466,6 @@ file_export_version=3.0
 /instance/org.eclipse.wst.server.core/module-start-timeout=300000
 /instance/org.eclipse.team.ui/pref_generichistory_view_linking=true
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.javadoclocations.migrated=true
-@org.eclipse.wst.xsd.ui=1.2.0.v200706131840
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.user_view_bindings=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<viewBindings>\r\n<view id\="org.eclipse.debug.ui.ExpressionView">\r\n<perspective id\="org.eclipse.debug.ui.DebugPerspective" userAction\="opened"/>\r\n</view>\r\n<view id\="org.eclipse.ui.console.ConsoleView">\r\n<perspective id\="org.polarion.team.svn.ui.repository.RepositoryPerspective" userAction\="opened"/>\r\n<perspective id\="org.eclipse.osee.ats.ATSPerspective" userAction\="opened"/>\r\n<perspective id\="osee.define.PerspectiveFactory" userAction\="opened"/>\r\n<perspective id\="org.eclipse.team.ui.TeamSynchronizingPerspective" userAction\="opened"/>\r\n<perspective id\="org.eclipse.jdt.ui.JavaPerspective" userAction\="opened"/>\r\n</view>\r\n</viewBindings>\r\n
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_method_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_semicolon_in_for=do not insert
