@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -73,6 +74,9 @@ public class MergeView extends ViewPart implements IActionable {
     */
 
    private IHandlerService handlerService;
+   private Branch sourceBranch;
+   private Branch destBranch;
+   private TransactionId transactionId;
 
    /**
     * @author Donald G. Dunne
@@ -304,11 +308,14 @@ public class MergeView extends ViewPart implements IActionable {
       });
    }
 
-   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
+   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionId transactionId) {
+      this.sourceBranch = sourceBranch;
+      this.destBranch = destBranch;
+      this.transactionId = transactionId;
       //      this.conflicts = conflicts;
       try {
          //         if (conflicts != null) {
-         xMergeViewer.setInputData(sourceBranch, destBranch, tranId, this);
+         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this);
          //         }
          setPartName("Merge Manager: " + sourceBranch.getBranchShortName());
 
@@ -328,7 +335,50 @@ public class MergeView extends ViewPart implements IActionable {
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
+      try {
+         Integer sourceBranchId = null;
+         Integer destBranchId = null;
+         Integer transactionId = null;
+
+         if (memento != null) {
+            memento = memento.getChild(INPUT);
+            if (memento != null) {
+               sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
+               final Branch sourceBranch = BranchPersistenceManager.getInstance().getBranch(sourceBranchId);
+               if (sourceBranch == null) {
+                  OSEELog.logWarning(SkynetGuiPlugin.class,
+                        "Merge View can't init due to invalid source branch id " + sourceBranchId, false);
+                  xMergeViewer.setLabel("Could not restore this Merge View");
+                  return;
+               }
+               destBranchId = memento.getInteger(DEST_BRANCH_ID);
+               final Branch destBranch = BranchPersistenceManager.getInstance().getBranch(destBranchId);
+               if (destBranch == null) {
+                  OSEELog.logWarning(SkynetGuiPlugin.class,
+                        "Merge View can't init due to invalid destination branch id " + sourceBranchId, false);
+                  xMergeViewer.setLabel("Could not restore this Merge View");
+                  return;
+               }
+               transactionId = memento.getInteger(TRANSACTION_NUMBER);
+               final TransactionId transId =
+                     TransactionIdManager.getInstance().getNonEditableTransactionId(transactionId);
+               if (transId == null) {
+                  OSEELog.logWarning(SkynetGuiPlugin.class,
+                        "Merge View can't init due to invalid transaction id " + transactionId, false);
+                  xMergeViewer.setLabel("Could not restore this Merge View");
+                  return;
+               }
+               openViewUpon(sourceBranch, destBranch, transId);
+            }
+         }
+      } catch (Exception ex) {
+         OSEELog.logWarning(SkynetGuiPlugin.class, "Merge View error on init", ex, false);
+      }
    }
+   private static final String INPUT = "input";
+   private static final String SOURCE_BRANCH_ID = "sourceBranchId";
+   private static final String DEST_BRANCH_ID = "destBranchId";
+   private static final String TRANSACTION_NUMBER = "transactionNumber";
 
    /*
     * (non-Javadoc)
@@ -338,6 +388,11 @@ public class MergeView extends ViewPart implements IActionable {
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
+      memento = memento.createChild(INPUT);
+
+      memento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getBranchId());
+      memento.putInteger(DEST_BRANCH_ID, destBranch.getBranchId());
+      memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
    }
 
    private class PreviewHandler extends AbstractSelectionEnabledHandler {

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
+import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -134,6 +135,7 @@ public class AtsLib implements IAtsLib {
     * @param guid
     */
    public void openArtifact(String guid, OseeAts.OpenView view) {
+      BulkLoadAtsConfigData.run(false);
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());

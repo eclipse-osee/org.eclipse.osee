@@ -197,7 +197,7 @@ public class ChangeView extends ViewPart implements IActionable {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, "Change report error on init", ex, false);
+         OSEELog.logWarning(SkynetGuiPlugin.class, "Change report error on init", ex, false);
       }
    }
 }
