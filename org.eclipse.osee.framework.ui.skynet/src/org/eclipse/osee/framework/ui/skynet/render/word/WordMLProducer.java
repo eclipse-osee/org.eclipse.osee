@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -177,6 +178,12 @@ public class WordMLProducer {
       strB.append(Xml.escape(text));
       strB.append("</w:t></w:r></w:p>");
    }
+   
+   public void addParagraphBold(CharSequence text) throws IOException {
+	      strB.append("<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>");
+	      strB.append(Xml.escape(text));
+	      strB.append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
+	   }
 
    public void addTextInsideParagraph(CharSequence text) throws IOException {
       strB.append("<w:r><w:t>");
