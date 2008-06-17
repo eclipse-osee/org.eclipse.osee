@@ -5,10 +5,27 @@
  */
 package org.eclipse.osee.define.blam.operation;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Ryan D. Brooks
  */
 public class Gamma1 {
+
+   public static void main(String[] args) {
+      Set<Integer> gammas = new HashSet<Integer>();
+      for (int i : gammaIds1) {
+         gammas.add(i);
+      }
+      for (int i : Gamma2.gammaIds2) {
+         gammas.add(i);
+      }
+      System.out.println(gammas.size());
+      System.out.println(Arrays.deepToString(gammas.toArray()));
+   }
+
    public static final int[] gammaIds1 =
          new int[] {177463, 177463, 177463, 177463, 177463, 177463, 177463, 177463, 177463, 1806392, 177463, 177463,
                177463, 177463, 177463, 177463, 852190, 1311395, 177463, 177463, 177463, 177463, 1508988, 1508988,
