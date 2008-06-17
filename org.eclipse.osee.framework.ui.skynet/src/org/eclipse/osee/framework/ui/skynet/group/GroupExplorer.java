@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.group;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -241,7 +243,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          AbstractSkynetTxTemplate unrelateTx =
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (GroupExplorerItem item : items) {
                         item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
                               item.getParentItem().getArtifact());
@@ -273,7 +275,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          AbstractSkynetTxTemplate deleteUniversalGroupTx =
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (GroupExplorerItem item : items) {
                         item.getArtifact().delete();
                      }
@@ -556,7 +558,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
 
                                  @Override
-                                 protected void handleTxWork() throws Exception {
+                                 protected void handleTxWork() throws OseeCoreException, SQLException {
                                     for (Artifact artifact : insertArts) {
                                        // Remove item from old group
                                        parentArtifact.deleteRelation(
@@ -654,7 +656,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
 
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (Artifact art : artsToRelate) {
                         if (!dragOverExplorerItem.contains(art)) {
                            dragOverExplorerItem.getArtifact().addRelation(

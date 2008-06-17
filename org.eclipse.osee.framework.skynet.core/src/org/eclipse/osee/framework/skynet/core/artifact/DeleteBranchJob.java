@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -117,7 +118,7 @@ class DeleteBranchJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          if (Query.getInt("child_branches", COUNT_CHILD_BRANCHES, SQL3DataType.INTEGER, branch.getBranchId()) > 0) throw new IllegalArgumentException(
                "Can not delete a branch that has children");
 

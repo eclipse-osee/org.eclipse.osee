@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -67,7 +68,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
@@ -134,7 +135,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * @return
     * @throws SQLException
     */
-   public static String getTeamWorkflowReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws Exception {
+   public static String getTeamWorkflowReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor)throws OseeCoreException, SQLException{
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Version", "StartDate", "RelDate",

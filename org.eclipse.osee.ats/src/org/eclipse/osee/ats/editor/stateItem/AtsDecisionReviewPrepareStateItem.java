@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -38,7 +40,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(java.lang.String, java.lang.String,
     *      java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
       if (fromState.equals(DecisionReviewArtifact.StateNames.Prepare) && toState.equals(DecisionReviewArtifact.StateNames.Decision)) {
          XDecisionOptions decOptions = new XDecisionOptions(smaMgr.getSma());
          return decOptions.validateDecisionOptions();
@@ -49,7 +51,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws Exception {
+   public String getDescription() throws OseeCoreException, SQLException {
       return "AtsDecisionReviewPrepareStateItem - Add validation of decision options prior to transitioning.";
    }
 

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -31,14 +32,14 @@ public class XListDam extends XList implements IArtifactWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws Exception {
+   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException, SQLException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
       super.setSelected(getStoredStrs());
    }
 
    @Override
-   public void saveToArtifact() throws Exception {
+   public void saveToArtifact() throws OseeCoreException, SQLException {
       artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
    }
 
@@ -50,7 +51,7 @@ public class XListDam extends XList implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws Exception {
+   public Result isDirty() throws OseeCoreException, SQLException {
       try {
          Collection<String> enteredValues = getSelectedStrs();
          Collection<String> storedValues = getStoredStrs();
@@ -67,7 +68,7 @@ public class XListDam extends XList implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws Exception {
+   public void revert() throws OseeCoreException, SQLException {
       setArtifact(artifact, attributeTypeName);
    }
 

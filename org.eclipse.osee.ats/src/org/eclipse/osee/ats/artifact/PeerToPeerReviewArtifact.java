@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -71,7 +71,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.artifact.ReviewSMArtifact#isUserRoleValid()
     */
    @Override
-   public Result isUserRoleValid() throws SQLException, MultipleAttributesExist {
+   public Result isUserRoleValid() throws OseeCoreException, SQLException {
       if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Result("Must have at least one Author");
       if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Result(
             "Must have at least one Reviewer");
@@ -89,7 +89,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       return "peerToPeerReview";
    }
 
-   public String getWorldViewVersion() throws Exception {
+   public String getWorldViewVersion() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -116,7 +116,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
-   public String getWorldViewTeam() throws Exception {
+   public String getWorldViewTeam() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -135,27 +135,27 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() throws Exception {
+   public String getWorldViewDescription() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory() throws Exception {
+   public String getWorldViewCategory() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewCategory2() throws Exception {
+   public String getWorldViewCategory2() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewCategory3() throws Exception {
+   public String getWorldViewCategory3() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public Date getWorldViewEstimatedReleaseDate() throws Exception {
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
 
-   public Date getWorldViewReleaseDate() throws Exception {
+   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -179,7 +179,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() throws Exception {
+   public String getWorldViewImplementer() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(State.Review.name()));
    }
 
@@ -188,7 +188,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
-   public Date getWorldViewDeadlineDate() throws Exception {
+   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -197,7 +197,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() throws Exception {
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -215,7 +215,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWorkPackage()
     */
-   public String getWorldViewWorkPackage() throws Exception {
+   public String getWorldViewWorkPackage() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -231,28 +231,28 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() throws Exception {
+   public String getWorldViewReviewAuthor() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() throws Exception {
+   public String getWorldViewReviewDecider() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() throws Exception {
+   public String getWorldViewReviewModerator() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() throws Exception {
+   public String getWorldViewReviewReviewer() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
    }
 

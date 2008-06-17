@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.menu;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -205,7 +207,7 @@ public class GlobalMenu {
                   AbstractSkynetTxTemplate purgeTx =
                         new AbstractSkynetTxTemplate(artifactsToBePurged.iterator().next().getBranch()) {
                            @Override
-                           protected void handleTxWork() throws Exception {
+                           protected void handleTxWork() throws OseeCoreException, SQLException {
                               for (Artifact artifactToPurge : artifactsToBePurged) {
                                  if (!artifactToPurge.isDeleted()) {
                                     fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());

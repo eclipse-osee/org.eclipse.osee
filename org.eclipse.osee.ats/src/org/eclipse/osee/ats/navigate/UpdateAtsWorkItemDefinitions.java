@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.sql.SQLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
@@ -39,7 +41,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(),
             "This could break lots of things, are you SURE?")) return;

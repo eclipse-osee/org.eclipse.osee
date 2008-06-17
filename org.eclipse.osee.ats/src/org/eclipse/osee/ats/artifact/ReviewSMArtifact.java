@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -60,7 +60,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return "Review";
    }
 
-   public boolean isBlocking() throws IllegalStateException, SQLException, MultipleAttributesExist, MultipleAttributesExist {
+   public boolean isBlocking() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
    }
 
@@ -72,11 +72,11 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return userRoleManager;
    }
 
-   public Result isUserRoleValid() throws SQLException, MultipleAttributesExist {
+   public Result isUserRoleValid() throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
-   public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws Exception {
+   public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException, SQLException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       if (getParentTeamWorkflow() != null) teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       if (actionableItemsDam.getActionableItems().size() > 0) {

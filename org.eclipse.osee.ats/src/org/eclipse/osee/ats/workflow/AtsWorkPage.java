@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.workflow;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -55,7 +57,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       super.widgetCreated(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (smaMgr != null) {
@@ -74,7 +76,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
       // If no tooltip, add global tooltip
       if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()) != null && ATSAttributes.getAtsAttributeByStoreName(
@@ -96,7 +98,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       super.widgetCreating(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (smaMgr != null) {
@@ -146,7 +148,7 @@ public class AtsWorkPage extends WorkPage {
    /**
     * @return the startPage
     */
-   public boolean isStartPage() throws Exception {
+   public boolean isStartPage() throws OseeCoreException, SQLException {
       return workFlowDefinition.getStartPage().getId().equals(getId());
    }
 
@@ -167,49 +169,49 @@ public class AtsWorkPage extends WorkPage {
    /**
     * @return the validatePage
     */
-   public boolean isValidatePage() throws Exception {
+   public boolean isValidatePage() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isValidatePage(workPageDefinition);
    }
 
    /**
     * @return the validateReviewBlocking
     */
-   public boolean isValidateReviewBlocking() throws Exception {
+   public boolean isValidateReviewBlocking() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isValidateReviewBlocking(workPageDefinition);
    }
 
    /**
     * @return the forceAssigneesToTeamLeads
     */
-   public boolean isForceAssigneesToTeamLeads() throws Exception {
+   public boolean isForceAssigneesToTeamLeads() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isForceAssigneesToTeamLeads(workPageDefinition);
    }
 
    /**
     * @return the forceAssigneesToTeamLeads
     */
-   public boolean isRequireStateHoursSpentPrompt() throws Exception {
+   public boolean isRequireStateHoursSpentPrompt() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(workPageDefinition);
    }
 
    /**
     * @return the allowCreateBranch
     */
-   public boolean isAllowTransitionWithWorkingBranch() throws Exception {
+   public boolean isAllowTransitionWithWorkingBranch() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(workPageDefinition);
    }
 
    /**
     * @return the allowCreateBranch
     */
-   public boolean isAllowCreateBranch() throws Exception {
+   public boolean isAllowCreateBranch() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isAllowCreateBranch(workPageDefinition);
    }
 
    /**
     * @return the allowCommitBranch
     */
-   public boolean isAllowCommitBranch() throws Exception {
+   public boolean isAllowCommitBranch() throws OseeCoreException, SQLException {
       return AtsWorkDefinitions.isAllowCommitBranch(workPageDefinition);
    }
 

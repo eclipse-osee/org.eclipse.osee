@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.TransactionChangeType;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -340,7 +341,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws Exception {
+                        protected void handleTxWork()throws OseeCoreException, SQLException{
                            ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
                         }
                      };
@@ -703,7 +704,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws Exception {
+                        protected void handleTxWork()throws OseeCoreException, SQLException{
                            for (Artifact loopArt : deleteArts) {
                               if (purge)
                                  loopArt.purge();

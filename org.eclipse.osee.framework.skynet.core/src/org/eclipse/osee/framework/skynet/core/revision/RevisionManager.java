@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -82,6 +81,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -611,7 +611,7 @@ public class RevisionManager implements IEventReceiver {
       }
    }
 
-   public Collection<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction) throws SQLException, IOException, Exception {
+   public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction) throws SQLException, OseeCoreException {
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       Set<Integer> artIdSet = new HashSet<Integer>();
@@ -636,7 +636,7 @@ public class RevisionManager implements IEventReceiver {
             BranchPersistenceManager.getInstance().getOrCreateMergeBranch(sourceBranch, destinationBranch,
                   new ArrayList<Integer>(artIdSet));
 
-      if (mergeBranch == null) throw new Exception("Could not create the Merge Branch.");
+      if (mergeBranch == null) throw new BranchMergeException("Could not create the Merge Branch.");
 
       preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet);
 
@@ -740,7 +740,7 @@ public class RevisionManager implements IEventReceiver {
     * @param conflicts
     * @throws SQLException
     */
-   private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) throws SQLException, IOException, Exception {
+   private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
 
       try {

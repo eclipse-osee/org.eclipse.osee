@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -103,13 +104,13 @@ public class AtsLib implements IAtsLib {
          return String.format("%5.2f", d);
    }
 
-   public static void editActionActionableItems(ActionArtifact actionArt) throws Exception {
+   public static void editActionActionableItems(ActionArtifact actionArt)throws OseeCoreException, SQLException{
       Result result = actionArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse()) result.popup(result.isTrue());
    }
 
-   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt) throws Exception {
+   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt)throws OseeCoreException, SQLException{
       Result result = teamArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -111,7 +112,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#getData()
     */
    @Override
-   public Object[] getData() throws Exception {
+   public Object[] getData() throws OseeDataStoreException {
       return new Object[] {rawStringValue, dataStore.getLocator()};
    }
 
@@ -119,10 +120,14 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
     */
    @Override
-   public void loadData(Object... objects) throws Exception {
-      if (objects != null && objects.length > 1) {
-         storeValue((String) objects[0]);
-         dataStore.setLocator((String) objects[1]);
+   public void loadData(Object... objects) throws OseeDataStoreException {
+      try {
+         if (objects != null && objects.length > 1) {
+            storeValue((String) objects[0]);
+            dataStore.setLocator((String) objects[1]);
+         }
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 
@@ -130,7 +135,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws Exception {
+   public void persist() throws OseeDataStoreException {
       dataStore.persist();
    }
 
@@ -138,7 +143,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
     */
    @Override
-   public void purge() throws Exception {
+   public void purge() throws OseeDataStoreException {
       dataStore.purge();
    }
 }

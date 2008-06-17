@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -99,7 +101,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          // This calls the containing class's version of the method
          AbstractSkynetTxJobTemplate.this.handleTxWork();
       }
@@ -110,7 +112,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws Exception {
+      protected void handleTxFinally() throws OseeCoreException, SQLException {
          super.handleTxFinally();
          // This calls the containing class's version of the method
          AbstractSkynetTxJobTemplate.this.handleTxFinally();
@@ -122,7 +124,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
     * 
     * @throws Exception
     */
-   protected abstract void handleTxWork() throws Exception;
+   protected abstract void handleTxWork() throws OseeCoreException, SQLException;
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
@@ -130,7 +132,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
     * 
     * @throws Exception
     */
-   protected void handleTxFinally() throws Exception {
+   protected void handleTxFinally() throws OseeCoreException, SQLException {
       // override to add additional code to finally
    }
 

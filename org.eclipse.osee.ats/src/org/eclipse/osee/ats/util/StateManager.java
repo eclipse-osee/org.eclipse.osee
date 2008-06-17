@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -61,13 +62,13 @@ public class StateManager {
     * @param stateName
     * @return hours spent or 0 if none
     */
-   public double getHoursSpent(String stateName) throws Exception {
+   public double getHoursSpent(String stateName) throws OseeCoreException, SQLException {
       SMAState state = getSMAState(stateName, false);
       if (state == null) return 0.0;
       return state.getHoursSpent();
    }
 
-   public double getHoursSpent() throws Exception {
+   public double getHoursSpent() throws OseeCoreException, SQLException {
       return getHoursSpent(getCurrentStateName());
    }
 
@@ -77,7 +78,7 @@ public class StateManager {
     * @param stateName
     * @return percent complete or 0 if none
     */
-   public int getPercentComplete(String stateName) throws Exception {
+   public int getPercentComplete(String stateName) throws OseeCoreException, SQLException {
       if (stateName.equals(DefaultTeamState.Completed) || stateName.equals(DefaultTeamState.Cancelled)) return 100;
       SMAState state = getSMAState(stateName, false);
       if (state == null) return 0;
@@ -85,7 +86,7 @@ public class StateManager {
 
    }
 
-   public int getPercentComplete() throws Exception {
+   public int getPercentComplete() throws OseeCoreException, SQLException {
       return getPercentComplete(getCurrentStateName());
    }
 
@@ -111,7 +112,7 @@ public class StateManager {
     * @param hoursSpent
     * @throws Exception
     */
-   public void setHoursSpent(double hoursSpent) throws Exception {
+   public void setHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
       setHoursSpent(getCurrentStateName(), hoursSpent);
    }
 
@@ -122,7 +123,7 @@ public class StateManager {
     * @param hoursSpent The hours to set.
     * @throws Exception
     */
-   public void setHoursSpent(String stateName, double hoursSpent) throws Exception {
+   public void setHoursSpent(String stateName, double hoursSpent) throws OseeCoreException, SQLException {
       if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
       SMAState state = getSMAState(stateName, false);
       state.setHoursSpent(hoursSpent);
@@ -135,7 +136,7 @@ public class StateManager {
     * @param hoursSpent The hoursSpent to set.
     * @throws Exception
     */
-   public void addHoursSpent(double hoursSpent) throws Exception {
+   public void addHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
       currentStateDam.addHoursSpent(hoursSpent);
    }
 
@@ -145,7 +146,7 @@ public class StateManager {
     * @param percentComplete The percentComplete to set.
     * @throws Exception
     */
-   public void setPercentComplete(int percentComplete) throws Exception {
+   public void setPercentComplete(int percentComplete) throws OseeCoreException, SQLException {
       setPercentComplete(getCurrentStateName(), percentComplete);
    }
 
@@ -156,7 +157,7 @@ public class StateManager {
     * @param percentComplete The percentComplete to set.
     * @throws Exception
     */
-   public void setPercentComplete(String stateName, int percentComplete) throws Exception {
+   public void setPercentComplete(String stateName, int percentComplete) throws OseeCoreException, SQLException {
       if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
       SMAState state = getSMAState(stateName, false);
       state.setPercentComplete(percentComplete);
@@ -169,7 +170,7 @@ public class StateManager {
     * @param assignees
     * @throws Exception
     */
-   public void setAssignees(Collection<User> assignees) throws Exception {
+   public void setAssignees(Collection<User> assignees) throws OseeCoreException, SQLException {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignees(assignees);
       putState(state);
@@ -181,7 +182,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void setAssignee(String stateName, User assignee) throws Exception {
+   public void setAssignee(String stateName, User assignee) throws OseeCoreException, SQLException {
       if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
@@ -194,7 +195,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void setAssignee(User assignee) throws Exception {
+   public void setAssignee(User assignee) throws OseeCoreException, SQLException {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignee(assignee);
       putState(state);
@@ -207,7 +208,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void removeAssignee(String stateName, User assignee) throws Exception {
+   public void removeAssignee(String stateName, User assignee) throws OseeCoreException, SQLException {
       if (!isStateVisited(stateName)) return;
       SMAState state = getSMAState(stateName, false);
       state.removeAssignee(assignee);
@@ -220,7 +221,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void removeAssignee(User assignee) throws Exception {
+   public void removeAssignee(User assignee) throws OseeCoreException, SQLException {
 
    }
 
@@ -230,7 +231,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void clearAssignees() throws Exception {
+   public void clearAssignees()throws OseeCoreException, SQLException{
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.clearAssignees();
       putState(state);
@@ -240,7 +241,7 @@ public class StateManager {
       return getVisitedStateNames().contains(name);
    }
 
-   public void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws Exception {
+   public void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws OseeCoreException, SQLException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
@@ -262,7 +263,7 @@ public class StateManager {
     * @param stateName
     * @throws Exception
     */
-   public void initializeStateMachine(String stateName) throws Exception {
+   public void initializeStateMachine(String stateName) throws OseeCoreException, SQLException {
       initializeStateMachine(stateName, null);
    }
 
@@ -273,7 +274,7 @@ public class StateManager {
     * @param assignees
     * @throws Exception
     */
-   public void initializeStateMachine(String stateName, Collection<User> assignees) throws Exception {
+   public void initializeStateMachine(String stateName, Collection<User> assignees) throws OseeCoreException, SQLException {
       SMAState smaState = null;
       if (getVisitedStateNames().contains(stateName)) {
          smaState = getSMAState(stateName, false);
@@ -287,7 +288,7 @@ public class StateManager {
       currentStateDam.setState(smaState);
    }
 
-   private void putState(SMAState state) throws Exception {
+   private void putState(SMAState state) throws OseeCoreException, SQLException {
       if (getCurrentStateName().equals(state.getName()))
          currentStateDam.setState(state);
       else

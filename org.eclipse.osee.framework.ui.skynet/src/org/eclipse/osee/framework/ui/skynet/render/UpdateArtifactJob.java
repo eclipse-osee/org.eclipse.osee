@@ -168,73 +168,77 @@ public class UpdateArtifactJob extends UpdateJob {
       }
 
       @Override
-      protected void handleTxWork() throws Exception {
-         boolean singleArtifact = artElements.size() == 1;
-         boolean containsOleData = false;
-         for (Element artElement : artElements) {
-            String guid = getGuid(artElement);
-            Artifact artifact = ArtifactQuery.getArtifactFromId(guid, getTxBranch());
+      protected void handleTxWork() throws OseeCoreException, SQLException {
+         try {
+            boolean singleArtifact = artElements.size() == 1;
+            boolean containsOleData = false;
+            for (Element artElement : artElements) {
+               String guid = getGuid(artElement);
+               Artifact artifact = ArtifactQuery.getArtifactFromId(guid, getTxBranch());
 
-            if (artifact != null) {
-               containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("");
+               if (artifact != null) {
+                  containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("");
 
-               if (oleDataElement == null && containsOleData) {
-                  artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
-               } else if (oleDataElement != null && singleArtifact) {
-                  artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
-                        WordRenderer.getFormattedContent(oleDataElement)));
-               }
-
-               String content =
-                     Lib.inputStreamToString(new ByteArrayInputStream(WordRenderer.getFormattedContent(artElement)));
-               StringBuilder stringBuffer = new StringBuilder();
-
-               // Decided not to support multi edit of artifacts that contain equations.
-               if (false && containsOleData && !singleArtifact) {
-                  int startIndex = 0, endIndex = 0, tagCursorStart = 0, tagCursorEnd = 0;
-                  String equationTag;
-
-                  content = content.replaceAll("MyObject", "OLEObject").replaceAll("number", "ObjectID");
-
-                  while (endIndex < content.length()) {
-                     tagCursorStart = content.indexOf(":OLEObject ", startIndex);
-
-                     if (tagCursorStart != -1) {
-                        tagCursorStart = content.lastIndexOf('<', tagCursorStart);
-
-                        tagCursorEnd = content.indexOf(">", tagCursorStart) + 1;
-                        equationTag = content.substring(tagCursorStart, tagCursorEnd);
-
-                        tagCursorEnd = content.indexOf("OLEObject>", tagCursorStart) + "OLEObject>".length();
-                        content = content.replace(content.subSequence(tagCursorStart, tagCursorEnd), "");
-
-                        endIndex = content.indexOf("</w:pict>", startIndex);
-                        stringBuffer.append(content.substring(startIndex, endIndex));
-
-                        equationTag = equationTag.replaceFirst("ns\\d+", "o").replace(">", "/>");
-                        stringBuffer.append(equationTag + "</w:pict>");
-                        startIndex = endIndex + "</w:pict>".length();
-                     } else {
-                        endIndex = content.length();
-                        stringBuffer.append(content.substring(startIndex, endIndex));
-                     }
+                  if (oleDataElement == null && containsOleData) {
+                     artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
+                  } else if (oleDataElement != null && singleArtifact) {
+                     artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
+                           WordRenderer.getFormattedContent(oleDataElement)));
                   }
-                  content = stringBuffer.toString();
+
+                  String content =
+                        Lib.inputStreamToString(new ByteArrayInputStream(WordRenderer.getFormattedContent(artElement)));
+                  StringBuilder stringBuffer = new StringBuilder();
+
+                  // Decided not to support multi edit of artifacts that contain equations.
+                  if (false && containsOleData && !singleArtifact) {
+                     int startIndex = 0, endIndex = 0, tagCursorStart = 0, tagCursorEnd = 0;
+                     String equationTag;
+
+                     content = content.replaceAll("MyObject", "OLEObject").replaceAll("number", "ObjectID");
+
+                     while (endIndex < content.length()) {
+                        tagCursorStart = content.indexOf(":OLEObject ", startIndex);
+
+                        if (tagCursorStart != -1) {
+                           tagCursorStart = content.lastIndexOf('<', tagCursorStart);
+
+                           tagCursorEnd = content.indexOf(">", tagCursorStart) + 1;
+                           equationTag = content.substring(tagCursorStart, tagCursorEnd);
+
+                           tagCursorEnd = content.indexOf("OLEObject>", tagCursorStart) + "OLEObject>".length();
+                           content = content.replace(content.subSequence(tagCursorStart, tagCursorEnd), "");
+
+                           endIndex = content.indexOf("</w:pict>", startIndex);
+                           stringBuffer.append(content.substring(startIndex, endIndex));
+
+                           equationTag = equationTag.replaceFirst("ns\\d+", "o").replace(">", "/>");
+                           stringBuffer.append(equationTag + "</w:pict>");
+                           startIndex = endIndex + "</w:pict>".length();
+                        } else {
+                           endIndex = content.length();
+                           stringBuffer.append(content.substring(startIndex, endIndex));
+                        }
+                     }
+                     content = stringBuffer.toString();
+                  }
+                  //Only update if editing a single artifact or if in multi-edit mode only update if
+                  //the artifact has at least on textual change.
+                  if (singleArtifact || !WordUtil.textOnly(
+                        artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
+                        WordUtil.textOnly(content))) {
+                     artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
+                  }
+                  if (artifact.isDirty()) {
+                     artifact.persistAttributes();
+                     changedArtifacts.add(artifact);
+                  }
+               } else {
+                  deletedGuids.add(guid);
                }
-               //Only update if editing a single artifact or if in multi-edit mode only update if
-               //the artifact has at least on textual change.
-               if (singleArtifact || !WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT).toString()).equals(
-                     WordUtil.textOnly(content))) {
-                  artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
-               }
-               if (artifact.isDirty()) {
-                  artifact.persistAttributes();
-                  changedArtifacts.add(artifact);
-               }
-            } else {
-               deletedGuids.add(guid);
             }
+         } catch (Exception ex) {
+            throw new OseeCoreException(ex);
          }
       }
 
@@ -244,7 +248,7 @@ public class UpdateArtifactJob extends UpdateJob {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws Exception {
+      protected void handleTxFinally() throws OseeCoreException, SQLException {
          super.handleTxFinally();
          for (Artifact artifact : changedArtifacts) {
             eventManager.kick(new VisitorEvent(artifact, this));

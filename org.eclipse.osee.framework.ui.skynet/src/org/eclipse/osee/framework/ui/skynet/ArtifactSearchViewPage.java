@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -252,7 +253,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                      AbstractSkynetTxTemplate purgeTx =
                            new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
                               @Override
-                              protected void handleTxWork() throws Exception {
+                              protected void handleTxWork() throws OseeCoreException, SQLException {
                                  for (Artifact artifactToPurge : artifacts) {
                                     if (!artifactToPurge.isDeleted()) {
                                        fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
@@ -823,7 +824,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                AbstractSkynetTxTemplate partitionsTx = new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
 
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (Artifact art : arts) {
                         for (String partition : partitions) {
                            boolean found = false;

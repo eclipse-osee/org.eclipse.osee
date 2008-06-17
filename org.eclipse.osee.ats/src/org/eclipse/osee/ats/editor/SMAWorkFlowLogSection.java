@@ -11,8 +11,10 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultsComposite;
 import org.eclipse.swt.SWT;
@@ -38,13 +40,13 @@ public class SMAWorkFlowLogSection extends SMAWorkFlowSection {
     * @param smaMgr
     * @throws Exception
     */
-   public SMAWorkFlowLogSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr) throws Exception {
+   public SMAWorkFlowLogSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr)throws OseeCoreException, SQLException{
       super(parent, toolkit, style, new AtsLogWorkPage(
             smaMgr.getSma().getArtifactTypeNameSuppressException() + " History"), smaMgr);
    }
 
    @Override
-   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit)throws OseeCoreException, SQLException{
       this.toolkit = toolkit;
       workComp = super.createWorkArea(comp, page, toolkit);
 
@@ -64,7 +66,7 @@ public class SMAWorkFlowLogSection extends SMAWorkFlowSection {
     * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#createPage(org.eclipse.swt.widgets.Composite)
     */
    @Override
-   protected Section createPage(Composite comp) throws Exception {
+   protected Section createPage(Composite comp)throws OseeCoreException, SQLException{
       Section section = super.createPage(comp);
       return section;
    }

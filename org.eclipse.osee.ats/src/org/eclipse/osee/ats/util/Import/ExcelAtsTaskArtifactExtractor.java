@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
@@ -212,11 +213,15 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws Exception {
-      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      excelHandler = new ExcelSaxHandler(this, true);
-      xmlReader.setContentHandler(excelHandler);
-      xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException, SQLException {
+      try {
+         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+         excelHandler = new ExcelSaxHandler(this, true);
+         xmlReader.setContentHandler(excelHandler);
+         xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /*

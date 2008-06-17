@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.workflow.vue;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -133,7 +135,7 @@ public class LoadAIsAndTeamsAction extends Action {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                // Get or create ATS root artifact
                Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
 
@@ -155,7 +157,7 @@ public class LoadAIsAndTeamsAction extends Action {
       }
    }
 
-   public TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page) throws Exception {
+   public TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page)throws OseeCoreException, SQLException{
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
       if (page.getName().equals(AtsConfig.TEAMS_HEADING)) {
@@ -268,7 +270,7 @@ public class LoadAIsAndTeamsAction extends Action {
       return teamDefArt;
    }
 
-   public ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page) throws Exception {
+   public ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page)throws OseeCoreException, SQLException{
       // System.out.println("Processing page " + page.getName());
       ActionableItemArtifact aia = null;
       boolean getOrCreate = false;

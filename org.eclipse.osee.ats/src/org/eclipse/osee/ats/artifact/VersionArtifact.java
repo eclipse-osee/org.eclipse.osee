@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 public class VersionArtifact extends BasicArtifact {
 
@@ -118,7 +119,7 @@ public class VersionArtifact extends BasicArtifact {
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
-   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws Exception {
+   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames)throws OseeCoreException, SQLException{
       Set<VersionArtifact> teamDefs = new HashSet<VersionArtifact>();
       for (String teamDefName : teamDefNames) {
          teamDefs.add(getSoleVersion(teamDefName));
@@ -133,7 +134,7 @@ public class VersionArtifact extends BasicArtifact {
     * @return
     * @throws SQLException
     */
-   public static VersionArtifact getSoleVersion(String name) throws Exception {
+   public static VersionArtifact getSoleVersion(String name)throws OseeCoreException, SQLException{
       return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
    }
 

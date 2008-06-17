@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -66,12 +67,16 @@ public class GenerateParagraphNumbersAction extends Action {
             AbstractSkynetTxTemplate artifactTx = new AbstractSkynetTxTemplate(selectedArtifact.getBranch()) {
 
                @Override
-               protected void handleTxWork() throws Exception {
-                  for (Artifact artifact : selectedArtifact.getChildren()) {
-                     if (monitor.isCanceled()) {
-                        throw new IllegalStateException("USER CANCELLED");
+               protected void handleTxWork() throws OseeCoreException, SQLException {
+                  try {
+                     for (Artifact artifact : selectedArtifact.getChildren()) {
+                        if (monitor.isCanceled()) {
+                           throw new IllegalStateException("USER CANCELLED");
+                        }
+                        setParagraphNumber(producer, artifact, monitor);
                      }
-                     setParagraphNumber(producer, artifact, monitor);
+                  } catch (Exception ex) {
+                     throw new OseeCoreException(ex);
                   }
                }
 

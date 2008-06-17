@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
@@ -87,7 +88,7 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
       }
    }
 
-   private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+   private void runIt(IProgressMonitor monitor, XResultData rd)throws OseeCoreException, SQLException{
       SearchWorkFlowsTx searchWorkFlowsTx =
             new SearchWorkFlowsTx(BranchPersistenceManager.getAtsBranch(), getName(), monitor, rd);
       searchWorkFlowsTx.execute();
@@ -111,7 +112,7 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork()throws OseeCoreException, SQLException{
          if (monitor != null) monitor.subTask("Searching Team Workflows...");
          Collection<Artifact> arts = new ArrayList<Artifact>();
          for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
@@ -170,7 +171,7 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
     */
-   public void startTasks(XResultData resultData) throws Exception {
+   public void startTasks(XResultData resultData)throws OseeCoreException, SQLException{
       runIt(null, resultData);
    }
 

@@ -66,7 +66,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       try {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                for (TaskArtifact taskArt : tasks)
                   taskArt.saveSMA();
             }
@@ -194,7 +194,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
     */
-   public String getCurrentStateName() throws Exception {
+   public String getCurrentStateName()throws OseeCoreException, SQLException{
       return "";
    }
 
@@ -203,7 +203,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
     */
-   public IDirtiableEditor getEditor() throws Exception {
+   public IDirtiableEditor getEditor()throws OseeCoreException, SQLException{
       return this;
    }
 
@@ -212,7 +212,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getOptions()
     */
-   public List<TaskResOptionDefinition> getResOptions() throws Exception {
+   public List<TaskResOptionDefinition> getResOptions()throws OseeCoreException, SQLException{
       if (((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions() != null) return ((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
@@ -222,7 +222,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
     */
-   public SMAManager getParentSmaMgr() throws Exception {
+   public SMAManager getParentSmaMgr()throws OseeCoreException, SQLException{
       return null;
    }
 
@@ -231,7 +231,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
     */
-   public String getTabName() throws Exception {
+   public String getTabName()throws OseeCoreException, SQLException{
       return "Tasks";
    }
 
@@ -240,7 +240,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
     */
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws Exception {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName)throws OseeCoreException, SQLException{
       return tasks;
    }
 
@@ -249,7 +249,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
     */
-   public boolean isTaskable() throws Exception {
+   public boolean isTaskable()throws OseeCoreException, SQLException{
       return false;
    }
 
@@ -258,7 +258,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
     */
-   public boolean isUsingTaskResolutionOptions() throws Exception {
+   public boolean isUsingTaskResolutionOptions()throws OseeCoreException, SQLException{
       try {
          return getResOptions().size() > 0;
       } catch (Exception ex) {
@@ -270,7 +270,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTasksEditable()
     */
-   public boolean isTasksEditable() throws Exception {
+   public boolean isTasksEditable()throws OseeCoreException, SQLException{
       return true;
    }
 

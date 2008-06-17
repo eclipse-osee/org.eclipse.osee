@@ -12,12 +12,14 @@
 package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
+import java.sql.SQLException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
@@ -139,7 +141,7 @@ public class ActionImportPage extends WizardDataTransferPage {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                ExcelAtsActionArtifactExtractor extractor =
                      new ExcelAtsActionArtifactExtractor(BranchPersistenceManager.getAtsBranch(),
                            emailPocs.getSelection());

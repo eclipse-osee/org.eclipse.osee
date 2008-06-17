@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -119,7 +120,7 @@ public abstract class Conflict implements IAdaptable {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Artifact getArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public Artifact getArtifact() throws OseeCoreException, SQLException {
       if (artifact == null) {
          artifact = ArtifactCache.getActive(artId, mergeBranch.getBranchId());
          if (artifact == null) {
@@ -241,20 +242,20 @@ public abstract class Conflict implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
    }
 
-   public Image getArtifactImage() throws IllegalArgumentException, SQLException, Exception {
+   public Image getArtifactImage() throws OseeCoreException, SQLException {
       return getArtifact().getArtifactType().getImage();
    }
 
-   public boolean okToOverwriteMerge() throws SQLException {
+   public boolean okToOverwriteMerge() throws OseeCoreException {
       if (status.equals(Status.RESOLVED)) {
          return false;
       }
       return true;
    }
 
-   public abstract Status computeStatus() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract Status computeStatus() throws OseeCoreException, SQLException;
 
-   public Status computeStatus(int objectID, Status DefaultStatus) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public Status computeStatus(int objectID, Status DefaultStatus) throws OseeCoreException, SQLException {
       Status passedStatus = DefaultStatus;
       if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
       status =
@@ -263,7 +264,7 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
-   public void setStatus(Status status) throws Exception {
+   public void setStatus(Status status) throws OseeCoreException, SQLException {
       if (this.status.equals(status)) return;
       ConflictStatusManager.setStatus(status, sourceGamma, destGamma);
       this.status = status;
@@ -293,7 +294,7 @@ public abstract class Conflict implements IAdaptable {
       return mergeBranch.getBranchId();
    }
 
-   public String getArtifactName() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getArtifactName() throws OseeCoreException, SQLException {
       return getArtifact().getDescriptiveName();
    }
 
@@ -309,27 +310,27 @@ public abstract class Conflict implements IAdaptable {
 
    public abstract Image getImage() throws SQLException;
 
-   public abstract String getSourceDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
+   public abstract String getSourceDisplayData() throws OseeCoreException, SQLException;
 
-   public abstract String getDestDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
+   public abstract String getDestDisplayData() throws OseeCoreException, SQLException;
 
-   public abstract boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean mergeEqualsSource() throws OseeCoreException, SQLException;
 
-   public abstract boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean mergeEqualsDestination() throws OseeCoreException, SQLException;
 
-   public abstract boolean sourceEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean sourceEqualsDestination() throws OseeCoreException, SQLException;
 
-   public abstract boolean setToSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean setToSource() throws OseeCoreException, SQLException;
 
-   public abstract boolean setToDest() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean setToDest() throws OseeCoreException, SQLException;
 
-   public abstract boolean clearValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract boolean clearValue() throws OseeCoreException, SQLException;
 
-   public abstract String getMergeDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract String getMergeDisplayData() throws OseeCoreException, SQLException;
 
-   public abstract String getChangeItem() throws SQLException, Exception;
+   public abstract String getChangeItem() throws OseeCoreException, SQLException;
 
    public abstract ConflictType getConflictType();
 
-   public abstract int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+   public abstract int getMergeGammaId() throws OseeCoreException, SQLException;
 }

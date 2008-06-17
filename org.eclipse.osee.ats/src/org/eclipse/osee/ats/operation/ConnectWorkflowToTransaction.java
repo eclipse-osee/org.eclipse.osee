@@ -37,7 +37,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor)throws OseeCoreException, SQLException{
       monitor.subTask("Aquiring Team Workflows");
 
       ConnectionHandlerStatement chStmt = null;

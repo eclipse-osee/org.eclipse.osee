@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -170,7 +171,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                AbstractSkynetTxTemplate modifyArtifactTx = new AbstractSkynetTxTemplate(branch) {
 
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (Artifact artifact : artifacts) {
                         monitor.subTask("Modifying " + artifact.getDescriptiveName());
                         for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {

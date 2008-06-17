@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -46,7 +47,7 @@ public class XActionableItemsDam extends XTextDam {
       return ais;
    }
 
-   public String getActionableItemsStr() throws Exception {
+   public String getActionableItemsStr()throws OseeCoreException, SQLException{
       return Artifacts.commaArts(getActionableItems());
    }
 

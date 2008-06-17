@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -98,7 +99,7 @@ public class XTaskViewer extends XWidget implements IActionable {
     * @param label
     * @throws Exception
     */
-   public XTaskViewer(IXTaskViewer iXTaskViewer) throws Exception {
+   public XTaskViewer(IXTaskViewer iXTaskViewer)throws OseeCoreException, SQLException{
       super(iXTaskViewer.getTabName());
       this.iXTaskViewer = iXTaskViewer;
    }
@@ -302,7 +303,7 @@ public class XTaskViewer extends XWidget implements IActionable {
       extraInfoLabel.getParent().layout();
    }
 
-   public void updateCurrentStateFilter() throws Exception {
+   public void updateCurrentStateFilter()throws OseeCoreException, SQLException{
       if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
          currentStateFilter = new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
          getXViewer().addFilter(currentStateFilter);
@@ -394,7 +395,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    }
 
-   public void loadTable() throws Exception {
+   public void loadTable()throws OseeCoreException, SQLException{
       try {
          getXViewer().set(iXTaskViewer.getTaskArtifacts(""));
       } catch (SQLException ex) {
@@ -404,14 +405,14 @@ public class XTaskViewer extends XWidget implements IActionable {
       xViewer.refresh();
    }
 
-   public void handleImportTasksViaList() throws Exception {
+   public void handleImportTasksViaList()throws OseeCoreException, SQLException{
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
       ((ImportTasksFromSimpleList) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
    }
 
-   public void handleImportTasksViaSpreadsheet() throws Exception {
+   public void handleImportTasksViaSpreadsheet()throws OseeCoreException, SQLException{
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
       ((ImportTasksFromSpreadsheet) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
@@ -440,7 +441,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          try {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork() throws Exception {
+               protected void handleTxWork()throws OseeCoreException, SQLException{
                   // Done for concurrent modification purposes
                   ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
                   delItems.addAll(items);
@@ -613,7 +614,7 @@ public class XTaskViewer extends XWidget implements IActionable {
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork() throws Exception {
+               protected void handleTxWork()throws OseeCoreException, SQLException{
                   for (Artifact art : artsToRelate) {
                      if (art instanceof TaskArtifact) {
                         TaskArtifact taskArt = (TaskArtifact) art;

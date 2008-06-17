@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -60,7 +61,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       this.teamDefName = null;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() throws Exception {
+   private TeamDefinitionArtifact getTeamDefinition()throws OseeCoreException, SQLException{
       if (selectedTeamDef != null) return selectedTeamDef;
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -56,7 +57,7 @@ public class SMARelationsComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(SMAManager smaMgr) throws Exception {
+   public void create(SMAManager smaMgr)throws OseeCoreException, SQLException{
       this.smaMgr = smaMgr;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -111,7 +112,7 @@ public class SMARelationsComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws Exception {
+   private void processReviewArtifact(final ReviewSMArtifact reviewArt)throws OseeCoreException, SQLException{
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().size() == 0) return;
       actionableItemsLabel = toolkit.createLabel(this, "");
       Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
@@ -130,11 +131,11 @@ public class SMARelationsComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void refreshActionableItemsLabel() throws Exception {
+   private void refreshActionableItemsLabel()throws OseeCoreException, SQLException{
       if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeNameSuppressException() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
-   public void refresh() throws Exception {
+   public void refresh()throws OseeCoreException, SQLException{
       refreshActionableItemsLabel();
    }
 

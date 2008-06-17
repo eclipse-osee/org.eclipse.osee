@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
@@ -96,7 +97,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
       }
    }
 
-   private List<TaskArtifact> runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+   private List<TaskArtifact> runIt(IProgressMonitor monitor, XResultData rd)throws OseeCoreException, SQLException{
       final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getAtsBranch());
@@ -151,7 +152,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
     */
-   public void startTasks(XResultData resultData) throws Exception {
+   public void startTasks(XResultData resultData)throws OseeCoreException, SQLException{
       runIt(null, resultData);
    }
 }

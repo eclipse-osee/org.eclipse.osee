@@ -143,7 +143,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    @Override
-   public Date getWorldViewDeadlineDate() throws Exception {
+   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -151,7 +151,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
    @Override
-   public String getWorldViewDeadlineDateStr() throws Exception {
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -159,7 +159,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    @Override
-   public String getWorldViewDescription() throws Exception {
+   public String getWorldViewDescription() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -167,7 +167,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
    @Override
-   public String getWorldViewImplementer() throws Exception {
+   public String getWorldViewImplementer() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -175,7 +175,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
    @Override
-   public String getWorldViewTeam() throws Exception {
+   public String getWorldViewTeam() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -183,7 +183,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
    @Override
-   public double getWorldViewWeeklyBenefit() throws Exception {
+   public double getWorldViewWeeklyBenefit() throws OseeCoreException, SQLException {
       return 0;
    }
 
@@ -335,7 +335,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return getDescriptiveName();
    }
 
-   public String getWorldViewActionableItems() throws Exception {
+   public String getWorldViewActionableItems() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -343,7 +343,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       smaRelations.add(side);
    }
 
-   public Image getAssigneeImage() throws Exception {
+   public Image getAssigneeImage() throws OseeCoreException, SQLException {
       if (isDeleted()) return null;
       if (smaMgr.getStateMgr().getAssignees().size() > 0) {
          if (smaMgr.isAssigneeMe())
@@ -434,33 +434,33 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.artifact.ATSArtifact#atsDelete(java.util.Set, java.util.Map)
     */
    @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException, SQLException {
       SMAEditor.close(this, true);
       super.atsDelete(deleteArts, allRelated);
    }
 
-   public String getWorldViewType() throws Exception {
+   public String getWorldViewType() throws OseeCoreException, SQLException {
       return getArtifactTypeNameSuppressException();
    }
 
-   public String getWorldViewTitle() throws Exception {
+   public String getWorldViewTitle() throws OseeCoreException, SQLException {
       return getDescriptiveName();
    }
 
-   public String getWorldViewState() throws Exception {
+   public String getWorldViewState() throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getCurrentStateName();
    }
 
-   public String getWorldViewActivePoc() throws Exception {
+   public String getWorldViewActivePoc() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees());
    }
 
-   public String getWorldViewCreatedDateStr() throws Exception {
+   public String getWorldViewCreatedDateStr() throws OseeCoreException, SQLException {
       if (getWorldViewCreatedDate() == null) return XViewerCells.getCellExceptionString("No creation date");
       return new XDate(getWorldViewCreatedDate()).getMMDDYYHHMM();
    }
 
-   public String getWorldViewCompletedDateStr() throws Exception {
+   public String getWorldViewCompletedDateStr() throws OseeCoreException, SQLException {
       if (smaMgr.isCompleted()) {
          if (getWorldViewCompletedDate() == null) {
             OSEELog.logSevere(AtsPlugin.class, "Completed with no date => " + smaMgr.getSma().getHumanReadableId(),
@@ -472,7 +472,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
-   public String getWorldViewCancelledDateStr() throws Exception {
+   public String getWorldViewCancelledDateStr() throws OseeCoreException, SQLException {
       if (smaMgr.isCancelled()) {
          if (getWorldViewCancelledDate() == null) {
             OSEELog.logSevere(AtsPlugin.class, "Cancelled with no date => " + smaMgr.getSma().getHumanReadableId(),
@@ -484,32 +484,32 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
-   public Date getWorldViewCreatedDate() throws Exception {
+   public Date getWorldViewCreatedDate() throws OseeCoreException, SQLException {
       return getLog().getCreationDate();
    }
 
-   public String getWorldViewOriginator() throws Exception {
+   public String getWorldViewOriginator() throws OseeCoreException, SQLException {
       return smaMgr.getOriginator().getName();
    }
 
-   public String getWorldViewID() throws Exception {
+   public String getWorldViewID() throws OseeCoreException, SQLException {
       return getHumanReadableId();
    }
 
-   public String getWorldViewLegacyPCR() throws Exception {
+   public String getWorldViewLegacyPCR() throws OseeCoreException, SQLException {
       if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
          return getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       }
       return "";
    }
 
-   public Date getWorldViewCompletedDate() throws Exception {
+   public Date getWorldViewCompletedDate() throws OseeCoreException, SQLException {
       LogItem item = getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Completed.name());
       if (item != null) return item.getDate();
       return null;
    }
 
-   public Date getWorldViewCancelledDate() throws Exception {
+   public Date getWorldViewCancelledDate() throws OseeCoreException, SQLException {
       LogItem item = getLog().getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
       if (item != null) return item.getDate();
       return null;
@@ -521,60 +521,60 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return ChangeType.None;
    }
 
-   public String getWorldViewChangeTypeStr() throws Exception {
+   public String getWorldViewChangeTypeStr() throws OseeCoreException, SQLException {
       if (getWorldViewChangeType() == null || getWorldViewChangeType() == ChangeType.None)
          return "";
       else
          return getWorldViewChangeType().name();
    }
 
-   public double getEstimatedHoursFromArtifact() throws Exception {
+   public double getEstimatedHoursFromArtifact() throws OseeCoreException, SQLException {
       if (isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) return getSoleAttributeValue(
             ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
       return 0;
    }
 
-   public double getEstimatedHoursFromTasks(String relatedToState) throws Exception {
+   public double getEstimatedHoursFromTasks(String relatedToState) throws OseeCoreException, SQLException {
       return smaMgr.getTaskMgr().getEstimatedHours(relatedToState);
    }
 
-   public double getEstimatedHoursFromTasks() throws Exception {
+   public double getEstimatedHoursFromTasks() throws OseeCoreException, SQLException {
       return smaMgr.getTaskMgr().getEstimatedHours();
    }
 
-   public double getEstimatedHoursFromReviews() throws Exception {
+   public double getEstimatedHoursFromReviews() throws OseeCoreException, SQLException {
       return smaMgr.getReviewManager().getEstimatedHours();
    }
 
-   public double getEstimatedHoursFromReviews(String relatedToState) throws Exception {
+   public double getEstimatedHoursFromReviews(String relatedToState) throws OseeCoreException, SQLException {
       return smaMgr.getReviewManager().getEstimatedHours(relatedToState);
    }
 
-   public double getEstimatedHoursTotal(String relatedToState) throws Exception {
+   public double getEstimatedHoursTotal(String relatedToState) throws OseeCoreException, SQLException {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks(relatedToState) + getEstimatedHoursFromReviews(relatedToState);
    }
 
-   public double getEstimatedHoursTotal() throws Exception {
+   public double getEstimatedHoursTotal() throws OseeCoreException, SQLException {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks() + getEstimatedHoursFromReviews();
    }
 
-   public double getWorldViewEstimatedHours() throws Exception {
+   public double getWorldViewEstimatedHours() throws OseeCoreException, SQLException {
       return getEstimatedHoursTotal();
    }
 
-   public String getWorldViewUserCommunity() throws Exception {
+   public String getWorldViewUserCommunity() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewPriority() throws Exception {
+   public String getWorldViewPriority() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewResolution() throws Exception {
+   public String getWorldViewResolution() throws OseeCoreException, SQLException {
       return getAttributesToString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
    }
 
-   public double getRemainHoursFromArtifact() throws Exception {
+   public double getRemainHoursFromArtifact() throws OseeCoreException, SQLException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();
       if (est == 0) return getWorldViewEstimatedHours();
@@ -582,23 +582,23 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return remain;
    }
 
-   public double getRemainHoursTotal() throws Exception {
+   public double getRemainHoursTotal() throws OseeCoreException, SQLException {
       return getRemainHoursFromArtifact() + getRemainFromTasks() + getRemainFromReviews();
    }
 
-   public double getRemainFromTasks() throws Exception {
+   public double getRemainFromTasks() throws OseeCoreException, SQLException {
       return smaMgr.getTaskMgr().getRemainHours();
    }
 
-   public double getRemainFromReviews() throws Exception {
+   public double getRemainFromReviews() throws OseeCoreException, SQLException {
       return smaMgr.getReviewManager().getRemainHours();
    }
 
-   public double getWorldViewRemainHours() throws Exception {
+   public double getWorldViewRemainHours() throws OseeCoreException, SQLException {
       return getRemainHoursTotal();
    }
 
-   public Result isWorldViewRemainHoursValid() throws Exception {
+   public Result isWorldViewRemainHoursValid() throws OseeCoreException, SQLException {
       if (!isAttributeTypeValid(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName())) return Result.TrueResult;
       try {
          Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
@@ -610,7 +610,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       }
    }
 
-   public Result isWorldViewManDaysNeededValid() throws Exception {
+   public Result isWorldViewManDaysNeededValid() throws OseeCoreException, SQLException {
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) return result;
       if (getManDayHrsPreference() == 0) return new Result("Man Day Hours Preference is not set.");
@@ -623,7 +623,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewManDaysNeeded()
     */
-   public double getWorldViewManDaysNeeded() throws Exception {
+   public double getWorldViewManDaysNeeded() throws OseeCoreException, SQLException {
       double hrsRemain = getWorldViewRemainHours();
       double manDaysNeeded = 0;
       if (hrsRemain != 0) manDaysNeeded = hrsRemain / getManDayHrsPreference();
@@ -634,11 +634,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return MAN_DAY_HOURS;
    }
 
-   public double getWorldViewAnnualCostAvoidance() throws Exception {
+   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException, SQLException {
       return 0;
    }
 
-   public Result isWorldViewAnnualCostAvoidanceValid() throws Exception {
+   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException, SQLException {
       if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return Result.TrueResult;
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) return result;
@@ -658,41 +658,41 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return Result.TrueResult;
    }
 
-   public String getWorldViewNotes() throws Exception {
+   public String getWorldViewNotes() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewWorkPackage() throws Exception {
+   public String getWorldViewWorkPackage() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory() throws Exception {
+   public String getWorldViewCategory() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory2() throws Exception {
+   public String getWorldViewCategory2() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory3() throws Exception {
+   public String getWorldViewCategory3() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
    }
 
-   public int getWorldViewStatePercentComplete() throws Exception {
+   public int getWorldViewStatePercentComplete() throws OseeCoreException, SQLException {
       return getPercentCompleteSMAStateTotal(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   public String getWorldViewNumberOfTasks() throws Exception {
+   public String getWorldViewNumberOfTasks() throws OseeCoreException, SQLException {
       int num = getSmaMgr().getTaskMgr().getTaskArtifacts().size();
       if (num == 0) return "";
       return String.valueOf(num);
    }
 
-   public String getWorldViewRelatedToState() throws Exception {
+   public String getWorldViewRelatedToState() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public abstract String getWorldViewVersion() throws Exception;
+   public abstract String getWorldViewVersion() throws OseeCoreException, SQLException;
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
@@ -719,16 +719,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       }
    }
 
-   public abstract Date getWorldViewEstimatedReleaseDate() throws Exception;
+   public abstract Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException;
 
-   public String getWorldViewEstimatedReleaseDateStr() throws Exception {
+   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException, SQLException {
       if (getWorldViewEstimatedReleaseDate() == null) return "";
       return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
    }
 
-   public abstract Date getWorldViewReleaseDate() throws Exception;
+   public abstract Date getWorldViewReleaseDate() throws OseeCoreException, SQLException;
 
-   public String getWorldViewReleaseDateStr() throws Exception {
+   public String getWorldViewReleaseDateStr() throws OseeCoreException, SQLException {
       if (getWorldViewReleaseDate() == null) return "";
       return new XDate(getWorldViewReleaseDate()).getMMDDYYHHMM();
    }
@@ -746,7 +746,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @throws Exception TODO
     */
-   public void statusChanged() throws Exception {
+   public void statusChanged() throws OseeCoreException, SQLException {
    }
 
    /**
@@ -755,7 +755,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @throws Exception
     */
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws OseeCoreException, SQLException {
    }
 
    /*
@@ -812,7 +812,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
     */
-   public Image getHyperAssigneeImage() throws Exception {
+   public Image getHyperAssigneeImage() throws OseeCoreException, SQLException {
       return smaMgr.getAssigneeImage();
    }
 
@@ -830,7 +830,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
-   public String getWorldViewDecision() throws Exception {
+   public String getWorldViewDecision() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -848,7 +848,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewValidationRequiredStr()
     */
-   public String getWorldViewValidationRequiredStr() throws Exception {
+   public String getWorldViewValidationRequiredStr() throws OseeCoreException, SQLException {
       if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       return "";
@@ -859,15 +859,15 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewDeadlineAlerting()
     */
-   public Result isWorldViewDeadlineAlerting() throws Exception {
+   public Result isWorldViewDeadlineAlerting() throws OseeCoreException, SQLException {
       return Result.FalseResult;
    }
 
-   public int getWorldViewPercentRework() throws Exception {
+   public int getWorldViewPercentRework() throws OseeCoreException, SQLException {
       return 0;
    }
 
-   public String getWorldViewPercentReworkStr() throws Exception {
+   public String getWorldViewPercentReworkStr() throws OseeCoreException, SQLException {
       int reWork = getWorldViewPercentRework();
       if (reWork == 0) return "";
       return String.valueOf(reWork);
@@ -930,7 +930,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
     */
-   public String getWorldViewBranchStatus() throws Exception {
+   public String getWorldViewBranchStatus() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -944,28 +944,28 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() throws Exception {
+   public String getWorldViewReviewAuthor() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() throws Exception {
+   public String getWorldViewReviewDecider() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() throws Exception {
+   public String getWorldViewReviewModerator() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() throws Exception {
+   public String getWorldViewReviewReviewer() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -975,7 +975,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @param stateName
     * @return
     */
-   public double getHoursSpentSMAState(String stateName) throws Exception {
+   public double getHoursSpentSMAState(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getHoursSpent(stateName);
    }
 
@@ -986,7 +986,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public double getHoursSpentSMAStateTasks(String stateName) throws Exception {
+   public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getTaskMgr().getHoursSpent(stateName);
    }
 
@@ -997,7 +997,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public double getHoursSpentSMAStateReviews(String stateName) throws Exception {
+   public double getHoursSpentSMAStateReviews(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getReviewManager().getHoursSpent(stateName);
    }
 
@@ -1008,12 +1008,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public double getHoursSpentSMAStateTotal(String stateName) throws Exception {
+   public double getHoursSpentSMAStateTotal(String stateName) throws OseeCoreException, SQLException {
       return getHoursSpentSMAState(stateName) + getHoursSpentSMAStateTasks(stateName) + getHoursSpentSMAStateReviews(stateName);
    }
 
    @Override
-   public double getWorldViewHoursSpentStateTotal() throws Exception {
+   public double getWorldViewHoursSpentStateTotal() throws OseeCoreException, SQLException {
       return getHoursSpentSMAStateTotal(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1023,7 +1023,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public double getHoursSpentSMATotal() throws Exception {
+   public double getHoursSpentSMATotal() throws OseeCoreException, SQLException {
       double hours = 0.0;
       for (String stateName : smaMgr.getStateMgr().getVisitedStateNames()) {
          hours += getHoursSpentSMAStateTotal(stateName);
@@ -1037,7 +1037,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @param stateName
     * @return
     */
-   public int getPercentCompleteSMAState(String stateName) throws Exception {
+   public int getPercentCompleteSMAState(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getPercentComplete(stateName);
    }
 
@@ -1048,7 +1048,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public int getPercentCompleteSMAStateTasks(String stateName) throws Exception {
+   public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getTaskMgr().getPercentComplete(stateName);
    }
 
@@ -1059,7 +1059,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public int getPercentCompleteSMAStateReviews(String stateName) throws Exception {
+   public int getPercentCompleteSMAStateReviews(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getReviewManager().getPercentComplete(stateName);
    }
 
@@ -1071,7 +1071,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public int getPercentCompleteSMAStateTotal(String stateName) throws Exception {
+   public int getPercentCompleteSMAStateTotal(String stateName) throws OseeCoreException, SQLException {
       return getStateMetricsData(stateName).getResultingPercent();
    }
 
@@ -1083,7 +1083,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @return
     * @throws Exception
     */
-   public int getPercentCompleteSMATotal() throws Exception {
+   public int getPercentCompleteSMATotal() throws OseeCoreException, SQLException {
       int percent = 0;
       int numStates = 0;
       for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
@@ -1096,7 +1096,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return percent / numStates;
    }
 
-   private StateMetricsData getStateMetricsData(String stateName) throws Exception {
+   private StateMetricsData getStateMetricsData(String stateName) throws OseeCoreException, SQLException {
       // Add percent and bump objects 1 for state percent
       int percent = getPercentCompleteSMAState(stateName);
       int numObjects = 1; // the state itself is one object
@@ -1137,7 +1137,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentState()
     */
    @Override
-   public double getWorldViewHoursSpentState() throws Exception {
+   public double getWorldViewHoursSpentState() throws OseeCoreException, SQLException {
       return getHoursSpentSMAState(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1145,7 +1145,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateReview()
     */
    @Override
-   public double getWorldViewHoursSpentStateReview() throws Exception {
+   public double getWorldViewHoursSpentStateReview() throws OseeCoreException, SQLException {
       return getHoursSpentSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1153,7 +1153,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateTask()
     */
    @Override
-   public double getWorldViewHoursSpentStateTask() throws Exception {
+   public double getWorldViewHoursSpentStateTask() throws OseeCoreException, SQLException {
       return getHoursSpentSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1161,7 +1161,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentTotal()
     */
    @Override
-   public double getWorldViewHoursSpentTotal() throws Exception {
+   public double getWorldViewHoursSpentTotal() throws OseeCoreException, SQLException {
       return getHoursSpentSMATotal();
    }
 
@@ -1169,7 +1169,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteState()
     */
    @Override
-   public int getWorldViewPercentCompleteState() throws Exception {
+   public int getWorldViewPercentCompleteState() throws OseeCoreException, SQLException {
       return getPercentCompleteSMAState(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1177,7 +1177,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateReview()
     */
    @Override
-   public int getWorldViewPercentCompleteStateReview() throws Exception {
+   public int getWorldViewPercentCompleteStateReview() throws OseeCoreException, SQLException {
       return getPercentCompleteSMAStateReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1185,7 +1185,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateTask()
     */
    @Override
-   public int getWorldViewPercentCompleteStateTask() throws Exception {
+   public int getWorldViewPercentCompleteStateTask() throws OseeCoreException, SQLException {
       return getPercentCompleteSMAStateTasks(smaMgr.getStateMgr().getCurrentStateName());
    }
 
@@ -1193,7 +1193,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteTotal()
     */
    @Override
-   public int getWorldViewPercentCompleteTotal() throws Exception {
+   public int getWorldViewPercentCompleteTotal() throws OseeCoreException, SQLException {
       return getPercentCompleteSMATotal();
    }
 

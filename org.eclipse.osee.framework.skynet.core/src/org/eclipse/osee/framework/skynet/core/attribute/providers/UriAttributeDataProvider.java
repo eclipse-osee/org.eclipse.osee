@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -145,7 +146,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#getData()
     */
    @Override
-   public Object[] getData() throws Exception {
+   public Object[] getData() throws OseeDataStoreException {
       return new Object[] {"", dataStore.getLocator()};
    }
 
@@ -153,7 +154,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
     */
    @Override
-   public void loadData(Object... objects) throws Exception {
+   public void loadData(Object... objects) throws OseeDataStoreException {
       if (objects != null && objects.length > 1) {
          dataStore.setLocator((String) objects[1]);
       }
@@ -163,7 +164,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws Exception {
+   public void persist() throws OseeDataStoreException {
       dataStore.persist();
    }
 
@@ -171,7 +172,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
     */
    @Override
-   public void purge() throws Exception {
+   public void purge() throws OseeDataStoreException {
       dataStore.purge();
    }
 }

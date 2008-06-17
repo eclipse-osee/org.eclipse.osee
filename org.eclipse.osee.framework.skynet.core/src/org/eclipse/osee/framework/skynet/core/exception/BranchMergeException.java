@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.skynet.core.exception;
 
-package org.eclipse.osee.framework.skynet.core.artifact;
-
-import java.sql.SQLException;
-import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactCheck {
+public class BranchMergeException extends OseeCoreException {
 
-   public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException, SQLException;
+   private static final long serialVersionUID = 1L;
 
+   public BranchMergeException(String message) {
+      super(message);
+   }
 }

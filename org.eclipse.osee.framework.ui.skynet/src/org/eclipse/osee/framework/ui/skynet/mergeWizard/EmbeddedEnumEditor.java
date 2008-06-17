@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Combo;
 
 /**
  * @author Theron Virgin

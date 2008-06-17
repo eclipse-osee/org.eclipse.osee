@@ -21,6 +21,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
@@ -119,7 +120,11 @@ public class HttpUrlBuilder {
       return address;
    }
 
-   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws SQLException, UnsupportedEncodingException {
-      return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
+      try {
+         return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 }

@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
@@ -63,7 +65,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return states;
    }
 
-   public void setState(SMAState state) throws Exception {
+   public void setState(SMAState state) throws OseeCoreException, SQLException {
       // Update attribute if it already exists
       try {
          Collection<Attribute<String>> attrs = sma.getAttributes(attributeTypeName);

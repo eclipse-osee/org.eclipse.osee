@@ -16,15 +16,12 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -53,7 +50,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) || page.getId().contains("Implement");
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)
@@ -138,11 +135,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
    private boolean isEnabled() {
       boolean enabled = false;
       try {
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            Pair<TransactionId, TransactionId> transactionToFrom =
-                  TransactionIdManager.getInstance().getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
-            enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
-         }
+         enabled = smaMgr.getBranchMgr().isWorkingBranch() || smaMgr.getBranchMgr().isCommittedBranch();
       } catch (Exception ex) {
          // do nothing
       }

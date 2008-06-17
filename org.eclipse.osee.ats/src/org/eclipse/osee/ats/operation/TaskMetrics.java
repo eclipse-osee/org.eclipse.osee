@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -63,29 +64,33 @@ public class TaskMetrics extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("TaskMetrics", 5);
-      metrics.clear();
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+      try {
+         monitor.beginTask("TaskMetrics", 5);
+         metrics.clear();
 
-      ArtifactType descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
+         ArtifactType descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
 
-      FromArtifactsSearch teamWorkflowSearch =
-            new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), DepricatedOperator.EQUAL));
-      LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
-      relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, AtsRelation.SmaToTask_Task));
+         FromArtifactsSearch teamWorkflowSearch =
+               new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), DepricatedOperator.EQUAL));
+         LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
+         relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, AtsRelation.SmaToTask_Task));
 
-      Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
-      for (Artifact artifact : artifacts) {
-         tallyState((TaskArtifact) artifact);
+         Collection<Artifact> artifacts =
+               ArtifactPersistenceManager.getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
+         for (Artifact artifact : artifacts) {
+            tallyState((TaskArtifact) artifact);
+         }
+
+         writeSummary();
+
+         excelWriter.endWorkbook();
+         IFile iFile = OseeData.getIFile("Task_Metrics.xml");
+         AIFile.writeToFile(iFile, charBak);
+         Program.launch(iFile.getLocation().toOSString());
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
-
-      writeSummary();
-
-      excelWriter.endWorkbook();
-      IFile iFile = OseeData.getIFile("Task_Metrics.xml");
-      AIFile.writeToFile(iFile, charBak);
-      Program.launch(iFile.getLocation().toOSString());
    }
 
    private void tallyState(TaskArtifact task) throws SQLException, MultipleAttributesExist {

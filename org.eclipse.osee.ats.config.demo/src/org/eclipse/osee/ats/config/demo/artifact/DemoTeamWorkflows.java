@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -37,7 +39,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#getTeamWorkflowArtifactName(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
     *      java.util.Collection, java.util.Collection)
     */
-   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws Exception {
+   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException {
       if (teamDef.getDescriptiveName().contains("Code"))
          return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
       else if (teamDef.getDescriptiveName().contains("Test"))
@@ -56,7 +58,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#isResponsibleForTeamWorkflowCreation(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
     *      java.util.Collection, java.util.Collection)
     */
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws Exception {
+   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException {
       return (teamDef.getDescriptiveName().contains("SAW") || teamDef.getDescriptiveName().contains("CIS"));
    }
 

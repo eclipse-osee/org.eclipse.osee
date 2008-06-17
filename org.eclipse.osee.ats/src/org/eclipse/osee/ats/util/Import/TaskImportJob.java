@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 
 /**
@@ -82,7 +83,7 @@ public class TaskImportJob extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork()throws OseeCoreException, SQLException{
          if (file != null && file.isFile()) {
             atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {

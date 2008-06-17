@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import java.sql.SQLException;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -79,11 +81,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
       });
    }
 
-   public static void edit(String workflowId) throws Exception {
+   public static void edit(String workflowId) throws OseeCoreException, SQLException {
       WorkflowEditor.edit(new WorkflowEditorInput(workflowId));
    }
 
-   public static void edit(BlamOperation blamOperation) throws Exception {
+   public static void edit(BlamOperation blamOperation) throws OseeCoreException, SQLException {
       WorkflowEditor.edit(new WorkflowEditorInput(blamOperation));
    }
 

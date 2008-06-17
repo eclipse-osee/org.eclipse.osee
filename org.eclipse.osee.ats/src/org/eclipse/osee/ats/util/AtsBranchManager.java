@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
@@ -94,13 +94,21 @@ public class AtsBranchManager {
 
    public void showMergeManager() {
       try {
-         if (!isWorkingBranch()) {
-            AWorkbench.popup("ERROR", "No Current Working Branch");
+         if (!isWorkingBranch() && !isCommittedBranch()) {
+            AWorkbench.popup("ERROR", "No Current Working or Committed Branch");
             return;
          }
-         Branch branch = getParentBranchForWorkingBranchCreation();
-         MergeView.openViewUpon(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
-               getWorkingBranch()).getKey());
+         if (isWorkingBranch()) {
+            Branch branch = getParentBranchForWorkingBranchCreation();
+            if (branch == null) {
+               AWorkbench.popup("ERROR", "Can't access parent branch");
+               return;
+            }
+            MergeView.openViewUpon(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
+                  getWorkingBranch()).getKey());
+         } else {
+            AWorkbench.popup("ERROR", "Not Implemented Yet");
+         }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -352,7 +360,7 @@ public class AtsBranchManager {
     * @param parentBranch
     * @throws Exception
     */
-   public void createWorkingBranch(String pageId, Branch parentBranch) throws Exception {
+   public void createWorkingBranch(String pageId, Branch parentBranch) throws OseeCoreException, SQLException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
@@ -371,7 +379,7 @@ public class AtsBranchManager {
             TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws Exception {
+         public void run(IProgressMonitor monitor) throws OseeCoreException, SQLException {
             BranchPersistenceManager.getInstance().createWorkingBranch(parentTransactionId, finalBranchShortName,
                   branchName, stateMachineArtifact);
          }
@@ -380,7 +388,7 @@ public class AtsBranchManager {
       Jobs.run("Create Branch", runnable, AtsPlugin.getLogger(), AtsPlugin.PLUGIN_ID);
    }
 
-   public void updateBranchAccessControl() throws Exception {
+   public void updateBranchAccessControl() throws OseeCoreException, SQLException {
       // Only set/update branch access control if state item is configured to accept
       for (IAtsStateItem stateItem : smaMgr.getStateItems().getCurrentPageStateItems(smaMgr)) {
          if (stateItem.isAccessControlViaAssigneesEnabledForBranching()) {
@@ -404,7 +412,7 @@ public class AtsBranchManager {
     * @param popup if true, popup errors associated with results
     * @return Result
     */
-   public Result commitWorkingBranch(boolean popup) {
+   public Result commitWorkingBranch(boolean popup) throws OseeCoreException, SQLException {
       return commitWorkingBranch(popup, false);
    }
 
@@ -414,109 +422,118 @@ public class AtsBranchManager {
     *           used for developmental testing or automation
     * @return Result
     */
-   public Result commitWorkingBranch(boolean popup, boolean overrideStateValidation) {
+   public Result commitWorkingBranch(boolean popup, boolean overrideStateValidation) throws OseeCoreException, SQLException {
       commitPopup = popup;
 
-      try {
-         Branch branch = getWorkingBranch();
-         if (branch == null) {
-            OSEELog.logSevere(AtsPlugin.class,
-                  "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId(),
-                  popup);
-            return new Result("Commit Branch Failed: Can not locate branch.");
-         }
-
-         // If team uses versions, then validate that the parent branch id is specified by either
-         // the team definition's attribute or the related version's attribute
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
-            // Only perform checks if team definition uses ATS versions
-            if (team.getTeamDefinition().isTeamUsesVersions()) {
-               // Validate that a parent branch is specified in ATS configuration
-               Branch parentBranch = getParentBranchForWorkingBranchCreation();
-               if (parentBranch == null) {
-                  return new Result(
-                        String.format(
-                              "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
-                              smaMgr.getSma().getHumanReadableId()));
-               }
-
-               // Validate that the configured parentBranch is the same as the working branch's
-               // parent branch.
-               Integer targetedVersionBranchId = parentBranch.getBranchId();
-               Integer workflowWorkingBranchParentBranchId =
-                     smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
-               if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
-                  return new Result(
-                        String.format(
-                              "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
-                              smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
-                              String.valueOf(targetedVersionBranchId),
-                              String.valueOf(workflowWorkingBranchParentBranchId)));
-               }
-            }
-         }
-
-         if (!overrideStateValidation) {
-            // Check extenstion points for valid commit
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
-               Result result = item.committing(smaMgr);
-               if (result.isFalse()) return result;
-            }
-         }
-
-         try {
-            BranchPersistenceManager.getInstance().commitBranch(branch, true, false);
-         } catch (ConflictDetectionException ex) {
-            MessageDialog dialog;
-            if (OseeProperties.isDeveloper()) {
-               dialog =
-                     new MessageDialog(
-                           Display.getCurrent().getActiveShell(),
-                           "Commit Failed",
-                           null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
-                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
-            } else {
-               dialog =
-                     new MessageDialog(
-                           Display.getCurrent().getActiveShell(),
-                           "Commit Failed",
-                           null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
-                           MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
-
-            }
-
-            try {
-               int result = dialog.open();
-               if (commitPopup && result == 1) {
-                  MergeView.openViewUpon(branch, branch.getParentBranch(),
-                        TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
-               } else if (result == 2) {
-                  BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
-               }
-            } catch (Exception exc) {
-               OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
-               return new Result("Commit Branch Failed: " + ex.getLocalizedMessage());
-            }
-         }
-
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
-         return new Result("Commit Branch Failed" + ex.getLocalizedMessage());
+      Branch branch = getWorkingBranch();
+      if (branch == null) {
+         OSEELog.logSevere(AtsPlugin.class,
+               "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId(),
+               popup);
+         return new Result("Commit Branch Failed: Can not locate branch.");
       }
+
+      // If team uses versions, then validate that the parent branch id is specified by either
+      // the team definition's attribute or the related version's attribute
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
+         // Only perform checks if team definition uses ATS versions
+         if (team.getTeamDefinition().isTeamUsesVersions()) {
+            // Validate that a parent branch is specified in ATS configuration
+            Branch parentBranch = getParentBranchForWorkingBranchCreation();
+            if (parentBranch == null) {
+               return new Result(
+                     String.format(
+                           "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
+                           smaMgr.getSma().getHumanReadableId()));
+            }
+
+            // Validate that the configured parentBranch is the same as the working branch's
+            // parent branch.
+            Integer targetedVersionBranchId = parentBranch.getBranchId();
+            Integer workflowWorkingBranchParentBranchId = smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
+            if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
+               return new Result(
+                     String.format(
+                           "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match branch's " + "parent branch id \"%s\"",
+                           smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
+                           String.valueOf(targetedVersionBranchId), String.valueOf(workflowWorkingBranchParentBranchId)));
+            }
+         }
+      }
+
+      if (!overrideStateValidation) {
+         // Check extenstion points for valid commit
+         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
+            Result result = item.committing(smaMgr);
+            if (result.isFalse()) return result;
+         }
+      }
+      ConflictManager conflictManager = new ConflictManager(branch.getParentBranch(), branch);
+      if (!popup) {
+         BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+      } else if (conflictManager.getRemainingConflicts().size() > 0) {
+
+         MessageDialog dialog;
+         if (OseeProperties.isDeveloper()) {
+            dialog =
+                  new MessageDialog(
+                        Display.getCurrent().getActiveShell(),
+                        "Commit Failed",
+                        null,
+                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
+                        MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
+         } else {
+            dialog =
+                  new MessageDialog(
+                        Display.getCurrent().getActiveShell(),
+                        "Commit Failed",
+                        null,
+                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
+                        MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
+
+         }
+
+         int result = dialog.open();
+         if (commitPopup && result == 1) {
+            MergeView.openViewUpon(branch, branch.getParentBranch(),
+                  TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
+         } else if (result == 2) {
+            BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+         }
+      } else {
+         StringBuffer sb =
+               new StringBuffer(
+                     "Commit branch\n\n\"" + branch + "\"\n\nto parent branch\n\n\"" + conflictManager.getToBranch() + "\"\n");
+         if (conflictManager.getOriginalConflicts().size() > 0) {
+            sb.append("\nwith " + conflictManager.getOriginalConflicts().size() + " conflicts resolved.\n");
+         } else {
+            sb.append("\n(no conflicts found)\n");
+         }
+         sb.append("\nCommit?");
+         MessageDialog dialog =
+               new MessageDialog(Display.getCurrent().getActiveShell(), "Commit Branch", null, sb.toString(),
+                     MessageDialog.QUESTION, new String[] {"Ok", "Launch Merge Manager", "Cancel"}, 0);
+         int result = dialog.open();
+         if (result == 0) {
+            BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+         } else if (result == 1) {
+            MergeView.openViewUpon(branch, branch.getParentBranch(),
+                  TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
+         }
+      }
+
       return Result.TrueResult;
    }
 
-   public ArtifactChange getArtifactChange(String artifactName) throws Exception {
+   public ArtifactChange getArtifactChange(String artifactName) throws OseeCoreException, SQLException {
       for (ArtifactChange artChange : getArtifactChanges()) {
          if (artChange.getName().equals(artifactName)) return artChange;
       }
       return null;
    }
 
-   public Collection<ArtifactChange> getArtifactChanges() throws Exception {
+   public Collection<ArtifactChange> getArtifactChanges() throws OseeCoreException, SQLException {
       ArrayList<ArtifactChange> artChanges = new ArrayList<ArtifactChange>();
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
@@ -646,7 +663,7 @@ public class AtsBranchManager {
    /**
     * @return the atsBranchMetrics
     */
-   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws Exception {
+   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws OseeCoreException, SQLException {
       if (cache) atsBranchMetrics.persist();
       return atsBranchMetrics;
    }

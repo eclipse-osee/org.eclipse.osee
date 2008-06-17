@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -88,7 +89,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
       }
    }
 
-   private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+   private void runIt(IProgressMonitor monitor, XResultData rd)throws OseeCoreException, SQLException{
       // Get Team and Action artifacts
       Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
       artTypeNames.add(ActionArtifact.ARTIFACT_NAME);
@@ -155,7 +156,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
     */
-   public void startTasks(XResultData resultData) throws Exception {
+   public void startTasks(XResultData resultData)throws OseeCoreException, SQLException{
       runIt(null, resultData);
    }
 }

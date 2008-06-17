@@ -183,7 +183,7 @@ public class RoughArtifact {
       return children;
    }
 
-   public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws Exception {
+   public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException, SQLException {
       if (realArtifact != null) {
          return realArtifact;
       }

@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -70,7 +72,7 @@ public class NewActionJob extends Job {
          AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
                actionArt =
                      createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
@@ -118,7 +120,7 @@ public class NewActionJob extends Job {
       return ttNum;
    }
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems) throws Exception {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems)throws OseeCoreException, SQLException{
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 

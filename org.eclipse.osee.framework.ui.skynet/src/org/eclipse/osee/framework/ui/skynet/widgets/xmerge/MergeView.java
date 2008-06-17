@@ -112,6 +112,23 @@ public class MergeView extends ViewPart implements IActionable {
       Jobs.startJob(job);
    }
 
+   public static void closeView(final Branch sourceBranch) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            try {
+               IWorkbenchPage page = AWorkbench.getActivePage();
+               MergeView mergeView =
+                     (MergeView) page.showView(MergeView.VIEW_ID, String.valueOf(sourceBranch.getBranchId()),
+                           IWorkbenchPage.VIEW_VISIBLE);
+               mergeView.dispose();
+               //                     }
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
+      });
+   }
+
    @Override
    public void dispose() {
       super.dispose();

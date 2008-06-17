@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -95,11 +96,11 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
       }
    }
 
-   private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
+   private void runIt(IProgressMonitor monitor, final XResultData rd)throws OseeCoreException, SQLException{
       if (fixIt) {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                getUnassignedAtsObjectHelper(rd);
             }
          };
@@ -110,7 +111,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
       }
    }
 
-   private void getUnassignedAtsObjectHelper(final XResultData rd) throws Exception {
+   private void getUnassignedAtsObjectHelper(final XResultData rd)throws OseeCoreException, SQLException{
       User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);
 
@@ -181,7 +182,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
     */
-   public void startTasks(XResultData resultData) throws Exception {
+   public void startTasks(XResultData resultData)throws OseeCoreException, SQLException{
       runIt(null, resultData);
    }
 

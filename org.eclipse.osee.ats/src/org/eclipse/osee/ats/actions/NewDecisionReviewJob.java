@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.actions;
 
+import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -48,7 +50,7 @@ public class NewDecisionReviewJob extends Job {
          AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                decisionReviewArtifact = createNewDecisionReview(teamParent, againstCurrentState);
                decisionReviewArtifact.persistAttributesAndRelations();
             }
@@ -65,7 +67,7 @@ public class NewDecisionReviewJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws Exception {
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState)throws OseeCoreException, SQLException{
       DecisionReviewArtifact decRev =
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
                   AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");

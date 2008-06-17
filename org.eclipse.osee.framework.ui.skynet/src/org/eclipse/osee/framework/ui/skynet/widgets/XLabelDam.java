@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -151,7 +152,7 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws Exception {
+   public void revert() throws OseeCoreException, SQLException {
       // Do nothing cause labelDam is read-only
    }
 

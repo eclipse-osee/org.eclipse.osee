@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -97,7 +96,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          try {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork() throws Exception {
+               protected void handleTxWork() throws OseeCoreException, SQLException {
                   // Save widget data to artifact
                   workFlowTab.saveXWidgetToArtifact();
                   smaMgr.getSma().saveSMA();
@@ -356,7 +355,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
     */
-   public String getCurrentStateName() throws Exception {
+   public String getCurrentStateName() throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getCurrentStateName();
    }
 
@@ -365,7 +364,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
     */
-   public IDirtiableEditor getEditor() throws Exception {
+   public IDirtiableEditor getEditor() throws OseeCoreException, SQLException {
       return this;
    }
 
@@ -374,7 +373,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
     */
-   public SMAManager getParentSmaMgr() throws Exception {
+   public SMAManager getParentSmaMgr() throws OseeCoreException, SQLException {
       return smaMgr;
    }
 
@@ -392,7 +391,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
     */
-   public String getTabName() throws Exception {
+   public String getTabName() throws OseeCoreException, SQLException {
       return "Tasks";
    }
 
@@ -401,7 +400,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
     */
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws MultipleAttributesExist, Exception {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException, SQLException {
       if (stateName == null || stateName.equals(""))
          return smaMgr.getTaskMgr().getTaskArtifacts();
       else
@@ -413,7 +412,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
     */
-   public boolean isTaskable() throws Exception {
+   public boolean isTaskable() throws OseeCoreException, SQLException {
       return smaMgr.isTaskable();
    }
 
@@ -422,7 +421,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
     */
-   public boolean isUsingTaskResolutionOptions() throws Exception {
+   public boolean isUsingTaskResolutionOptions() throws OseeCoreException, SQLException {
       if (smaMgr.getWorkPageDefinition() == null) return false;
       return (smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE).size() == 1);
    }
@@ -432,7 +431,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isEditable()
     */
-   public boolean isTasksEditable() throws Exception {
+   public boolean isTasksEditable() throws OseeCoreException, SQLException {
       return smaMgr.getSma().isTaskable();
    }
 

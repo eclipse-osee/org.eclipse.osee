@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -125,7 +124,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       return sb.toString();
    }
 
-   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws SQLException, MultipleAttributesExist {
+   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException, SQLException {
       String str = "";
       for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
          if (role.getUser().equals(user)) str += role.getRole().name() + ", ";

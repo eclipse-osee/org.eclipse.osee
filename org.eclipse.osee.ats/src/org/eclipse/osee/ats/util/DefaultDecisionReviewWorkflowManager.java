@@ -11,9 +11,11 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -34,7 +36,7 @@ public class DefaultDecisionReviewWorkflowManager {
     * @return
     * @throws Exception
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.StateNames toState, User user, boolean popup) throws Exception {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.StateNames toState, User user, boolean popup)throws OseeCoreException, SQLException{
       Result result = setPrepareStateData(reviewArt, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -68,7 +70,7 @@ public class DefaultDecisionReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
       reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
@@ -76,7 +78,7 @@ public class DefaultDecisionReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision);
       reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
       reviewArt.getSmaMgr().getStateMgr().setPercentComplete(statePercentComplete);

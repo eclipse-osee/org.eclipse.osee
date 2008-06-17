@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -255,7 +254,7 @@ public class BranchPersistenceManager {
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws Exception {
+   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException, SQLException {
       Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
 
       if (mergeBranch == null) {
@@ -270,9 +269,9 @@ public class BranchPersistenceManager {
     * Checks the merge branch cache for the branch if it does not find it then it will query the database for the
     * branch.
     */
-   public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws Exception {
+   public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws OseeCoreException, SQLException {
       if (sourceBranchId < 1 || destBranchId < 1) {
-         throw new IllegalAccessException(
+         throw new IllegalArgumentException(
                "Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
       }
 
@@ -418,7 +417,7 @@ public class BranchPersistenceManager {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
+   public Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws SQLException, OseeCoreException {
       Branch parentBranch = childBranch.getParentBranch();
 
       if (parentBranch == null) {
@@ -436,7 +435,7 @@ public class BranchPersistenceManager {
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws ConflictDetectionException, Exception {
+   public Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws SQLException, OseeCoreException {
       CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch, forceCommit);
       Jobs.startJob(commitJob);
       return commitJob;
@@ -714,7 +713,7 @@ public class BranchPersistenceManager {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
+   public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException, SQLException {
       Collection<ArtifactType> compressArtTypes =
             ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
@@ -729,7 +728,7 @@ public class BranchPersistenceManager {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
+   public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException, SQLException {
       Collection<ArtifactType> preserveArtTypes =
             ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 

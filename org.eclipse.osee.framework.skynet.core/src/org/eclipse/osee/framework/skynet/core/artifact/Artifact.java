@@ -908,7 +908,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
          @Override
-         protected void handleTxWork() throws Exception {
+         protected void handleTxWork() throws OseeCoreException, SQLException {
             if (isDirty()) {
                getTxBuilder().addArtifactToPersist(Artifact.this);
             }
@@ -1028,7 +1028,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public void delete() throws Exception {
+   public void delete() throws OseeCoreException, SQLException {
       ArtifactPersistenceManager.deleteArtifact(this);
    }
 
@@ -1037,7 +1037,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public void purgeFromBranch() throws Exception {
+   public void purgeFromBranch() throws OseeCoreException, SQLException {
       ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
    }
 

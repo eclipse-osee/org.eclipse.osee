@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -38,7 +40,7 @@ public class DefaultPeerToPeerReviewWorkflowManager {
     * @return
     * @throws Exception
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.State toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws Exception {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.State toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup)throws OseeCoreException, SQLException{
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -69,7 +71,7 @@ public class DefaultPeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
       if (roles != null) for (UserRole role : roles)
@@ -80,7 +82,7 @@ public class DefaultPeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (roles != null) for (UserRole role : roles)
          reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false);
       if (defects != null) for (DefectItem defect : defects)

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -19,11 +21,11 @@ public interface IAttributeDataProvider {
 
    public void setDisplayableString(String toDisplay);
 
-   public void loadData(Object... objects) throws Exception;
+   public void loadData(Object... objects) throws OseeDataStoreException;
 
-   public Object[] getData() throws Exception;
+   public Object[] getData() throws OseeDataStoreException;
 
-   public void persist() throws Exception;
+   public void persist() throws OseeDataStoreException;
 
-   public void purge() throws Exception;
+   public void purge() throws OseeDataStoreException;
 }

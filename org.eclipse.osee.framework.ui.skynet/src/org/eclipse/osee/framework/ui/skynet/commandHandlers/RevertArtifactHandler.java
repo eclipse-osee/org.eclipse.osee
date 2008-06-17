@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
@@ -113,7 +115,7 @@ public class RevertArtifactHandler extends AbstractHandler {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          monitor.beginTask(txName, 7);
          monitor.subTask("Calculating change set");
 
@@ -188,7 +190,7 @@ public class RevertArtifactHandler extends AbstractHandler {
          }
       }
 
-      private boolean isCanceled() throws Exception {
+      private boolean isCanceled() throws OseeCoreException {
          boolean toReturn = monitor.isCanceled();
          if (false != toReturn) {
             throw new IllegalStateException("User Cancelled Operation");

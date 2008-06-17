@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -82,7 +83,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
       }
    }
 
-   private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+   private void runIt(IProgressMonitor monitor, XResultData rd)throws OseeCoreException, SQLException{
       for (String type : StateMachineArtifact.getAllSMATypeNames()) {
          if (monitor != null) monitor.subTask("Loading " + type + "...");
          try {
@@ -133,7 +134,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
     */
-   public void startTasks(XResultData resultData) throws Exception {
+   public void startTasks(XResultData resultData)throws OseeCoreException, SQLException{
       runIt(null, resultData);
    }
 

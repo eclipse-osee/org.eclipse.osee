@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -120,16 +120,16 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public String getWorldViewRelatedToState() throws Exception {
+   public String getWorldViewRelatedToState() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "");
    }
 
    @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException, SQLException {
       super.atsDelete(deleteArts, allRelated);
    }
 
-   public String getWorldViewTeam() throws Exception {
+   public String getWorldViewTeam() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -152,7 +152,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return smaMgr.isCompleted();
    }
 
-   public void transitionToCancelled(String reason, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void transitionToCancelled(String reason, boolean persist) throws OseeCoreException, SQLException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
       setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
       Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, persist);
@@ -174,7 +174,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToInWork(User toUser, boolean persist) throws Exception {
+   public void transitionToInWork(User toUser, boolean persist) throws OseeCoreException, SQLException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
       Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false);
       if (smaMgr.getStateMgr().getPercentComplete() == 100) smaMgr.getStateMgr().setPercentComplete(99);
@@ -188,7 +188,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#statusChanged()
     */
    @Override
-   public void statusChanged() throws Exception {
+   public void statusChanged() throws OseeCoreException, SQLException {
       super.statusChanged();
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false);
@@ -197,7 +197,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       }
    }
 
-   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist) throws Exception {
+   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist) throws OseeCoreException, SQLException {
       if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
       else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
@@ -209,7 +209,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
     */
-   public String getWorldViewVersion() throws Exception {
+   public String getWorldViewVersion() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -218,23 +218,23 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() throws Exception {
+   public String getWorldViewDescription() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewNumberOfTasks() throws Exception {
+   public String getWorldViewNumberOfTasks() throws OseeCoreException, SQLException {
       return "";
    }
 
    /**
     * @return parent SMA's date if it has one. else return task's date if it has one
     */
-   public Date getWorldViewEstimatedReleaseDate() throws Exception {
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewEstimatedReleaseDate();
       return getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
-   public Date getWorldViewReleaseDate() throws Exception {
+   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
@@ -244,7 +244,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
-   public double getWorldViewRemainHours() throws Exception {
+   public double getWorldViewRemainHours() throws OseeCoreException, SQLException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();
       if (getWorldViewStatePercentComplete() == 0) return getWorldViewEstimatedHours();
@@ -287,7 +287,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() throws Exception {
+   public String getWorldViewImplementer() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(getImplementers());
    }
 
@@ -300,7 +300,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
-   public Date getWorldViewDeadlineDate() throws Exception {
+   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -309,7 +309,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() throws Exception {
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -326,7 +326,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isWorldViewAnnualCostAvoidanceValid()
     */
    @Override
-   public Result isWorldViewAnnualCostAvoidanceValid() throws Exception {
+   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
@@ -335,7 +335,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewLegacyPCR()
     */
-   public String getWorldViewLegacyPCR() throws Exception {
+   public String getWorldViewLegacyPCR() throws OseeCoreException, SQLException {
       StateMachineArtifact sma = getParentSMA();
       if (sma != null) return sma.getWorldViewLegacyPCR();
       return "";

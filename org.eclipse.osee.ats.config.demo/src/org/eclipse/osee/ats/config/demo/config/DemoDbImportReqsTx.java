@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.config.demo.config;
 
 import java.io.File;
+import java.sql.SQLException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
@@ -15,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
@@ -35,7 +37,7 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
    }
 
    @Override
-   protected void handleTxWork() throws Exception {
+   protected void handleTxWork() throws OseeCoreException, SQLException {
       try {
          importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SOFTWARE_REQUIREMENT + "s",
                Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");

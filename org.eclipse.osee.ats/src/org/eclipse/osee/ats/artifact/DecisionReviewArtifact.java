@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -82,7 +83,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       return "decisionReview";
    }
 
-   public String getWorldViewVersion() throws Exception {
+   public String getWorldViewVersion() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -109,7 +110,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
-   public String getWorldViewTeam() throws Exception {
+   public String getWorldViewTeam() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -128,7 +129,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
-   public String getWorldViewDecision() throws Exception {
+   public String getWorldViewDecision() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
    }
 
@@ -137,27 +138,27 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() throws Exception {
+   public String getWorldViewDescription() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory() throws Exception {
+   public String getWorldViewCategory() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewCategory2() throws Exception {
+   public String getWorldViewCategory2() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public String getWorldViewCategory3() throws Exception {
+   public String getWorldViewCategory3() throws OseeCoreException, SQLException {
       return "";
    }
 
-   public Date getWorldViewEstimatedReleaseDate() throws Exception {
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
 
-   public Date getWorldViewReleaseDate() throws Exception {
+   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -180,7 +181,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() throws Exception {
+   public String getWorldViewImplementer() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
    }
 
@@ -189,7 +190,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
-   public Date getWorldViewDeadlineDate() throws Exception {
+   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -198,7 +199,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() throws Exception {
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -216,7 +217,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWorkPackage()
     */
-   public String getWorldViewWorkPackage() throws Exception {
+   public String getWorldViewWorkPackage() throws OseeCoreException, SQLException {
       return "";
    }
 
@@ -232,28 +233,28 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() throws Exception {
+   public String getWorldViewReviewAuthor() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() throws Exception {
+   public String getWorldViewReviewDecider() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() throws Exception {
+   public String getWorldViewReviewModerator() throws OseeCoreException, SQLException {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() throws Exception {
+   public String getWorldViewReviewReviewer() throws OseeCoreException, SQLException {
       return "";
    }
 

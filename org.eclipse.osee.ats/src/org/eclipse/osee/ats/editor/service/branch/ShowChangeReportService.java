@@ -53,7 +53,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) || page.getId().contains("Implement");
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)

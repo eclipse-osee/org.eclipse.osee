@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**
@@ -22,21 +24,21 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
  */
 public interface IXTaskViewer {
 
-   public String getTabName() throws Exception;
+   public String getTabName() throws OseeCoreException, SQLException;
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws Exception;
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException, SQLException;
 
-   public IDirtiableEditor getEditor() throws Exception;
+   public IDirtiableEditor getEditor() throws OseeCoreException, SQLException;
 
-   public boolean isUsingTaskResolutionOptions() throws Exception;
+   public boolean isUsingTaskResolutionOptions() throws OseeCoreException, SQLException;
 
-   public List<TaskResOptionDefinition> getResOptions() throws Exception;
+   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException, SQLException;
 
-   public boolean isTaskable() throws Exception;
+   public boolean isTaskable() throws OseeCoreException, SQLException;
 
-   public String getCurrentStateName() throws Exception;
+   public String getCurrentStateName() throws OseeCoreException, SQLException;
 
-   public SMAManager getParentSmaMgr() throws Exception;
+   public SMAManager getParentSmaMgr() throws OseeCoreException, SQLException;
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click
@@ -45,6 +47,6 @@ public interface IXTaskViewer {
     * @return false if tasks are readonly from the TaskViewer
     * @throws Exception TODO
     */
-   public boolean isTasksEditable() throws Exception;
+   public boolean isTasksEditable() throws OseeCoreException, SQLException;
 
 }

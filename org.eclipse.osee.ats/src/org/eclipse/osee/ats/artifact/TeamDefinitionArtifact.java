@@ -68,7 +68,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef, TeamDefinitionOptions... teamDefinitionOptions) throws Exception {
+   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef, TeamDefinitionOptions... teamDefinitionOptions)throws OseeCoreException, SQLException{
       List<Object> teamDefOptions = Collections.getAggregate((Object[]) teamDefinitionOptions);
       TeamDefinitionArtifact tda = null;
       tda =
@@ -110,7 +110,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return tda;
    }
 
-   public static TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws Exception {
+   public static TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact()throws OseeCoreException, SQLException{
       return AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
    }
 
@@ -238,7 +238,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
    }
 
-   public static TeamDefinitionArtifact getHeadTeamDefinition() throws Exception {
+   public static TeamDefinitionArtifact getHeadTeamDefinition()throws OseeCoreException, SQLException{
       return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
             AtsConfig.TEAMS_HEADING, AtsPlugin.getAtsBranch());
    }
@@ -391,7 +391,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return null;
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws Exception {
+   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames)throws OseeCoreException, SQLException{
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
          teamDefs.add(getSoleTeamDefinition(teamDefName));
@@ -406,7 +406,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @return
     * @throws SQLException
     */
-   public static TeamDefinitionArtifact getSoleTeamDefinition(String name) throws Exception {
+   public static TeamDefinitionArtifact getSoleTeamDefinition(String name)throws OseeCoreException, SQLException{
       return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name,
             AtsPlugin.getAtsBranch());
    }

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -66,7 +67,7 @@ public class ArtifactImportJob extends Job {
 
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(branch) {
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork() throws OseeCoreException, SQLException {
                for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
                   // the getReal call with recursively call get real on all descendants of roughArtifact
                   importRoot.addChild(roughArtifact.getReal(branch, monitor, artifactResolver));

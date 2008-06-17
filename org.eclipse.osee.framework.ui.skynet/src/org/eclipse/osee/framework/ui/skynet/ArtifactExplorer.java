@@ -1432,7 +1432,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                AbstractSkynetTxTemplate replaceRelationTx = new AbstractSkynetTxTemplate(parentArtifact.getBranch()) {
 
                   @Override
-                  protected void handleTxWork() throws Exception {
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
                      // Replace all of the parent relations
                      for (Artifact artifact : artifactsToBeRelated) {
                         artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);

@@ -192,7 +192,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws Exception {
+   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       workingOn(artifact.getDescriptiveName());
       ModificationType modType;
 
@@ -480,7 +480,7 @@ public class ArtifactPersistenceManager {
     * @param artifacts The artifacts to delete.
     * @throws SQLException
     */
-   public static void deleteArtifact(final Artifact... artifacts) throws Exception {
+   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException, SQLException {
       if (artifacts.length == 0) return;
 
       // Confirm artifacts are fit to delete
@@ -497,7 +497,7 @@ public class ArtifactPersistenceManager {
       } else {
          AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork() throws OseeCoreException, SQLException {
                for (Artifact artifact : artifacts) {
                   if (!artifact.isDeleted()) {
                      deleteTrace(artifact, getTxBuilder());
@@ -514,7 +514,7 @@ public class ArtifactPersistenceManager {
     * @param builder
     * @throws Exception
     */
-   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws Exception {
+   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
@@ -532,7 +532,7 @@ public class ArtifactPersistenceManager {
     * @param transaction
     * @throws Exception
     */
-   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws Exception {
+   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
       if (!artifact.isInDb()) return;
 
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SkynetDatabase.getNextGammaId());
@@ -548,7 +548,7 @@ public class ArtifactPersistenceManager {
       TagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 
-   public void purgeArtifactFromBranch(Artifact artifact) throws Exception {
+   public void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException, SQLException {
       if (artifact == null) throw new IllegalArgumentException("Artifact = null in purgeArtifactFromBranch");
       purgeArtifactFromBranch(artifact.getBranch().getBranchId(), artifact.getArtId());
    }
@@ -561,7 +561,7 @@ public class ArtifactPersistenceManager {
     * @param artifact
     * @throws SQLException
     */
-   public void purgeArtifactFromBranch(int branchId, int artId) throws Exception {
+   public void purgeArtifactFromBranch(int branchId, int artId) throws OseeCoreException, SQLException {
       revertArtifact(branchId, artId);
 
       //Remove from Baseline
@@ -608,15 +608,18 @@ public class ArtifactPersistenceManager {
       SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Purged, instance));
    }
 
-   public void revertArtifact(Artifact artifact) throws Exception {
+   public void revertArtifact(Artifact artifact) throws OseeCoreException, SQLException {
       if (artifact == null) return;
       revertArtifact(artifact.getBranch().getBranchId(), artifact.getArtId());
    }
 
-   public void revertArtifact(int branchId, int artId) throws Exception {
-      new RevertDbTx(branchId, artId).execute();
+   public void revertArtifact(int branchId, int artId) throws OseeCoreException, SQLException {
+      try {
+         new RevertDbTx(branchId, artId).execute();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
-
    private final class RevertDbTx extends AbstractDbTxTemplate {
       int branchId;
       int artId;
@@ -627,7 +630,7 @@ public class ArtifactPersistenceManager {
       }
 
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          class GammaTransaction {
             int gammaId;
             int transactionId;

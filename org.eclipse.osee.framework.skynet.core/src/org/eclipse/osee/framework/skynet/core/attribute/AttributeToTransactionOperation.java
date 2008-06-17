@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
@@ -61,7 +62,7 @@ public class AttributeToTransactionOperation {
       this.transaction = transaction;
    }
 
-   public void execute() throws Exception {
+   public void execute() throws OseeCoreException, SQLException {
       for (Attribute<?> attribute : artifact.internalGetAttributes()) {
          if (attribute.isDirty()) {
             if (attribute.isDeleted()) {
@@ -73,7 +74,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   private void addAttributeData(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
+   private void addAttributeData(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       if (artifact.isVersionControlled()) {
          versionControlled(artifact, attribute, transaction);
       } else {
@@ -82,7 +83,7 @@ public class AttributeToTransactionOperation {
    }
 
    //TODO
-   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
+   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       ModType modType = null;
       ModificationType attrModType = null;
       if (attribute.isInDatastore()) {
@@ -101,7 +102,7 @@ public class AttributeToTransactionOperation {
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, modType, artifact));
    }
 
-   private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
+   private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       IAttributeDataProvider dataProvider = attribute.getAttributeDataProvider();
       if (!attribute.isInDatastore()) {
          createNewAttributeMemo(attribute);
@@ -123,7 +124,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws Exception {
+   private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws OseeCoreException {
       return new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), dao.getValue(), attribute.getGammaId(),
             transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());

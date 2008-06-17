@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +42,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
       if (!toState.equals(PeerToPeerReviewArtifact.State.Review.name())) return;
       // Set Assignees to all user roles users
@@ -57,7 +59,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws Exception {
+   public String getDescription() throws OseeCoreException, SQLException {
       return "AtsPeerToPeerReviewReviewStateItem - assign review state to all members of review as per role in prepare state.";
    }
 

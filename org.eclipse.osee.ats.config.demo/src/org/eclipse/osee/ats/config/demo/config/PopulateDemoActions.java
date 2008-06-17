@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -180,7 +182,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          try {
             OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating SAW_Bld_2 branch off SAW_Bld_1", false);
             // Create SAW_Bld_2 branch off SAW_Bld_1

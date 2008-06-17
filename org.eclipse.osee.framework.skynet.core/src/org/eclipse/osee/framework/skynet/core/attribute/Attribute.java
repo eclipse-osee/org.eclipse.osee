@@ -157,7 +157,7 @@ public abstract class Attribute<T> {
    /**
     * Purges the attribute from the database.
     */
-   public void purge() throws Exception {
+   public void purge() throws OseeCoreException, SQLException {
       getAttributeDataProvider().purge();
    }
 

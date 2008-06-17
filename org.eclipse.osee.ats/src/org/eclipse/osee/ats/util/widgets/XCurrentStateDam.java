@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -40,11 +41,11 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    }
 
    @Override
-   public void setState(SMAState state) throws Exception {
+   public void setState(SMAState state) throws OseeCoreException, SQLException {
       sma.setSoleAttributeValue(attributeTypeName, state.toXml());
    }
 
-   public void logMetrics() throws Exception {
+   public void logMetrics() throws OseeCoreException, SQLException {
       if (sma instanceof TaskArtifact) logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
             AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), SkynetAuthentication.getUser(), new Date());
    }
@@ -61,7 +62,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * @param hoursSpent The hoursSpent to set.
     * @throws Exception
     */
-   public void setHoursSpent(double hoursSpent) throws Exception {
+   public void setHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
       SMAState currState = getState();
       currState.setHoursSpent(hoursSpent);
       setState(currState);
@@ -74,7 +75,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * @param hoursSpent The hoursSpent to set.
     * @throws Exception
     */
-   public void addHoursSpent(double hoursSpent) throws Exception {
+   public void addHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
       SMAState currState = getState();
       currState.setHoursSpent(hoursSpent + currState.getHoursSpent());
       setState(currState);
@@ -87,7 +88,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * @param percentComplete The percentComplete to set.
     * @throws Exception
     */
-   public void setPercentComplete(int percentComplete) throws Exception {
+   public void setPercentComplete(int percentComplete) throws OseeCoreException, SQLException {
       SMAState currState = getState();
       currState.setPercentComplete(percentComplete);
       setState(currState);

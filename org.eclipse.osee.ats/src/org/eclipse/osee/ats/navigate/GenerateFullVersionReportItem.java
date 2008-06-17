@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -60,7 +62,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
       TeamDefinitionArtifact teamDef = getTeamDefinition();
       if (teamDef == null) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
@@ -70,7 +72,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws Exception {
+   public TeamDefinitionArtifact getTeamDefinition()throws OseeCoreException, SQLException{
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {

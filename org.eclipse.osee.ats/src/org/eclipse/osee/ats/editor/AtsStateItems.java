@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -17,6 +18,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.osgi.framework.Bundle;
 
@@ -27,7 +29,7 @@ public class AtsStateItems {
 
    private static List<IAtsStateItem> stateItems = new ArrayList<IAtsStateItem>();
 
-   public List<IAtsStateItem> getStateItems(String stateId) throws Exception {
+   public List<IAtsStateItem> getStateItems(String stateId) throws OseeCoreException, SQLException {
       loadAllStateItems();
       List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
       for (IAtsStateItem item : stateItems)
@@ -35,7 +37,7 @@ public class AtsStateItems {
       return items;
    }
 
-   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr) throws Exception {
+   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr)throws OseeCoreException, SQLException{
       return getStateItems(smaMgr.getWorkPageDefinition().getId());
    }
 

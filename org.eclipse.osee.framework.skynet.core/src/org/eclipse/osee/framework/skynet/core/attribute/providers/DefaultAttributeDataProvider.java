@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -71,7 +72,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#getData()
     */
    @Override
-   public Object[] getData() throws Exception {
+   public Object[] getData() throws OseeDataStoreException {
       return new Object[] {this.value, ""};
    }
 
@@ -79,7 +80,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#loadData(java.lang.Object[])
     */
    @Override
-   public void loadData(Object... objects) throws Exception {
+   public void loadData(Object... objects) throws OseeDataStoreException {
       if (objects != null && objects.length > 0) {
          this.value = (String) objects[0];
       }
@@ -89,7 +90,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject#persist()
     */
    @Override
-   public void persist() throws Exception {
+   public void persist() throws OseeDataStoreException {
       // Do Nothing
    }
 
@@ -97,7 +98,11 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
     */
    @Override
-   public void purge() throws Exception {
-      ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
+   public void purge() throws OseeDataStoreException {
+      try {
+         ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 }

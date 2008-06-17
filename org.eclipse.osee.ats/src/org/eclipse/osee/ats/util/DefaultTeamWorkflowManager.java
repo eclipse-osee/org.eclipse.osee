@@ -11,11 +11,13 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -44,7 +46,7 @@ public class DefaultTeamWorkflowManager {
     * @return
     * @throws Exception
     */
-   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws Exception {
+   public Result transitionTo(DefaultTeamState toState, User user, boolean popup)throws OseeCoreException, SQLException{
       Result result = setEndorseData(null, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -99,7 +101,7 @@ public class DefaultTeamWorkflowManager {
 
    }
 
-   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
@@ -111,7 +113,7 @@ public class DefaultTeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
       if (problem == null || problem.equals(""))
@@ -128,7 +130,7 @@ public class DefaultTeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws Exception {
+   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
             "Action not in Authorize state");
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
@@ -136,7 +138,7 @@ public class DefaultTeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws Exception {
+   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
       if (resolution == null || resolution.equals(""))

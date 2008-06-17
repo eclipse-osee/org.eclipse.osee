@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 public class XTextDam extends XText implements IArtifactWidget {
@@ -25,7 +26,7 @@ public class XTextDam extends XText implements IArtifactWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attributeTypeName) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public void setArtifact(Artifact artifact, String attributeTypeName) throws OseeCoreException, SQLException {
       this.artifact = artifact;
       this.attributeTypeName = attributeTypeName;
 
@@ -43,7 +44,7 @@ public class XTextDam extends XText implements IArtifactWidget {
    }
 
    @Override
-   public Result isDirty() throws Exception {
+   public Result isDirty() throws OseeCoreException, SQLException {
       try {
          String enteredValue = get();
          String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
@@ -60,7 +61,7 @@ public class XTextDam extends XText implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws Exception {
+   public void revert() throws OseeCoreException, SQLException {
       setArtifact(artifact, attributeTypeName);
    }
 }

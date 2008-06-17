@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +49,7 @@ public class SMATaskComposite extends Composite {
       return xTaskViewer.toHTML(AHTML.LABEL_FONT);
    }
 
-   public void create(IXTaskViewer iXTaskViewer) throws Exception {
+   public void create(IXTaskViewer iXTaskViewer)throws OseeCoreException, SQLException{
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 

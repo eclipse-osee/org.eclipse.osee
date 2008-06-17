@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -92,28 +91,33 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 
-   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, OseeCoreException {
-      List<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
-      Collection<Artifact> candidates = new LinkedList<Artifact>();
+   public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException {
+      try {
+         List<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
+         Collection<Artifact> candidates = new LinkedList<Artifact>();
 
-      for (Artifact artifact : siblings) {
-         if (attributeValuesMatch(roughArtifact, artifact)) {
-            candidates.add(artifact);
+         for (Artifact artifact : siblings) {
+            if (attributeValuesMatch(roughArtifact, artifact)) {
+               candidates.add(artifact);
+            }
          }
-      }
 
-      Artifact realArtifact = null;
-      if (candidates.size() == 1) {
-         realArtifact = candidates.iterator().next();
-         roughArtifact.updateValues(realArtifact);
-      } else {
-         OSEELog.logInfo(getClass(),
-               "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName(), false);
-         if (createNewIfNotExist) {
-            realArtifact = super.resolve(roughArtifact);
+         Artifact realArtifact = null;
+         if (candidates.size() == 1) {
+            realArtifact = candidates.iterator().next();
+            roughArtifact.updateValues(realArtifact);
+         } else {
+            OSEELog.logInfo(getClass(),
+                  "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName(),
+                  false);
+            if (createNewIfNotExist) {
+               realArtifact = super.resolve(roughArtifact);
+            }
          }
-      }
 
-      return realArtifact;
+         return realArtifact;
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 }

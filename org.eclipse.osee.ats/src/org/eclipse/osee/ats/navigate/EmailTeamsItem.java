@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDi
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -61,7 +62,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
       if (teamDefs == null || teamDefs.size() == 0) return;
       Set<String> emails = new HashSet<String>();

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -33,16 +35,16 @@ public class VersionTeamMetrics {
    private Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
    Map<Date, VersionMetrics> relDateToVerMet = new HashMap<Date, VersionMetrics>();
 
-   public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef) throws Exception {
+   public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef)throws OseeCoreException, SQLException{
       this.verTeamDef = verTeamDef;
       loadMetrics();
    }
 
-   private void loadMetrics() throws Exception {
+   private void loadMetrics()throws OseeCoreException, SQLException{
       orderReleasedVersions();
    }
 
-   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws Exception {
+   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate)throws OseeCoreException, SQLException{
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
          for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
@@ -55,7 +57,7 @@ public class VersionTeamMetrics {
       return teams;
    }
 
-   private void orderReleasedVersions() throws Exception {
+   private void orderReleasedVersions()throws OseeCoreException, SQLException{
       for (VersionArtifact ver : verTeamDef.getVersionsArtifacts()) {
          VersionMetrics verMet = new VersionMetrics(ver, this);
          if (ver.getReleaseDate() != null) relDateToVerMet.put(ver.getReleaseDate(), verMet);

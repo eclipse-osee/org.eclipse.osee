@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
@@ -57,7 +58,7 @@ public class SkynetTransactionBuilder {
       ConnectionHandler.startTransactionLevel(transactionKey);
    }
 
-   public void addArtifactToPersist(Artifact artifact) throws Exception {
+   public void addArtifactToPersist(Artifact artifact) throws OseeCoreException, SQLException {
       ArtifactPersistenceManager.getInstance().persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
    }
 
@@ -65,7 +66,7 @@ public class SkynetTransactionBuilder {
       RelationPersistenceManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 
-   public void deleteArtifact(Artifact artifact) throws Exception {
+   public void deleteArtifact(Artifact artifact) throws OseeCoreException, SQLException {
       // No work is recorded since this reports children, and the number of children
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work

@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -27,8 +29,12 @@ public class AtsRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
-      OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+      try {
+         OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /* (non-Javadoc)

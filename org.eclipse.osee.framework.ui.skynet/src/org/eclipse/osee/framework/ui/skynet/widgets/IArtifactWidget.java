@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -24,21 +26,21 @@ public interface IArtifactWidget {
     * 
     * @throws Exception TODO
     */
-   public void setArtifact(Artifact artifact, String attrName) throws Exception;
+   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException, SQLException;
 
    /**
     * Save data changes to artifact
     * 
     * @throws Exception TODO
     */
-   public void saveToArtifact() throws Exception;
+   public void saveToArtifact() throws OseeCoreException, SQLException;
 
    /**
     * Revert changes to widget data back to what was in artifact
     * 
     * @throws Exception TODO
     */
-   public void revert() throws Exception;
+   public void revert() throws OseeCoreException, SQLException;
 
    /**
     * Return true if storage data different than widget data
@@ -46,6 +48,6 @@ public interface IArtifactWidget {
     * @return
     * @throws Exception TODO
     */
-   public Result isDirty() throws Exception;
+   public Result isDirty() throws OseeCoreException, SQLException;
 
 }

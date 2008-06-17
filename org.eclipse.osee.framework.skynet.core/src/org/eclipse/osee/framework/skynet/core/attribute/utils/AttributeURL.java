@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 /**
@@ -27,34 +28,42 @@ public class AttributeURL {
    private AttributeURL() {
    }
 
-   public static URL getStorageURL(Attribute<?> attribute, String extension) throws Exception {
+   public static URL getStorageURL(Attribute<?> attribute, String extension) throws OseeDataStoreException {
       return getStorageURL(attribute.getGammaId(), attribute.getArtifact().getHumanReadableId(), extension);
    }
 
-   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws Exception {
-      Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put("protocol", "attr");
-      parameterMap.put("seed", Integer.toString(gammaId));
-      parameterMap.put("name", artifactHrid);
-      if (Strings.isValid(extension) != false) {
-         parameterMap.put("extension", extension);
+   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException {
+      try {
+         Map<String, String> parameterMap = new HashMap<String, String>();
+         parameterMap.put("protocol", "attr");
+         parameterMap.put("seed", Integer.toString(gammaId));
+         parameterMap.put("name", artifactHrid);
+         if (Strings.isValid(extension) != false) {
+            parameterMap.put("extension", extension);
+         }
+         String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
+         return new URL(urlString);
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
       }
-      String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
-      return new URL(urlString);
    }
 
-   private static URL generatePathURL(String uri) throws Exception {
-      Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put("uri", uri);
-      String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
-      return new URL(urlString);
+   private static URL generatePathURL(String uri) throws OseeDataStoreException {
+      try {
+         Map<String, String> parameterMap = new HashMap<String, String>();
+         parameterMap.put("uri", uri);
+         String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
+         return new URL(urlString);
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
-   public static URL getAcquireURL(String uri) throws Exception {
+   public static URL getAcquireURL(String uri) throws OseeDataStoreException {
       return generatePathURL(uri);
    }
 
-   public static URL getDeleteURL(String uri) throws Exception {
+   public static URL getDeleteURL(String uri) throws OseeDataStoreException {
       return generatePathURL(uri);
    }
 }

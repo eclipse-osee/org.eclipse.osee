@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactMo
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class RemoteArtifactEventFactory {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RemoteArtifactEventFactory.class);
 
-   public static NetworkArtifactModifiedEvent makeEvent(Artifact artifact, int transactionNumber) throws Exception {
+   public static NetworkArtifactModifiedEvent makeEvent(Artifact artifact, int transactionNumber) throws OseeCoreException, SQLException {
       NetworkArtifactModifiedEvent networkArtifactModifiedEvent = null;
 
       if (artifact == null || transactionNumber < 0) {
@@ -33,12 +34,8 @@ public class RemoteArtifactEventFactory {
 
       try {
          networkArtifactModifiedEvent =
-               new NetworkArtifactModifiedEvent(
-                     artifact.getBranch().getBranchId(),
-                     transactionNumber,
-                     artifact.getArtId(),
-                     artifact.getArtTypeId(),
-                     artifact.getFactory().getClass().getCanonicalName(),
+               new NetworkArtifactModifiedEvent(artifact.getBranch().getBranchId(), transactionNumber,
+                     artifact.getArtId(), artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
                      artifact.getDirtySkynetAttributeChanges(),
                      SkynetAuthentication.getUser().isInDb() ? SkynetAuthentication.getUser().getArtId() : -1);
       } catch (Exception ex) {

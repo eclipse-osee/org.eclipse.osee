@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.report;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -90,7 +92,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
     * 
     * @throws Exception
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws Exception {
+   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd)throws OseeCoreException, SQLException{
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
@@ -115,7 +117,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(sb.toString().replaceAll("\n", ""));
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb) throws Exception {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb)throws OseeCoreException, SQLException{
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);

@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -54,7 +55,7 @@ public class DataStore {
       return new ByteArrayInputStream(getContent());
    }
 
-   public byte[] getContent() throws Exception {
+   public byte[] getContent() throws OseeDataStoreException {
       if (isLocatorValid() != false && needToReadFromRemote) {
          resourceProcessor.acquire(this);
          needToReadFromRemote = false;
@@ -75,13 +76,13 @@ public class DataStore {
       other.encoding = this.encoding;
    }
 
-   public void persist() throws Exception {
+   public void persist() throws OseeDataStoreException {
       if (this.rawContent != null && this.rawContent.length > 0) {
          resourceProcessor.saveResource(this);
       }
    }
 
-   public void purge() throws Exception {
+   public void purge() throws OseeDataStoreException {
       if (isLocatorValid() != false) {
          resourceProcessor.purge(this);
       }

@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -14,6 +15,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -34,12 +36,12 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       startPageId = AtsPeerPrepareWorkPageDefinition.ID;
    }
 
-   public PeerToPeerWorkflowDefinition(Artifact artifact) throws Exception {
+   public PeerToPeerWorkflowDefinition(Artifact artifact)throws OseeCoreException, SQLException{
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
    }
 
-   public void config(WriteType writeType, XResultData xResultData) throws Exception {
+   public void config(WriteType writeType, XResultData xResultData)throws OseeCoreException, SQLException{
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
    }
 

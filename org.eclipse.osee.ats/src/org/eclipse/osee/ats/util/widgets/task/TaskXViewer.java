@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -288,7 +290,7 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   public boolean handleChangeResolution() throws Exception {
+   public boolean handleChangeResolution()throws OseeCoreException, SQLException{
       if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();

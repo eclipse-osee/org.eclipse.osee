@@ -89,7 +89,7 @@ public class ActionableItemArtifact extends Artifact {
       return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws Exception {
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames)throws OseeCoreException, SQLException{
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          aias.add(getSoleActionableItem(actionableItemName));
@@ -104,7 +104,7 @@ public class ActionableItemArtifact extends Artifact {
     * @return
     * @throws SQLException
     */
-   public static ActionableItemArtifact getSoleActionableItem(String name) throws Exception {
+   public static ActionableItemArtifact getSoleActionableItem(String name)throws OseeCoreException, SQLException{
       return (ActionableItemArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name,
             AtsPlugin.getAtsBranch());
    }

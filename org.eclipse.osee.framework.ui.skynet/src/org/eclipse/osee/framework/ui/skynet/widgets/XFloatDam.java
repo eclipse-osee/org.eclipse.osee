@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,7 +41,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
       super(displayLabel, xmlRoot);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws Exception {
+   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException, SQLException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
       try {
@@ -51,7 +53,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
    }
 
    @Override
-   public void saveToArtifact() throws Exception {
+   public void saveToArtifact() throws OseeCoreException, SQLException {
       try {
          if (text == null || text.equals("")) {
             artifact.deleteSoleAttribute(attributeTypeName);
@@ -70,7 +72,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws Exception {
+   public Result isDirty() throws OseeCoreException, SQLException {
       try {
          Double enteredValue = getFloat();
          Double storedValue = artifact.getSoleAttributeValue(attributeTypeName);
@@ -89,7 +91,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws Exception {
+   public void revert() throws OseeCoreException, SQLException {
       setArtifact(artifact, attributeTypeName);
    }
 

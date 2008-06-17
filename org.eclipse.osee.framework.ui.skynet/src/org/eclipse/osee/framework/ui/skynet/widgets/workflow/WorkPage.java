@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -80,13 +82,13 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       this(null, null, (String) null, optionResolver);
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
    }
 
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
    }
 
    /*
@@ -98,7 +100,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
     *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
     *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -111,7 +113,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
     *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
     *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -132,7 +134,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return false;
    }
 
-   public DynamicXWidgetLayout createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public DynamicXWidgetLayout createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       dynamicXWidgetLayout.createBody(toolkit, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
@@ -210,25 +212,25 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    /**
     * @return Returns the toPages.
     */
-   public List<WorkPageDefinition> getToPages() throws Exception {
+   public List<WorkPageDefinition> getToPages() throws OseeCoreException, SQLException {
       return workFlowDefinition.getToPages(workPageDefinition);
    }
 
    /**
     * @return Returns the toPages.
     */
-   public List<WorkPageDefinition> getReturnPages() throws Exception {
+   public List<WorkPageDefinition> getReturnPages() throws OseeCoreException, SQLException {
       return workFlowDefinition.getReturnPages(workPageDefinition);
    }
 
-   public boolean isReturnPage(WorkPageDefinition page) throws Exception {
+   public boolean isReturnPage(WorkPageDefinition page) throws OseeCoreException, SQLException {
       return getReturnPages().contains(page);
    }
 
    /**
     * @return Returns the defaultToPage.
     */
-   public WorkPageDefinition getDefaultToPage() throws Exception {
+   public WorkPageDefinition getDefaultToPage() throws OseeCoreException, SQLException {
       return workFlowDefinition.getDefaultToPage(workPageDefinition);
    }
 

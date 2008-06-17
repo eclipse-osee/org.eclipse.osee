@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -35,14 +37,14 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#committing(org.eclipse.osee.ats.editor.SMAManager)
     */
-   public Result committing(SMAManager smaMgr) throws Exception {
+   public Result committing(SMAManager smaMgr) throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getBranchShortName(org.eclipse.osee.ats.editor.SMAManager)
     */
-   public String getBranchShortName(SMAManager smaMgr) throws Exception {
+   public String getBranchShortName(SMAManager smaMgr) throws OseeCoreException, SQLException {
       return null;
    }
 
@@ -56,7 +58,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getIds()
     */
-   public Collection<String> getIds() throws Exception {
+   public Collection<String> getIds() throws OseeCoreException, SQLException {
       if (getId() == null) return EMPTY_STRING;
       return Arrays.asList(getId());
    }
@@ -64,74 +66,74 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToAssignees(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws Exception {
+   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException, SQLException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToStateName(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws Exception {
+   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException, SQLException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getSidebarServices(org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws Exception {
+   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws OseeCoreException, SQLException {
       return EMPTY_SERVICES;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getToolbarServices(org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws Exception {
+   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws OseeCoreException, SQLException {
       return EMPTY_SERVICES;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#pageCreated(org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioned(org.eclipse.osee.ats.editor.SMAManager, java.lang.String, java.lang.String, java.util.Collection)
     */
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(org.eclipse.osee.ats.editor.SMAManager, java.lang.String, java.lang.String, java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#widgetModified(org.eclipse.osee.ats.editor.SMAWorkFlowSection, org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
     */
-   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws Exception {
+   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException, SQLException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#xWidgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#xWidgetCreating(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
       return Result.TrueResult;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#isAccessControlViaAssigneesEnabledForBranching()
     */
-   public boolean isAccessControlViaAssigneesEnabledForBranching() throws Exception {
+   public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException, SQLException {
       return false;
    }
 

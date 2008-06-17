@@ -71,7 +71,7 @@ public final class Artifacts {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override
-         protected void handleTxWork() throws Exception {
+         protected void handleTxWork() throws OseeCoreException, SQLException {
             for (Artifact art : artifacts)
                art.persistAttributesAndRelations();
          }
@@ -84,7 +84,7 @@ public final class Artifacts {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override
-         protected void handleTxWork() throws Exception {
+         protected void handleTxWork() throws OseeCoreException, SQLException {
             for (Artifact art : artifacts)
                art.delete();
          }
@@ -97,7 +97,7 @@ public final class Artifacts {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override
-         protected void handleTxWork() throws Exception {
+         protected void handleTxWork() throws OseeCoreException, SQLException {
             for (Artifact art : artifacts)
                art.purge();
          }

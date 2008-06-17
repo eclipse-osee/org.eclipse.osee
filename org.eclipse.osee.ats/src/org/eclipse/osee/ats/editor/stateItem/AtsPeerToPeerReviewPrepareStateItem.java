@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -46,7 +47,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
     *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws Exception {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException, SQLException {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
          if ((art instanceof ReviewSMArtifact) && ((ReviewSMArtifact) art).getParentSMA() == null) {
@@ -64,7 +65,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws Exception {
+   public String getDescription() throws OseeCoreException, SQLException {
       return "AtsPeerToPeerReviewPrepareStateItem - If stand-alone review, remove blocking review enablement and required entry.";
    }
 

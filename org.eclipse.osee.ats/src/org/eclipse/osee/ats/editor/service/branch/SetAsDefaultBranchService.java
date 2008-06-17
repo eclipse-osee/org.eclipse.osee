@@ -51,7 +51,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IEvent
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) || page.getId().contains("Implement");
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -44,12 +45,12 @@ public abstract class XMultiXWidgetDam extends XMultiXWidget implements IArtifac
       this.attributeTypeName = attributeTypeName;
    }
 
-   public abstract void saveToArtifact() throws Exception;
+   public abstract void saveToArtifact() throws OseeCoreException, SQLException;
 
-   public abstract Result isDirty() throws Exception;
+   public abstract Result isDirty() throws OseeCoreException, SQLException;
 
    @Override
-   public void revert() throws Exception {
+   public void revert() throws OseeCoreException, SQLException {
       setArtifact(artifact, attributeTypeName);
    }
 

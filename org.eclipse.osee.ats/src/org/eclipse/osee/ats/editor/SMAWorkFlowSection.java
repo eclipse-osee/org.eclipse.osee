@@ -90,7 +90,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private Composite mainComp;
    private DynamicXWidgetLayout dynamicXWidgetLayout;
 
-   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws Exception {
+   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr)throws OseeCoreException, SQLException{
       super(parent, toolkit, style);
       this.toolkit = toolkit;
       this.atsWorkPage = page;
@@ -104,7 +104,7 @@ public class SMAWorkFlowSection extends SectionPart {
       createPage(parent);
    }
 
-   protected Section createPage(Composite parent) throws Exception {
+   protected Section createPage(Composite parent)throws OseeCoreException, SQLException{
 
       Section section = toolkit.createSection(parent, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(getCurrentStateTitle());
@@ -138,7 +138,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return section;
    }
 
-   protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws Exception {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit)throws OseeCoreException, SQLException{
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -189,7 +189,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return workComp;
    }
 
-   public Result isXWidgetSavable() throws Exception {
+   public Result isXWidgetSavable()throws OseeCoreException, SQLException{
       if (dynamicXWidgetLayout == null) return Result.TrueResult;
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
@@ -204,7 +204,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return atsWorkPage + " for " + getSmaMgr().getSma();
    }
 
-   public Result isXWidgetDirty() throws Exception {
+   public Result isXWidgetDirty()throws OseeCoreException, SQLException{
       if (dynamicXWidgetLayout == null) return Result.FalseResult;
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) {
@@ -215,13 +215,13 @@ public class SMAWorkFlowSection extends SectionPart {
       return Result.FalseResult;
    }
 
-   public void saveXWidgetToArtifact() throws Exception {
+   public void saveXWidgetToArtifact()throws OseeCoreException, SQLException{
       for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
          if (widget instanceof IArtifactWidget) ((IArtifactWidget) widget).saveToArtifact();
       }
    }
 
-   private String getCurrentStateTitle() throws Exception {
+   private String getCurrentStateTitle()throws OseeCoreException, SQLException{
       StringBuffer sb = new StringBuffer(atsWorkPage.getName());
       if (isEditable && (!smaMgr.isCompleted() && !smaMgr.isCancelled())) {
          sb.append(" - Current State");
@@ -352,7 +352,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void handleChangeCurrentAssignees() throws Exception {
+   private void handleChangeCurrentAssignees()throws OseeCoreException, SQLException{
       if (smaMgr.promptChangeAssignees()) {
          refresh();
          smaMgr.getEditor().onDirtied();
@@ -383,7 +383,7 @@ public class SMAWorkFlowSection extends SectionPart {
       smaMgr.getEditor().onDirtied();
    }
 
-   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws Exception {
+   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit)throws OseeCoreException, SQLException{
       Composite comp = toolkit.createContainer(parent, 5);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -465,7 +465,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    }
 
-   public void updateTransitionToAssignees() throws Exception {
+   public void updateTransitionToAssignees()throws OseeCoreException, SQLException{
       Collection<User> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
@@ -480,7 +480,7 @@ public class SMAWorkFlowSection extends SectionPart {
       refresh();
    }
 
-   public void updateTransitionToState() throws Exception {
+   public void updateTransitionToState()throws OseeCoreException, SQLException{
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
@@ -503,7 +503,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   public void setTransitionToStateSelection(String stateName) throws Exception {
+   public void setTransitionToStateSelection(String stateName)throws OseeCoreException, SQLException{
       ArrayList<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : smaMgr.getToWorkPages()) {
          if (nextPage.getPageName().equals(stateName)) allPages.add(nextPage);
@@ -643,7 +643,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return isCurrentState;
    }
 
-   public boolean handlePopulateStateMetrics() throws Exception {
+   public boolean handlePopulateStateMetrics()throws OseeCoreException, SQLException{
 
       // Page has the ability to override the autofill of the metrics
       if (!atsWorkPage.isRequireStateHoursSpentPrompt() && smaMgr.getStateMgr().getHoursSpent() == 0) {

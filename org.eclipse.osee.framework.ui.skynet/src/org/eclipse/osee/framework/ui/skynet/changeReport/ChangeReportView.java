@@ -1265,7 +1265,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          monitor.beginTask(txName, 7);
 
          monitor.subTask("Calculating change set");
@@ -1334,7 +1334,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
       }
 
-      private boolean isCanceled() throws Exception {
+      private boolean isCanceled() throws OseeCoreException {
          boolean toReturn = monitor.isCanceled();
          if (false != toReturn) {
             throw new IllegalStateException("User Cancelled Operation");

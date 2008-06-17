@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SMAState {
@@ -145,7 +146,7 @@ public class SMAState {
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public void setFromXml(String xml) throws Exception {
+   public void setFromXml(String xml) throws OseeCoreException, SQLException {
       if (xml == null || xml.equals("")) {
          name = "Unknown";
          return;

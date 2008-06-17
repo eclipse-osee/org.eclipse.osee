@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.editor.TaskEditorInput;
 import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -44,7 +46,7 @@ public class EditTasksBySelectedWorkflows extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
       Set<StateMachineArtifact> smas = WorldView.getWorldView().getxViewer().getSelectedSMAArtifacts();
       if (smas.size() == 0) {
          AWorkbench.popup("ERROR", "Must select Action Workflows in ATS World to edit tasks.");

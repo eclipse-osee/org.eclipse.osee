@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
@@ -57,6 +57,6 @@ public abstract class ConflictBuilder {
       this.destBranch = destBranch;
    }
 
-   public abstract Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws SQLException, IOException, Exception;
+   public abstract Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws SQLException, OseeCoreException;
 
 }

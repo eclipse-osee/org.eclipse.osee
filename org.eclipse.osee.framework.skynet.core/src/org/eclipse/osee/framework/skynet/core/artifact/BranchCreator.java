@@ -424,7 +424,7 @@ public class BranchCreator {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws Exception {
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws OseeCoreException, SQLException {
       return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, preserveMetaData, compressArtTypes, preserveArtTypes);
    }
@@ -432,15 +432,28 @@ public class BranchCreator {
    /**
     * Creates a new merge branch based on the artifacts from the source branch
     */
-   public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws Exception {
-      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
-      createMergeBranchTx.execute();
-      return createMergeBranchTx.getMergeBranch();
+   public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException, SQLException {
+      try {
+         CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
+         createMergeBranchTx.execute();
+         return createMergeBranchTx.getMergeBranch();
+      } catch (SQLException ex) {
+         throw ex;
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
-   public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws Exception {
-      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
-      createMergeBranchTx.execute();
+   public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException, SQLException {
+      try {
+         CreateMergeBranchTx createMergeBranchTx =
+               new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
+         createMergeBranchTx.execute();
+      } catch (SQLException ex) {
+         throw ex;
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    private final class CreateMergeBranchTx extends AbstractDbTxTemplate {
@@ -475,7 +488,7 @@ public class BranchCreator {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork() throws OseeCoreException, SQLException {
          boolean createBranch = (mergeBranch == null);
 
          if (artIds == null || artIds.isEmpty()) {

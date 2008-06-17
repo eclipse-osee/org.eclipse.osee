@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -54,7 +56,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor)throws OseeCoreException, SQLException{
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -90,7 +92,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                      AbstractSkynetTxTemplate txWrapper =
                            new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                               @Override
-                              protected void handleTxWork() throws Exception {
+                              protected void handleTxWork()throws OseeCoreException, SQLException{
                                  handleCreateTasks(assignees, titles, teamArt);
                                  teamArt.persistAttributesAndRelations();
                               }
@@ -112,7 +114,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       });
    }
 
-   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt) throws Exception {
+   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt)throws OseeCoreException, SQLException{
       for (String title : titles) {
          TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title, false);
          if (assignees != null && assignees.size() > 0) {
@@ -131,7 +133,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws Exception {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)throws OseeCoreException, SQLException{
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;

@@ -239,11 +239,15 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws Exception {
-      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      excelHandler = new ExcelSaxHandler(this, true);
-      xmlReader.setContentHandler(excelHandler);
-      xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException, SQLException {
+      try {
+         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+         excelHandler = new ExcelSaxHandler(this, true);
+         xmlReader.setContentHandler(excelHandler);
+         xmlReader.parse(new InputSource(new InputStreamReader(new FileInputStream(artifactsFile), "UTF-8")));
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /*

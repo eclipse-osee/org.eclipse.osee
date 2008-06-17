@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
@@ -29,9 +28,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -74,7 +72,7 @@ public class AttributeConflict extends Conflict {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, String destValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws SQLException, IOException, Exception {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, String destValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws SQLException, OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, changeType, mergeBranch,
             sourceBranch, destBranch);
       this.attrId = attrId;
@@ -83,7 +81,7 @@ public class AttributeConflict extends Conflict {
       isWordAttribute = sourceValue == null;
    }
 
-   public Attribute<?> getAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Attribute<?> getAttribute() throws OseeCoreException, SQLException {
       if (attribute != null) return attribute;
       Collection<Attribute<Object>> localAttributes =
             getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -99,7 +97,7 @@ public class AttributeConflict extends Conflict {
       return attribute;
    }
 
-   public Attribute<?> getSourceAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Attribute<?> getSourceAttribute() throws OseeCoreException, SQLException {
       if (sourceAttribute != null) return sourceAttribute;
       Collection<Attribute<Object>> localAttributes =
             getSourceArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -115,7 +113,7 @@ public class AttributeConflict extends Conflict {
       return sourceAttribute;
    }
 
-   public Attribute<?> getDestAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Attribute<?> getDestAttribute() throws OseeCoreException, SQLException {
       if (destAttribute != null) return destAttribute;
       Collection<Attribute<Object>> localAttributes =
             getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -135,7 +133,7 @@ public class AttributeConflict extends Conflict {
     * @return the dynamicAttributeDescriptor
     * @throws SQLException
     */
-   public AttributeType getDynamicAttributeDescriptor() throws Exception {
+   public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException, SQLException {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor =
                AttributeTypeManager.getTypeWithWordContentCheck(getArtifact(),
@@ -144,13 +142,13 @@ public class AttributeConflict extends Conflict {
       return dynamicAttributeDescriptor;
    }
 
-   public Object getSourceObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Object getSourceObject() throws OseeCoreException, SQLException {
       if (sourceObject != null) return sourceObject;
       sourceObject = getSourceAttribute().getValue();
       return sourceObject;
    }
 
-   public Object getDestObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Object getDestObject() throws OseeCoreException, SQLException {
       if (destObject != null) return destObject;
       destObject = getDestAttribute().getValue();
       return destObject;
@@ -216,21 +214,21 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean mergeEqualsSource() throws OseeCoreException, SQLException {
       return (getMergeObject().equals(getSourceObject()));
    }
 
    @Override
-   public boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean mergeEqualsDestination() throws OseeCoreException, SQLException {
       return (getMergeObject().equals(getDestObject()));
    }
 
    @Override
-   public boolean sourceEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean sourceEqualsDestination() throws OseeCoreException, SQLException {
       return (getSourceObject().equals(getDestObject()));
    }
 
-   public boolean setStringAttributeValue(String value) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public boolean setStringAttributeValue(String value) throws OseeCoreException, SQLException {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), value);
@@ -238,7 +236,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   public boolean setAttributeValue(Object value) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public boolean setAttributeValue(Object value) throws OseeCoreException, SQLException {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), value);
@@ -246,22 +244,22 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   public Object getMergeObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Object getMergeObject() throws OseeCoreException, SQLException {
       return getAttribute().getValue();
    }
 
-   public TreeSet<String> getEnumerationAttributeValues() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException, SQLException {
       return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(
             getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
    }
 
    @SuppressWarnings("unchecked")
-   public Class<? extends Attribute> getBaseAttributeClass() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Class<? extends Attribute> getBaseAttributeClass() throws OseeCoreException, SQLException {
       return getDynamicAttributeDescriptor().getBaseAttributeClass();
    }
 
    @Override
-   public boolean setToSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean setToSource() throws OseeCoreException, SQLException {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
@@ -270,7 +268,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean setToDest() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean setToDest() throws OseeCoreException, SQLException {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
@@ -279,7 +277,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean clearValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public boolean clearValue() throws OseeCoreException, SQLException {
       if (!okToOverwriteMerge()) return false;
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
@@ -293,17 +291,17 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   protected void markStatusToReflectEdit() throws Exception {
+   protected void markStatusToReflectEdit() throws OseeCoreException, SQLException {
       if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
    }
 
    @Override
-   public Status computeStatus() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public Status computeStatus() throws OseeCoreException, SQLException {
       return super.computeStatus(attrId, Status.UNTOUCHED);
    }
 
    @Override
-   public String getMergeDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public String getMergeDisplayData() throws OseeCoreException, SQLException {
       if ((status.equals(Status.UNTOUCHED)) && !(sourceEqualsDestination() && mergeEqualsSource())) {
          return NO_VALUE;
       }
@@ -314,7 +312,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getChangeItem() throws SQLException, Exception {
+   public String getChangeItem() throws OseeCoreException, SQLException {
       return getDynamicAttributeDescriptor().getName();
    }
 
@@ -365,7 +363,7 @@ public class AttributeConflict extends Conflict {
       this.sourceDestDiffFile = sourceDestDiffFile;
    }
 
-   public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public int getMergeGammaId() throws OseeCoreException, SQLException {
       return getAttribute().getGammaId();
    }
 

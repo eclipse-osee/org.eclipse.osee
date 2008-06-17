@@ -11,9 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.widgets.Composite;
 
@@ -51,7 +53,7 @@ public class XMultiXWidgetTextDam extends XMultiXWidgetDam {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetDam#isDirty()
     */
    @Override
-   public Result isDirty() throws Exception {
+   public Result isDirty() throws OseeCoreException, SQLException {
       List<String> enteredValues = getEnteredValues();
       List<String> storedValues = artifact.getAttributesToStringList(attributeTypeName);
       if (!Collections.isEqual(enteredValues, storedValues)) {
@@ -72,7 +74,7 @@ public class XMultiXWidgetTextDam extends XMultiXWidgetDam {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetDam#saveToArtifact()
     */
    @Override
-   public void saveToArtifact() throws Exception {
+   public void saveToArtifact() throws OseeCoreException, SQLException {
       artifact.setAttributeValues(attributeTypeName, getEnteredValues());
    }
 

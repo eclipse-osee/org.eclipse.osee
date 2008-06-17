@@ -207,7 +207,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
          @Override
-         protected void handleTxWork() throws Exception {
+         protected void handleTxWork()throws OseeCoreException, SQLException{
             // Items must be imported in order due to the relations that are created between items
             for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
                   WorkPageDefinition.class, WorkFlowDefinition.class}) {

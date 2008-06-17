@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -69,7 +71,7 @@ public class PurgeArtifactHandler extends AbstractHandler {
                AbstractSkynetTxTemplate purgeTx =
                      new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
                         @Override
-                        protected void handleTxWork() throws Exception {
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
                            for (Artifact artifactToPurge : artifacts) {
                               if (!artifactToPurge.isDeleted()) {
                                  fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());

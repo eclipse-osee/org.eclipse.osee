@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarService
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -63,7 +65,7 @@ public class ServicesArea {
          service.dispose();
    }
 
-   public void loadSidebarServices(AtsWorkPage page) throws Exception {
+   public void loadSidebarServices(AtsWorkPage page)throws OseeCoreException, SQLException{
       if (sideBarServices.size() == 0) {
          // Operations
          sideBarServices.add(new FavoriteOperation(smaMgr));
@@ -106,7 +108,7 @@ public class ServicesArea {
       }
    }
 
-   public void loadToolbarServices(AtsWorkPage atsWorkPage) throws Exception {
+   public void loadToolbarServices(AtsWorkPage atsWorkPage)throws OseeCoreException, SQLException{
       if (toolBarServices.size() == 0) {
          // Toolbar Services
          // Add page configured branchable state items
@@ -134,7 +136,7 @@ public class ServicesArea {
       }
    }
 
-   public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws Exception {
+   public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section)throws OseeCoreException, SQLException{
       loadSidebarServices(page);
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : sideBarServices) {
@@ -149,7 +151,7 @@ public class ServicesArea {
       }
    }
 
-   public void createToolbarServices(AtsWorkPage page, IToolBarManager toolbarManager) throws Exception {
+   public void createToolbarServices(AtsWorkPage page, IToolBarManager toolbarManager)throws OseeCoreException, SQLException{
       try {
          loadToolbarServices(page);
          for (final WorkPageService service : toolBarServices) {

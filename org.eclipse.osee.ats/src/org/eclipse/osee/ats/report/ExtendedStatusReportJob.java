@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.report;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -74,7 +76,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport() throws Exception {
+   public String getStatusReport()throws OseeCoreException, SQLException{
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(getStatusReportBody());
@@ -110,7 +112,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody() throws Exception {
+   public String getStatusReportBody()throws OseeCoreException, SQLException{
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -135,7 +137,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws Exception {
+   public void addTableRow(StringBuilder sb, StateMachineArtifact sma)throws OseeCoreException, SQLException{
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {

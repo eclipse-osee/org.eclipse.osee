@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * This abstract class provides a uniform way of executing transactions. It handles exceptions ensuring that
@@ -88,7 +90,7 @@ public abstract class AbstractSkynetTxTemplate {
     * 
     * @throws Exception
     */
-   public void execute() throws Exception {
+   public void execute() throws OseeCoreException, SQLException {
       try {
          transactionManager.startBatchLevel(this, branch);
          SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
@@ -108,7 +110,7 @@ public abstract class AbstractSkynetTxTemplate {
     * 
     * @throws Exception
     */
-   protected abstract void handleTxWork() throws Exception;
+   protected abstract void handleTxWork() throws OseeCoreException, SQLException;
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
@@ -116,7 +118,7 @@ public abstract class AbstractSkynetTxTemplate {
     * 
     * @throws Exception
     */
-   protected void handleTxFinally() throws Exception {
+   protected void handleTxFinally() throws OseeCoreException, SQLException {
       // override to add additional code to finally
    }
 }

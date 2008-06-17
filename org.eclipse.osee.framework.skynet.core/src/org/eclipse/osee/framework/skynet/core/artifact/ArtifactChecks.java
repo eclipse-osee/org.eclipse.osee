@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.osgi.framework.Bundle;
 
 /**
@@ -30,7 +32,7 @@ public class ArtifactChecks {
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChecks.class);
    public static String EXTENSION_POINT = "org.eclipse.osee.framework.skynet.core.ArtifactCheck";
 
-   public static List<IArtifactCheck> getArtifactChecks() throws Exception {
+   public static List<IArtifactCheck> getArtifactChecks() throws OseeCoreException, SQLException {
       if (tasks == null) {
          tasks = new ArrayList<IArtifactCheck>();
          List<IConfigurationElement> iExtensions =

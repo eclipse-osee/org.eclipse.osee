@@ -93,7 +93,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return art;
    }
 
-   public Collection<String> getPageNames() throws Exception {
+   public Collection<String> getPageNames() throws OseeCoreException, SQLException {
       loadPageData();
       return pageNameToPageId.keySet();
    }

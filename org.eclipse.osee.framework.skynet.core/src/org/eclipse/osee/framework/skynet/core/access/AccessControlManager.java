@@ -742,18 +742,22 @@ public class AccessControlManager {
     * 
     * @throws SQLException
     */
-   public void removeAllPermissionsFromBranch(final Branch branch) throws Exception {
-      AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
-         @Override
-         protected void handleTxWork() throws Exception {
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
-                  branch.getBranchId());
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
-                  branch.getBranchId());
-         }
+   public void removeAllPermissionsFromBranch(final Branch branch) throws OseeCoreException, SQLException {
+      try {
+         AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
+            @Override
+            protected void handleTxWork() throws OseeCoreException, SQLException {
+               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
+                     branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
+                     branch.getBranchId());
+            }
 
-      };
-      dbTxWrapper.execute();
+         };
+         dbTxWrapper.execute();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /**

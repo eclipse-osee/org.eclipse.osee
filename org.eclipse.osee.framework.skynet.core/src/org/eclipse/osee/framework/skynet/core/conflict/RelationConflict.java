@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -161,7 +161,7 @@ public class RelationConflict extends Conflict {
       return null;
    }
 
-   public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
-      throw new Exception("Relation Conflicts are not implemented yet");
+   public int getMergeGammaId() throws OseeCoreException, SQLException {
+      throw new BranchMergeException("Relation Conflicts are not implemented yet");
    }
 }

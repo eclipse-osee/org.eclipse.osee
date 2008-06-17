@@ -23,7 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -102,7 +104,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
    @Override
-   public Status computeStatus() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+   public Status computeStatus() throws OseeCoreException, SQLException {
       return super.computeStatus(getArtifact().getArtId(), Status.NOT_RESOLVABLE);
    }
 
@@ -149,7 +151,7 @@ public class ArtifactConflict extends Conflict {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeValue()
     */
-   protected Object getMergeValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   protected Object getMergeValue() throws OseeCoreException, SQLException {
       return getArtifact();
    }
 
@@ -157,7 +159,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getSourceDisplayData()
     */
    @Override
-   public String getSourceDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getSourceDisplayData() throws OseeCoreException, SQLException {
       return ARTIFACT_MODIFIED;
    }
 
@@ -165,7 +167,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsDestination()
     */
    @Override
-   public boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public boolean mergeEqualsDestination() throws OseeCoreException, SQLException {
       return getDestArtifact().equals(getMergeValue());
    }
 
@@ -173,7 +175,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsSource()
     */
    @Override
-   public boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public boolean mergeEqualsSource() throws OseeCoreException, SQLException {
       return getSourceArtifact().equals(getMergeValue());
    }
 
@@ -201,13 +203,13 @@ public class ArtifactConflict extends Conflict {
       return false;
    }
 
-   public void revertSourceArtifact() throws Exception {
+   public void revertSourceArtifact() throws OseeCoreException, SQLException {
       ArtifactPersistenceManager.getInstance().revertArtifact(getSourceArtifact());
       getSourceArtifact().reloadArtifact();
    }
 
-   public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
-      throw new Exception("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
+   public int getMergeGammaId() throws OseeCoreException, SQLException {
+      throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }
 
 }

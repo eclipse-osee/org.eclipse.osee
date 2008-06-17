@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets.defect;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -286,7 +288,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws Exception {
+                        protected void handleTxWork()throws OseeCoreException, SQLException{
                            deleteDefectHelper(items);
                         }
                      };
@@ -501,7 +503,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
     */
    @Override
-   public void saveToArtifact() throws Exception {
+   public void saveToArtifact()throws OseeCoreException, SQLException{
       // DefectViewer uses artifact as storage mechanism; nothing to do here
    }
 
@@ -509,7 +511,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws Exception {
+   public Result isDirty()throws OseeCoreException, SQLException{
       // DefectViewer uses artifact as storage mechanism which already determines dirty
       return Result.FalseResult;
    }
@@ -518,7 +520,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws Exception {
+   public void revert()throws OseeCoreException, SQLException{
       // Nothing to revert cause artifact will be reverted
    }
 

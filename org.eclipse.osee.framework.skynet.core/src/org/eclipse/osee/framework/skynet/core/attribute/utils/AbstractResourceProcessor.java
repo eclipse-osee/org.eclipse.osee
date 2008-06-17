@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
@@ -24,31 +25,35 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResul
  */
 public abstract class AbstractResourceProcessor {
 
-   protected abstract URL getAcquireURL(DataStore dataStore) throws Exception;
+   protected abstract URL getAcquireURL(DataStore dataStore) throws OseeDataStoreException;
 
-   protected abstract URL getDeleteURL(DataStore dataStore) throws Exception;
+   protected abstract URL getDeleteURL(DataStore dataStore) throws OseeDataStoreException;
 
-   protected abstract URL getStorageURL(DataStore dataStore) throws Exception;
+   protected abstract URL getStorageURL(DataStore dataStore) throws OseeDataStoreException;
 
-   public void saveResource(DataStore dataStore) throws Exception {
-      InputStream inputStream = null;
+   public void saveResource(DataStore dataStore) throws OseeDataStoreException {
       try {
-         URL url = getStorageURL(dataStore);
-         inputStream = dataStore.getInputStream();
-         URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
-         if (uri != null) {
-            dataStore.setLocator(uri.toASCIIString());
+         InputStream inputStream = null;
+         try {
+            URL url = getStorageURL(dataStore);
+            inputStream = dataStore.getInputStream();
+            URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
+            if (uri != null) {
+               dataStore.setLocator(uri.toASCIIString());
+            }
+         } catch (Exception ex) {
+            throw new OseeDataStoreException("Error saving resource", ex);
+         } finally {
+            if (inputStream != null) {
+               inputStream.close();
+            }
          }
       } catch (Exception ex) {
-         throw new Exception("Error saving resource", ex);
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         throw new OseeDataStoreException("Error saving resource", ex);
       }
    }
 
-   public void acquire(DataStore dataStore) throws Exception {
+   public void acquire(DataStore dataStore) throws OseeDataStoreException {
       int code = -1;
       try {
          URL url = getAcquireURL(dataStore);
@@ -59,12 +64,12 @@ public abstract class AbstractResourceProcessor {
             dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
          }
       } catch (Exception ex) {
-         throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]",
+         throw new OseeDataStoreException(String.format("Error acquiring resource: [%s] - status code: [%s]",
                dataStore.getLocator(), code), ex);
       }
    }
 
-   public void purge(DataStore dataStore) throws Exception {
+   public void purge(DataStore dataStore) throws OseeDataStoreException {
       int code = -1;
       try {
          URL url = getDeleteURL(dataStore);
@@ -73,8 +78,8 @@ public abstract class AbstractResourceProcessor {
             dataStore.clear();
          }
       } catch (Exception ex) {
-         throw new Exception(String.format("Error deleting resource: [%s] - status code: [%s]", dataStore.getLocator(),
-               code), ex);
+         throw new OseeDataStoreException(String.format("Error deleting resource: [%s] - status code: [%s]",
+               dataStore.getLocator(), code), ex);
       }
    }
 }

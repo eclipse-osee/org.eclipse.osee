@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * Used during imports that ask for artifact re-use to resolve the Artifact to be used for a particular RoughArtifact
@@ -19,5 +20,5 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IArtifactImportResolver {
 
-   public Artifact resolve(RoughArtifact roughArtifact) throws Exception;
+   public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException;
 }

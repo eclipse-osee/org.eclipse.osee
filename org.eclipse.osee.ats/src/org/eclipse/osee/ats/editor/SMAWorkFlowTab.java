@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -130,7 +131,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public Result isXWidgetDirty() throws Exception {
+   public Result isXWidgetDirty()throws OseeCoreException, SQLException{
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetDirty();
          if (result.isTrue()) return result;
@@ -138,7 +139,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.FalseResult;
    }
 
-   public Result isXWidgetSavable() throws Exception {
+   public Result isXWidgetSavable()throws OseeCoreException, SQLException{
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetSavable();
          if (result.isFalse()) return result;
@@ -146,7 +147,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.TrueResult;
    }
 
-   public void saveXWidgetToArtifact() throws Exception {
+   public void saveXWidgetToArtifact()throws OseeCoreException, SQLException{
       for (SMAWorkFlowSection section : sections) {
          section.saveXWidgetToArtifact();
       }
@@ -177,7 +178,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return sb.toString();
    }
 
-   private void fillBody(IManagedForm managedForm) throws Exception {
+   private void fillBody(IManagedForm managedForm)throws OseeCoreException, SQLException{
       Composite body = managedForm.getForm().getBody();
       GridLayout gridLayout = new GridLayout(1, false);
       body.setLayout(gridLayout);
@@ -522,7 +523,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void updateOrigLabel() throws Exception {
+   public void updateOrigLabel()throws OseeCoreException, SQLException{
       origLabel.setText(smaMgr.getOriginator().getName());
       origLabel.getParent().layout();
       if (teamWf != null) {
@@ -531,7 +532,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refresh() throws Exception {
+   public void refresh()throws OseeCoreException, SQLException{
       for (SMAWorkFlowSection section : sections)
          section.refresh();
       if (smaRelationsComposite != null) smaRelationsComposite.refresh();

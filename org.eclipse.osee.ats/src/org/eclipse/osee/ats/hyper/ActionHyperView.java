@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -167,12 +168,12 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          else
             setVerticalSelection(45);
          create(topAHI);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          clear();
       }
    }
 
-   private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws SQLException {
+   private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws OseeCoreException, SQLException {
       if (!(artifact instanceof StateMachineArtifact)) return;
       if (((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts().size() > 0) {
          if (artifact instanceof ReviewSMArtifact) tasksReviewsCreated = true;

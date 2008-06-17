@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -44,7 +44,7 @@ public class UserRoleManager {
       this.artifact = artifact;
    }
 
-   public String getHtml() throws SQLException, MultipleAttributesExist {
+   public String getHtml() throws OseeCoreException, SQLException {
       if (getUserRoles().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
@@ -52,7 +52,7 @@ public class UserRoleManager {
       return sb.toString();
    }
 
-   public Set<UserRole> getUserRoles() throws SQLException, MultipleAttributesExist {
+   public Set<UserRole> getUserRoles() throws OseeCoreException, SQLException {
       Set<UserRole> uRoles = new HashSet<UserRole>();
       String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       Matcher m =
@@ -64,14 +64,14 @@ public class UserRoleManager {
       return uRoles;
    }
 
-   public Set<UserRole> getUserRoles(Role role) throws SQLException, MultipleAttributesExist {
+   public Set<UserRole> getUserRoles(Role role) throws OseeCoreException, SQLException {
       Set<UserRole> roles = new HashSet<UserRole>();
       for (UserRole uRole : getUserRoles())
          if (uRole.getRole() == role) roles.add(uRole);
       return roles;
    }
 
-   public Set<User> getRoleUsers(Role role) throws SQLException, MultipleAttributesExist {
+   public Set<User> getRoleUsers(Role role) throws OseeCoreException, SQLException {
       Set<User> users = new HashSet<User>();
       for (UserRole uRole : getUserRoles())
          if (uRole.getRole() == role) users.add(uRole.getUser());
@@ -93,7 +93,7 @@ public class UserRoleManager {
       }
    }
 
-   public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws OseeCoreException, SQLException {
       Set<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -106,7 +106,7 @@ public class UserRoleManager {
       saveRoleItems(roleItems, persist);
    }
 
-   private void updateAssignees() throws Exception {
+   private void updateAssignees() throws OseeCoreException, SQLException {
       // Set assigness based on roles that are not set as completed
       Set<User> assignees = new HashSet<User>();
       for (UserRole uRole : getUserRoles()) {
@@ -127,7 +127,7 @@ public class UserRoleManager {
       artifact.getSmaMgr().getStateMgr().setAssignees(assignees);
    }
 
-   public void removeUserRole(UserRole userRole, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void removeUserRole(UserRole userRole, boolean persist) throws OseeCoreException, SQLException {
       Set<UserRole> roleItems = getUserRoles();
       roleItems.remove(userRole);
       saveRoleItems(roleItems, persist);
@@ -137,7 +137,7 @@ public class UserRoleManager {
       saveRoleItems(new HashSet<UserRole>(), persist);
    }
 
-   public String getTable() throws SQLException, MultipleAttributesExist {
+   public String getTable() throws OseeCoreException, SQLException {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles()) {
@@ -162,21 +162,21 @@ public class UserRoleManager {
       return builder.toString();
    }
 
-   public int getNumMajor(User user) throws SQLException, MultipleAttributesExist {
+   public int getNumMajor(User user) throws OseeCoreException, SQLException {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) x++;
       return x;
    }
 
-   public int getNumMinor(User user) throws SQLException, MultipleAttributesExist {
+   public int getNumMinor(User user) throws OseeCoreException, SQLException {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) x++;
       return x;
    }
 
-   public int getNumIssues(User user) throws SQLException, MultipleAttributesExist {
+   public int getNumIssues(User user) throws OseeCoreException, SQLException {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) x++;
@@ -191,7 +191,7 @@ public class UserRoleManager {
       this.enabled = enabled;
    }
 
-   public void rollupHoursSpentToReviewState(boolean persist) throws Exception {
+   public void rollupHoursSpentToReviewState(boolean persist) throws OseeCoreException, SQLException {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();

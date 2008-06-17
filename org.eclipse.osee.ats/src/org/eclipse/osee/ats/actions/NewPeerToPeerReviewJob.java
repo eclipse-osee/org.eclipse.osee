@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.actions;
 
+import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -43,7 +45,7 @@ public class NewPeerToPeerReviewJob extends Job {
          AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork()throws OseeCoreException, SQLException{
                peerToPeerReviewArtifact =
                      teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(againstState);
                peerToPeerReviewArtifact.persistAttributesAndRelations();
