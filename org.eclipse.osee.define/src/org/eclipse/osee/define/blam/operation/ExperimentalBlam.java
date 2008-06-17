@@ -13,7 +13,6 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -26,20 +25,37 @@ public class ExperimentalBlam extends AbstractBlam {
          "UPDATE osee_define_rel_link SET modification_id = 2 WHERE gamma_id = ?";
    private static final String UpdateTxsCurrent = "UPDATE osee_define_txs SET tx_current = 1 WHERE gamma_id = ?";
 
+   //   private static final String checkForOnBaselined = "Select * from "
+
+   int[] gammaIds =
+         new int[] {852176, 1806465, 1806464, 1806466, 1806468, 852190, 852191, 1543816, 1807037, 1806492, 1806481,
+               1806485, 1713318, 177456, 1806507, 177457, 177458, 177459, 177460, 177461, 177462, 177463, 1806499,
+               1806498, 1806497, 1806502, 1806501, 1806500, 1806522, 173862, 852192, 852199, 1611799, 1498880, 177449,
+               1495752, 177451, 1611800, 1806513, 177453, 177455, 1806516, 177454, 1575261, 223175, 1807087, 1807086,
+               1807085, 1807084, 1800592, 1164028, 1807088, 1807089, 3249936, 1575289, 1575288, 1575284, 1575281,
+               1575276, 1508988, 2848359, 1575272, 2848358, 2848361, 1508983, 2848360, 2848363, 1575268, 2848362,
+               1508979, 1575265, 1137539, 898640, 173020, 1806903, 174666, 1806908, 1806364, 1806904, 1806863, 1806650,
+               839426, 1812929, 1806391, 1806389, 1589156, 1806393, 264571, 1806392, 1589154, 1589155, 1806400, 264757,
+               1806412, 1806413, 1806414, 3198866, 1806411, 1812923, 1812922, 467177, 1806422, 1806417, 1812925,
+               1812924, 1806418, 1311395, 1482583, 1311387, 1806438, 1806244, 1806439, 1806245, 1806914, 1806246,
+               1806436, 1806247, 1806437, 2078493, 2078494, 1806243, 1806446, 1806252, 1806447, 1806444, 2092598,
+               1806445, 1806442, 1806443, 1806249, 1806440, 1806441, 1806251, 1806454, 1806453, 1806452, 1806451,
+               1953629, 1806450, 2080927, 1806449, 1806448, 1806463, 1806462, 1806461, 1806460, 1806459, 261366,
+               1806458, 1806457, 1806456, 261365};
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      int[] gammaIds = new int[Gamma1.gammaIds1.length + Gamma2.gammaIds2.length];
-      System.arraycopy(Gamma1.gammaIds1, 0, gammaIds, 0, Gamma1.gammaIds1.length);
-      System.arraycopy(Gamma2.gammaIds2, 0, gammaIds, Gamma1.gammaIds1.length, Gamma2.gammaIds2.length);
       List<Object[]> updateParameters = new ArrayList<Object[]>(gammaIds.length);
 
       for (int gammaId : gammaIds) {
          updateParameters.add(new Object[] {SQL3DataType.INTEGER, gammaId});
       }
 
-      ConnectionHandler.runPreparedUpdateBatch(UpdateRelationModType, updateParameters);
-      ConnectionHandler.runPreparedUpdateBatch(UpdateTxsCurrent, updateParameters);
+      //      StringBuilder sb 
+      //      
+      //      ConnectionHandler.runPreparedUpdateBatch(UpdateRelationModType, updateParameters);
+      //      ConnectionHandler.runPreparedUpdateBatch(UpdateTxsCurrent, updateParameters);
    }
 }
