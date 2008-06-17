@@ -46,7 +46,9 @@ public interface IAtsStateItem {
 
    public Collection<String> getIds() throws Exception;
 
-   public List<WorkPageService> getServices(SMAManager smaMgr) throws Exception;
+   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws Exception;
+
+   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws Exception;
 
    /**
     * @param smaMgr

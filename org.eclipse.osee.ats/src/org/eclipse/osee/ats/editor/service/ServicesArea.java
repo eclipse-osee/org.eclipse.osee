@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.SetAsDefaultBranchService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
-import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarServiceOld;
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
@@ -46,7 +45,8 @@ import org.eclipse.swt.widgets.Group;
 public class ServicesArea {
 
    private final SMAManager smaMgr;
-   private List<WorkPageService> services = new ArrayList<WorkPageService>();
+   private List<WorkPageService> sideBarServices = new ArrayList<WorkPageService>();
+   private List<WorkPageService> toolBarServices = new ArrayList<WorkPageService>();
    private ArrayList<Group> groups = new ArrayList<Group>();
    public static String STATISTIC_CATEGORY = "Statistics";
    public static String OPERATION_CATEGORY = "Operation";
@@ -57,93 +57,102 @@ public class ServicesArea {
    }
 
    public void dispose() {
-      for (WorkPageService service : services)
+      for (WorkPageService service : sideBarServices)
+         service.dispose();
+      for (WorkPageService service : toolBarServices)
          service.dispose();
    }
 
-   public void loadServices(AtsWorkPage page) throws Exception {
-      if (services.size() == 0) {
+   public void loadSidebarServices(AtsWorkPage page) throws Exception {
+      if (sideBarServices.size() == 0) {
          // Operations
-         services.add(new FavoriteOperation(smaMgr));
-         services.add(new SubscribedOperation(smaMgr));
-         services.add(new OpenLatestVersion(smaMgr));
-         services.add(new DebugOperations(smaMgr));
-         services.add(new PrivilegedEditService(smaMgr));
+         sideBarServices.add(new FavoriteOperation(smaMgr));
+         sideBarServices.add(new SubscribedOperation(smaMgr));
+         sideBarServices.add(new OpenLatestVersion(smaMgr));
+         sideBarServices.add(new DebugOperations(smaMgr));
+         sideBarServices.add(new PrivilegedEditService(smaMgr));
          // Services
-         services.add(new AtsAdminStat(smaMgr));
-         services.add(new TotalPercentCompleteStat(smaMgr));
-         services.add(new TotalEstimatedHoursStat(smaMgr));
-         services.add(new TotalHoursSpentStat(smaMgr));
-         services.add(new TargetedForVersionState(smaMgr));
-         services.add(new StatePercentCompleteStat(smaMgr));
-         services.add(new StateEstimatedHoursStat(smaMgr));
-         services.add(new StateHoursSpentStat(smaMgr));
-         services.add(new RemainingHoursStat(smaMgr));
-         services.add(new AddDecisionReviewService(smaMgr));
-         services.add(new AddPeerToPeerReviewService(smaMgr));
-         services.add(new BlockingReview(smaMgr));
-         // Toolbar Services
-         services.add(new ShowChangeReportToolbarService(smaMgr));
-         services.add(new ShowChangeReportToolbarServiceOld(smaMgr));
-         services.add(new OpenParent(smaMgr));
-         services.add(new EmailActionService(smaMgr));
-         services.add(new AddNoteOperation(smaMgr));
-         services.add(new ShowNotesOperation(smaMgr));
-         services.add(new OpenInAtsWorldOperation(smaMgr));
-         services.add(new OpenInArtifactEditorOperation(smaMgr));
-         services.add(new OpenInSkyWalkerOperation(smaMgr));
-         services.add(new OpenVersionArtifact(smaMgr));
-         services.add(new OpenTeamDefinition(smaMgr));
-         services.add(new CopyActionDetailsService(smaMgr));
+         sideBarServices.add(new AtsAdminStat(smaMgr));
+         sideBarServices.add(new TotalPercentCompleteStat(smaMgr));
+         sideBarServices.add(new TotalEstimatedHoursStat(smaMgr));
+         sideBarServices.add(new TotalHoursSpentStat(smaMgr));
+         sideBarServices.add(new TargetedForVersionState(smaMgr));
+         sideBarServices.add(new StatePercentCompleteStat(smaMgr));
+         sideBarServices.add(new StateEstimatedHoursStat(smaMgr));
+         sideBarServices.add(new StateHoursSpentStat(smaMgr));
+         sideBarServices.add(new RemainingHoursStat(smaMgr));
+         sideBarServices.add(new AddDecisionReviewService(smaMgr));
+         sideBarServices.add(new AddPeerToPeerReviewService(smaMgr));
+         sideBarServices.add(new BlockingReview(smaMgr));
          // Add page configured branchable state items
          if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
-            if (page.isAllowCreateBranch()) services.add(new CreateWorkingBranchService(smaMgr));
-            services.add(new ShowWorkingBranchService(smaMgr));
-            services.add(new SetAsDefaultBranchService(smaMgr));
-            services.add(new ShowChangeReportService(smaMgr));
-            services.add(new ShowMergeManagerService(smaMgr));
-            if (page.isAllowCommitBranch()) services.add(new CommitWorkingBranchService(smaMgr, false));
-            if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, true));
-            services.add(new DeleteWorkingBranch(smaMgr));
+            if (page.isAllowCreateBranch()) sideBarServices.add(new CreateWorkingBranchService(smaMgr));
+            sideBarServices.add(new ShowWorkingBranchService(smaMgr));
+            sideBarServices.add(new SetAsDefaultBranchService(smaMgr));
+            sideBarServices.add(new ShowChangeReportService(smaMgr));
+            sideBarServices.add(new ShowMergeManagerService(smaMgr));
+            if (page.isAllowCommitBranch()) {
+               sideBarServices.add(new CommitWorkingBranchService(smaMgr, false));
+            }
+            if (AtsPlugin.isAtsAdmin()) {
+               sideBarServices.add(new CommitWorkingBranchService(smaMgr, true));
+            }
+            sideBarServices.add(new DeleteWorkingBranch(smaMgr));
          }
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
-         if (page != null)
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
-               services.addAll(item.getServices(smaMgr));
-            }
-         // If page is null, this is a toolbar request for services, load all state items
-         else if (page == null) {
-            for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
-               services.addAll(item.getServices(smaMgr));
-            }
+         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+            sideBarServices.addAll(item.getSidebarServices(smaMgr));
          }
       }
    }
 
-   public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      try {
-         loadServices(page);
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-
-      Set<String> categories = new HashSet<String>();
-      for (WorkPageService service : services) {
-         if (service.getSidebarCategory() != null) categories.add(service.getSidebarCategory());
-      }
-      createServicesArea(comp, STATISTIC_CATEGORY, page, toolkit, section);
-      categories.remove(STATISTIC_CATEGORY);
-      createServicesArea(comp, OPERATION_CATEGORY, page, toolkit, section);
-      categories.remove(OPERATION_CATEGORY);
-      for (String category : categories) {
-         createServicesArea(comp, category, page, toolkit, section);
+   public void loadToolbarServices(AtsWorkPage atsWorkPage) throws Exception {
+      if (toolBarServices.size() == 0) {
+         // Toolbar Services
+         // Add page configured branchable state items
+         if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch())) {
+            if (atsWorkPage.isAllowCreateBranch()) {
+               sideBarServices.add(new CreateWorkingBranchService(smaMgr));
+            }
+            toolBarServices.add(new ShowMergeManagerService(smaMgr));
+            toolBarServices.add(new ShowChangeReportService(smaMgr));
+            toolBarServices.add(new ShowChangeReportToolbarServiceOld(smaMgr));
+         }
+         toolBarServices.add(new OpenParent(smaMgr));
+         toolBarServices.add(new EmailActionService(smaMgr));
+         toolBarServices.add(new AddNoteOperation(smaMgr));
+         toolBarServices.add(new ShowNotesOperation(smaMgr));
+         toolBarServices.add(new OpenInAtsWorldOperation(smaMgr));
+         toolBarServices.add(new OpenInArtifactEditorOperation(smaMgr));
+         toolBarServices.add(new OpenInSkyWalkerOperation(smaMgr));
+         toolBarServices.add(new OpenVersionArtifact(smaMgr));
+         toolBarServices.add(new OpenTeamDefinition(smaMgr));
+         toolBarServices.add(new CopyActionDetailsService(smaMgr));
+         for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
+            toolBarServices.addAll(item.getToolbarServices(smaMgr));
+         }
       }
    }
 
-   public void createToolbarServices(IToolBarManager toolbarManager) {
+   public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) throws Exception {
+      loadSidebarServices(page);
+      Set<String> categories = new HashSet<String>();
+      for (WorkPageService service : sideBarServices) {
+         if (service.getSidebarCategory() != null) categories.add(service.getSidebarCategory());
+      }
+      createSidebarServicesArea(comp, STATISTIC_CATEGORY, page, toolkit, section);
+      categories.remove(STATISTIC_CATEGORY);
+      createSidebarServicesArea(comp, OPERATION_CATEGORY, page, toolkit, section);
+      categories.remove(OPERATION_CATEGORY);
+      for (String category : categories) {
+         createSidebarServicesArea(comp, category, page, toolkit, section);
+      }
+   }
+
+   public void createToolbarServices(AtsWorkPage page, IToolBarManager toolbarManager) throws Exception {
       try {
-         loadServices(null);
-         for (final WorkPageService service : services) {
+         loadToolbarServices(page);
+         for (final WorkPageService service : toolBarServices) {
             try {
                Action action = service.createToolbarService();
                if (action != null) toolbarManager.add(action);
@@ -156,11 +165,11 @@ public class ServicesArea {
       }
    }
 
-   private void createServicesArea(Composite comp, String category, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   private void createSidebarServicesArea(Composite comp, String category, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
 
       // Determine services that are in this category and confirm that they should be displayed
       List<WorkPageService> displayServices = new ArrayList<WorkPageService>();
-      for (WorkPageService service : services)
+      for (WorkPageService service : sideBarServices)
          if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(category) && service.isShowSidebarService(page)) displayServices.add(service);
       if (displayServices.size() == 0) return;
 
@@ -181,7 +190,9 @@ public class ServicesArea {
    }
 
    public void refresh() {
-      for (WorkPageService stat : services)
+      for (WorkPageService stat : sideBarServices)
+         stat.refresh();
+      for (WorkPageService stat : toolBarServices)
          stat.refresh();
       for (Group group : groups)
          if (group != null && !group.isDisposed()) group.layout();

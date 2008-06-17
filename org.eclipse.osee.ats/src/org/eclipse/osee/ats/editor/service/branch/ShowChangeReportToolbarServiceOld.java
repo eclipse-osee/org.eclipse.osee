@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Donald G. Dunne
  */
 public class ShowChangeReportToolbarServiceOld extends WorkPageService implements IEventReceiver {
-   private Action action;
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
    // work
@@ -33,23 +32,25 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
       super(smaMgr);
    }
 
+   Action toolBarAction;
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
    @Override
    public Action createToolbarService() {
-      if (!isEnabled()) return null;
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+      toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performService();
          }
       };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      toolBarAction.setToolTipText(getName());
+      toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
       SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
-      return action;
+      refresh();
+      return toolBarAction;
    }
 
    /* (non-Javadoc)
@@ -76,7 +77,9 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
    @Override
    public void refresh() {
       super.refresh();
-      if (action != null) action.setEnabled(isEnabled());
+      if (toolBarAction != null) {
+         toolBarAction.setEnabled(isEnabled());
+      }
    }
 
    public void onEvent(Event event) {

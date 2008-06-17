@@ -474,6 +474,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             try {
                IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+               if (!selection.isEmpty() || selection.getFirstElement() == null) return false;
                Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
                return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
             } catch (Exception ex) {

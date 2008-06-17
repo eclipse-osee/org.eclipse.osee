@@ -74,6 +74,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private static String ACTION_ACTIONABLE_ITEMS = "Action Actionable Items: ";
    private Label origLabel, teamActionableItemLabel, actionActionableItemsLabel;
    private List<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
+   private AtsWorkPage currentAtsWorkPage;
    private ScrolledForm scrolledForm;
    private Integer HEADER_COMP_COLUMNS = 4;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
@@ -114,7 +115,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.refresh();
 
          ServicesArea toolbarArea = new ServicesArea(smaMgr);
-         toolbarArea.createToolbarServices(scrolledForm.getToolBarManager());
+         toolbarArea.createToolbarServices(currentAtsWorkPage, scrolledForm.getToolBarManager());
 
          OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
                scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
@@ -212,6 +213,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          AtsWorkPage atsWorkPage =
                (AtsWorkPage) new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
                      ATSXWidgetOptionResolver.getInstance());
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
          if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
             // Don't show completed or cancelled state if not currently those state
             if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
@@ -245,7 +247,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          job.schedule(500);
       }
    }
-
    private Control control = null;
    private SMAWorkFlowLogSection logSection;
 

@@ -76,9 +76,16 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getServices(org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getSidebarServices(org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public List<WorkPageService> getServices(SMAManager smaMgr) throws Exception {
+   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws Exception {
+      return EMPTY_SERVICES;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getToolbarServices(org.eclipse.osee.ats.editor.SMAManager, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws Exception {
       return EMPTY_SERVICES;
    }
 

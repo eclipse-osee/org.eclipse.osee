@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service.branch;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
@@ -80,6 +82,33 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       refresh();
    }
 
+   private Action toolBarAction;
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
+    */
+   @Override
+   public Action createToolbarService() {
+      toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         public void run() {
+            performService();
+         }
+      };
+      toolBarAction.setToolTipText(getName());
+      toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
+      refresh();
+      return toolBarAction;
+   }
+
+   @Override
+   public void dispose() {
+      super.dispose();
+      SkynetEventManager.getInstance().unRegisterAll(this);
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
@@ -105,9 +134,11 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
    public void refresh() {
       if (link != null && !link.isDisposed()) {
          boolean enabled = isEnabled();
-         link.setText(enabled ? "Show Change Report" : "Show Change Report\n(no changes)");
          link.setEnabled(enabled);
          link.setUnderlined(enabled);
+      }
+      if (toolBarAction != null) {
+         toolBarAction.setEnabled(isEnabled());
       }
    }
 

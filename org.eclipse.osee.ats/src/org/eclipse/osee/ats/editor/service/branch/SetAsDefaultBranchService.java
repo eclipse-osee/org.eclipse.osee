@@ -105,7 +105,6 @@ public class SetAsDefaultBranchService extends WorkPageService implements IEvent
    public void refresh() {
       if (link != null && !link.isDisposed()) {
          boolean enabled = isEnabled();
-         link.setText(enabled ? getName() : getName() + "\n(no changes)");
          link.setEnabled(enabled);
          link.setUnderlined(enabled);
       }
