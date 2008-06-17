@@ -22,7 +22,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
@@ -30,12 +33,16 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -131,6 +138,20 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
 
    }
 
+   private ToolItem openAssociatedArtifactItem;
+
+   private void refreshAssociatedArtifactItem(Branch sourceBranch) {
+      try {
+         Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+         if (branchAssociatedArtifact != null) {
+            openAssociatedArtifactItem.setEnabled(true);
+            openAssociatedArtifactItem.setImage(branchAssociatedArtifact.getImage());
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+   }
+
    public void createTaskActionBar(Composite parent) {
 
       Composite bComp = new Composite(parent, SWT.NONE);
@@ -153,6 +174,29 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
+
+      openAssociatedArtifactItem = new ToolItem(toolBar, SWT.PUSH);
+      openAssociatedArtifactItem.setToolTipText("Open Associated Artifact");
+      openAssociatedArtifactItem.setEnabled(false);
+      openAssociatedArtifactItem.setImage(SkynetGuiPlugin.getInstance().getImage("laser_16_16.gif"));
+      openAssociatedArtifactItem.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               Branch sourceBranch = conflicts[0].getSourceBranch();
+               Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+               if (branchAssociatedArtifact instanceof IATSArtifact) {
+                  OseeAts.openATSArtifact(branchAssociatedArtifact);
+                  return;
+               } else if (!branchAssociatedArtifact.equals(SkynetAuthentication.getUser(UserEnum.NoOne))) {
+                  ArtifactEditor.editArtifact(branchAssociatedArtifact);
+                  return;
+               }
+               AWorkbench.popup("ERROR", "Unknown branch association");
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
+      });
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change_source.gif"));
@@ -381,6 +425,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
          }
       };
       Jobs.startJob(job);
+      refreshAssociatedArtifactItem(sourceBranch);
    }
 
    public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
