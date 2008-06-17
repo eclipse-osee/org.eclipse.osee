@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -273,10 +274,26 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    }
 
    private void updateWidgetEnablements() {
-      chkCaseSensitive.setEnabled(radIndexSearch.getSelection());
-      chkPartialSearch.setEnabled(radIndexSearch.getSelection());
-      btnSearch.setEnabled(!txtSearch.getText().trim().equals(""));
-      branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
+      if (radIndexSearch != null && radIndexSearch.isDisposed() != true) {
+         boolean radIndexSearchValue = radIndexSearch.getSelection();
+
+         if (chkCaseSensitive != null && chkCaseSensitive.isDisposed() != true) {
+            chkCaseSensitive.setEnabled(radIndexSearchValue);
+         }
+         if (chkPartialSearch != null && chkPartialSearch.isDisposed() != true) {
+            chkPartialSearch.setEnabled(radIndexSearchValue);
+         }
+      }
+      if (txtSearch != null && txtSearch.isDisposed() != true && btnSearch != null && btnSearch.isDisposed() != true) {
+         String value = txtSearch.getText();
+         if (value != null) {
+            value = value.trim();
+         }
+         btnSearch.setEnabled(Strings.isValid(value));
+      }
+      if (branchLabel != null && branchLabel.isDisposed() != true) {
+         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
+      }
    }
 
    public void handleEvent(Event event) {
