@@ -474,8 +474,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             try {
                IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-               Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-               return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
+               if (!selection.isEmpty()) {
+                  Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+                  return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
+               }
+               return false;
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, false);
             }
@@ -640,8 +643,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.checkObjectPermission(
-                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.FULLACCESS) || OseeProperties.isDeveloper());
+            if (!selection.isEmpty()) {
+               return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.checkObjectPermission(
+                     SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.FULLACCESS) || OseeProperties.isDeveloper());
+            }
+            return false;
          }
       });
    }
