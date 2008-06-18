@@ -28,14 +28,14 @@ import org.eclipse.swt.graphics.Image;
 public class RelationChangeIcons {
    private static final String BASE_IMAGE_STRING = "relate";
    private static final SkynetActivator plugin = SkynetActivator.getInstance();
-   private static boolean imagesInitialized;
+   private static boolean imagesInitialized = false;
 
    public static Image getImage(ChangeType changeType, ModificationType modType) {
       checkImageRegistry();
       return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
    }
 
-   private static void checkImageRegistry() {
+   private synchronized static void checkImageRegistry() {
       if (!imagesInitialized) {
          imagesInitialized = true;
 
@@ -60,5 +60,4 @@ public class RelationChangeIcons {
          plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
       }
    }
-
 }
