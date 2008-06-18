@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * Common cache storage for ATS configuration artifacts:<br>
@@ -42,7 +44,7 @@ public class AtsCache {
                VersionArtifact.ARTIFACT_NAME);
 
    public static void cache(Artifact artifact) throws OseeCoreException {
-      if (cacheTypes.contains(artifact.getArtifactTypeName())) instance.cache.add(artifact);
+         if (cacheTypes.contains(artifact.getArtifactTypeName())) instance.cache.add(artifact);
    }
 
    public static void deCache(Artifact artifact) {
