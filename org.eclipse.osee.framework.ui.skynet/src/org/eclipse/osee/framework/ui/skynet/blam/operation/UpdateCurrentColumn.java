@@ -64,8 +64,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
    private static final String UPDATE_TXS_CURRENT_TO_0 =
          "update osee_define_txs set tx_current = 0 where gamma_id = ? and transaction_id = ?";
-   private static final String UPDATE_TXS_CURRENT_TO_1 =
-         "update osee_define_txs set tx_current = 1 where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT =
          "update osee_define_txs set tx_current = ? where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT_FROM_NULL =
@@ -87,11 +85,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "select count(1) from osee_define_txs txs1, osee_define_rel_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
 
    private static final String INNER_SELECT_ARTIFACT_MOD_TYPE =
-         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 " + "where txs1.gamma_id = artv1.gamma_id";
+         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 where txs1.gamma_id = artv1.gamma_id";
    private static final String INNER_SELECT_ATTRIBUTE_MOD_TYPE =
-         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 " + "where txs1.gamma_id = attr1.gamma_id";
+         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 where txs1.gamma_id = attr1.gamma_id";
    private static final String INNER_SELECT_RELATION_MOD_TYPE =
-         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 " + "where txs1.gamma_id = rel1.gamma_id";
+         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 where txs1.gamma_id = rel1.gamma_id";
 
    private static final String UPDATE_TXS_MOD_TYPE_SINGLE_CALL =
          "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
@@ -280,7 +278,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          executeQuery(monitor, connection, new IRowProcessor() {
             public void processRow(ResultSet resultSet) throws Exception {
                int modType = resultSet.getInt(3);
-               int tx_current_value = 1;
+               int tx_current_value = TxChange.CURRENT.getValue();
                if (modType == ModificationType.DELETED.getValue()) {
                   tx_current_value = TxChange.DELETED.getValue();
                }
