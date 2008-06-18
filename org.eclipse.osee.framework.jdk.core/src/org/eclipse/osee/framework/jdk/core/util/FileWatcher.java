@@ -95,18 +95,22 @@ public class FileWatcher extends TimerTask {
                entry.setValue(latestLastModified);
                if (storedLastModified == 0) {
                   // created
+                  assert entry.getKey().exists() : "file doesn't exist";
                   fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.CREATED));
                } else if (latestLastModified == 0) {
                   // deleted
+                  assert !entry.getKey().exists() : "file still exist";
                   fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.DELETED));
                } else {
                   // modified
+                  assert entry.getKey().exists() : "file doesn't exist";
                   fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.MODIFIED));
                }
 
             }
          }
          if (!fileChangeEvents.isEmpty()) {
+            // there is at least one file change event, notify listeners
             for (IFileWatcherListener listener : listeners) {
                listener.filesModified(fileChangeEvents);
             }
@@ -118,7 +122,7 @@ public class FileWatcher extends TimerTask {
 
    public static void main(String[] args) {
       final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-      FileWatcher watcher = new FileWatcher(5, TimeUnit.SECONDS);
+      FileWatcher watcher = new FileWatcher(2, TimeUnit.SECONDS);
       watcher.addListener(new IFileWatcherListener() {
 
          @Override
