@@ -11,11 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,8 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.schema.Table;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -45,24 +43,24 @@ public class DeleteTransactionJob extends Job {
          "update osee_define_tx_details SET osee_comment = replace(osee_comment, ?, ?) WHERE osee_comment like ?";
 
    private static final String SELECT_GAMMAS_FROM_TRANSACTION =
-         "SELECT txs1.gamma_id FROM osee_define_txs txs1, osee_join_transaction txj1 WHERE " + //
-         "txs1.transaction_id = txj1.transaction_id AND txj1.query_id = ? " + //
-         "AND NOT EXISTS " + // 
-         "(SELECT 'x' FROM osee_define_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id <> txs2.transaction_id)";
+         "SELECT txs1.gamma_id FROM osee_define_txs txs1, osee_join_transaction txj1 WHERE txs1.transaction_id = txj1.transaction_id AND txj1.query_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_define_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id <> txs2.transaction_id)";
 
    private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
          "DELETE FROM osee_define_tx_details WHERE transaction_id IN (SELECT txj1.transaction_id FROM osee_join_transaction txj1 WHERE txj1.query_id = ?)";
 
-   private final static String DELTE_TEMPLATE =
-         "DELETE FROM %s WHERE gamma_id IN (SELECT txj1.gamma_id FROM osee_join_transaction txj1 where txj1.query_id = ?)";
+   private static final String DELETE_POSTFIX =
+         " outerTb where outerTb.gamma_id = (SELECT txj1.gamma_id from osee.osee_join_transaction txj1 WHERE outerTb.gamma_id = txj1.gamma_id AND txj1.query_id = ?)";
 
-   private static final List<String> DELETE_ITEMS_SQL = new ArrayList<String>();
-   static {
-      Table[] itemTables = new Table[] {ARTIFACT_VERSION_TABLE, RELATION_LINK_VERSION_TABLE, ATTRIBUTE_VERSION_TABLE};
-      for (Table tb : itemTables) {
-         DELETE_ITEMS_SQL.add(String.format(DELTE_TEMPLATE, tb));
-      }
-   }
+   private static final String UPDATE_TX_CURRENT =
+         "UPDATE osee.osee_define_txs txs1 SET tx_current = 1 where txs1.mod_type <> 3 and txs1.gamma_id IN (SELECT txj1.gamma_id from osee.osee_join_transaction txj1 WHERE txj1.gamma_id = txs1.gamma_id AND txj1.query_id = ?)";
+
+   private static final String UPDATE_TX_CURRENT_DELETED_ITEMS =
+         "UPDATE osee.osee_define_txs txs1 SET tx_current = 2 where txs1.mod_type = 3 and txs1.gamma_id IN (SELECT txj1.gamma_id from osee.osee_join_transaction txj1 WHERE txj1.gamma_id = txs1.gamma_id AND txj1.query_id = ?)";
+
+   private final static String DELETE_ARTIFACT_VERSIONS = "DELETE FROM osee_define_artifact_version " + DELETE_POSTFIX;
+   private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_define_attribute " + DELETE_POSTFIX;
+   private final static String DELETE_RELATIONS = "DELETE FROM osee_define_rel_link " + DELETE_POSTFIX;
+
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private final int[] txIdsToDelete;
@@ -72,7 +70,7 @@ public class DeleteTransactionJob extends Job {
     * @param transactionIdNumber
     */
    public DeleteTransactionJob(int... txIdsToDelete) {
-      super("Delete transactions: " + txIdsToDelete);
+      super(String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)));
       this.txIdsToDelete = txIdsToDelete;
    }
 
@@ -84,7 +82,7 @@ public class DeleteTransactionJob extends Job {
       IStatus returnStatus = Status.CANCEL_STATUS;
       try {
          DeleteTransactionTx deleteTransactionTx = new DeleteTransactionTx(monitor);
-         deleteTransactionTx.handleTxWork();
+         deleteTransactionTx.execute();
          returnStatus = Status.OK_STATUS;
       } catch (Exception ex) {
          returnStatus = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
@@ -94,7 +92,7 @@ public class DeleteTransactionJob extends Job {
       return returnStatus;
    }
 
-   private final class DeleteTransactionTx extends AbstractDbTxTemplate {
+   private final class DeleteTransactionTx extends DbTransaction {
       private IProgressMonitor monitor;
 
       public DeleteTransactionTx(IProgressMonitor monitor) {
@@ -105,26 +103,28 @@ public class DeleteTransactionJob extends Job {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws Exception {
+      protected void handleTxWork(Connection connection) throws Exception {
          TransactionJoinQuery txsToDeleteQuery = JoinUtility.createTransactionJoinQuery();
          TransactionJoinQuery previousTxsQuery = JoinUtility.createTransactionJoinQuery();
          try {
             monitor.beginTask(getName(), getTotalWork());
             List<ObjectPair<Integer, TransactionId>> fromToTxData =
                   getTransactionPairs(monitor, txIdsToDelete, txsToDeleteQuery, previousTxsQuery);
-            txsToDeleteQuery.store();
-            previousTxsQuery.store();
+            txsToDeleteQuery.store(connection);
+            previousTxsQuery.store(connection);
 
-            setChildBranchBaselineTxs(monitor, fromToTxData);
+            setChildBranchBaselineTxs(connection, monitor, fromToTxData);
 
-            deleteItemEntriesForTransactions(monitor, txsToDeleteQuery.getQueryId());
+            deleteItemEntriesForTransactions(connection, monitor, txsToDeleteQuery.getQueryId());
 
-            setPreviousTxToCurrent(monitor, previousTxsQuery.getQueryId());
+            setPreviousTxToCurrent(connection, monitor, previousTxsQuery.getQueryId());
 
-            deleteTransactionsFromTxDetails(monitor, txsToDeleteQuery.getQueryId());
+            deleteTransactionsFromTxDetails(connection, monitor, txsToDeleteQuery.getQueryId());
          } finally {
-            txsToDeleteQuery.delete();
-            previousTxsQuery.delete();
+            if (connection != null && connection.isClosed() != true) {
+               txsToDeleteQuery.delete(connection);
+               previousTxsQuery.delete(connection);
+            }
          }
       }
 
@@ -135,7 +135,7 @@ public class DeleteTransactionJob extends Job {
       private List<ObjectPair<Integer, TransactionId>> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery, TransactionJoinQuery previousTxsQuery) throws BranchDoesNotExist, TransactionDoesNotExist, SQLException {
          List<ObjectPair<Integer, TransactionId>> fromToTxData = new ArrayList<ObjectPair<Integer, TransactionId>>();
          for (int index = 0; index < txsToDelete.length; index++) {
-            monitor.subTask(String.format("Fetching Previous Tx Info: [%s of %s]", index, txsToDelete.length));
+            monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));
             int fromTx = txsToDelete[index];
             TransactionId previous =
                   transactionIdManager.getPriorTransaction(transactionIdManager.getPossiblyEditableTransactionId(fromTx));
@@ -151,31 +151,38 @@ public class DeleteTransactionJob extends Job {
          return fromToTxData;
       }
 
-      private void deleteTransactionsFromTxDetails(IProgressMonitor monitor, int queryId) throws SQLException {
+      private void deleteTransactionsFromTxDetails(Connection connection, IProgressMonitor monitor, int queryId) throws SQLException {
          monitor.subTask("Deleting Tx");
-         ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS,
+               SQL3DataType.INTEGER, queryId);
          monitor.worked(1);
       }
 
-      private void deleteItemEntriesForTransactions(IProgressMonitor monitor, int queryId) throws SQLException {
+      private void deleteItemEntriesForTransactions(Connection connection, IProgressMonitor monitor, int queryId) throws SQLException {
          monitor.subTask("Deleting Tx Items");
          TransactionJoinQuery joinQuery = null;
          try {
-            joinQuery = findAllGammasForTransaction(queryId);
-            for (String deleteSql : DELETE_ITEMS_SQL) {
-               ConnectionHandler.runPreparedUpdate(deleteSql, SQL3DataType.INTEGER, joinQuery.getQueryId());
-            }
+            joinQuery = findAllGammasForTransaction(connection, queryId);
+            int deleteQueryId = joinQuery.getQueryId();
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_VERSIONS, SQL3DataType.INTEGER,
+                  deleteQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTES, SQL3DataType.INTEGER, deleteQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATIONS, SQL3DataType.INTEGER, deleteQueryId);
          } finally {
-            joinQuery.delete();
+            if (connection != null && connection.isClosed() != true) {
+               joinQuery.delete(connection);
+            }
          }
          monitor.worked(1);
       }
 
-      private TransactionJoinQuery findAllGammasForTransaction(int queryId) throws SQLException {
+      private TransactionJoinQuery findAllGammasForTransaction(Connection connection, int queryId) throws SQLException {
          ConnectionHandlerStatement chStmt = null;
          TransactionJoinQuery joinQuery = JoinUtility.createTransactionJoinQuery();
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_GAMMAS_FROM_TRANSACTION, SQL3DataType.INTEGER, queryId);
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(connection, SELECT_GAMMAS_FROM_TRANSACTION, SQL3DataType.INTEGER,
+                        queryId);
             while (chStmt.next()) {
                joinQuery.add(chStmt.getRset().getInt("gamma_id"), -1);
             }
@@ -186,19 +193,26 @@ public class DeleteTransactionJob extends Job {
          return joinQuery;
       }
 
-      private void setPreviousTxToCurrent(IProgressMonitor monitor, int queryId) throws SQLException {
+      private void setPreviousTxToCurrent(Connection connection, IProgressMonitor monitor, int queryId) throws SQLException {
          monitor.subTask("Updating Previous Tx to Current");
          TransactionJoinQuery joinQuery = null;
          try {
-            joinQuery = findAllGammasForTransaction(queryId);
+            joinQuery = findAllGammasForTransaction(connection, queryId);
+            joinQuery.store(connection);
 
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_CURRENT, SQL3DataType.INTEGER,
+                  joinQuery.getQueryId());
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_CURRENT_DELETED_ITEMS, SQL3DataType.INTEGER,
+                  joinQuery.getQueryId());
          } finally {
-            joinQuery.delete();
+            if (connection != null && connection.isClosed() != true) {
+               joinQuery.delete(connection);
+            }
          }
          monitor.worked(1);
       }
 
-      private void setChildBranchBaselineTxs(IProgressMonitor monitor, List<ObjectPair<Integer, TransactionId>> transactions) throws SQLException {
+      private void setChildBranchBaselineTxs(Connection connection, IProgressMonitor monitor, List<ObjectPair<Integer, TransactionId>> transactions) throws SQLException {
          List<Object[]> data = new ArrayList<Object[]>();
          monitor.subTask("Update Baseline Txs for Child Branches");
          for (ObjectPair<Integer, TransactionId> entry : transactions) {
@@ -210,7 +224,7 @@ public class DeleteTransactionJob extends Job {
             }
          }
          if (data.size() > 0) {
-            ConnectionHandler.runPreparedUpdate(UPDATE_TXS_DETAILS_COMMENT, data);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
          }
          monitor.worked(1);
       }

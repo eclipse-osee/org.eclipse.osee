@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -75,21 +76,29 @@ public class JoinUtility {
          return queryId;
       }
 
-      public void store() throws SQLException {
+      public void store(Connection connection) throws SQLException {
          List<Object[]> data = new ArrayList<Object[]>();
          for (IJoinRow joinArray : entries) {
             data.add(joinArray.toArray());
          }
-         ConnectionHandler.runPreparedUpdateBatch(insertSql, data);
+         ConnectionHandler.runPreparedUpdate(connection, insertSql, data);
       }
 
-      public int delete() throws SQLException {
+      public int delete(Connection connection) throws SQLException {
          int updated = 0;
          if (queryId != -1) {
-            updated = ConnectionHandler.runPreparedUpdateReturnCount(deleteSql, SQL3DataType.INTEGER, queryId);
+            updated = ConnectionHandler.runPreparedUpdate(connection, deleteSql, SQL3DataType.INTEGER, queryId);
          }
          entries.clear();
          return updated;
+      }
+
+      public void store() throws SQLException {
+         store(ConnectionHandler.getConnection());
+      }
+
+      public int delete() throws SQLException {
+         return delete(ConnectionHandler.getConnection());
       }
    }
 
