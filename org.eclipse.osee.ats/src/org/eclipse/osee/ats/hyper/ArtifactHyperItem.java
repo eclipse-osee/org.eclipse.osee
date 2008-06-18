@@ -28,13 +28,13 @@ public class ArtifactHyperItem extends HyperViewItem {
    @Override
    public String getToolTip() {
       String tt =
-            "Type: " + artifact.getArtifactTypeNameSuppressException() + "\n\n" + "Title: " + artifact.getDescriptiveName();
+            "Type: " + artifact.getArtifactTypeName() + "\n\n" + "Title: " + artifact.getDescriptiveName();
       return tt;
    }
 
    @Override
    public String getTitle() {
-      return artifact.getArtifactTypeNameSuppressException() + "\n" + artifact.getDescriptiveName();
+      return artifact.getArtifactTypeName() + "\n" + artifact.getDescriptiveName();
    }
 
    @Override

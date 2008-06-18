@@ -483,7 +483,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       });
 
       Artifact artifact = getEditorInput().getArtifact();
-      artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeNameSuppressException() + "\"  Guid: " + artifact.getGuid() + "  HRID: " + artifact.getHumanReadableId() + "  Art Id: " + artifact.getArtId());
+      artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"  Guid: " + artifact.getGuid() + "  HRID: " + artifact.getHumanReadableId() + "  Art Id: " + artifact.getArtId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;

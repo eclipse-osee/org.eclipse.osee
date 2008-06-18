@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,23 +51,18 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       if (attributeHolder == null) return false;
       if (attributeHolder.size() < 1) return false;
       Object obj = attributeHolder.iterator().next();
-      try {
-         if (obj instanceof Artifact) {
-            String type = ((Artifact) obj).getArtifactTypeName();
-            for (Object object : attributeHolder) {
-               if (object instanceof Artifact) {
-                  if (!type.equals(((Artifact) object).getArtifactTypeName())) {
-                     AWorkbench.popup("ERROR",
-                           "All artifacts must be of the same " + "type when edited in an date editor.");
-                     return false;
-                  }
-               } else
+      if (obj instanceof Artifact) {
+         String type = ((Artifact) obj).getArtifactTypeName();
+         for (Object object : attributeHolder) {
+            if (object instanceof Artifact) {
+               if (!type.equals(((Artifact) object).getArtifactTypeName())) {
+                  AWorkbench.popup("ERROR",
+                        "All artifacts must be of the same " + "type when edited in an date editor.");
                   return false;
-            }
+               }
+            } else
+               return false;
          }
-
-      } catch (SQLException ex) {
-         OSEELog.logException(EmbeddedDateAttributeEditor.class, ex, true);
       }
       Date date = new Date();
       if (obj instanceof Artifact) {

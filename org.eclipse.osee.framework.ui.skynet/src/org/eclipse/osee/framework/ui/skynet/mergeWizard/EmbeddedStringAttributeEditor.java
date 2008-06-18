@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -59,21 +58,17 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
       if (attributeHolders == null) return false;
       if (attributeHolders.size() < 1) return false;
       Object obj = attributeHolders.iterator().next();
-      try {
-         if (obj instanceof Artifact) {
-            String type = ((Artifact) obj).getArtifactTypeName();
-            for (Object object : attributeHolders) {
-               if (object instanceof Artifact) {
-                  if (!type.equals(((Artifact) object).getArtifactTypeName())) {
-                     AWorkbench.popup("ERROR", TYPE_ERROR);
-                     return false;
-                  }
-               } else
+      if (obj instanceof Artifact) {
+         String type = ((Artifact) obj).getArtifactTypeName();
+         for (Object object : attributeHolders) {
+            if (object instanceof Artifact) {
+               if (!type.equals(((Artifact) object).getArtifactTypeName())) {
+                  AWorkbench.popup("ERROR", TYPE_ERROR);
                   return false;
-            }
+               }
+            } else
+               return false;
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
       }
       editor = new EmbeddedStringEditor(PROMPT);
       editor.setValidationErrorString(VALIDATION_ERROR);

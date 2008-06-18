@@ -42,7 +42,7 @@ public class SMAWorkFlowLogSection extends SMAWorkFlowSection {
     */
    public SMAWorkFlowLogSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr)throws OseeCoreException, SQLException{
       super(parent, toolkit, style, new AtsLogWorkPage(
-            smaMgr.getSma().getArtifactTypeNameSuppressException() + " History"), smaMgr);
+            smaMgr.getSma().getArtifactTypeName() + " History"), smaMgr);
    }
 
    @Override

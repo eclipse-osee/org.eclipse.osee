@@ -76,11 +76,11 @@ public class GroupExplorerItem implements IEventReceiver {
 
    public boolean isUniversalGroup() {
       if (artifact == null || artifact.isDeleted()) return false;
-      return artifact.getArtifactTypeNameSuppressException().equals("Universal Group");
+      return artifact.getArtifactTypeName().equals("Universal Group");
    }
 
    public String getTableArtifactType() {
-      return artifact.getArtifactTypeNameSuppressException();
+      return artifact.getArtifactTypeName();
    }
 
    public String getTableArtifactName() {

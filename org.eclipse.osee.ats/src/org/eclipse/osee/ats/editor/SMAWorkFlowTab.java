@@ -429,7 +429,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          Label label =
                toolkit.createLabel(
                      comp,
-                     "This is a historical version of this " + smaMgr.getSma().getArtifactTypeNameSuppressException() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
+                     "This is a historical version of this " + smaMgr.getSma().getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }

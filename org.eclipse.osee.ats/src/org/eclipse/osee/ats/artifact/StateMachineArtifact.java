@@ -99,11 +99,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       atsLog = new ATSLog(this);
       atsNote = new ATSNote(this);
       try {
-            preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
-            if (smaMgr.getOriginator() == null)
-               preSaveOriginator = SkynetAuthentication.getUser();
-            else
-               preSaveOriginator = smaMgr.getOriginator();
+         preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+         if (smaMgr.getOriginator() == null)
+            preSaveOriginator = SkynetAuthentication.getUser();
+         else
+            preSaveOriginator = smaMgr.getOriginator();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
@@ -133,7 +133,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public String getArtifactSuperTypeName() {
-      return getArtifactTypeNameSuppressException();
+      return getArtifactTypeName();
    }
 
    /* (non-Javadoc)
@@ -437,7 +437,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public String getWorldViewType() throws OseeCoreException, SQLException {
-      return getArtifactTypeNameSuppressException();
+      return getArtifactTypeName();
    }
 
    public String getWorldViewTitle() throws OseeCoreException, SQLException {

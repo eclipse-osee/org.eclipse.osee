@@ -495,7 +495,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
 
       mm.insertBefore(MENU_GROUP_PRE, emailAction);
       emailAction.setEnabled(getSelectedArtifacts().size() == 1);
-      emailAction.setText("Email " + ((getSelectedArtifacts().size() == 1) ? getSelectedArtifacts().iterator().next().getArtifactTypeNameSuppressException() : ""));
+      emailAction.setText("Email " + ((getSelectedArtifacts().size() == 1) ? getSelectedArtifacts().iterator().next().getArtifactTypeName() : ""));
 
       mm.insertBefore(MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);

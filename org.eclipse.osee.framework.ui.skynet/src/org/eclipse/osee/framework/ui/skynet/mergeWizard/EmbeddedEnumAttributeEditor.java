@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,22 +55,17 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       if (attributeHolder == null) return false;
       if (attributeHolder.size() < 1) return false;
       Object obj = attributeHolder.iterator().next();
-      try {
-         if (obj instanceof Artifact) {
-            String type = ((Artifact) obj).getArtifactTypeName();
-            for (Object object : attributeHolder) {
-               if (object instanceof Artifact) {
-                  if (!type.equals(((Artifact) object).getArtifactTypeName())) {
-                     AWorkbench.popup("ERROR", ERROR_PROMPT);
-                     return false;
-                  }
-               } else
+      if (obj instanceof Artifact) {
+         String type = ((Artifact) obj).getArtifactTypeName();
+         for (Object object : attributeHolder) {
+            if (object instanceof Artifact) {
+               if (!type.equals(((Artifact) object).getArtifactTypeName())) {
+                  AWorkbench.popup("ERROR", ERROR_PROMPT);
                   return false;
-            }
+               }
+            } else
+               return false;
          }
-
-      } catch (SQLException ex) {
-         OSEELog.logException(EmbeddedEnumAttributeEditor.class, ex, true);
       }
       editor = new EmbeddedEnumEditor(PROMPT);
       editor.createEditor(composite);

@@ -132,7 +132,7 @@ public class SMARelationsComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel()throws OseeCoreException, SQLException{
-      if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeNameSuppressException() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
+      if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
    public void refresh()throws OseeCoreException, SQLException{

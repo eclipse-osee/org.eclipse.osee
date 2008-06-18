@@ -287,16 +287,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return guid;
    }
 
-   public String getArtifactTypeName() throws SQLException {
+   public String getArtifactTypeName() {
       return artifactType.getName();
-   }
-
-   public String getArtifactTypeNameSuppressException() {
-      try {
-         return getArtifactTypeName();
-      } catch (SQLException ex) {
-         return ex.getLocalizedMessage();
-      }
    }
 
    /**

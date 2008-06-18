@@ -169,7 +169,7 @@ public class Overview {
       this.html.append(AHTML.newline());
 
       if (PreviewStyle.contains(styles, PreviewStyle.HYPEROPEN)) this.html.append("<A HREF=\"" + AtsHttpServerRequest.getInstance().getUrl(
-            sma) + "\">" + "Start OSEE and select here to open this " + sma.getArtifactTypeNameSuppressException() + " in ATS.</A>");
+            sma) + "\">" + "Start OSEE and select here to open this " + sma.getArtifactTypeName() + " in ATS.</A>");
    }
 
    public void addRelationsBlock(ATSArtifact artifact) {
@@ -208,7 +208,7 @@ public class Overview {
          builder.append("<TABLE BORDER=\"1\" align=\"center\" cellspacing=\"1\" cellpadding=\"3%\" width=\"" + width + "%\"><THEAD><TR><TH>Type</TH>" + "<TH>Name</TH></THEAD></TR>");
          for (Artifact art : arts) {
             builder.append("<TR>");
-            builder.append("<TD>" + art.getArtifactTypeNameSuppressException() + "</TD>");
+            builder.append("<TD>" + art.getArtifactTypeName() + "</TD>");
             builder.append("<TD>" + Overview.getOpenHyperlinkHtml(art) + "</TD>");
             builder.append("</TR>");
          }

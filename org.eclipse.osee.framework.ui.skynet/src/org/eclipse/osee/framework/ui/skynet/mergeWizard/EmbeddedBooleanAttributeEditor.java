@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -50,22 +49,18 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
       if (attributeHolder == null) return false;
       if (attributeHolder.size() < 1) return false;
       Object obj = attributeHolder.iterator().next();
-      try {
-         if (obj instanceof Artifact) {
-            String type = ((Artifact) obj).getArtifactTypeName();
-            for (Object object : attributeHolder) {
-               if (object instanceof Artifact) {
-                  if (!type.equals(((Artifact) object).getArtifactTypeName())) {
-                     AWorkbench.popup("ERROR",
-                           "All artifacts must be of the same type when " + "edited in a boolean editor.");
-                     return false;
-                  }
-               } else
+      if (obj instanceof Artifact) {
+         String type = ((Artifact) obj).getArtifactTypeName();
+         for (Object object : attributeHolder) {
+            if (object instanceof Artifact) {
+               if (!type.equals(((Artifact) object).getArtifactTypeName())) {
+                  AWorkbench.popup("ERROR",
+                        "All artifacts must be of the same type when " + "edited in a boolean editor.");
                   return false;
-            }
+               }
+            } else
+               return false;
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(EmbeddedBooleanAttributeEditor.class, ex, true);
       }
       editor = new EmbeddedBooleanEditor("Select a value for the " + attributeName);
       editor.createEditor(composite, gd);

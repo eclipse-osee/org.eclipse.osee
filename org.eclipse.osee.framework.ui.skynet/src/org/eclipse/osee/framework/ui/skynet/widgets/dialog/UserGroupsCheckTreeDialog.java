@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -49,11 +48,7 @@ public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
       }
 
       public String getText(Object arg0) {
-         try {
-            return ((Artifact) arg0).getDescriptiveName() + " - (" + ((Artifact) arg0).getArtifactTypeName() + ")";
-         } catch (SQLException ex) {
-            return "Exception: " + ex.getLocalizedMessage();
-         }
+         return ((Artifact) arg0).getDescriptiveName() + " - (" + ((Artifact) arg0).getArtifactTypeName() + ")";
       }
 
       public void addListener(ILabelProviderListener arg0) {
