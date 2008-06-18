@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.report;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -79,7 +78,7 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       try {
          for (TeamDefinitionArtifact teamDef : TeamDefinitionArtifact.getTeamDefinitions(Active.Both))
             objs.add(teamDef);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       teamDefList.setInput(objs);

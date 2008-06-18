@@ -99,11 +99,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       atsLog = new ATSLog(this);
       atsNote = new ATSNote(this);
       try {
-         preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
-         if (smaMgr.getOriginator() == null)
-            preSaveOriginator = SkynetAuthentication.getUser();
-         else
-            preSaveOriginator = smaMgr.getOriginator();
+            preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
+            if (smaMgr.getOriginator() == null)
+               preSaveOriginator = SkynetAuthentication.getUser();
+            else
+               preSaveOriginator = smaMgr.getOriginator();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
@@ -908,7 +908,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return artTypeNames;
    }
 
-   public static List<Artifact> getAllSMATypeArtifacts() throws SQLException {
+   public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException, SQLException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : getAllSMATypeNames()) {
          result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchPersistenceManager.getAtsBranch()));
@@ -916,7 +916,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return result;
    }
 
-   public static List<Artifact> getAllTeamWorkflowArtifacts() throws SQLException {
+   public static List<Artifact> getAllTeamWorkflowArtifacts() throws OseeCoreException, SQLException {
       List<Artifact> result = new ArrayList<Artifact>();
       for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
          result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchPersistenceManager.getAtsBranch()));

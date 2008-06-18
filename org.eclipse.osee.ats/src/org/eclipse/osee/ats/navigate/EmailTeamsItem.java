@@ -62,7 +62,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
       if (teamDefs == null || teamDefs.size() == 0) return;
       Set<String> emails = new HashSet<String>();
@@ -84,7 +84,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       AWorkbench.popup("Complete", "Configured emails openened in local email client.");
    }
 
-   public Collection<TeamDefinitionArtifact> getTeamDefinitions() throws SQLException {
+   public Collection<TeamDefinitionArtifact> getTeamDefinitions() throws OseeCoreException, SQLException {
       if (teamDef != null) {
          return Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, true);
       }

@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -143,8 +144,12 @@ public class BranchPersistenceManager {
       return KeyedBranchCache.getInstance().getKeyedBranch(keyname);
    }
 
-   public static Branch getAtsBranch() throws SQLException {
-      return getCommonBranch();
+   public static Branch getAtsBranch() throws OseeCoreException {
+      try {
+         return getCommonBranch();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    public static List<Branch> getBranches() throws SQLException {

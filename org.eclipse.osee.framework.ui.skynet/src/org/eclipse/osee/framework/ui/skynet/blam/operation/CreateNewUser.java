@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -140,7 +139,7 @@ public class CreateNewUser extends AbstractBlam {
          groupStr = groupStr.replaceFirst(",$", "");
          widgetXml +=
                "<XWidget xwidgetType=\"XList(" + groupStr + ")\" displayName=\"Groups\" defaultValue=\"Everyone\"/>";
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       //

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.changeReport;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,7 +35,7 @@ public class ChangeRepolrt2ClickListener implements IDoubleClickListener {
          if (backingObject instanceof ArtifactChange) {
             try {
                ArtifactEditor.editArtifact(((ArtifactChange) backingObject).getArtifact());
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
             }
          }

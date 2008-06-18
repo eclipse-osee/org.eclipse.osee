@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
@@ -53,21 +54,21 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       this.groupType = groupType;
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws SQLException {
+   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws OseeCoreException, SQLException {
       List<GroupType> groupTypes = Arrays.asList(groupType);
       Set<Artifact> groupOptions = new HashSet<Artifact>();
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
          for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
-            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(
-                  art, PermissionEnum.READ)) groupOptions.add(art);
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(art,
+                  PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
          for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
-            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(
-                  art, PermissionEnum.READ)) groupOptions.add(art);
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.checkObjectPermission(art,
+                  PermissionEnum.READ)) groupOptions.add(art);
          }
       }
       return groupOptions;
@@ -80,8 +81,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Set<Artifact> groupOptions =
-            getEmailGroupsAndUserGroups(SkynetAuthentication.getUser(), groupType);
+      Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(SkynetAuthentication.getUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
       dialog.setTitle("Select Groups to Email");
       if (dialog.open() == 0) {

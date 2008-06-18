@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.IRevisionChange;
@@ -241,7 +242,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
                   }
                }
                return txt;
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, false);
                return ex.getLocalizedMessage();
             }
@@ -276,7 +277,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
       return "";
    }
 
-   private String getChangeType(ArtifactChange artifactChange) throws SQLException {
+   private String getChangeType(ArtifactChange artifactChange) throws OseeCoreException, SQLException {
       // Compare using artids cause a historical artifact is NOT equal to a current artifact
       if ((artifactChange.getModType() == ModificationType.CHANGE) && attributeModifiedArtifactIds != null && !attributeModifiedArtifactIds.contains(artifactChange.getArtifact().getArtId())) return artifactChange.getModType().getDisplayName() + " Relation Only";
       return artifactChange.getModType().getDisplayName();

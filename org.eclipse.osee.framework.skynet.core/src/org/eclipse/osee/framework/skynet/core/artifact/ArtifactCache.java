@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -31,6 +36,9 @@ public class ArtifactCache {
    private final CompositeKeyHashMap<String, Branch, Artifact> keyedArtifactCache =
          new CompositeKeyHashMap<String, Branch, Artifact>(10);
 
+   private final HashCollection<String, Artifact> staticIdArtifactCache =
+         new HashCollection<String, Artifact>(true, HashSet.class, 100);
+
    private static final ArtifactCache instance = new ArtifactCache();
 
    private ArtifactCache() {
@@ -41,21 +49,49 @@ public class ArtifactCache {
     * 
     * @param artifact
     */
-   static void cache(Artifact artifact) {
-      if (artifact.isLive()) {
-         instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
-         instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
-      } else {
-         instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
-         instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+   static void cache(Artifact artifact) throws OseeCoreException {
+      try {
+         if (artifact.isLive()) {
+            instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
+            instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
+            for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+               instance.staticIdArtifactCache.put(staticId, artifact);
+            }
+         } else {
+            instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
+            instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+         }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
    }
 
-   static void deCache(Artifact artifact) {
-      instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
-      instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
-      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
-      instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
+   static void deCache(Artifact artifact) throws OseeCoreException {
+      try {
+         instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+         instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+         instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
+         instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
+         for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+            instance.staticIdArtifactCache.removeValue(staticId, artifact);
+         }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
+
+   public static Collection<Artifact> getArtifactsByStaticId(String staticId) {
+      return instance.staticIdArtifactCache.getValues(staticId);
+   }
+
+   public static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Collection<Artifact> cachedArts = instance.staticIdArtifactCache.getValues(staticId);
+      if (cachedArts == null) return artifacts;
+      for (Artifact artifact : cachedArts) {
+         if (artifact.getBranch().equals(branch)) artifacts.add(artifact);
+      }
+      return artifacts;
    }
 
    public static Artifact getHistorical(Integer artId, Integer transactionNumber) {

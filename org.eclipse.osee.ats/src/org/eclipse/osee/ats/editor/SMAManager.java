@@ -48,8 +48,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -211,11 +209,11 @@ public class SMAManager {
       return sma.getTargetedForVersion();
    }
 
-   public boolean promptChangeAssignees()throws OseeCoreException, SQLException{
+   public boolean promptChangeAssignees() throws OseeCoreException, SQLException {
       return promptChangeAssignees(Arrays.asList(sma));
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas)throws OseeCoreException, SQLException{
+   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException, SQLException {
       for (StateMachineArtifact sma : smas) {
          SMAManager smaMgr = new SMAManager(sma);
          if (smaMgr.isCompleted()) {
@@ -264,11 +262,11 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, OseeCoreException {
       return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, persist);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : smas) {
          SMAManager smaMgr = new SMAManager(teamArt);
@@ -309,20 +307,16 @@ public class SMAManager {
       if (result != 0) {
          return false;
       }
-      try {
-         if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork()throws OseeCoreException, SQLException{
-                  promptChangeVersionHelper(smas, vld, persist);
-               }
-            };
-            txWrapper.execute();
-         } else {
-            promptChangeVersionHelper(smas, vld, persist);
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Prompt Change Version Version Exception", ex, false);
+      if (persist) {
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            @Override
+            protected void handleTxWork() throws OseeCoreException, SQLException {
+               promptChangeVersionHelper(smas, vld, persist);
+            }
+         };
+         txWrapper.execute();
+      } else {
+         promptChangeVersionHelper(smas, vld, persist);
       }
       return true;
    }
@@ -360,7 +354,7 @@ public class SMAManager {
          if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork()throws OseeCoreException, SQLException{
+               protected void handleTxWork() throws OseeCoreException, SQLException {
 
                   for (TeamWorkFlowArtifact team : teams) {
                      if (team.getChangeType() != ald.getSelection()) {
@@ -402,7 +396,7 @@ public class SMAManager {
          if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork()throws OseeCoreException, SQLException{
+               protected void handleTxWork() throws OseeCoreException, SQLException {
                   for (TeamWorkFlowArtifact team : teams) {
                      if (team.getPriority() != ald.getSelection()) {
                         team.setPriority(ald.getSelection());
@@ -420,15 +414,15 @@ public class SMAManager {
       }
    }
 
-   public boolean promptChangeStatus(boolean persist)throws OseeCoreException, SQLException{
+   public boolean promptChangeStatus(boolean persist) throws OseeCoreException, SQLException {
       return promptChangeStatus(null, persist);
    }
 
-   public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist)throws OseeCoreException, SQLException{
+   public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist) throws OseeCoreException, SQLException {
       return promptChangeStatus(options, Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist)throws OseeCoreException, SQLException{
+   public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException, SQLException {
       try {
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
@@ -694,7 +688,7 @@ public class SMAManager {
       return Artifacts.commaArts(stateMgr.getAssignees());
    }
 
-   public Image getAssigneeImage()throws OseeCoreException, SQLException{
+   public Image getAssigneeImage() throws OseeCoreException, SQLException {
       return getSma().getAssigneeImage();
    }
 
@@ -784,7 +778,7 @@ public class SMAManager {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                @Override
-               protected void handleTxWork()throws OseeCoreException, SQLException{
+               protected void handleTxWork() throws OseeCoreException, SQLException {
                   transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
                         cancelReason);
                }
@@ -804,7 +798,7 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason)throws OseeCoreException, SQLException{
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws OseeCoreException, SQLException {
       // Log transition
       if (toPage.isCancelledPage()) {
          getSma().getLog().addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);

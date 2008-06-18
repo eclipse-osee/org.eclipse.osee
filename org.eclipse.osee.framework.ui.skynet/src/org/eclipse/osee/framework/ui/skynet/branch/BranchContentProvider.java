@@ -194,7 +194,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    // so they will just
    // use the snapshot that the first concurrently running job produced.
    @SuppressWarnings("unchecked")
-   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws SQLException, TransactionDoesNotExist {
+   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws OseeCoreException, SQLException {
       String key = calculateKey(input);
       Object[] changeReport = null;
       Date changeTime = null;
@@ -242,7 +242,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    }
 
    @SuppressWarnings("unchecked")
-   private Object[] computeChangeReport(ChangeReportInput input) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private Object[] computeChangeReport(ChangeReportInput input) throws OseeCoreException, SQLException {
       Object[] items;
       if (input.isEmptyChange()) {
          items = EMPTY_REPORT_CHILDREN;
@@ -275,12 +275,12 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       return items;
    }
 
-   public static Object[] getArtifactChanges(ChangeReportInput input) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static Object[] getArtifactChanges(ChangeReportInput input) throws OseeCoreException, SQLException {
       return getArtifactChanges(input.getBaseParentTransactionId(), input.getBaseTransaction(),
             input.getToTransaction());
    }
 
-   private static Object[] getArtifactChanges(TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException, SQLException {
       TransactionId priorTransaction;
       try {
          priorTransaction = transactionIdManager.getPriorTransaction(toTransaction);
@@ -290,7 +290,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       return getArtifactChanges(null, priorTransaction, toTransaction);
    }
 
-   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException, SQLException {
       TransactionId headParentTransaction =
             baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
                   baseParentTransaction.getBranch()).getValue();

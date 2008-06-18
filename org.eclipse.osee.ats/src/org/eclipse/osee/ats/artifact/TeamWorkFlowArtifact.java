@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -191,7 +190,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       this.setSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, OseeCoreException {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");

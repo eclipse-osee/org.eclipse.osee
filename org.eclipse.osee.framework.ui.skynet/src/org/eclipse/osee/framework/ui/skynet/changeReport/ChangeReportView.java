@@ -405,7 +405,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                         return 1;
                      else
                         return -1;
-                  } catch (SQLException ex) {
+                  } catch (Exception ex) {
                      // do nothing since this is comparator, errors will be too many
                   }
                   return getComparator().compare(artChg1.getName(), artChg2.getName());
@@ -636,7 +636,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             try {
                selectedArtifact = selectedItem.getArtifact();
                ArtifactEditor.editArtifact(selectedArtifact);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
             }
          }
@@ -706,7 +706,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      artifactTransferData.add(artifact);
                      textTransferData.add(artifact.getDescriptiveName());
                   }
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   OSEELog.logException(getClass(), ex, true);
                }
             }
@@ -726,7 +726,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          public void widgetSelected(SelectionEvent e) {
             try {
                performCompression();
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
             }
          }
@@ -771,7 +771,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       });
    }
 
-   private void performCompression() throws SQLException {
+   private void performCompression() throws OseeCoreException, SQLException {
       IStructuredSelection selection = (IStructuredSelection) changeTable.getSelection();
       final Collection<Integer> artifacts = new LinkedList<Integer>();
       Branch aBranch = null;
@@ -996,7 +996,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
                      writePermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.WRITE);
                   }
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   readPermission = false;
                   writePermission = false;
                   OSEELog.logException(getClass(), ex, false);
@@ -1008,7 +1008,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          try {
             artifactSelected =
                   obj1 instanceof ArtifactChange && obj2 == null && ((ArtifactChange) obj1).getArtifact() != null;
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, false);
          }
 
@@ -1062,7 +1062,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                // else {
                // showFinalWordVersionMenuItem.setText(SHOW_FINAL_WORD_VERSION_TXT);
                // }
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                compressWordAttributes.setEnabled(false);
                copyMenuItem.setEnabled(false);
                diffMenuItem.setEnabled(false);
@@ -1148,7 +1148,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       }
 
       @Override
-      public Artifact[] getArtifacts() throws SQLException {
+      public Artifact[] getArtifacts() throws OseeCoreException, SQLException {
          IStructuredSelection selection = (IStructuredSelection) changeTable.getSelection();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 

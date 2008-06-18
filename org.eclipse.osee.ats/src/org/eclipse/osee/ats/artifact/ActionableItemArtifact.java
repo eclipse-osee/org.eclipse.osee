@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -53,17 +53,16 @@ public class ActionableItemArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Active active) throws SQLException {
-      ActiveArtifactTypeSearch search =
-            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getAtsBranch());
-      return search.getArtifacts(ActionableItemArtifact.class);
+   public static Set<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
+      return ActiveArtifactTypeSearch.getArtifacts(ARTIFACT_NAME, active, BranchPersistenceManager.getAtsBranch(),
+            ActionableItemArtifact.class);
    }
 
    public static String getNotActionableItemError(ActionableItemArtifact aia) {
       return "Action can not be written against Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
-   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException, MultipleAttributesExist {
+   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException, OseeCoreException {
       ActionableItemArtifact topAi = getTopActionableItem();
       if (topAi == null) return EMPTY_SET;
       return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
@@ -74,22 +73,21 @@ public class ActionableItemArtifact extends Artifact {
       return getArtifacts(AtsRelation.TeamLead_Lead, User.class);
    }
 
-   public static ActionableItemArtifact getTopActionableItem() throws SQLException {
-      return ArtifactStaticIdSearch.getSingletonArtifactOrException(ActionableItemArtifact.ARTIFACT_NAME,
-            TOP_AI_STATIC_ID, BranchPersistenceManager.getAtsBranch(), ActionableItemArtifact.class);
+   public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
+      return (ActionableItemArtifact) StaticIdQuery.getSingletonArtifactOrException(
+            ActionableItemArtifact.ARTIFACT_NAME, TOP_AI_STATIC_ID, BranchPersistenceManager.getAtsBranch());
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems() throws SQLException {
-      ActiveArtifactTypeSearch search =
-            new ActiveArtifactTypeSearch(ARTIFACT_NAME, Active.Active, BranchPersistenceManager.getAtsBranch());
-      return search.getArtifacts(ActionableItemArtifact.class);
+   public static Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
+      return ActiveArtifactTypeSearch.getArtifacts(ARTIFACT_NAME, Active.Active,
+            BranchPersistenceManager.getAtsBranch(), ActionableItemArtifact.class);
    }
 
    public boolean isActionable() throws IllegalStateException, SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames)throws OseeCoreException, SQLException{
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException, SQLException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          aias.add(getSoleActionableItem(actionableItemName));
@@ -104,7 +102,7 @@ public class ActionableItemArtifact extends Artifact {
     * @return
     * @throws SQLException
     */
-   public static ActionableItemArtifact getSoleActionableItem(String name)throws OseeCoreException, SQLException{
+   public static ActionableItemArtifact getSoleActionableItem(String name) throws OseeCoreException, SQLException {
       return (ActionableItemArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name,
             AtsPlugin.getAtsBranch());
    }

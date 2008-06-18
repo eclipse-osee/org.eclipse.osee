@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
@@ -140,7 +141,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the artifact. If the modtype is deleted, this will be the version just prior to deletion.
     * @throws SQLException
     */
-   public Artifact getArtifact() throws SQLException {
+   public Artifact getArtifact() throws OseeCoreException, SQLException {
       TransactionId transactionId =
             (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
 
@@ -150,7 +151,7 @@ public class ArtifactChange extends RevisionChange {
       return artifact;
    }
 
-   private Artifact loadArtifact(TransactionId transactionId, Artifact artifact, int artId) throws SQLException {
+   private Artifact loadArtifact(TransactionId transactionId, Artifact artifact, int artId) throws OseeCoreException, SQLException {
       // the memo is checked on the cached artifact in case our original artifact was editable,
       // modified, and no longer on the transaction
       try {
@@ -199,7 +200,7 @@ public class ArtifactChange extends RevisionChange {
       boolean hasConflictedArtifact = false;
       try {
          hasConflictedArtifact = getConflictingModArtifact() != null;
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return hasConflictedArtifact;
@@ -208,7 +209,7 @@ public class ArtifactChange extends RevisionChange {
    /**
     * @return Returns the conflictingModArtifact.
     */
-   public Artifact getConflictingModArtifact() throws SQLException {
+   public Artifact getConflictingModArtifact() throws OseeCoreException, SQLException {
       if (conflictingArtTransactionId == null) return null;
       if (conflictingModArtifact == null && conflictingArtTransactionId.getTransactionNumber() != 0) {
          conflictingModArtifact = loadArtifact(conflictingArtTransactionId, conflictingModArtifact, conflictingArtId);

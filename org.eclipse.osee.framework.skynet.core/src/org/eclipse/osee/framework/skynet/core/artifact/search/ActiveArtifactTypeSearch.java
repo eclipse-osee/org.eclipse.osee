@@ -24,10 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ActiveArtifactTypeSearch {
 
-   private final String artifactTypeName;
-   private final Active active;
-   private final Branch branch;
-
    /**
     * Search for given artifactType with active attribute set as specified
     * 
@@ -35,15 +31,8 @@ public class ActiveArtifactTypeSearch {
     * @param active
     * @param branch
     */
-   public ActiveArtifactTypeSearch(String artifactTypeName, Active active, Branch branch) {
-      super();
-      this.artifactTypeName = artifactTypeName;
-      this.active = active;
-      this.branch = branch;
-   }
-
    @SuppressWarnings("unchecked")
-   public <A extends Artifact> Set<A> getArtifacts(Class<A> clazz) {
+   public static <A extends Artifact> Set<A> getArtifacts(String artifactTypeName, Active active, Branch branch, Class<A> clazz) {
       Set<A> results = new HashSet<A>();
 
       try {

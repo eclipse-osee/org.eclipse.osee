@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
             options =
                   ConfigurationPersistenceManager.getValidEnumerationAttributeValues(xWidgetData.getStorageName(),
                         BranchPersistenceManager.getAtsBranch());
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());
          }

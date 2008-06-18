@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -49,8 +49,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkRulesFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
       }
       validateATSHeadingParent(art);
       return art;
@@ -58,8 +58,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkPagesFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
       }
       validateATSHeadingParent(art);
       return art;
@@ -67,8 +67,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkWidgetsFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
       }
       validateATSHeadingParent(art);
       return art;
@@ -76,8 +76,8 @@ public class AtsConfig {
 
    public Artifact getOrCreateWorkFlowsFolderArtifact() throws OseeCoreException, SQLException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
       }
       validateATSHeadingParent(art);
       return art;
@@ -87,9 +87,9 @@ public class AtsConfig {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), ActionableItemArtifact.ARTIFACT_NAME,
                   ACTIONABLE_ITEMS_HEADING);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(
             ActionableItemArtifact.TOP_AI_STATIC_ID)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, ActionableItemArtifact.TOP_AI_STATIC_ID);
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, ActionableItemArtifact.TOP_AI_STATIC_ID);
       }
       validateATSHeadingParent(art);
       return (ActionableItemArtifact) art;
@@ -98,9 +98,9 @@ public class AtsConfig {
    public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws OseeCoreException, SQLException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
-      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(
             TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
-         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
+         art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
       }
       validateATSHeadingParent(art);
       return (TeamDefinitionArtifact) art;

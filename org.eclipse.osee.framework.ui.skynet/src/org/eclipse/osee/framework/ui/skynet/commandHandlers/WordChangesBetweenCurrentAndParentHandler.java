@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -91,7 +90,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
             boolean conflictedWordArtifactSelected =
                   modifiedWordArtifactSelected && artifactChange.getChangeType() == ChangeType.CONFLICTING;
             isEnabled = readPermission && conflictedWordArtifactSelected;
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);
          }
       }

@@ -239,15 +239,15 @@ public class ArtifactPersistenceManager {
     * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
     * @throws SQLException
     */
-   public Artifact getArtifact(String guid, TransactionId transactionId) throws SQLException {
+   public Artifact getArtifact(String guid, TransactionId transactionId) throws SQLException, OseeCoreException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid, -1, true);
    }
 
-   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException {
+   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException, OseeCoreException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, null, artId, false);
    }
 
-   private Artifact getArtifactInternal(TransactionId transactionId, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException {
+   private Artifact getArtifactInternal(TransactionId transactionId, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
       // First try to acquire the artifact from cache
       Artifact artifact;
       Object data;
@@ -674,7 +674,9 @@ public class ArtifactPersistenceManager {
                gammaIdsBaseline.delete();
             }
          }
+
          ConnectionHandler.runPreparedUpdate(REMOVE_EMPTY_TRANSACTION_DETAILS, SQL3DataType.INTEGER, branchId);
+
       }
 
       @Override

@@ -313,7 +313,7 @@ public class RevisionManager implements IEventReceiver {
     * @return - Collection<RevisionChange>
     * @throws SQLException
     */
-   public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws SQLException {
+   public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws OseeCoreException, SQLException {
       Collection<RevisionChange> changes =
             getTransactionChanges(OUTGOING, artChange.getFromTransactionId(), artChange.getToTransactionId(),
                   artChange.getArtifact().getArtId(), artifactNameDescriptorCache);

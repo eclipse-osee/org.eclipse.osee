@@ -318,7 +318,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                AWorkbench.getActivePage().closeEditor(this, false);
                return;
             }
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
       } else {

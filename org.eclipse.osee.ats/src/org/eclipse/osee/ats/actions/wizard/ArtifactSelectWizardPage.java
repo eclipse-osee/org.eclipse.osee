@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -76,15 +75,14 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(ConfigurationPersistenceManager.getValidArtifactTypes(
-               BranchPersistenceManager.getAtsBranch()));
+         artTypeList.setInput(ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactType desc = (ArtifactType) selection.getFirstElement();
                try {
                   artList.setInput(ArtifactQuery.getArtifactsFromType(desc, BranchPersistenceManager.getAtsBranch()));
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);
                }
             }
@@ -93,8 +91,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
             @SuppressWarnings("unchecked")
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-               return getComparator().compare(((ArtifactType) e1).getName(),
-                     ((ArtifactType) e2).getName());
+               return getComparator().compare(((ArtifactType) e1).getName(), ((ArtifactType) e2).getName());
             }
          });
 
@@ -136,7 +133,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                selectedArtifact = (Artifact) selection.getFirstElement();
             }
          });
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
 

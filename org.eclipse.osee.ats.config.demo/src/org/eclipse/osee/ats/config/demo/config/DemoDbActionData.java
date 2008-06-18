@@ -12,6 +12,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
 
 /**
@@ -52,7 +53,7 @@ public class DemoDbActionData {
       return userComms;
    }
 
-   public Collection<ActionableItemArtifact> getActionableItems() throws SQLException {
+   public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException, SQLException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
          for (ActionableItemArtifact aia : ActionableItemArtifact.getActionableItems()) {

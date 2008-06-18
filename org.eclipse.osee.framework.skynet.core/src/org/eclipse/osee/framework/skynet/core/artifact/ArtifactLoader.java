@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -193,7 +192,7 @@ public final class ArtifactLoader {
                   insertParameters.size()), new Exception());
    }
 
-   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws BranchDoesNotExist, SQLException {
+   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws OseeCoreException, SQLException {
       int artifactId = rSet.getInt("art_id");
       Branch branch = BranchPersistenceManager.getInstance().getBranch(rSet.getInt("branch_id"));
 

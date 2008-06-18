@@ -38,8 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -82,7 +80,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public void resetAttributesOffChildren() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public void resetAttributesOffChildren() throws SQLException, OseeCoreException {
       resetActionItemsOffChildren();
       resetChangeTypeOffChildren();
       resetPriorityOffChildren();
@@ -135,7 +133,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
-   private Result resetActionItemsOffChildren() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   private Result resetActionItemsOffChildren() throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
          if (!(new SMAManager(team)).isCancelled()) aias.addAll(team.getActionableItemsDam().getActionableItems());

@@ -40,10 +40,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -242,7 +242,7 @@ public class LoadAIsAndTeamsAction extends Action {
                         teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
          }
          for (String staticId : staticIds) {
-            teamDefArt.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
+            teamDefArt.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
          }
 
          teamDefArt.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
@@ -309,7 +309,7 @@ public class LoadAIsAndTeamsAction extends Action {
                         BranchPersistenceManager.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
-               aia.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
+               aia.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, staticId);
             }
             for (User user : leads) {
                aia.addRelation(AtsRelation.TeamLead_Lead, user);

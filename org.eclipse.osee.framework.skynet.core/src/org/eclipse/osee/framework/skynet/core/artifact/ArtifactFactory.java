@@ -69,7 +69,7 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, boolean active) {
+   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, boolean active) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
 
       artifact.setArtId(artId);

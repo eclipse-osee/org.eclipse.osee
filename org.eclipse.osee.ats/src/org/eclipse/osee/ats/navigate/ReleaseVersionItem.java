@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -55,7 +56,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
       if (teamDefHoldingVersions == null) return;
       try {
@@ -112,7 +113,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws SQLException {
+   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException, SQLException {
       if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {

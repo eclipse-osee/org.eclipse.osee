@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -37,26 +36,24 @@ public class ShowPreviewHandler extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-		ISelectionProvider selectionProvider = AWorkbench.getActivePage()
-				.getActivePart().getSite().getSelectionProvider();
+      ISelectionProvider selectionProvider =
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 
-		if (selectionProvider != null
-				&& selectionProvider.getSelection() instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider
-					.getSelection();
+      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
 
-			List<ArtifactChange> mySelectedArtifactChangeList = Handlers
-					.getArtifactChangesFromStructuredSelection(structuredSelection);
-			for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
-				Artifact selectedArtifact;
-				try {
-					selectedArtifact = mySelectedArtifactChange.getArtifact();
-					ArtifactEditor.editArtifact(selectedArtifact);
-				} catch (SQLException ex) {
-					OSEELog.logException(getClass(), ex, true);
-				}
-			}
-		}
-		return null;
-	}
+         List<ArtifactChange> mySelectedArtifactChangeList =
+               Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+         for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
+            Artifact selectedArtifact;
+            try {
+               selectedArtifact = mySelectedArtifactChange.getArtifact();
+               ArtifactEditor.editArtifact(selectedArtifact);
+            } catch (Exception ex) {
+               OSEELog.logException(getClass(), ex, true);
+            }
+         }
+      }
+      return null;
+   }
 }

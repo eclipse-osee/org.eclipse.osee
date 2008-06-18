@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -137,7 +136,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             }
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
       }
 

@@ -20,8 +20,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -39,7 +37,7 @@ public class XActionableItemsDam extends XTextDam {
       this.sma = sma;
    }
 
-   public Set<ActionableItemArtifact> getActionableItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Set<ActionableItemArtifact> getActionableItems() throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (String guid : getActionableItemGuids()) {
          ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch()));
@@ -47,7 +45,7 @@ public class XActionableItemsDam extends XTextDam {
       return ais;
    }
 
-   public String getActionableItemsStr()throws OseeCoreException, SQLException{
+   public String getActionableItemsStr() throws OseeCoreException, SQLException {
       return Artifacts.commaArts(getActionableItems());
    }
 
@@ -64,7 +62,7 @@ public class XActionableItemsDam extends XTextDam {
       sma.deleteAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
-   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> existingAias = getActionableItems();
 
       // Remove non-selected items
