@@ -67,27 +67,28 @@ public class Xml {
 
       for (int index = 0; index < text.length(); index++) {
          chr = text.charAt(index);
-
          if (chr == '&') {
             startIndex = index;
             endIndex = text.indexOf(';', startIndex) + 1;
-
-            String entityReference = text.substring(startIndex, endIndex);
-
-            if (entityReference.equals("&amp;"))
-               strB.append('&');
-            else if (entityReference.equals("&lt;"))
-               strB.append('<');
-            else if (entityReference.equals("&gt;"))
-               strB.append('>');
-            else if (entityReference.equals("&nbsp;"))
-               strB.append(' ');
-            else if (entityReference.equals("&quot;"))
-               strB.append('"');
-            else
-               throw new IllegalArgumentException("unknown entity reference: " + text.substring(startIndex, endIndex));
-
-            index = endIndex - 1;
+            if (endIndex > startIndex && endIndex < (startIndex + 6)) {
+               String entityReference = text.substring(startIndex, endIndex);
+               if (entityReference.equals("&amp;"))
+                  strB.append('&');
+               else if (entityReference.equals("&lt;"))
+                  strB.append('<');
+               else if (entityReference.equals("&gt;"))
+                  strB.append('>');
+               else if (entityReference.equals("&nbsp;"))
+                  strB.append(' ');
+               else if (entityReference.equals("&quot;"))
+                  strB.append('"');
+               else
+                  throw new IllegalArgumentException(
+                        "unknown entity reference: " + text.substring(startIndex, endIndex));
+               index = endIndex - 1;
+            } else {
+               strB.append(chr);
+            }
          } else {
             strB.append(chr);
          }
