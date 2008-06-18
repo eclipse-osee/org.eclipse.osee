@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -25,11 +26,14 @@ public class DeleteTransaction extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      for (int transactionId : Lib.stringToIntegerList(variableMap.getString("Transaction List"))) {
-         Job job = new DeleteTransactionJob(transactionId);
-         Jobs.startJob(job);
-         job.join();
+      List<Integer> txs = Lib.stringToIntegerList(variableMap.getString("Transaction List"));
+      int[] txIds = new int[txs.size()];
+      for (int index = 0; index < txs.size(); index++) {
+         txIds[index] = txs.get(index);
       }
+      Job job = new DeleteTransactionJob(txIds);
+      Jobs.startJob(job);
+      job.join();
    }
 
    /*
