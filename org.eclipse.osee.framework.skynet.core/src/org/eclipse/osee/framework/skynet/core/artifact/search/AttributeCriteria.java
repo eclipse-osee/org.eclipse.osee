@@ -219,7 +219,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    }
 
    public void cleanUp() throws SQLException {
-      joinQuery.delete();
+      if (joinQuery != null) {
+         joinQuery.delete();
+      }
    }
 
 }
