@@ -64,8 +64,8 @@ public abstract class DbTransaction {
       } finally {
          if (connection != null) {
             connection.setAutoCommit(true);
+            connection.close();
          }
-         connection.close();
          handleTxFinally();
       }
    }
