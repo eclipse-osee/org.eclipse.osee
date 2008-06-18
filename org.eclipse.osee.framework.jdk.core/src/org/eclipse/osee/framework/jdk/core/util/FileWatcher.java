@@ -19,7 +19,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class FileWatcher extends TimerTask {
    private final long interval;
@@ -32,22 +32,51 @@ public class FileWatcher extends TimerTask {
       interval = unit.toMillis(time);
    }
 
+   /**
+    * Starts the file watcher monitoring of the file system
+    */
    public void start() {
       timer.schedule(this, interval, interval);
    }
 
-   public synchronized Long addFile(File file) {
-      return filesToWatch.put(file, file.lastModified());
+   /**
+    * adds a {@link File} to the files to be monitored. This method can be called before or after the {@link #start()}
+    * method is called.
+    * 
+    * @param file
+    */
+   public synchronized void addFile(File file) {
+      filesToWatch.put(file, file.lastModified());
    }
 
+   /**
+    * removes a {@link File} from the set of files to be monitored. This method can be called before or after the
+    * {@link #start()} method is called.
+    * 
+    * @param file
+    * @return returns the last know timestamp of the file before it was removed or null if it was never being monitored
+    *         in the first place
+    */
    public synchronized Long removeFile(File file) {
       return filesToWatch.remove(file);
    }
 
+   /**
+    * registers a listener who will be notified of file change events. This method can be called before or after the
+    * {@link #start()} method is called.
+    * 
+    * @param listener
+    */
    public synchronized void addListener(IFileWatcherListener listener) {
       listeners.add(listener);
    }
 
+   /**
+    * unregisters a listener from receiving file change events. This method can be called before or after the
+    * {@link #start()} method is called.
+    * 
+    * @param listener
+    */
    public synchronized void removeListener(IFileWatcherListener listener) {
       listeners.remove(listener);
    }
@@ -58,28 +87,28 @@ public class FileWatcher extends TimerTask {
    @Override
    public synchronized void run() {
       try {
-         LinkedList<FileChangeEvent> changedFiles = new LinkedList<FileChangeEvent>();
+         LinkedList<FileChangeEvent> fileChangeEvents = new LinkedList<FileChangeEvent>();
          for (Map.Entry<File, Long> entry : filesToWatch.entrySet()) {
             Long latestLastModified = entry.getKey().lastModified();
-            Long storedLastModifiedValue = entry.getValue();
-            if (!storedLastModifiedValue.equals(latestLastModified)) {
+            Long storedLastModified = entry.getValue();
+            if (!storedLastModified.equals(latestLastModified)) {
                entry.setValue(latestLastModified);
-               if (storedLastModifiedValue == 0) {
+               if (storedLastModified == 0) {
                   // created
-                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.CREATED));
+                  fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.CREATED));
                } else if (latestLastModified == 0) {
                   // deleted
-                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.DELETED));
+                  fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.DELETED));
                } else {
                   // modified
-                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.MODIFIED));
+                  fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.MODIFIED));
                }
 
             }
          }
-         if (!changedFiles.isEmpty()) {
+         if (!fileChangeEvents.isEmpty()) {
             for (IFileWatcherListener listener : listeners) {
-               listener.filesModified(changedFiles);
+               listener.filesModified(fileChangeEvents);
             }
          }
       } catch (Exception ex) {
@@ -94,7 +123,6 @@ public class FileWatcher extends TimerTask {
 
          @Override
          public void filesModified(Collection<FileChangeEvent> events) {
-            System.out.println("\nchanges detected in:");
             for (FileChangeEvent event : events) {
                System.out.println(event.getChangeType().name() + ": " + event.getFile().getAbsolutePath());
             }

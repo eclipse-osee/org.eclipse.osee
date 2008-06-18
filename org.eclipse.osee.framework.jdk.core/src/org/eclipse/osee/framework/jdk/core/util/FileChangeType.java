@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public enum FileChangeType {
    CREATED, MODIFIED, DELETED

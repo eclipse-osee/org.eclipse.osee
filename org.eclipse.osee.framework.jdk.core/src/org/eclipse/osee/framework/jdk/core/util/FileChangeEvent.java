@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.io.File;
 
 /**
- * @author b1529404
+ * @author Ken J. Aguilar
  */
 public class FileChangeEvent {
    private final File file;
