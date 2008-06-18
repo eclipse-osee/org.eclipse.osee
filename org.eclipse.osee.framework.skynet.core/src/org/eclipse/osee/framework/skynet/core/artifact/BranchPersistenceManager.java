@@ -61,9 +61,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -124,14 +122,8 @@ public class BranchPersistenceManager {
       ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : getBranches())
-         try {
-            if (branch.getAssociatedArtifact() != null && branch.getAssociatedArtifact().equals(associatedArtifact)) {
-               branches.add(branch);
-            }
-         } catch (ArtifactDoesNotExist ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         } catch (MultipleArtifactsExist ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         if (branch.isAssociatedToArtifact(associatedArtifact)) {
+            branches.add(branch);
          }
       return branches;
    }

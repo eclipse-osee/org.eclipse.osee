@@ -319,6 +319,16 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return associatedArtifact;
    }
 
+   /**
+    * Efficient way of determining if branch is associated cause it does not load the associated artifact
+    * 
+    * @param artifact
+    * @return
+    */
+   public boolean isAssociatedToArtifact(Artifact artifact) {
+      return artifact.getArtId() == getAssociatedArtifactId();
+   }
+
    public boolean isChangeManaged() {
       return associatedArtifactId != SkynetAuthentication.getNoOneArtifactId();
    }
