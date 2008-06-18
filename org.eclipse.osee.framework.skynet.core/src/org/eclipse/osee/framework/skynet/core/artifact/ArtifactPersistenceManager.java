@@ -66,7 +66,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManag
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
+import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
+import org.eclipse.osee.framework.skynet.core.utility.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -121,17 +123,12 @@ public class ArtifactPersistenceManager {
 
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
-   public static final String INSERT_TRANSACTION_HOLDER =
-         "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
-
    private static final String SELECT_ARTIFACT_START =
          "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
          " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
    private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
    private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
-
-   private static final String DELETE_FROM_HOLDER = "DELETE FROM osee_join_transaction WHERE query_id = ?";
 
    private static final String ARTIFACT_SELECT =
          "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
@@ -631,18 +628,8 @@ public class ArtifactPersistenceManager {
 
       @Override
       protected void handleTxWork() throws OseeCoreException, SQLException {
-         class GammaTransaction {
-            int gammaId;
-            int transactionId;
-
-            public GammaTransaction(int gammaId, int transactionId) {
-               this.gammaId = gammaId;
-               this.transactionId = transactionId;
-            }
-         }
-         ;
-         Collection<GammaTransaction> gammaIdsModifications = new LinkedList<GammaTransaction>();
-         Collection<GammaTransaction> gammaIdsBaseline = new LinkedList<GammaTransaction>();
+         TransactionJoinQuery gammaIdsModifications = JoinUtility.createTransactionJoinQuery();
+         TransactionJoinQuery gammaIdsBaseline = JoinUtility.createTransactionJoinQuery();
 
          //Get attribute Gammas
          ConnectionHandlerStatement connectionHandlerStatement = null;
@@ -655,11 +642,9 @@ public class ArtifactPersistenceManager {
             resultSet = connectionHandlerStatement.getRset();
             while (resultSet.next()) {
                if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-                  gammaIdsModifications.add(new GammaTransaction(resultSet.getInt("gamma_id"),
-                        resultSet.getInt("transaction_id")));
+                  gammaIdsModifications.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
                } else {
-                  gammaIdsBaseline.add(new GammaTransaction(resultSet.getInt("gamma_id"),
-                        resultSet.getInt("transaction_id")));
+                  gammaIdsBaseline.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
                }
             }
          } finally {
@@ -669,60 +654,33 @@ public class ArtifactPersistenceManager {
          }
 
          if (!gammaIdsModifications.isEmpty()) {
-            List<Object[]> datas = new LinkedList<Object[]>();
-            int queryId = ArtifactLoader.getNewQueryId();
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-            for (GammaTransaction gammaTransaction : gammaIdsModifications) {
-               datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                     SQL3DataType.INTEGER, gammaTransaction.gammaId, SQL3DataType.INTEGER,
-                     gammaTransaction.transactionId});
-            }
-            selectTempTransactions(datas);
-
             try {
-               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER, queryId);
-               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, queryId);
-               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, queryId);
+               gammaIdsModifications.store();
+               int gammaIdModsQID = gammaIdsModifications.getQueryId();
+               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER,
+                     gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
 
-               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT, SQL3DataType.INTEGER, queryId);
-               clearTempTransactions(queryId);
+               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
 
                if (!gammaIdsBaseline.isEmpty()) {
-                  datas = new LinkedList<Object[]>();
-                  queryId = ArtifactLoader.getNewQueryId();
-                  insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-                  for (GammaTransaction gammaTransaction : gammaIdsBaseline) {
-                     datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                           SQL3DataType.INTEGER, gammaTransaction.gammaId, SQL3DataType.INTEGER,
-                           gammaTransaction.transactionId});
-                  }
-                  selectTempTransactions(datas);
-                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, SQL3DataType.INTEGER, queryId);
+                  gammaIdsBaseline.store();
+                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, SQL3DataType.INTEGER,
+                        gammaIdsBaseline.getQueryId());
                }
             } finally {
-               clearTempTransactions(queryId);
+               gammaIdsModifications.delete();
+               gammaIdsBaseline.delete();
             }
          }
-
          ConnectionHandler.runPreparedUpdate(REMOVE_EMPTY_TRANSACTION_DETAILS, SQL3DataType.INTEGER, branchId);
-
       }
 
       @Override
       protected void handleTxFinally() throws Exception {
          super.handleTxFinally();
       }
-
-   }
-
-   public static void selectTempTransactions(Collection<Object[]> insertParameters) throws SQLException {
-      ConnectionHandler.runPreparedUpdateBatch(INSERT_TRANSACTION_HOLDER, insertParameters);
-   }
-
-   public static void clearTempTransactions(int queryId) throws SQLException {
-      ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_HOLDER, SQL3DataType.INTEGER, queryId);
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {

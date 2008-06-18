@@ -11,26 +11,18 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.framework.skynet.core.utility.JoinUtility.AttributeJoinQuery;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AttributeCriteria extends AbstractArtifactSearchCriteria {
-
-   public static final String INSERT_INTO_ATTRIBUTE_SEARCH =
-         "INSERT INTO osee_join_attribute (attr_query_id, start_time, value) VALUES (?, ?, ?)";
-   public static final String DELETE_FROM_ATTRIBUTE_SEARCH = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
 
    private AttributeType attributeType;
    private String value;
@@ -40,7 +32,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    private String attrAlias;
    private final boolean historical;
    private final Operator operator;
-   private int attrQueryId;
+   private AttributeJoinQuery joinQuery;
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -118,15 +110,11 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             this.value = values.iterator().next();
          } else {
             this.values = values;
-            this.attrQueryId = ArtifactLoader.getNewQueryId();
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-            List<Object[]> data = new ArrayList<Object[]>();
+            AttributeJoinQuery joinQuery = JoinUtility.createAttributeJoinQuery();
             for (String str : values) {
-               data.add(new Object[] {SQL3DataType.INTEGER, this.attrQueryId, SQL3DataType.TIMESTAMP, insertTime,
-                     SQL3DataType.VARCHAR, str});
+               joinQuery.add(str);
             }
-            ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_ATTRIBUTE_SEARCH, data);
+            joinQuery.store();
          }
       }
       this.operator = operator;
@@ -180,7 +168,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             builder.append("NOT ");
          }
          builder.append("IN ( SELECT value FROM osee_join_attribute WHERE attr_query_id = ? ) AND ");
-         builder.addParameter(SQL3DataType.INTEGER, this.attrQueryId);
+         builder.addParameter(SQL3DataType.INTEGER, joinQuery.getQueryId());
       }
 
       builder.append(attrAlias);
@@ -231,7 +219,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    }
 
    public void cleanUp() throws SQLException {
-      ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_SEARCH, SQL3DataType.INTEGER, this.attrQueryId);
+      joinQuery.delete();
    }
 
 }
