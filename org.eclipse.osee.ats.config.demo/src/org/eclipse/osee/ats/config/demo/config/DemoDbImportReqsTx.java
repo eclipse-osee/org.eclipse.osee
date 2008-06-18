@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.skynet.core.util.Requirements;
+import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportJob;
 import org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver;

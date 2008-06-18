@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

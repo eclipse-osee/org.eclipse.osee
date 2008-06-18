@@ -84,7 +84,7 @@ public class DeleteTransactionJob extends Job {
       IStatus returnStatus = Status.CANCEL_STATUS;
       try {
          DeleteTransactionTx deleteTransactionTx = new DeleteTransactionTx(monitor);
-         deleteTransactionTx.execute();
+         deleteTransactionTx.handleTxWork();
          returnStatus = Status.OK_STATUS;
       } catch (Exception ex) {
          returnStatus = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
@@ -206,8 +206,7 @@ public class DeleteTransactionJob extends Job {
             TransactionId toTransaction = entry.object2;
             if (toTransaction != null) {
                data.add(new Object[] {SQL3DataType.VARCHAR, String.valueOf(fromTransaction), SQL3DataType.VARCHAR,
-                     String.valueOf(toTransaction.getTransactionNumber()), SQL3DataType.VARCHAR,
-                     "%" + fromTransaction + ")"});
+                     String.valueOf(toTransaction.getTransactionNumber()), SQL3DataType.VARCHAR, "%" + fromTransaction});
             }
          }
          if (data.size() > 0) {
