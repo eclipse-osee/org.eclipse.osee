@@ -57,18 +57,33 @@ public class FileWatcher extends TimerTask {
     */
    @Override
    public synchronized void run() {
-      LinkedList<File> changedFiles = new LinkedList<File>();
-      for (Map.Entry<File, Long> entry : filesToWatch.entrySet()) {
-         Long lastModified = entry.getKey().lastModified();
-         if (!entry.getValue().equals(lastModified)) {
-            entry.setValue(lastModified);
-            changedFiles.add(entry.getKey());
+      try {
+         LinkedList<FileChangeEvent> changedFiles = new LinkedList<FileChangeEvent>();
+         for (Map.Entry<File, Long> entry : filesToWatch.entrySet()) {
+            Long latestLastModified = entry.getKey().lastModified();
+            Long storedLastModifiedValue = entry.getValue();
+            if (!storedLastModifiedValue.equals(latestLastModified)) {
+               entry.setValue(latestLastModified);
+               if (storedLastModifiedValue == 0) {
+                  // created
+                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.CREATED));
+               } else if (latestLastModified == 0) {
+                  // deleted
+                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.DELETED));
+               } else {
+                  // modified
+                  changedFiles.add(new FileChangeEvent(entry.getKey(), FileChangeType.MODIFIED));
+               }
+
+            }
          }
-      }
-      if (!changedFiles.isEmpty()) {
-         for (IFileWatcherListener listener : listeners) {
-            listener.filesModified(changedFiles);
+         if (!changedFiles.isEmpty()) {
+            for (IFileWatcherListener listener : listeners) {
+               listener.filesModified(changedFiles);
+            }
          }
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
    }
 
@@ -78,16 +93,15 @@ public class FileWatcher extends TimerTask {
       watcher.addListener(new IFileWatcherListener() {
 
          @Override
-         public void filesModified(Collection<File> modifiedFiles) {
+         public void filesModified(Collection<FileChangeEvent> events) {
             System.out.println("\nchanges detected in:");
-            for (File file : modifiedFiles) {
-               System.out.println(file.getAbsolutePath());
+            for (FileChangeEvent event : events) {
+               System.out.println(event.getChangeType().name() + ": " + event.getFile().getAbsolutePath());
             }
          }
 
       });
       File directory = new File("C:\\Documents and Settings\\b1529404\\Desktop\\watcher_test");
-      watcher.addFile(directory);
       watcher.addFile(new File(directory, "f1.txt"));
       watcher.addFile(new File(directory, "f2.txt"));
       watcher.addFile(new File(directory, "f3.txt"));

@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.jdk.core.util;
 
-import java.io.File;
 import java.util.Collection;
 
 /**
@@ -13,5 +12,5 @@ import java.util.Collection;
  */
 public interface IFileWatcherListener {
 
-   void filesModified(Collection<File> modifiedFiles);
+   void filesModified(Collection<FileChangeEvent> fileChangeEvents);
 }
