@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -62,7 +62,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       String usePublishToFilename = publishToFilename;
       if (usePublishToFilename == null) {
          final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
@@ -73,9 +73,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          try {
-            useTeamDef =
-                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName, AtsPlugin.getAtsBranch());
+            useTeamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }

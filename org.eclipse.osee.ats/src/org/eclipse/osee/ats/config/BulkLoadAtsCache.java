@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -20,9 +21,9 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Donald G. Dunne
  */
-public class BulkLoadAtsConfigData extends org.eclipse.core.runtime.jobs.Job {
+public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
 
-   private BulkLoadAtsConfigData() {
+   private BulkLoadAtsCache() {
       super("Bulk Loading ATS Config Artifacts");
    }
 
@@ -31,7 +32,7 @@ public class BulkLoadAtsConfigData extends org.eclipse.core.runtime.jobs.Job {
    public static void run(boolean forcePend) {
       if (atsTypeDataLoaded) return;
       atsTypeDataLoaded = true;
-      BulkLoadAtsConfigData job = new BulkLoadAtsConfigData();
+      BulkLoadAtsCache job = new BulkLoadAtsCache();
       job.setPriority(Job.SHORT);
       job.setSystem(true);
       job.schedule();
@@ -49,14 +50,19 @@ public class BulkLoadAtsConfigData extends org.eclipse.core.runtime.jobs.Job {
    protected IStatus run(IProgressMonitor monitor) {
       OSEELog.logInfo(AtsPlugin.class, getName(), false);
       try {
-         RelationManager.getRelatedArtifacts(Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
-         ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch());
+         for (Artifact artifact : RelationManager.getRelatedArtifacts(
+               Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD)) {
+            AtsCache.cache(artifact);
+         }
+         for (Artifact artifact : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME,
+               AtsPlugin.getAtsBranch())) {
+            AtsCache.cache(artifact);
+         }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       monitor.done();
       return Status.OK_STATUS;
    }
-
 }

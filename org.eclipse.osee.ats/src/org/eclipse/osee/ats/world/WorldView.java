@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
+import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
@@ -205,7 +205,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       debug.report("createPartControl");
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
-      BulkLoadAtsConfigData.run(false);
+      BulkLoadAtsCache.run(false);
 
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;

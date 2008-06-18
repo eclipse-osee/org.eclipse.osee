@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -21,8 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
@@ -54,11 +50,11 @@ public class NewAction extends Action {
    @Override
    public void run() {
       super.run();
-      BulkLoadAtsConfigData.run(true);
+      BulkLoadAtsCache.run(true);
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {
-            wizard.setInitialAias(getTeamActionableItems());
+            wizard.setInitialAias(ActionableItemArtifact.getActionableItems(Arrays.asList(actionableItem)));
          }
          if (initialDescription != null) {
             wizard.setInitialDescription(initialDescription);
@@ -84,14 +80,6 @@ public class NewAction extends Action {
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-   }
-
-   private Collection<ActionableItemArtifact> getTeamActionableItems()throws OseeCoreException, SQLException{
-      Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
-      if (actionableItem != null) {
-         ais.add(ActionableItemArtifact.getSoleActionableItem(actionableItem));
-      }
-      return ais;
    }
 
    /**

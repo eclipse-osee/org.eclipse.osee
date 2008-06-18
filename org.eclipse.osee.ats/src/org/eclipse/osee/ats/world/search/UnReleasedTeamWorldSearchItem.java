@@ -25,13 +25,13 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
@@ -101,10 +101,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String name : teamDefNames) {
-            TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
-            teamDefs.add(teamDef);
+            teamDefs.add(AtsCache.getSoleArtifactByName(name, TeamDefinitionArtifact.class));
          }
       }
       if (teamDefs == null) throw new IllegalArgumentException("Can't Find ProductDefinitionArtifact for " + getName());

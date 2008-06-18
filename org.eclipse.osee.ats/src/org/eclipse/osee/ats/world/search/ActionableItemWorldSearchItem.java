@@ -17,13 +17,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
@@ -83,9 +82,12 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
 
    public void getActionableItems() throws OseeCoreException, SQLException {
       if (actionItemNames != null && actionItems == null) {
-         actionItems =
-               Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(ActionableItemArtifact.ARTIFACT_NAME,
-                     "Name", actionItemNames, AtsPlugin.getAtsBranch(), 200));
+         for (String actionItemName : actionItemNames) {
+            ActionableItemArtifact aia = AtsCache.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
+            if (aia != null) {
+               actionItems.add(aia);
+            }
+         }
       }
    }
 

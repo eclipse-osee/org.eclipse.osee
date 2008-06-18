@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
+import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,7 +69,7 @@ public class NavigateView extends ViewPart implements IActionable {
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
-      BulkLoadAtsConfigData.run(false);
+      BulkLoadAtsCache.run(false);
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       SkynetContributionItem.addTo(this, false);

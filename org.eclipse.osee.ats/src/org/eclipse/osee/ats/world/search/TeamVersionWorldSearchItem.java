@@ -19,17 +19,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeByVersionDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -81,10 +80,7 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String name : teamDefNames) {
-            TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
-            teamDefs.add(teamDef);
+            teamDefs.add(AtsCache.getSoleArtifactByName(name, TeamDefinitionArtifact.class));
          }
       }
       if (teamDefs == null) throw new IllegalArgumentException("Can't Find ProductDefinitionArtifact for " + getName());

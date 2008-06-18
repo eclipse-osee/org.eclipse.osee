@@ -15,14 +15,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -119,7 +118,7 @@ public class VersionArtifact extends BasicArtifact {
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
-   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames)throws OseeCoreException, SQLException{
+   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException, SQLException {
       Set<VersionArtifact> teamDefs = new HashSet<VersionArtifact>();
       for (String teamDefName : teamDefNames) {
          teamDefs.add(getSoleVersion(teamDefName));
@@ -134,8 +133,7 @@ public class VersionArtifact extends BasicArtifact {
     * @return
     * @throws SQLException
     */
-   public static VersionArtifact getSoleVersion(String name)throws OseeCoreException, SQLException{
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
+   public static VersionArtifact getSoleVersion(String name) throws OseeCoreException, SQLException {
+      return (VersionArtifact) AtsCache.getArtifactsByName(name, VersionArtifact.class);
    }
-
 }

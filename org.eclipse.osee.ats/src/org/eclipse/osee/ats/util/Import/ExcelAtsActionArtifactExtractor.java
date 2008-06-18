@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -152,11 +152,10 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          if (aData.actionableItems.size() == 0)
             rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
          else {
-            for (String ai : aData.actionableItems) {
+            for (String actionableItemName : aData.actionableItems) {
                try {
-                  ActionableItemArtifact aia = ActionableItemArtifact.getSoleActionableItem(ai);
-                  if (aia == null) {
-                     rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + ai + "\"");
+                  if (AtsCache.getArtifactsByName(actionableItemName, ActionableItemArtifact.class).size() > 0) {
+                     rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   }
                } catch (Exception ex) {
                   rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
@@ -166,8 +165,9 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          }
          if (!aData.version.equals("")) {
             try {
-               if (ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, aData.version,
-                     AtsPlugin.getAtsBranch()) == null) rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
+               if (AtsCache.getSoleArtifactByName(aData.version, VersionArtifact.class) == null) {
+                  rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
+               }
             } catch (Exception ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
                OSEELog.logException(AtsPlugin.class, ex, false);
@@ -204,12 +204,10 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                         ActionableItemArtifact.getActionableItems(aData.actionableItems));
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
-               VersionArtifact verArt =
-                     (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
-                           aData.version, AtsPlugin.getAtsBranch());
+               VersionArtifact verArt = AtsCache.getSoleArtifactByName(aData.version, VersionArtifact.class);
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
-                  verArt.relate(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team, true);
+                  verArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team);
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

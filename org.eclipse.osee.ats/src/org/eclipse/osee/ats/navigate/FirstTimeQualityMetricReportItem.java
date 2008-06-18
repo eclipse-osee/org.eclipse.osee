@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.VersionMetrics;
 import org.eclipse.osee.ats.util.VersionTeamMetrics;
@@ -28,7 +29,6 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -68,14 +68,11 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         useTeamDef =
-               (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
-                     teamDefName, AtsPlugin.getAtsBranch());
-
+         useTeamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
@@ -135,7 +132,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * @return
     * @throws SQLException
     */
-   public static String getTeamWorkflowReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public static String getTeamWorkflowReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Version", "StartDate", "RelDate",

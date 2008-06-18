@@ -21,11 +21,12 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
-import org.eclipse.osee.ats.config.BulkLoadAtsConfigData;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
+import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -104,13 +105,13 @@ public class AtsLib implements IAtsLib {
          return String.format("%5.2f", d);
    }
 
-   public static void editActionActionableItems(ActionArtifact actionArt)throws OseeCoreException, SQLException{
+   public static void editActionActionableItems(ActionArtifact actionArt) throws OseeCoreException, SQLException {
       Result result = actionArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse()) result.popup(result.isTrue());
    }
 
-   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt)throws OseeCoreException, SQLException{
+   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException, SQLException {
       Result result = teamArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
@@ -136,7 +137,7 @@ public class AtsLib implements IAtsLib {
     * @param guid
     */
    public void openArtifact(String guid, OseeAts.OpenView view) {
-      BulkLoadAtsConfigData.run(false);
+      BulkLoadAtsCache.run(false);
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
@@ -161,22 +162,21 @@ public class AtsLib implements IAtsLib {
       (new AtsLib()).createATSAction(initialDescription, actionableItem);
    }
 
-   public void createATSAction(String initialDescription, String actionableItem) {
+   public void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, actionableItem,
-               AtsPlugin.getAtsBranch());
+         AtsCache.getSoleArtifactByName(actionableItemName, VersionArtifact.class);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
                "Configuration Error",
-               "Actionable Item \"" + actionableItem + "\" is not configured for ATS tracking.\n\nAction can not be created.");
+               "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
          return;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return;
       }
 
-      NewAction newAction = new NewAction(actionableItem);
+      NewAction newAction = new NewAction(actionableItemName);
       newAction.setInitialDescription(initialDescription);
       newAction.run();
 

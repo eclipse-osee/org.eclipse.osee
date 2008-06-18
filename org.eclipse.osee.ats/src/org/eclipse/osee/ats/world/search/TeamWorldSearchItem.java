@@ -18,13 +18,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
@@ -102,9 +101,12 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     */
    public void getTeamDefs() throws OseeCoreException, SQLException {
       if (teamDefNames != null && teamDefs == null) {
-         teamDefs =
-               Collections.castAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(TeamDefinitionArtifact.ARTIFACT_NAME,
-                     "Name", teamDefNames, AtsPlugin.getAtsBranch(), 200));
+         for (String teamDefName : teamDefNames) {
+            TeamDefinitionArtifact aia = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
+            if (aia != null) {
+               teamDefs.add(aia);
+            }
+         }
       }
    }
 
@@ -136,7 +138,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
             teamDefinitionGuids));
 
-      if (!showFinished) {
+      if (!selectedShowFinished) {
          List<String> cancelOrComplete = new ArrayList<String>(2);
          cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
          cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
@@ -150,7 +152,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (showAction) {
+      if (selectedShowAction) {
          return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.ActionToWorkflow_Action);
       } else {
          return artifacts;

@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -62,7 +62,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
       if (teamDef == null) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
@@ -72,13 +72,11 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public TeamDefinitionArtifact getTeamDefinition()throws OseeCoreException, SQLException{
+   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, SQLException {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
-            TeamDefinitionArtifact teamDef =
-                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName, AtsPlugin.getAtsBranch());
+            TeamDefinitionArtifact teamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
             if (teamDef != null) return teamDef;
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
