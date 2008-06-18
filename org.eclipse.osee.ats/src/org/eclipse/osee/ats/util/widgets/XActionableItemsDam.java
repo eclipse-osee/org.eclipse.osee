@@ -15,14 +15,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
 /**
@@ -40,7 +41,11 @@ public class XActionableItemsDam extends XTextDam {
    public Set<ActionableItemArtifact> getActionableItems() throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (String guid : getActionableItemGuids()) {
-         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch()));
+         ActionableItemArtifact aia = AtsCache.getActionableItemByGuid(guid);
+         if (aia == null)
+            OSEELog.logSevere(AtsPlugin.class, "Can't find Actionable Item for guid " + guid, false);
+         else
+            ais.add(aia);
       }
       return ais;
    }

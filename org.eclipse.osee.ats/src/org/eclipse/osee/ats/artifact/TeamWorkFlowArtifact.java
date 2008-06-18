@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -194,7 +194,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
-      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
+      return AtsCache.getTeamDefinitionArtifact(guid);
    }
 
    public String getTeamTitle() {
