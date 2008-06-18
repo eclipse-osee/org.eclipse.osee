@@ -46,7 +46,7 @@ public class TisRenderer extends WordRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if ("Test Information Sheet".equals(artifact.getArtifactTypeNameSuppressException())) {
+      if ("Test Information Sheet".equals(artifact.getArtifactTypeName())) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;
