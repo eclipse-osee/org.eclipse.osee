@@ -107,7 +107,7 @@ public class AtsBranchManager {
             MergeView.openViewUpon(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
                   getWorkingBranch()).getKey());
          } else {
-            AWorkbench.popup("ERROR", "Not Implemented Yet");
+            AWorkbench.popup("ERROR", "Showing Read-Only Merge View for Committed Branch\n\nNot Implemented Yet");
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
