@@ -346,19 +346,19 @@ public class SMAManager {
             return false;
          }
       }
-      final ChangeTypeDialog ald = new ChangeTypeDialog(Display.getCurrent().getActiveShell());
+      final ChangeTypeDialog dialog = new ChangeTypeDialog(Display.getCurrent().getActiveShell());
       try {
          if (teams.size() == 1) {
-            ald.setSelected(teams.iterator().next().getChangeType());
+            dialog.setSelected(teams.iterator().next().getChangeType());
          }
-         if (ald.open() == 0) {
+         if (dialog.open() == 0) {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException, SQLException {
 
                   for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getChangeType() != ald.getSelection()) {
-                        team.setChangeType(ald.getSelection());
+                     if (team.getChangeType() != dialog.getSelection()) {
+                        team.setChangeType(dialog.getSelection());
                         team.saveSMA();
                      }
                   }

@@ -341,7 +341,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork()throws OseeCoreException, SQLException{
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
                            ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
                         }
                      };
@@ -704,7 +704,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork()throws OseeCoreException, SQLException{
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
                            for (Artifact loopArt : deleteArts) {
                               if (purge)
                                  loopArt.purge();
@@ -760,8 +760,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                   useArt = (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next());
                else
                   return false;
-            } else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(true);
-            if (aCol == AtsXColumn.Change_Type_Col) modified = smaMgr.promptChangeType(true);
+            }
             if (modified) {
                update(useArt, null);
                return true;
