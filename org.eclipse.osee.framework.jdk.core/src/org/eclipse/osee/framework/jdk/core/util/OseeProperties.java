@@ -27,7 +27,7 @@ public class OseeProperties {
    public static final String OSEE_DEVELOPER = "Developer";
    public static final String OSEE_OVERRIDE_VERSION_CHECK = "OseeOverrideVersionCheck";
 
-   private static final String OSEE_NO_PROMPT = "OseeNoPrompt";
+   public static final String OSEE_NO_PROMPT = "OseeNoPrompt";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "OseeUseFileSpecifiedSchemas";
    private static final String PRINT_SQL = "PrintSql";
    private static final String DONT_LOG_USAGE = "DontLogUsage";
