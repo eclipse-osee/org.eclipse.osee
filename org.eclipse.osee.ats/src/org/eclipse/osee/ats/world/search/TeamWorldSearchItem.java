@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 public class TeamWorldSearchItem extends WorldSearchItem {
 
    private Collection<TeamDefinitionArtifact> teamDefs;
-   private Set<TeamDefinitionArtifact> selectedTeamDefs;
+   private Set<TeamDefinitionArtifact> selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
    private boolean selectedRecurseChildren; // Used to not corrupt original values
    private boolean recurseChildren;
    private boolean selectedShowFinished; // Used to not corrupt original values
@@ -101,6 +101,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     */
    public void getTeamDefs() throws OseeCoreException, SQLException {
       if (teamDefNames != null && teamDefs == null) {
+         teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
             if (aia != null) {
