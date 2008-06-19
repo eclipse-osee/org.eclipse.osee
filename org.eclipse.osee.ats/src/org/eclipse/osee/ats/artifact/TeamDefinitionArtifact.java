@@ -177,7 +177,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException, SQLException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : getTeamDefinitions(active)) {
-         if (teamDef.getSoleAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false) && teamDef.getVersionsArtifacts().size() > 0) {
+         if (teamDef.getVersionsArtifacts().size() > 0) {
             teamDefs.add(teamDef);
          }
       }

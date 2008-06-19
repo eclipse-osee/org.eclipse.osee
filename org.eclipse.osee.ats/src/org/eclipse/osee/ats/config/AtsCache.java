@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * Common cache storage for ATS configuration artifacts:<br>
@@ -104,8 +106,13 @@ public class AtsCache {
       BulkLoadAtsCache.run(true);
       List<A> arts = new ArrayList<A>();
       for (Artifact art : instance.cache) {
-         if (!art.isDeleted() && art.getClass().isInstance(clazz)) {
-            arts.add((A) art);
+         try {
+            if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName()) && art.getSoleAttributeValue(
+                  ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false)) {
+               arts.add((A) art);
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
       }
       return arts;
@@ -116,7 +123,7 @@ public class AtsCache {
       BulkLoadAtsCache.run(true);
       List<A> arts = new ArrayList<A>();
       for (Artifact art : instance.cache) {
-         if (!art.isDeleted() && art.getClass().isInstance(clazz) && art.getDescriptiveName().equals(name)) {
+         if (!art.isDeleted() && art.getClass().isAssignableFrom(clazz) && art.getDescriptiveName().equals(name)) {
             arts.add((A) art);
          }
       }
@@ -124,6 +131,7 @@ public class AtsCache {
    }
 
    public static <A> A getSoleArtifactByName(String name, Class<A> clazz) throws MultipleArtifactsExist, ArtifactDoesNotExist {
+      BulkLoadAtsCache.run(true);
       List<A> arts = getArtifactsByName(name, clazz);
       if (arts.size() == 1) {
          return (A) arts.iterator().next();
