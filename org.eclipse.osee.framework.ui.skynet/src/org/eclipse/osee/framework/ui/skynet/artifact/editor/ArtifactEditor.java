@@ -61,15 +61,12 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
-import org.eclipse.osee.framework.ui.skynet.render.EditingFolderVisitor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.browser.ProgressListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -459,28 +456,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.addMouseListener(new MouseAdapter() {
-
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.MouseAdapter#mouseDoubleClick(org.eclipse.swt.events.MouseEvent)
-          */
-         @Override
-         public void mouseDoubleClick(MouseEvent e) {
-
-            StringBuilder counters = new StringBuilder();
-
-            for (int i = 0; i < EditingFolderVisitor.visitorCounters.length; i++) {
-               counters.append("Level : " + i + " ");
-               counters.append(EditingFolderVisitor.visitorCounters[i]);
-               counters.append(",");
-            }
-
-            logger.log(Level.INFO, counters.toString());
-            super.mouseDoubleClick(e);
-         }
-      });
 
       Artifact artifact = getEditorInput().getArtifact();
       artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"  Guid: " + artifact.getGuid() + "  HRID: " + artifact.getHumanReadableId() + "  Art Id: " + artifact.getArtId());

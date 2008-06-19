@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Ken J. Aguilar
@@ -116,7 +119,7 @@ public class FileWatcher extends TimerTask {
             }
          }
       } catch (Exception ex) {
-         ex.printStackTrace();
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 

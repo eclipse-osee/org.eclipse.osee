@@ -657,8 +657,7 @@ public class ArtifactPersistenceManager {
             try {
                gammaIdsModifications.store();
                int gammaIdModsQID = gammaIdsModifications.getQueryId();
-               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER,
-                     gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
                ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
                ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
 
@@ -819,7 +818,7 @@ public class ArtifactPersistenceManager {
          batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
                SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, art.getBranch().getBranchId()});
       }
-      int returnCount = ArtifactLoader.selectArtifacts(batchParameters);
+      ArtifactLoader.selectArtifacts(batchParameters);
 
       //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
       int transactionJoinId = ArtifactLoader.getNewQueryId();

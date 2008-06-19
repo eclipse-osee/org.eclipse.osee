@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.utility.FileWatcher;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 
 /**
@@ -28,6 +30,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
  */
 public abstract class FileRenderer extends FileSystemRenderer {
    private ResourceAttributes readonlyfileAttributes;
+   private static final FileWatcher watcher = new FileWatcher(3, TimeUnit.SECONDS);
+   static {
+      watcher.addListener(new ArtifactEditFileWatcher());
+      watcher.start();
+   }
 
    public FileRenderer() {
       super();
@@ -68,7 +75,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
       IFile workingFile = baseFolder.getFile(fileName);
       AIFile.writeToFile(workingFile, renderInputStream);
 
-      if (presentationType == PresentationType.PREVIEW) {
+      if (presentationType == PresentationType.EDIT) {
+         watcher.addFile(workingFile.getLocation().toFile());
+      } else if (presentationType == PresentationType.PREVIEW) {
          workingFile.setResourceAttributes(readonlyfileAttributes);
       }
 
