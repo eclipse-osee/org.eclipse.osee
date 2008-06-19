@@ -860,7 +860,7 @@ public class BranchPersistenceManager {
             catch (BranchDoesNotExist ex) {
                try {
                   logger.log(Level.WARNING,
-                        "Could not use default branch id from the prefernce store: " + ex.toString());
+                        "Could not use default branch id from the preference store: " + ex.toString());
                   initialBranch = getCommonBranch();
                   preferenceStore.setValue(LAST_DEFAULT_BRANCH, initialBranch.getBranchId());
                } catch (SQLException ex1) {
