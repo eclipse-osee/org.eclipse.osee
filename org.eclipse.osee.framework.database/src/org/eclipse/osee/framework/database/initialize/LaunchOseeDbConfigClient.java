@@ -181,8 +181,15 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
          String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
          String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
-         System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
-         String line = waitForUserResponse();
+
+         boolean isPromptEnabled = OseeProperties.getInstance().isPromptEnabled();
+         String line = null;
+         if (isPromptEnabled) {
+            System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
+            line = waitForUserResponse();
+         } else {
+            line = "Y";
+         }
          if (line.equalsIgnoreCase("Y")) {
             isConfigured = true;
             System.out.println("Configuring Database...");
