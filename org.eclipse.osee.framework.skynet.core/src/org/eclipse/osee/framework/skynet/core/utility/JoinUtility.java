@@ -23,7 +23,7 @@ public class JoinUtility {
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
 
    public static final String INSERT_INTO_JOIN_ATTRIBUTE =
-         "INSERT INTO osee_join_attribute (attr_query_id, start_time, value) VALUES (?, ?, ?)";
+         "INSERT INTO osee_join_attribute (attr_query_id, insert_time, value) VALUES (?, ?, ?)";
 
    public static final String INSERT_INTO_JOIN_TRANSACTION =
          "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";

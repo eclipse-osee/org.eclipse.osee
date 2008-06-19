@@ -68,4 +68,26 @@ public class BaseTagger extends Tagger {
       }
       return textString;
    }
+
+   char[] tagChars =
+         new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+               'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'w', 'y'};
+
+   private void fastTag(Collection<Object[]> insertParameters, Attribute<?> attribute, String textValue) {
+      char[] chars = textValue.toCharArray();
+      int startStartIndex = 0;
+      for (int index = 0; index < textValue.length(); index++) {
+         char c = textValue.charAt(index);
+
+         if (c == '\t' || c == '\n' || c == '\r') {
+            // startStartIndex
+         }
+
+         if (c >= 'A' && c <= 'Z') {
+            c += 32;
+         }
+
+      }
+
+   }
 }

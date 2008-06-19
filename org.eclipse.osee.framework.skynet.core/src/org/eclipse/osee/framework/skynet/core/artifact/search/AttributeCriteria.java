@@ -110,7 +110,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             this.value = values.iterator().next();
          } else {
             this.values = values;
-            AttributeJoinQuery joinQuery = JoinUtility.createAttributeJoinQuery();
+            joinQuery = JoinUtility.createAttributeJoinQuery();
             for (String str : values) {
                joinQuery.add(str);
             }
