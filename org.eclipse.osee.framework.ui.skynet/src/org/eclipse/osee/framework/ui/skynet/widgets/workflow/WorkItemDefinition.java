@@ -153,7 +153,7 @@ public abstract class WorkItemDefinition {
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
       if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
             getType());
-      WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(this, artifact);
+      WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(writeType, this, artifact);
       return artifact;
    }
 

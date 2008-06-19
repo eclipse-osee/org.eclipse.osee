@@ -198,7 +198,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
 
-      if (OseeProperties.isDeveloper()) {
+      if (false && OseeProperties.isDeveloper()) {
          newAttributesPageIndex = createNewAttributesPage();
          setPageText(newAttributesPageIndex, "Attributes2");
       }

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 /**
  * @author Donald G. Dunne
@@ -38,25 +39,25 @@ public class WorkItemDefinitionFactory {
          // Add all work item definitions provided through extension points
          for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
             for (WorkItemDefinition def : provider.getProgramaticWorkItemDefinitions()) {
-               addItemDefinition(def);
+               addItemDefinition(WriteType.New, def);
             }
          }
 
          for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkRuleDefinition.ARTIFACT_NAME,
                BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(new WorkRuleDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
          }
          for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkWidgetDefinition.ARTIFACT_NAME,
                BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(new WorkWidgetDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
          }
          for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
                BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(new WorkPageDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
          }
          for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
                BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(new WorkFlowDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
          }
       }
    }
@@ -68,8 +69,8 @@ public class WorkItemDefinitionFactory {
     * @param workItemDefinition
     * @param artifact
     */
-   public static void cacheWorkItemDefinitionArtifact(WorkItemDefinition workItemDefinition, Artifact artifact) {
-      addItemDefinition(workItemDefinition, artifact);
+   public static void cacheWorkItemDefinitionArtifact(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) {
+      addItemDefinition(writeType, workItemDefinition, artifact);
    }
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException, SQLException {
@@ -87,15 +88,15 @@ public class WorkItemDefinitionFactory {
       }
    }
 
-   private static void addItemDefinition(WorkItemDefinition workItemDefinition) {
+   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition) {
       if (workItemDefinition.getId() == null) throw new IllegalArgumentException("Item Id can't be null");
-      if (itemIdToDefinition.containsKey(workItemDefinition.getId())) throw new IllegalArgumentException(
+      if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) throw new IllegalArgumentException(
             "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }
 
-   private static void addItemDefinition(WorkItemDefinition workItemDefinition, Artifact artifact) {
-      addItemDefinition(workItemDefinition);
+   private static void addItemDefinition(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) {
+      addItemDefinition(writeType, workItemDefinition);
       itemIdToWidArtifact.put(workItemDefinition.id, artifact);
    }
 
@@ -103,19 +104,19 @@ public class WorkItemDefinitionFactory {
       for (Artifact art : arts) {
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(new WorkRuleDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(new WorkWidgetDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
          }
          if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(new WorkPageDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
          }
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
-            addItemDefinition(new WorkFlowDefinition(art), art);
+            addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
          }
       }
    }
