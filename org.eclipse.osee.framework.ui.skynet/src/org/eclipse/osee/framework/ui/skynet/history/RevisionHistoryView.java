@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.history;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -213,10 +216,14 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       try {
          if (memento != null) {
-            artifact =
-                  ArtifactQuery.getArtifactFromId(memento.getString(ARTIFACT_GUID),
-                        BranchPersistenceManager.getInstance().getDefaultBranch());
+            String guid = memento.getString(ARTIFACT_GUID);
+            if (guid != null) {
+               artifact =
+                     ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getDefaultBranch());
+            }
          }
+      } catch (ArtifactDoesNotExist ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
