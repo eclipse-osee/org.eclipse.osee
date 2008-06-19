@@ -77,13 +77,29 @@
    <NumberFormat/>
    <Protection/>
   </Style>
+  <Style ss:ID="s30">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s31">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat/>
+  </Style>
  </Styles>
  <Worksheet ss:Name="SkyNet_ATS">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R198C1:R223C5"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=SkyNet_ATS!R200C1:R225C5"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="227" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="229" x:FullColumns="1"
    x:FullRows="1">
    <Column ss:AutoFitWidth="0" ss:Width="330"/>
    <Column ss:AutoFitWidth="0" ss:Width="382.5"/>
@@ -600,6 +616,14 @@
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
     <Cell><Data ss:Type="String">Name</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
+    <Cell ss:StyleID="s30"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s30"><Data ss:Type="String">Annotation</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
+    <Cell ss:StyleID="s30"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">Static Id</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">PeerToPeer Review</Data></Cell>
@@ -1537,13 +1561,12 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>27</TopRowVisible>
-   <LeftColumnVisible>2</LeftColumnVisible>
+   <TopRowVisible>48</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>51</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>68</ActiveRow>
+     <RangeSelection>R69:R70</RangeSelection>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
