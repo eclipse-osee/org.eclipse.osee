@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
@@ -149,14 +148,6 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       needArtifactListener = new NeedArtifactMenuListener();
       tree.setMenu(getPopupMenu());
 
-      try {
-         System.out.println("WorkItem_Children");
-         for (Artifact art : artifact.getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class)) {
-            System.out.println(" - " + art);
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
       setHelpContexts();
    }
 
