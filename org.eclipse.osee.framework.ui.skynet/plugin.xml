@@ -570,6 +570,10 @@
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.SortRelationsByBranch"/>
 	</extension>
 	
+	<extension id="LoadAllArtifactsOnBranch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.LoadAllArtifactsOnBranch"/>
+	</extension>
+	
 		<extension id="FindArtifactsWithMinAttributeContraintProblems" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeContraintProblems"/>
 	</extension>
