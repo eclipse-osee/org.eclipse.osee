@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jdbcodbc Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.jdbcodbc
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.jdbcodbc.Activator
+Bundle-Vendor: Boeing
+Eclipse-LazyStart: true
+OseeEarlyStart: true
+Import-Package: org.eclipse.osee.framework.db.connection,
+ org.osgi.framework;version="1.4.0"
