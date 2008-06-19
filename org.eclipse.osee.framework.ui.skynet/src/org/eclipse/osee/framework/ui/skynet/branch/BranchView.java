@@ -1641,8 +1641,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          refresh();
       } else if (event instanceof BranchEvent) {
          try {
-            BranchPersistenceManager.refreshBranches();
-            refresh();
+            forcePopulateView();
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
