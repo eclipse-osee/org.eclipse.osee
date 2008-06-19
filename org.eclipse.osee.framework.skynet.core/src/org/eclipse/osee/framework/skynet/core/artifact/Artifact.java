@@ -1118,6 +1118,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param relationSide
     * @param artifact
     * @param persist
+    * @see #addRelation
     * @throws SQLException
     */
    @Deprecated
