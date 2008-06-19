@@ -77,7 +77,9 @@ public class BaseTagger extends Tagger {
 
    /**
     * create a bit-packed tag that will fit in a 64-bit integer that can provide an extremely quick search mechanism for
-    * for the first pass. The second pass will do a full text search to provide more exact matches
+    * for the first pass. The second pass will do a full text search to provide more exact matches. The tag will
+    * represent up to 12 characters (all that can be stuffed into 64-bits). Longer search tags will be turned into
+    * consecutive search tags
     * 
     * @param insertParameters
     * @param attribute
@@ -89,7 +91,7 @@ public class BaseTagger extends Tagger {
       for (int index = 0; index < textValue.length(); index++) {
          char c = textValue.charAt(index);
 
-         if (c == '\t' || c == '\n' || c == '\r') {
+         if (c == '\t' || c == '\n' || c == '\r' || tagBitsPos == 60) {
             if (tagBitsPos > 10) {
                insertParameters.add(new Object[] {SQL3DataType.BIGINT, tagBits});
             }
