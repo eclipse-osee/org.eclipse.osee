@@ -268,8 +268,9 @@ public class WordTemplateProcessor {
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  if (!artifact.getSoleAttributeValue("Imported Paragraph Number", "").equals("")) {
-                     startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
+                  String paragraphNum = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
+                  if (paragraphNum != null && !paragraphNum.equals("")) {
+                     startParagraphNumber = paragraphNum;
                   }
                }
             }
