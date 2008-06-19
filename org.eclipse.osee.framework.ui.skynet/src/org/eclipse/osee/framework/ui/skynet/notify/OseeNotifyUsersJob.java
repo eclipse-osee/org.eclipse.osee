@@ -73,7 +73,7 @@ public class OseeNotifyUsersJob extends Job {
    private String notificationEventsToHtml(List<OseeNotificationEvent> notificationEvents) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Description", "ID"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "ID"}));
       for (OseeNotificationEvent notificationEvent : notificationEvents) {
          sb.append(AHTML.addRowMultiColumnTable(new String[] {notificationEvent.getType(),
                notificationEvent.getDescription(), notificationEvent.getId()}));

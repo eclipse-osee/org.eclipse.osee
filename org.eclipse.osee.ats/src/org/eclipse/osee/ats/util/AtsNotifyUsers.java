@@ -41,7 +41,7 @@ public class AtsNotifyUsers {
    }
 
    public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws IllegalArgumentException, SQLException {
-      if (!AtsPlugin.isEmailEnabled()) {
+      if (!AtsPlugin.isEmailEnabled() || !AtsPlugin.isProductionDb() || sma.getDescriptiveName().startsWith("tt ")) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
