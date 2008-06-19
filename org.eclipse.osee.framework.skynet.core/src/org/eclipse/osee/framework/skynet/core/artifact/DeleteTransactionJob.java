@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -27,12 +28,15 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
  * @author Ryan D. Brooks
@@ -84,6 +88,9 @@ public class DeleteTransactionJob extends Job {
          DeleteTransactionTx deleteTransactionTx = new DeleteTransactionTx(monitor);
          deleteTransactionTx.execute();
          returnStatus = Status.OK_STATUS;
+
+         Collection<Event> events = new ArrayList<Event>();
+         SkynetEventManager.getInstance().kick(new LocalTransactionEvent(events, this));
       } catch (Exception ex) {
          returnStatus = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {

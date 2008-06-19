@@ -24,7 +24,10 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IParameter;
 import org.eclipse.core.commands.IParameterValues;
 import org.eclipse.core.commands.ParameterValuesException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -677,7 +680,27 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
             if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
                   "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
-               BranchPersistenceManager.getInstance().deleteTransaction(selectedTransaction.getTransactionNumber());
+               BranchPersistenceManager.getInstance().deleteTransactions(new JobChangeAdapter() {
+
+                  /* (non-Javadoc)
+                   * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
+                   */
+                  @Override
+                  public void done(IJobChangeEvent event) {
+                     if (event.getResult().getSeverity() == IStatus.OK) {
+                        Display.getDefault().asyncExec(new Runnable() {
+                           public void run() {
+                              try {
+                                 forcePopulateView();
+                              } catch (SQLException ex) {
+                                 OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                              }
+                           }
+                        });
+                     }
+                  }
+
+               }, selectedTransaction.getTransactionNumber());
             }
 
             return null;

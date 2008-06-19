@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -667,12 +668,22 @@ public class BranchPersistenceManager {
    }
 
    /**
-    * Permanently removes this transaction and any of its backing data that is not referenced by any other transactions.
+    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     * 
     * @param transactionIdNumber
     */
-   public void deleteTransaction(final int transactionIdNumber) {
-      Jobs.startJob(new DeleteTransactionJob(transactionIdNumber));
+   public void deleteTransactions(final int... transactionIdNumbers) {
+      deleteTransactions(null, transactionIdNumbers);
+   }
+
+   /**
+    * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
+    * 
+    * @param transactionIdNumber
+    */
+   public void deleteTransactions(IJobChangeListener jobChangeListener, final int... transactionIdNumbers) {
+      Jobs.startJob(new DeleteTransactionJob(transactionIdNumbers), jobChangeListener);
+
    }
 
    /**

@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -25,13 +26,24 @@ public final class Jobs {
    private Jobs() {
    };
 
+   public static Job startJob(Job job, IJobChangeListener jobChangeListener) {
+      return startJob(job, true, jobChangeListener);
+   }
+
    public static Job startJob(Job job) {
-      return startJob(job, true);
+      return startJob(job, true, null);
    }
 
    public static Job startJob(Job job, boolean user) {
+      return startJob(job, user, null);
+   }
+
+   public static Job startJob(Job job, boolean user, IJobChangeListener jobChangeListener) {
       job.setUser(user);
       job.setPriority(Job.LONG);
+      if (jobChangeListener != null) {
+         job.addJobChangeListener(jobChangeListener);
+      }
       job.schedule();
       return job;
    }
