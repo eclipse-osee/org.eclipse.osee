@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JINI Connector provider
+Bundle-SymbolicName: org.eclipse.osee.ote.connection.jini
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.osee.ote.connection.jini.Activator
+Bundle-Vendor: Boeing
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jini,
+ net.jini
+Eclipse-LazyStart: true
+Import-Package: org.eclipse.osee.connection.service,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.network
+Export-Package: org.eclipse.osee.ote.connection.jini
