@@ -13,8 +13,8 @@
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/fiddler.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/group.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jarwrapper.jar"/>
-	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-core.jar"/>
-	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-ext.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-core.jar" sourcepath="jini2_1/source.zip"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-ext.jar" sourcepath="jini2_1/source.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-debug-policy.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-lib.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-platform.jar"/>
@@ -30,7 +30,7 @@
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/phoenix-init.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/prebuilt-outrigger-logstore.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/preferredlistgen.jar"/>
-	<classpathentry exported="true" kind="lib" path="jini2_1/lib/reggie.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/reggie.jar" sourcepath="jini2_1/source.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/sharedvm.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/start.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/sun-util.jar"/>
