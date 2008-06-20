@@ -108,7 +108,7 @@ public class UploadRemoteFileJob extends Job {
                try {
                   sftp.mkdir(serviceInfo.getUnzipLocation());
                } catch (SftpException ex2) {
-                  throw new Exception("Unable to create remote path.");
+                  throw new Exception("Unable to create remote path." + serviceInfo.getUnzipLocation());
                }
             } else {
                throw new Exception("Unable to find remote path.");
