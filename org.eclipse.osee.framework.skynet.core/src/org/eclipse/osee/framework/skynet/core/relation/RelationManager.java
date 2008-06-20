@@ -202,30 +202,36 @@ public class RelationManager {
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
-      Collection<? extends Artifact> newArtifacts = artifacts;
-      for (int i = 0; i < depth && newArtifacts.size() > 0; i++) {
-
+      Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
+      Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
+      int oldArtifactCount = -1;
+      for (int i = 0; i < depth && oldArtifactCount != relatedArtifacts.size(); i++) {
+         oldArtifactCount = relatedArtifacts.size();
          insertParameters.clear();
-         for (Artifact artifact : newArtifacts) {
+         newArtifacts.clear();
+         for (Artifact artifact : newArtifactsToSearch) {
             List<RelationLink> selectedRelations = null;
+
             if (relationEnums.length == 0) {
                selectedRelations = artifactToRelations.get(artifact);
-               addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
+               addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
                      RelationSide.OPPOSITE);
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   selectedRelations = relationsByType.get(artifact, relationEnum.getRelationType());
-                  addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
+                  addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
                         relationEnum.getSide());
                }
             }
          }
 
          if (insertParameters.size() > 0) {
-            newArtifacts =
-                  ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters.values(), false);
-            relatedArtifacts.addAll(newArtifacts);
+            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null,
+                  insertParameters.values(), false));
          }
+         newArtifactsToSearch.clear();
+         newArtifactsToSearch.addAll(newArtifacts);
+         relatedArtifacts.addAll(newArtifacts);
       }
       return relatedArtifacts;
    }
@@ -633,9 +639,13 @@ public class RelationManager {
                }
                relations.addAll(sideA.values());
             } else {
-               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
-                     "Artifact [%d][%s] is unsorted for relations type [%d][%s]. (duplicate relation)",
-                     artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               OseeLog.log(
+                     SkynetActivator.class,
+                     Level.FINE,
+                     String.format(
+                           "Artifact [%d][%s] is unsorted for relations type [%d][%s] # of relations in mem [%d]. (duplicate relation)",
+                           artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString(),
+                           relations.size()));
             }
          }
       }
