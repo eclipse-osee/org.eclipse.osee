@@ -107,6 +107,14 @@ public class OseeConnectionPool {
    }
 
    public synchronized void returnConnection(OseeConnection conn) {
-      conn.expireLease();
+      try {
+         if (conn == null || conn.isClosed()) {
+            removeConnection(conn);
+         } else {
+            conn.expireLease();
+         }
+      } catch (SQLException ex) {
+         removeConnection(conn);
+      }
    }
 }

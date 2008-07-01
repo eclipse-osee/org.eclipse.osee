@@ -63,8 +63,16 @@ public abstract class DbTransaction {
          handleTxException(ex);
       } finally {
          if (connection != null) {
-            connection.setAutoCommit(true);
-            connection.close();
+            try {
+               connection.setAutoCommit(true);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+            try {
+               connection.close();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
          }
          handleTxFinally();
       }
