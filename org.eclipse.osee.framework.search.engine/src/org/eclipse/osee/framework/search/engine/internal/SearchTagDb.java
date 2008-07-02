@@ -75,12 +75,12 @@ public class SearchTagDb {
       return updated;
    }
 
-   public static void executeQuery(String sql, List<Object[]> datas, IRowProcessor processor) throws Exception {
+   public static void executeQuery(String sql, IRowProcessor processor, Object... data) throws Exception {
       Connection connection = null;
       ConnectionHandlerStatement chStmt = null;
       try {
          connection = OseeDbConnection.getConnection();
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, datas);
+         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
          while (chStmt.next()) {
             processor.processRow(chStmt.getRset());
          }

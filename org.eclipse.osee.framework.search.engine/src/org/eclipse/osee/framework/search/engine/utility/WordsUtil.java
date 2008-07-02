@@ -30,7 +30,7 @@ public class WordsUtil {
       dictionary = new Properties();
       try {
          URL url =
-               Activator.getInstance().getContext().getBundle().getResource("support/pluralToSingularExceptions.xml");
+               Activator.getInstance().getContext().getBundle().getResource("/support/pluralToSingularExceptions.xml");
          dictionary.loadFromXML(url.openStream());
       } catch (Exception ex) {
          ex.printStackTrace();

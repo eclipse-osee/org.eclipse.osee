@@ -29,7 +29,7 @@ public class SearchEngine implements ISearchEngine {
       for (AttributeVersion attrVersion : attributes) {
          // Perform Second Pass;
       }
-      return null;
+      return "12345,2";
    }
 
 }

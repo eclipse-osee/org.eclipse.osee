@@ -24,12 +24,12 @@ import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
  * @author Roberto E. Escobar
  */
 public final class AttributeSearch implements ITagCollector {
-   private List<Object[]> datas;
+   private List<Long> tags;
    private String searchString;
    private Options options;
 
    public AttributeSearch(String searchString, Options options) {
-      this.datas = new ArrayList<Object[]>();
+      this.tags = new ArrayList<Long>();
       this.searchString = searchString;
       this.options = options;
    }
@@ -39,15 +39,17 @@ public final class AttributeSearch implements ITagCollector {
       try {
          TagProcessor.collectFromString(searchString, this);
 
-         SearchTagDb.executeQuery(SearchTagDb.getQuery(options), datas, new IRowProcessor() {
-            @Override
-            public void processRow(ResultSet resultSet) throws Exception {
-               toReturn.add(new AttributeVersion(resultSet));
-            }
-         });
+         for (Long codedTag : tags) {
+            SearchTagDb.executeQuery(SearchTagDb.getQuery(options), new IRowProcessor() {
+               @Override
+               public void processRow(ResultSet resultSet) throws Exception {
+                  toReturn.add(new AttributeVersion(resultSet));
+               }
+            }, SQL3DataType.BIGINT, codedTag);
+         }
       } finally {
-         datas.clear();
-         datas = null;
+         tags.clear();
+         tags = null;
       }
       return toReturn;
    }
@@ -57,6 +59,6 @@ public final class AttributeSearch implements ITagCollector {
     */
    @Override
    public void addTag(Long codedTag) {
-      datas.add(new Object[] {SQL3DataType.BIGINT, codedTag});
+      tags.add(codedTag);
    }
 }
