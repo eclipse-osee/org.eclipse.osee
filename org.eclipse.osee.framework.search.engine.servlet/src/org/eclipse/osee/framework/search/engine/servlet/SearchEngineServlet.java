@@ -37,8 +37,8 @@ public class SearchEngineServlet extends HttpServlet {
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
          String result = searchEngine.search(searchInfo.getQuery(), searchInfo.getOptions());
          response.setCharacterEncoding("UTF-8");
-         response.setContentType("plain/text");
-         if (result != null && result.isEmpty()) {
+         response.setContentType("text/plain");
+         if (result != null && result.isEmpty() != true) {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(result);
          } else {
