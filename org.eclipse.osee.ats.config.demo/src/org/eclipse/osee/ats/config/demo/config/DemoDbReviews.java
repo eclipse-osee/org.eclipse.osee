@@ -104,13 +104,13 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
-                  firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName());
+                  "Peer Review first set of code changes", firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName());
       reviewArt.setDescriptiveName("Peer Review first set of code changes");
       reviewArt.persistAttributesAndRelations();
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
-            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
+            firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Peer Review algorithm used in code",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName());
       reviewArt.setDescriptiveName("Peer Review algorithm used in code");
       List<UserRole> roles = new ArrayList<UserRole>();
@@ -125,7 +125,7 @@ public class DemoDbReviews {
       }
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
-            secondCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
+            secondCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview("Peer to Peer Review",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(),
                   DemoUsers.getDemoUser(DemoUsers.Kay_Jones), new Date());
       roles = new ArrayList<UserRole>();
