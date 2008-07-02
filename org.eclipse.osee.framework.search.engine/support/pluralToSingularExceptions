@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="feet">foot</entry>
+<entry key="geese">goose</entry>
+<entry key="lice">louse</entry>
+<entry key="men">man</entry>
+<entry key="women">woman</entry>
+<entry key="mice">mouse</entry>
+<entry key="teeth">tooth</entry>
+<entry key="indeces">index</entry>
+<entry key="lives">life</entry>
+<entry key="oxen">ox</entry>
+<entry key="kine">cow</entry>
+<entry key="brethren">brother</entry>
+<entry key="children">child</entry>
+<entry key="criteria">criterion</entry>
+<entry key="cacti">cactus</entry>
+<entry key="fungi">fungus</entry>
+<entry key="automata">automaton</entry>
+<entry key="phenomena">phenomenon</entry>
+<entry key="polyhedra">polyhedron</entry>
+<entry key="axes">axis</entry>
+<entry key="crises">crisis</entry>
+<entry key="testes">testis</entry>
+<entry key="species">species</entry>
+<entry key="series">series</entry>
+<entry key="appendeces">appendix</entry>
+<entry key="memoranda">memorandum</entry>
+<entry key="mediums">medium</entry>
+<entry key="various">various</entry>
+<entry key="is">is</entry>
+<entry key="was">was</entry>
+<entry key="has">has</entry>
+<entry key="yours">yours</entry>
+<entry key="ours">ours</entry>
+<entry key="hers">hers</entry>
+<entry key="his">his</entry>
+<entry key="theirs">theirs</entry>
+</properties>
