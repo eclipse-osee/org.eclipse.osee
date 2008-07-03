@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Servlet Plug-in
+Bundle-Name: Artifact Servlet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.artifact.servlet
 Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.artifact.servlet.Activator
-Bundle-Vendor: Boeing
+Bundle-Vendor: Eclipse.org
 Eclipse-LazyStart: true
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
