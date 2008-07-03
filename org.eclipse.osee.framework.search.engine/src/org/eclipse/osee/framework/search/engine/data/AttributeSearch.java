@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.data;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.search.engine.Options;
-import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
+import org.eclipse.osee.framework.search.engine.internal.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
+import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
  * @author Roberto E. Escobar
@@ -34,22 +33,17 @@ public final class AttributeSearch implements ITagCollector {
       this.options = options;
    }
 
-   public Set<AttributeVersion> findMatches() throws Exception {
-      final Set<AttributeVersion> toReturn = new HashSet<AttributeVersion>();
+   public Set<IAttributeLocator> findMatches() throws Exception {
+      Set<IAttributeLocator> toReturn = null;
       try {
          TagProcessor.collectFromString(searchString, this);
-
-         for (Long codedTag : tags) {
-            SearchTagDb.executeQuery(SearchTagDb.getQuery(options), new IRowProcessor() {
-               @Override
-               public void processRow(ResultSet resultSet) throws Exception {
-                  toReturn.add(new AttributeVersion(resultSet));
-               }
-            }, SQL3DataType.BIGINT, codedTag);
-         }
+         toReturn = SearchTagDataStore.fetchTagEntries(options, tags);
       } finally {
          tags.clear();
          tags = null;
+      }
+      if (toReturn == null) {
+         toReturn = Collections.emptySet();
       }
       return toReturn;
    }

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.Set;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
+import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -25,9 +27,10 @@ public class SearchEngine implements ISearchEngine {
    @Override
    public String search(String searchString, Options options) throws Exception {
       AttributeSearch attributeSearch = new AttributeSearch(searchString, options);
-      Set<AttributeVersion> attributes = attributeSearch.findMatches();
-      for (AttributeVersion attrVersion : attributes) {
-         // Perform Second Pass;
+      Set<IAttributeLocator> attributeLocators = attributeSearch.findMatches();
+      for (IAttributeLocator attributeLocator : attributeLocators) {
+         // GET ACTUAL ATTRIBUTE CONTENT
+         // Perform Second Pass Search -- this needs to be extremely fast;
       }
       return "12345,2";
    }

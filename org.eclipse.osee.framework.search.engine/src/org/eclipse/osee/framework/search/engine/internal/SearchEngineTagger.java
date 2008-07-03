@@ -21,7 +21,10 @@ import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchTagger;
+import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
+import org.eclipse.osee.framework.search.engine.data.SearchTag;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
+import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
  * @author Roberto E. Escobar
@@ -79,7 +82,7 @@ public class SearchEngineTagger implements ISearchTagger {
          searchTag.addTag(codedTag);
          if (searchTag.size() >= MAXIMUM_CACHED_TAGS) {
             try {
-               SearchTagDb.storeTags(searchTag);
+               SearchTagDataStore.storeTags(searchTag);
             } catch (SQLException ex) {
                OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to store tags [%s]",
                      searchTag), ex);
@@ -88,7 +91,7 @@ public class SearchEngineTagger implements ISearchTagger {
       }
 
       public void store() throws SQLException {
-         SearchTagDb.storeTags(searchTag);
+         SearchTagDataStore.storeTags(searchTag);
          searchTag.clear();
       }
    }

@@ -8,16 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+package org.eclipse.osee.framework.search.engine.data;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeVersion {
+public class AttributeVersion implements IAttributeLocator {
    private int attrId;
    private long gamma_id;
 
@@ -25,10 +21,6 @@ public class AttributeVersion {
       super();
       this.attrId = attrId;
       this.gamma_id = gamma_id;
-   }
-
-   public AttributeVersion(ResultSet resultSet) throws SQLException {
-      this(resultSet.getInt("attr_id"), resultSet.getLong("gamma_id"));
    }
 
    public int getAttrId() {
@@ -52,9 +44,5 @@ public class AttributeVersion {
 
    public String toString() {
       return String.format("attrId: [%s] gammaId: [%d]", getAttrId(), getGamma_id());
-   }
-
-   public Object[] toArray() {
-      return new Object[] {SQL3DataType.INTEGER, getAttrId(), SQL3DataType.BIGINT, getGamma_id()};
    }
 }

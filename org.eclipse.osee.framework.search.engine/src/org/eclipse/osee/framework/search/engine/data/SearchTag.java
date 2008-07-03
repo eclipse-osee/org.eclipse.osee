@@ -8,18 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.data;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchTag {
+public class SearchTag implements IAttributeLocator {
 
    private AttributeVersion attributeVersion;
    private Set<Long> codedTags;
@@ -29,7 +26,7 @@ public class SearchTag {
       this.codedTags = new HashSet<Long>();
    }
 
-   public void addTag(Long codedTag) {
+   public void addTag(long codedTag) {
       this.codedTags.add(codedTag);
    }
 
@@ -41,18 +38,19 @@ public class SearchTag {
       this.codedTags.clear();
    }
 
-   public String toString() {
-      return String.format("%s with %d tags", attributeVersion.toString(), size());
+   public int getAttrId() {
+      return attributeVersion.getAttrId();
    }
 
-   public List<Object[]> toList() {
-      List<Object[]> datas = new ArrayList<Object[]>();
-      if (this.codedTags.isEmpty() != true) {
-         for (Long codedTag : this.codedTags) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, attributeVersion.getAttrId(), SQL3DataType.BIGINT,
-                  attributeVersion.getGamma_id(), SQL3DataType.BIGINT, codedTag});
-         }
-      }
-      return datas;
+   public long getGamma_id() {
+      return attributeVersion.getGamma_id();
+   }
+
+   public Set<Long> getTags() {
+      return this.codedTags;
+   }
+
+   public String toString() {
+      return String.format("%s with %d tags", attributeVersion.toString(), size());
    }
 }
