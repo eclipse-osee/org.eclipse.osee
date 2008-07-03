@@ -37,9 +37,9 @@ public class AttributeVersion implements IAttributeLocator {
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (!(object instanceof AttributeVersion)) return false;
-      AttributeVersion other = (AttributeVersion) object;
-      return other.attrId == this.attrId && other.gamma_id == this.gamma_id;
+      if (!(object instanceof IAttributeLocator)) return false;
+      IAttributeLocator other = (IAttributeLocator) object;
+      return other.getAttrId() == this.getAttrId() && other.getGamma_id() == this.getGamma_id();
    }
 
    public String toString() {

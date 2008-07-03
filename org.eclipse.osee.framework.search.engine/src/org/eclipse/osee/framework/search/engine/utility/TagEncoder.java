@@ -56,5 +56,6 @@ public class TagEncoder {
             tagBitsPos += 4;
          }
       }
+      collector.addTag(tagBits);
    }
 }

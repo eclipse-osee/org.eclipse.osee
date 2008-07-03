@@ -28,6 +28,7 @@ public class SearchEngine implements ISearchEngine {
    public String search(String searchString, Options options) throws Exception {
       AttributeSearch attributeSearch = new AttributeSearch(searchString, options);
       Set<IAttributeLocator> attributeLocators = attributeSearch.findMatches();
+
       for (IAttributeLocator attributeLocator : attributeLocators) {
          // GET ACTUAL ATTRIBUTE CONTENT
          // Perform Second Pass Search -- this needs to be extremely fast;

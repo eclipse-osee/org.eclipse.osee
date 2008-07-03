@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -64,7 +66,6 @@ public class SearchEngineTagger implements ISearchTagger {
             for (AttributeData attributeData : attributes) {
                // Tag String portion
                TagProcessor.collectFromString(attributeData.getValue(), this);
-               attributeData.getValue();
 
                // Tag Resource Portion
                if (attributeData.isUriValid()) {
@@ -75,6 +76,11 @@ public class SearchEngineTagger implements ISearchTagger {
                   InputStream inputStream = null;
                   try {
                      inputStream = resource.getContent();
+                     String mimeType = getContentType(resource, inputStream);
+                     if (mimeType.contains("text")) {
+                        // need to process word content so only string portion available
+                        // other files ? 1025 8211
+                     }
                      TagProcessor.collectFromInputStream(inputStream, this);
                   } finally {
                      if (inputStream != null) {
@@ -87,6 +93,17 @@ public class SearchEngineTagger implements ISearchTagger {
          } catch (Exception ex) {
             OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
          }
+      }
+
+      private String getContentType(IResource resource, InputStream inputStream) throws IOException {
+         String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
+         if (mimeType == null) {
+            mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+            if (mimeType == null) {
+               mimeType = "application/*";
+            }
+         }
+         return mimeType;
       }
 
       /* (non-Javadoc)

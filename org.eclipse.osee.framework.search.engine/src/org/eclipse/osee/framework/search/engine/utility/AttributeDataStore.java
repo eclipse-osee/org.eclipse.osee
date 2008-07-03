@@ -22,17 +22,14 @@ public class AttributeDataStore {
 
    public static List<AttributeData> getAttribute(IAttributeLocator... locators) throws Exception {
       final List<AttributeData> attributeData = new ArrayList<AttributeData>();
-      List<Object[]> datas = new ArrayList<Object[]>();
       for (IAttributeLocator locator : locators) {
-         datas.add(new Object[] {SQL3DataType.INTEGER, locator.getAttrId(), SQL3DataType.BIGINT, locator.getGamma_id()});
+         DatabaseUtil.executeQuery(SELECT_ATTRIBUTE, new IRowProcessor() {
+            @Override
+            public void processRow(ResultSet resultSet) throws Exception {
+               attributeData.add(new AttributeData(resultSet.getString("value"), resultSet.getString("uri")));
+            }
+         }, new Object[] {SQL3DataType.INTEGER, locator.getAttrId(), SQL3DataType.BIGINT, locator.getGamma_id()});
       }
-      DatabaseUtil.executeQuery(SELECT_ATTRIBUTE, new IRowProcessor() {
-         @Override
-         public void processRow(ResultSet resultSet) throws Exception {
-            attributeData.add(new AttributeData(resultSet.getString("value"), resultSet.getString("uri")));
-         }
-      }, datas);
-
       return attributeData;
    }
 
