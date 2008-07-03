@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -21,10 +23,11 @@ import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchTagger;
-import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
+import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
+import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore.AttributeData;
 
 /**
  * @author Roberto E. Escobar
@@ -38,14 +41,16 @@ public class SearchEngineTagger implements ISearchTagger {
    }
 
    public void submitForTagging(int attrId, long gammaId) {
-      this.executor.execute(new TagRunnable(new AttributeVersion(attrId, gammaId)));
+      this.executor.execute(new TagRunnable(attrId, gammaId));
    }
-
    private final class TagRunnable implements Runnable, ITagCollector {
       private SearchTag searchTag;
+      private Options options;
 
-      private TagRunnable(AttributeVersion attributeVersion) {
-         this.searchTag = new SearchTag(attributeVersion);
+      private TagRunnable(int attrId, long gammaId) {
+         this.searchTag = new SearchTag(attrId, gammaId);
+         this.options = new Options();
+         this.options.put(StandardOptions.DecompressOnAquire.name(), true);
       }
 
       /* (non-Javadoc)
@@ -53,25 +58,35 @@ public class SearchEngineTagger implements ISearchTagger {
        */
       @Override
       public void run() {
-         System.out.println("I must Tag: " + searchTag.toString());
+         System.out.println("Tagging: " + searchTag.toString());
          try {
+            List<AttributeData> attributes = AttributeDataStore.getAttribute(searchTag);
+            for (AttributeData attributeData : attributes) {
+               // Tag String portion
+               TagProcessor.collectFromString(attributeData.getValue(), this);
+               attributeData.getValue();
 
-            //         TagProcessor.collectFromString(value, this);
+               // Tag Resource Portion
+               if (attributeData.isUriValid()) {
+                  IResourceLocator locator =
+                        Activator.getInstance().getResourceLocatorManager().getResourceLocator(attributeData.getUri());
+                  IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
 
-            String path = "";
-
-            IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(path);
-            Options options = new Options();
-            options.put(StandardOptions.DecompressOnAquire.name(), true);
-
-            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
-            TagProcessor.collectFromInputStream(resource.getContent(), this);
-
+                  InputStream inputStream = null;
+                  try {
+                     inputStream = resource.getContent();
+                     TagProcessor.collectFromInputStream(inputStream, this);
+                  } finally {
+                     if (inputStream != null) {
+                        inputStream.close();
+                     }
+                  }
+               }
+            }
             store();
          } catch (Exception ex) {
             OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
          }
-
       }
 
       /* (non-Javadoc)
@@ -82,7 +97,7 @@ public class SearchEngineTagger implements ISearchTagger {
          searchTag.addTag(codedTag);
          if (searchTag.size() >= MAXIMUM_CACHED_TAGS) {
             try {
-               SearchTagDataStore.storeTags(searchTag);
+               store();
             } catch (SQLException ex) {
                OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to store tags [%s]",
                      searchTag), ex);

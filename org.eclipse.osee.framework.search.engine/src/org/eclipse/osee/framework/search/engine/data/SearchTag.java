@@ -21,8 +21,8 @@ public class SearchTag implements IAttributeLocator {
    private AttributeVersion attributeVersion;
    private Set<Long> codedTags;
 
-   public SearchTag(AttributeVersion attributeVersion) {
-      this.attributeVersion = attributeVersion;
+   public SearchTag(int attrId, long gamma_id) {
+      this.attributeVersion = new AttributeVersion(attrId, gamma_id);
       this.codedTags = new HashSet<Long>();
    }
 

@@ -19,8 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.search.engine.Options;
@@ -33,11 +31,13 @@ import org.eclipse.osee.framework.search.engine.data.SearchTag;
  */
 public class SearchTagDataStore {
 
-   private static final String INSERT_SEARCH_TAG =
-         "insert into osee_search_tags ost1 (ost1.attr_id, ost1.gamma_id, ost1.coded_tag_id) values (?,?,?)";
+   private static final String BASE_INSERT_FOR_SEARCH_TAG =
+         "INSERT INTO osee.osee_search_tags (attr_id, gamma_id, coded_tag_id) select ?, ?, ? %s where 0 = (select count(1) from osee.osee_search_tags where attr_id=? and gamma_id=? and coded_tag_id=?)";
 
-   private static final String DELETE_SEARCH_TAGS =
-         "delete from osee_search_tags ost1 where ost1.attr_id = ? and ost1.gamma_id = ?";
+   // Initialized at runtime based on connection
+   private static String INSERT_SEARCH_TAG = null;
+
+   private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where attr_id = ? and gamma_id = ?";
 
    private static final String SELECT_SEARCH_TAGS =
          "select ost1.attr_id, ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
@@ -71,6 +71,24 @@ public class SearchTagDataStore {
       return updated;
    }
 
+   public static int storeTags(Collection<SearchTag> searchTags) throws Exception {
+      return storeTags(searchTags.toArray(new SearchTag[searchTags.size()]));
+   }
+
+   private static void checkSQLInitialized(Connection connection) throws SQLException {
+      if (INSERT_SEARCH_TAG == null) {
+         String value = "";
+         String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
+         if (dbName.contains("mysql") || dbName.contains("oracle")) {
+            value = "FROM DUAL";
+         } else if (dbName.contains("derby")) {
+            value = "FROM SYSIBM.SYSDUMMY1";
+         }
+         // Postgres doesn't require dummy table
+         INSERT_SEARCH_TAG = String.format(BASE_INSERT_FOR_SEARCH_TAG, value);
+      }
+   }
+
    public static int storeTags(SearchTag... searchTags) throws SQLException {
       int updated = 0;
       if (searchTags != null && searchTags.length > 0) {
@@ -81,10 +99,13 @@ public class SearchTagDataStore {
             for (SearchTag searchTag : searchTags) {
                for (Long codedTag : searchTag.getTags()) {
                   data.add(new Object[] {SQL3DataType.INTEGER, searchTag.getAttrId(), SQL3DataType.BIGINT,
-                        searchTag.getGamma_id(), SQL3DataType.BIGINT, codedTag});
+                        searchTag.getGamma_id(), SQL3DataType.BIGINT, codedTag, SQL3DataType.INTEGER,
+                        searchTag.getAttrId(), SQL3DataType.BIGINT, searchTag.getGamma_id(), SQL3DataType.BIGINT,
+                        codedTag});
                }
             }
             connection = OseeDbConnection.getConnection();
+            checkSQLInitialized(connection);
             updated = ConnectionHandler.runPreparedUpdate(connection, INSERT_SEARCH_TAG, data);
          } finally {
             if (connection != null && connection.isClosed() != true) {
@@ -102,7 +123,7 @@ public class SearchTagDataStore {
    public static Set<IAttributeLocator> fetchTagEntries(Options options, Long... codedTags) throws Exception {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
       for (Long codedTag : codedTags) {
-         executeQuery(getQuery(options), new IRowProcessor() {
+         DatabaseUtil.executeQuery(getQuery(options), new IRowProcessor() {
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
                toReturn.add(new AttributeVersion(resultSet.getInt("attr_id"), resultSet.getLong("gamma_id")));
@@ -110,22 +131,5 @@ public class SearchTagDataStore {
          }, SQL3DataType.BIGINT, codedTag);
       }
       return toReturn;
-   }
-
-   private static void executeQuery(String sql, IRowProcessor processor, Object... data) throws Exception {
-      Connection connection = null;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
-         while (chStmt.next()) {
-            processor.processRow(chStmt.getRset());
-         }
-      } finally {
-         DbUtil.close(chStmt);
-         if (connection != null && connection.isClosed() != true) {
-            connection.close();
-         }
-      }
    }
 }
