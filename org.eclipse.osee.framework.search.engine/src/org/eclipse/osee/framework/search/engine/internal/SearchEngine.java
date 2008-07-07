@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
+import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore;
+import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore.AttributeData;
 
 /**
  * @author Roberto E. Escobar
@@ -28,12 +31,16 @@ public class SearchEngine implements ISearchEngine {
    public String search(String searchString, Options options) throws Exception {
       AttributeSearch attributeSearch = new AttributeSearch(searchString, options);
       Set<IAttributeLocator> attributeLocators = attributeSearch.findMatches();
+      List<AttributeData> attributeDatas = AttributeDataStore.getAttribute(attributeLocators);
+      for (AttributeData attributeData : attributeDatas) {
+         String value = attributeData.getValue();
+         if (value.contains(searchString)) {
+            System.out.println("Matches: " + attributeData.getArtId());
+         }
 
-      for (IAttributeLocator attributeLocator : attributeLocators) {
          // GET ACTUAL ATTRIBUTE CONTENT
          // Perform Second Pass Search -- this needs to be extremely fast;
       }
       return "12345,2";
    }
-
 }
