@@ -17,9 +17,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public class ReportData implements Serializable {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 6645261625619889708L;
 
    private List<String> headers;

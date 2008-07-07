@@ -8,14 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.logging;
 
 import java.util.List;
 import java.util.logging.Level;
 
 /**
- * @author afinkbei
+ * @author Andrew M. Finkbeiner
  */
 public class OseeLog {
 

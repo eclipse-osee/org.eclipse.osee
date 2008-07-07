@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.logging;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * @author afinkbei
+ * @author Andrew M. Finkbeiner
  */
 class StatusManager {
    List<IStatusListener> listeners;

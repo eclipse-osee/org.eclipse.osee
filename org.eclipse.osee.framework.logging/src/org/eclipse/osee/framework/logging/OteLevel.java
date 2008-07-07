@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.logging;
 
 import java.util.logging.Level;
 
 /**
- * @author osee
+ * @author Andrew M. Finkbeiner
  */
 public class OteLevel extends Level {
 

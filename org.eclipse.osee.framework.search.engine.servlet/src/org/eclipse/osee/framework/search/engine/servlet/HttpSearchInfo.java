@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.search.engine.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class HttpSearchInfo {
+class HttpSearchInfo {
 
    private String queryString;
    private Options options;

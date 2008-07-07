@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.logging;
 
 /**
- * @author afinkbei
+ * @author Andrew M. Finkbeiner
  */
 public interface IStatusListener {
    void onStatus(IHealthStatus status);
