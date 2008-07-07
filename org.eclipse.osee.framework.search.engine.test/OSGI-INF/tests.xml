@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="search.engine.tests">
+	<implementation class="org.eclipse.osee.framework.search.engine.test.AllSearchEngineTests"/>
+	<service>
+		<provide interface="junit.framework.Test"/>
+	</service>	
+</component>
