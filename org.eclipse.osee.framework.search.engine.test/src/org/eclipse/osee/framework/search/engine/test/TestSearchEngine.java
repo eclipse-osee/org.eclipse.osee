@@ -85,7 +85,7 @@ public class TestSearchEngine extends TestCase {
 
       // tag it
       ISearchTagger tagger = Activator.getInstance().getSearchTagger();
-      tagger.submitForTagging(3, 4);
+      tagger.tagAttribute(3, 4);
 
       // check tagged
 

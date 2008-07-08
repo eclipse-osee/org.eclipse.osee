@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.search.engine.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -62,7 +63,7 @@ public class SearchEngineServlet extends HttpServlet {
       try {
          int attrId = Integer.parseInt(request.getParameter("attrId"));
          long gammaId = Long.parseLong(request.getParameter("gammaId"));
-         Activator.getInstance().getSearchTagger().submitForTagging(attrId, gammaId);
+         Activator.getInstance().getSearchTagger().tagAttribute(attrId, gammaId);
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -72,5 +73,18 @@ public class SearchEngineServlet extends HttpServlet {
       }
       response.getWriter().flush();
       response.getWriter().close();
+   }
+
+   /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      InputStream inputStream = null;
+      try {
+         inputStream = req.getInputStream();
+      } catch (Exception ex) {
+
+      }
    }
 }

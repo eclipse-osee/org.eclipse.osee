@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -30,6 +32,8 @@ import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore.AttributeData;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Roberto E. Escobar
@@ -42,8 +46,31 @@ public class SearchEngineTagger implements ISearchTagger {
       this.executor = Executors.newSingleThreadExecutor();
    }
 
-   public void submitForTagging(int attrId, long gammaId) {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagAttribute(int, long)
+    */
+   @Override
+   public void tagAttribute(int attrId, long gammaId) {
       this.executor.execute(new TagRunnable(attrId, gammaId));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagFromXmlStream(java.io.InputStream)
+    */
+   @Override
+   public void tagFromXmlStream(InputStream inputStream) {
+      try {
+         Document document = Jaxp.readXmlDocument(inputStream);
+         List<Element> elements = Jaxp.getChildDirects(document.getDocumentElement(), "attribute");
+         for (Element element : elements) {
+            String attrId = element.getAttribute("attrId");
+            String gammaId = element.getAttribute("gammaId");
+            if (Strings.isValid(attrId) && Strings.isValid(gammaId)) {
+               tagAttribute(Integer.parseInt(attrId), Long.parseLong(gammaId));
+            }
+         }
+      } catch (Exception ex) {
+      }
    }
    private final class TagRunnable implements Runnable, ITagCollector {
       private SearchTag searchTag;

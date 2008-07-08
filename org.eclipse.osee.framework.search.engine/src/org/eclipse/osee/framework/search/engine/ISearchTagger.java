@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
+import java.io.InputStream;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface ISearchTagger {
 
-   public void submitForTagging(int attrId, long gammaId);
+   public void tagAttribute(int attrId, long gammaId);
+
+   public void tagFromXmlStream(InputStream inputStream);
 }
