@@ -10,20 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -34,29 +26,21 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ArtifactChange extends RevisionChange {
    private static final long serialVersionUID = 1L;
-   static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChange.class);
-   private static final ArtifactPersistenceManager artifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
-   private String name;
    private TransactionId baseParentTransactionId;
    private TransactionId headParentTransactionId;
    private TransactionId baselineTransactionId;
    private TransactionId fromTransactionId;
    private TransactionId toTransactionId;
-   private TransactionId lastGoodTransactionId; // Only for deleted artifacts
-   private ArtifactType descriptor;
-
    transient private Artifact artifact;
-   private int artId;
-
    transient private Artifact conflictingModArtifact;
+
    private int conflictingArtId;
    private TransactionId conflictingArtTransactionId;
    private TransactionId deletedTransactionId;
 
    @Override
    public String toString() {
-      return "ArtId: " + getArtId() + " Type: " + getChangeType() + " Gamma: " + getGammaId() + " - " + getName();
+      return " Type: " + getChangeType() + " Gamma: " + getGammaId() + " - " + getName();
    }
 
    /**
@@ -65,44 +49,6 @@ public class ArtifactChange extends RevisionChange {
    protected ArtifactChange() {
       this.artifact = null;
       this.conflictingModArtifact = null;
-   }
-
-   /**
-    * When using this constructor only the gammaId, artId and modification values will not be null for this object.
-    * 
-    * @param artId
-    * @param modificationId
-    * @param gammaId
-    */
-   public ArtifactChange(ChangeType changeType, int artId, int modificationId, int gammaId, TransactionId toTransactionId, TransactionId fromTransactionId, ArtifactType descriptor) {
-      this(changeType, ModificationType.getMod(modificationId), null, descriptor, null, null, null, null,
-            toTransactionId, fromTransactionId, artId, gammaId, null);
-   }
-
-   /**
-    * Create an <code>ArtifactChange</code> object for a deleted artifact.
-    * 
-    * @param name The last name for the Artifact before it was deleted.
-    * @param descriptor The descriptor for the Artifact.
-    */
-   public ArtifactChange(ChangeType changeType, String name, ArtifactType descriptor, int artId, int gammaId, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId lastGoodTransactionId, TransactionId deletedTransactionId) {
-      this(changeType, DELETED, name, descriptor, null, baseParentTransactionId, headParentTransactionId,
-            lastGoodTransactionId, lastGoodTransactionId, lastGoodTransactionId, artId, gammaId, lastGoodTransactionId);
-
-      this.deletedTransactionId = deletedTransactionId;
-   }
-
-   /**
-    * Create an <code>ArtifactChange</code> object for a new or modified artifact.
-    * 
-    * @param modtype The type of artifact modification to create.
-    * @param artifact The artifact this artifact change describes.
-    * @param fromTransactionId TODO
-    */
-   public ArtifactChange(ChangeType changeType, ModificationType modtype, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int gammaId) {
-      this(changeType, modtype, artifact.getDescriptiveName(), artifact.getArtifactType(), artifact,
-            baseParentTransactionId, headParentTransactionId, baselineTransactionId, fromTransactionId,
-            toTransactionId, artifact.getArtId(), gammaId, null);
    }
 
    /**
@@ -115,53 +61,27 @@ public class ArtifactChange extends RevisionChange {
     * @param artId
     * @param lastGoodTransactionId TODO
     */
-   public ArtifactChange(ChangeType changeType, ModificationType modtype, String name, ArtifactType descriptor, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, int gammaId, TransactionId lastGoodTransactionId) {
+   public ArtifactChange(ChangeType changeType, ModificationType modtype, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int gammaId) {
       super(changeType, modtype, gammaId);
-
-      this.name = name;
-      this.descriptor = descriptor;
       this.artifact = artifact;
       this.baseParentTransactionId = baseParentTransactionId;
       this.headParentTransactionId = headParentTransactionId;
       this.baselineTransactionId = baselineTransactionId == null ? toTransactionId : baselineTransactionId;
       this.fromTransactionId = fromTransactionId;
       this.toTransactionId = toTransactionId;
-      this.artId = artId;
-      this.lastGoodTransactionId = lastGoodTransactionId;
    }
 
    /**
     * @return Returns the image for the artifact type overlayed with the modtype image.
     */
    public Image getImage() {
-      return descriptor.getImage(getChangeType(), getModType());
+      return artifact.getArtifactType().getImage(getChangeType(), getModType());
    }
 
    /**
-    * @return Returns the artifact. If the modtype is deleted, this will be the version just prior to deletion.
-    * @throws SQLException
+    * @return Returns the artifact.
     */
-   public Artifact getArtifact() throws OseeCoreException, SQLException {
-      TransactionId transactionId =
-            (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
-
-      if (artifact == null && transactionId != null) {
-         artifact = loadArtifact(transactionId, artifact, artId);
-      }
-      return artifact;
-   }
-
-   private Artifact loadArtifact(TransactionId transactionId, Artifact artifact, int artId) throws OseeCoreException, SQLException {
-      // the memo is checked on the cached artifact in case our original artifact was editable,
-      // modified, and no longer on the transaction
-      try {
-         if (artifact == null || artifact.getTransactionNumber() != transactionId.getTransactionNumber() || (artifact.getTransactionNumber() == transactionId.getTransactionNumber() && artifact.isLive() != transactionId.isEditable())) {
-            artifact = artifactPersistenceManager.getArtifactFromId(artId, transactionId);
-         }
-      } catch (IllegalArgumentException ex) {
-         throw new IllegalStateException(
-               "Unexpected exception for transaction id " + transactionId + " and mod type " + getModType(), ex);
-      }
+   public Artifact getArtifact() {
       return artifact;
    }
 
@@ -183,27 +103,14 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the name.
     */
    public String getName() {
-      return name;
-   }
-
-   /**
-    * @return Returns the artId.
-    */
-   public int getArtId() {
-      return artId;
+      return artifact.getInternalDescriptiveName();
    }
 
    /**
     * @return true if conflictingModArtifact is not null else false.
     */
    public boolean hasConflictingModArtifact() {
-      boolean hasConflictedArtifact = false;
-      try {
-         hasConflictedArtifact = getConflictingModArtifact() != null;
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
-      return hasConflictedArtifact;
+      return getConflictingModArtifact() != null;
    }
 
    /**
@@ -224,7 +131,6 @@ public class ArtifactChange extends RevisionChange {
     */
    public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException, BranchDoesNotExist {
       this.conflictingModArtifact = conflictingModArtifact;
-      this.conflictingArtId = conflictingModArtifact.getArtId();
       this.conflictingArtTransactionId =
             TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
                   conflictingModArtifact.getTransactionNumber());
@@ -270,12 +176,5 @@ public class ArtifactChange extends RevisionChange {
          return this;
       }
       return null;
-   }
-
-   /**
-    * @return the deletedTransactionId
-    */
-   public TransactionId getDeletedTransactionId() {
-      return deletedTransactionId;
    }
 }

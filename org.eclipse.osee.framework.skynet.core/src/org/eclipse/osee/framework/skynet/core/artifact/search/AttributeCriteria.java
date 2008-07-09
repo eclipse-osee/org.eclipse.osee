@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.AttributeJoinQuery;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
-import org.eclipse.osee.framework.skynet.core.utility.JoinUtility.AttributeJoinQuery;
 
 /**
  * @author Ryan D. Brooks

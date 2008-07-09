@@ -61,7 +61,7 @@ public class ConflictStatusManager {
          if (statusSet.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = statusSet.getInt("status");
-            if ((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) {
+            if (((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITED.getValue()) {
                if (intStatus == Status.RESOLVED.getValue()) {
                   intStatus = Status.OUT_OF_DATE.getValue();
                }

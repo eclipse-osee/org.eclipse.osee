@@ -36,6 +36,7 @@ public class AttributeChanged extends Change {
    private int attrTypeId;
    private AttributeType dynamicAttributeDescriptor;
    private ArtifactChange artifactChange;
+   private ModificationType artModType;
 
    /**
     * @param sourceGamma
@@ -49,12 +50,13 @@ public class AttributeChanged extends Change {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId) {
+   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType) {
       super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
+      this.artModType = artModType;
    }
 
    /**
@@ -134,9 +136,9 @@ public class AttributeChanged extends Change {
    private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifactChange == null) {
          artifactChange =
-               new ArtifactChange(getChangeType(), getModificationType(), getArtifactName(),
-                     ArtifactTypeManager.getType(getArtTypeId()), getArtifact(), null, null, getFromTransactionId(),
-                     getFromTransactionId(), getToTransactionId(), getArtId(), getGamma(), null);
+               new ArtifactChange(getChangeType(), getArtModType(), 
+                     getArtifact(), null, null, getFromTransactionId(),
+                     getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
    }
@@ -174,5 +176,12 @@ public class AttributeChanged extends Change {
    @Override
    public Image getItemKindImage() throws IllegalArgumentException, SQLException {
       return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
+   }
+
+   /**
+    * @return the artModType
+    */
+   public ModificationType getArtModType() {
+      return artModType;
    }
 }

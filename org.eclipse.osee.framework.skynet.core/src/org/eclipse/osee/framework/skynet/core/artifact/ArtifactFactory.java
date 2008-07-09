@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
+import java.util.Date;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -69,11 +70,11 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, boolean active) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, Date time, boolean active) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
 
       artifact.setArtId(artId);
-      artifact.initPersistenceData(gammaId, transactionId, modType, active);
+      artifact.initPersistenceData(gammaId, transactionId, modType, time, active);
 
       ArtifactCache.cache(artifact);
       return artifact;

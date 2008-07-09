@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
-/**
+/*
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
@@ -43,8 +43,6 @@ public class AttributeConflict extends Conflict {
    public static final String EMPTY_XML = "<w:p><w:r><w:t></w:t></w:r></w:p>";
    public final static String NO_VALUE = "";
    public final static String STREAM_DATA = "Stream data";
-   private String sourceDiffFile = null;
-   private String destDiffFile = null;
    private String sourceDestDiffFile = null;
    private final int attrId;
    private final int attrTypeId;
@@ -204,27 +202,30 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getDestDisplayData() {
-      return isWordAttribute ? STREAM_DATA : destObject.toString();
+   public String getDestDisplayData() throws OseeCoreException, SQLException {
+      return isWordAttribute ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
    }
 
    @Override
-   public String getSourceDisplayData() {
-      return isWordAttribute ? STREAM_DATA : sourceObject.toString();
+   public String getSourceDisplayData() throws OseeCoreException, SQLException {
+      return isWordAttribute ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
    }
 
    @Override
    public boolean mergeEqualsSource() throws OseeCoreException, SQLException {
+      if (getMergeObject() == null || getSourceObject() == null) return false;
       return (getMergeObject().equals(getSourceObject()));
    }
 
    @Override
    public boolean mergeEqualsDestination() throws OseeCoreException, SQLException {
+      if (getMergeObject() == null || getDestObject() == null) return false;
       return (getMergeObject().equals(getDestObject()));
    }
 
    @Override
    public boolean sourceEqualsDestination() throws OseeCoreException, SQLException {
+      if (getSourceObject() == null || getDestObject() == null) return false;
       return (getSourceObject().equals(getDestObject()));
    }
 
@@ -260,7 +261,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean setToSource() throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge()) return false;
+      if (!okToOverwriteMerge() || getSourceObject() == null) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
       getArtifact().persistAttributes();
@@ -269,7 +270,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean setToDest() throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge()) return false;
+      if (!okToOverwriteMerge() || getDestObject() == null) return false;
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
       getArtifact().persistAttributes();
@@ -282,8 +283,7 @@ public class AttributeConflict extends Conflict {
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
-         getAttribute().setNotDirty();
-
+         getArtifact().persistAttributes();
       } else {
          getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), NO_VALUE);
          getArtifact().persistAttributes();
@@ -291,7 +291,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   protected void markStatusToReflectEdit() throws OseeCoreException, SQLException {
+   public void markStatusToReflectEdit() throws OseeCoreException, SQLException {
       if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
    }
 
@@ -306,7 +306,7 @@ public class AttributeConflict extends Conflict {
          return NO_VALUE;
       }
       if (!isWordAttribute) {
-         return getMergeObject().toString();
+         return getMergeObject() == null ? null : getMergeObject().toString();
       }
       return AttributeConflict.STREAM_DATA;
    }
@@ -319,34 +319,6 @@ public class AttributeConflict extends Conflict {
    @Override
    public ConflictType getConflictType() {
       return ConflictType.ATTRIBUTE;
-   }
-
-   /**
-    * @return the sourceDiffFile
-    */
-   public String getSourceDiffFile() {
-      return sourceDiffFile;
-   }
-
-   /**
-    * @param sourceDiffFile the sourceDiffFile to set
-    */
-   public void setSourceDiffFile(String sourceDiffFile) {
-      this.sourceDiffFile = sourceDiffFile;
-   }
-
-   /**
-    * @return the destDiffFile
-    */
-   public String getDestDiffFile() {
-      return destDiffFile;
-   }
-
-   /**
-    * @param destDiffFile the destDiffFile to set
-    */
-   public void setDestDiffFile(String destDiffFile) {
-      this.destDiffFile = destDiffFile;
    }
 
    /**

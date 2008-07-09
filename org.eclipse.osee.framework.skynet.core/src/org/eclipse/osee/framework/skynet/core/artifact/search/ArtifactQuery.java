@@ -56,6 +56,10 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist {
       try {
+         Artifact artifact = ArtifactCache.getActive(artId, branch.getBranchId());
+         if (artifact != null) {
+            return artifact;
+         }
          return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
       } catch (MultipleArtifactsExist ex) {
          // it is not possible to have two artifacts with the same artifact id

@@ -377,10 +377,6 @@ public class RelationLink {
       return relationSide == RelationSide.SIDE_A ? aBranch : bBranch;
    }
 
-   public void setDirty(boolean isDirty) {
-      dirty = isDirty;
-   }
-
    public void setPersistenceIds(int relationId, int gammaId) {
       this.relationId = relationId;
       this.gammaId = gammaId;

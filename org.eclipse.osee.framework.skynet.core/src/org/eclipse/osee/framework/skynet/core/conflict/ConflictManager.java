@@ -44,7 +44,7 @@ public class ConflictManager {
       List<Conflict> remainingConflicts = new ArrayList<Conflict>();
       if (originalConflictsExist()) {
          for (Conflict conflict : getOriginalConflicts()) {
-            if (!conflict.statusResolved()) {
+            if (!conflict.statusResolved() && !conflict.statusCommited() && !conflict.statusInformational()) {
                remainingConflicts.add(conflict);
             }
          }

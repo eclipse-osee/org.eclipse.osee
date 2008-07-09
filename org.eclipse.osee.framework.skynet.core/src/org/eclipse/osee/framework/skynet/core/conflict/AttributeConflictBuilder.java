@@ -63,9 +63,11 @@ public class AttributeConflictBuilder extends ConflictBuilder {
       for (Integer integer : artIdSet) {
          if (integer.intValue() == artId) return null;
       }
-      return new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType,
-            ChangeType.CONFLICTING, sourceValue, destValue, attrId, attrTypeId, mergeBranch, sourceBranch, destBranch);
-
+      AttributeConflict attributeConflict = new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType,
+                  ChangeType.CONFLICTING, sourceValue, destValue, attrId, attrTypeId, mergeBranch, sourceBranch,
+                  destBranch);
+      if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) return null;
+      return attributeConflict;
    }
 
 }

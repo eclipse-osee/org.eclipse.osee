@@ -99,7 +99,7 @@ public final class Artifacts {
          @Override
          protected void handleTxWork() throws OseeCoreException, SQLException {
             for (Artifact art : artifacts)
-               art.purge();
+               art.purgeFromBranch();
          }
 
       };

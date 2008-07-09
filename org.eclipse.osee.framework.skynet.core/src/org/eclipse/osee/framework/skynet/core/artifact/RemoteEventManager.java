@@ -15,6 +15,7 @@ import java.rmi.server.ExportException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
 import org.eclipse.osee.framework.jini.util.OseeJini;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ASkynetEventListener;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
@@ -57,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
@@ -69,6 +70,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
@@ -89,9 +91,6 @@ public class RemoteEventManager implements IServiceLookupListener {
    private ASkynetEventListener listener;
    private ISkynetEventListener myReference;
 
-   private SkynetEventManager eventManager;
-   private static BranchPersistenceManager branchPersistenceManager;
-
    private static final RemoteEventManager instance = new RemoteEventManager();
 
    private RemoteEventManager() {
@@ -106,7 +105,6 @@ public class RemoteEventManager implements IServiceLookupListener {
       try {
          this.listener = new EventListener();
          this.myReference = (ISkynetEventListener) OseeJini.getRemoteReference(listener);
-         this.eventManager = SkynetEventManager.getInstance();
 
          addListenerForEventService();
       } catch (ExportException e) {
@@ -172,7 +170,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       try {
          logger.log(Level.INFO, "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
          skynetEventService.register(myReference);
-         eventManager.kick(new SkynetServiceEvent(this, true));
+         SkynetEventManager.getInstance().kick(new SkynetServiceEvent(this, true));
 
       } catch (ExportException e) {
          logger.log(Level.SEVERE, e.toString(), e);
@@ -184,7 +182,7 @@ public class RemoteEventManager implements IServiceLookupListener {
    private void disconnectService(Exception e) {
       logger.log(Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
       skynetEventService = null;
-      eventManager.kick(new SkynetServiceEvent(this, false));
+      SkynetEventManager.getInstance().kick(new SkynetServiceEvent(this, false));
    }
 
    /*
@@ -281,7 +279,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   if (event instanceof NetworkRenameBranchEvent) {
                      int branchId = ((NetworkRenameBranchEvent) event).getBranchId();
                      try {
-                        Branch branch = branchPersistenceManager.getBranch(branchId);
+                        Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         eventManager.kick(new RemoteRenameBranchEvent(this, branchId, branch.getBranchName(),
@@ -293,11 +291,11 @@ public class RemoteEventManager implements IServiceLookupListener {
                      eventManager.kick(new RemoteNewBranchEvent(this, ((NetworkNewBranchEvent) event).getBranchId()));
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
-                     branchPersistenceManager.removeBranchFromCache(branchId);
+                     BranchPersistenceManager.getInstance().removeBranchFromCache(branchId);
                      eventManager.kick(new RemoteDeletedBranchEvent(this, branchId));
                   } else if (event instanceof NetworkCommitBranchEvent) {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
-                     branchPersistenceManager.removeBranchFromCache(branchId);
+                     BranchPersistenceManager.getInstance().removeBranchFromCache(branchId);
                      eventManager.kick(new RemoteCommitBranchEvent(this, branchId));
                   } else if (event instanceof NetworkBroadcastEvent) {
                      handleBroadcastMessageEvent((NetworkBroadcastEvent) event);
@@ -372,39 +370,97 @@ public class RemoteEventManager implements IServiceLookupListener {
          RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
          Branch branch = BranchPersistenceManager.getInstance().getBranch(event.getBranchId());
          org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType modType = null;
-         int aArtId = event.getArtAId();
-         int bArtId = event.getArtBId();
-         RelationLink link = RelationManager.getLoadedRelation(relationType, aArtId, bArtId, branch, branch);
+         Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
+         Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
+         boolean aArtifactLoaded = aArtifact != null;
+         boolean bArtifactLoaded = bArtifact != null;
 
-         if (link != null) {
+         if (aArtifactLoaded || bArtifactLoaded) {
+            //            if (aArtifactLoaded) {
+            //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", aArtifact.toString(),
+            //                     aArtifact.getArtifactTypeName(), aArtifact.getArtId()));
+            //               aArtifact.reloadArtifact();
+            //            }
+            //            if (bArtifactLoaded) {
+            //               OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s - %s - %d", bArtifact.toString(),
+            //                     bArtifact.getArtifactTypeName(), bArtifact.getArtId()));
+            //               bArtifact.reloadArtifact();
+            //            }
+            //TODO Maybe just send a link change refresh event
             if (event instanceof NetworkRelationLinkModifiedEvent) {
-               NetworkRelationLinkModifiedEvent networkRelationLinkModifiedEvent =
-                     (NetworkRelationLinkModifiedEvent) event;
-               link.setAOrder(networkRelationLinkModifiedEvent.getAOrder());
-               link.setBOrder(networkRelationLinkModifiedEvent.getBOrder());
-               link.setRationale(networkRelationLinkModifiedEvent.getRationale(), false);
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Changed;
+               RelationLink relation =
+                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                           event.getArtAId(), event.getArtBId(), branch, branch);
+
+               if (relation != null) {
+                  boolean aOrderChanged =
+                        ((NetworkRelationLinkModifiedEvent) event).getAOrder() != relation.getAOrder();
+                  boolean bOrderChanged =
+                        ((NetworkRelationLinkModifiedEvent) event).getBOrder() != relation.getBOrder();
+                  if (aOrderChanged) {
+                     relation.setAOrder(((NetworkRelationLinkModifiedEvent) event).getAOrder());
+                     if (bArtifactLoaded) {
+                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
+                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     }
+                  }
+                  if (bOrderChanged) {
+                     relation.setBOrder(((NetworkRelationLinkModifiedEvent) event).getBOrder());
+                     if (aArtifactLoaded) {
+                        RelationManager.sortRelations(aArtifact, relation.getRelationType(),
+                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     }
+                  }
+                  relation.setRationale(((NetworkRelationLinkModifiedEvent) event).getRationale(), false);
+                  relation.setNotDirty();
+               }
             } else if (event instanceof NetworkRelationLinkDeletedEvent) {
-               link.markAsDeleted();
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Deleted;
+               RelationLink relation =
+                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                           event.getArtAId(), event.getArtBId(), branch, branch);
+               if (relation != null) {
+                  relation.deleteWithoutDirtyAndEvent();
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
-            if (ArtifactCache.getActive(aArtId, branch.getBranchId()) != null || ArtifactCache.getActive(bArtId,
-                  branch.getBranchId()) != null) {
-               NetworkNewRelationLinkEvent newRelationLinkEvent = (NetworkNewRelationLinkEvent) event;
-               String rationale = newRelationLinkEvent.getRationale();
-               Artifact aArtifact = ArtifactQuery.getArtifactFromId(event.getArtAId(), branch);
-               Artifact bArtifact = ArtifactQuery.getArtifactFromId(event.getArtBId(), branch);
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
+               RelationLink relation =
+                     RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
+                           event.getArtAId(), event.getArtBId(), branch, branch);
 
-               RelationManager.addRelation(relationType, aArtifact, bArtifact, rationale);
-               link = RelationManager.getLoadedRelation(relationType, aArtId, bArtId, branch, branch);
+               if (relation == null) {
+                  relation =
+                        new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
+                              event.getRelId(), event.getGammaId(),
+                              ((NetworkNewRelationLinkEvent) event).getRationale(),
+                              ((NetworkNewRelationLinkEvent) event).getAOrder(),
+                              ((NetworkNewRelationLinkEvent) event).getBOrder());
+                  RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+                  RelationManager.manageRelation(relation, RelationSide.SIDE_B);
+                  if (bArtifactLoaded) {
+                     RelationManager.sortRelations(bArtifact, relation.getRelationType(),
+                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                  }
+                  if (aArtifactLoaded) {
+                     RelationManager.sortRelations(aArtifact, relation.getRelationType(),
+                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                  }
+               }
             }
          }
+         RelationLink link =
+               RelationManager.getLoadedRelation(relationType, event.getArtAId(), event.getArtBId(), branch, branch);
 
-         link.setNotDirty();
+         if (link != null) {
          localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
                link.getASideName(), modType, RemoteEventManager.instance));
+         } else {
+            OseeLog.log(
+                  SkynetActivator.class,
+                  Level.FINE,
+                  "Link was null for artifacts A:" + event.getArtAId() + " B:" + event.getArtBId() + " from the remote event service");
+         }
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }

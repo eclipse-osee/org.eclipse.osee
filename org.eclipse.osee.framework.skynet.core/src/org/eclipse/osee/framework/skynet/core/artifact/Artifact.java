@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -84,6 +86,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int transactionId;
    private int artId;
    private int gammaId;
+   private Date lastModified;
    private boolean linksLoaded;
 
    protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
@@ -377,7 +380,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * creates a new child using descriptor, relates it to its parent, and persists the child
     * 
     * @param artifactType
-    * @param name TODO
+    * @param name
     * @throws SQLException
     * @throws OseeCoreException
     */
@@ -451,7 +454,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * The use of this method is discouraged since it directly returns Attributres.
+    * The use of this method is discouraged since it directly returns Attributes.
     * 
     * @param <T>
     * @param attributeTypeName
@@ -460,11 +463,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws SQLException {
       ensureAttributesLoaded();
+      List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
       Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
       if (selectedAttributes == null) {
          return java.util.Collections.emptyList();
       }
-      return Collections.castAll(selectedAttributes);
+      for (Attribute<?> attribute : selectedAttributes) {
+         if (!attribute.isDeleted()) {
+            notDeltedAttributes.add(attribute);
+      }
+      }
+      return Collections.castAll(notDeltedAttributes);
    }
 
    /**
@@ -531,8 +540,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
       ensureAttributesLoaded();
-      Collection<Attribute<?>> soleAttributes = attributes.getValues(attributeTypeName);
-      if (soleAttributes == null) {
+      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+      if (soleAttributes.size() == 0) {
          return null;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(String.format(
@@ -566,8 +575,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, SQLException {
       ensureAttributesLoaded();
-      Collection<Attribute<?>> soleAttributes = attributes.getValues(attributeTypeName);
-      if (soleAttributes == null) {
+      List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
+      if (soleAttributes.size() == 0) {
          throw new AttributeDoesNotExist(
                "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getHumanReadableId());
       } else if (soleAttributes.size() > 1) {
@@ -612,7 +621,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws MultipleAttributesExist, SQLException {
       try {
-         return getSoleAttributeValue(attributeTypeName);
+         T value = getSoleAttributeValue(attributeTypeName);
+         if (value == null) {
+            OseeLog.log(
+                  SkynetActivator.class,
+                  Level.SEVERE,
+                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getDescriptiveName() + "\"");
+            return defaultReturnValue;
+         }
+         return value;
       } catch (AttributeDoesNotExist ex) {
          return defaultReturnValue;
       }
@@ -707,8 +724,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param attributeTypeName
     * @param dataStrs
-    * @throws OseeCoreException TODO
-    * @throws SQLException TODO
+    * @throws OseeCoreException
     * @throws SQLException
     */
    public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws OseeCoreException, SQLException {
@@ -732,7 +748,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (dataStrs.size() == maxOccur && !storedNames.equals(dataStrs)) {
          String[] dataStrsArr = dataStrs.toArray(new String[dataStrs.size()]);
          int x = 0;
-         for (Attribute<?> attribute : attributes.getValues(attributeTypeName)) {
+         for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
             if (attribute instanceof CharacterBackedAttribute) {
                ((CharacterBackedAttribute<?>) attribute).setFromString(dataStrsArr[x++]);
             }
@@ -750,7 +766,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       // Remove items that aren't selected anymore
       for (String stored : storedNames) {
          if (!dataStrs.contains(stored)) {
-            for (Attribute<?> attribute : attributes.getValues(attributeTypeName)) {
+            for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
                if (attribute.toString().equals(stored)) {
                   attribute.delete();
                }
@@ -784,14 +800,41 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       ensureAttributesLoaded();
 
       List<String> items = new ArrayList<String>();
-      Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
-
-      if (selectedAttributes != null) {
-         for (Attribute<?> attribute : selectedAttributes) {
-            items.add(attribute.toString());
-         }
+      for (Attribute<?> attribute : getAttributes(attributeTypeName)) {
+         items.add(attribute.toString());
       }
       return items;
+   }
+
+   public String getInternalDescriptiveName() {
+      String name = getInternalAttributeValue("Name");
+      if (name.equals("")) return UNNAMED;
+      return name;
+   }
+
+   /**
+    * Return the String value of the first found attributeTypeName attribute whether deleted or not.
+    * 
+    * @param attributeTypeName
+    * @return
+    */
+   public String getInternalAttributeValue(String attributeTypeName) {
+      try {
+         if (!isAttributeTypeValid(attributeTypeName)) {
+            throw new IllegalStateException(String.format(
+                  "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
+                  getArtifactTypeName(), getGuid()));
+         }
+         for (Attribute<?> attribute : internalGetAttributes()) {
+            if (attribute.getAttributeType().getName().equals(attributeTypeName)) {
+               return (String) attribute.getValue();
+            }
+         }
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         return ex.getLocalizedMessage();
+      }
+      return "";
    }
 
    public String getDescriptiveName() {
@@ -827,10 +870,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public void setNotDirty() {
+   public void setNotDirty() throws SQLException {
       dirty = false;
 
-      for (Attribute<?> attribute : attributes.getValues()) {
+      for (Attribute<?> attribute : internalGetAttributes()) {
          attribute.setNotDirty();
       }
    }
@@ -860,7 +903,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private boolean anAttributeIsDirty() throws SQLException {
-      for (Attribute<?> attribute : attributes.getValues()) {
+      for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             return true;
          }
@@ -869,12 +912,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Reverts this artifact back to the last state saved. This will have no effect if the artifact has never been saved.
+    * Reverts this artifact's attributes and relations back to the last state saved. This will have no effect if the
+    * artifact has never been saved.
     * 
     * @throws SQLException
     * @throws IllegalStateException if the artifact is deleted
     */
-   public void reloadArtifact() throws SQLException {
+   public void reloadAttributesAndRelations() throws SQLException {
       if (!isInDb()) return;
 
       prepareForReload();
@@ -1033,18 +1077,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
    }
 
-   /**
-    * Remove artifact from the database
-    * 
-    * @throws SQLException
-    */
-   public void purge() throws SQLException {
-      if (true) {
-         throw new UnsupportedOperationException("Purge has been disabled until further notice.");
-      }
-      ArtifactPersistenceManager.purgeArtifact(this);
-   }
-
    public boolean isDeleted() {
       return deleted;
    }
@@ -1131,7 +1163,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
+      try {
       RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
+      } catch (ArtifactDoesNotExist ex) {
+         throw new SQLException(ex);
+      }
    }
 
    /**
@@ -1140,8 +1176,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param relationSide
     * @param artifact
     * @throws SQLException
+    * @throws ArtifactDoesNotExist
+    * @throws ArtifactDoesNotExist
     */
-   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException, ArtifactDoesNotExist {
       // Delete all existing relations
       for (RelationLink relationLink : getRelations(relationSide)) {
          relationLink.delete();
@@ -1155,8 +1193,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param relationSide
     * @param artifacts
     * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
-   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws SQLException {
+   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws SQLException, ArtifactDoesNotExist {
       Collection<Artifact> currentlyRelated = getArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
@@ -1239,7 +1278,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       try {
          if (isDirty()) {
 
-            for (Attribute<?> attribute : attributes.getValues()) {
+            for (Attribute<?> attribute : internalGetAttributes()) {
                if (attribute.isDirty()) {
                   return new Result(true, "===> Dirty Attribute - " + attribute.getAttributeType().getName() + "\n");
                }
@@ -1267,61 +1306,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Save artifact, any of it's links specified, and any of the artifacts on the other side of the links that are dirty
-    */
-   public void saveArtifactsFromRelations(Set<IRelationEnumeration> links) throws SQLException {
-      saveRevertArtifactsFromRelations(links, false);
-   }
-
-   /**
-    * Revert artifact, any of it's links specified, and any of the artifacts on the other side of the links that are
-    * dirty
-    */
-   public void revertArtifactsFromRelations(Set<IRelationEnumeration> links) throws SQLException {
-      saveRevertArtifactsFromRelations(links, true);
-   }
-
-   @Deprecated
-   //  use persistAttributesAndLinks() instead
-   private void saveRevertArtifactsFromRelations(Set<IRelationEnumeration> links, boolean revert) throws SQLException {
-      Set<Artifact> artifactToManipulate = new HashSet<Artifact>();
-      artifactToManipulate.add(this);
-      Set<RelationLink> linksToManipulate = new HashSet<RelationLink>();
-
-      // Loop through all relations and collect all artifact to operate on
-      for (IRelationEnumeration side : links) {
-         for (Artifact artifact : getRelatedArtifacts(side)) {
-            artifactToManipulate.add(artifact);
-            // Check the links to this artifact
-            for (RelationLink link : getRelations(artifact)) {
-               linksToManipulate.add(link);
-            }
-         }
-      }
-      // Loop through all relations and persist/revert as necessary
-      for (RelationLink link : linksToManipulate) {
-         if (link.isDirty()) {
-            if (revert) {
-               link.delete();
-            } else {
-               link.persist();
-            }
-         }
-      }
-      // Loop through all artifacts and persist/revert as necessary
-      for (Artifact artifact : artifactToManipulate) {
-         if (revert) {
-            artifact.reloadArtifact();
-         } else {
-            artifact.persistAttributes();
-         }
-      }
-      // Persist link manager to ensure deleted links get persisted
-      //TODO: this defeats the whole purpose of a selective persist based on link type
-      persistRelations();
-   }
-
-   /**
     * Creates a new artifact and duplicates all of its attribute data.
     * 
     * @throws OseeCoreException
@@ -1329,6 +1313,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public Artifact duplicate(Branch branch) throws SQLException, OseeCoreException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
+      //we do this because attributes were added on creation to meet the minimium attribute requirements      
+      newArtifact.attributes.clear();
       copyAttributes(newArtifact);
       return newArtifact;
    }
@@ -1367,7 +1353,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws Exception {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
-      for (Attribute<?> attribute : attributes.getValues()) {
+      for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
                   attribute.getAttributeDataProvider().getData(), attribute.getAttrId(), attribute.getGammaId()));
@@ -1530,12 +1516,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public int getAttributeCount(String attributeTypeName) throws SQLException {
       ensureAttributesLoaded();
-
-      Collection<Attribute<?>> tempAttributes = attributes.getValues(attributeTypeName);
-      if (tempAttributes == null) {
-         return 0;
-      }
-      return tempAttributes.size();
+      return getAttributes(attributeTypeName).size();
    }
 
    void setArtId(int artifactId) {
@@ -1571,9 +1552,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelatedArtifactsAll(this);
    }
 
-   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean active) {
+   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, Date lastModified, boolean active) {
+      this.lastModified = lastModified;
       this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
       this.transactionId = active ? 0 : transactionId;
+   }
+
+   public Date getLastModified() throws OseeCoreException, SQLException {
+      return lastModified;
+   }
+
+   /**
+    * @param lastModified the lastModified to set
+    */
+   public void setLastModified(Date lastModified) {
+      this.lastModified = lastModified;
    }
 }

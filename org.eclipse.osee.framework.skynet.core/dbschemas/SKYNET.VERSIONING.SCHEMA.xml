@@ -34,6 +34,9 @@
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_ARTIFACT_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
+		<Index id="OSEE_JOIN_ARTIFACT_Q_IDX">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
 	</Table>
 	
 	<Table name="OSEE_JOIN_ATTRIBUTE" schema="OSEE">
@@ -440,6 +443,13 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	   
+	<Table name="OSEE_SEARCH_TAGS" schema="OSEE">
+		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
+		<Constraint schema="OSEE" id="OSEE_SEARCH_TAGS__PK" type="PRIMARY KEY" appliesTo="ATTR_ID, GAMMA_ID, CODED_TAG_ID" />
+	</Table>
+	   
    <Table name="OSEE_TAG_ART_MAP" schema="OSEE">
 		<Column id="TAG_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
@@ -580,6 +590,7 @@
 		<Column id="SOURCE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__ODM_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
 			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>

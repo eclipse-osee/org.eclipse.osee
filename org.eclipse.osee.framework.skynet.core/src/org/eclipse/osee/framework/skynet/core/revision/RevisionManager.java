@@ -22,6 +22,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -36,6 +37,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -53,10 +55,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
@@ -80,9 +82,11 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
@@ -98,22 +102,22 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  */
 public class RevisionManager implements IEventReceiver {
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
-         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
+         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND (t1.tx_current = " + TxChange.DELETED.getValue() + " OR t1.tx_current = " + TxChange.CURRENT.getValue() + ") AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
    private static final String TRANSACTION_ATTRIBUTE_CHANGES =
-         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.transaction_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
+         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.transaction_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
    private static final String BRANCH_REL_CHANGES =
-         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
+         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where (tx1.tx_current = " + TxChange.DELETED.getValue() + " OR tx1.tx_current = " + TxChange.CURRENT.getValue() + ") AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
 
    private static final String TRANSACTION_REL_CHANGES =
-         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.transaction_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
+         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where td2.tx_type = 0 AND td2.transaction_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
 
    private static final String BRANCH_ARTIFACT_CHANGES =
          "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.tx_current = " + TxChange.DELETED.getValue() + " OR tx1.mod_type = " + ModificationType.NEW.getValue() + ")  AND av3.art_id = af4.art_id";
 
    private static final String TRANSACTION_ARTIFACT_CHANGES =
-         "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.transaction_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.tx_current = " + TxChange.DELETED.getValue() + " OR tx1.mod_type = " + ModificationType.NEW.getValue() + ")  AND av3.art_id = af4.art_id";
+         "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.transaction_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.mod_type = " + ModificationType.DELETED.getValue() + " OR tx1.mod_type = " + ModificationType.NEW.getValue() + ")  AND av3.art_id = af4.art_id";
 
    private static final String SELECT_TRANSACTIONS =
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
@@ -122,7 +126,7 @@ public class RevisionManager implements IEventReceiver {
          "SELECT transaction_id, commit_art_id from osee_define_tx_details where commit_art_id is not null";
 
    private static final String GET_CHANGED_ARTIFACTS =
-         " SELECT arv2.modification_id, arv2.gamma_id, ar1.art_type_id FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
+         "SELECT arv2.gamma_id, txs1.mod_type FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs1, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
 
    private static final String GET_DELETED_ARTIFACTS =
          Table.generateTableAliasedSql("SELECT txd10.branch_id, att8.value AS name, art5.art_id, ary6.name AS type_name, arv7.modification_id, arv7.gamma_id, (SELECT MAX(txd3.transaction_id) FROM OSEE_DEFINE_ARTIFACT_VERSION arv1,OSEE_DEFINE_TXS txs2,OSEE_DEFINE_TX_DETAILS txd3 WHERE arv1.art_id=arv7.art_id AND arv1.modification_id<> 3 AND arv1.gamma_id=txs2.gamma_id AND txs2.transaction_id=txd3.transaction_id AND txd3.branch_id=txd10.branch_id AND txd3.transaction_id< txd10.transaction_id) PUT_TABLE_ALIAS_HERE last_good_transaction, txs4.transaction_id as deleted_transaction FROM osee_define_txs txs4,OSEE_DEFINE_ARTIFACT art5, OSEE_DEFINE_ARTIFACT_TYPE ary6, OSEE_DEFINE_ARTIFACT_VERSION arv7, OSEE_DEFINE_ATTRIBUTE att8,OSEE_DEFINE_TXS txs9,OSEE_DEFINE_TX_DETAILS txd10, OSEE_DEFINE_TX_DETAILS txd11, (SELECT MAX(att11.gamma_id) PUT_TABLE_ALIAS_HERE gamma_id FROM OSEE_DEFINE_ATTRIBUTE att11, OSEE_DEFINE_ATTRIBUTE_TYPE aty12 WHERE att11.attr_type_id=aty12.attr_type_id AND aty12.name=? GROUP BY att11.art_id) PUT_TABLE_ALIAS_HERE ATTR_GAMMA WHERE txd11.branch_id = txd10.branch_id AND txd11.transaction_id = txs4.transaction_id AND txs4.gamma_id = arv7.gamma_id AND txd10.branch_id=? AND txd10.transaction_id=txs9.transaction_id AND txs9.transaction_id > ?  AND txs9.transaction_id <= ? AND txs9.gamma_id=arv7.gamma_id AND arv7.art_id=art5.art_id AND arv7.modification_id=? AND art5.art_type_id=ary6.art_type_id AND art5.art_id=att8.art_id AND att8.gamma_id= ATTR_GAMMA.gamma_id");
@@ -144,10 +148,13 @@ public class RevisionManager implements IEventReceiver {
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
 
    private static final String ARTIFACT_CONFLICTS =
-         "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_artifact_version arv1, osee_define_artifact_version arv2, osee_define_artifact art1 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
+         "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma, arv3.gamma_id AS begin_gamma  FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_txs txs3, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_artifact_version arv1, osee_define_artifact_version arv2, osee_define_artifact_version arv3 , osee_define_artifact art1 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = arv3.gamma_id and arv3.art_id = arv1.art_id";
+
+   private static final String ATTRIBUTE_CONFLICTS_NEW =
+         "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_attribute atr1, osee_define_attribute atr2 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.mod_type =  " + ModificationType.NEW.getValue() + " AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
 
    private static final String ATTRIBUTE_CONFLICTS =
-         "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_attribute atr1, osee_define_attribute atr2 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
+         "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type, atr3.gamma_id AS begin_gamma  FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_txs txs3, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_attribute atr1, osee_define_attribute atr2, osee_define_attribute atr3 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ? AND txs3.transaction_id = ?  AND txs3.gamma_id = atr3.gamma_id and atr3.attr_id = atr1.attr_id";
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
    private static final Pair<String, ArtifactType> UNKNOWN_DATA = new Pair<String, ArtifactType>(null, null);
@@ -298,8 +305,9 @@ public class RevisionManager implements IEventReceiver {
     * @return - Collection<RevisionChange>
     * @throws SQLException
     * @throws BranchDoesNotExist
+    * @throws ArtifactDoesNotExist
     */
-   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws SQLException, BranchDoesNotExist {
+   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
       IArtifactNameDescriptorResolver resolver = new ArtifactNameDescriptorResolver(tData.getBranch());
 
       return getTransactionChanges(OUTGOING, tData.getTransactionId(), tData.getTransactionId(),
@@ -338,8 +346,9 @@ public class RevisionManager implements IEventReceiver {
     * @return All revision changes including artifact, attribute and relationLink.
     * @throws SQLException
     * @throws BranchDoesNotExist
+    * @throws ArtifactDoesNotExist
     */
-   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist {
+   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
 
       TransactionId fromTransactionId =
             TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
@@ -353,7 +362,7 @@ public class RevisionManager implements IEventReceiver {
       return changes;
    }
 
-   public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException {
+   public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, ArtifactDoesNotExist {
       Collection<AttributeChange> attributeChanges =
             getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
                   toTransactionId.getTransactionNumber(), artId);
@@ -409,11 +418,12 @@ public class RevisionManager implements IEventReceiver {
    private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionNumber) throws SQLException, OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
+      Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean hasBranch = sourceBranch != null;
 
-      loadNewOrDeletedArtifactChanges(sourceBranch, transactionNumber, artIds, changes);
-      loadAttributeChanges(sourceBranch, transactionNumber, artIds, changes);
-      loadRelationChanges(sourceBranch, transactionNumber, artIds, changes);
+      loadNewOrDeletedArtifactChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
+      loadAttributeChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
+      loadRelationChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
 
       Branch branch =
             hasBranch ? sourceBranch : BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
@@ -444,20 +454,34 @@ public class RevisionManager implements IEventReceiver {
     * @param sourceBranch
     * @param changes
     * @throws SQLException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException {
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
+      boolean hasBranch = sourceBranch != null;
+      TransactionId fromTransactionId;
+      TransactionId toTransactionId;
 
       try {
          //Changes per a branch
-         if (sourceBranch != null) {
+         if (hasBranch) {
+            Pair<TransactionId, TransactionId> branchStartEndTransaction =
+                  TransactionIdManager.getInstance().getStartEndPoint(sourceBranch);
+
+            fromTransactionId = branchStartEndTransaction.getKey();
+            toTransactionId = branchStartEndTransaction.getValue();
+
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, SQL3DataType.INTEGER,
                         sourceBranch.getBranchId());
          }
          //Changes per a transaction
          else {
+            toTransactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
+            fromTransactionId = TransactionIdManager.getInstance().getPriorTransaction(toTransactionId);
+
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES, SQL3DataType.INTEGER,
                         transactionNumber);
@@ -468,7 +492,8 @@ public class RevisionManager implements IEventReceiver {
             int artId = resultSet.getInt("art_id");
             ArtifactChanged artifactChanged =
                   new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"), resultSet.getInt("gamma_id"),
-                        artId, null, null, ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING);
+                        artId, toTransactionId, fromTransactionId,
+                        ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING);
 
             //We do not want to display artifacts that were new and then deleted
             //The only was this could happen is if the artifact was in here twice
@@ -479,6 +504,7 @@ public class RevisionManager implements IEventReceiver {
                artifactChanges.put(artId, artifactChanged);
             } else {
                changes.remove(artifactChanges.get(artId));
+               newAndDeletedArtifactIds.add(artId);
             }
          }
       } finally {
@@ -492,7 +518,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException, OseeCoreException {
+   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          //Changes per a branch
@@ -512,6 +538,7 @@ public class RevisionManager implements IEventReceiver {
             int bArtId = resultSet.getInt("b_art_id");
             int relLinkId = resultSet.getInt("rel_link_id");
 
+            if (!newAndDeletedArtifactIds.contains(aArtId) && !newAndDeletedArtifactIds.contains(bArtId)) {
             artIds.add(aArtId);
             artIds.add(bArtId);
 
@@ -519,6 +546,7 @@ public class RevisionManager implements IEventReceiver {
                   ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
                   resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
                   RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
+         }
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);
@@ -531,13 +559,23 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
+ * @throws OseeDataStoreException 
     */
-   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+	private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
+      Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
+      Set<Integer> modifiedArtifacts = new HashSet<Integer>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
+      ModificationType artModType;
       boolean hasBranch = sourceBranch != null;
-      TransactionId sourceHeadTransactionId;
-      TransactionId sourceEndTransactionId;
+      TransactionId fromTransactionId;
+      TransactionId toTransactionId;
+      int queryId;
+
+      for (Change change : changes) {
+         artModTypes.put(change.getArtId(), change.getModificationType());
+      }
+
 
       try {
          //Changes per a branch
@@ -549,18 +587,16 @@ public class RevisionManager implements IEventReceiver {
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getInstance().getStartEndPoint(sourceBranch);
 
-            sourceHeadTransactionId = branchStartEndTransaction.getKey();
-            sourceEndTransactionId = branchStartEndTransaction.getValue();
+            fromTransactionId = branchStartEndTransaction.getKey();
+            toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
                         transactionNumber);
 
-            sourceHeadTransactionId =
-                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
-            sourceEndTransactionId =
-                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
+            toTransactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
+            fromTransactionId = TransactionIdManager.getInstance().getPriorTransaction(toTransactionId);
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
          AttributeChanged attributeChanged;
@@ -574,10 +610,27 @@ public class RevisionManager implements IEventReceiver {
             int modType = resultSet.getInt(7);
             String isValue = resultSet.getString(6);
 
-            attributeChanged =
-                  new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, sourceEndTransactionId,
-                        sourceHeadTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
-                        ChangeType.OUTGOING, isValue, "", attrId, attrTypeId);
+            if (artModTypes.containsKey(artId)) {
+               artModType = artModTypes.get(artId);
+            } else {
+               artModType = ModificationType.CHANGE;
+            }
+
+            if (!newAndDeletedArtifactIds.contains(artId)) {
+               // Want to add an artifact changed item once if any attribute was modified && artifact was not
+               // NEW or DELETED
+               if (artModType == ModificationType.CHANGE && !modifiedArtifacts.contains(artId)) {
+                  ArtifactChanged artifactChanged =
+                        new ArtifactChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
+                              fromTransactionId, ModificationType.CHANGE, ChangeType.OUTGOING);
+
+                  changes.add(artifactChanged);
+                  modifiedArtifacts.add(artId);
+               }
+               attributeChanged =
+                     new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
+                           fromTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
+                           ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType);
 
             changes.add(attributeChanged);
             mightNeedWasValue.put(attrId, attributeChanged);
@@ -586,13 +639,24 @@ public class RevisionManager implements IEventReceiver {
 
          //Load was values for branch change reports only
          if (hasBranch && !artIds.isEmpty()) {
+            queryId = ArtifactLoader.getNewQueryId();
+        	 try{
+	            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+	            List<Object[]> datas = new LinkedList<Object[]>();
+	
+	            // insert into the artifact_join_table
+	            for (int artId : artIds) {
+	               datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+	                     SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
+	            }
+	            ArtifactLoader.selectArtifacts(datas);
+	
             String BRANCH_ATTRIBUTE_WAS_CHANGE =
-                  "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id IN " + Collections.toString(
-                        artIds, "(", ",", ")");
+	                  "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
 
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, SQL3DataType.INTEGER,
-                        sourceBranch.getBranchId());
+	                        sourceBranch.getBranchId(), SQL3DataType.INTEGER, queryId);
             resultSet = connectionHandlerStatement.getRset();
 
             while (resultSet.next()) {
@@ -604,8 +668,12 @@ public class RevisionManager implements IEventReceiver {
                   changed.setModType(ModificationType.CHANGE);
                   changed.setWasValue(wasValue);
                }
+	            }
+        	 }
+        	 finally{
+        		 ArtifactLoader.clearQuery(queryId);
             }
-         }
+            }
       } finally {
          DbUtil.close(connectionHandlerStatement);
       }
@@ -688,7 +756,7 @@ public class RevisionManager implements IEventReceiver {
          connectionHandlerStatement =
                ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
                      SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
-                     destinationBranch.getBranchId());
+                     destinationBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber());
 
          TransactionId sourceHeadTransactionId =
                TransactionIdManager.getInstance().getEditableTransactionId(sourceBranch);
@@ -705,11 +773,12 @@ public class RevisionManager implements IEventReceiver {
             int sourceModType = resultSet.getInt("source_mod_type");
             int destModType = resultSet.getInt("dest_mod_type");
             int artTypeId = resultSet.getInt("art_type_id");
+            int beginGamma = resultSet.getInt("begin_gamma");
 
-            if (artId != nextArtId) {
+            if (artId != nextArtId && beginGamma != destGamma) {
                artId = nextArtId;
 
-               if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) {
+               if ((destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) || (destModType == ModificationType.CHANGE.getValue() && sourceModType == ModificationType.DELETED.getValue())) {
 
                   artifactConflictBuilder =
                         new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction,
@@ -718,8 +787,7 @@ public class RevisionManager implements IEventReceiver {
 
                   conflictBuilders.add(artifactConflictBuilder);
                   artIdSet.add(artId);
-               }
-               if ((destModType == ModificationType.CHANGE.getValue() || destModType == ModificationType.DELETED.getValue()) && sourceModType == ModificationType.DELETED.getValue()) {
+               } else if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.DELETED.getValue()) {
                   artIdSetDontShow.add(artId);
                   artIdSetDontAdd.add(artId);
                }
@@ -742,10 +810,10 @@ public class RevisionManager implements IEventReceiver {
     */
    private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
-
+      AttributeConflictBuilder attributeConflictBuilder;
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS_NEW, SQL3DataType.INTEGER,
                      sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
                      SQL3DataType.INTEGER, destinationBranch.getBranchId());
 
@@ -753,8 +821,49 @@ public class RevisionManager implements IEventReceiver {
                TransactionIdManager.getInstance().getEditableTransactionId(sourceBranch);
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
+         int attrId = 0;
+
+         if (resultSet.next()) {
+
+            do {
+               int nextAttrId = resultSet.getInt("attr_id");
+               int artId = resultSet.getInt("art_id");
+               int sourceGamma = resultSet.getInt("source_gamma");
+               int destGamma = resultSet.getInt("dest_gamma");
+               int modType = resultSet.getInt("mod_type");
+               int attrTypeId = resultSet.getInt("attr_type_id");
+               String sourceValue = resultSet.getString("source_value");
+               String destValue = resultSet.getString("dest_value");
+
+               if (attrId != nextAttrId && modType == ModificationType.NEW.getValue()) {
+                  attrId = nextAttrId;
+                  attributeConflictBuilder =
+                        new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction,
+                              sourceHeadTransactionId, ModificationType.getMod(modType), sourceBranch,
+                              destinationBranch, sourceValue, destValue, attrId, attrTypeId);
+
+                  conflictBuilders.add(attributeConflictBuilder);
+                  artIdSet.add(artId);
+               }
+            } while (resultSet.next());
+         }
+
+      } finally {
+         DbUtil.close(connectionHandlerStatement);
+      }
+
+      try {
+         connectionHandlerStatement =
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
+                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
+                     SQL3DataType.INTEGER, destinationBranch.getBranchId(), SQL3DataType.INTEGER,
+                     baselineTransaction.getTransactionNumber());
+
+         ResultSet resultSet = connectionHandlerStatement.getRset();
+
+         TransactionId sourceHeadTransactionId =
+               TransactionIdManager.getInstance().getEditableTransactionId(sourceBranch);
          if (!resultSet.next()) return;
-         AttributeConflictBuilder attributeConflictBuilder;
          int attrId = 0;
 
          do {
@@ -764,10 +873,11 @@ public class RevisionManager implements IEventReceiver {
             int destGamma = resultSet.getInt("dest_gamma");
             int modType = resultSet.getInt("mod_type");
             int attrTypeId = resultSet.getInt("attr_type_id");
+            int beginGamma = resultSet.getInt("begin_gamma");
             String sourceValue = resultSet.getString("source_value");
             String destValue = resultSet.getString("dest_value");
 
-            if (attrId != nextAttrId) {
+            if (attrId != nextAttrId && beginGamma != destGamma) {
                attrId = nextAttrId;
                attributeConflictBuilder =
                      new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction,
@@ -891,11 +1001,11 @@ public class RevisionManager implements IEventReceiver {
       return name;
    }
 
-   private Collection<ArtifactChange> getArtifactChanges(TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException {
+   private Collection<ArtifactChange> getArtifactChanges(TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException, ArtifactDoesNotExist {
       return getArtifactChanges(OUTGOING, fromTransactionId, toTransactionId, artId);
    }
 
-   private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException {
+   private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException, ArtifactDoesNotExist {
       Collection<ArtifactChange> changes = new LinkedList<ArtifactChange>();
       ConnectionHandlerStatement chStmt = null;
 
@@ -906,10 +1016,12 @@ public class RevisionManager implements IEventReceiver {
                      toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                      fromTransactionId.getBranch().getBranchId());
 
+         Artifact artifact = ArtifactQuery.getArtifactFromId(artId, fromTransactionId.getBranch(), true);
+
+         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            changes.add(new ArtifactChange(changeType, artId, chStmt.getRset().getInt("modification_id"),
-                  chStmt.getRset().getInt("gamma_id"), toTransactionId, fromTransactionId,
-                  ArtifactTypeManager.getType(chStmt.getRset().getInt("art_type_id"))));
+            changes.add(new ArtifactChange(changeType, ModificationType.getMod(rSet.getInt("mod_type")), artifact,
+                  null, null, null, toTransactionId, fromTransactionId, rSet.getInt("gamma_id")));
          }
       } finally {
          DbUtil.close(chStmt);
@@ -1103,52 +1215,22 @@ public class RevisionManager implements IEventReceiver {
          this.artifactNameDescriptorCache = artifactNameDescriptorCache;
       }
 
-      /**
-       * This constructor is to be used for processing new/modified artifact change data, and should be instantiated for
-       * each different range.
-       * 
-       * @param fromTransactionId
-       * @param toTransactionId
-       */
-      public ArtifactChangeProcessor(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) {
-         this(baseParentTransactionId, headParentTransactionId, artifactNameDescriptorCache);
-
-         this.fromTransactionId = fromTransactionId;
-         this.toTransactionId = toTransactionId;
-      }
-
       public ArtifactChange process(ResultSet set) throws SQLException {
          try {
             ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
-            if (modType == DELETED) {
-               int lastGoodTransactionNumber = set.getInt("last_good_transaction");
-               TransactionId lastGoodTransactionId = null;
-               if (!set.wasNull()) lastGoodTransactionId =
-                     TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                           lastGoodTransactionNumber);
-               ArtifactType descriptor = ArtifactTypeManager.getType(set.getString("type_name"));
-               String name = set.getString("name");
 
-               if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(set.getInt("art_id"), name,
-                     descriptor);
+            TransactionId transactionId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                        set.getInt("deleted_transaction"));
+            int artId = set.getInt("art_id");
+            Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, transactionId);
 
-               return new ArtifactChange(OUTGOING, name, descriptor, set.getInt("art_id"), set.getInt("gamma_id"),
-                     baseParentTransactionId, headParentTransactionId, lastGoodTransactionId,
-                     TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
-                           set.getInt("deleted_transaction")));
-            } else {
-               TransactionId transactionId =
-                     TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                           set.getInt("transaction_id"));
-               int artId = set.getInt("art_id");
-               Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, transactionId);
+            if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(artId,
+                  artifact.getDescriptiveName(), artifact.getArtifactType());
 
-               if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(artId,
-                     artifact.getDescriptiveName(), artifact.getArtifactType());
+            return new ArtifactChange(OUTGOING, modType, artifact, baseParentTransactionId, headParentTransactionId,
+                  fromTransactionId, fromTransactionId, transactionId, set.getInt("gamma_id"));
 
-               return new ArtifactChange(OUTGOING, modType, artifact, baseParentTransactionId, headParentTransactionId,
-                     fromTransactionId, fromTransactionId, toTransactionId, set.getInt("gamma_id"));
-            }
          } catch (OseeCoreException ex) {
             throw new SQLException(ex);
          }
@@ -1297,52 +1379,6 @@ public class RevisionManager implements IEventReceiver {
          }
       }
       return otherBranches;
-   }
-
-   // branch == fromBranch
-   public boolean branchHasConflicts(Branch sourceBranch, Branch destBranch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      if (sourceBranch == null || destBranch == null) throw new IllegalArgumentException("branch can not be null.");
-      ConnectionHandlerStatement connectionHandlerStatement = null;
-      boolean conflictsExist = false;
-
-      try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-                     SQL3DataType.INTEGER,
-                     TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey().getTransactionNumber(),
-                     SQL3DataType.INTEGER, destBranch.getBranchId());
-
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-
-         while (resultSet.next()) {
-            int sourceModType = resultSet.getInt("source_mod_type");
-            int destModType = resultSet.getInt("dest_mod_type");
-
-            if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.CHANGE.getValue()) {
-               conflictsExist = true;
-            }
-         }
-      } finally {
-         DbUtil.close(connectionHandlerStatement);
-      }
-      try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER,
-                     TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey().getTransactionNumber(),
-                     SQL3DataType.INTEGER, destBranch.getBranchId());
-
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-
-         if (resultSet.next()) {
-            conflictsExist = true;
-         }
-      } finally {
-         DbUtil.close(connectionHandlerStatement);
-      }
-
-      return conflictsExist;
-
    }
 
    /* (non-Javadoc)

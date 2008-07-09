@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.MERGED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
-import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 
@@ -53,6 +53,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
    private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
    private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
+   private static final ImageDescriptor merge = SkynetActivator.getInstance().getImageDescriptor("branch_merge.gif");
    private static final ImageDescriptor conChangeSmall =
          SkynetActivator.getInstance().getImageDescriptor("con_change_2.gif");
    private static final ImageDescriptor conDeletedSmall =
@@ -80,9 +81,9 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private String name;
    private String namespace;
    transient private ImageRegistry imageRegistry;
-   transient private InputStreamImageDescriptor imageDescriptor;
+   transient private ImageDescriptor imageDescriptor;
 
-   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
+   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
@@ -143,6 +144,24 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     */
    public String getName() {
       return name;
+   }
+
+   /**
+    * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
+    * 
+    * @return
+    */
+   public boolean isTypeCompatible(String artifactTypeName) {
+      return name.equals(artifactTypeName);
+   }
+
+   /**
+    * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
+    * 
+    * @return
+    */
+   public boolean isTypeCompatible(String artifactTypeName) {
+      return name.equals(artifactTypeName);
    }
 
    /**
@@ -247,6 +266,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
          imageRegistry.put(BASE + INCOMING + NEW, new OverlayImage(imageRegistry.get(BASE), incNew));
          imageRegistry.put(BASE + OUTGOING + DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
          imageRegistry.put(BASE + OUTGOING + CHANGE, new OverlayImage(imageRegistry.get(BASE), outChange));
+         imageRegistry.put(BASE + OUTGOING + MERGED, new OverlayImage(imageRegistry.get(BASE), merge));
          imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));
          imageRegistry.put(BASE + CONFLICTING + DELETED, new OverlayImage(imageRegistry.get(BASE), conDeleted));
          imageRegistry.put(BASE + CONFLICTING + CHANGE, new OverlayImage(imageRegistry.get(BASE), conChange));
@@ -264,7 +284,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    /**
     * @return Returns the imageDescriptor.
     */
-   public InputStreamImageDescriptor getImageDescriptor() {
+   public ImageDescriptor getImageDescriptor() {
       return imageDescriptor;
    }
 
@@ -321,7 +341,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    /**
     * @param imageDescriptor the imageDescriptor to set
     */
-   public void setImageDescriptor(InputStreamImageDescriptor imageDescriptor) {
+   public void setImageDescriptor(ImageDescriptor imageDescriptor) {
       this.imageDescriptor = imageDescriptor;
       // Clear out the image cache so it will be re-created
       if (imageRegistry != null) imageRegistry = null;

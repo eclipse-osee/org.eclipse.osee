@@ -37,9 +37,11 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
     * @param sourceBranch
     * @param destBranch
     */
-   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, Branch sourceBranch, Branch destBranch, int sourceTxType, int destTxType, int artTypeId) {
+   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, sourceBranch, destBranch);
       this.artTypeId = artTypeId;
+      this.sourceModType = sourceModType;
+      this.destModType = destModType;
    }
 
    /* (non-Javadoc)

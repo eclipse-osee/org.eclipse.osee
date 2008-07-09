@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -79,6 +80,7 @@ public class SkynetTransaction {
    //            exact transaction must be known over the life of this transaction despite the head transaction
    //            potentially moving on from other transactions occurring in parallel.
    private Integer transactionNumber;
+   private Date transactionDate;
 
    public SkynetTransaction(Branch branch) throws SQLException {
       this(branch, SkynetAuthentication.getUser());
@@ -123,10 +125,10 @@ public class SkynetTransaction {
          blameArtId = userToBlame.getArtId();
       }
 
+      transactionDate = GlobalTime.GreenwichMeanTimestamp();
       datas.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.VARCHAR, getComment(),
-            SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER, blameArtId,
-            SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-            TransactionDetailsType.NonBaselined.getId()});
+            SQL3DataType.TIMESTAMP, transactionDate, SQL3DataType.INTEGER, blameArtId, SQL3DataType.INTEGER,
+            branch.getBranchId(), SQL3DataType.INTEGER, TransactionDetailsType.NonBaselined.getId()});
       ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
 
       preparedBatch = new HashMap<String, List<Object[]>>();
@@ -164,6 +166,7 @@ public class SkynetTransaction {
          }
 
          setArtifactsNotDirty();
+         updateLastModified();
       } catch (SQLException ex) {
          deleteTransactionDetail = true;
          transactionCleanUp();
@@ -225,6 +228,15 @@ public class SkynetTransaction {
          if (transactionData instanceof ArtifactTransactionData) {
             Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
             artifact.setNotDirty();
+         }
+      }
+   }
+
+   private void updateLastModified() throws SQLException {
+      for (ITransactionData transactionData : transactionItems.keySet()) {
+         if (transactionData instanceof ArtifactTransactionData) {
+            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
+            artifact.setLastModified(transactionDate);
          }
       }
    }

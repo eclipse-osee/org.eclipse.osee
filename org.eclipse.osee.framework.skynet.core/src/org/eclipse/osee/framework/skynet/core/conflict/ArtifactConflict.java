@@ -38,6 +38,7 @@ public class ArtifactConflict extends Conflict {
    private static final String CHANGE_ITEM = "Artifact State";
    private static final String ARTIFACT_DELETED = "DELETED";
    private static final String ARTIFACT_MODIFIED = "MODIFIED";
+   private final boolean sourceDeleted;
 
    /**
     * @param sourceGamma
@@ -51,9 +52,10 @@ public class ArtifactConflict extends Conflict {
     * @param sourceBranch
     * @param destBranch
     */
-   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceTxType, int destTxType, int artTypeId) {
+   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, changeType, mergeBranch,
             sourceBranch, destBranch);
+      sourceDeleted = (sourceModType == ModificationType.DELETED.getValue());
    }
 
    /*
@@ -105,7 +107,11 @@ public class ArtifactConflict extends Conflict {
     */
    @Override
    public Status computeStatus() throws OseeCoreException, SQLException {
-      return super.computeStatus(getArtifact().getArtId(), Status.NOT_RESOLVABLE);
+      if (!sourceDeleted)
+         return super.computeStatus(getArtifact().getArtId(), Status.NOT_RESOLVABLE);
+      else
+         return super.computeStatus(getArtifact().getArtId(), Status.INFORMATIONAL);
+
    }
 
    /* (non-Javadoc)
@@ -129,7 +135,11 @@ public class ArtifactConflict extends Conflict {
     */
    @Override
    public String getDestDisplayData() throws SQLException {
-      return ARTIFACT_DELETED;
+      if (sourceDeleted) {
+         return ARTIFACT_MODIFIED;
+      } else {
+         return ARTIFACT_DELETED;
+      }
    }
 
    /* (non-Javadoc)
@@ -160,7 +170,11 @@ public class ArtifactConflict extends Conflict {
     */
    @Override
    public String getSourceDisplayData() throws OseeCoreException, SQLException {
-      return ARTIFACT_MODIFIED;
+      if (sourceDeleted) {
+         return ARTIFACT_DELETED;
+      } else {
+         return ARTIFACT_MODIFIED;
+      }
    }
 
    /* (non-Javadoc)
@@ -205,7 +219,6 @@ public class ArtifactConflict extends Conflict {
 
    public void revertSourceArtifact() throws OseeCoreException, SQLException {
       ArtifactPersistenceManager.getInstance().revertArtifact(getSourceArtifact());
-      getSourceArtifact().reloadArtifact();
    }
 
    public int getMergeGammaId() throws OseeCoreException, SQLException {
