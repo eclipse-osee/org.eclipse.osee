@@ -13,8 +13,9 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.EveryoneGroup;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
@@ -66,19 +67,25 @@ public class ExperimentalBlam extends AbstractBlam {
          new long[] {177461, 177456, 177453, 177454, 177449, 177451, 177462, 177457, 177458, 177458, 177463, 177460,
                177459, 177455, 852176, 839426, 852199, 852192, 852191, 173020, 174666};
 
+   // TAsks from V13 DP Test 8694 that needed relations deleted (artifacts were already deleted)
+   long[] tasksThatShouldbeDeleted =
+         new long[] {2607662, 2607713, 2607644, 2607704, 2607725, 2607656, 2607626, 2607620, 2607638, 2607692, 2607614,
+               2607668, 2607719, 2607650, 2607674, 2607632, 2607686, 2607680, 2607698, 2607731};
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Object[]> updateParameters = new ArrayList<Object[]>(gammaIds.length);
 
-      for (long gammaId : moregammaIdsBasedOnV13Messup) {
-         updateParameters.add(new Object[] {SQL3DataType.BIGINT, gammaId});
-      }
+      //      for (long gammaId : tasksThatShouldbeDeleted) {
+      //         updateParameters.add(new Object[] {SQL3DataType.BIGINT, gammaId});
+      //      }
 
       //      StringBuilder sb 
       //      
-      ConnectionHandler.runPreparedUpdateBatch(UpdateRelationModType, updateParameters);
-      ConnectionHandler.runPreparedUpdateBatch(UpdateTxsCurrent, updateParameters);
+      //ConnectionHandler.runPreparedUpdateBatch(UpdateRelationModType, updateParameters);
+      //ConnectionHandler.runPreparedUpdateBatch(UpdateTxsCurrent, updateParameters);
+      EveryoneGroup.getEveryoneGroup().getArtifacts(CoreRelationEnumeration.Users_User, User.class);
    }
 }

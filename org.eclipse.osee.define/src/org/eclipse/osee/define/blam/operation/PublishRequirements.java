@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -34,9 +34,16 @@ public class PublishRequirements extends AbstractBlam {
          if (monitor.isCanceled()) {
             return;
          }
-         List<Artifact> children = artifact.getChildren();
-         IRenderer renderer = rendererManager.getRendererById("org.eclipse.osee.framework.ui.skynet.word");
-         renderer.preview(new ArrayList<Artifact>(children), "Publish Pids", monitor);
+         if (artifact.isOfType("Folder")) {
+            List<Artifact> arts = artifact.getChildren();
+            if (arts.size() > 0) {
+               IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, arts.get(0));
+               renderer.preview(arts, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
+            }
+         } else {
+            IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, artifact);
+            renderer.preview(artifact, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
+         }
       }
    }
 
