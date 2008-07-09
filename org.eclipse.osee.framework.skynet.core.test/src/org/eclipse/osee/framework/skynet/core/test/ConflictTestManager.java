@@ -149,6 +149,10 @@ public class ConflictTestManager {
             destArtifacts[i].delete();
             numConflicts = 0;
             numArtifacts = 0;
+            if (!conflictDefs[i].sourceDelete) {
+               NUMBER_OF_CONFLICTS++;
+               numArtifacts = 1;
+            }
          }
          if (conflictDefs[i].sourceDelete) {
             System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId());
@@ -312,8 +316,8 @@ public class ConflictTestManager {
                }
             }
          } else {
-            if (!destArtifacts[i].isDeleted()) {
-               System.err.println("Artifact " + destArtifacts[i] + "should be deleted but isn't");
+            if (conflictDefs[i].destDelete && !destArtifacts[i].isDeleted()) {
+               System.err.println("Artifact " + destArtifacts[i] + " should be deleted but isn't");
                return false;
             }
          }

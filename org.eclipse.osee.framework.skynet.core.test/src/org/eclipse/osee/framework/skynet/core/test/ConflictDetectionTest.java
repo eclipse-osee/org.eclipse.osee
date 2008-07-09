@@ -62,23 +62,4 @@ public class ConflictDetectionTest extends TestCase {
             ConflictTestManager.numberOfConflicts(), conflicts.toArray().length);
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.revision.RevisionManager#branchHasConflicts(org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch)}.
-    */
-   public void testBranchHasConflicts() {
-      RevisionManager revisionManager = RevisionManager.getInstance();
-      try {
-         if (ConflictTestManager.hasConflicts()) {
-            assertTrue("Call falsely asserts that Branch has no Conflicts", revisionManager.branchHasConflicts(
-                  ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch()));
-         } else {
-            assertFalse("Call falsely asserts that Branch has Conflicts", revisionManager.branchHasConflicts(
-                  ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch()));
-         }
-      } catch (Exception ex) {
-         fail(ex.getMessage());
-      }
-   }
-
 }
