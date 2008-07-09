@@ -139,14 +139,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Mark all CIS Code "Team Workflows" as Favorites for "Joe Smith"
          OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Add Favorites", false);
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
-               "%Graph%", AtsPlugin.getAtsBranch())) {
+               "%Diagram View%", AtsPlugin.getAtsBranch())) {
             new Favorites((StateMachineArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Add Subscribed", false);
          for (Artifact art : ArtifactQuery.getArtifactsFromTypeAndName(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
-               "%Button W%", AtsPlugin.getAtsBranch())) {
+               "%Even%", AtsPlugin.getAtsBranch())) {
             new Subscribe((StateMachineArtifact) art).toggleSubscribe(false);
          }
 

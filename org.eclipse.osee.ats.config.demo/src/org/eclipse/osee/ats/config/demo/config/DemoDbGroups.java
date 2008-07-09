@@ -10,11 +10,8 @@ import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
-import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig.SawBuilds;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -43,10 +40,6 @@ public class DemoDbGroups {
             groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow);
          }
 
-         // Relate codeArt to SAW_Bld_2
-         codeArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version,
-               ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, SawBuilds.SAW_Bld_2.name(),
-                     AtsPlugin.getAtsBranch()));
          codeArt.persistAttributesAndRelations();
       }
 

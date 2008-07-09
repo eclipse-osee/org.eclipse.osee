@@ -31,7 +31,8 @@ public class DemoDbUtil {
    public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws Exception {
       if (codeArts == null) {
          codeArts = new ArrayList<DemoCodeTeamWorkflowArtifact>();
-         for (String actionName : new String[] {"Can't see the Graph View", "Problem with the Graph View"}) {
+         for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
+               "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
             for (Artifact art : ArtifactQuery.getArtifactsFromName(actionName, AtsPlugin.getAtsBranch())) {
                if (art instanceof DemoCodeTeamWorkflowArtifact) {

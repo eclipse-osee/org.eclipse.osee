@@ -23,12 +23,7 @@ import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
-import org.eclipse.osee.ats.health.ActionsHaveOneTeam;
-import org.eclipse.osee.ats.health.AssignedActiveActions;
-import org.eclipse.osee.ats.health.AttributeDuplication;
-import org.eclipse.osee.ats.health.OrphanedTasks;
-import org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion;
-import org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects;
+import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.CreateNewVersionItem;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.ReleaseVersionItem;
@@ -140,12 +135,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Tasks", criteria, true));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
-      new AttributeDuplication(healthItems);
-      new OrphanedTasks(healthItems);
-      new ActionsHaveOneTeam(healthItems);
-      new AssignedActiveActions(healthItems);
-      new TeamWorkflowsHaveZeroOrOneVersion(healthItems);
-      new UnAssignedAssignedAtsObjects(healthItems);
+      new ValidateAtsDatabase(healthItems);
 
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data");
       new PopulateDemoActions(demoItems);
