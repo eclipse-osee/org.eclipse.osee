@@ -37,7 +37,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -55,6 +57,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
+   private Set<IRelationEnumeration> nonVersionRelations;
    public static enum DefaultTeamState {
 
       Endorse, Analyze, Authorize, Implement, Completed, Cancelled
@@ -71,6 +74,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       // review relation should NOT be here cause it's changes are NOT part of dirty logic
+      // register targeted version so ATS Editor can dirty when target changed
       registerSMARelation(AtsRelation.TeamWorkflowTargetedForVersion_Version);
    }
 
@@ -82,6 +86,19 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getArtifactSuperTypeName() {
       return "Team Workflow";
+   }
+
+   @Override
+   public boolean hasChildren() throws OseeCoreException {
+      if (nonVersionRelations == null) {
+         nonVersionRelations = new HashSet<IRelationEnumeration>();
+         nonVersionRelations.addAll(getSmaRelations());
+         nonVersionRelations.remove(AtsRelation.TeamWorkflowTargetedForVersion_Version);
+      }
+      for (IRelationEnumeration iRelationEnumeration : nonVersionRelations) {
+         if (getRelatedArtifactsCount(iRelationEnumeration) > 0) return true;
+      }
+      return false;
    }
 
    /*
@@ -409,6 +426,14 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentAtsArtifact()
+    */
+   @Override
+   public Artifact getParentAtsArtifact() throws SQLException {
+      return getParentActionArtifact();
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -573,7 +598,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getCommitManagerBranch()
     */
-   public Branch getWorkingBranch() throws SQLException {
+   public Branch getWorkingBranch() throws SQLException, MultipleBranchesExist {
       if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) {
          return getSmaMgr().getBranchMgr().getWorkingBranch();
       }

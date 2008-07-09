@@ -839,7 +839,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @see org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact#getParentSMArt()
     */
-   public Artifact getParentSMArt() throws SQLException {
+   public Artifact getParentAtsArtifact() throws SQLException {
       return getParentSMA();
    }
 
@@ -1196,6 +1196,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    @Override
    public int getWorldViewPercentCompleteTotal() throws OseeCoreException, SQLException {
       return getPercentCompleteSMATotal();
+   }
+
+   /**
+    * @return the smaRelations
+    */
+   public Set<IRelationEnumeration> getSmaRelations() {
+      return smaRelations;
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException, SQLException {
