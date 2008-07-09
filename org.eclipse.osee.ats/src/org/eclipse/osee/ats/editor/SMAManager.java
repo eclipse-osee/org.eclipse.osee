@@ -21,6 +21,8 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ATSLog;
+import org.eclipse.osee.ats.artifact.ATSNote;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -48,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -82,6 +85,8 @@ public class SMAManager {
    private StateManager stateMgr;
    private DeadlineManager deadlineMgr;
    private SMAEditor editor;
+   private ATSLog atsLog;
+   private ATSNote atsNote;
    private AtsStateItems stateItems;
    private boolean inTransition = false;
 
@@ -95,6 +100,8 @@ public class SMAManager {
       branchMgr = new AtsBranchManager(this);
       deadlineMgr = new DeadlineManager(this);
       stateItems = new AtsStateItems();
+      atsLog = new ATSLog(sma);
+      atsNote = new ATSNote(sma);
    }
 
    public SMAManager(StateMachineArtifact sma) {
@@ -109,16 +116,21 @@ public class SMAManager {
       return sma.getPrivilegedUsers();
    }
 
+   public ATSLog getLog() {
+      return atsLog;
+   }
+
+   public ATSNote getNotes() {
+      return atsNote;
+   }
+
    public String getEditorHeaderString() {
       if (sma instanceof TeamWorkFlowArtifact)
-         return String.format("Current State: %s        Team: %s       Assignee(s): %s        Created: %s",
-               stateMgr.getCurrentStateName(), ((TeamWorkFlowArtifact) sma).getTeamName(),
-               Artifacts.commaArts(stateMgr.getAssignees()), XDate.getDateStr(getSma().getLog().getCreationDate(),
-                     XDate.MMDDYYHHMM));
+         return String.format("Current State: %s        Team: %s        Created: %s", stateMgr.getCurrentStateName(),
+               ((TeamWorkFlowArtifact) sma).getTeamName(), XDate.getDateStr(atsLog.getCreationDate(), XDate.MMDDYYHHMM));
       else
-         return String.format("Current State: %s        Assignee(s): %s        Created: %s",
-               stateMgr.getCurrentStateName(), Artifacts.commaArts(stateMgr.getAssignees()), XDate.getDateStr(
-                     getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
+         return String.format("Current State: %s        Created: %s", stateMgr.getCurrentStateName(), XDate.getDateStr(
+               atsLog.getCreationDate(), XDate.MMDDYYHHMM));
    }
 
    public Result getUserInputNeeded() {
@@ -159,11 +171,11 @@ public class SMAManager {
    }
 
    public User getOriginator() {
-      return sma.getLog().getOriginator();
+      return atsLog.getOriginator();
    }
 
    public void setOriginator(User user) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      sma.getLog().addLog(LogType.Originated, "", "Changed by " + SkynetAuthentication.getUser().getName(), user);
+      atsLog.addLog(LogType.Originated, "", "Changed by " + SkynetAuthentication.getUser().getName(), user);
    }
 
    /**
@@ -321,7 +333,7 @@ public class SMAManager {
       return true;
    }
 
-   private static void promptChangeVersionHelper(Collection<? extends TeamWorkFlowArtifact> smas, VersionListDialog vld, boolean persist) throws SQLException {
+   private static void promptChangeVersionHelper(Collection<? extends TeamWorkFlowArtifact> smas, VersionListDialog vld, boolean persist) throws SQLException, ArtifactDoesNotExist {
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
 
@@ -445,8 +457,7 @@ public class SMAManager {
                   hours = hours / smas.size();
                }
                for (StateMachineArtifact sma : smas) {
-                  sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
-                  sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
+                  sma.getSmaMgr().getStateMgr().updateMetrics(hours, tsd.getPercent().getInt(), true);
                   sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
@@ -465,8 +476,7 @@ public class SMAManager {
                   hours = hours / smas.size();
                }
                for (StateMachineArtifact sma : smas) {
-                  sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
-                  sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
+                  sma.getSmaMgr().getStateMgr().updateMetrics(hours, tsd.getPercent().getInt(), true);
                   sma.statusChanged();
                }
                return true;
@@ -726,13 +736,6 @@ public class SMAManager {
    public Result transitionToCancelled(String reason, boolean persist) throws SQLException {
       Result result =
             transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false);
-      if (result.isTrue()) {
-         for (VersionArtifact verArt : sma.getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version,
-               VersionArtifact.class)) {
-            sma.deleteRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
-         }
-         sma.persistRelations();
-      }
       return result;
    }
 
@@ -801,11 +804,11 @@ public class SMAManager {
    private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws OseeCoreException, SQLException {
       // Log transition
       if (toPage.isCancelledPage()) {
-         getSma().getLog().addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
+         atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
       } else {
-         getSma().getLog().addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");
+         atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");
       }
-      getSma().getLog().addLog(LogType.StateEntered, toStateName, "");
+      atsLog.addLog(LogType.StateEntered, toStateName, "");
 
       stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
 
