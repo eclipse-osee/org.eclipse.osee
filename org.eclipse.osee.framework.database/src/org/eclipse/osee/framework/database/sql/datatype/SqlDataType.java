@@ -236,12 +236,10 @@ public abstract class SqlDataType {
             } else {
                statement.setDate(index, Date.valueOf(value));
             }
-            //statement.setString(index, formatDate(value));
             break;
          case TIMESTAMP:
             statement.setTimestamp(index,
                   (value != null && !value.equals("") ? Timestamp.valueOf(value) : GlobalTime.GreenwichMeanTimestamp()));
-            //statement.setString(index, "timestamp '" + value + "'"); //formatDate(value));
             break;
          case TIME:
             if (value == null || value.equals("")) {
@@ -249,7 +247,6 @@ public abstract class SqlDataType {
             } else {
                statement.setTime(index, Time.valueOf(value));
             }
-            //statement.setString(index, value);
             break;
          case VARBINARY:
          case LONGVARBINARY:

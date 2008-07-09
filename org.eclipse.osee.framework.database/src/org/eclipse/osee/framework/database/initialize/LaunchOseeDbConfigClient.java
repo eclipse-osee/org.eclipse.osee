@@ -44,7 +44,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
 
    private static BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 
-   public LaunchOseeDbConfigClient(DbInformation databaseService) {
+   private LaunchOseeDbConfigClient(DbInformation databaseService) {
       super(ConfigUtil.getConfigFactory().getLogger(LaunchOseeDbConfigClient.class), "Config Client Thread",
             databaseService);
    }
