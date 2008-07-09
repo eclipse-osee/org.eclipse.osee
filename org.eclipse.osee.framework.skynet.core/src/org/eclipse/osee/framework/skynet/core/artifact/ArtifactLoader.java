@@ -129,11 +129,7 @@ public final class ArtifactLoader {
       } catch (OseeCoreException ex) {
          throw new SQLException(ex);
       } finally {
-         try {
-            clearQuery(queryId);
-         } catch (OseeDataStoreException ex) {
-            throw new SQLException(ex);
-         }
+         clearQuery(queryId);
       }
       return artifacts;
    }

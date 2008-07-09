@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
+import java.sql.SQLException;
 import java.util.EnumMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -18,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -102,7 +104,11 @@ public class ConflictResolutionWizardPage extends WizardPage {
 
       createHeader(composite);
 
-      createEditButtons(composite, gd);
+      try {
+         createEditButtons(composite, gd);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
 
       setControl(composite);
 
@@ -122,7 +128,7 @@ public class ConflictResolutionWizardPage extends WizardPage {
 
    }
 
-   private void createEditButtons(Composite composite, GridData gd) {
+   private void createEditButtons(Composite composite, GridData gd) throws OseeCoreException, SQLException {
 
       if (!conflict.isWordAttribute()) {
          new Label(composite, SWT.NONE).setText(SOURCE_TITLE);

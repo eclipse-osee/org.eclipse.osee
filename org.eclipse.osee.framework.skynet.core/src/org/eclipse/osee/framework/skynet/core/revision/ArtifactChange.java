@@ -110,8 +110,10 @@ public class ArtifactChange extends RevisionChange {
 
    /**
     * @return true if conflictingModArtifact is not null else false.
+    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public boolean hasConflictingModArtifact() {
+   public boolean hasConflictingModArtifact() throws OseeCoreException, SQLException {
       return getConflictingModArtifact() != null;
    }
 

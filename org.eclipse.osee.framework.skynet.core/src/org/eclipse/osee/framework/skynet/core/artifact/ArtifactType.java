@@ -156,15 +156,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
-    * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
-    * 
-    * @return
-    */
-   public boolean isTypeCompatible(String artifactTypeName) {
-      return name.equals(artifactTypeName);
-   }
-
-   /**
     * @return Returns the factoryKey.
     */
    public String getFactoryKey() {

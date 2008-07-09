@@ -401,15 +401,15 @@ public class RemoteEventManager implements IServiceLookupListener {
                   if (aOrderChanged) {
                      relation.setAOrder(((NetworkRelationLinkModifiedEvent) event).getAOrder());
                      if (bArtifactLoaded) {
-                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
-                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                        RelationManager.sortRelations(bArtifact, new HashMap<Integer, RelationLink>(),
+                              new HashMap<Integer, RelationLink>());
                      }
                   }
                   if (bOrderChanged) {
                      relation.setBOrder(((NetworkRelationLinkModifiedEvent) event).getBOrder());
                      if (aArtifactLoaded) {
-                        RelationManager.sortRelations(aArtifact, relation.getRelationType(),
-                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                        RelationManager.sortRelations(aArtifact, new HashMap<Integer, RelationLink>(),
+                              new HashMap<Integer, RelationLink>());
                      }
                   }
                   relation.setRationale(((NetworkRelationLinkModifiedEvent) event).getRationale(), false);
@@ -421,7 +421,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                            event.getArtAId(), event.getArtBId(), branch, branch);
                if (relation != null) {
-                  relation.deleteWithoutDirtyAndEvent();
+                  relation.delete();
                }
             } else if (event instanceof NetworkNewRelationLinkEvent) {
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
@@ -439,12 +439,12 @@ public class RemoteEventManager implements IServiceLookupListener {
                   RelationManager.manageRelation(relation, RelationSide.SIDE_A);
                   RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                   if (bArtifactLoaded) {
-                     RelationManager.sortRelations(bArtifact, relation.getRelationType(),
-                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     RelationManager.sortRelations(bArtifact, new HashMap<Integer, RelationLink>(),
+                           new HashMap<Integer, RelationLink>());
                   }
                   if (aArtifactLoaded) {
-                     RelationManager.sortRelations(aArtifact, relation.getRelationType(),
-                           new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     RelationManager.sortRelations(aArtifact, new HashMap<Integer, RelationLink>(),
+                           new HashMap<Integer, RelationLink>());
                   }
                }
             }
