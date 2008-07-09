@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -174,7 +175,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       super.dispose();
       for (Artifact taskArt : artifacts)
          try {
-            if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadArtifact();
+            if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadAttributesAndRelations();
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
@@ -240,7 +241,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       xViewer.setContentProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassContentProvider(
             xViewer));
       xViewer.setLabelProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassLabelProvider(xViewer));
-      branchLabel.setText("Branch: " + ((MassArtifactEditorInput) editorInput).getArtifacts().iterator().next().getBranch().getBranchName());
+      branchLabel.setText("Branch: " + getBranch().getBranchShortName());
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
 
@@ -253,6 +254,10 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
       setActivePage(artifactsPageIndex);
       xViewer.set(((MassArtifactEditorInput) editorInput).getArtifacts());
+   }
+
+   public Branch getBranch() {
+      return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranch();
    }
 
    @Override

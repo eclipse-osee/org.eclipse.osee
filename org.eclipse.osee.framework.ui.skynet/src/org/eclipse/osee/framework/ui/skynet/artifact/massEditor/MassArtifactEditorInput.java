@@ -22,6 +22,7 @@ import org.eclipse.ui.IPersistableElement;
 public class MassArtifactEditorInput implements IEditorInput {
 
    private final Collection<? extends Artifact> artifacts;
+
    private final String name;
 
    /**

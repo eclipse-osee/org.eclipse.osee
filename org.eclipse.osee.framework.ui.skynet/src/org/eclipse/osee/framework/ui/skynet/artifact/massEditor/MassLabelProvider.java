@@ -38,7 +38,7 @@ public class MassLabelProvider implements ITableLabelProvider {
          else
             return "";
       }
-      Artifact artifact = ((MassArtifactItem) element).getArtifact();
+      Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return "";
       // Handle case where columns haven't been loaded yet
       if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
@@ -87,7 +87,7 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
-      Artifact artifact = ((MassArtifactItem) element).getArtifact();
+      Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
       if (columnIndex == 0) return artifact.getImage();
       return null;

@@ -75,7 +75,7 @@ public class PurgeArtifactHandler extends AbstractHandler {
                            for (Artifact artifactToPurge : artifacts) {
                               if (!artifactToPurge.isDeleted()) {
                                  fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
-                                 artifactToPurge.purge();
+                                 artifactToPurge.purgeFromBranch();
                               }
                               fMonitor.worked(1);
                            }

@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
+import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -88,7 +90,7 @@ public class MergeView extends ViewPart implements IActionable {
       Job job = new Job("Open Merge View") {
 
          @Override
-         protected IStatus run(IProgressMonitor monitor) {
+         protected IStatus run(final IProgressMonitor monitor) {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
@@ -174,10 +176,11 @@ public class MergeView extends ViewPart implements IActionable {
          }
 
          private void fillPopupMenu(MenuManager menuManager) {
-            addDestBranchDefaultMenuItem(menuManager);
             addSourceBranchDefaultMenuItem(menuManager);
+            addDestBranchDefaultMenuItem(menuManager);
             menuManager.add(new Separator());
             addPreviewMenuItem(menuManager);
+            addDiffMenuItem(menuManager);
             menuManager.add(new Separator());
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          }
@@ -185,10 +188,11 @@ public class MergeView extends ViewPart implements IActionable {
 
       xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
 
-      createDestBranchDefaultMenuItem(menuManager);
       createSourceBranchDefaultMenuItem(menuManager);
+      createDestBranchDefaultMenuItem(menuManager);
       menuManager.add(new Separator());
       createPreviewMenuItem(menuManager);
+      createDiffMenuItem(menuManager);
       menuManager.add(new Separator());
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
@@ -243,11 +247,60 @@ public class MergeView extends ViewPart implements IActionable {
    /**
     * @param menuManager
     */
+   private void addDiffMenuItem(MenuManager menuManager) {
+      MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
+      menuManager.add(subMenuManager);
+      addDiffItems(subMenuManager, "Show Source Branch Differences");
+      addDiffItems(subMenuManager, "Show Destination Branch Differences");
+      addDiffItems(subMenuManager, "Show Source/Destination Differences");
+   }
+
+   /**
+    * @param menuManager
+    */
+   private void createDiffMenuItem(MenuManager menuManager) {
+      MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
+      menuManager.add(subMenuManager);
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 1), "Show Source Branch Differences");
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 2), "Show Destination Branch Differences");
+      createDiffItems(subMenuManager, new DiffHandler(menuManager, 3), "Show Source/Destination Differences");
+   }
+
+   /**
+    * @param subMenuManager
+    */
+   private String addDiffItems(MenuManager subMenuManager, String command) {
+      CommandContributionItem diffCommand =
+            Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null,
+                  null, null, null, null);
+      subMenuManager.add(diffCommand);
+      return diffCommand.getId();
+   }
+
+   /**
+    * @param subMenuManager
+    */
+   private void createDiffItems(MenuManager subMenuManager, DiffHandler handler, String command) {
+      handlerService.activateHandler(addDiffItems(subMenuManager, command), handler);
+   }
+
+   /**
+    * @param menuManager
+    */
    private String addDestBranchDefaultMenuItem(MenuManager menuManager) {
-      CommandContributionItem setDestBranchDefaultCommand =
-            Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
-                  "Set Destination as Default Branch", null, null, null, "S", null,
-                  "branch_manager_default_branch_menu");
+      CommandContributionItem setDestBranchDefaultCommand;
+      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) {
+         setDestBranchDefaultCommand =
+               Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
+                     "Set Destination as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
+                           "chkbox_enabled.gif"), "D", null, "branch_manager_default_branch_menu");
+      } else {
+         setDestBranchDefaultCommand =
+               Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
+                     "Set Destination as Default Branch", null, null, null, "D", null,
+                     "branch_manager_default_branch_menu");
+
+      }
       menuManager.add(setDestBranchDefaultCommand);
       return setDestBranchDefaultCommand.getId();
    }
@@ -329,11 +382,8 @@ public class MergeView extends ViewPart implements IActionable {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.transactionId = transactionId;
-      //      this.conflicts = conflicts;
       try {
-         //         if (conflicts != null) {
          xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, this);
-         //         }
          setPartName("Merge Manager: " + sourceBranch.getBranchShortName());
 
       } catch (Exception ex) {
@@ -448,6 +498,7 @@ public class MergeView extends ViewPart implements IActionable {
                      }
                      break;
                   case 3:
+                     if (conflict.statusNotResolvable() || conflict.statusInformational()) return false;
                      if (conflict.getArtifact() != null) {
                         artifacts.add(conflict.getArtifact());
                      }
@@ -462,4 +513,103 @@ public class MergeView extends ViewPart implements IActionable {
       }
    }
 
+   private class DiffHandler extends AbstractSelectionEnabledHandler {
+      private int diffToShow;
+      private AttributeConflict attributeConflict;
+      private ArtifactConflict artifactConflict;
+      private List<Artifact> artifacts;
+
+      public DiffHandler(MenuManager menuManager, int diffToShow) {
+         super(menuManager);
+         this.diffToShow = diffToShow;
+      }
+
+      @Override
+      public Object execute(ExecutionEvent event) throws ExecutionException {
+         if (attributeConflict != null) {
+            switch (diffToShow) {
+               case 1:
+                  MergeUtility.showSourceCompareFile(attributeConflict);
+                  break;
+               case 2:
+                  MergeUtility.showDestCompareFile(attributeConflict);
+                  break;
+               case 3:
+                  MergeUtility.showSourceDestCompareFile(attributeConflict);
+                  break;
+            }
+         } else if (artifactConflict != null) {
+            if (diffToShow == 1) {
+               MergeUtility.showSourceCompareFile(artifactConflict);
+            }
+            if (diffToShow == 2) {
+               MergeUtility.showDestCompareFile(artifactConflict);
+            }
+         }
+         return null;
+      }
+
+      @Override
+      public boolean isEnabled() {
+         artifacts = new LinkedList<Artifact>();
+         List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+         if (conflicts.size() != 1) return false;
+         if (conflicts.get(0) instanceof AttributeConflict) {
+            attributeConflict = (AttributeConflict) conflicts.get(0);
+            artifactConflict = null;
+            try {
+               switch (diffToShow) {
+                  case 1:
+                     if (attributeConflict.getSourceArtifact() != null) {
+                        artifacts.add(attributeConflict.getSourceArtifact());
+                     } else
+                        return false;
+                     break;
+                  case 2:
+                     if (attributeConflict.getDestArtifact() != null) {
+                        artifacts.add(attributeConflict.getDestArtifact());
+                     } else
+                        return false;
+                     break;
+                  case 3:
+                     if (attributeConflict.getDestArtifact() != null && attributeConflict.getSourceArtifact() != null) {
+                        artifacts.add(attributeConflict.getSourceArtifact());
+                        artifacts.add(attributeConflict.getDestArtifact());
+                     } else
+                        return false;
+                     break;
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(MergeView.class, ex, true);
+            }
+
+         } else if (conflicts.get(0) instanceof ArtifactConflict) {
+
+            attributeConflict = null;
+            artifactConflict = (ArtifactConflict) conflicts.get(0);
+            try {
+               switch (diffToShow) {
+                  case 1:
+                     if (artifactConflict.getSourceArtifact() != null && conflicts.get(0).statusNotResolvable()) {
+                        artifacts.add(artifactConflict.getSourceArtifact());
+                     } else
+                        return false;
+                     break;
+                  case 2:
+                     if (artifactConflict.getDestArtifact() != null && conflicts.get(0).statusInformational()) {
+                        artifacts.add(artifactConflict.getDestArtifact());
+                     } else
+                        return false;
+                     break;
+                  case 3:
+                     return false;
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(MergeView.class, ex, true);
+            }
+
+         }
+         return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      }
+   }
 }

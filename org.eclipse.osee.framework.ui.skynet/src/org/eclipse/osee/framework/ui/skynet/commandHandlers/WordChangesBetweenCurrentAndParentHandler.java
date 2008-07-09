@@ -51,7 +51,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
          Artifact secondArtifact =
-               myArtifactPersistenceManager.getArtifactFromId(artifactChange.getArtId(),
+               myArtifactPersistenceManager.getArtifactFromId(artifactChange.getArtifact().getArtId(),
                      artifactChange.getToTransactionId());
          RendererManager.getInstance().compareInJob(artifactChange.getConflictingModArtifact(), secondArtifact,
                DIFF_ARTIFACT);

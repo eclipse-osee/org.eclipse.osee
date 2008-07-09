@@ -91,7 +91,9 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
    }
 
    public void update(Object value) {
-      editor.setEntry(value.toString());
+      if (value != null) {
+         editor.setEntry(value.toString());
+      }
    }
 
    public boolean commit() {

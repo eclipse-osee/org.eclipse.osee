@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class MassContentProvider implements ITreeContentProvider {
 
-   protected Collection<MassArtifactItem> rootSet = new HashSet<MassArtifactItem>();
+   protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final MassXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
    private SkynetDebug debug = new SkynetDebug(false, "WorldTreeContentProvider");
@@ -32,11 +31,11 @@ public class MassContentProvider implements ITreeContentProvider {
       this.xViewer = xViewer;
    }
 
-   public void add(final MassArtifactItem item) {
+   public void add(final Artifact item) {
       add(Arrays.asList(item));
    }
 
-   public void add(final Collection<? extends MassArtifactItem> items) {
+   public void add(final Collection<? extends Artifact> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -46,7 +45,7 @@ public class MassContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends MassArtifactItem> arts) {
+   public void set(final Collection<? extends Artifact> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -61,17 +60,6 @@ public class MassContentProvider implements ITreeContentProvider {
    }
 
    public void remove(final Collection<? extends Artifact> arts) {
-      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<MassArtifactItem> delItems = new ArrayList<MassArtifactItem>();
-      delItems.addAll(rootSet);
-      for (Artifact art : arts) {
-         for (MassArtifactItem wai : rootSet)
-            if (wai.getArtifact().equals(art)) delItems.add(wai);
-      }
-      removeItems(delItems);
-   }
-
-   public void removeItems(final Collection<? extends MassArtifactItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -85,8 +73,6 @@ public class MassContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (MassArtifactItem wai : rootSet)
-               wai.dispose();
             rootSet.clear();
             xViewer.refresh();
          };
@@ -99,17 +85,11 @@ public class MassContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      if (parentElement instanceof MassArtifactItem) {
-         return ((MassArtifactItem) parentElement).getChildren();
-      }
       return EMPTY_ARRAY;
    }
 
    public Object getParent(Object element) {
       debug.report("getParent");
-      if (element instanceof MassArtifactItem) {
-         return ((MassArtifactItem) element).getParentItem();
-      }
       return null;
    }
 

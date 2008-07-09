@@ -10,6 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
@@ -22,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -57,6 +66,13 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String PRIOR_PARTIAL_MATCH = "partialMatch";
    private static final String PRIOR_SEARCH_TYPE = "searchType";
 
+   private static final String ENTRY_SEPARATOR = "##";
+   private static final String LAST_QUERY_KEY_ID = "lastQuery";
+   private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
+   private static final String OPTIONS_KEY_ID = "searchOption";
+
+   private static final String[] SEARCH_OPTIONS = new String[] {"Include Deleted"};
+
    private Button btnSearch;
    private Button chkCaseSensitive;
    private Button chkPartialSearch;
@@ -73,16 +89,19 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private String initialSearchText;
    private String initialSearchType;
 
+   private SearchComposite searchComposite;
+   private IMemento memento;
+
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       if (memento != null) {
+         this.memento = memento;
          initialSearchText = memento.getString(PRIOR_SEARCH_TEXT);
 
          initialSearchType = memento.getString(PRIOR_SEARCH_TYPE);
 
-         String boolStr;
-         boolStr = memento.getString(PRIOR_CASE_SENSITIVE);
+         String boolStr = memento.getString(PRIOR_CASE_SENSITIVE);
          if (boolStr == null) {
             initialCaseSensitive = false;
          } else {
@@ -98,7 +117,6 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (initialSearchText == null) {
          initialSearchText = "";
       }
-
    }
 
    @Override
@@ -116,6 +134,53 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
                   break;
                }
             }
+         }
+      }
+      if (OseeProperties.isDeveloper() && searchComposite != null && memento != null) {
+         memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
+         Map<String, Boolean> options = searchComposite.getOptions();
+         for (String option : options.keySet()) {
+            memento.putString(OPTIONS_KEY_ID + option.replaceAll(" ", ""), options.get(option).toString());
+         }
+         StringBuilder builder = new StringBuilder();
+         String[] queries = searchComposite.getQueryHistory();
+         for (int index = 0; index < queries.length; index++) {
+            try {
+               builder.append(URLEncoder.encode(queries[index], "UTF-8"));
+               if (index + 1 < queries.length) {
+                  builder.append(ENTRY_SEPARATOR);
+               }
+            } catch (UnsupportedEncodingException ex) {
+               // DO NOTHING
+            }
+         }
+         memento.putString(QUERY_HISTORY_KEY_ID, builder.toString());
+      }
+   }
+
+   private void loadState() {
+      if (memento != null) {
+         if (OseeProperties.isDeveloper() && searchComposite != null && memento != null) {
+            String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
+
+            Map<String, Boolean> options = new HashMap<String, Boolean>();
+            for (String option : SEARCH_OPTIONS) {
+               options.put(option, new Boolean(memento.getString(OPTIONS_KEY_ID + option.replaceAll(" ", ""))));
+            }
+
+            List<String> queries = new ArrayList<String>();
+            String rawHistory = memento.getString(QUERY_HISTORY_KEY_ID);
+            if (rawHistory != null) {
+               String[] values = rawHistory.split(ENTRY_SEPARATOR);
+               for (String value : values) {
+                  try {
+                     queries.add(URLDecoder.decode(value, "UTF-8"));
+                  } catch (UnsupportedEncodingException ex) {
+                     // DO NOTHING
+                  }
+               }
+            }
+            searchComposite.restoreWidgetValues(queries, lastQuery, options);
          }
       }
    }
@@ -157,6 +222,17 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
 
       updateWidgetEnablements();
+
+      if (OseeProperties.isDeveloper()) {
+         Group group = new Group(parent, SWT.NONE);
+         group.setLayout(new GridLayout());
+         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         group.setText("EXPERIMENTAL - Only Visible to Developers");
+
+         searchComposite = new SearchComposite(group, SWT.NONE, SEARCH_OPTIONS);
+         searchComposite.addListener(this);
+         loadState();
+      }
    }
 
    private void initSearchTypeRadioButton() {
@@ -298,6 +374,11 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    public void handleEvent(Event event) {
       updateWidgetEnablements();
+      if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
+         NewSearchUI.activateSearchResultView();
+         NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
+               searchComposite.getOptions()));
+      }
    }
 
    /* (non-Javadoc)

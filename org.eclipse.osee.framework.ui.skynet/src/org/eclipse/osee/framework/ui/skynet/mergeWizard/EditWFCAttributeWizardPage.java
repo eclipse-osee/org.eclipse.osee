@@ -16,7 +16,9 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeLabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -40,6 +42,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private Button sourceDiffButton;
    private Button destDiffButton;
    private Button sourceDestDiffButton;
+   private Label imageLabel;
    private static final String MERGE_TEXT = "Open Document Editor";
    private static final String MERGE_TOOLTIP = "Make additional changes using the Document/Merge Editor";
    private static final String CLEAR_TEXT = "Clear the Document";
@@ -54,7 +57,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private static final String DDIFF_TEXT = "Show Destination Diff";
    private static final String DDIFF_TOOLTIP =
          "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
-   private static final String SDDIFF_TEXT = "Show Source Destination Diff";
+   private static final String SDDIFF_TEXT = "Show Source/Destination Diff";
    private static final String SDDIFF_TOOLTIP =
          "Show the differences between the current Destination" + " artifact and the current Source artifact";
    private static final int NUM_COLUMNS = 1;
@@ -65,7 +68,8 @@ public class EditWFCAttributeWizardPage extends WizardPage {
 
          try {
             if (event.widget == editButton) {
-               RendererManager.getInstance().editInJob(conflict.getArtifact(), "PREVIEW_ARTIFACT");
+               RendererManager.getInstance().editInJob(conflict.getArtifact(), "EDIT_ARTIFACT");
+               conflict.markStatusToReflectEdit();
             } else if (event.widget == clearButton) {
                MergeUtility.clearValue(conflict, getShell(), true);
             } else if (event.widget == sourceButton) {
@@ -119,11 +123,14 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       composite.setLayoutData(gd);
       gd.horizontalSpan = NUM_COLUMNS;
 
+      imageLabel = new Label(composite, SWT.NONE);
+      imageLabel.setImage(null);
+
       try {
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizardPage.ART_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizardPage.INDENT + conflict.getArtifactName());
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizardPage.TYPE_TEXT);
-         new Label(composite, SWT.NONE).setText(ConflictResolutionWizardPage.INDENT + changeType);
+         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.ART_TEXT);
+         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getArtifactName());
+         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.TYPE_TEXT);
+         new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + changeType);
       } catch (Exception ex) {
          OSEELog.logException(EditWFCAttributeWizardPage.class, ex, true);
       }
@@ -149,6 +156,12 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       destDiffButton = createButton(DDIFF_TEXT, DDIFF_TOOLTIP, buttonComp);
       sourceDestDiffButton = createButton(SDDIFF_TEXT, SDDIFF_TOOLTIP, buttonComp);
 
+      try {
+         setResolution(XMergeLabelProvider.getMergeImage(conflict));
+      } catch (Exception ex) {
+         OSEELog.logException(EditWFCAttributeWizardPage.class, ex, true);
+      }
+
       setControl(composite);
    }
 
@@ -164,22 +177,12 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
-    */
-   @Override
-   public void setVisible(boolean visible) {
-      super.setVisible(visible);
-   }
-
-   public boolean canFlipToNextPage() {
-      return false;
-   }
-
    public boolean closingPage() {
       return true;
+   }
+
+   public void setResolution(Image image) {
+      imageLabel.setImage(image);
    }
 
 }

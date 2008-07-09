@@ -614,7 +614,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                RevisionHistoryView revisionHistoryView =
                      (RevisionHistoryView) page.showView(
                            RevisionHistoryView.VIEW_ID,
-                           selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(selectedItem.getArtId()),
+                           selectedArtifact.getGuid(),
                            IWorkbenchPage.VIEW_VISIBLE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
@@ -660,7 +660,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   "Confirm Revert of " + selectedItem.getName(),
                   "All attribute changes for the artifact and all link changes that involve the artifact on this branch will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
 
-               Jobs.startJob(new RevertJob(selectedItem.getName(), selectedItem.getArtId()));
+               Jobs.startJob(new RevertJob(selectedItem.getName(), selectedItem.getArtifact().getArtId()));
             }
          }
       });
@@ -779,10 +779,10 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          for (Object object : selection.toArray()) {
 
             if (object instanceof ITreeNode) {
-               ArtifactChange artifactChange = (ArtifactChange) ((ITreeNode) object).getBackingData();
-               artifacts.add(artifactChange.getArtId());
+               Artifact artifact = ((ArtifactChange) ((ITreeNode) object).getBackingData()).getArtifact();
+               artifacts.add(artifact.getArtId());
                if (aBranch == null) {
-                  aBranch = artifactChange.getArtifact().getBranch();
+                  aBranch = artifact.getBranch();
                }
             }
          }

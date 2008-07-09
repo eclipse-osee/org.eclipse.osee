@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -249,7 +250,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
 
       extraInfoLabel.setText(LOADING);
 
-      Job job = new Job("") {
+      Job job = new Job("Open Change View") {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -269,6 +270,8 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                      try {
                         if (changes.length == 0) {
                            extraInfoLabel.setText(NOT_CHANGES);
+                           xChangeViewer.setChanges(changes);
+                           xChangeViewer.refresh();
                         } else {
                            extraInfoLabel.setText(hasBranch ? "Changes made to branch " + branch.getBranchName() : "Changes made on transaction " + transactionNumber);
                            xChangeViewer.setChanges(changes);

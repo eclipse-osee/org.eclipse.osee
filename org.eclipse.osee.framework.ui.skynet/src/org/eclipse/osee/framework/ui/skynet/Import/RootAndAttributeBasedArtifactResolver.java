@@ -93,25 +93,29 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    public Artifact resolve(RoughArtifact roughArtifact) throws OseeCoreException {
       try {
-         List<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
-         Collection<Artifact> candidates = new LinkedList<Artifact>();
-
-         for (Artifact artifact : siblings) {
-            if (attributeValuesMatch(roughArtifact, artifact)) {
-               candidates.add(artifact);
-            }
-         }
-
          Artifact realArtifact = null;
-         if (candidates.size() == 1) {
-            realArtifact = candidates.iterator().next();
-            roughArtifact.updateValues(realArtifact);
-         } else {
-            OSEELog.logInfo(getClass(),
-                  "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName(),
-                  false);
-            if (createNewIfNotExist) {
-               realArtifact = super.resolve(roughArtifact);
+         RoughArtifact roughParent = roughArtifact.getRoughParent();
+
+         if (roughParent != null) {
+            List<Artifact> siblings = roughParent.getAssociatedArtifact().getChildren();
+            Collection<Artifact> candidates = new LinkedList<Artifact>();
+
+            for (Artifact artifact : siblings) {
+               if (attributeValuesMatch(roughArtifact, artifact)) {
+                  candidates.add(artifact);
+               }
+            }
+
+            if (candidates.size() == 1) {
+               realArtifact = candidates.iterator().next();
+               roughArtifact.updateValues(realArtifact);
+            } else {
+               OSEELog.logInfo(getClass(),
+                     "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName(),
+                     false);
+               if (createNewIfNotExist) {
+                  realArtifact = super.resolve(roughArtifact);
+               }
             }
          }
 

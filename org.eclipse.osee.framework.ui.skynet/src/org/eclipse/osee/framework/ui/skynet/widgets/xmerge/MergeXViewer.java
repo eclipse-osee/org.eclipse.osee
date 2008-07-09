@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * @author Donald G. Dunne
@@ -44,6 +45,8 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    private static String NAMESPACE = "osee.skynet.gui.MergeXViewer";
    private final XMergeViewer xCommitViewer;
    private Conflict[] conflicts;
+   private ConflictResolutionWizard conWizard;
+   private XMergeLabelProvider labelProvider;
 
    /**
     * @param parent
@@ -142,6 +145,10 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       xCommitViewer.refresh();
    }
 
+   public void resetDefaultSorter() {
+      setSorter(new MergeXViewerSorter(this, labelProvider));
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -172,29 +179,37 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
          if (treeColumn.getText().equals(MergeColumn.Source.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
+            } else if (conflict.statusInformational()) {
+               MergeUtility.showInformationalConflict(shell);
             } else {
                MergeUtility.setToSource(conflict, shell, true);
             }
          } else if (treeColumn.getText().equals(MergeColumn.Destination.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
+            } else if (conflict.statusInformational()) {
+               MergeUtility.showInformationalConflict(shell);
             } else {
                MergeUtility.setToDest(conflict, shell, true);
             }
          } else if (treeColumn.getText().equals(MergeColumn.Merged.getName())) {
             if (!(conflict.getConflictType().equals(Conflict.ConflictType.ARTIFACT))) {
-               ConflictResolutionWizard conWizard = new ConflictResolutionWizard(conflict);
+               conWizard = new ConflictResolutionWizard(conflict);
                WizardDialog dialog = new WizardDialog(shell, conWizard);
                dialog.create();
                if (dialog.open() == 0) {
                   conWizard.getResolved();
                }
+            } else if (conflict.statusNotResolvable()) {
+               MergeUtility.showArtifactDeletedConflict(conflict, shell);
             }
          } else if (treeColumn.getText().equals(MergeColumn.Conflict_Resolved.getName())) {
             if (conflict.statusNotResolvable()) {
                if (MergeUtility.showArtifactDeletedConflict(conflict, shell)) {
                   xCommitViewer.refreshTable();
                }
+            } else if (conflict.statusInformational()) {
+               MergeUtility.showInformationalConflict(shell);
             } else {
                conflict.handleResolvedSelection();
             }
@@ -205,6 +220,22 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       }
       xCommitViewer.loadTable();
       return super.handleLeftClickInIconArea(treeColumn, treeItem);
+   }
+
+   /* (non-Javadoc) Method declared on StructuredViewer. */
+   protected void doUpdateItem(Widget widget, Object element, boolean fullMap) {
+      super.doUpdateItem(widget, element, fullMap);
+      if (conWizard != null) {
+         try {
+            conWizard.setResolution();
+         } catch (Exception ex) {
+            OSEELog.logException(MergeXViewer.class, ex, true);
+         }
+      }
+   }
+
+   public void addLabelProvider(XMergeLabelProvider labelProvider) {
+      this.labelProvider = labelProvider;
    }
 
 }

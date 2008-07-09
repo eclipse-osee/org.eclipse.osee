@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeLabelProvider.ConflictState;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -22,13 +23,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 public class MergeXViewerSorter extends XViewerSorter {
 
    protected final XViewer xViewer;
+   protected final XMergeLabelProvider labelProvider;
 
    /**
     * @param xViewer
     */
-   public MergeXViewerSorter(XViewer xViewer) {
+   public MergeXViewerSorter(XViewer xViewer, XMergeLabelProvider labelProvider) {
       super(xViewer);
       this.xViewer = xViewer;
+      this.labelProvider = labelProvider;
    }
 
    /*
@@ -45,9 +48,15 @@ public class MergeXViewerSorter extends XViewerSorter {
          XViewerColumn sortXCol =
                xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
          MergeColumn aCol = MergeColumn.getXColumn(sortXCol);
+         String value1 = labelProvider.getColumnText(o1, sortXColIndex, sortXCol, aCol);
+         String value2 = labelProvider.getColumnText(o2, sortXColIndex, sortXCol, aCol);
 
-         if (aCol == MergeColumn.Conflict_Resolved) {
-            return ConflictState.valueOf(o1.toString()).compareTo(ConflictState.valueOf(o2.toString()));
+         if (o1 instanceof Conflict && o2 instanceof Conflict) {
+            if (aCol == MergeColumn.Conflict_Resolved) {
+               int compareInt =
+                     new Integer(ConflictState.getValue(value1)).compareTo(new Integer(ConflictState.getValue(value2)));
+               return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+            }
          }
 
          return super.compare(viewer, o1, o2, sortXColIndex);
@@ -56,5 +65,4 @@ public class MergeXViewerSorter extends XViewerSorter {
       }
       return 1;
    }
-
 }

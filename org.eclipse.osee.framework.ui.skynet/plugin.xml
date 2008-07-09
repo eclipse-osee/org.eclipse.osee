@@ -889,4 +889,12 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn">
     </Operation>
  </extension>
+ <extension
+       id="Clean up commit transactions"
+       name="Clean up commit transactions"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.CleanUpCommitTransactions">
+    </Operation>
+ </extension>
 </plugin>

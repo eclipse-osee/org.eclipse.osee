@@ -197,7 +197,7 @@ public class RoughArtifact {
 
       for (RoughArtifact roughArtifact : children) {
          Artifact tempArtifact = roughArtifact.getReal(branch, monitor, artifactResolver);
-         if (realArtifact != null) {
+         if (realArtifact != null && tempArtifact != null) {
             if (tempArtifact.getParent() == null) {
                realArtifact.addChild(tempArtifact);
             } else if (tempArtifact.getParent() != realArtifact) {
@@ -207,7 +207,9 @@ public class RoughArtifact {
          }
       }
 
-      realArtifact.persistAttributesAndRelations();
+      if (realArtifact != null) {
+         realArtifact.persistAttributesAndRelations();
+      }
       return realArtifact;
    }
 

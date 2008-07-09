@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -64,7 +65,7 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class XMergeViewer extends XWidget implements IEventReceiver {
+public class XMergeViewer extends XWidget implements IEventReceiver, IActionable {
 
    private MergeXViewer xCommitViewer;
    private IDirtiableEditor editor;
@@ -74,6 +75,11 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    private Label extraInfoLabel;
    private Conflict[] conflicts;
    private String displayLabelText;
+   private ToolItem openAssociatedArtifactItem;
+   private Branch sourceBranch;
+   private Branch destBranch;
+   private TransactionId tranId;
+   private MergeView mergeView;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
    /**
@@ -111,8 +117,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
 
       xCommitViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xCommitViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      xCommitViewer.setSorter(new MergeXViewerSorter(xCommitViewer));
+      XMergeLabelProvider labelProvider = new XMergeLabelProvider(xCommitViewer);
+      xCommitViewer.addLabelProvider(labelProvider);
+      xCommitViewer.setSorter(new MergeXViewerSorter(xCommitViewer, labelProvider));
       xCommitViewer.setContentProvider(new XMergeContentProvider(xCommitViewer));
       xCommitViewer.setLabelProvider(new XMergeLabelProvider(xCommitViewer));
       xCommitViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -137,8 +144,6 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       tree.setLinesVisible(true);
 
    }
-
-   private ToolItem openAssociatedArtifactItem;
 
    private void refreshAssociatedArtifactItem(Branch sourceBranch) {
       try {
@@ -234,7 +239,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            refreshTable();
+            setInputData(sourceBranch, destBranch, tranId, mergeView);
          }
       });
 
@@ -246,6 +251,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
             xCommitViewer.getCustomize().handleTableCustomization();
          }
       });
+
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, MergeView.VIEW_ID, "Merge Manager");
    }
 
    public void refreshTable() {
@@ -302,16 +309,21 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       setLabelError();
       refreshActionEnablement();
       int resolved = 0;
+      int informational = 0;
       if (conflicts != null && conflicts.length != 0) {
          for (Conflict conflict : conflicts) {
             if (conflict.statusResolved()) {
                resolved++;
             }
+            if (conflict.statusInformational()) {
+               informational++;
+         }
          }
          if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + conflicts.length + " <=> Resovled : " + resolved);
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
+
          }
       }
    }
@@ -393,9 +405,13 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView) throws IllegalStateException, SQLException {
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView) {
+      this.sourceBranch = sourceBranch;
+      this.destBranch = destBranch;
+      this.tranId = tranId;
+      this.mergeView = mergeView;
       extraInfoLabel.setText(LOADING);
-      Job job = new Job("") {
+      Job job = new Job("Loading Merge Manager") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
@@ -432,22 +448,38 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       this.conflicts = conflicts;
       loadTable();
       int resolved = 0;
+      int informational = 0;
       for (Conflict conflict : conflicts) {
          if (conflict.statusResolved()) {
             resolved++;
+         }
+         if (conflict.statusInformational()) {
+            informational++;
          }
       }
       xCommitViewer.setConflicts(conflicts);
       if (conflicts != null && conflicts.length != 0) {
          displayLabelText =
                "Source Branch :  " + conflicts[0].getSourceBranch().getBranchName() + "\nDestination Branch :  " + conflicts[0].getDestBranch().getBranchName();
-         if (resolved == conflicts.length) {
+         if (resolved == (conflicts.length - informational)) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + conflicts.length + " <=> Resovled : " + resolved);
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + "\nInformational Conflicts : " + informational);
+         }
+
          }
 
       }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
+    */
+   @Override
+   public String getActionDescription() {
+      StringBuffer sb = new StringBuffer();
+      if (sourceBranch != null) sb.append("\nSource Branch: " + sourceBranch);
+      if (destBranch != null) sb.append("\nDestination Branch: " + destBranch);
+      if (tranId != null) sb.append("\nTransactionId: " + tranId);
+      return sb.toString();
    }
 }
