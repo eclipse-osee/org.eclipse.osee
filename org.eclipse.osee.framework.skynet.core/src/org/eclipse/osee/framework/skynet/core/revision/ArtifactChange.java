@@ -15,7 +15,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 
 /**

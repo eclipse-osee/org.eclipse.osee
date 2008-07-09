@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -399,10 +400,11 @@ public class RelationManager {
 
          RelationManager.manageRelation(relation, RelationSide.SIDE_A);
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
-         
+
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                     relation.getASideName(), ModType.Added, RelationManager.class));
+               new CacheRelationModifiedEvent(relation, relation.getABranch(),
+                     relation.getRelationType().getTypeName(), relation.getASideName(), ModType.Added,
+                     RelationManager.class));
       }
    }
 

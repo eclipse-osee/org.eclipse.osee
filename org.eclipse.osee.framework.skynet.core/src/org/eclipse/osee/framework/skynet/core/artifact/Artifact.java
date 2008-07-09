@@ -471,7 +471,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : selectedAttributes) {
          if (!attribute.isDeleted()) {
             notDeltedAttributes.add(attribute);
-      }
+         }
       }
       return Collections.castAll(notDeltedAttributes);
    }
@@ -1163,11 +1163,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
-      try {
       RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
-      } catch (ArtifactDoesNotExist ex) {
-         throw new SQLException(ex);
-      }
    }
 
    /**

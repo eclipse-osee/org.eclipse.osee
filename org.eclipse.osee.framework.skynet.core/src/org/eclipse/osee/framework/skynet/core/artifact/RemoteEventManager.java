@@ -422,8 +422,8 @@ public class RemoteEventManager implements IServiceLookupListener {
                            event.getArtAId(), event.getArtBId(), branch, branch);
                if (relation != null) {
                   relation.deleteWithoutDirtyAndEvent();
-            }
-         } else if (event instanceof NetworkNewRelationLinkEvent) {
+               }
+            } else if (event instanceof NetworkNewRelationLinkEvent) {
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
                RelationLink relation =
                      RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
@@ -453,8 +453,8 @@ public class RemoteEventManager implements IServiceLookupListener {
                RelationManager.getLoadedRelation(relationType, event.getArtAId(), event.getArtBId(), branch, branch);
 
          if (link != null) {
-         localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
-               link.getASideName(), modType, RemoteEventManager.instance));
+            localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
+                  link.getASideName(), modType, RemoteEventManager.instance));
          } else {
             OseeLog.log(
                   SkynetActivator.class,

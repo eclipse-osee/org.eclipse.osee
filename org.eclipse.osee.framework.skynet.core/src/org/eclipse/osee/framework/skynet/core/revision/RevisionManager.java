@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,7 +36,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -539,14 +537,14 @@ public class RevisionManager implements IEventReceiver {
             int relLinkId = resultSet.getInt("rel_link_id");
 
             if (!newAndDeletedArtifactIds.contains(aArtId) && !newAndDeletedArtifactIds.contains(bArtId)) {
-            artIds.add(aArtId);
-            artIds.add(bArtId);
+               artIds.add(aArtId);
+               artIds.add(bArtId);
 
-            changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
-                  ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
-                  resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
-                  RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
-         }
+               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
+                     ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
+                     resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
+                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
+            }
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);
@@ -559,9 +557,9 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
-	private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
