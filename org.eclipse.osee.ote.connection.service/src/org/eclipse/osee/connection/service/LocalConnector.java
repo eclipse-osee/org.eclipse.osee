@@ -5,7 +5,8 @@
  */
 package org.eclipse.osee.connection.service;
 
-import java.util.Properties;
+import java.io.Serializable;
+import java.util.HashSet;
 
 /**
  * @author b1529404
@@ -13,13 +14,16 @@ import java.util.Properties;
 public class LocalConnector implements IServiceConnector {
    public static final String TYPE = "local";
    private final Object service;
-   private final Properties properties;
+   private final EnhancedProperties properties;
+
+   private final HashSet<IServicePropertyChangeListener> propertyChangeListeners =
+         new HashSet<IServicePropertyChangeListener>();
 
    /**
     * @param service
     * @param properties
     */
-   public LocalConnector(Object service, Properties properties) {
+   public LocalConnector(Object service, EnhancedProperties properties) {
       this.service = service;
       this.properties = properties;
    }
@@ -48,10 +52,22 @@ public class LocalConnector implements IServiceConnector {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#setProperty(java.lang.String, java.lang.String)
+    */
+   @Override
+   public void setProperty(String key, Serializable value) {
+      properties.setProperty(key, value);
+      for (IServicePropertyChangeListener listener : propertyChangeListeners) {
+         listener.propertyChanged(this, key, value);
+      }
+
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.connection.service.IServiceConnector#getProperty(java.lang.String, java.lang.String)
     */
    @Override
-   public String getProperty(String property, String defaultValue) {
+   public Serializable getProperty(String property, Serializable defaultValue) {
       return properties.getProperty(property, defaultValue);
    }
 
@@ -68,6 +84,22 @@ public class LocalConnector implements IServiceConnector {
     */
    @Override
    public void unexport(Object callback) throws Exception {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#addPropertyChangeListener(org.eclipse.osee.connection.service.IServicePropertyChangeListener)
+    */
+   @Override
+   public void addPropertyChangeListener(IServicePropertyChangeListener listener) {
+      propertyChangeListeners.add(listener);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#removePropertyChangeListener(org.eclipse.osee.connection.service.IServicePropertyChangeListener)
+    */
+   @Override
+   public void removePropertyChangeListener(IServicePropertyChangeListener listener) {
+      propertyChangeListeners.remove(listener);
    }
 
 }

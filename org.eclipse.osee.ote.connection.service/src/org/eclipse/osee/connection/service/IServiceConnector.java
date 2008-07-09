@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.connection.service;
 
+import java.io.Serializable;
+
 /**
  * Provides a communication pipe to a service.
  * 
@@ -21,7 +23,9 @@ public interface IServiceConnector {
     */
    Object getService();
 
-   String getProperty(String property, String defaultValue);
+   void setProperty(String key, Serializable value);
+
+   Serializable getProperty(String property, Serializable defaultValue);
 
    void stop() throws Exception;
 
@@ -35,4 +39,8 @@ public interface IServiceConnector {
    Object export(Object callback) throws Exception;
 
    void unexport(Object callback) throws Exception;
+
+   void addPropertyChangeListener(IServicePropertyChangeListener listener);
+
+   void removePropertyChangeListener(IServicePropertyChangeListener listener);
 }
