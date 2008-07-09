@@ -37,7 +37,7 @@ public class AtsStateItems {
       return items;
    }
 
-   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr)throws OseeCoreException, SQLException{
+   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr) throws OseeCoreException, SQLException {
       return getStateItems(smaMgr.getWorkPageDefinition().getId());
    }
 
@@ -63,12 +63,16 @@ public class AtsStateItems {
                   try {
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
-                     stateItems.add((IAtsStateItem) obj);
+                     if (obj == null) {
+                        OSEELog.logException(AtsPlugin.class,
+                              "Error Instantiating AtsStateItem extension \"" + classname + "\"", null, false);
+                     } else {
+                        stateItems.add((IAtsStateItem) obj);
+                     }
                   } catch (Exception ex) {
                      OSEELog.logException(AtsPlugin.class, "Error loading AtsStateItem extension", ex, true);
                   }
                }
-
             }
          }
       }

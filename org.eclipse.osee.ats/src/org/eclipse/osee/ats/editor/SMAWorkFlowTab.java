@@ -227,11 +227,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       }
 
-      logSection = new SMAWorkFlowLogSection(body, toolkit, SWT.NONE, smaMgr);
-      control = logSection.getMainComp();
-      sections.add(logSection);
-      managedForm.addPart(logSection);
-
       if (AtsPlugin.isAtsAdmin()) {
          SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(body, toolkit, SWT.NONE, smaMgr);
          control = section.getMainComp();
@@ -249,7 +244,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
    private Control control = null;
-   private SMAWorkFlowLogSection logSection;
 
    private void storeScrollLocation() {
       if (scrolledForm != null) {
@@ -450,7 +444,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan, String forStateName) throws SQLException, MultipleAttributesExist {
       // Display global Notes
-      for (NoteItem noteItem : smaMgr.getSma().getNotes().getNoteItems()) {
+      for (NoteItem noteItem : smaMgr.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
             createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toHTML(), false);
          }

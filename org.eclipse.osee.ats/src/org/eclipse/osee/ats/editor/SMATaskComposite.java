@@ -32,8 +32,19 @@ public class SMATaskComposite extends Composite {
     * @param parent
     * @param style
     */
-   public SMATaskComposite(Composite parent, int style) {
+   public SMATaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) throws OseeCoreException, SQLException {
       super(parent, style);
+      setLayout(new GridLayout(1, true));
+      setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      xTaskViewer = new XTaskViewer(iXTaskViewer);
+      xTaskViewer.createWidgets(this, 1);
+      // xTask.addXModifiedListener(xModListener);
+
+      AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
+
+      xTaskViewer.loadTable();
+
    }
 
    /* (non-Javadoc)
@@ -47,19 +58,6 @@ public class SMATaskComposite extends Composite {
 
    public String getHtml() {
       return xTaskViewer.toHTML(AHTML.LABEL_FONT);
-   }
-
-   public void create(IXTaskViewer iXTaskViewer)throws OseeCoreException, SQLException{
-      setLayout(new GridLayout(1, true));
-      setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      xTaskViewer = new XTaskViewer(iXTaskViewer);
-      xTaskViewer.createWidgets(this, 1);
-      // xTask.addXModifiedListener(xModListener);
-
-      AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
-
-      xTaskViewer.loadTable();
    }
 
    /**

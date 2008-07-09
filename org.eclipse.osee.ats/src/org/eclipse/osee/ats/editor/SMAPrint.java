@@ -65,7 +65,7 @@ public class SMAPrint extends Action {
                      ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
                //
                AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
-                     smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM))
+                     smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM))
 
          }));
          sb.append(AHTML.endMultiColumnTable());
@@ -80,7 +80,7 @@ public class SMAPrint extends Action {
          if (workFlowTab != null) sb.append(workFlowTab.getHtml());
          if (taskComposite != null) sb.append(taskComposite.getHtml());
          sb.append(AHTML.newline());
-         sb.append(smaMgr.getSma().getLog().getHtml());
+         sb.append(smaMgr.getLog().getHtml());
          XResultData resultData = new XResultData(AtsPlugin.getLogger());
          resultData.addRaw(sb.toString());
          resultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);

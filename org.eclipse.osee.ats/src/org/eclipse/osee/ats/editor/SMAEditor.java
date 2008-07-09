@@ -68,9 +68,10 @@ import org.eclipse.ui.actions.ActionFactory;
 public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IEventReceiver, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex;
+   private int workFlowPageIndex, taskPageIndex, historyPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
+   private SMAHistoryComposite historyComposite;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
    };
@@ -89,8 +90,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "Historical Error",
                "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
       } else if (!smaMgr.isAccessControlWrite()) {
-         AWorkbench.popup(
-               "Authentication Error",
+         AWorkbench.popup("Authentication Error",
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
       } else {
          try {
@@ -202,7 +202,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
          SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-         //         SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
          SkynetEventManager.getInstance().register(LocalNewBranchEvent.class, this);
          SkynetEventManager.getInstance().register(RemoteNewBranchEvent.class, this);
          SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
@@ -218,10 +217,16 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          // Create Tasks tab
          if (smaMgr.showTaskTab()) {
-            taskComposite = new SMATaskComposite(getContainer(), SWT.NONE);
-            taskComposite.create(this);
+            taskComposite = new SMATaskComposite(this, getContainer(), SWT.NONE);
             taskPageIndex = addPage(taskComposite);
             setPageText(taskPageIndex, "Tasks");
+         }
+
+         // Create History tab
+         if (smaMgr.showTaskTab()) {
+            historyComposite = new SMAHistoryComposite(smaMgr, getContainer(), SWT.NONE);
+            historyPageIndex = addPage(historyComposite);
+            setPageText(historyPageIndex, "History");
          }
 
          setActivePage(workFlowPageIndex);

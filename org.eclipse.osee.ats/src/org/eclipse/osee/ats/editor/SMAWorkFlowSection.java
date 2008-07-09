@@ -227,7 +227,7 @@ public class SMAWorkFlowSection extends SectionPart {
          sb.append(" - Current State");
       }
       if (smaMgr.isCancelled()) {
-         LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
             if (!item.getMsg().equals("")) sb.append(" - Reason: " + item.getMsg());
@@ -237,12 +237,12 @@ public class SMAWorkFlowSection extends SectionPart {
          if (smaMgr.isCompleted()) {
             sb.append(" - ");
             sb.append(smaMgr.getSma().getWorldViewCompletedDateStr());
-            LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
+            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
          } else if (smaMgr.isCancelled()) {
             sb.append(" - ");
             sb.append(smaMgr.getSma().getWorldViewCancelledDateStr());
-            LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
+            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
          }
          if (smaMgr.getStateMgr().getAssignees().size() > 0) {
@@ -250,7 +250,7 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
          }
       } else {
-         LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
          if (item != null) {
             sb.append(" - State Completed " + item.getDate(XDate.MMDDYYHHMM));
             sb.append(" by " + item.getUser().getName());
@@ -417,7 +417,7 @@ public class SMAWorkFlowSection extends SectionPart {
          transitionToStateCombo.setSelected(defaultPage);
       }
       if (atsWorkPage.isCancelledPage()) {
-         LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
          if (item != null) {
             defaultPage.add(smaMgr.getWorkPageDefinitionByName(item.getState()));
             transitionToStateCombo.setSelected(defaultPage);
@@ -654,8 +654,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (hoursSinceCreation < 0.02) hoursSinceCreation = (new Float(0.02)).floatValue();
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
-            smaMgr.getStateMgr().setPercentComplete(100);
-            smaMgr.getStateMgr().setHoursSpent(hoursSinceCreation);
+            smaMgr.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
             return true;
          }
       }
@@ -668,15 +667,14 @@ public class SMAWorkFlowSection extends SectionPart {
                   msg, false, Arrays.asList(smaMgr.getSma()));
       int result = tsd.open();
       if (result == 0) {
-         smaMgr.getStateMgr().setPercentComplete(100);
-         smaMgr.getStateMgr().setHoursSpent(smaMgr.getStateMgr().getHoursSpent() + tsd.getHours().getFloat());
+         smaMgr.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
          return true;
       }
       return false;
    }
 
    public int getCreationToNowDateDeltaMinutes() {
-      Date createDate = smaMgr.getSma().getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
+      Date createDate = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
       float diff = (date.getTime() - createDateLong);
