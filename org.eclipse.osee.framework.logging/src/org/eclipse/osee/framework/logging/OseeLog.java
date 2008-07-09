@@ -25,14 +25,12 @@ public class OseeLog {
       sm = Activator.getInstance().getStatusManager();
       log = Activator.getInstance().getLogger();
       register(new IStatusListener() {
-
          @Override
          public void onStatus(IHealthStatus status) {
             log.log(status.getPlugin(), status.getPlugin(), status.getLevel(), status.getMessage(),
                   status.getException());
 
          }
-
       });
    }
 
@@ -49,7 +47,7 @@ public class OseeLog {
    }
 
    public static void log(Class<?> loggerName, Level level, Throwable th) {
-      log.log(loggerName.getName(), loggerName.getName(), level, th.getLocalizedMessage());
+      log.log(loggerName.getName(), loggerName.getName(), level, th.getLocalizedMessage(), th);
    }
 
    public static void log(String loggerName, Level level, String message, Throwable th) {
