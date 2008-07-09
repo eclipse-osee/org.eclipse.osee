@@ -21,7 +21,7 @@ public class AtsCancellationReasonStateWorkItem extends WorkWidgetDefinition {
       super("Cancellation Reason", "ats.CancellationReason");
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
       data.setDefaultValue(item.getMsg());
       data.setStorageName(getId());
       data.setXWidgetName("XText");

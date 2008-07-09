@@ -78,6 +78,8 @@ public enum AtsXColumn {
    Percent_Rework_Col("Percent Rework", 40, SWT.CENTER, false, SortDataType.Integer, false),
    Branch_Status_Col("Branch Status", 40, SWT.CENTER, false, SortDataType.String, false),
    Number_of_Tasks_Col("Number of Tasks", 40, SWT.CENTER, false, SortDataType.String, false),
+   Last_Modified_Col("Last Modified", 40, SWT.CENTER, false, SortDataType.Date, false, "Retrieves timestamp of last database update of this artifact."),
+   Last_Statused_Col("Last Statused", 40, SWT.CENTER, false, SortDataType.Date, false, "Retrieves timestamp of status (percent completed or hours spent)."),
    Validation_Required_Col("Validation Required", 80, SWT.LEFT, false, SortDataType.String, false, "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
 
    private final String name;

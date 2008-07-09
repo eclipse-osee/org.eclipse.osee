@@ -81,11 +81,11 @@ public class TaskManager {
       taskArt =
             (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), title);
-      taskArt.getLog().addLog(LogType.Originated, "", "");
+      taskArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
       // Initialize state machine
       taskArt.getSmaMgr().getStateMgr().initializeStateMachine(TaskStates.InWork.name(), assignees);
-      taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
+      taskArt.getSmaMgr().getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),

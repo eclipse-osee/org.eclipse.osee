@@ -50,7 +50,7 @@ public class NewDecisionReviewJob extends Job {
          AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork()throws OseeCoreException, SQLException{
+            protected void handleTxWork() throws OseeCoreException, SQLException {
                decisionReviewArtifact = createNewDecisionReview(teamParent, againstCurrentState);
                decisionReviewArtifact.persistAttributesAndRelations();
             }
@@ -67,7 +67,7 @@ public class NewDecisionReviewJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState)throws OseeCoreException, SQLException{
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws OseeCoreException, SQLException {
       DecisionReviewArtifact decRev =
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
                   AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
@@ -76,16 +76,15 @@ public class NewDecisionReviewJob extends Job {
       if (againstCurrentState) decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             teamParent.getSmaMgr().getStateMgr().getCurrentStateName());
 
-      decRev.getLog().addLog(LogType.Originated, "", "");
+      decRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
       decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
             "Enter description of the decision, if any");
-      decRev.setSoleAttributeValue(
-            ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+      decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             "Yes;Followup;<" + SkynetAuthentication.getUser().getUserId() + ">\n" + "No;Completed;");
 
       // Initialize state machine
       decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
-      decRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "");
+      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "");
 
       return decRev;
    }

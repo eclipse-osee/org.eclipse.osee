@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
@@ -65,7 +66,9 @@ public class ATSLog {
    public String getHtml(boolean showLog) {
       if (getLogItems().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
-      if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Log"));
+      if (showLog) sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
+            AHTML.LABEL_FONT,
+            "History for \"" + artifact.getArtifactTypeName() + "\" - " + artifact.getHumanReadableId() + " - titled \"" + artifact.getDescriptiveName() + "\""));
       sb.append(getTable());
       return sb.toString();
    }
@@ -88,6 +91,12 @@ public class ATSLog {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return logItems;
+   }
+
+   public Date getLastStatusedDate() throws OseeCoreException, SQLException {
+      LogItem logItem = getLastEvent(LogType.Metrics);
+      if (logItem == null) return null;
+      return logItem.getDate();
    }
 
    public void putLogItems(List<LogItem> items) {

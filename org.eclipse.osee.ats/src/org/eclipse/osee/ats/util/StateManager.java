@@ -106,62 +106,19 @@ public class StateManager {
          return EMPTY_USER_ARRAY;
    }
 
-   /**
-    * Set hours spent on current state
-    * 
-    * @param hoursSpent
-    * @throws Exception
-    */
-   public void setHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
-      setHoursSpent(getCurrentStateName(), hoursSpent);
+   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      updateMetrics(getCurrentStateName(), additionalHours, percentComplete, logMetrics);
    }
 
-   /**
-    * Set hours spent on the stateName
-    * 
-    * @param stateName
-    * @param hoursSpent The hours to set.
-    * @throws Exception
-    */
-   public void setHoursSpent(String stateName, double hoursSpent) throws OseeCoreException, SQLException {
-      if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
-      SMAState state = getSMAState(stateName, false);
-      state.setHoursSpent(hoursSpent);
-      putState(state);
+   public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      if (stateName.equals(getCurrentStateName()))
+         currentStateDam.updateMetrics(additionalHours, percentComplete, logMetrics);
+      else
+         stateDam.updateMetrics(stateName, additionalHours, percentComplete, logMetrics);
    }
 
-   /**
-    * Add hours spent on the current state
-    * 
-    * @param hoursSpent The hoursSpent to set.
-    * @throws Exception
-    */
-   public void addHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
-      currentStateDam.addHoursSpent(hoursSpent);
-   }
-
-   /**
-    * Set percent complete on the current state
-    * 
-    * @param percentComplete The percentComplete to set.
-    * @throws Exception
-    */
-   public void setPercentComplete(int percentComplete) throws OseeCoreException, SQLException {
-      setPercentComplete(getCurrentStateName(), percentComplete);
-   }
-
-   /**
-    * Set percent complete on the stateName
-    * 
-    * @param stateName
-    * @param percentComplete The percentComplete to set.
-    * @throws Exception
-    */
-   public void setPercentComplete(String stateName, int percentComplete) throws OseeCoreException, SQLException {
-      if (!isStateVisited(stateName)) throw new IllegalArgumentException("State " + stateName + " does not exist.");
-      SMAState state = getSMAState(stateName, false);
-      state.setPercentComplete(percentComplete);
-      putState(state);
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      currentStateDam.setMetrics(hours, percentComplete, logMetrics);
    }
 
    /**

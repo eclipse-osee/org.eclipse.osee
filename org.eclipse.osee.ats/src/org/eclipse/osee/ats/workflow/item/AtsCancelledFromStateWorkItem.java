@@ -21,7 +21,7 @@ public class AtsCancelledFromStateWorkItem extends WorkWidgetDefinition {
       super("Cancelled from State", "ats.CancelledFromState");
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
       data.setDefaultValue(item.getState());
       data.setStorageName(getId());
       data.setXWidgetName("XText");

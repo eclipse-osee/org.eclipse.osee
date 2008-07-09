@@ -696,10 +696,10 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
             }
             String results = (purge ? "Purge" : "Delete") + " ATS Objects, Are You Sure?\n" + delBuilder.toString();
             results = results.replaceAll("\n", "<br>");
-            HtmlDialog wd =
+            HtmlDialog dialog =
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
-            wd.open();
-            if (wd.getReturnCode() == 0) {
+            dialog.open();
+            if (dialog.getReturnCode() == 0) {
                AbstractSkynetTxTemplate txWrapper =
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
@@ -715,6 +715,8 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                         }
                      };
                txWrapper.execute();
+               AWorkbench.popup((purge ? "Purge" : "Delete") + " Completed",
+                     (purge ? "Purge" : "Delete") + " Completed");
             }
          }
       } catch (Exception ex) {

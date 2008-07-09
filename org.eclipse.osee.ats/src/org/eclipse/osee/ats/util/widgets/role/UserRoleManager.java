@@ -196,7 +196,7 @@ public class UserRoleManager {
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-      smaMgr.getStateMgr().setHoursSpent(hoursSpent);
+      smaMgr.getStateMgr().updateMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
       if (persist) artifact.persistAttributes();
    }
 

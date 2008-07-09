@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -45,54 +44,31 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       sma.setSoleAttributeValue(attributeTypeName, state.toXml());
    }
 
-   public void logMetrics() throws OseeCoreException, SQLException {
-      if (sma instanceof TaskArtifact) logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
-            AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), SkynetAuthentication.getUser(), new Date());
-   }
-
-   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, User user, Date date) throws SQLException, MultipleAttributesExist {
-      LogItem logItem =
-            new LogItem(LogType.Metrics, date, user, "", String.format("Percent %s Hours %s", percent, hours));
-      sma.getLog().addLogItem(logItem);
-   }
-
-   /**
-    * Set hours spent on the current state
-    * 
-    * @param hoursSpent The hoursSpent to set.
-    * @throws Exception
-    */
-   public void setHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
+   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
       SMAState currState = getState();
-      currState.setHoursSpent(hoursSpent);
-      setState(currState);
-      logMetrics();
-   }
-
-   /**
-    * Add hours spent on the current state
-    * 
-    * @param hoursSpent The hoursSpent to set.
-    * @throws Exception
-    */
-   public void addHoursSpent(double hoursSpent) throws OseeCoreException, SQLException {
-      SMAState currState = getState();
-      currState.setHoursSpent(hoursSpent + currState.getHoursSpent());
-      setState(currState);
-      logMetrics();
-   }
-
-   /**
-    * Set percent complete on the current state
-    * 
-    * @param percentComplete The percentComplete to set.
-    * @throws Exception
-    */
-   public void setPercentComplete(int percentComplete) throws OseeCoreException, SQLException {
-      SMAState currState = getState();
+      currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
-      logMetrics();
+      if (logMetrics) logMetrics();
+   }
+
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      SMAState currState = getState();
+      currState.setHoursSpent(hours);
+      currState.setPercentComplete(percentComplete);
+      setState(currState);
+      if (logMetrics) logMetrics();
+   }
+
+   public void logMetrics() throws OseeCoreException, SQLException {
+      logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), "",
+            SkynetAuthentication.getUser(), new Date());
+   }
+
+   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws SQLException, MultipleAttributesExist {
+      LogItem logItem =
+            new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours));
+      sma.getSmaMgr().getLog().addLogItem(logItem);
    }
 
 }

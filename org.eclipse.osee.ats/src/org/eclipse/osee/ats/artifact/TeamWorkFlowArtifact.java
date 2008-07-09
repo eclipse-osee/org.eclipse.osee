@@ -70,7 +70,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     */
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.TeamWorkflowToReview_Review);
+      // review relation should NOT be here cause it's changes are NOT part of dirty logic
       registerSMARelation(AtsRelation.TeamWorkflowTargetedForVersion_Version);
    }
 
@@ -262,7 +262,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          return XViewerCells.getCellExceptionString(errStr);
       }
       VersionArtifact verArt = verArts.iterator().next();
-      if (!smaMgr.isCompleted() && verArt.getSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
+      if (!smaMgr.isCompleted() && !smaMgr.isCancelled() && verArt.getSoleAttributeValue(
+            ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
          String errStr =
                "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
          OSEELog.logException(AtsPlugin.class, errStr, null, false);

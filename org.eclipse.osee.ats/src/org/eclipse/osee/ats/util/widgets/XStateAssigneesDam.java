@@ -12,10 +12,13 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -49,6 +52,30 @@ public abstract class XStateAssigneesDam extends XTextDam {
          OSEELog.logException(AtsPlugin.class, "Error parsing state data for " + sma.getHumanReadableId(), ex, false);
       }
       return null;
+   }
+
+   public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      SMAState currState = getState(stateName, false);
+      currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
+      currState.setPercentComplete(percentComplete);
+      setState(currState);
+      if (logMetrics) {
+         XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
+               AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, SkynetAuthentication.getUser(),
+               new Date());
+      }
+   }
+
+   public void setMetrics(String stateName, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+      SMAState currState = getState(stateName, false);
+      currState.setHoursSpent(hours);
+      currState.setPercentComplete(percentComplete);
+      setState(currState);
+      if (logMetrics) {
+         XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
+               AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), stateName, SkynetAuthentication.getUser(),
+               new Date());
+      }
    }
 
    public Set<SMAState> getStates() {

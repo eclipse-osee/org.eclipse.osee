@@ -177,7 +177,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public void transitionToInWork(User toUser, boolean persist) throws OseeCoreException, SQLException {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) return;
       Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false);
-      if (smaMgr.getStateMgr().getPercentComplete() == 100) smaMgr.getStateMgr().setPercentComplete(99);
+      if (smaMgr.getStateMgr().getPercentComplete() == 100) {
+         smaMgr.getStateMgr().updateMetrics(0, 99, true);
+      }
       if (persist) smaMgr.getSma().saveSMA();
       if (result.isFalse()) result.popup();
    }

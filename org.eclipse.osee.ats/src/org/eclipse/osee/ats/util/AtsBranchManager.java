@@ -543,7 +543,8 @@ public class AtsBranchManager {
                   if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
                }
             } catch (SQLException ex) {
-               OSEELog.logSevere(AtsPlugin.class, "Error getting branch artifact changes", true);
+               OSEELog.logSevere(AtsPlugin.class,
+                     "Error getting branch artifact changes - " + ex.getLocalizedMessage(), true);
             }
          }
       } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
@@ -554,7 +555,8 @@ public class AtsBranchManager {
                   if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
                }
             } catch (SQLException ex) {
-               OSEELog.logSevere(AtsPlugin.class, "Error getting transaction artifact changes", true);
+               OSEELog.logSevere(AtsPlugin.class,
+                     "Error getting transaction artifact changes - " + ex.getLocalizedMessage(), true);
             }
          }
       }

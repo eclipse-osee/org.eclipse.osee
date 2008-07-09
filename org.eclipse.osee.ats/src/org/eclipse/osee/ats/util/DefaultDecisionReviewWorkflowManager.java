@@ -73,15 +73,13 @@ public class DefaultDecisionReviewWorkflowManager {
    public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
-      reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
-      reviewArt.getSmaMgr().getStateMgr().setPercentComplete(statePercentComplete);
+      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
       reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision);
-      reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
-      reviewArt.getSmaMgr().getStateMgr().setPercentComplete(statePercentComplete);
+      reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

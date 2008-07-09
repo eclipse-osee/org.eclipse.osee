@@ -21,7 +21,7 @@ public class AtsCompletedFromStateWorkItem extends WorkWidgetDefinition {
       super("Completed from State", "ats.CompletedFromState");
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateComplete);
+      LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete);
       data.setDefaultValue(item.getState());
       data.setStorageName(getId());
       data.setXWidgetName("XText");

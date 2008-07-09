@@ -88,7 +88,7 @@ public class AtsNotifyUsers {
                         "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\" is Completed"));
                }
                if (smaMgr.isCancelled()) {
-                  LogItem cancelledItem = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+                  LogItem cancelledItem = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                         Arrays.asList(originator),
                         sma.getHumanReadableId(),

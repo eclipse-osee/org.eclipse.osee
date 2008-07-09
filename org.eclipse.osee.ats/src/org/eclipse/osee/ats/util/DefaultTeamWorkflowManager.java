@@ -46,7 +46,7 @@ public class DefaultTeamWorkflowManager {
     * @return
     * @throws Exception
     */
-   public Result transitionTo(DefaultTeamState toState, User user, boolean popup)throws OseeCoreException, SQLException{
+   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws OseeCoreException, SQLException {
       Result result = setEndorseData(null, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -101,19 +101,18 @@ public class DefaultTeamWorkflowManager {
 
    }
 
-   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
+   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
-      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
-      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
+   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
       if (problem == null || problem.equals(""))
@@ -125,28 +124,25 @@ public class DefaultTeamWorkflowManager {
       else
          teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
-      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
-      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
+   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
             "Action not in Authorize state");
-      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
-      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
+   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
       if (resolution == null || resolution.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
-      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
-      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 

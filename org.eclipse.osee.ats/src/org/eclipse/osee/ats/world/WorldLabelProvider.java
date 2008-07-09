@@ -70,6 +70,8 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
          if (aCol == AtsXColumn.User_Community_Col) return wva.getWorldViewUserCommunity();
          if (aCol == AtsXColumn.Title_Col) return wva.getWorldViewTitle();
          if (aCol == AtsXColumn.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();
+         if (aCol == AtsXColumn.Last_Modified_Col) return wva.getWorldViewLastUpdated();
+         if (aCol == AtsXColumn.Last_Statused_Col) return wva.getWorldViewLastStatused();
          if (aCol == AtsXColumn.Description_Col) return wva.getWorldViewDescription();
          if (aCol == AtsXColumn.Validation_Required_Col) return wva.getWorldViewValidationRequiredStr();
          if (aCol == AtsXColumn.Version_Target_Col) return wva.getWorldViewVersion();

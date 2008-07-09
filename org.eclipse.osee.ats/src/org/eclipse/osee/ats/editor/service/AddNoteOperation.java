@@ -73,7 +73,7 @@ public class AddNoteOperation extends WorkPageService {
             String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();
             String state = "";
             if (!selected.startsWith(smaMgr.getSma().getDescriptiveName() + " - ")) state = selected;
-            smaMgr.getSma().getNotes().addNote(
+            smaMgr.getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
                   noteWizard.mainPage.noteText.get(), SkynetAuthentication.getUser());
             smaMgr.getEditor().onDirtied();

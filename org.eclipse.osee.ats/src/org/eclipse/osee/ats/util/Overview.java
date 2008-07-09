@@ -137,7 +137,7 @@ public class Overview {
                AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
                AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
          addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue(
-               "Creation Date", XDate.getDateStr(smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM)));
+               "Creation Date", XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
             addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
                   "Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
@@ -145,7 +145,7 @@ public class Overview {
             addTable(getLabelValue("Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
          addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
          if (smaMgr.isCancelled()) {
-            LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
+            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
             addTable(getLabelValue("Cancelled From", item.getState()));
             addTable(getLabelValue("Cancellation Reason", item.getMsg()));
          }
@@ -183,7 +183,7 @@ public class Overview {
 
    public void addNotes(StateMachineArtifact artifact, String state) {
       if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = ((StateMachineArtifact) artifact).getNotes().getTable(state);
+         String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(state);
          if (notesHtml.equals("")) return;
          this.html.append(notesHtml);
       }
@@ -191,7 +191,7 @@ public class Overview {
 
    public void addNotes(Artifact artifact) {
       if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = ((StateMachineArtifact) artifact).getNotes().getTable(null);
+         String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(null);
          if (notesHtml.equals("")) return;
          this.html.append(notesHtml);
       }
@@ -281,8 +281,8 @@ public class Overview {
    }
 
    public void addLog(StateMachineArtifact artifact) {
-      ATSLog artifactLog = artifact.getLog();
-      if (artifactLog != null && artifactLog.getLogItems().size() > 0) addTable(artifact.getLog().getTable());
+      ATSLog artifactLog = artifact.getSmaMgr().getLog();
+      if (artifactLog != null && artifactLog.getLogItems().size() > 0) addTable(artifact.getSmaMgr().getLog().getTable());
    }
 
    public void startStateBorderTable(SMAManager smaMgr, SMAState state) {

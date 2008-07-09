@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.sql.SQLException;
 import java.util.Date;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.swt.graphics.Image;
@@ -84,6 +86,10 @@ public interface IWorldViewArtifact {
    public String getWorldViewNotes() throws Exception;
 
    public String getWorldViewNumberOfTasks() throws Exception;
+
+   public String getWorldViewLastUpdated() throws OseeCoreException, SQLException;
+
+   public String getWorldViewLastStatused() throws OseeCoreException, SQLException;
 
    public String getWorldViewOriginator() throws Exception;
 

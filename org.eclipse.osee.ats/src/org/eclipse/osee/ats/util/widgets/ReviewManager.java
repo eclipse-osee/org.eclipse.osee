@@ -107,13 +107,13 @@ public class ReviewManager {
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
 
-      peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
+      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "", origDate, origUser);
       peerToPeerRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
 
       // Initialize state machine
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
-      peerToPeerRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "",
-            origDate, origUser);
+      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(),
+            "", origDate, origUser);
       peerToPeerRev.persistAttributesAndRelations();
       return peerToPeerRev;
    }
