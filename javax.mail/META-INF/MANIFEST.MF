@@ -8,8 +8,7 @@ Bundle-ClassPath: mail.jar,
  lib/mail.jar,
  lib/mailapi.jar,
  lib/pop3.jar,
- lib/smtp.jar,
- lib/activation.jar
+ lib/smtp.jar
 Bundle-Vendor: Sun
 Export-Package: com.sun.activation.registries,
  com.sun.activation.viewers,
@@ -20,7 +19,6 @@ Export-Package: com.sun.activation.registries,
  com.sun.mail.pop3,
  com.sun.mail.smtp,
  com.sun.mail.util,
- javax.activation,
  javax.mail,
  javax.mail.event,
  javax.mail.internet,
