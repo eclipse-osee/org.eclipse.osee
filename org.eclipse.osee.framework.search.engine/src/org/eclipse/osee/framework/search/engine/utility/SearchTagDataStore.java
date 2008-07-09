@@ -60,7 +60,7 @@ public class SearchTagDataStore {
          List<Object[]> datas = new ArrayList<Object[]>();
          for (IAttributeLocator locator : locators) {
             datas.add(new Object[] {SQL3DataType.INTEGER, locator.getAttrId(), SQL3DataType.BIGINT,
-                  locator.getGamma_id()});
+                  locator.getGammaId()});
          }
          updated = ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
       } finally {
@@ -99,8 +99,8 @@ public class SearchTagDataStore {
             for (SearchTag searchTag : searchTags) {
                for (Long codedTag : searchTag.getTags()) {
                   data.add(new Object[] {SQL3DataType.INTEGER, searchTag.getAttrId(), SQL3DataType.BIGINT,
-                        searchTag.getGamma_id(), SQL3DataType.BIGINT, codedTag, SQL3DataType.INTEGER,
-                        searchTag.getAttrId(), SQL3DataType.BIGINT, searchTag.getGamma_id(), SQL3DataType.BIGINT,
+                        searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag, SQL3DataType.INTEGER,
+                        searchTag.getAttrId(), SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT,
                         codedTag});
                }
             }

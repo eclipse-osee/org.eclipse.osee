@@ -21,8 +21,8 @@ public class SearchTag implements IAttributeLocator {
    private AttributeVersion attributeVersion;
    private Set<Long> codedTags;
 
-   public SearchTag(int attrId, long gamma_id) {
-      this.attributeVersion = new AttributeVersion(attrId, gamma_id);
+   public SearchTag(int attrId, long gammaId) {
+      this.attributeVersion = new AttributeVersion(attrId, gammaId);
       this.codedTags = new HashSet<Long>();
    }
 
@@ -42,8 +42,8 @@ public class SearchTag implements IAttributeLocator {
       return attributeVersion.getAttrId();
    }
 
-   public long getGamma_id() {
-      return attributeVersion.getGamma_id();
+   public long getGammaId() {
+      return attributeVersion.getGammaId();
    }
 
    public Set<Long> getTags() {

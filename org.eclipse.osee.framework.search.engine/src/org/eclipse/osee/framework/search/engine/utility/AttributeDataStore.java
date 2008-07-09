@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 public class AttributeDataStore {
 
    private static final String SELECT_ATTRIBUTE =
-         "select art_id, value, uri from osee_define_attribute where attr_id = ? and gamma_id =?";
+         "select attr1.art_id, attr1.value, attr1.uri, txd1.branch_id from osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1 where attr1.gamma_id = txs1.gamma_id and txs1.transaction_id = txd1.transaction_id and attr1.attr_id = ? and attr1.gamma_id =?";
 
    public static List<AttributeData> getAttribute(Collection<IAttributeLocator> locators) throws Exception {
       return getAttribute(locators.toArray(new IAttributeLocator[locators.size()]));
@@ -37,23 +37,25 @@ public class AttributeDataStore {
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
                attributeData.add(new AttributeData(resultSet.getString("value"), resultSet.getString("uri"),
-                     resultSet.getInt("art_id")));
+                     resultSet.getInt("art_id"), resultSet.getInt("branch_id")));
             }
-         }, new Object[] {SQL3DataType.INTEGER, locator.getAttrId(), SQL3DataType.BIGINT, locator.getGamma_id()});
+         }, new Object[] {SQL3DataType.INTEGER, locator.getAttrId(), SQL3DataType.BIGINT, locator.getGammaId()});
       }
       return attributeData;
    }
 
    public final static class AttributeData {
-      public String value;
-      public String uri;
-      public int artId;
+      private String value;
+      private String uri;
+      private int artId;
+      private int branchId;
 
-      public AttributeData(String value, String uri, int artId) {
+      public AttributeData(String value, String uri, int artId, int branchId) {
          super();
          this.value = value;
          this.uri = uri;
          this.artId = artId;
+         this.branchId = branchId;
       }
 
       public String getValue() {
@@ -66,6 +68,10 @@ public class AttributeDataStore {
 
       public int getArtId() {
          return artId;
+      }
+
+      public int getBranchId() {
+         return branchId;
       }
 
       public boolean isUriValid() {

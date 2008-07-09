@@ -15,20 +15,20 @@ package org.eclipse.osee.framework.search.engine.data;
  */
 public class AttributeVersion implements IAttributeLocator {
    private int attrId;
-   private long gamma_id;
+   private long gammaId;
 
-   public AttributeVersion(int attrId, long gamma_id) {
+   public AttributeVersion(int attrId, long gammaId) {
       super();
       this.attrId = attrId;
-      this.gamma_id = gamma_id;
+      this.gammaId = gammaId;
    }
 
    public int getAttrId() {
       return attrId;
    }
 
-   public long getGamma_id() {
-      return gamma_id;
+   public long getGammaId() {
+      return gammaId;
    }
 
    /* (non-Javadoc)
@@ -39,10 +39,18 @@ public class AttributeVersion implements IAttributeLocator {
       if (this == object) return true;
       if (!(object instanceof IAttributeLocator)) return false;
       IAttributeLocator other = (IAttributeLocator) object;
-      return other.getAttrId() == this.getAttrId() && other.getGamma_id() == this.getGamma_id();
+      return other.getAttrId() == this.getAttrId() && other.getGammaId() == this.getGammaId();
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return (int) (37 * getAttrId() * getGammaId());
    }
 
    public String toString() {
-      return String.format("attrId: [%s] gammaId: [%d]", getAttrId(), getGamma_id());
+      return String.format("attrId: [%s] gammaId: [%d]", getAttrId(), getGammaId());
    }
 }

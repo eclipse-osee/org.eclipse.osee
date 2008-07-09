@@ -17,5 +17,5 @@ public interface IAttributeLocator {
 
    public int getAttrId();
 
-   public long getGamma_id();
+   public long getGammaId();
 }

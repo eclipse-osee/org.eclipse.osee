@@ -67,7 +67,7 @@ public class TestSearchEngine extends TestCase {
                assertEquals(locators.size(), 1);
                IAttributeLocator locator = locators.iterator().next();
                assertEquals(locator.getAttrId(), tag.getAttrId());
-               assertEquals(locator.getGamma_id(), tag.getGamma_id());
+               assertEquals(locator.getGammaId(), tag.getGammaId());
             }
          }
 

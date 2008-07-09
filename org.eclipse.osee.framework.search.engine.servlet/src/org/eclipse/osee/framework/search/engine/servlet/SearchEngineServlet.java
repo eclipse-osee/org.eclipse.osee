@@ -79,12 +79,27 @@ public class SearchEngineServlet extends HttpServlet {
     * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
     */
    @Override
-   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
       try {
-         inputStream = req.getInputStream();
-      } catch (Exception ex) {
+         inputStream = request.getInputStream();
+         Activator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
 
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
+         response.setStatus(HttpServletResponse.SC_CREATED);
+
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+               request.toString()), ex);
+         response.getWriter().write(Lib.exceptionToString(ex));
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+         response.getWriter().flush();
+         response.getWriter().close();
       }
    }
 }
