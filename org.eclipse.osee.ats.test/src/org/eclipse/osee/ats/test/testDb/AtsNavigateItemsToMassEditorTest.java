@@ -26,11 +26,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AtsNavigateItemsToMassEditorTest extends TestCase {
 
-   /* (non-Javadoc)
-    * @see junit.framework.TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
+   public void testDemoDatabase() throws Exception {
       DemoTestUtil.setUpTest();
    }
 

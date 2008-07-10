@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 /**
  * @author Donald G. Dunne
  */
-public class DemoDbInitTest extends TestCase {
+public class AtsDbInitTest extends TestCase {
 
    /**
     * @throws java.lang.Exception
@@ -25,7 +25,7 @@ public class DemoDbInitTest extends TestCase {
 
    public void testDemoDbInit() throws Exception {
       System.out.println("Begin Database Initialization...");
-      OseeProperties.getInstance().setDBConfigInitChoice("OSEE Demo Database");
+      OseeProperties.getInstance().setDBConfigInitChoice("ATS - Developer");
       System.setProperty(OseeProperties.OSEE_NO_PROMPT, "true");
       LaunchOseeDbConfigClient.main(null);
       System.out.println("Database Initialization Complete.");

@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import junit.framework.TestCase;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
@@ -45,11 +47,12 @@ public class NavigateTestUtil {
 
    public static void testExpectedVersusActual(String name, Collection<? extends Artifact> arts, Class<?> clazz, int expectedNumOfType) {
       int actualNumOfType = numOfType(arts, clazz);
-      String expectedStr = "\"" + name + "\"   Expected: " + expectedNumOfType + "   Found: " + actualNumOfType;
+      String expectedStr =
+            "\"" + name + "\"   Expected: " + expectedNumOfType + "   Found: " + actualNumOfType + "   Of Type: " + clazz;
       if (expectedNumOfType != actualNumOfType)
-         System.err.println(expectedStr);
+         OSEELog.logException(AtsPlugin.class, expectedStr, null, false);
       else
-         System.out.println(expectedStr);
+         OSEELog.logInfo(AtsPlugin.class, expectedStr, false);
       TestCase.assertTrue(actualNumOfType == expectedNumOfType);
    }
 
