@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
+import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceRegistration;
@@ -40,8 +41,8 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
          new HashMap<JiniServiceSideConnector, HashSet<ServiceRegistrar>>();
    private final HashSet<ServiceRegistrar> serviceRegistrars = new HashSet<ServiceRegistrar>();
    private final IConnectionService connectionService;
-   private final HashMap<ServiceItem, JiniClientSideConnector> clientSideConnectors =
-         new HashMap<ServiceItem, JiniClientSideConnector>();
+   private final HashMap<ServiceID, JiniClientSideConnector> clientSideConnectors =
+         new HashMap<ServiceID, JiniClientSideConnector>();
 
    private LookupDiscoveryManager lookupDiscoveryManager;
    private ServiceDiscoveryManager serviceDiscoveryManager;
@@ -86,7 +87,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
    public void onConnectorsAdded(Collection<IServiceConnector> connectors) {
       for (IServiceConnector connector : connectors) {
          if (connector.getConnectorType().equals(JiniServiceSideConnector.TYPE)) {
-            System.out.println("found jini connector");
+            System.out.println("found jini server side connector");
             JiniServiceSideConnector jiniConnector = (JiniServiceSideConnector) connector;
             HashSet<ServiceRegistrar> list = new HashSet<ServiceRegistrar>(serviceRegistrars);
             serverSideConnectors.put(jiniConnector, list);
@@ -154,9 +155,9 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
          JiniServiceSideConnector jiniConnector = (JiniServiceSideConnector) connector;
          serverSideConnectors.remove(jiniConnector);
       } else if (connector.getConnectorType().equals(JiniClientSideConnector.TYPE)) {
-         Iterator<Entry<ServiceItem, JiniClientSideConnector>> iter = clientSideConnectors.entrySet().iterator();
+         Iterator<Entry<ServiceID, JiniClientSideConnector>> iter = clientSideConnectors.entrySet().iterator();
          while (iter.hasNext()) {
-            final Entry<ServiceItem, JiniClientSideConnector> entry = iter.next();
+            final Entry<ServiceID, JiniClientSideConnector> entry = iter.next();
             if (entry.getValue().equals(connector)) {
                iter.remove();
             }
@@ -203,20 +204,20 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
    public synchronized void serviceAdded(ServiceDiscoveryEvent event) {
       ServiceItem serviceItem = event.getPostEventServiceItem();
 
-      for (JiniServiceSideConnector connector : serverSideConnectors.keySet()) {
-         if (connector.getServiceItem().serviceID.equals(serviceItem.serviceID)) {
-            System.out.println("found server side connector for incomming remote service. ignoring");
-            return;
-         }
-      }
+      //      for (JiniServiceSideConnector connector : serverSideConnectors.keySet()) {
+      //         if (connector.getServiceItem().serviceID.equals(serviceItem.serviceID)) {
+      //            System.out.println("found server side connector for incomming remote service. ignoring");
+      //            return;
+      //         }
+      //      }
       JiniClientSideConnector connector = new JiniClientSideConnector(serviceItem);
-      clientSideConnectors.put(serviceItem, connector);
+      clientSideConnectors.put(serviceItem.serviceID, connector);
       connectionService.addConnector(connector);
    }
 
    @Override
    public synchronized void serviceRemoved(ServiceDiscoveryEvent event) {
-      JiniClientSideConnector connector = clientSideConnectors.remove(event.getPreEventServiceItem());
+      JiniClientSideConnector connector = clientSideConnectors.remove(event.getPreEventServiceItem().serviceID);
 
       if (connector != null) {
          connector.setServiceStopped(true);
@@ -230,7 +231,11 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
     * @see net.jini.lookup.ServiceDiscoveryListener#serviceChanged(net.jini.lookup.ServiceDiscoveryEvent)
     */
    public synchronized void serviceChanged(ServiceDiscoveryEvent event) {
-
+      ServiceItem item = event.getPostEventServiceItem();
+      JiniClientSideConnector connector = clientSideConnectors.remove(item.serviceID);
+      if (connector != null) {
+         connector.entriesChanged(item.attributeSets);
+      }
    }
 
    @Override

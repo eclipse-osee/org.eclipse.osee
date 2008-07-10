@@ -1,10 +1,10 @@
 package org.eclipse.osee.ote.connection.jini;
 
+import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Timer;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -15,12 +15,8 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-import net.jini.lookup.entry.Comment;
-import net.jini.lookup.entry.Name;
-import net.jini.lookup.entry.ServiceInfo;
+import org.eclipse.osee.connection.service.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
-import org.eclipse.osee.framework.jini.service.core.GroupEntry;
-import org.eclipse.osee.framework.jini.service.test.StaticStationInfo;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 
 /**
@@ -36,36 +32,16 @@ public class JiniServiceSideConnector extends JiniConnector {
    private final ServiceID serviceId;
    private final Timer timer = new Timer();
    private final ServiceItem serviceItem;
-   private final Properties properties = new Properties();
 
-   public JiniServiceSideConnector(Remote service, Entry[] entries) throws UnknownHostException, ExportException {
-      super();
+   public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
+      super(props);
       this.service = service;
       serviceId = generateServiceId();
       serviceExporter =
             new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
                   new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
       serviceProxy = (Remote) serviceExporter.export(service);
-      serviceItem = new ServiceItem(serviceId, serviceProxy, entries);
-      for (Entry entry : entries) {
-         if (entry instanceof ServiceInfo) {
-            ServiceInfo si = (ServiceInfo) entry;
-            properties.setProperty("name", si.name);
-            properties.setProperty("model", si.model == null ? "N.A." : si.model);
-         } else if (entry instanceof Comment) {
-            properties.setProperty("comment", ((Comment) entry).comment);
-         } else if (entry instanceof GroupEntry) {
-            properties.setProperty("groups", ((GroupEntry) entry).getFormmatedString());
-         } else if (entry instanceof StaticStationInfo) {
-            StaticStationInfo ssi = (StaticStationInfo) entry;
-            properties.setProperty("type", ssi.type);
-            properties.setProperty("station", ssi.station);
-            properties.setProperty("mode", ssi.mode);
-            properties.setProperty("date", ssi.dateStarted.toString());
-         } else if (entry instanceof Name) {
-            properties.setProperty("name", ((Name) entry).name);
-         }
-      }
+      serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
    }
 
    /* (non-Javadoc)
@@ -122,7 +98,7 @@ public class JiniServiceSideConnector extends JiniConnector {
       return serviceItem;
    }
 
-   public synchronized void setAttributes(Entry[] entry) {
+   private synchronized void setAttributes(Entry[] entry) {
       for (ServiceRegistration registration : registrations.keySet()) {
          try {
             registration.setAttributes(entry);
@@ -141,10 +117,12 @@ public class JiniServiceSideConnector extends JiniConnector {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#getProperty(java.lang.String, java.lang.String)
+    * @see org.eclipse.osee.ote.connection.jini.JiniConnector#setProperty(java.lang.String, java.lang.String)
     */
    @Override
-   public String getProperty(String property, String defaultValue) {
-      return properties.getProperty(property, defaultValue);
+   public void setProperty(String key, Serializable value) {
+      super.setProperty(key, value);
+      setAttributes(createEntries());
    }
+
 }
