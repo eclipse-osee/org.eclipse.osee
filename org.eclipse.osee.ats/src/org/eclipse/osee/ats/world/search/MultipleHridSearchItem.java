@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class MultipleHridSearchItem extends WorldSearchItem {
    private String enteredIds = "";
+   Pattern numberPattern = Pattern.compile("^[0-9]+$");
 
    public MultipleHridSearchItem() {
       super("Search by ID(s)");
@@ -45,17 +47,14 @@ public class MultipleHridSearchItem extends WorldSearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
-      List<String> ids = new ArrayList<String>();
+      List<String> hridGuids = new ArrayList<String>();
       Set<String> nonHridGuids = new HashSet<String>();
       for (String str : enteredIds.split(",")) {
          str = str.replaceAll("\\s+", "");
-         if (str.length() == 5)
-            ids.add(str);
-         else if (GUID.isValid(str))
-            ids.add(str);
-         else {
-            nonHridGuids.add(str);
-         }
+         if (str.length() == 5) {
+            hridGuids.add(str);
+         } else if (GUID.isValid(str)) hridGuids.add(str);
+         nonHridGuids.add(str);
       }
 
       if (isCancelled()) return EMPTY_SET;
@@ -76,8 +75,9 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          }
       }
 
-      if (ids.size() > 0) {
-         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromIds(ids, BranchPersistenceManager.getAtsBranch());
+      if (hridGuids.size() > 0) {
+         Collection<Artifact> arts =
+               ArtifactQuery.getArtifactsFromIds(hridGuids, BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }
