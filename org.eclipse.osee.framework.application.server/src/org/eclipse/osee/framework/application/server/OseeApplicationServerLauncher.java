@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.db.connection.OseeDb;
-import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,10 +50,12 @@ public class OseeApplicationServerLauncher {
       if (Strings.isValid(binaryDataPath)) {
          File binaryDataDirectory = new File(binaryDataPath);
          if (binaryDataDirectory != null && binaryDataDirectory.exists() && binaryDataDirectory.canRead()) {
-            DbInformation information = OseeDb.getDefaultDatabaseService();
-            String dbConnection = information.getDatabaseSetupDetails().getId();
-            launchProcess(OseeApplicationServer.getApplicationServerPort(), dbConnection,
-                  binaryDataDirectory.getAbsolutePath());
+            DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+            String dbConnection = dbInfo.getDatabaseSetupDetails().getId();
+
+            String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+            URL url = new URL(serverUrl);
+            launchProcess(url.getPort(), dbConnection, binaryDataDirectory.getAbsolutePath());
          }
       }
    }

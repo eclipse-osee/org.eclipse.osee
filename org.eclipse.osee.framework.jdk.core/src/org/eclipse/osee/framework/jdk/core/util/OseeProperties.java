@@ -36,6 +36,7 @@ public class OseeProperties {
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
+   private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
 
    private static boolean developer = false;
 
@@ -142,5 +143,14 @@ public class OseeProperties {
 
    public String getRemoteHttpServerUploadPath() {
       return System.getProperty(OSEE_REMOTE_HTTP_UPLOAD_PATH, "");
+   }
+
+   /**
+    * Get location for OSEE application server binary data
+    * 
+    * @return OSEE application server binary data path
+    */
+   public String getOseeApplicationServerData() {
+      return System.getProperty(OSEE_APPLICATION_SERVER_DATA, "");
    }
 }
