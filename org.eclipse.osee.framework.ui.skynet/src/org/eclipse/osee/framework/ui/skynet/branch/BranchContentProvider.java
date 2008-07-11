@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -123,12 +124,13 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          if (parentElement instanceof BranchPersistenceManager) {
             try {
                Collection<Branch> branches = BranchPersistenceManager.getBranches();
-               if (!showChildBranchesAtMainLevel) {
-                  Iterator<Branch> iter = branches.iterator();
-                  while (iter.hasNext()) {
-                     if (iter.next().getParentBranch() != null) {
-                        iter.remove();
-                     }
+               Iterator<Branch> iter = branches.iterator();
+
+               while (iter.hasNext()) {
+                  Branch branch = iter.next();
+
+                  if ((!showChildBranchesAtMainLevel && branch.getParentBranch() != null) || (!OseeProperties.isDeveloper() && branch.isMergeBranch())) {
+                     iter.remove();
                   }
                }
                return branches.toArray();

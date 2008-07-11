@@ -38,8 +38,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
     * @param artifacts
     */
    public UserCheckTreeDialog(Shell parent, Collection<User> artifacts) {
-      super(parent);
-      super.setInput(artifacts);
+      super(artifacts);
    }
 
    public UserCheckTreeDialog(Shell parent) throws OseeCoreException, SQLException {

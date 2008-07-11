@@ -80,11 +80,9 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
          }
          if (obj instanceof AttributeConflict) {
             Object object = ((AttributeConflict) obj).getMergeObject();
-            if (object instanceof Boolean)
+            if (object instanceof Boolean) {
                editor.setEntry(((Boolean) object).booleanValue());
-            else
-               OSEELog.logException(EmbeddedBooleanAttributeEditor.class, new Exception(
-                     "Boolean editor did not receive a boolean value"), true);
+            }
          }
       } catch (Exception ex) {
          OSEELog.logException(EmbeddedBooleanAttributeEditor.class, ex, true);

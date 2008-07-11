@@ -93,7 +93,9 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
          }
       } else if (obj instanceof AttributeConflict) {
          try {
-            editor.setSelected(((AttributeConflict) obj).getMergeObject().toString());
+            if (((AttributeConflict) obj).getMergeObject() != null) {
+               editor.setSelected(((AttributeConflict) obj).getMergeObject().toString());
+            }
          } catch (Exception ex) {
             OSEELog.logException(EmbeddedEnumAttributeEditor.class, ex, true);
          }

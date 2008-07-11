@@ -81,7 +81,9 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          }
       } else if (obj instanceof AttributeConflict) {
          try {
-            editor.setEntry(((AttributeConflict) obj).getMergeObject().toString());
+            if (((AttributeConflict) obj).getMergeObject() != null) {
+               editor.setEntry(((AttributeConflict) obj).getMergeObject().toString());
+            }
          } catch (Exception ex) {
             OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
          }

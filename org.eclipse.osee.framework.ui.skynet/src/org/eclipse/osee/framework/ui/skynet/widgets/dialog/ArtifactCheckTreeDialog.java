@@ -12,13 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -26,13 +27,17 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class ArtifactCheckTreeDialog extends CheckedTreeSelectionDialog {
 
-   public ArtifactCheckTreeDialog(Shell parent, Collection<Artifact> artifacts) {
-      super(parent, new ArtifactDescriptiveLabelProvider(), new ArtifactTreeContentProvider());
-      setInput(artifacts);
+   public ArtifactCheckTreeDialog(Collection<? extends Artifact> artifacts) {
+      this(artifacts, new ArtifactDescriptiveLabelProvider());
    }
 
-   public ArtifactCheckTreeDialog(Shell parent) {
-      super(parent, new ArtifactDescriptiveLabelProvider(), new ArtifactTreeContentProvider());
+   public ArtifactCheckTreeDialog(Collection<? extends Artifact> artifacts, ILabelProvider iLabelProvider) {
+      super(Display.getCurrent().getActiveShell(), iLabelProvider, new ArtifactTreeContentProvider());
+      if (artifacts != null) setInput(artifacts);
+   }
+
+   public ArtifactCheckTreeDialog() {
+      this(null);
    }
 
    public Collection<Artifact> getSelection() {

@@ -49,7 +49,7 @@ public class EditAttributeWizardPage extends WizardPage {
    private static final String CLEAR_TOOLTIP = "Clear the Editor Value";
    private static final int NUM_COLUMNS = 1;
    private IEmbeddedAttributeEditor editor;
-
+   
    private final Listener listener = new Listener() {
       public void handleEvent(Event event) {
          // ...
@@ -57,12 +57,12 @@ public class EditAttributeWizardPage extends WizardPage {
             if (conflict.okToOverwriteMerge()) {
                if (event.widget == sourceButton) {
                   if (conflict.getSourceObject() != null) {
-                  editor.update(conflict.getSourceObject());
-               }
+                     editor.update(conflict.getSourceObject());
+                  }
                }
                if (event.widget == destButton) {
                   if (conflict.getDestObject() != null) {
-                  editor.update(conflict.getDestObject());
+                     editor.update(conflict.getDestObject());
                   }
                }
                if (event.widget == clearButton) {
@@ -89,11 +89,11 @@ public class EditAttributeWizardPage extends WizardPage {
          if (conflict != null) {
             this.conflict = conflict;
             changeType = conflict.getDynamicAttributeDescriptor().getName();
-      }
-      if (!conflict.isWordAttribute()) {
-         editor =
-               EmbededAttributeEditorFactory.getEmbeddedEditor(changeType, conflict.getSourceDisplayData(),
-                     Arrays.asList(conflict), true);
+         }
+         if (!conflict.isWordAttribute()) {
+            editor =
+                  EmbededAttributeEditorFactory.getEmbeddedEditor(changeType, conflict.getSourceDisplayData(),
+                        Arrays.asList(conflict), true);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -132,13 +132,13 @@ public class EditAttributeWizardPage extends WizardPage {
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.TYPE_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + changeType);
 
-      new Label(composite, SWT.NONE).setText("");
+         new Label(composite, SWT.NONE).setText("");
 
-      new Label(composite, SWT.NONE).setText(SOURCE_TEXT);
+         new Label(composite, SWT.NONE).setText(SOURCE_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getSourceDisplayData());
          // sourceButton =
          // createButton(conflict.getSourceDisplayData(),SOURCE_TOOLTIP,composite,gd);
-      new Label(composite, SWT.NONE).setText(DEST_TEXT);
+         new Label(composite, SWT.NONE).setText(DEST_TEXT);
          new Label(composite, SWT.NONE).setText(ConflictResolutionWizard.INDENT + conflict.getDestDisplayData());
       } catch (Exception ex) {
          OSEELog.logException(EditAttributeWizardPage.class, ex, true);

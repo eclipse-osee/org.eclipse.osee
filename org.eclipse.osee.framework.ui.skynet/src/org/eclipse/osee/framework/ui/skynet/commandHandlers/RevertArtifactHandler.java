@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -81,7 +82,7 @@ public class RevertArtifactHandler extends AbstractHandler {
             toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          } finally {
             monitor.done();
-            }
+         }
          return toReturn;
       }
    }

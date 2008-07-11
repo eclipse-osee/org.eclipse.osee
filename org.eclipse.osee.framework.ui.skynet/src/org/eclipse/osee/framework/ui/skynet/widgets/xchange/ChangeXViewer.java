@@ -160,7 +160,9 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
    public void onEvent(Event event) {
-      xChangeViewer.refresh();
+      if (xChangeViewer != null && xChangeViewer.getXViewer().getTree().isDisposed() != true) {
+         xChangeViewer.refresh();
+      }
    }
 
    /* (non-Javadoc)

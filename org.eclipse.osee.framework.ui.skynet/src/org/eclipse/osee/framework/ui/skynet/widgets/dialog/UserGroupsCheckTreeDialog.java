@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -30,8 +29,7 @@ public class UserGroupsCheckTreeDialog extends ArtifactCheckTreeDialog {
     * @param artifacts
     */
    public UserGroupsCheckTreeDialog(Collection<Artifact> artifacts) {
-      super(Display.getCurrent().getActiveShell());
-      super.setInput(artifacts);
+      super(artifacts);
    }
 
    @Override

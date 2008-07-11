@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -105,8 +107,11 @@ public class RelationContentProvider implements ITreeContentProvider {
             List<RelationLink> relations = artifact.getRelations(relationTypeSide);
 
             for (RelationLink relationLink : relations) {
+            	Artifact art = relationLink.getArtifactOnOtherSide(artifact);
                SkynetEventManager.getInstance().register(RelationModifiedEvent.class,
-                     relationLink.getArtifactOnOtherSide(artifact), relComp);
+            		   art, relComp);
+               SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class,
+            		   art, relComp);
             }
             SkynetEventManager.getInstance().register(RelationModifiedEvent.class, artifact, relComp);
             return relations.toArray();

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -520,7 +521,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          ArtifactEvent artifactEvent = (ArtifactEvent) event;
          Artifact eventArtifact = artifactEvent.getArtifact();
 
-         if (eventArtifact.equals(artifact)) {
+         if (eventArtifact != null && eventArtifact.equals(artifact)) {
             if (event instanceof ArtifactModifiedEvent) {
                ModType modType = ((ArtifactModifiedEvent) event).getType();
 
@@ -531,6 +532,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                   setPartName(getEditorInput().getName());
                   setTitleImage(artifact.getImage());
                   attributeComposite.refreshArtifact(artifact);
+
+                  if (event instanceof CacheArtifactModifiedEvent) {
+                     CacheArtifactModifiedEvent cachedEvent = (CacheArtifactModifiedEvent) event;
+                     if (cachedEvent.getSender() instanceof WordAttribute) {
+                        renderPreviewPage();
+                     }
+                  }
 
                   onDirtied();
                } else if (event instanceof VisitorEvent) {

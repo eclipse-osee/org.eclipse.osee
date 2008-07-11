@@ -550,6 +550,9 @@ public class WordTemplateProcessor {
             if (value != null && value instanceof String) {
                String data = (String) value;
                String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+               //Change the BinData Id so images do not get overriden by the other images
+               wordContent = WordUtil.reassignBinDataID(wordContent);
+
                if (isEditMode) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",

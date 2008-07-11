@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -108,6 +109,11 @@ public class BlamVariableMap {
    @SuppressWarnings("unchecked")
    public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
       return getValue(Collection.class, parameterName);
+   }
+
+   @SuppressWarnings("unchecked")
+   public User getUser(String parameterName) {
+      return getValue(User.class, parameterName);
    }
 
    private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) {

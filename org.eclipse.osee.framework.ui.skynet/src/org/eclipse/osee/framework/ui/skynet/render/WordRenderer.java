@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -452,6 +453,8 @@ public class WordRenderer extends FileRenderer {
       if (PresentationType.EDIT == presentationType) {
          renderInEditMode = true;
       }
+
+      template = WordUtil.removeGUIDFromTemplate(template);
       return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode);
    }
 

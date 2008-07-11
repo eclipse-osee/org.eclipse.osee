@@ -75,12 +75,9 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       }
       if (obj instanceof AttributeConflict) try {
          Object object = ((AttributeConflict) obj).getMergeObject();
-         if (object instanceof Date)
+         if (object instanceof Date) {
             date = (Date) object;
-         else
-            OSEELog.logException(EmbeddedDateAttributeEditor.class, new Exception(
-                  "Date editor did not receive a date value"), true);
-
+         }
       } catch (Exception ex) {
          OSEELog.logException(EmbeddedDateAttributeEditor.class, ex, true);
       }

@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -438,7 +439,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
        */
-      public Branch getWorkingBranch() throws IllegalStateException, SQLException {
+      public Branch getWorkingBranch() throws IllegalStateException, SQLException, MultipleBranchesExist {
          return branch;
       }
 

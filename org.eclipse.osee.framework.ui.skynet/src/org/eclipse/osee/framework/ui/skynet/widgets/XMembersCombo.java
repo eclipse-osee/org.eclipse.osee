@@ -303,6 +303,6 @@ public class XMembersCombo extends XWidget {
 
    @Override
    public Object getData() {
-      return dataCombo.getText();
+      return selectedUser;
    }
 }

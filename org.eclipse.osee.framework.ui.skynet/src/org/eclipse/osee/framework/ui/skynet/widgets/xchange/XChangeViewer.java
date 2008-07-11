@@ -29,14 +29,19 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -58,7 +63,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XChangeViewer extends XWidget implements IEventReceiver {
+public class XChangeViewer extends XWidget implements IEventReceiver, IActionable {
 
    private ChangeXViewer xChangeViewer;
    public final static String normalColor = "#EEEEEE";
@@ -162,6 +167,8 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
          }
       });
 
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, ChangeView.VIEW_ID,
+            "Change Report");
    }
 
    public void loadTable() {
@@ -273,11 +280,22 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                            xChangeViewer.setChanges(changes);
                            xChangeViewer.refresh();
                         } else {
-                           extraInfoLabel.setText(hasBranch ? "Changes made to branch " + branch.getBranchName() : "Changes made on transaction " + transactionNumber);
+                           TransactionId transId =
+                                 hasBranch ? null : TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
+                                       transactionNumber);
+                           String infoLabel =
+                                 String.format(
+                                       "Changes %s to branch: %s\n%s",
+                                       hasBranch ? "made" : "committed",
+                                       hasBranch ? branch : "(" + transId.getTransactionNumber() + ") " + transId.getBranch(),
+                                       hasBranch ? "" : "Comment: " + transId.getComment());
+                           extraInfoLabel.setText(infoLabel);
                            xChangeViewer.setChanges(changes);
                            loadTable();
                         }
                      } catch (SQLException ex) {
+                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+                     } catch (BranchDoesNotExist ex) {
                         OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
                      }
                   }
@@ -345,5 +363,16 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
          }
          return artifacts.toArray(new Artifact[artifacts.size()]);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
+    */
+   @Override
+   public String getActionDescription() {
+      StringBuffer sb = new StringBuffer();
+      if (branch != null) sb.append("\nBranch: " + branch);
+      sb.append("\nTransaction Id: " + transactionNumber);
+      return sb.toString();
    }
 }

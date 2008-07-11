@@ -24,7 +24,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  org.eclipse.zest.core,
  org.eclipse.zest.layouts,
- org.eclipse.compare
+ org.eclipse.compare,
+ javax.mail
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
@@ -78,10 +79,7 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: skynet.jar
-Import-Package: javax.activation,
- javax.mail,
- javax.mail.internet,
- org.eclipse.nebula.widgets.calendarcombo,
+Import-Package: org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,

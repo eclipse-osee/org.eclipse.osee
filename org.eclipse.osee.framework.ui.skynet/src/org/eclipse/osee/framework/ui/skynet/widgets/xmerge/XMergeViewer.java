@@ -317,7 +317,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             }
             if (conflict.statusInformational()) {
                informational++;
-         }
+            }
          }
          if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
@@ -467,9 +467,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + "\nInformational Conflicts : " + informational);
          }
 
-         }
-
       }
+
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()

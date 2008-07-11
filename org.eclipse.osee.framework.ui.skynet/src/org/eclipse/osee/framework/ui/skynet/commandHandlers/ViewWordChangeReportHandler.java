@@ -118,6 +118,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          return false;
       }
 
+      artifactChangeMap.clear();
       List<Artifact> artifacts = new LinkedList<Artifact>();
       boolean isEnabled = false;
 
@@ -166,7 +167,6 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, true);
          } catch (Exception e) {
             JournalList.add(e.getMessage());
-            //         e.printStackTrace();
          }
          return Status.OK_STATUS;
       }

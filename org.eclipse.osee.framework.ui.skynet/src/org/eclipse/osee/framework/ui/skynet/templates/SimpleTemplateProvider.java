@@ -91,19 +91,17 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       }
       List<String> list = new ArrayList<String>();
 
-      list.add(renderer.getId() + " " + presentationType);
-
-      if (artifact != null) {
-         list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType);
-      }
-
       if (artifact != null && option != null) {
          list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
+      }
+      if (artifact != null) {
+         list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType);
       }
       if (option != null) {
          list.add(renderer.getId() + " " + presentationType + " " + option);
       }
 
+      list.add(renderer.getId() + " " + presentationType);
       return list;
    }
 

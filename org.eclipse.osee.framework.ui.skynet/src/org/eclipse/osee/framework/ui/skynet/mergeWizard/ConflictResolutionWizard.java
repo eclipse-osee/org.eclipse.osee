@@ -47,7 +47,7 @@ public class ConflictResolutionWizard extends Wizard {
       if (conflict.isWordAttribute()) {
          editWizardPage = new EditWFCAttributeWizardPage(conflict);
       } else {
-      editWizardPage = new EditAttributeWizardPage(conflict);
+         editWizardPage = new EditAttributeWizardPage(conflict);
       }
       addPage(editWizardPage);
    }
@@ -84,12 +84,12 @@ public class ConflictResolutionWizard extends Wizard {
       else
          return getPage(EditAttributeWizardPage.TITLE);
 
-      }
+   }
 
    @Override
    public IWizardPage getPreviousPage(IWizardPage page) {
-         return null;
-      }
+      return null;
+   }
 
    /*
     * (non-Javadoc)

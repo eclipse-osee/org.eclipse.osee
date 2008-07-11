@@ -40,7 +40,11 @@ public class XTextDam extends XText implements IArtifactWidget {
 
    @Override
    public void saveToArtifact() throws SQLException, MultipleAttributesExist {
-      artifact.setSoleAttributeValue(attributeTypeName, get());
+      String value = get();
+      if (value == null || value.equals(""))
+         artifact.deleteSoleAttribute(attributeTypeName);
+      else
+         artifact.setSoleAttributeValue(attributeTypeName, value);
    }
 
    @Override

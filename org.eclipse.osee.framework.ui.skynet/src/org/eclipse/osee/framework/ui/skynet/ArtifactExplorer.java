@@ -716,7 +716,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       }
       myTextBeingRenamed = new Text(myTree, SWT.BORDER);
       myTextBeingRenamed.setBackground(myYellowColor);
-      myTextBeingRenamed.setText(myTreeItem.getText());
+      Object myTreeItemObject = myTreeItem.getData();
+      myTextBeingRenamed.setText(((Artifact) myTreeItemObject).getDescriptiveName());
       myTextBeingRenamed.addFocusListener(new FocusAdapter() {
          public void focusLost(FocusEvent e) {
             updateText(myTextBeingRenamed.getText(), myTreeItem);

@@ -23,6 +23,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -145,8 +147,17 @@ public class ChangeView extends ViewPart implements IActionable {
          this.branch = branch;
          this.transactionNumber = transactionNumber;
          xChangeViewer.setInputData(branch, transactionNumber);
-         setPartName(branch != null ? "Change Report " + branch.getBranchShortName() : "Change Report: " + BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
-               transactionNumber));
+         if (branch != null) {
+            setPartName("Change Report: " + branch.getBranchShortName());
+         } else {
+            TransactionId transId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
+            if (transId != null)
+               setPartName("Change Report: " + transId.getBranch().getBranchShortestName() + " - " + transId.getComment());
+            else
+               setPartName("Change Report: " + BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
+                     transactionNumber));
+         }
       }
    }
 

@@ -384,6 +384,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       toolbarManager.add(sortAction);
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Change Report");
    }
+
    ViewerSorter viewerSorter = new ViewerSorter() {
 
       @SuppressWarnings("unchecked")
@@ -406,7 +407,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      else
                         return -1;
                   } catch (Exception ex) {
-                     // do nothing since this is comparator, errors will be too many
+                     // do nothing since this is comparator, errors will
+                     // be too many
                   }
                   return getComparator().compare(artChg1.getName(), artChg2.getName());
                } else if (artChg1.getModType() == ModificationType.CHANGE)
@@ -1178,16 +1180,19 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    public void onEvent(Event event) {
       int branchId = -1;
-
       if (event instanceof BranchEvent) {
          BranchEvent branchEvent = (BranchEvent) event;
          branchId = branchEvent.getBranchId();
       }
+      if (changeTable != null && changeTable.getTree().isDisposed() != true) {
+         ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();
 
-      ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();
-
-      if (changeReportInput != null && changeReportInput.getBranch().getBranchId() == branchId) {
-         changeTable.getTree().setEnabled(false);
+         if (changeReportInput != null) {
+            Branch branch = changeReportInput.getBranch();
+            if (branch != null && branch.getBranchId() == branchId) {
+               changeTable.getTree().setEnabled(false);
+            }
+         }
       }
    }
 

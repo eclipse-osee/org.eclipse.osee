@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -31,15 +32,19 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -277,7 +282,13 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-            performDeleteRelation(selection);
+            try {
+               performDeleteRelation(selection);
+            } catch (ArtifactDoesNotExist ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+            } catch (SQLException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+            }
          }
       });
 
@@ -528,25 +539,46 @@ public class RelationsComposite extends Composite implements IEventReceiver {
     * Performs the deletion functionality
     * 
     * @param selection
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
-   private void performDeleteRelation(IStructuredSelection selection) {
-      Object object = selection.getFirstElement();
+   private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist, SQLException {
+      Object[] objects = selection.toArray();
+      for (Object object : objects) {
+         if (object instanceof RelationLink) {
+            ((RelationLink) object).delete();
 
-      if (object instanceof RelationLink) {
-         ((RelationLink) object).delete();
-      } else if (object instanceof RelationType) {
-         RelationType relationType = (RelationType) object;
-         RelationManager.deleteRelations(artifact, relationType, null);
-      } else if (object instanceof RelationTypeSide) {
-         RelationTypeSide group = (RelationTypeSide) object;
-         try {
-            RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            RelationType relationType = (RelationType) ((RelationLink) object).getRelationType();
+            int sideAMax =
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
+            int sideBMax =
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_B);
+            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact);
+            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact);
+            boolean onSideA = sideBMax > 0;
+            boolean onSideB = sideAMax > 0;
+            if (onSideA && onSideB) {
+               treeViewer.refresh(sideA);
+            } else if (onSideA) {
+               treeViewer.refresh(sideA);
+               treeViewer.refresh(sideB);
+            } else if (onSideB) {
+               treeViewer.refresh(sideB);
+            }
+         } else if (object instanceof RelationType) {
+            RelationType relationType = (RelationType) object;
+            RelationManager.deleteRelations(artifact, relationType, null);
+            treeViewer.refresh(relationType);
+         } else if (object instanceof RelationTypeSide) {
+            RelationTypeSide group = (RelationTypeSide) object;
+            try {
+               RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
+               treeViewer.refresh(group);
+            } catch (SQLException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
          }
       }
-
-      refresh();
    }
 
    public void refresh() {
@@ -559,7 +591,13 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
          if (e.keyCode == SWT.DEL) {
-            performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
+            try {
+               performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
+            } catch (ArtifactDoesNotExist ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+            } catch (SQLException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+            }
          }
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             treeViewer.getTree().selectAll();
@@ -581,7 +619,27 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    }
 
    public void onEvent(org.eclipse.osee.framework.ui.plugin.event.Event event) {
-      if (treeViewer != null && treeViewer.getInput() instanceof Artifact) refresh();
+      if (treeViewer != null && treeViewer.getInput() instanceof Artifact) {
+         if (event instanceof CacheArtifactModifiedEvent) {
+            CacheArtifactModifiedEvent ev = (CacheArtifactModifiedEvent) event;
+            Artifact modifiedArtifact = ev.getArtifact();
+            if (artifact == modifiedArtifact) {
+               treeViewer.refresh(modifiedArtifact);
+            } else {
+               for (RelationLink rel : modifiedArtifact.getRelationsAll()) {
+                  try {
+                     if (rel.getArtifactOnOtherSide(modifiedArtifact) == artifact) {
+                        treeViewer.update(rel, null);
+                     }
+                  } catch (ArtifactDoesNotExist ex) {
+                  } catch (SQLException ex) {
+                  }
+               }
+            }
+         } else if (event instanceof RelationModifiedEvent) {
+            treeViewer.refresh(getArtifact());
+         }
+      }
    }
 
    public boolean runOnEventInDisplayThread() {

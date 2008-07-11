@@ -183,7 +183,9 @@ public class CommitXViewer extends XViewer implements IEventReceiver {
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
    public void onEvent(Event event) {
-      xCommitViewer.refresh();
+      if (xCommitViewer != null && xCommitViewer.getXViewer().getTree().isDisposed() != true) {
+         xCommitViewer.refresh();
+      }
    }
 
    /* (non-Javadoc)

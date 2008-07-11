@@ -586,12 +586,6 @@
 	<extension id="UpdateFromParentBranch" name="Update From Parent Branch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch"/>
 	</extension>
-	      <extension
-            id="DeleteErroneousTagsFromWorkingBranches"
-            name="Delete Erroneous Tags From Working Branches"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteErroneousTagsFromWorkingBranches"/>
-      </extension>
        <extension
              id="CopyTransactionDataToBaseline"
              name="Copy Transaction Data To Baseline"
@@ -793,6 +787,13 @@
              name="org.eclipse.ui.edit.ChangeView.copy.seperator"
              visible="true">
        </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+       </command>
+       <separator
+             name="org.eclipse.ui.edit.ChangeView.revert.seperator"
+             visible="true">
+       </separator>
     </menuContribution>
  </extension>
  <extension
@@ -887,6 +888,14 @@
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn">
+    </Operation>
+ </extension>
+ <extension
+       id="Find Relations With Deleted Artifacts"
+       name="Find Relations With Deleted Artifacts"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindRelationsWithDeletedArtifacts">
     </Operation>
  </extension>
  <extension

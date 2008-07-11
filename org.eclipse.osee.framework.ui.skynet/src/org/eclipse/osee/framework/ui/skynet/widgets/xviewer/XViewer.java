@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
@@ -67,6 +68,10 @@ public class XViewer extends TreeViewer {
       this.customize = custom;
       this.customize.init(this);
       createSupportWidgets(parent);
+
+      Tree tree = getTree();
+      tree.setHeaderVisible(true);
+      tree.setLinesVisible(true);
    }
 
    /**
