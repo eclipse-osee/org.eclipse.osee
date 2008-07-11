@@ -33,7 +33,8 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
     */
    public TaskableStateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(AtsRelation.SmaToTask_Task);
+      registerSMAEditorRelation(AtsRelation.SmaToTask_Task);
+      registerAtsWorldRelation(AtsRelation.SmaToTask_Task);
    }
 
    @Override

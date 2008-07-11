@@ -158,7 +158,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof ActionArtifact) return true;
       if (element instanceof StateMachineArtifact) {
          try {
-            return ((StateMachineArtifact) element).hasChildren();
+            return ((StateMachineArtifact) element).hasAtsWorldChildren();
          } catch (Exception ex) {
             // do nothing
          }

@@ -63,7 +63,8 @@ import org.eclipse.swt.graphics.Image;
 public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, IEventReceiver, ISubscribableArtifact, IFavoriteableArtifact {
 
    protected SMAManager smaMgr;
-   private Set<IRelationEnumeration> smaRelations = new HashSet<IRelationEnumeration>();
+   private Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
+   private Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
    public static double MAN_DAY_HOURS = 8;
@@ -117,8 +118,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       setRelations(CoreRelationEnumeration.Users_User, getSmaMgr().getStateMgr().getAssignees());
    }
 
-   public boolean hasChildren() throws OseeCoreException {
-      for (IRelationEnumeration iRelationEnumeration : smaRelations) {
+   public boolean hasAtsWorldChildren() throws OseeCoreException {
+      for (IRelationEnumeration iRelationEnumeration : atsWorldRelations) {
          if (getRelatedArtifactsCount(iRelationEnumeration) > 0) return true;
       }
       return false;
@@ -324,8 +325,22 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return "";
    }
 
-   public void registerSMARelation(AtsRelation side) {
-      smaRelations.add(side);
+   /**
+    * Registers relation as part of the SMAEditor isDirty/save tree
+    * 
+    * @param side
+    */
+   public void registerSMAEditorRelation(AtsRelation side) {
+      smaEditorRelations.add(side);
+   }
+
+   /**
+    * Registers relation as part of the parent/child hierarchy in ATS World
+    * 
+    * @param side
+    */
+   public void registerAtsWorldRelation(AtsRelation side) {
+      atsWorldRelations.add(side);
    }
 
    public Image getAssigneeImage() throws OseeCoreException, SQLException {
@@ -684,8 +699,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @return true if any object in SMA tree is dirty
     */
-   public Result isSMADirty() {
-      return isRelationsAndArtifactsDirty(smaRelations);
+   public Result isSMAEditorDirty() {
+      return isRelationsAndArtifactsDirty(smaEditorRelations);
    }
 
    public void saveSMA() {
@@ -712,7 +727,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public static void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException, SQLException {
       artifacts.add(smaArtifact);
-      for (IRelationEnumeration side : smaArtifact.getSmaRelations()) {
+      for (IRelationEnumeration side : smaArtifact.getSmaEditorRelations()) {
          for (Artifact artifact : smaArtifact.getRelatedArtifacts(side)) {
             artifacts.add(artifact);
          }
@@ -1201,8 +1216,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    /**
     * @return the smaRelations
     */
-   public Set<IRelationEnumeration> getSmaRelations() {
-      return smaRelations;
+   public Set<IRelationEnumeration> getSmaEditorRelations() {
+      return smaEditorRelations;
+   }
+
+   public Set<IRelationEnumeration> getAtsWorldRelations() {
+      return atsWorldRelations;
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException, SQLException {

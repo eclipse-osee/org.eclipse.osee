@@ -91,6 +91,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       persistAttributes();
    }
 
+   public boolean hasAtsWorldChildren() throws OseeCoreException {
+      return true;
+   }
+
    /**
     * Reset Action title only if all children are titled the same
     * 

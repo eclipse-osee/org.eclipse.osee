@@ -127,7 +127,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public void dispose() {
-      if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMADirty().isTrue()) smaMgr.getSma().revertSMA();
+      if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) smaMgr.getSma().revertSMA();
       SkynetEventManager.getInstance().unRegisterAll(this);
       workFlowTab.dispose();
       if (taskComposite != null) taskComposite.dispose();
@@ -150,7 +150,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          Result result = workFlowTab.isXWidgetDirty();
          if (result.isTrue()) return result;
 
-         result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMADirty();
+         result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
 
       } catch (Exception ex) {

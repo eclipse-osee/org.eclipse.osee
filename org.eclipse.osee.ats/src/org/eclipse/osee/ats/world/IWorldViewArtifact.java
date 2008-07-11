@@ -19,6 +19,8 @@ import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
 
+   public boolean hasAtsWorldChildren() throws OseeCoreException, SQLException;
+
    public Image getAssigneeImage() throws Exception;
 
    public String getWorldViewActionableItems() throws Exception;
