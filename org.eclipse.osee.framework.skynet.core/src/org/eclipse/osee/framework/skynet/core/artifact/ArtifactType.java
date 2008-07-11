@@ -83,7 +83,9 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    transient private ImageRegistry imageRegistry;
    transient private ImageDescriptor imageDescriptor;
 
-   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) {
+   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) throws OseeCoreException {
+      if (factory == null) throw new OseeCoreException(
+            "Artifact factory can not be null for artifact type \"" + name + "\"");
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;

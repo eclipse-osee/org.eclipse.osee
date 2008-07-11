@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -71,7 +72,11 @@ public class ConfigurationPersistenceManager {
    }
 
    public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException {
-      return instance.artifactTypeValidityCache.getValidArtifactTypes(branch);
+      try {
+         return instance.artifactTypeValidityCache.getValidArtifactTypes(branch);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex.getLocalizedMessage());
+      }
    }
 
    public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {

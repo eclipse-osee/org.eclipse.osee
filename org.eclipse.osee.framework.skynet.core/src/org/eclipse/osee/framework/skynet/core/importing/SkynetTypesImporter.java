@@ -263,7 +263,7 @@ public class SkynetTypesImporter implements RowProcessor {
     * @throws OseeDataStoreException
     * @throws IllegalStateException
     */
-   private void addArtifactType(String[] row) throws SQLException, ClassNotFoundException, IllegalStateException, OseeDataStoreException {
+   private void addArtifactType(String[] row) throws SQLException, ClassNotFoundException, IllegalStateException, OseeCoreException {
       if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       String factoryClassName = row[0];
       String artifactTypeName = row[1];

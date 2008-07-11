@@ -61,7 +61,7 @@ public class ArtifactTypeManager {
    private ArtifactTypeManager() {
    }
 
-   public void refreshCache() throws OseeDataStoreException {
+   public void refreshCache() throws OseeCoreException {
       nameToTypeMap.clear();
       idToTypeMap.clear();
       populateCache();
@@ -71,13 +71,13 @@ public class ArtifactTypeManager {
       if (instance.idToTypeMap.size() == 0) {
          try {
             instance.populateCache();
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             throw new SQLException(ex);
          }
       }
    }
 
-   private void populateCache() throws OseeDataStoreException {
+   private void populateCache() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -234,7 +234,7 @@ public class ArtifactTypeManager {
       descriptor.setImageDescriptor(imageDescriptor);
    }
 
-   public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException, IllegalStateException, OseeDataStoreException {
+   public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException, IllegalStateException, OseeCoreException {
       ArtifactType artifactType;
       if (!typeExists(namespace, artifactTypeName)) {
          int artTypeId = Query.getNextSeqVal(SkynetDatabase.ART_TYPE_ID_SEQ);

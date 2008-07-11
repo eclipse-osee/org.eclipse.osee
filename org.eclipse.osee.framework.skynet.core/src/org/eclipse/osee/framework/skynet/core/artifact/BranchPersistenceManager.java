@@ -743,7 +743,7 @@ public class BranchPersistenceManager {
             associatedArtifact, false, null, preserveArtTypes);
    }
 
-   private Set<ArtifactType> getSubtypeDescriptors(String[] artTypeNames) throws SQLException {
+   private Set<ArtifactType> getSubtypeDescriptors(String[] artTypeNames) throws SQLException, OseeCoreException {
       Set<ArtifactType> artifactTypes;
       if (artTypeNames == null) {
          artifactTypes = new HashSet<ArtifactType>(0);
