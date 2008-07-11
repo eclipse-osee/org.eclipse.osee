@@ -25,7 +25,7 @@ public class ConfigIniGeneration {
       builder.append("org.eclipse.equinox.http.jetty_1.0.100.v20080303.jar@start, \\\n");
       builder.append("org.apache.commons.logging_1.0.4.v200803061811.jar@start, \\\n");
       builder.append("javax.servlet_2.4.0.v200803061910.jar@start, \\\n");
-      File pluginDir = new File(args[0] + "/osee_servers_bundles/plugins");
+      File pluginDir = new File(args[0] + "/osee_server_bundles/plugins");
       File[] files = pluginDir.listFiles();
       for (File file : files) {
          builder.append("plugins/");
@@ -36,7 +36,7 @@ public class ConfigIniGeneration {
       builder.append("eclipse.ignoreApp=true\n");
 
       try {
-         FileOutputStream fos = new FileOutputStream(args[0] + "/osee_servers_bundles/configuration/config.ini");
+         FileOutputStream fos = new FileOutputStream(args[0] + "/osee_server_bundles/configuration/config.ini");
          System.out.println(new File("config.ini").getAbsolutePath());
          fos.write(builder.toString().getBytes());
          fos.flush();
