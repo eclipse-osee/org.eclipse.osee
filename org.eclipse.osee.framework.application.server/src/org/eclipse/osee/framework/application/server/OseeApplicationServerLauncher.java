@@ -10,28 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.application.server;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IOConsole;
-import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -40,16 +35,10 @@ public class OseeApplicationServerLauncher {
 
    private static OseeApplicationServerLauncher instance = new OseeApplicationServerLauncher();
 
-   private IOConsole console;
    private Process process;
-   private IOConsoleOutputStream streamOut = null;
-   private IOConsoleOutputStream streamErr = null;
 
    private OseeApplicationServerLauncher() {
-      this.console = null;
       this.process = null;
-      this.streamOut = null;
-      this.streamErr = null;
    }
 
    public static OseeApplicationServerLauncher getInstance() {
@@ -70,11 +59,6 @@ public class OseeApplicationServerLauncher {
    }
 
    public void stop() {
-      if (this.console != null) {
-         ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] {this.console});
-         this.streamOut = null;
-         this.streamErr = null;
-      }
       if (this.process != null) {
          this.process.destroy();
       }
@@ -84,7 +68,7 @@ public class OseeApplicationServerLauncher {
       String javaLocation = System.getProperty("java.home");
       List<String> commands = new ArrayList<String>();
 
-      commands.add(javaLocation);
+      commands.add(javaLocation + File.separator + "bin" + File.separator + "java.exe");
       commands.add("-Dorg.osgi.service.http.port=" + serverPort);
       commands.add("-Dosgi.compatibility.bootdelegation=true");
       commands.add("-Xmx512m");
@@ -93,33 +77,21 @@ public class OseeApplicationServerLauncher {
       commands.add("-Dorg.eclipse.osee.framework.resource.provider.attribute.basepath=" + binaryDataPath);
       commands.add("-jar");
       commands.add("org.eclipse.osgi_3.4.0.v20080326.jar");
-      commands.add("-console");
 
-      URL url = Activator.getInstance().getBundleContext().getBundle().getResource("/osee_server_bundles/");
+      try {
+         URL url = Activator.getInstance().getBundleContext().getBundle().getResource("/osee_server_bundles/");
+         url = FileLocator.resolve(url);
+         ProcessBuilder processBuilder = new ProcessBuilder();
+         processBuilder.directory(new File(url.toURI()));
+         processBuilder.command(commands);
 
-      ProcessBuilder processBuilder = new ProcessBuilder();
-      processBuilder.directory(new File(url.toURI()));
-      processBuilder.command(commands);
-
-      this.process = processBuilder.start();
-
-      this.console = new IOConsole("Osee Application Server", null);
-      console.clearConsole();
-
-      ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] {console});
-
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            streamOut = console.newOutputStream();
-            streamOut.setColor(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
-            streamErr = console.newOutputStream();
-            streamErr.setColor(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-
-            Lib.handleProcessNoWait(process, new BufferedWriter(new OutputStreamWriter(streamOut)), new BufferedWriter(
-                  new OutputStreamWriter(streamErr)), new BufferedReader(
-                  new InputStreamReader(console.getInputStream())));
+         this.process = processBuilder.start();
+         Lib.handleProcessNoWait(process, new BufferedWriter(new OutputStreamWriter(System.out)), true);
+      } catch (Exception ex) {
+         if (process != null) {
+            stop();
          }
-      });
-
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Error launching osee application server", ex);
+      }
    }
 }
