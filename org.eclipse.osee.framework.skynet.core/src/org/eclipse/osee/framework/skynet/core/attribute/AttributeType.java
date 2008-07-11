@@ -32,6 +32,7 @@ public class AttributeType implements Comparable<AttributeType> {
    private int minOccurrences;
    private String tipText;
    private String fileTypeExtension;
+   private String taggerId;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -46,7 +47,7 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param tipText
     * @throws SQLException
     */
-   public AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws SQLException {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -65,6 +66,7 @@ public class AttributeType implements Comparable<AttributeType> {
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
       this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
+      this.taggerId = taggerId;
    }
 
    /**
@@ -185,5 +187,23 @@ public class AttributeType implements Comparable<AttributeType> {
     */
    public Class<? extends IAttributeDataProvider> getProviderAttributeClass() {
       return providerAttributeClass;
+   }
+
+   /**
+    * Get the registered tagger id for this attribute type
+    * 
+    * @return tagger id
+    */
+   public String getTaggerId() {
+      return taggerId;
+   }
+
+   /**
+    * Whether this attribute type is taggable.
+    * 
+    * @return <b>true</b> if this attribute type is taggable. <b>false</b> if this is not taggable.
+    */
+   public boolean isTaggable() {
+      return taggerId != null;
    }
 }

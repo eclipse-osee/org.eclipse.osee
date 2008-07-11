@@ -209,11 +209,11 @@ public class ArtifactPersistenceManager {
       artifact.setGammaId(artGamma);
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
 
-      notifyOnAttributeSave(artifact);
-
       // Add Attributes to Transaction
       AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
       operation.execute();
+
+      notifyOnAttributeSave(artifact);
 
       if (modType != ModificationType.NEW) {
          transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact, transaction.getTransactionNumber()));
@@ -779,68 +779,68 @@ public class ArtifactPersistenceManager {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
       try {
-      for (Artifact art : artifactsToPurge) {
-         for (Branch branch : art.getBranch().getChildBranches(true)) {
-            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, branch.getBranchId()});
+         for (Artifact art : artifactsToPurge) {
+            for (Branch branch : art.getBranch().getChildBranches(true)) {
+               batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                     SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, branch.getBranchId()});
+            }
          }
-      }
-      if (batchParameters.size() > 0) {
-         ArtifactLoader.selectArtifacts(batchParameters);
-         ConnectionHandlerStatement stmt = null;
-         try {
-            stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, SQL3DataType.INTEGER, queryId);
-            boolean failed = false;
-            StringBuilder sb = new StringBuilder();
-            while (stmt.getRset().next()) {
-               failed = true;
-               sb.append("ArtifactId[");
-               sb.append(stmt.getRset().getInt(1));
-               sb.append("] BranchId[");
-               sb.append(stmt.getRset().getInt(2));
-               sb.append("]\n");
-            }
-            if (failed) {
-               throw new OseeCoreException(String.format(
-                     "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
-            }
-         } finally {
+         if (batchParameters.size() > 0) {
+            ArtifactLoader.selectArtifacts(batchParameters);
+            ConnectionHandlerStatement stmt = null;
+            try {
+               stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, SQL3DataType.INTEGER, queryId);
+               boolean failed = false;
+               StringBuilder sb = new StringBuilder();
+               while (stmt.getRset().next()) {
+                  failed = true;
+                  sb.append("ArtifactId[");
+                  sb.append(stmt.getRset().getInt(1));
+                  sb.append("] BranchId[");
+                  sb.append(stmt.getRset().getInt(2));
+                  sb.append("]\n");
+               }
+               if (failed) {
+                  throw new OseeCoreException(String.format(
+                        "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
+               }
+            } finally {
                ArtifactLoader.clearQuery(queryId);
-            DbUtil.close(stmt);
+               DbUtil.close(stmt);
+            }
          }
-      }
 
-      // now load the artifacts to be purged
-      batchParameters.clear();
-      queryId = ArtifactLoader.getNewQueryId();
-      insertTime = GlobalTime.GreenwichMeanTimestamp();
+         // now load the artifacts to be purged
+         batchParameters.clear();
+         queryId = ArtifactLoader.getNewQueryId();
+         insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-      // insert into the artifact_join_table
-      for (Artifact art : artifactsToPurge) {
-         batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-               SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, art.getBranch().getBranchId()});
-      }
-      ArtifactLoader.selectArtifacts(batchParameters);
+         // insert into the artifact_join_table
+         for (Artifact art : artifactsToPurge) {
+            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, art.getBranch().getBranchId()});
+         }
+         ArtifactLoader.selectArtifacts(batchParameters);
 
-      //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
-      int transactionJoinId = ArtifactLoader.getNewQueryId();
-      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
-      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
-      ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, SQL3DataType.INTEGER, transactionJoinId,
-            SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
+         //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
+         int transactionJoinId = ArtifactLoader.getNewQueryId();
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, SQL3DataType.INTEGER, transactionJoinId,
+               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, SQL3DataType.INTEGER, transactionJoinId,
+               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, SQL3DataType.INTEGER, transactionJoinId,
+               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
 
-      //delete from the txs table
-      int txsDeletes =
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
+         //delete from the txs table
+         int txsDeletes =
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
                      transactionJoinId);
 
          int txdDeletes =
                ConnectionHandler.runPreparedUpdate(DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
-                  transactionJoinId);
+                     transactionJoinId);
 
-   		int relationVersions =
+         int relationVersions =
                ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS, SQL3DataType.INTEGER,
                      transactionJoinId);
          int attributeVersions =
@@ -851,28 +851,27 @@ public class ArtifactPersistenceManager {
                      transactionJoinId);
          int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, SQL3DataType.INTEGER, queryId);
 
-
-      OseeLog.log(
-            SkynetActivator.class,
-            Level.INFO,
-            String.format(
-                  "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
-                  txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
-                  (relationVersions + attributeVersions + artifactVersions)));
+         OseeLog.log(
+               SkynetActivator.class,
+               Level.INFO,
+               String.format(
+                     "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
+                     txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
+                     (relationVersions + attributeVersions + artifactVersions)));
 
          ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_transaction where query_id = ?",
                SQL3DataType.INTEGER, transactionJoinId);
 
-      for (Artifact art : artifactsToPurge) {
-         art.setDeleted();
-         for (RelationLink rel : art.getRelationsAll()) {
-            rel.markAsPurged();
+         for (Artifact art : artifactsToPurge) {
+            art.setDeleted();
+            for (RelationLink rel : art.getRelationsAll()) {
+               rel.markAsPurged();
+            }
+            for (Attribute<?> attr : art.internalGetAttributes()) {
+               attr.markAsPurged();
+            }
+            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(art, ModType.Purged, instance));
          }
-         for (Attribute<?> attr : art.internalGetAttributes()) {
-            attr.markAsPurged();
-         }
-         SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(art, ModType.Purged, instance));
-      }
       } finally {
          ArtifactLoader.clearQuery(queryId);
       }

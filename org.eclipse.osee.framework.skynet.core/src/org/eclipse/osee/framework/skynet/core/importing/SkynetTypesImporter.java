@@ -186,18 +186,16 @@ public class SkynetTypesImporter implements RowProcessor {
       String attrBaseType = row[0];
       String attrProviderType = row[1];
       String attributeName = row[2];
-      String fileTypeExtension = row[3];
+      String fileTypeExtension = row[3] != null ? row[3] : "";
       String defaultValue = row[4];
       String validityXml = row[5];
       int minOccurrence = getQuantity(row[6]);
       int maxOccurrence = getQuantity(row[7]);
       String tipText = row[8];
+      String taggerId = row[9] != null ? row[9] : "";
 
-      if (fileTypeExtension == null) {
-         fileTypeExtension = "";
-      }
       AttributeTypeManager.createType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
-            defaultValue, validityXml, minOccurrence, maxOccurrence, tipText);
+            defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
    }
 
    /**

@@ -44,7 +44,6 @@ public class RemoteArtifactSearch implements ISearchQuery {
    private boolean isSearchComplete;
 
    public RemoteArtifactSearch(String query, Map<String, Boolean> options) {
-      this.searchResult = new RemoteArtifactSearchResult();
       this.isSearchComplete = false;
       this.numberOfMatches = 0;
       this.parameters = new HashMap<String, String>();
@@ -85,6 +84,9 @@ public class RemoteArtifactSearch implements ISearchQuery {
     */
    @Override
    public ISearchResult getSearchResult() {
+      if (searchResult == null) {
+         searchResult = new RemoteArtifactSearchResult();
+      }
       return searchResult;
    }
 
@@ -102,15 +104,15 @@ public class RemoteArtifactSearch implements ISearchQuery {
       reset();
       try {
          ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
-         if (queryIdAndSize != null) {
+         if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
             List<Artifact> artifacts =
                   ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
                         queryIdAndSize.object2, false);
             for (Artifact artifact : artifacts) {
-               Match match = new Match(artifact, 1, 2);
-               searchResult.addMatch(match);
+               searchResult.addMatch(new Match(artifact, 1, 2));
                this.numberOfMatches++;
             }
+            System.out.println("Loaded: " + artifacts.size());
          }
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);

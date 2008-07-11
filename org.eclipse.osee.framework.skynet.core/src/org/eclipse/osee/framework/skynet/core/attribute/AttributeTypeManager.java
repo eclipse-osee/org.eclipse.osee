@@ -39,7 +39,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby1, osee_define_attr_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -81,12 +81,12 @@ public class AttributeTypeManager {
                      extensionManager.getAttributeClassFor(baseClassString);
                Class<? extends IAttributeDataProvider> providerAttributeClass =
                      extensionManager.getAttributeProviderClassFor(baseProviderClassString);
-
                AttributeType type =
                      new AttributeType(rSet.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
                            rSet.getString("file_type_extension"), rSet.getString("namespace"), rSet.getString("name"),
                            rSet.getString("default_value"), rSet.getString("validity_xml"),
-                           rSet.getInt("min_occurence"), rSet.getInt("max_occurence"), rSet.getString("tip_text"));
+                           rSet.getInt("min_occurence"), rSet.getInt("max_occurence"), rSet.getString("tip_text"),
+                           rSet.getString("tagger_id"));
                cache(type);
 
             } catch (IllegalStateException ex) {
@@ -190,7 +190,7 @@ public class AttributeTypeManager {
       idToTypeMap.put(attributeType.getAttrTypeId(), attributeType);
    }
 
-   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws Exception {
+   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws Exception {
       if (minOccurrences > 0 && defaultValue == null) throw new IllegalArgumentException(
             "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
       if (typeExists(namespace, name)) {
@@ -210,11 +210,10 @@ public class AttributeTypeManager {
             SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.INTEGER, attrProviderTypeId, SQL3DataType.VARCHAR,
             fileTypeExtension, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, name, SQL3DataType.VARCHAR,
             defaultValue, SQL3DataType.VARCHAR, validityXml, SQL3DataType.INTEGER, minOccurrences,
-            SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText);
-
+            SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText, SQL3DataType.VARCHAR, taggerId);
       AttributeType descriptor =
             new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension, namespace,
-                  name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText);
+                  name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText, taggerId);
       instance.cache(descriptor);
       return descriptor;
    }

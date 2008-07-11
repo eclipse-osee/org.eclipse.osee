@@ -39,25 +39,34 @@ public class HttpProcessor {
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
       URI toReturn = null;
       try {
-         HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
-         IStatus status = uploader.execute(new NullProgressMonitor());
-         if (status.getSeverity() == IStatus.OK) {
-            String locator = uploader.getUploadResponse();
-            if (locator == null) {
-               throw new Exception(status.getMessage(), status.getException());
-            } else {
-               URI uri = new URI(locator);
-               if (uri != null) {
-                  toReturn = uri;
-               }
-            }
-         } else {
-            throw new Exception(status.getMessage(), status.getException());
+         String locator = put(url, inputStream, contentType, encoding);
+         URI uri = new URI(locator);
+         if (uri != null) {
+            toReturn = uri;
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error saving resource [%s]", ex.getLocalizedMessage()), ex);
       }
       return toReturn;
+   }
+
+   public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
+      String response = null;
+      try {
+         HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
+         IStatus status = uploader.execute(new NullProgressMonitor());
+         if (status.getSeverity() == IStatus.OK) {
+            response = uploader.getUploadResponse();
+            if (response == null) {
+               throw new Exception(status.getMessage(), status.getException());
+            }
+         } else {
+            throw new Exception(status.getMessage(), status.getException());
+         }
+      } catch (Exception ex) {
+         throw new Exception(String.format("Error sending resource [%s]", ex.getLocalizedMessage()), ex);
+      }
+      return response;
    }
 
    public static String post(URL url) throws Exception {
