@@ -172,9 +172,9 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       diag.setRecurseChildren(recurseChildren);
       int result = diag.open();
       if (result == 0) {
-         showFinished = diag.isShowFinished();
-         showAction = diag.isShowAction();
-         recurseChildren = diag.isRecurseChildren();
+         selectedShowFinished = diag.isShowFinished();
+         selectedShowAction = diag.isShowAction();
+         selectedRecurseChildren = diag.isRecurseChildren();
          if (selectedTeamDefs == null)
             selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
          else

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -86,13 +87,15 @@ public class SkynetEventManager extends EventManager {
       for (Class<?> eventClass = event.getClass(); !eventClass.equals(Object.class); eventClass =
             eventClass.getSuperclass()) {
          // Get all receivers subscribed by Event type
-         if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null) receivers.addAll(receiverMap.get(eventClass));
-
+         if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null){
+        	 receivers.addAll(receiverMap.get(eventClass));
+         }
+         
          // Get all receivers subscribed by Event type and Guid
-         if ((event.equals(ArtifactEvent.class)) && (guidReceiverMap.containsKey(eventClass,
-               ((ArtifactEvent) event).getArtifact().getGuid()))) receivers.addAll(guidReceiverMap.get(eventClass,
-               ((ArtifactEvent) event).getArtifact().getGuid()));
-
+         if ((event instanceof ArtifactEvent) && (guidReceiverMap.containsKey(eventClass,
+               ((ArtifactEvent) event).getArtifact().getGuid()))){
+        	 receivers.addAll(guidReceiverMap.get(eventClass,  ((ArtifactEvent) event).getArtifact().getGuid()));
+         }
          receivers.addAll(subscribeAll);
       }
       return receivers;

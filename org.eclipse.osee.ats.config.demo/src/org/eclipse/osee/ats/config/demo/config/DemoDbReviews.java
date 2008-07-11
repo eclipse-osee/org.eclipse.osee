@@ -58,8 +58,8 @@ public class DemoDbReviews {
       // Create a Decision review and transition to ReWork
       DecisionReviewArtifact reviewArt = firstTestArt.getSmaMgr().getReviewManager().createValidateReview(true);
       Result result =
-      DefaultDecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.StateNames.Followup,
-            SkynetAuthentication.getUser(), false);
+            DefaultDecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.StateNames.Followup,
+                  SkynetAuthentication.getUser(), false);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }

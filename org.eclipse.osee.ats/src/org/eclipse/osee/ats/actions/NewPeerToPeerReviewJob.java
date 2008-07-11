@@ -32,11 +32,13 @@ public class NewPeerToPeerReviewJob extends Job {
    private final TeamWorkFlowArtifact teamParent;
    private final String againstState;
    private PeerToPeerReviewArtifact peerToPeerReviewArtifact;
+   private final String reviewTitle;
 
-   public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent, String againstState) {
+   public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent, String reviewTitle, String againstState) {
       super("Creating New PeerToPeer Review");
       this.teamParent = teamParent;
       this.againstState = againstState;
+      this.reviewTitle = reviewTitle;
    }
 
    @Override
@@ -45,9 +47,9 @@ public class NewPeerToPeerReviewJob extends Job {
          AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork()throws OseeCoreException, SQLException{
+            protected void handleTxWork() throws OseeCoreException, SQLException {
                peerToPeerReviewArtifact =
-                     teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(againstState);
+                     teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState);
                peerToPeerReviewArtifact.persistAttributesAndRelations();
             }
 

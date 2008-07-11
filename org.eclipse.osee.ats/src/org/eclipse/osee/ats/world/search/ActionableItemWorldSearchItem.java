@@ -53,8 +53,11 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       super(displayName);
       this.actionItemNames = actionItemNames;
       this.showFinished = showFinished;
+      this.selectedShowFinished = showFinished; // Set as default in case UI is not used
       this.showAction = showAction;
+      this.selectedShowAction = showAction; // Set as default in case UI is not used
       this.recurseChildren = recurseChildren;
+      this.selectedRecurseChildren = recurseChildren; // Set as default in case UI is not used
    }
 
    public ActionableItemWorldSearchItem(String displayName, Collection<ActionableItemArtifact> actionItems, boolean showFinished, boolean showAction, boolean recurseChildren) {

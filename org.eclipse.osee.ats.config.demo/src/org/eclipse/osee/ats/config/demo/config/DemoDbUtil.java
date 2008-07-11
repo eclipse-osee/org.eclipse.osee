@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
-   private static List<DemoCodeTeamWorkflowArtifact> codeArts = null;
+   private static List<DemoCodeTeamWorkflowArtifact> codeArts;
 
    public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws Exception {
       if (codeArts == null) {

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -227,8 +226,7 @@ public class ArtifactTypeManager {
    }
 
    public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
-      // Update DB
-      ConnectionHandler.runPreparedUpdate("UPDATE " + ARTIFACT_TYPE_TABLE + " SET image = ? where art_type_id = ?",
+      ConnectionHandler.runPreparedUpdate("UPDATE osee_define_artifact_type SET image = ? where art_type_id = ?",
             SQL3DataType.BLOB, new ByteArrayInputStream(imageDescriptor.getData()), SQL3DataType.INTEGER,
             descriptor.getArtTypeId());
 

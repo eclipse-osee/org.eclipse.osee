@@ -57,7 +57,7 @@ public class ReviewManager {
     * @return new review
     * @throws SQLException
     */
-   public DecisionReviewArtifact createValidateReview(boolean force)throws OseeCoreException, SQLException{
+   public DecisionReviewArtifact createValidateReview(boolean force) throws OseeCoreException, SQLException {
       // If not validate page, don't do anything
       if (!force && !AtsWorkDefinitions.isValidatePage(smaMgr.getWorkPageDefinition())) return null;
       // If validate review already created for this state, return
@@ -71,7 +71,6 @@ public class ReviewManager {
 
          DecisionReviewArtifact decRev = NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), true);
          decRev.setDescriptiveName(VALIDATE_REVIEW_TITLE);
-         decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
          decRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
@@ -88,18 +87,18 @@ public class ReviewManager {
       return null;
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState)throws OseeCoreException, SQLException{
-      return createNewPeerToPeerReview(againstState, SkynetAuthentication.getUser(), new Date());
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState) throws OseeCoreException, SQLException {
+      return createNewPeerToPeerReview(reviewTitle, againstState, SkynetAuthentication.getUser(), new Date());
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
-      return createNewPeerToPeerReview(smaMgr.getSma(), againstState, origUser, origDate);
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
+      return createNewPeerToPeerReview(smaMgr.getSma(), reviewTitle, againstState, origUser, origDate);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch(), "Peer to Peer Review");
+                  BranchPersistenceManager.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamParent != null) {
          teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, peerToPeerRev);

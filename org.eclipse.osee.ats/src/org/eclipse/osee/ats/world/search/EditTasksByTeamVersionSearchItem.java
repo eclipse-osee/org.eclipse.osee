@@ -14,27 +14,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
+
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeByVersionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -87,42 +78,16 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
-
-      List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (TeamDefinitionArtifact tda : getSearchTeamDefs())
-         teamDefWorkflowCriteria.add(new AttributeValueSearch(
-               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamDefWorkflowSearch = new FromArtifactsSearch(teamDefWorkflowCriteria, false);
-
-      FromArtifactsSearch versionWorkflowSearch = null;
-      if (selectedVersion != null) {
-         List<ISearchPrimitive> versionCriteria = new LinkedList<ISearchPrimitive>();
-         versionCriteria.add(new ArtifactIdSearch(selectedVersion.getArtId(), DepricatedOperator.EQUAL));
-         versionWorkflowSearch = new FromArtifactsSearch(versionCriteria, true);
-      }
-
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
-
-      List<ISearchPrimitive> allProductCriteria = new LinkedList<ISearchPrimitive>();
-      allProductCriteria.add(teamDefWorkflowSearch);
-      allProductCriteria.add(teamWorkflowSearch);
-      if (selectedVersion != null) allProductCriteria.add(new InRelationSearch(versionWorkflowSearch,
-            AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-      FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allProductCriteria, true);
-
-      List<ISearchPrimitive> taskCriteria = new LinkedList<ISearchPrimitive>();
-      taskCriteria.add(new InRelationSearch(allTeamWorkflows, AtsRelation.SmaToTask_Task));
-
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(taskCriteria, true, BranchPersistenceManager.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+	   Set<TeamDefinitionArtifact> teamDefs = getSearchTeamDefs();
+	   List<Artifact> validWorkflows = new ArrayList<Artifact>();
+	   List<Artifact> workflows = selectedVersion.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
+	   for(Artifact workflow:workflows){
+		   if(teamDefs.contains(((TeamWorkFlowArtifact)workflow).getTeamDefinition())){
+			   validWorkflows.add(workflow);
+		   }
+	   }
+	   Set<Artifact> tasks = RelationManager.getRelatedArtifacts(validWorkflows, 1, AtsRelation.SmaToTask_Task);
+	   return tasks;
    }
 
    @Override

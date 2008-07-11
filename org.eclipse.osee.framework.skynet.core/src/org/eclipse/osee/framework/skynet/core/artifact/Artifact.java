@@ -1163,7 +1163,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
-      RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
+      try {
+         RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
+      } catch (ArtifactDoesNotExist ex) {
+         throw new SQLException(ex);
+      }
    }
 
    /**

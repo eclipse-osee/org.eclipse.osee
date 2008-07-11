@@ -179,7 +179,21 @@ public class StateManager {
     * @throws Exception
     */
    public void removeAssignee(User assignee) throws OseeCoreException, SQLException {
+      SMAState state = getSMAState(getCurrentStateName(), false);
+      state.removeAssignee(assignee);
+      putState(state);
+   }
 
+   /**
+    * Adds the assignee AND writes to SMA. Does not persist.
+    * 
+    * @param assignee
+    * @throws Exception
+    */
+   public void addAssignee(User assignee) throws OseeCoreException, SQLException {
+      SMAState state = getSMAState(getCurrentStateName(), false);
+      state.addAssignee(assignee);
+      putState(state);
    }
 
    /**
@@ -188,7 +202,7 @@ public class StateManager {
     * @param assignee
     * @throws Exception
     */
-   public void clearAssignees()throws OseeCoreException, SQLException{
+   public void clearAssignees() throws OseeCoreException, SQLException {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.clearAssignees();
       putState(state);
@@ -202,9 +216,7 @@ public class StateManager {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
-      // Set XCurrentState; If been to this state, copy state info from
-      // prev state; else create
-      // new
+      // Set XCurrentState; If been to this state, copy state info from prev state; else create new
       SMAState previousState = stateDam.getState(toStateName, false);
       if (previousState != null) {
          if (toAssignees.size() > 0) previousState.setAssignees(toAssignees);

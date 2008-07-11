@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.access;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -58,9 +60,9 @@ public class AccessControlManager {
    private static final String UPDATE_BRANCH_ACL =
          "UPDATE " + SkynetDatabase.BRANCH_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
    private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
-         "SELECT t2.permission_id, t2.privilege_entity_id, t2.art_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.ARTIFACT_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
-   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
-         "SELECT t2.permission_id,t2.privilege_entity_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.BRANCH_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
+         "SELECT aac1.*, art1.art_type_id FROM osee_define_artifact art1, osee_define_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
+
+   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST = "SELECT bac1.*, art1.art_type_id FROM osee_define_artifact art1, osee_define_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
    private static final String DELETE_ARTIFACT_ACL =
          "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
    private static final String DELETE_BRANCH_ACL =
@@ -167,26 +169,22 @@ public class AccessControlManager {
     * @throws SQLException
     */
    private void populateBranchAccessControlList() throws SQLException {
-      BranchAccessObject branchAccessObject = null;
-      String subjectName;
-      Integer subjectId;
-      Integer branchId;
-
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
 
-         while (chStmt.next()) {
-            subjectId = chStmt.getRset().getInt("privilege_entity_id");
-            branchId = chStmt.getRset().getInt("branch_id");
-            subjectName = chStmt.getRset().getString("name");
-            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getRset().getInt("permission_id"));
-            branchAccessObject = getBranchAccessObject(branchId);
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            Integer subjectId = rSet.getInt("privilege_entity_id");
+            Integer branchId = rSet.getInt("branch_id");
+            int subjectArtifactTypeId = rSet.getInt("art_type_id");
+            PermissionEnum permission = PermissionEnum.getPermission(rSet.getInt("permission_id"));
+            BranchAccessObject branchAccessObject = getBranchAccessObject(branchId);
 
             accessControlListCache.put(subjectId, branchAccessObject, permission);
             objectToSubjectCache.put(branchAccessObject, subjectId);
 
-            if (subjectName.equals("User Group")) {
+            if (ArtifactTypeManager.getType(subjectArtifactTypeId).isTypeCompatible("User Group")) {
                populateGroupMembers(subjectId);
             }
          }
@@ -202,31 +200,26 @@ public class AccessControlManager {
     */
    private void populateArtifactAccessControlList() throws SQLException {
       ConnectionHandlerStatement chStmt = null;
-      Integer subjectId = null;
-      Integer objectId = null;
-      Integer branchId = null;
-      String subjectName = "";
-      PermissionEnum permission;
-      AccessObject accessObject;
 
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
-         while (chStmt.next()) {
-            subjectId = chStmt.getRset().getInt("privilege_entity_id");
-            objectId = chStmt.getRset().getInt("art_id");
-            branchId = chStmt.getRset().getInt("branch_id");
-            subjectName = chStmt.getRset().getString("name");
-            permission = PermissionEnum.getPermission(chStmt.getRset().getInt("permission_id"));
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            Integer subjectId = rSet.getInt("privilege_entity_id");
+            Integer objectId = rSet.getInt("art_id");
+            Integer branchId = rSet.getInt("branch_id");
+            int subjectArtifactTypeId = rSet.getInt("art_type_id");
+            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getRset().getInt("permission_id"));
 
             if (permission.equals(PermissionEnum.LOCK)) {
                objectToBranchLockCache.put(objectId, branchId);
                lockedObjectToSubject.put(objectId, subjectId);
             } else {
-               accessObject = getArtifactAccessObject(objectId, branchId);
+               AccessObject accessObject = getArtifactAccessObject(objectId, branchId);
                cacheAccessObject(objectId, subjectId, permission, accessObject);
 
-               if (subjectName.equals("User Group")) {
+               if (ArtifactTypeManager.getType(subjectArtifactTypeId).isTypeCompatible("User Group")) {
                   populateGroupMembers(subjectId);
                }
             }

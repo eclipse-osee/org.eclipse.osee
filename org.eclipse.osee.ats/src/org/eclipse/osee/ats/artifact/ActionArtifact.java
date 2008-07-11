@@ -103,7 +103,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             title = team.getDescriptiveName();
          else if (!title.equals(team.getDescriptiveName())) return;
       }
-      if (!title.equals(getDescriptiveName())) setDescriptiveName(title);
+      if (!title.equals(getDescriptiveName())) {
+         setDescriptiveName(title);
+      }
    }
 
    // Set validation to true if any require validation
@@ -129,14 +131,20 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             desc = team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
          else if (!desc.equals(team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) return;
       }
-      if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) setSoleAttributeValue(
-            ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) {
+         setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      }
+      if (desc.equals("")) {
+         deleteSoleAttribute(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      }
    }
 
    private Result resetActionItemsOffChildren() throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
-         if (!(new SMAManager(team)).isCancelled()) aias.addAll(team.getActionableItemsDam().getActionableItems());
+         if (!(new SMAManager(team)).isCancelled()) {
+            aias.addAll(team.getActionableItemsDam().getActionableItems());
+         }
       return actionableItemsDam.setActionableItems(aias);
    }
 
@@ -880,7 +888,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact#getParentSMArt()
     */
-   public Artifact getParentSMArt() throws SQLException {
+   public Artifact getParentAtsArtifact() throws SQLException {
       return null;
    }
 

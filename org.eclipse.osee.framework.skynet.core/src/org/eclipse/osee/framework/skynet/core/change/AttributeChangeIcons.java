@@ -15,7 +15,9 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.MERGED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
@@ -47,6 +49,7 @@ public class AttributeChangeIcons {
          ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
          ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
          ImageDescriptor conNew = SkynetActivator.getInstance().getImageDescriptor("con_new.gif");
+         ImageDescriptor merge = SkynetActivator.getInstance().getImageDescriptor("branch_merge.gif");
 
          Image baseImage = skynetActivator.getImage(BASE_IMAGE_STRING + ".gif");
 
@@ -54,6 +57,8 @@ public class AttributeChangeIcons {
                outDeleted));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage,
                outChange));
+         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + MERGED, new OverlayImage(baseImage,
+        		 merge));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETED, new OverlayImage(baseImage,
                incDeleted));

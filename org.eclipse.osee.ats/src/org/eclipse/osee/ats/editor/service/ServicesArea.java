@@ -160,7 +160,7 @@ public class ServicesArea {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 

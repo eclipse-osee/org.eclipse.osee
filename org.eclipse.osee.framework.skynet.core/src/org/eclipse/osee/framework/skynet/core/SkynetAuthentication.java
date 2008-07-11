@@ -166,7 +166,7 @@ public class SkynetAuthentication {
                currentUser = getUser(UserEnum.Guest);
             } else {
                String userId = OseeAuthentication.getInstance().getCredentials().getField(UserCredentialEnum.Id);
-               if (currentUser == null || !currentUser.getUserId().equals(userId)) {
+               if (currentUser == null) {
                   try {
                      currentUser = getUserByUserId(userId);
                   } catch (UserNotInDatabase ex) {

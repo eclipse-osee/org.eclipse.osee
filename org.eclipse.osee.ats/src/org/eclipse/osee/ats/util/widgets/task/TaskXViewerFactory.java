@@ -40,7 +40,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       // Title, State, POC, Percent_Complete, Hours_Spent, Resolution, Est_Hours, Remain_Hours
       List<AtsXColumn> taskColumnOrder =
             Arrays.asList(AtsXColumn.Title_Col, AtsXColumn.State_Col, AtsXColumn.Assignees_Col,
-                  AtsXColumn.Percent_Complete_Total_Col, AtsXColumn.Hours_Spent_Total_Col, AtsXColumn.Resolution_Col,
+                  AtsXColumn.Percent_Complete_Total_Col, AtsXColumn.Total_Hours_Spent_Col, AtsXColumn.Resolution_Col,
                   AtsXColumn.Estimated_Hours_Col, AtsXColumn.Remaining_Hours_Col, AtsXColumn.Related_To_State_Col,
                   AtsXColumn.Notes_Col);
       List<Integer> widths = Arrays.asList(450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80);

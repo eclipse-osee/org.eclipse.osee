@@ -11,18 +11,17 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
+import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -63,17 +62,20 @@ public class AddPeerToPeerReviewService extends WorkPageService {
 
          public void linkActivated(HyperlinkEvent e) {
             try {
-               StateListDialog dialog =
-                     new StateListDialog("Related Review State",
+               StateListAndTitleDialog dialog =
+                     new StateListAndTitleDialog("Related Review State",
                            "Select state to that review will be associated with.",
                            smaMgr.getWorkFlowDefinition().getPageNames());
                dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
                dialog.setReviewTitle("Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getDescriptiveName() + "\"");
                if (dialog.open() == 0) {
-                  if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add PeerToPeer Review",
-                        "Create a PeerToPeer Review and attach it the \"" + dialog.getResult()[0] + "\" state?")) return;
+                  if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
+                     AWorkbench.popup("ERROR", "Must enter review title");
+                     return;
+                  }
                   NewPeerToPeerReviewJob job =
-                        new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getSelectedState());
+                        new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getReviewTitle(),
+                              dialog.getSelectedState());
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();

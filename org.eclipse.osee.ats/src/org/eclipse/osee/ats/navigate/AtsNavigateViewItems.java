@@ -107,7 +107,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
       items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
-
       items.add(new VisitedItems(null));
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
@@ -266,12 +265,6 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new DoesNotWorkItem(adminItems);
 
          XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
-         new AttributeDuplication(healthItems);
-         new OrphanedTasks(healthItems);
-         new ActionsHaveOneTeam(healthItems);
-         new AssignedActiveActions(healthItems);
-         new TeamWorkflowsHaveZeroOrOneVersion(healthItems);
-         new UnAssignedAssignedAtsObjects(healthItems);
          new ValidateAtsDatabase(healthItems);
          new ValidateChangeReports(healthItems);
 

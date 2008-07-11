@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
@@ -117,6 +118,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }
          }
+         MassArtifactEditor.editArtifacts(title + " as of " + XDate.getDateNow(), reviewArts, TableLoadOption.None);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

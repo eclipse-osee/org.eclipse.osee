@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -182,7 +181,7 @@ public class BranchPersistenceManager {
 
                Branch branch = branchCache.get(branchId);
 
-               if (isArchived || (!OseeProperties.isDeveloper() && rSet.getInt("branch_type") == BranchType.MERGE.getValue())) {
+               if (isArchived) {
                   if (branch != null) {
                      branchCache.remove(branch.getBranchId());
                   }

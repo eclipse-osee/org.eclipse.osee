@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -131,7 +132,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public Result isXWidgetDirty()throws OseeCoreException, SQLException{
+   public Result isXWidgetDirty() throws OseeCoreException, SQLException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetDirty();
          if (result.isTrue()) return result;
@@ -139,7 +140,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.FalseResult;
    }
 
-   public Result isXWidgetSavable()throws OseeCoreException, SQLException{
+   public Result isXWidgetSavable() throws OseeCoreException, SQLException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetSavable();
          if (result.isFalse()) return result;
@@ -147,7 +148,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.TrueResult;
    }
 
-   public void saveXWidgetToArtifact()throws OseeCoreException, SQLException{
+   public void saveXWidgetToArtifact() throws OseeCoreException, SQLException {
       for (SMAWorkFlowSection section : sections) {
          section.saveXWidgetToArtifact();
       }
@@ -178,7 +179,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return sb.toString();
    }
 
-   private void fillBody(IManagedForm managedForm)throws OseeCoreException, SQLException{
+   private void fillBody(IManagedForm managedForm) throws OseeCoreException, SQLException {
       Composite body = managedForm.getForm().getBody();
       GridLayout gridLayout = new GridLayout(1, false);
       body.setLayout(gridLayout);
@@ -192,6 +193,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display relations
       try {
          createTopLineHeader(headerComp, toolkit);
+         createAssigneesLineHeader(headerComp, toolkit);
          createLatestHeader(headerComp, toolkit);
          createTeamWorkflowHeader(headerComp, toolkit);
          createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
@@ -392,6 +394,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
+   private void createAssigneesLineHeader(Composite comp, XFormToolkit toolkit) {
+      Composite topLineComp = new Composite(comp, SWT.NONE);
+      topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      toolkit.adapt(topLineComp);
+      Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
+      toolkit.adapt(text, true, true);
+      text.setText(String.format("Assignee(s): %s", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
+   }
+
    private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -399,12 +411,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit.adapt(topLineComp);
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
-      toolkit.createLabel(topLineComp, smaMgr.getEditorHeaderString(), SWT.NO_TRIM);
+      Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
+      toolkit.adapt(text, true, true);
+      text.setText(smaMgr.getEditorHeaderString());
+
       createOriginatorHeader(topLineComp, toolkit);
 
       try {
          toolkit.createLabel(topLineComp, "Action Id:");
-         Text text = new Text(topLineComp, SWT.NONE);
+         text = new Text(topLineComp, SWT.NONE);
          toolkit.adapt(text, true, true);
          text.setText(smaMgr.getSma().getParentActionArtifact() == null ? "??" : smaMgr.getSma().getParentActionArtifact().getHumanReadableId());
       } catch (SQLException ex) {
@@ -412,7 +427,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       toolkit.createLabel(topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id:");
-      Text text = new Text(topLineComp, SWT.NONE);
+      text = new Text(topLineComp, SWT.NONE);
       toolkit.adapt(text, true, true);
       text.setText(smaMgr.getSma().getHumanReadableId());
 
@@ -517,7 +532,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void updateOrigLabel()throws OseeCoreException, SQLException{
+   public void updateOrigLabel() throws OseeCoreException, SQLException {
       origLabel.setText(smaMgr.getOriginator().getName());
       origLabel.getParent().layout();
       if (teamWf != null) {
@@ -526,7 +541,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refresh()throws OseeCoreException, SQLException{
+   public void refresh() throws OseeCoreException, SQLException {
       for (SMAWorkFlowSection section : sections)
          section.refresh();
       if (smaRelationsComposite != null) smaRelationsComposite.refresh();

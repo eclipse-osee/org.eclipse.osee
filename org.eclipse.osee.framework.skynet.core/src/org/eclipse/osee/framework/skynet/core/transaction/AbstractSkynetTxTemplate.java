@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
@@ -93,12 +91,12 @@ public abstract class AbstractSkynetTxTemplate {
    public void execute() throws OseeCoreException, SQLException {
       try {
          transactionManager.startBatchLevel(this, branch);
-         SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         //         SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
          transactionManager.setBatchLevelAsSuccessful(this, branch);
-         SkynetActivator.getLogger().log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         //         SkynetActivator.getLogger().log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } finally {
          transactionManager.endBatchLevel(this, branch);
          handleTxFinally();

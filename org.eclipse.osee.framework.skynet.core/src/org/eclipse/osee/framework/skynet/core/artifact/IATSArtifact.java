@@ -19,5 +19,5 @@ import java.sql.SQLException;
  */
 public interface IATSArtifact {
 
-   public Artifact getParentSMArt() throws SQLException;
+   public Artifact getParentAtsArtifact() throws SQLException;
 }

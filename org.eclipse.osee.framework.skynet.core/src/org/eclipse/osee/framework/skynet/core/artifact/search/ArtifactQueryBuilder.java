@@ -161,7 +161,7 @@ public class ArtifactQueryBuilder {
       return id;
    }
 
-   private String getArtifactInsertSql() throws SQLException {
+   private String getArtifactSelectSql() throws SQLException {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
       } else {
@@ -332,7 +332,7 @@ public class ArtifactQueryBuilder {
 
    private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
       List<Artifact> artifacts =
-            ArtifactLoader.getArtifacts(getArtifactInsertSql(), queryParameters.toArray(), artifactCountEstimate,
+            ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
                   loadLevel, reload, confirmer);
       clearCriteria();
       return artifacts;
@@ -347,7 +347,7 @@ public class ArtifactQueryBuilder {
    }
 
    public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters) throws SQLException {
-      ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactInsertSql(), queryParameters.toArray(),
+      ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
             artifactCountEstimate);
       clearCriteria();
    }
@@ -358,7 +358,7 @@ public class ArtifactQueryBuilder {
       ConnectionHandlerStatement chStmt = null;
       count = true;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactInsertSql(), queryParameters.toArray());
+         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactSelectSql(), queryParameters.toArray());
          ResultSet rSet = chStmt.getRset();
 
          if (rSet.next()) {

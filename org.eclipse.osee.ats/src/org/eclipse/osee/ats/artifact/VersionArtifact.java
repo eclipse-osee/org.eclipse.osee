@@ -134,6 +134,6 @@ public class VersionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException, SQLException {
-      return (VersionArtifact) AtsCache.getArtifactsByName(name, VersionArtifact.class);
+      return AtsCache.getArtifactsByName(name, VersionArtifact.class).iterator().next();
    }
 }

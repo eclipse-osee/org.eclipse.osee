@@ -80,20 +80,26 @@ public abstract class Change implements IAdaptable {
 
    /**
     * @return the artifact
+    * @throws ArtifactDoesNotExist
     * @throws SQLException
     * @throws IllegalArgumentException
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     */
-   public Artifact getArtifact() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact getArtifact() throws ArtifactDoesNotExist {
       if (artifact == null) {
          artifact = ArtifactCache.getActive(artId, branch);
+      }
+
+      if (artifact == null) {
+         throw new ArtifactDoesNotExist(
+               "Artifact: " + artId + " Does not exist on branch: " + branch.getBranchName() + " branch id: " + branch.getBranchId());
       }
       return artifact;
    }
 
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
-      return getArtifact().getDescriptiveName();
+      return getArtifact().getInternalDescriptiveName();
    }
 
    /**

@@ -16,30 +16,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -51,25 +46,22 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    private Set<TeamDefinitionArtifact> teamDefs;
    private Set<TeamDefinitionArtifact> selectedTeamDefs;
    private boolean recurseChildren;
+   private boolean selectedRecurseChildren;
    private boolean showFinished;
+   private boolean selectedShowFinished;
    private boolean showAction;
+   private boolean selectedShowAction;
    private final String[] teamDefNames;
 
    public UnReleasedTeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren) {
       super(displayName);
       this.teamDefNames = teamDefNames;
       this.showFinished = showFinished;
+      this.selectedShowFinished = showFinished;
       this.showAction = showAction;
+      this.selectedShowAction = showAction;
       this.recurseChildren = recurseChildren;
-   }
-
-   public UnReleasedTeamWorldSearchItem(String displayName, Set<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren) {
-      super(displayName);
-      this.teamDefNames = null;
-      this.teamDefs = teamDefs;
-      this.showFinished = showFinished;
-      this.showAction = showAction;
-      this.recurseChildren = recurseChildren;
+      this.selectedRecurseChildren = recurseChildren;
    }
 
    public UnReleasedTeamWorldSearchItem(String displayName, TeamDefinitionArtifact teamDef, boolean showFinished, boolean showAction, boolean recurseChildren) {
@@ -78,8 +70,11 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       this.teamDefs = new HashSet<TeamDefinitionArtifact>();
       this.teamDefs.add(teamDef);
       this.showFinished = showFinished;
+      this.selectedShowFinished = showFinished;
       this.showAction = showAction;
+      this.selectedShowAction = showAction;
       this.recurseChildren = recurseChildren;
+      this.selectedRecurseChildren = recurseChildren;
    }
 
    public Collection<String> getProductSearchName() {
@@ -116,7 +111,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
          srchTeamDefs.add(teamDef);
-      if (recurseChildren) {
+      if (selectedRecurseChildren) {
          for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs)) {
             Artifacts.getChildrenOfType(teamDef, srchTeamDefs, TeamDefinitionArtifact.class, true);
          }
@@ -127,75 +122,42 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
       getTeamDefs();
-      List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (TeamDefinitionArtifact tda : getSearchTeamDefs())
-         teamDefWorkflowCriteria.add(new AttributeValueSearch(
-               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamDefWorkflowSearch = new FromArtifactsSearch(teamDefWorkflowCriteria, false);
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
-
-      List<ISearchPrimitive> allTeamCriteria = new LinkedList<ISearchPrimitive>();
-      allTeamCriteria.add(teamDefWorkflowSearch);
-      allTeamCriteria.add(teamWorkflowSearch);
-      if (!showFinished) {
-         allTeamCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
-         allTeamCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
+      Set<TeamDefinitionArtifact> items = getSearchTeamDefs();
+      List<String> teamDefinitionGuids = new ArrayList<String>(items.size());
+      for (TeamDefinitionArtifact art : items) {
+         teamDefinitionGuids.add(art.getGuid());
       }
-      FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allTeamCriteria, true);
+      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+            teamDefinitionGuids));
 
-      // Get un-targeted workflows
-      List<ISearchPrimitive> untargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
-      untargetedTeamsCriteria.add(teamWorkflowSearch);
-      untargetedTeamsCriteria.add(new NotSearch(new InRelationSearch(allTeamWorkflows,
-            AtsRelation.TeamWorkflowTargetedForVersion_Workflow)));
-      FromArtifactsSearch untargetedTeamsCriteriaArts = new FromArtifactsSearch(untargetedTeamsCriteria, true);
-
-      // Get un-released version artifacts
-      List<ISearchPrimitive> unReleasedVersionCriteria = new LinkedList<ISearchPrimitive>();
-      unReleasedVersionCriteria.add(new ArtifactTypeSearch(VersionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
-      unReleasedVersionCriteria.add(new AttributeValueSearch(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), "no",
-            DepricatedOperator.EQUAL));
-      FromArtifactsSearch unReleasedVersionCriteriaArts = new FromArtifactsSearch(unReleasedVersionCriteria, true);
-
-      List<ISearchPrimitive> unReleasedTeamsCriteria = new LinkedList<ISearchPrimitive>();
-      unReleasedTeamsCriteria.add(new InRelationSearch(unReleasedVersionCriteriaArts,
-            AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-      unReleasedTeamsCriteria.add(allTeamWorkflows);
-      FromArtifactsSearch unReleasedTeamsCriteriaArts = new FromArtifactsSearch(unReleasedTeamsCriteria, true);
-
-      // Get all un-released and un-targeted workflows
-      List<ISearchPrimitive> unReleasedAndUntargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
-      unReleasedAndUntargetedTeamsCriteria.add(untargetedTeamsCriteriaArts);
-      unReleasedAndUntargetedTeamsCriteria.add(unReleasedTeamsCriteriaArts);
-      FromArtifactsSearch unReleasedAndUntargetedTeamsCriteriaArts =
-            new FromArtifactsSearch(unReleasedAndUntargetedTeamsCriteria, false);
-
-      if (!showAction) {
-         if (isCancelled()) return EMPTY_SET;
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getArtifacts(unReleasedAndUntargetedTeamsCriteria, false,
-                     BranchPersistenceManager.getAtsBranch());
-         if (isCancelled()) return EMPTY_SET;
-         return arts;
+      if (!selectedShowFinished) {
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
+         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
+         criteria.add(new AttributeCriteria(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), cancelOrComplete,
+               Operator.NOT_EQUAL));
       }
 
-      List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(unReleasedAndUntargetedTeamsCriteriaArts,
-            AtsRelation.ActionToWorkflow_Action));
+      List<Artifact> artifacts =
+            ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), 1000, criteria);
 
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getArtifacts(actionCriteria, true, BranchPersistenceManager.getAtsBranch());
+      List<Artifact> unReleasedArtifacts = new ArrayList<Artifact>();
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) artifact;
+            if (team.getTargetedForVersion() == null || !team.getTargetedForVersion().isReleased()) {
+               unReleasedArtifacts.add(artifact);
+            }
+         }
+      }
 
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      if (selectedShowAction) {
+         return RelationManager.getRelatedArtifacts(unReleasedArtifacts, 1, AtsRelation.ActionToWorkflow_Action);
+      } else {
+         return unReleasedArtifacts;
+      }
 
    }
 
@@ -212,12 +174,13 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       diag.setShowFinished(showFinished);
-      diag.setShowFinished(true);
+      diag.setRecurseChildren(recurseChildren);
+      diag.setShowAction(showAction);
       int result = diag.open();
       if (result == 0) {
-         showFinished = diag.isShowFinished();
-         showAction = diag.isShowAction();
-         recurseChildren = diag.isRecurseChildren();
+         selectedShowFinished = diag.isShowFinished();
+         selectedShowAction = diag.isShowAction();
+         selectedRecurseChildren = diag.isRecurseChildren();
          if (selectedTeamDefs == null)
             selectedTeamDefs = new HashSet<TeamDefinitionArtifact>();
          else
@@ -257,4 +220,10 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       this.recurseChildren = recurseChildren;
    }
 
+   /**
+    * @param selectedTeamDefs the selectedTeamDefs to set
+    */
+   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
+      this.selectedTeamDefs = selectedTeamDefs;
+   }
 }

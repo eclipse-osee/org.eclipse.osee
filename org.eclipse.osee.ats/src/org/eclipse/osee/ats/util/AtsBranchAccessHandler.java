@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -54,6 +55,8 @@ public class AtsBranchAccessHandler implements IEventReceiver {
                ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().updateBranchAccessControl();
             }
          }
+      } catch (BranchDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, ex);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

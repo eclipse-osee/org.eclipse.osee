@@ -15,9 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,10 +33,6 @@ public class ArtifactChange extends RevisionChange {
    private TransactionId toTransactionId;
    transient private Artifact artifact;
    transient private Artifact conflictingModArtifact;
-
-   private int conflictingArtId;
-   private TransactionId conflictingArtTransactionId;
-   private TransactionId deletedTransactionId;
 
    @Override
    public String toString() {
@@ -110,21 +104,15 @@ public class ArtifactChange extends RevisionChange {
 
    /**
     * @return true if conflictingModArtifact is not null else false.
-    * @throws SQLException
-    * @throws OseeCoreException
     */
-   public boolean hasConflictingModArtifact() throws OseeCoreException, SQLException {
+   public boolean hasConflictingModArtifact() {
       return getConflictingModArtifact() != null;
    }
 
    /**
     * @return Returns the conflictingModArtifact.
     */
-   public Artifact getConflictingModArtifact() throws OseeCoreException, SQLException {
-      if (conflictingArtTransactionId == null) return null;
-      if (conflictingModArtifact == null && conflictingArtTransactionId.getTransactionNumber() != 0) {
-         conflictingModArtifact = loadArtifact(conflictingArtTransactionId, conflictingModArtifact, conflictingArtId);
-      }
+   public Artifact getConflictingModArtifact() {
       return conflictingModArtifact;
    }
 
@@ -135,9 +123,6 @@ public class ArtifactChange extends RevisionChange {
     */
    public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException, BranchDoesNotExist {
       this.conflictingModArtifact = conflictingModArtifact;
-      this.conflictingArtTransactionId =
-            TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
-                  conflictingModArtifact.getTransactionNumber());
    }
 
    /*

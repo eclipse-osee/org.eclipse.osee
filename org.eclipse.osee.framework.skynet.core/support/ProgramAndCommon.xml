@@ -175,10 +175,6 @@
    </Borders>
    <Font x:Family="Swiss" ss:Size="9"/>
   </Style>
-  <Style ss:ID="s41">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
   <Style ss:ID="s42">
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -436,36 +432,40 @@
     <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s40"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.CompressedContentAttribute</Data></Cell>
-    <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s32"><Data ss:Type="String">Native Content</Data></Cell>
-    <Cell ss:StyleID="s32"><Data ss:Type="String">bin</Data></Cell>
-    <Cell ss:StyleID="s40"/>
-    <Cell ss:StyleID="s40"/>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.CompressedContentAttribute</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Native Content</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">bin</Data></Cell>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">content that will be editing by a native program</Data></Cell>
+    <Cell ss:StyleID="s37"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s43"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordAttribute</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">Word Template Content</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">xml</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">&lt;w:p xmlns:w=&quot;http://schemas.microsoft.com/office/word/2003/wordml&quot;&gt;&lt;w:r&gt;&lt;w:t&gt;&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:p&gt;</Data></Cell>
+    <Cell ss:StyleID="s43"/>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
+    <Cell ss:StyleID="s43"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.WordAttribute</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">Whole Word Content</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">xml</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">&lt;?xml version='1.0' encoding='UTF-8' standalone='yes'?&gt;&lt;?mso-application progid='Word.Document'?&gt;&lt;w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'&gt;&lt;w:body&gt;&lt;/w:body&gt;&lt;/w:wordDocument&gt;</Data></Cell>
+    <Cell ss:StyleID="s31"/>
     <Cell ss:StyleID="s40"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s40"><Data ss:Type="String">content that will be editing by a native program</Data></Cell>
-    <Cell ss:StyleID="s40"/>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.Artifact.WordAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell><Data ss:Type="String">Word Template Content</Data></Cell>
-    <Cell><Data ss:Type="String">xml</Data></Cell>
-    <Cell><Data ss:Type="String">&lt;w:p xmlns:w=&quot;http://schemas.microsoft.com/office/word/2003/wordml&quot;&gt;&lt;w:r&gt;&lt;w:t&gt;&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:p&gt;</Data></Cell>
-    <Cell ss:Index="7" ss:StyleID="s41"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s41"><Data ss:Type="Number">1</Data></Cell>
-    <Cell><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
-   </Row>
-   <Row ss:AutoFitHeight="0">
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.Artifact.WordAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
-    <Cell><Data ss:Type="String">Whole Word Content</Data></Cell>
-    <Cell><Data ss:Type="String">xml</Data></Cell>
-    <Cell><Data ss:Type="String">&lt;?xml version='1.0' encoding='UTF-8' standalone='yes'?&gt;&lt;?mso-application progid='Word.Document'?&gt;&lt;w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'&gt;&lt;w:body&gt;&lt;/w:body&gt;&lt;/w:wordDocument&gt;</Data></Cell>
-    <Cell ss:Index="7" ss:StyleID="s41"><Data ss:Type="Number">0</Data></Cell>
-    <Cell ss:StyleID="s41"><Data ss:Type="Number">1</Data></Cell>
-    <Cell><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">value must comply with WordML xml schema</Data></Cell>
+    <Cell ss:StyleID="s31"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0"/>
@@ -661,12 +661,10 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>27</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>32</ActiveRow>
-     <RangeSelection>R33:R34</RangeSelection>
+     <ActiveRow>37</ActiveRow>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -707,7 +707,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                         protected void handleTxWork() throws OseeCoreException, SQLException {
                            for (Artifact loopArt : deleteArts) {
                               if (purge)
-                                 loopArt.purge();
+                                 loopArt.purgeFromBranch();
                               else {
                                  loopArt.delete();
                               }
@@ -751,11 +751,8 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
          Artifact useArt = (Artifact) treeItem.getData();
          if (useArt instanceof StateMachineArtifact) {
-            SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
             boolean modified = false;
             if (useArt instanceof ActionArtifact) {
                if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
@@ -863,7 +860,19 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
          Set<Artifact> modArts = new HashSet<Artifact>(20);
          for (int artId : artIds) {
             Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+            if (art != null && (art instanceof IATSArtifact)) {
+               modArts.add(art);
+               try {
+                  if (art instanceof IATSArtifact) {
+                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
+                     if (parentArt != null) {
+                        modArts.add(parentArt);
+                     }
+                  }
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
          }
          if (modArts.size() > 0) update(modArts.toArray(), null);
 
@@ -872,7 +881,9 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
          modArts.clear();
          for (int artId : artIds) {
             Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+            if (art != null && (art instanceof IATSArtifact)) {
+               modArts.add(art);
+            }
          }
          if (modArts.size() > 0) remove(modArts.toArray());
 
@@ -880,7 +891,19 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
          modArts.clear();
          for (int artId : artIds) {
             Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) modArts.add(art);
+            if (art != null && (art instanceof IATSArtifact)) {
+               modArts.add(art);
+               try {
+                  if (art instanceof IATSArtifact) {
+                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
+                     if (parentArt != null) {
+                        modArts.add(parentArt);
+                     }
+                  }
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
          }
          if (modArts.size() > 0) {
             for (Artifact art : modArts) {

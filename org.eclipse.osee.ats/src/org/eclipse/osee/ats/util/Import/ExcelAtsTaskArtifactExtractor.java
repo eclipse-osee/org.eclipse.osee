@@ -204,7 +204,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             AtsNotifyUsers.notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
 

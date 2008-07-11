@@ -229,6 +229,18 @@ public class WordUtil {
       return guid;
    }
 
+   public final static String removeGUIDFromTemplate(String template) {
+      String newTemplate = "";
+
+      String[] splitsBeforeAndAfter = template.split(Artifact.BEFORE_GUID_STRING + "|" + Artifact.AFTER_GUID_STRING);
+
+      if (splitsBeforeAndAfter.length == 3) {
+         newTemplate = splitsBeforeAndAfter[0] + " " + splitsBeforeAndAfter[2];
+      } else {
+         newTemplate = template;
+      }
+      return newTemplate;
+   }
    private static final Matcher spellCheck =
          Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 

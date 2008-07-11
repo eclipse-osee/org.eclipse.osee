@@ -52,10 +52,18 @@ public class TaskLabelProvider extends WorldLabelProvider {
             return "";
       }
       TaskArtifact taskArt = (TaskArtifact) element;
-      if (taskArt == null || taskArt.isDeleted()) return "";
+      if (taskArt == null) return "";
       XViewerColumn xCol = taskXViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
          AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
+         if (taskArt.isDeleted()) {
+            if (aCol == AtsXColumn.ID_Col)
+               return taskArt.getHumanReadableId();
+            else if (aCol == AtsXColumn.Title_Col)
+               return taskArt.getInternalDescriptiveName();
+            else
+               return "<deleted>";
+         }
          if (!xCol.isShow()) return ""; // Since not shown, don't display
          if (aCol == AtsXColumn.Assignees_Col) {
             return (new SMAManager(taskArt)).getAssigneesWasIsStr();

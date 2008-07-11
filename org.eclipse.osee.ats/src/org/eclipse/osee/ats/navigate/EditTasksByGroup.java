@@ -14,10 +14,12 @@ package org.eclipse.osee.ats.navigate;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.editor.TaskEditorInput;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
@@ -44,7 +46,7 @@ public class EditTasksByGroup extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
       if (dialog.open() == 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
@@ -52,6 +54,8 @@ public class EditTasksByGroup extends XNavigateItemAction {
          for (Artifact art : selectedGroup.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
             if (art instanceof TaskArtifact) {
                taskArts.add((TaskArtifact) art);
+            } else if (art instanceof StateMachineArtifact) {
+               taskArts.addAll(((StateMachineArtifact) art).getSmaMgr().getTaskMgr().getTaskArtifacts());
             }
          }
          if (taskArts.size() == 0) {

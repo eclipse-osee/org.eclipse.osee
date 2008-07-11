@@ -36,19 +36,19 @@ public class DefaultDecisionReviewWorkflowManager {
     * @return
     * @throws Exception
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.StateNames toState, User user, boolean popup)throws OseeCoreException, SQLException{
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.StateNames toState, User user, boolean popup) throws OseeCoreException, SQLException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.StateNames.Prepare.name())) {
          result = setPrepareStateData(reviewArt, 100, 3, .2);
 
-      if (result.isFalse()) {
-         if (popup) result.popup();
-         return result;
-      }
-      result =
-            reviewArt.getSmaMgr().transition(DecisionReviewArtifact.StateNames.Decision.name(),
+         if (result.isFalse()) {
+            if (popup) result.popup();
+            return result;
+         }
+         result =
+               reviewArt.getSmaMgr().transition(DecisionReviewArtifact.StateNames.Decision.name(),
                      (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()),
                      false);
       }
@@ -85,7 +85,7 @@ public class DefaultDecisionReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent)throws OseeCoreException, SQLException{
+   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.StateNames.Decision.name())) return new Result("Action not in Decision state");
       reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision ? "Yes" : "No");

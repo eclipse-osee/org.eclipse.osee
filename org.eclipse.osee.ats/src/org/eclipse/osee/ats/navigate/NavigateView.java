@@ -142,7 +142,8 @@ public class NavigateView extends ViewPart implements IActionable {
     * @param item
     */
    public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
-      System.out.println("Simulating NavigateView Double-Click for \"" + item.getName() + "\"...");
+      OSEELog.logInfo(AtsPlugin.class, "===> Simulating NavigateView Double-Click for \"" + item.getName() + "\"...",
+            false);
       xNavComp.handleDoubleClick(item, tableLoadOptions);
    }
 

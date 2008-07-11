@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -129,7 +130,7 @@ public class AtsBranchManager {
       }
    }
 
-   public Integer getBranchId() throws SQLException {
+   public Integer getBranchId() throws SQLException, MultipleBranchesExist {
       if (getWorkingBranch() == null) return null;
       return getWorkingBranch().getBranchId();
    }
@@ -225,7 +226,7 @@ public class AtsBranchManager {
             AWorkbench.popup("ERROR", "Not IBranchArtifact");
          } else
             CommitManagerView.openViewUpon((IBranchArtifact) smaMgr.getSma());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
@@ -237,24 +238,23 @@ public class AtsBranchManager {
     * @return
     * @throws SQLException
     */
-   public Branch getWorkingBranch() throws SQLException {
+   public Branch getWorkingBranch() throws SQLException, MultipleBranchesExist {
       Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
-         OSEELog.logWarning(AtsPlugin.class,
-               "Unexpected multiple working branches per workflow" + smaMgr.getSma().getHumanReadableId(), false);
+         throw new MultipleBranchesExist(
+               "Unexpected multiple associated working branches found for workflow " + smaMgr.getSma().getHumanReadableId());
       } else {
          return branches.iterator().next();
       }
-      return null;
    }
 
    /**
     * @return true if there is a current working branch
     * @throws SQLException
     */
-   public boolean isWorkingBranch() throws SQLException {
+   public boolean isWorkingBranch() throws SQLException, MultipleBranchesExist {
       return getWorkingBranch() != null;
    }
 
@@ -624,7 +624,7 @@ public class AtsBranchManager {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public Boolean isChangesOnWorkingBranch() throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public Boolean isChangesOnWorkingBranch() throws SQLException, MultipleBranchesExist, BranchDoesNotExist, TransactionDoesNotExist {
       if (isWorkingBranch()) {
          Pair<TransactionId, TransactionId> transactionToFrom =
                TransactionIdManager.getInstance().getStartEndPoint(getWorkingBranch());

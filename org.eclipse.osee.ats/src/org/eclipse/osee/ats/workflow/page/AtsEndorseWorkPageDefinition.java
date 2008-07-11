@@ -33,7 +33,6 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
    }
 
 }

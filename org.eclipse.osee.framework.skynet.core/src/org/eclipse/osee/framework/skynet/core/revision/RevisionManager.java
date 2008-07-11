@@ -22,6 +22,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -36,6 +37,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -488,6 +490,7 @@ public class RevisionManager implements IEventReceiver {
 
          while (resultSet.next()) {
             int artId = resultSet.getInt("art_id");
+
             ArtifactChanged artifactChanged =
                   new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"), resultSet.getInt("gamma_id"),
                         artId, toTransactionId, fromTransactionId,
@@ -557,7 +560,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
-    * @throws OseeDataStoreException
+ * @throws OseeDataStoreException 
     */
    private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
@@ -633,43 +636,44 @@ public class RevisionManager implements IEventReceiver {
                mightNeedWasValue.put(attrId, attributeChanged);
                artIds.add(artId);
             }
+         }
 
-            //Load was values for branch change reports only
-            if (hasBranch && !artIds.isEmpty()) {
-               queryId = ArtifactLoader.getNewQueryId();
-               try {
-                  Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-                  List<Object[]> datas = new LinkedList<Object[]>();
-
-                  // insert into the artifact_join_table
-                  for (int artIdX : artIds) {
-                     datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                           SQL3DataType.INTEGER, artIdX, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
-                  }
-                  ArtifactLoader.selectArtifacts(datas);
-
-                  String BRANCH_ATTRIBUTE_WAS_CHANGE =
-                        "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
-
-                  connectionHandlerStatement =
-                        ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, SQL3DataType.INTEGER,
-                              sourceBranch.getBranchId(), SQL3DataType.INTEGER, queryId);
-                  resultSet = connectionHandlerStatement.getRset();
-
-                  while (resultSet.next()) {
-                     int attrIdX = resultSet.getInt("attr_id");
-                     String wasValue = resultSet.getString("was_value");
-
-                     if (mightNeedWasValue.containsKey(attrIdX) && mightNeedWasValue.get(attrIdX) instanceof AttributeChanged) {
-                        AttributeChanged changed = (AttributeChanged) mightNeedWasValue.get(attrIdX);
-                        changed.setModType(ModificationType.CHANGE);
-                        changed.setWasValue(wasValue);
-                     }
-                  }
-               } finally {
-                  ArtifactLoader.clearQuery(queryId);
-               }
-            }
+         //Load was values for branch change reports only
+         if (hasBranch && !artIds.isEmpty()) {
+            queryId = ArtifactLoader.getNewQueryId();
+        	 try{
+	            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+	            List<Object[]> datas = new LinkedList<Object[]>();
+	
+	            // insert into the artifact_join_table
+	            for (int artId : artIds) {
+	               datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
+	                     SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
+	            }
+	            ArtifactLoader.selectArtifacts(datas);
+	
+	            String BRANCH_ATTRIBUTE_WAS_CHANGE =
+	                  "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
+	
+	            connectionHandlerStatement =
+	                  ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, SQL3DataType.INTEGER,
+	                        sourceBranch.getBranchId(), SQL3DataType.INTEGER, queryId);
+	            resultSet = connectionHandlerStatement.getRset();
+	
+	            while (resultSet.next()) {
+	               int attrId = resultSet.getInt("attr_id");
+	               String wasValue = resultSet.getString("was_value");
+	
+	               if (mightNeedWasValue.containsKey(attrId) && mightNeedWasValue.get(attrId) instanceof AttributeChanged) {
+	                  AttributeChanged changed = (AttributeChanged) mightNeedWasValue.get(attrId);
+	                  changed.setModType(ModificationType.CHANGE);
+	                  changed.setWasValue(wasValue);
+	               }
+	            }
+        	 }
+        	 finally{
+        		 ArtifactLoader.clearQuery(queryId);
+        	 }
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);

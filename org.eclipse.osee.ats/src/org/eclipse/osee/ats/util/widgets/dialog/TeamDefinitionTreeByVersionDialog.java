@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import java.util.HashSet;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -30,6 +31,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -40,6 +42,7 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
 
    XListViewer versionList = new XListViewer("Version");
    VersionArtifact selectedVersion = null;
+private Button okButton;
 
    /**
     * @param active
@@ -97,9 +100,10 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
                selectedVersion = null;
             else
                selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();
+            
+            updateButtons();
          };
       });
-
       return container;
    }
 
@@ -110,4 +114,26 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
       return selectedVersion;
    }
 
+   @Override
+   protected Control createButtonBar(Composite parent) {
+      Control c = super.createButtonBar(parent);
+      okButton = getButton(0);
+      okButton.setEnabled(false);
+      return c;
+   }
+
+   protected boolean isComplete() {
+	   return selectedVersion != null;
+   }
+
+   private void updateButtons() {
+      if (okButton != null) {
+    	  okButton.setEnabled(isComplete());
+      }
+   }
+   
+   protected void updateOKStatus() {
+	   updateButtons();
+   }
+   
 }

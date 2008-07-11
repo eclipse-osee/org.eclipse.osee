@@ -12,9 +12,10 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.sql.SQLException;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -89,10 +90,16 @@ public class RelationChanged extends Change {
     * @throws SQLException
     * @throws ArtifactDoesNotExist
     */
-   public Artifact getBArtifact() throws ArtifactDoesNotExist, SQLException {
+   public Artifact getBArtifact() throws ArtifactDoesNotExist {
       if (bArtifact == null) {
-         bArtifact = ArtifactQuery.getArtifactFromId(bArtId, getBranch());
+         bArtifact = ArtifactCache.getActive(bArtId, getBranch());
       }
+
+      if (bArtifact == null) {
+         throw new ArtifactDoesNotExist(
+               "Artifact: " + bArtId + " Does not exist on branch: " + getBranch().getBranchName() + " branch id: " + getBranch().getBranchId());
+      }
+
       return bArtifact;
    }
 

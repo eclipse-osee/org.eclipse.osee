@@ -53,23 +53,11 @@ public class AttributeExtensionManager {
       return instance;
    }
 
-   private String resolveName(String name) {
-      // TODO Escobar - Remove this once Attribute Type Table has been converted to use extension point id instead of class names
-      int index = name.lastIndexOf(".");
-      if (index != -1 && index + 1 < name.length()) {
-         name = name.substring(index + 1, name.length());
-      }
-      if ("SimpleDateAttribute".equals(name)) {
-         name = "DateAttribute";
-      }
-      return SkynetActivator.PLUGIN_ID + "." + name;
-   }
-
    public Class<? extends Attribute<?>> getAttributeClassFor(String name) throws ClassNotFoundException {
       if (attributeTypeClasses == null) {
          attributeTypeClasses = loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
-      Pair<String, String> entry = attributeTypeClasses.get(resolveName(name));
+      Pair<String, String> entry = attributeTypeClasses.get(name);
       if (entry == null) {
          throw new IllegalStateException(String.format("Unable to find class for: [%s]", name));
       }
@@ -82,7 +70,7 @@ public class AttributeExtensionManager {
          attributeDataProviderClasses =
                loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
-      Pair<String, String> entry = attributeDataProviderClasses.get(resolveName(name));
+      Pair<String, String> entry = attributeDataProviderClasses.get(name);
       if (entry == null) {
          throw new IllegalStateException(String.format("Unable to find class for: [%s]", name));
       }
@@ -107,7 +95,7 @@ public class AttributeExtensionManager {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
          for (IConfigurationElement element : elements) {
             IExtension extension = ((IExtension) element.getParent());
-            String name = resolveName(extension.getUniqueIdentifier());
+            String name = extension.getUniqueIdentifier();
             String className = element.getAttribute(classNameAttribute);
             String bundleName = element.getContributor().getName();
 

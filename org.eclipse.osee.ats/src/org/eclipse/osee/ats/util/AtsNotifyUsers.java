@@ -63,7 +63,7 @@ public class AtsNotifyUsers {
                   assignees,
                   sma.getHumanReadableId(),
                   NotifyType.Assigned.name(),
-                  "New Assignment for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
+                  "You have been set as an assignee for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
@@ -73,7 +73,7 @@ public class AtsNotifyUsers {
                   subscribed,
                   sma.getHumanReadableId(),
                   NotifyType.Subscribed.name(),
-                  sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\" Transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\""));
+                  sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\" and you subscribed for notification."));
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
@@ -94,7 +94,7 @@ public class AtsNotifyUsers {
                         sma.getHumanReadableId(),
                         NotifyType.Cancelled.name(),
                         String.format(
-                              sma.getArtifactTypeName() + " was cancelled from \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
+                              sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
                               cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
                }
             }

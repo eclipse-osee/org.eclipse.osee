@@ -108,7 +108,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",
+            XOption.REQUIRED));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
             "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
@@ -207,7 +208,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
          @Override
-         protected void handleTxWork()throws OseeCoreException, SQLException{
+         protected void handleTxWork() throws OseeCoreException, SQLException {
             // Items must be imported in order due to the relations that are created between items
             for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
                   WorkPageDefinition.class, WorkFlowDefinition.class}) {

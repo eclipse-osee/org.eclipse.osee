@@ -11,23 +11,15 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
@@ -35,51 +27,33 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
  */
 public class MyOrigSearchItem extends UserSearchItem {
 
-   private final boolean onlyInWork;
+   private final OriginatedState originatedState;
 
-   public MyOrigSearchItem(String name) {
-      this(name, null, false);
-   }
+   public enum OriginatedState {
+      InWork, All
+   };
 
-   public MyOrigSearchItem() {
-      this("My Originator", null, false);
-   }
-
-   public MyOrigSearchItem(String name, User user, boolean onlyInWork) {
+   public MyOrigSearchItem(String name, User user, OriginatedState originatedState) {
       super(name, user);
-      this.onlyInWork = onlyInWork;
+      this.originatedState = originatedState;
    }
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
 
-      // Find all Team Workflows artifact types
-      List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
+      Collection<Artifact> artifacts =
+            ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+                  "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsPlugin.getAtsBranch());
 
-      // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      List<ISearchPrimitive> smaOrigCriteria = new LinkedList<ISearchPrimitive>();
-      smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", DepricatedOperator.LIKE));
-      if (onlyInWork) {
-         smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
-         smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
+      for (Artifact artifact : artifacts) {
+         if (artifact instanceof StateMachineArtifact) {
+            if (originatedState == OriginatedState.All || (originatedState == OriginatedState.InWork && !((StateMachineArtifact) artifact).getSmaMgr().isCancelledOrCompleted())) {
+               artifactsToReturn.add(artifact);
+            }
+         }
       }
-      smaOrigCriteria.add(teamWorkflowSearch);
-      FromArtifactsSearch smaOrigSearch = new FromArtifactsSearch(smaOrigCriteria, true);
 
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(
-                  new InRelationSearch(smaOrigSearch, AtsRelation.ActionToWorkflow_Action),
-                  BranchPersistenceManager.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return artifactsToReturn;
    }
-
 }
