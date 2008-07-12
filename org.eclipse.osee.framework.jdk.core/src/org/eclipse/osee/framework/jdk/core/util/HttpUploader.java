@@ -8,19 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.linking;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Roberto E. Escobar
@@ -69,23 +63,15 @@ public class HttpUploader {
       return uploadResponse;
    }
 
-   public IStatus execute(IProgressMonitor monitor) throws Exception {
-      IStatus toReturn = Status.CANCEL_STATUS;
-      if (monitor == null) {
-         monitor = new NullProgressMonitor();
-      }
+   public boolean execute() throws Exception {
       HttpURLConnection connection = null;
+      boolean toReturn = false;
       try {
-         monitor.subTask(String.format("Uploading to server: [%s] bytes", inputStream.available()));
          connection = setupConnection();
          connection.connect();
 
-         if (monitor.isCanceled() != true) {
-            inputStreamToOutputStream(monitor, inputStream, connection.getOutputStream());
-            if (monitor.isCanceled() != true) {
-               toReturn = handleResponse(connection);
-            }
-         }
+         inputStreamToOutputStream(inputStream, connection.getOutputStream());
+         toReturn = handleResponse(connection);
       } catch (Exception ex) {
          throw new Exception(String.format("Error uploading to server: [%s]", urlRequest), ex);
       } finally {
@@ -104,9 +90,9 @@ public class HttpUploader {
       return remoteLocation;
    }
 
-   private IStatus handleResponse(HttpURLConnection connection) throws Exception {
+   private boolean handleResponse(HttpURLConnection connection) throws Exception {
       InputStream inputStream = null;
-      IStatus toReturn = Status.CANCEL_STATUS;
+      boolean toReturn = false;
       try {
          int responseCode = HttpURLConnection.HTTP_CLIENT_TIMEOUT;
          responseCode = connection.getResponseCode();
@@ -117,10 +103,10 @@ public class HttpUploader {
             inputStream = (InputStream) connection.getContent();
             this.uploadResponse = Lib.inputStreamToString(inputStream);
 
-            toReturn = new Status(Status.OK, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(responseCode));
+            toReturn = true;
          }
          if (responseCode != HttpURLConnection.HTTP_CREATED) {
-            toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(responseCode));
+            toReturn = false;
          }
       } finally {
          if (inputStream != null) {
@@ -130,20 +116,14 @@ public class HttpUploader {
       return toReturn;
    }
 
-   private void inputStreamToOutputStream(IProgressMonitor monitor, InputStream inputStream, OutputStream outputStream) throws IOException {
+   private void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
       byte[] buf = new byte[8092];
-      int total = inputStream.available();
       int count = -1;
       int tracker = 0;
       while ((count = inputStream.read(buf)) != -1) {
-         monitor.subTask(String.format("Uploading: [%s of %s]", tracker, total));
          outputStream.write(buf, 0, count);
          tracker += count;
-         if (monitor.isCanceled() == true) {
-            break;
-         }
       }
-      //      logger.log(Level.INFO, String.format("Uploaded: [%s of %s]", tracker, total));
       inputStream.close();
       outputStream.flush();
       outputStream.close();

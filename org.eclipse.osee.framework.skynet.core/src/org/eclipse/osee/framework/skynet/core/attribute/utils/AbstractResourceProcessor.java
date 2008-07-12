@@ -15,10 +15,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar

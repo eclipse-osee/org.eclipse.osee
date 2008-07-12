@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar

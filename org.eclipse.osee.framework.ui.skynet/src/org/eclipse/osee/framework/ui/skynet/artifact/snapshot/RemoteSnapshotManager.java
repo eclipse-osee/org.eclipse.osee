@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar

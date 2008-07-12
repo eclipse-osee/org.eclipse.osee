@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.linking;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +16,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
@@ -54,14 +51,14 @@ public class HttpProcessor {
       String response = null;
       try {
          HttpUploader uploader = new HttpUploader(url.toString(), inputStream, contentType, encoding);
-         IStatus status = uploader.execute(new NullProgressMonitor());
-         if (status.getSeverity() == IStatus.OK) {
+         boolean wasSuccessful = uploader.execute();
+         if (wasSuccessful) {
             response = uploader.getUploadResponse();
             if (response == null) {
-               throw new Exception(status.getMessage(), status.getException());
+               throw new Exception(String.format("Error uploading resource [%s]", url));
             }
          } else {
-            throw new Exception(status.getMessage(), status.getException());
+            throw new Exception(String.format("Error uploading resource [%s]", url));
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error sending resource [%s]", ex.getLocalizedMessage()), ex);

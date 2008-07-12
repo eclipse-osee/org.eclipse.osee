@@ -22,10 +22,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
-import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 /**
