@@ -17,12 +17,9 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -70,15 +67,6 @@ public class HttpUrlBuilder {
       return String.format(urlPrefixFormat, HttpServer.getLocalServerAddress(), port);
    }
 
-   public String getRemoteServerPrefix() {
-      IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
-      String remoteAddress = preferenceStore.getString(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER);
-      if (remoteAddress.endsWith("/") != true) {
-         remoteAddress += "/";
-      }
-      return remoteAddress;
-   }
-
    private String buildUrl(String prefix, String context, String parameters) {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
@@ -92,16 +80,6 @@ public class HttpUrlBuilder {
       // TODO clean exception handling
       try {
          return buildUrl(getSkynetHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
-      } catch (UnsupportedEncodingException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
-      return null;
-   }
-
-   public String getUrlForRemoteSkynetHttpServer(String context, Map<String, String> parameters) {
-      // TODO clean exception handling
-      try {
-         return buildUrl(getRemoteServerPrefix(), context, getParametersAsEncodedUrl(parameters));
       } catch (UnsupportedEncodingException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }

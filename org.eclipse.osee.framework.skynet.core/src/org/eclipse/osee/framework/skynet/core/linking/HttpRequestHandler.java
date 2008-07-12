@@ -30,8 +30,6 @@ public class HttpRequestHandler implements Runnable {
       httpMethodHandlers = new HashMap<HttpMethod, IHttpMethod>();
       httpMethodHandlers.put(HttpMethod.RESOURCE_GET, HttpResourceRequest.getInstance());
       httpMethodHandlers.put(HttpMethod.GET, new HttpGetMethod());
-      httpMethodHandlers.put(HttpMethod.PUT, new HttpPutMethod());
-      httpMethodHandlers.put(HttpMethod.DELETE, new HttpDeleteMethod());
    }
    private boolean areRemoteRequestsAllowed;
    private Socket socket;
