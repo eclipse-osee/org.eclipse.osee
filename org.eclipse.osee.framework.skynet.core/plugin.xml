@@ -365,5 +365,11 @@
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
          </CharacterAttributeDataProvider>
       </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.AttributeSaveListener">
+         <AttributeSaveListener
+               classname="org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger">
+         </AttributeSaveListener>
+      </extension>
    
 </plugin>

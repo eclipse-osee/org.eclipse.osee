@@ -11,41 +11,37 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
+import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
+import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * @author Roberto E. Escobar
  */
-public class HttpAttributeTagger implements IAttributeSaveListener {
+public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransactionListener {
    private static final HttpAttributeTagger instance = new HttpAttributeTagger();
-
-   private CopyOnWriteArraySet<AttributeData> taggingInfo;
+   private static final String XML_START = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><AttributeTag>";
+   private static final String XML_FINISH = "</AttributeTag>";
+   private static final String PREFIX = "<entry gammaId=\"";
+   private static final String POSTFIX = "\"/>\n";
    private ExecutorService executor;
+   private StringBuffer taggingInfo;
 
    private HttpAttributeTagger() {
-      this.taggingInfo = new CopyOnWriteArraySet<AttributeData>();
+      this.taggingInfo = new StringBuffer();
       this.executor = Executors.newSingleThreadExecutor();
    }
 
@@ -61,107 +57,68 @@ public class HttpAttributeTagger implements IAttributeSaveListener {
       List<Attribute<?>> attributes = artifact.getAttributes();
       for (Attribute<?> attribute : attributes) {
          if (attribute.isDirty() && attribute.getAttributeType().isTaggable()) {
-            this.taggingInfo.add(new AttributeData(attribute.getAttrId(), attribute.getGammaId(),
-                  attribute.getAttributeType().getTaggerId()));
+            this.taggingInfo.append(PREFIX);
+            this.taggingInfo.append(attribute.getGammaId());
+            this.taggingInfo.append(POSTFIX);
          }
-      }
-      if (this.taggingInfo.isEmpty() != true) {
-         this.executor.submit(new TagService());
       }
    }
 
-   private final class AttributeData {
-      private int attrId;
-      private long gammaId;
-      private String taggerId;
-
-      public AttributeData(int attrId, long gammaId, String taggerId) {
-         super();
-         this.attrId = attrId;
-         this.gammaId = gammaId;
-         this.taggerId = taggerId;
-      }
-
-      public String getAttrId() {
-         return Integer.toString(attrId);
-      }
-
-      public String getGammaId() {
-         return Long.toString(gammaId);
-      }
-
-      public String getTaggerId() {
-         return taggerId;
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (this == obj) {
-            return true;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener#onEvent(org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent)
+    */
+   @Override
+   public void onEvent(IDbTransactionEvent event) {
+      if (event instanceof DbTransactionEventCompleted) {
+         DbTransactionEventCompleted eventCompleted = (DbTransactionEventCompleted) event;
+         if (this.taggingInfo.length() > 0) {
+            if (eventCompleted.isCommitted()) {
+               this.executor.submit(new TagService(taggingInfo.toString()));
+            }
+            this.taggingInfo.delete(0, taggingInfo.length());
          }
-         if (!(obj instanceof AttributeData)) {
-            return false;
-         }
-         AttributeData other = (AttributeData) obj;
-         return other.attrId == this.attrId && other.gammaId == this.gammaId;
       }
    }
 
    private final class TagService implements Runnable {
+      private String toSend;
 
-      public void run() {
-         try {
-            Document document = Jaxp.newDocument();
-            Element rootElement = document.createElement("tag");
-            document.appendChild(rootElement);
-
-            List<AttributeData> toDelete = new ArrayList<AttributeData>();
-            for (AttributeData attributeData : taggingInfo) {
-               Element element = document.createElement("attribute");
-               element.setAttribute("attrId", attributeData.getAttrId());
-               element.setAttribute("gammaId", attributeData.getGammaId());
-               element.setAttribute("taggerId", attributeData.getTaggerId());
-               rootElement.appendChild(element);
-
-               toDelete.add(attributeData);
-            }
-            taggingInfo.removeAll(toDelete);
-            toDelete.clear();
-            toDelete = null;
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            OutputFormat format = new OutputFormat(document);
-            format.setIndenting(false);
-            format.setIndent(0);
-            XMLSerializer serializer = new XMLSerializer(outputStream, format);
-            serializer.serialize(document);
-
-            System.out.println(outputStream.toString());
-            sendToTagger(new ByteArrayInputStream(outputStream.toByteArray()));
-
-         } catch (OseeCoreException ex) {
-            ex.printStackTrace();
-         } catch (IOException ex) {
-            ex.printStackTrace();
-         } catch (ParserConfigurationException ex) {
-            ex.printStackTrace();
-         }
+      public TagService(String toSend) {
+         this.toSend = toSend;
       }
 
-      private void sendToTagger(InputStream inputStream) throws OseeCoreException {
-         Map<String, String> parameters = new HashMap<String, String>();
-         String response = null;
+      public void run() {
+         long start = System.currentTimeMillis();
+         StringBuffer response = new StringBuffer();
+         ByteArrayInputStream inputStream = null;
          try {
+            Map<String, String> parameters = new HashMap<String, String>();
+
+            StringBuffer payload = new StringBuffer();
+            payload.append(XML_START);
+            payload.append(toSend);
+            payload.append(XML_FINISH);
+
+            inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-            response = HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8");
-            if (Strings.isValid(response)) {
-               System.out.println("Tagger Response: " + response);
-            } else {
-               System.out.println(response);
-            }
+            response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
+            OseeLog.log(TagService.class, Level.INFO, String.format("Transmitted to Tagger in [%d ms]",
+                  System.currentTimeMillis() - start));
          } catch (Exception ex) {
-            throw new OseeCoreException(ex);
+            if (response.length() > 0) {
+               response.append("\n");
+            }
+            response.append(ex.getLocalizedMessage());
+            OseeLog.log(TagService.class, Level.SEVERE, response.toString(), ex);
+         } finally {
+            this.toSend = null;
+            if (inputStream != null) {
+               try {
+                  inputStream.close();
+               } catch (IOException ex) {
+                  OseeLog.log(TagService.class, Level.SEVERE, ex.toString(), ex);
+               }
+            }
          }
       }
    }
