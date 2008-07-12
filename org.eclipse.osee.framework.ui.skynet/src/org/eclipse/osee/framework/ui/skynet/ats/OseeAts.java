@@ -54,6 +54,7 @@ public class OseeAts {
 
    public static boolean isAtsAdmin() {
       try {
+         if (getAtsLib() == null) return true;
          return getAtsLib().isAtsAdmin();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
@@ -201,6 +202,7 @@ public class OseeAts {
    }
 
    public static IAtsLib getAtsLib() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      if (Platform.getExtensionRegistry() == null) return null;
       if (atsLib == null) {
          IExtensionPoint point =
                Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.AtsLib");
