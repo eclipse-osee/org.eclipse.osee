@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.FullPortableExport;
+import org.eclipse.osee.framework.skynet.core.exportImport.FullPortableExport;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
