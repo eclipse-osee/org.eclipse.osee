@@ -72,6 +72,18 @@ public class XViewerTest extends XViewer {
       xViewerTest.setContentProvider(new XViewerTestContentProvider(xViewerTest));
       xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));
 
+      xViewerTest.setInput(getTestTasks());
+      Shell_1.open();
+      while (!Shell_1.isDisposed()) {
+         if (!Display_1.readAndDispatch()) {
+            Display_1.sleep();
+         }
+      }
+
+      Display_1.dispose();
+   }
+
+   private static List<IXViewerTestTask> getTestTasks() {
       List<IXViewerTestTask> tasks = new ArrayList<IXViewerTestTask>();
       tasks.add(new XViewerTestTask(RunDb.Test_Db, TaskType.Backup, "org.eclipse.osee.test1", "10:03",
             "run to test this", "Suite A", "mark@eclipse.com"));
@@ -101,15 +113,6 @@ public class XViewerTest extends XViewer {
             "run to test this", "Suite C", "john@eclipse.com"));
       tasks.add(new XViewerTestTask(RunDb.Test_Db, TaskType.Db_Health, "org.eclipse.osee.test8", "24:00",
             "run to test this", "Suite C", "mike@eclipse.com"));
-
-      xViewerTest.setInput(tasks);
-      Shell_1.open();
-      while (!Shell_1.isDisposed()) {
-         if (!Display_1.readAndDispatch()) {
-            Display_1.sleep();
-         }
-      }
-
-      Display_1.dispose();
+      return tasks;
    }
 }

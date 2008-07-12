@@ -90,7 +90,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       getShell().setText(title);
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
+      if (SkynetGuiPlugin.getInstance() != null) SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
 
       final Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -269,7 +269,10 @@ public class XViewerCustomizeDialog extends MessageDialog {
       sorterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearSorterLabel = new Label(composite_2, SWT.PUSH);
-      clearSorterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      if (SkynetGuiPlugin.getInstance() != null)
+         clearSorterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      else
+         clearSorterLabel.setText("clear");
       clearSorterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -297,7 +300,10 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearFilterLabel = new Label(composite_7, SWT.PUSH);
-      clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      if (SkynetGuiPlugin.getInstance() != null)
+         clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      else
+         clearFilterLabel.setText("clear");
       clearFilterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }

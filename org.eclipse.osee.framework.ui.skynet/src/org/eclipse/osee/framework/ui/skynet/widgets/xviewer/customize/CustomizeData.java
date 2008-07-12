@@ -52,8 +52,10 @@ public class CustomizeData {
    }
 
    public Image getImage(boolean isDefault) {
-      if (name.equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || name.equals(XViewerCustomize.CURRENT_LABEL)) return SkynetGuiPlugin.getInstance().getImage(
-            "customize.gif");
+      if (SkynetGuiPlugin.getInstance() == null) return null;
+      if (name.equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || name.equals(XViewerCustomize.CURRENT_LABEL)) {
+         return SkynetGuiPlugin.getInstance().getImage("customize.gif");
+      }
       String index = "" + personal + isDefault;
       if (imageMap.containsKey(index)) return imageMap.get(index);
       Image image = SkynetGuiPlugin.getInstance().getImage("customize.gif");
