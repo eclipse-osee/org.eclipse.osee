@@ -75,7 +75,7 @@ public abstract class PreviewArtifactHandler extends AbstractHandler {
 
          //whole word artifacts can only be viewed as a single document
          for (Artifact artifact : artifacts) {
-            if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
+            if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
                isEnabled &= artifacts.size() == 1;
                break;
             }
