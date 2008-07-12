@@ -12,14 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,24 +23,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.search.ui.ISearchQuery;
-import org.eclipse.search.ui.ISearchResult;
-import org.eclipse.search.ui.NewSearchUI;
-import org.eclipse.search.ui.text.Match;
 
 /**
  * @author Roberto E. Escobar
  */
-public class RemoteArtifactSearch implements ISearchQuery {
-   private RemoteArtifactSearchResult searchResult;
+public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private Map<String, String> parameters;
-   private int numberOfMatches;
-   private boolean isSearchComplete;
 
    public RemoteArtifactSearch(String query, Map<String, Boolean> options) {
-      this.isSearchComplete = false;
-      this.numberOfMatches = 0;
       this.parameters = new HashMap<String, String>();
       this.parameters.put("query", query);
       if (options != null) {
@@ -56,69 +41,24 @@ public class RemoteArtifactSearch implements ISearchQuery {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.search.ui.ISearchQuery#canRerun()
+    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getArtifacts()
     */
    @Override
-   public boolean canRerun() {
-      return true;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.search.ui.ISearchQuery#canRunInBackground()
-    */
-   @Override
-   public boolean canRunInBackground() {
-      return true;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.search.ui.ISearchQuery#getLabel()
-    */
-   @Override
-   public String getLabel() {
-      return "Remote Artifact Search";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.search.ui.ISearchQuery#getSearchResult()
-    */
-   @Override
-   public ISearchResult getSearchResult() {
-      if (searchResult == null) {
-         searchResult = new RemoteArtifactSearchResult();
+   public Collection<Artifact> getArtifacts() throws Exception {
+      ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
+      if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
+         return ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
+               queryIdAndSize.object2, false);
       }
-      return searchResult;
-   }
-
-   private void reset() {
-      this.isSearchComplete = false;
-      this.searchResult.removeAll();
-      this.numberOfMatches = 0;
+      return java.util.Collections.emptyList();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.search.ui.ISearchQuery#run(org.eclipse.core.runtime.IProgressMonitor)
+    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getCriteriaLabel()
     */
    @Override
-   public IStatus run(IProgressMonitor monitor) throws OperationCanceledException {
-      reset();
-      try {
-         ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
-         if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
-            List<Artifact> artifacts =
-                  ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
-                        queryIdAndSize.object2, false);
-            for (Artifact artifact : artifacts) {
-               searchResult.addMatch(new Match(artifact, 1, 2));
-               this.numberOfMatches++;
-            }
-            System.out.println("Loaded: " + artifacts.size());
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
-      }
-      this.isSearchComplete = true;
-      return new MultiStatus(NewSearchUI.PLUGIN_ID, IStatus.OK, "OK", null);
+   public String getCriteriaLabel() {
+      return parameters.get("query");
    }
 
    private ObjectPair<Integer, Integer> executeSearch() throws Exception {
@@ -138,38 +78,4 @@ public class RemoteArtifactSearch implements ISearchQuery {
       return toReturn;
    }
 
-   public final class RemoteArtifactSearchResult extends AbstractArtifactSearchResult {
-
-      /* (non-Javadoc)
-       * @see org.eclipse.search.ui.ISearchResult#getImageDescriptor()
-       */
-      @Override
-      public ImageDescriptor getImageDescriptor() {
-         return null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.search.ui.ISearchResult#getLabel()
-       */
-      @Override
-      public String getLabel() {
-         return parameters.get("query") + " - " + (isSearchComplete ? (numberOfMatches + " matches") : "busy");
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.search.ui.ISearchResult#getQuery()
-       */
-      @Override
-      public ISearchQuery getQuery() {
-         return RemoteArtifactSearch.this;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.search.ui.ISearchResult#getTooltip()
-       */
-      @Override
-      public String getTooltip() {
-         return getLabel();
-      }
-   }
 }
