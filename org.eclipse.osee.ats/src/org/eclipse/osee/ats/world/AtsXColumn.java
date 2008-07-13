@@ -99,7 +99,11 @@ public enum AtsXColumn {
       return nameToAtsXColumn.get(xCol.getSystemName());
    }
 
-   public XViewerColumn getXViewerColumn(AtsXColumn atsXCol) {
+   public XViewerColumn getXViewerColumn() {
+      return AtsXColumn.getXViewerColumn(this);
+   }
+
+   public static XViewerColumn getXViewerColumn(AtsXColumn atsXCol) {
       XViewerColumn xCol =
             new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
                   atsXCol.sortDataType, 0);

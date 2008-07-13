@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -275,59 +276,69 @@ public class MassXViewer extends XViewer implements IEventReceiver {
 
    public void resetColumns(Collection<? extends Artifact> artifacts) {
       CustomizeData custData = new CustomizeData();
-
-      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-
-      try {
-         for (Artifact art : artifacts) {
-            attributeTypes.addAll(art.getAttributeTypes());
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      Set<String> attrNames = new HashSet<String>();
-      // Add Name first
-      XViewerColumn newCol = new XViewerColumn(this, "Name", 150, 150, SWT.LEFT);
-
-      int x = 0;
-      newCol.setOrderNum(x++);
-      newCol.setTreeViewer(this);
-      cols.add(newCol);
-      attrNames.add("Name");
-
-      // Add other attributes
-      for (AttributeType attributeType : attributeTypes) {
-         if (!attrNames.contains(attributeType.getName())) {
-            SortDataType sortType = SortDataType.String;
-            if (attributeType.getBaseAttributeClass().equals(DateAttribute.class))
-               sortType = SortDataType.Date;
-            else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class))
-               sortType = SortDataType.Float;
-            else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class))
-               sortType = SortDataType.Integer;
-            else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
-                  SortDataType.Boolean;
-            newCol = new XViewerColumn(this, attributeType.getName(), 75, 75, SWT.CENTER);
-            newCol.setSortDataType(sortType);
-            newCol.setOrderNum(x++);
+      List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
+      int columnNum = 0;
+      List<XViewerColumn> columns =
+            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getXViewerColumns();
+      if (columns != null) {
+         for (XViewerColumn newCol : columns) {
+            newCol.setOrderNum(columnNum++);
             newCol.setTreeViewer(this);
             cols.add(newCol);
-            attrNames.add(attributeType.getName());
          }
+      }
+      // If editor input has no specified columns defined, create columns from all attribute types
+      if (columns == null) {
+         Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
+         try {
+            for (Artifact art : artifacts) {
+               attributeTypes.addAll(art.getAttributeTypes());
+            }
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+
+         Set<String> attrNames = new HashSet<String>();
+         // Add Name first
+         XViewerColumn newCol = new XViewerColumn(this, "Name", 150, 150, SWT.LEFT);
+
+         newCol.setOrderNum(columnNum++);
+         newCol.setTreeViewer(this);
+         cols.add(newCol);
+         attrNames.add("Name");
+
+         // Add other attributes
+         for (AttributeType attributeType : attributeTypes) {
+            if (!attrNames.contains(attributeType.getName())) {
+               SortDataType sortType = SortDataType.String;
+               if (attributeType.getBaseAttributeClass().equals(DateAttribute.class))
+                  sortType = SortDataType.Date;
+               else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class))
+                  sortType = SortDataType.Float;
+               else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class))
+                  sortType = SortDataType.Integer;
+               else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
+                     SortDataType.Boolean;
+               newCol = new XViewerColumn(this, attributeType.getName(), 75, 75, SWT.CENTER);
+               newCol.setSortDataType(sortType);
+               newCol.setOrderNum(columnNum++);
+               newCol.setTreeViewer(this);
+               cols.add(newCol);
+               attrNames.add(attributeType.getName());
+            }
+         }
+         custData.getSortingData().setSortingNames(Arrays.asList("Name"));
       }
 
       // Add HRID and GUID
       for (Extra_Columns col : Extra_Columns.values()) {
-         newCol = new XViewerColumn(this, col.name(), 75, 75, SWT.LEFT);
-         newCol.setOrderNum(x++);
+         XViewerColumn newCol = new XViewerColumn(this, col.name(), 75, 75, SWT.LEFT);
+         newCol.setOrderNum(columnNum++);
          newCol.setTreeViewer(this);
          cols.add(newCol);
       }
 
       custData.getColumnData().setColumns(cols);
-      custData.getSortingData().setSortingNames(Arrays.asList("Name"));
       getCustomize().setCustomization(custData);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
    }

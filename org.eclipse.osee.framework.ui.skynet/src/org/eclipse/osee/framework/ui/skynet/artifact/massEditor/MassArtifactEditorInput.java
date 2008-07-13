@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -22,8 +24,8 @@ import org.eclipse.ui.IPersistableElement;
 public class MassArtifactEditorInput implements IEditorInput {
 
    private final Collection<? extends Artifact> artifacts;
-
    private final String name;
+   private final List<XViewerColumn> xViewerColumns;
 
    /**
     * @param artifact
@@ -31,6 +33,16 @@ public class MassArtifactEditorInput implements IEditorInput {
    public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts) {
       this.name = name;
       this.artifacts = artifacts;
+      this.xViewerColumns = null;
+   }
+
+   /**
+    * @param artifact
+    */
+   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, List<XViewerColumn> xViewerColumns) {
+      this.name = name;
+      this.artifacts = artifacts;
+      this.xViewerColumns = xViewerColumns;
    }
 
    /* (non-Javadoc)
@@ -89,6 +101,10 @@ public class MassArtifactEditorInput implements IEditorInput {
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;
+   }
+
+   public List<XViewerColumn> getXViewerColumns() {
+      return xViewerColumns;
    }
 
 }

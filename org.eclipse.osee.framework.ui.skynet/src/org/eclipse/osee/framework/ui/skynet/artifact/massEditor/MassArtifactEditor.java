@@ -157,13 +157,22 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Mass Artifact Editor");
    }
 
-   public static void editArtifacts(MassArtifactEditorInput input) {
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      try {
-         page.openEditor(input, EDITOR_ID);
-      } catch (PartInitException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+   public static void editArtifacts(final MassArtifactEditorInput input) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.openEditor(input, EDITOR_ID);
+            } catch (PartInitException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
+      });
+
    }
 
    public boolean isSaveOnCloseNeeded() {
