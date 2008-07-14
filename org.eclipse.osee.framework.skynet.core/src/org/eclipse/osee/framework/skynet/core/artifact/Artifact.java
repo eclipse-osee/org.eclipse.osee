@@ -88,6 +88,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int gammaId;
    private Date lastModified;
    private boolean linksLoaded;
+   private boolean historical;
 
    protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
 
@@ -113,21 +114,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * A live artifact is one that can have its data updated to reflect its most current data in the datastore
-    * 
-    * @return whether this artifact is live
-    */
-   public boolean isLive() {
-      return transactionId == 0;
-   }
-
-   /**
     * A historical artifact always corresponds to a fixed revision of an artifact
     * 
     * @return
     */
    public boolean isHistorical() {
-      return !isLive();
+      return historical;
    }
 
    public boolean isAnnotation(ArtifactAnnotation.Type type) {
@@ -1552,11 +1544,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelatedArtifactsAll(this);
    }
 
-   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, Date lastModified, boolean active) {
+   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, Date lastModified, boolean historical) {
       this.lastModified = lastModified;
       this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
-      this.transactionId = active ? 0 : transactionId;
+      this.transactionId = transactionId;
+      this.historical = historical;
    }
 
    public Date getLastModified() throws OseeCoreException, SQLException {

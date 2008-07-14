@@ -51,15 +51,15 @@ public class ArtifactCache {
     */
    static void cache(Artifact artifact) throws OseeCoreException {
       try {
-         if (artifact.isLive()) {
+         if (artifact.isHistorical()) {
+            instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
+            instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+         } else {
             instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
             instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
             for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
                instance.staticIdArtifactCache.put(staticId, artifact);
             }
-         } else {
-            instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
-            instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
          }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);

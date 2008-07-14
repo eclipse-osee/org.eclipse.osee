@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 public class TransactionId implements Serializable {
    private static final long serialVersionUID = 7295589339029402964L;
    private int transactionNumber;
-   private boolean head;
    private Branch branch;
    private String comment;
    // This will only differ from the transactionNumber for TransactionId's that are head
@@ -36,50 +35,24 @@ public class TransactionId implements Serializable {
 
    /**
     * @param transactionNumber
-    * @param head
     * @param branch
     * @param comment
     */
-   public TransactionId(int transactionNumber, Branch branch, boolean head, String comment) {
+   public TransactionId(int transactionNumber, Branch branch, String comment) {
       if (branch == null) throw new IllegalArgumentException(
-            "Branch can not be null. TransactionNumber = " + transactionNumber + ", Transaction is editable = " + head);
+            "Branch can not be null. TransactionNumber = " + transactionNumber);
 
       this.transactionNumber = transactionNumber;
-      this.head = head;
       this.branch = branch;
       this.comment = comment;
       this.lastSavedTransactionNumber = transactionNumber;
    }
-
-   //   /**
-   //    * Constructor for deserialization
-   //    */
-   //   private TransactionId() {
-   //      this.transactionNumber = 0;
-   //      this.head = false;
-   //      this.branch = null;
-   //      this.comment = null;
-   //   }
 
    /**
     * @return Returns the branch.
     */
    public Branch getBranch() {
       return branch;
-   }
-
-   /**
-    * @return the head
-    */
-   public boolean isHead() {
-      return head;
-   }
-
-   /**
-    * @return Returns the head.
-    */
-   public boolean isEditable() {
-      return isHead();
    }
 
    /**
@@ -94,13 +67,6 @@ public class TransactionId implements Serializable {
     */
    protected void setTransactionNumber(int transactionNumber) {
       this.transactionNumber = transactionNumber;
-   }
-
-   /**
-    * @param head The head to set.
-    */
-   public void setHead(boolean head) {
-      this.head = head;
    }
 
    /*
@@ -159,7 +125,7 @@ public class TransactionId implements Serializable {
    public boolean equals(Object obj) {
       if (obj instanceof TransactionId) {
          TransactionId other = ((TransactionId) obj);
-         return (other.head == head && other.transactionNumber == transactionNumber) || (other.head && head && other.branch.equals(branch));
+         return other.transactionNumber == transactionNumber;
       }
 
       return false;
@@ -172,9 +138,6 @@ public class TransactionId implements Serializable {
     */
    @Override
    public int hashCode() {
-      if (head) {
-         return branch.hashCode();
-      }
       int result = 17;
       result = 37 * result + transactionNumber;
       return result;

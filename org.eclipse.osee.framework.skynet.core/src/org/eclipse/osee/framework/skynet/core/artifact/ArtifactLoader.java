@@ -231,10 +231,10 @@ public final class ArtifactLoader {
                factory.loadExisitingArtifact(artifactId, rSet.getInt("gamma_id"), rSet.getString("guid"),
                      rSet.getString("human_readable_id"), artifactType.getFactoryKey(), branch, artifactType,
                      rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")),
-                     rSet.getDate("time"), true);
+                     rSet.getDate("time"), false);
       } else if (reload) {
          artifact.initPersistenceData(rSet.getInt("gamma_id"), rSet.getInt("transaction_id"),
-               ModificationType.getMod(rSet.getInt("mod_type")), rSet.getDate("time"), true);
+               ModificationType.getMod(rSet.getInt("mod_type")), rSet.getDate("time"), false);
       }
       return artifact;
    }

@@ -151,24 +151,6 @@ public class TransactionIdManager {
    }
 
    /**
-    * Replaces the current editable transactionId object with a new transactionId object created with the
-    * newTransactionNumber. Note: the old transactionId will be set to uneditable and moved from the editable cache to
-    * the non-editable cache. However, the old transactionId will still remain in the transactionCache.
-    * 
-    * @param newTransactionNumber
-    * @param branch
-    * @throws SQLException
-    */
-   public void resetEditableTransactionId(Integer newTransactionNumber, Branch branch) throws SQLException {
-      TransactionId oldEditabletransactionId = getEditableTransactionId(branch);
-      oldEditabletransactionId.setHead(false);
-      editableTransactionCache.remove(oldEditabletransactionId);
-      nonEditableTransactionIdCache.put(oldEditabletransactionId.getTransactionNumber(), oldEditabletransactionId);
-
-      createTransactionId(newTransactionNumber, branch, true);
-   }
-
-   /**
     * Returns the editable transactionId object with the newTransactionNumber.
     * 
     * @param newTransactionNumber
@@ -206,7 +188,7 @@ public class TransactionIdManager {
 
    private TransactionId createTransactionId(int transactionNumber, Branch branch, boolean head) {
       TransactionId transactionId =
-            new TransactionId(transactionNumber, branch, head, getTransactionComment(transactionNumber));
+            new TransactionId(transactionNumber, branch, getTransactionComment(transactionNumber));
 
       if (head) {
          editableTransactionCache.put(branch, transactionId);

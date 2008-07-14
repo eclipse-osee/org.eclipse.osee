@@ -330,7 +330,7 @@ public class RemoteEventManager implements IServiceLookupListener {
          List<String> dirtyAttributeName = new LinkedList<String>();
          Artifact artifact = ArtifactCache.getActive(artId, branchId);
 
-         if (artifact != null && artifact.isLive()) {
+         if (artifact != null && !artifact.isHistorical()) {
             ModType modType = null;
 
             if (event instanceof NetworkArtifactModifiedEvent) {

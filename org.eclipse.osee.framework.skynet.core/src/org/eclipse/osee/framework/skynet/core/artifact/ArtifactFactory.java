@@ -70,11 +70,11 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, Date time, boolean active) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, Date time, boolean historical) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
 
       artifact.setArtId(artId);
-      artifact.initPersistenceData(gammaId, transactionId, modType, time, active);
+      artifact.initPersistenceData(gammaId, transactionId, modType, time, historical);
 
       ArtifactCache.cache(artifact);
       return artifact;

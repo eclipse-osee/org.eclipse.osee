@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.
@@ -199,7 +198,7 @@ class CommitJob extends Job {
 
          //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
          //and modified on the same branch.
-         
+
          ConnectionHandler.runPreparedUpdate(UPDATE_MODIFICATION_ID, SQL3DataType.INTEGER, newTransactionNumber,
                SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
@@ -222,15 +221,12 @@ class CommitJob extends Job {
 
          }
 
-
          if (insertCount > 0) {
             Object[] dataList =
                   new Object[] {SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
                         newTransactionNumber, SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
                         newTransactionNumber};
             ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true);
-
-            TransactionIdManager.getInstance().resetEditableTransactionId(newTransactionNumber, toBranch);
             tagArtifacts(toBranch, fromBranchId, monitor);
 
             if (archiveBranch) {

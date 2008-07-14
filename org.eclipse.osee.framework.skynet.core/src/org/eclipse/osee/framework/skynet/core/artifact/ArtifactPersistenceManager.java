@@ -125,7 +125,7 @@ public class ArtifactPersistenceManager {
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
    private static final String SELECT_ARTIFACT_START =
-         "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
+         "SELECT art1.*, txs1.*, txd1.time FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
          " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
    private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
@@ -285,7 +285,7 @@ public class ArtifactPersistenceManager {
                   factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getInt("gamma_id"), rSet.getString("guid"),
                         rSet.getString("human_readable_id"), artifactType.getFactoryKey(), transactionId.getBranch(),
                         artifactType, rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")),
-                        rSet.getDate("time"), false);
+                        rSet.getDate("time"), true);
 
             setAttributesOnHistoricalArtifact(artifact);
 
