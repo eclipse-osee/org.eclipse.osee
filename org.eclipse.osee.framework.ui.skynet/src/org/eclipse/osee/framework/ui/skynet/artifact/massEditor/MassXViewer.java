@@ -25,10 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -44,8 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.AttributeSortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
@@ -315,17 +311,8 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       // Add other attributes
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
-            SortDataType sortType = SortDataType.String;
-            if (attributeType.getBaseAttributeClass().equals(DateAttribute.class))
-               sortType = SortDataType.Date;
-            else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class))
-               sortType = SortDataType.Float;
-            else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class))
-               sortType = SortDataType.Integer;
-            else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
-                  SortDataType.Boolean;
             XViewerColumn newCol = new XViewerColumn(viewer, attributeType.getName(), 75, 75, SWT.CENTER);
-            newCol.setSortDataType(sortType);
+            newCol.setSortDataType(AttributeSortDataType.getSortDataType(attributeType));
             newCol.setOrderNum(columnNum++);
             newCol.setTreeViewer(viewer);
             cols.add(newCol);
