@@ -104,7 +104,7 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
       return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
    }
 
-   private static void checkImageRegistry() {
+   private synchronized static void checkImageRegistry() {
       if (!imagesInitialized) {
          imagesInitialized = true;
 
