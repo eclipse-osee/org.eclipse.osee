@@ -59,7 +59,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
    public XViewerColumn getDefaultXViewerColumn(String name) {
       if (custData != null) for (XViewerColumn xCol : custData.getColumnData().getColumns())
          if (xCol.getDisplayName().equals(name)) return xCol;
-      return new XViewerColumn(xViewer, "Name", 50, 50, SWT.CENTER);
+      return null;
    }
 
    /**

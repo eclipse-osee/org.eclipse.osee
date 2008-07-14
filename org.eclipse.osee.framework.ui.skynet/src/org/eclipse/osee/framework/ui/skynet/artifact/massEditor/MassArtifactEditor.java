@@ -250,7 +250,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       xViewer.setContentProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassContentProvider(
             xViewer));
       xViewer.setLabelProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassLabelProvider(xViewer));
-      branchLabel.setText("Branch: " + getBranch().getBranchShortName());
+      branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getBranchShortName()));
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
 
@@ -266,6 +266,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    }
 
    public Branch getBranch() {
+      if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().size() == 0) return null;
       return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranch();
    }
 
