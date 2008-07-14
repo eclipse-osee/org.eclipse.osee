@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Image;
@@ -33,24 +34,24 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public String getColumnText(Object element, int columnIndex) {
-      XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
-      if (xViewerColumn instanceof XViewerValueColumn) {
-         return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
-      }
-      if (element instanceof String) {
-         if (columnIndex == 1)
-            return (String) element;
-         else
-            return "";
-      }
-      Artifact artifact = (Artifact) element;
-      if (artifact == null || artifact.isDeleted()) return "";
-      // Handle case where columns haven't been loaded yet
-      if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
-         return "";
-      }
-
       try {
+         XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
+         if (xViewerColumn instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
+         }
+         if (element instanceof String) {
+            if (columnIndex == 1)
+               return (String) element;
+            else
+               return "";
+         }
+         Artifact artifact = (Artifact) element;
+         if (artifact == null || artifact.isDeleted()) return "";
+         // Handle case where columns haven't been loaded yet
+         if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
+            return "";
+         }
+
          TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
          String colName = treeCol.getText();
          if (!artifact.isAttributeTypeValid(colName)) {
@@ -67,7 +68,7 @@ public class MassLabelProvider implements ITableLabelProvider {
          return artifact.getAttributesToString(colName);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         return ex.getLocalizedMessage();
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 

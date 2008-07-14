@@ -65,10 +65,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       if (nonHridGuids.size() > 0) {
          Collection<ActionArtifact> actionArts =
                LegacyPCRActions.getTeamsActionArtifacts(nonHridGuids, (Collection<TeamDefinitionArtifact>) null);
-         if (actionArts.size() == 0) {
-            OSEELog.logException(AtsPlugin.class,
-                  "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(nonHridGuids), null, true);
-         } else {
+         if (actionArts.size() != 0) {
             for (ActionArtifact teamWf : actionArts) {
                resultArts.add(teamWf);
             }
@@ -81,7 +78,10 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }
-
+      if (resultArts.size() == 0) {
+         OSEELog.logException(AtsPlugin.class,
+               "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(nonHridGuids), null, true);
+      }
       return resultArts;
    }
 

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewCompletionDateColumn;
 import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
@@ -143,7 +144,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       columns.add(new XViewerArtifactTypeColumn("Type", null, 0));
       columns.add(AtsXColumn.Legacy_PCR_Col.getXViewerAttributeColumn(true));
       //    columns.add(AtsXColumn.Review_Role.getXViewerColumn());  COMPUTED
-      //      columns.add(AtsXColumn.Completed_Date_Col.getXViewerColumn());  COMPUTED
+      columns.add(new XViewerReviewCompletionDateColumn(null, 0));
       columns.add(AtsXColumn.Related_To_State_Col.getXViewerAttributeColumn(true));
       columns.add(new XViewerArtifactNameColumn("Title", null, 0));
       columns.add(new XViewerGuidColumn(null, 0));
