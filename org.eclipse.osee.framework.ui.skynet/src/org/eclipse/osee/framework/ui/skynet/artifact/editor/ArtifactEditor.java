@@ -19,6 +19,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -26,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
@@ -379,6 +384,18 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       });
 
+      final DeleteArtifactAction deleteAction = new DeleteArtifactAction();
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(skynetGuiPlugin.getImage("delete.gif"));
+      item.setToolTipText(deleteAction.getText());
+      item.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            deleteAction.run();
+         }
+      });
+      item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
+            branchManager.getDefaultBranch()));
+
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
       item = new ToolItem(toolBar, SWT.PUSH);
@@ -463,6 +480,27 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
+   }
+
+   private final class DeleteArtifactAction extends Action {
+
+      public DeleteArtifactAction() {
+         super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
+      }
+
+      public void run() {
+         try {
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            if (dialog.open() == Window.OK) {
+               ArtifactPersistenceManager.deleteArtifact(getEditorInput().getArtifact());
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+      }
    }
 
    private void checkEnabledTooltems() {
