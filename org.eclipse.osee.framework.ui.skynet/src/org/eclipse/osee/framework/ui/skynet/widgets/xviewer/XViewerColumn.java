@@ -21,7 +21,8 @@ import org.eclipse.swt.widgets.TreeColumn;
 public class XViewerColumn {
 
    private XViewer xViewer;
-   private String systemName;
+   private String displayName;
+   private String storeName;
    private String alternateName = "";
    private int width;
    private int defaultWidth;
@@ -38,10 +39,10 @@ public class XViewerColumn {
       Date, Float, Percent, String, String_MultiLine, Boolean, Integer
    };
 
-   public XViewerColumn(XViewer xViewer, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
+   public XViewerColumn(XViewer xViewer, String displayName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
       super();
       this.xViewer = xViewer;
-      this.systemName = name;
+      this.displayName = displayName;
       this.defaultWidth = defaultWidth;
       this.width = defaultWidth;
       this.align = align;
@@ -61,7 +62,7 @@ public class XViewerColumn {
 
    public boolean equals(Object obj) {
       if (obj instanceof XViewerColumn) {
-         return ((XViewerColumn) obj).getSystemName().equals(systemName);
+         return ((XViewerColumn) obj).getSystemName().equals(displayName);
       }
       return super.equals(obj);
    }
@@ -90,7 +91,7 @@ public class XViewerColumn {
 
    public String toXml() {
       StringBuffer sb = new StringBuffer("<" + XTREECOLUMN_TAG + ">");
-      sb.append(AXml.addTagData(SYSTEM_NAME, systemName));
+      sb.append(AXml.addTagData(SYSTEM_NAME, displayName));
       sb.append(AXml.addTagData(ALTERNATE_NAME, alternateName));
       sb.append(AXml.addTagData(DEFAULT_WIDTH, defaultWidth + ""));
       sb.append(AXml.addTagData(WIDTH, (xViewer == null) ? width + "" : xViewer.getCurrentColumnWidth(this) + ""));
@@ -103,7 +104,7 @@ public class XViewerColumn {
    }
 
    public void setFromXml(String xml) {
-      systemName = AXml.getTagData(xml, SYSTEM_NAME);
+      displayName = AXml.getTagData(xml, SYSTEM_NAME);
       alternateName = AXml.getTagData(xml, ALTERNATE_NAME);
       width = AXml.getTagIntData(xml, WIDTH);
       defaultWidth = AXml.getTagIntData(xml, DEFAULT_WIDTH);
@@ -138,7 +139,7 @@ public class XViewerColumn {
    }
 
    public String toString() {
-      return systemName;
+      return displayName;
    }
 
    public int getAlign() {
@@ -146,12 +147,12 @@ public class XViewerColumn {
    }
 
    public String getNameAlternate() {
-      return systemName + (alternateName.equals("") ? "" : " (" + (alternateName + ")"));
+      return displayName + (alternateName.equals("") ? "" : " (" + (alternateName + ")"));
    }
 
    public void refreshColumn() {
       if (treeColumn == null) return;
-      treeColumn.setText(systemName);
+      treeColumn.setText(displayName);
       if (show)
          treeColumn.setWidth(width);
       else
@@ -164,11 +165,11 @@ public class XViewerColumn {
    }
 
    public String getSystemName() {
-      return systemName;
+      return displayName;
    }
 
    public void setSystemName(String name) {
-      this.systemName = name;
+      this.displayName = name;
    }
 
    public int getWidth() {
@@ -242,7 +243,7 @@ public class XViewerColumn {
       if (!alternateName.equals(""))
          return alternateName;
       else
-         return systemName;
+         return displayName;
    }
 
    /**
@@ -299,6 +300,14 @@ public class XViewerColumn {
     */
    public void setDefaultWidth(int defaultWidth) {
       this.defaultWidth = defaultWidth;
+   }
+
+   public String getStoreName() {
+      return storeName;
+   }
+
+   public void setStoreName(String storeName) {
+      this.storeName = storeName;
    }
 
 }

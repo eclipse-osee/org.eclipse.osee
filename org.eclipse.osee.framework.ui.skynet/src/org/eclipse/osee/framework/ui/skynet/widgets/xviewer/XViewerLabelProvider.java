@@ -29,12 +29,24 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
-      if (viewer.getXTreeColumn(columnIndex) != null) return getColumnImage(element, viewer.getXTreeColumn(columnIndex));
+      if (viewer.getXTreeColumn(columnIndex) != null) {
+         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         if (xViewerColumn instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+         }
+         return getColumnImage(element, xViewerColumn);
+      }
       return null;
    }
 
    public String getColumnText(Object element, int columnIndex) {
-      if (viewer.getXTreeColumn(columnIndex) != null) return getColumnText(element, viewer.getXTreeColumn(columnIndex));
+      if (viewer.getXTreeColumn(columnIndex) != null) {
+         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         if (xViewerColumn instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
+         }
+         return getColumnText(element, xViewerColumn);
+      }
       return "";
    }
 

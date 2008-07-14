@@ -43,6 +43,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -135,13 +139,14 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private static List<XViewerColumn> getXViewerColumns() {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      columns.add(AtsXColumn.ID_Col.getXViewerColumn());
-      columns.add(AtsXColumn.Legacy_PCR_Col.getXViewerColumn());
+      columns.add(new XViewerHridColumn("ID", null, 0));
+      columns.add(new XViewerArtifactTypeColumn("Type", null, 0));
+      columns.add(AtsXColumn.Legacy_PCR_Col.getXViewerAttributeColumn(true));
       //    columns.add(AtsXColumn.Review_Role.getXViewerColumn());  COMPUTED
-      columns.add(AtsXColumn.Title_Col.getXViewerColumn());
       //      columns.add(AtsXColumn.Completed_Date_Col.getXViewerColumn());  COMPUTED
-      columns.add(AtsXColumn.Type_Col.getXViewerColumn());
-      columns.add(AtsXColumn.Related_To_State_Col.getXViewerColumn());
+      columns.add(AtsXColumn.Related_To_State_Col.getXViewerAttributeColumn(true));
+      columns.add(new XViewerArtifactNameColumn("Title", null, 0));
+      columns.add(new XViewerGuidColumn(null, 0));
       return columns;
    }
 

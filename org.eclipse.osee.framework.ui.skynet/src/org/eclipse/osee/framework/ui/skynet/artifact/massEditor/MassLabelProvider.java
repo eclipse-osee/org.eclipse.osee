@@ -17,8 +17,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewer.Extra_Columns;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -32,6 +33,10 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public String getColumnText(Object element, int columnIndex) {
+      XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
+      if (xViewerColumn instanceof XViewerValueColumn) {
+         return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
+      }
       if (element instanceof String) {
          if (columnIndex == 1)
             return (String) element;
@@ -48,12 +53,6 @@ public class MassLabelProvider implements ITableLabelProvider {
       try {
          TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
          String colName = treeCol.getText();
-         if (colName.equals(Extra_Columns.HRID.name()))
-            return artifact.getHumanReadableId();
-         else if (colName.equals(Extra_Columns.GUID.name()))
-            return artifact.getGuid();
-         else if (colName.equals(Extra_Columns.Artifact_Type.name())) return artifact.getArtifactTypeName();
-
          if (!artifact.isAttributeTypeValid(colName)) {
             return "";
          }
@@ -87,6 +86,10 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
+      XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
+      if (xViewerColumn instanceof XViewerValueColumn) {
+         return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+      }
       Artifact artifact = (Artifact) element;
       if (artifact == null || artifact.isDeleted()) return null;
       if (columnIndex == 0) return artifact.getImage();
