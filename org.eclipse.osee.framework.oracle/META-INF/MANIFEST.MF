@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Oracle Db Connector Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.oracle
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.oracle.Activator
+Bundle-Vendor: Eclipse.org
+Eclipse-LazyStart: true
+OseeEarlyStart: true
+Import-Package: oracle.jdbc.driver,
+ org.eclipse.osee.framework.db.connection,
+ org.osgi.framework;version="1.3.0"
