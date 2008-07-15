@@ -51,35 +51,30 @@ public enum SQL3DataType {
    DATALINK(java.sql.Types.DATALINK, Object.class),
    BOOLEAN(java.sql.Types.BOOLEAN, Boolean.class);
 
-   @SuppressWarnings("unchecked")
-   private Class javaClassEquivalent;
+   private Class<?> javaClassEquivalent;
    private int sqlTypeNumber;
-   @SuppressWarnings("unchecked")
-   private static HashMap<Integer, Class> typeToClass;
-   private static HashMap<Integer, SQL3DataType> typeToEnum;
 
-   @SuppressWarnings("unchecked")
-   private SQL3DataType(int sqlTypeNumber, Class classEquiv) {
-      if (SQL3DataType.typeToClass == null) {
-         SQL3DataType.typeToClass = new HashMap<Integer, Class>();
-         SQL3DataType.typeToEnum = new HashMap<Integer, SQL3DataType>();
-      }
+   private static HashMap<Integer, SQL3DataType> typeToEnum = new HashMap<Integer, SQL3DataType>();
+
+   private SQL3DataType(int sqlTypeNumber, Class<?> classEquiv) {
       this.javaClassEquivalent = classEquiv;
       this.sqlTypeNumber = sqlTypeNumber;
-      SQL3DataType.typeToClass.put(sqlTypeNumber, classEquiv);
-      SQL3DataType.typeToEnum.put(sqlTypeNumber, this);
    }
 
    public int getSQLTypeNumber() {
       return sqlTypeNumber;
    }
 
-   @SuppressWarnings("unchecked")
-   public Class getJavaEquivalentClass() {
+   public Class<?> getJavaEquivalentClass() {
       return javaClassEquivalent;
    }
 
    public static SQL3DataType get(int type) {
+      if (typeToEnum == null) {
+         for (SQL3DataType enumType : SQL3DataType.values()) {
+            typeToEnum.put(enumType.sqlTypeNumber, enumType);
+         }
+      }
       return typeToEnum.get(type);
    }
 }
