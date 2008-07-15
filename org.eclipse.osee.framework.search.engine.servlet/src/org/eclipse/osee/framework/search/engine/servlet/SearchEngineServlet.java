@@ -61,9 +61,8 @@ public class SearchEngineServlet extends HttpServlet {
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         int attrId = Integer.parseInt(request.getParameter("attrId"));
          long gammaId = Long.parseLong(request.getParameter("gammaId"));
-         Activator.getInstance().getSearchTagger().tagAttribute(attrId, gammaId);
+         Activator.getInstance().getSearchTagger().tagAttribute(gammaId);
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
