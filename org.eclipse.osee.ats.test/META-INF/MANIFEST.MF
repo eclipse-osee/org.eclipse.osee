@@ -8,3 +8,4 @@ Fragment-Host: org.eclipse.osee.ats;bundle-version="0.2.0"
 Require-Bundle: org.eclipse.osee.ats.config.demo,
  org.junit
 Import-Package: org.eclipse.osee.framework.db.connection.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

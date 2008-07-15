@@ -26,7 +26,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.layouts,
  org.eclipse.compare,
  javax.mail
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
  org.eclipse.osee.framework.ui.skynet.access,
@@ -94,3 +94,4 @@ Import-Package: org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.db.connection.core.transaction,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

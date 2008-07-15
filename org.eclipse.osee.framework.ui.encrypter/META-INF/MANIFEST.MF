@@ -12,4 +12,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.core.runtime
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

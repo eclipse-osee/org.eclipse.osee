@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.plugin
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.info
 Export-Package: org.eclipse.osee.ats.config.demo,
@@ -23,3 +23,4 @@ Export-Package: org.eclipse.osee.ats.config.demo,
  org.eclipse.osee.ats.config.demo.config,
  org.eclipse.osee.ats.config.demo.navigate,
  org.eclipse.osee.ats.config.demo.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

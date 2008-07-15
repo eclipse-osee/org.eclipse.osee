@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.operation.local.InfoOperation;
 import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
@@ -213,7 +214,7 @@ public class SvnAPI {
                for (int i = 0; i < checkoutSet.length; i++) {
                   operateMap.put(resources2names.get(checkoutSet[i]), checkoutSet[i]);
                }
-               toReturn = new CheckoutOperation(operateMap, false, null, true);
+               toReturn = new CheckoutOperation(operateMap, true, null, Depth.INFINITY, true);
             }
          }
          return toReturn;

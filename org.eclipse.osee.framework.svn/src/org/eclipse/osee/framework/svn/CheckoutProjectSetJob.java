@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.svn;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -28,6 +30,7 @@ import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.xml.sax.SAXException;
 
@@ -50,7 +53,14 @@ public class CheckoutProjectSetJob extends Job {
    protected IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.OK_STATUS;
       try {
-         boolean result = performImportProjectSet(monitor, getProjectSetPath(), workingSetName);
+         List<IWorkingSet> workingSets = new ArrayList<IWorkingSet>();
+         IWorkingSet workingSet = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName);
+         if (workingSet != null) {
+            workingSets.add(workingSet);
+         }
+         boolean result =
+               performImportProjectSet(monitor, getProjectSetPath(),
+                     workingSets.toArray(new IWorkingSet[workingSets.size()]));
          if (result != true) {
             toReturn = Status.CANCEL_STATUS;
          }
@@ -66,10 +76,10 @@ public class CheckoutProjectSetJob extends Job {
       return file.getAbsolutePath();
    }
 
-   private boolean performImportProjectSet(IProgressMonitor monitor, String fileName, String workingSet) {
+   private boolean performImportProjectSet(IProgressMonitor monitor, String fileName, IWorkingSet[] workingSets) {
       boolean result = false;
       try {
-         ImportProjectSetOperation op = new ImportProjectSetOperation(null, fileName, workingSet);
+         ImportProjectSetOperation op = new ImportProjectSetOperation(null, fileName, workingSets);
          op.run(monitor);
          result = true;
       } catch (InterruptedException e) {

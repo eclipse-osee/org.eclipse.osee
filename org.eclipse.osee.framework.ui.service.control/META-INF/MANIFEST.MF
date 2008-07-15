@@ -30,4 +30,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.swt,
  com.jcraft.jsch
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

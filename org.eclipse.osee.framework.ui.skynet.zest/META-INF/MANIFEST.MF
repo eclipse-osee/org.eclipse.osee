@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.core,
  org.eclipse.zest.layouts
 Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

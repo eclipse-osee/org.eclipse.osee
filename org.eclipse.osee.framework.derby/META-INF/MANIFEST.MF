@@ -4,10 +4,11 @@ Bundle-Name: Derby Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.derby
 Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.derby.Activator
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 OseeEarlyStart: true
 Import-Package: org.apache.derby.jdbc,
  org.eclipse.osee.framework.db.connection,
  org.osgi.framework;version="1.4.0"
 Export-Package: org.eclipse.osee.framework.derby
 Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

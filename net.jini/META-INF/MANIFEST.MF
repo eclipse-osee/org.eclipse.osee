@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jini Plug-in (Incubation)
-Bundle-SymbolicName: net.jini
+Bundle-SymbolicName: net.jini;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: jini.jar,
  jini2_1/lib/browser.jar,
@@ -41,7 +41,7 @@ Bundle-ClassPath: jini.jar,
 Bundle-Activator: net.jini.JiniPlugin
 Bundle-Vendor: Sun
 Require-Bundle: org.eclipse.core.runtime
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.jini.action,
  com.sun.jini.admin,
  com.sun.jini.collection,
@@ -130,3 +130,4 @@ Export-Package: com.sun.jini.action,
  net.jini.url.file,
  net.jini.url.httpmd,
  net.jini.url.https
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

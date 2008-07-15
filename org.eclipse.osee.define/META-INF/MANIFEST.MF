@@ -28,6 +28,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.database,
  org.eclipse.ui.forms
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.info
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

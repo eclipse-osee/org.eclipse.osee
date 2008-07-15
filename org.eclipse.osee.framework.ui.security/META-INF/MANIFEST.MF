@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.ui.security
 Bundle-Version: 0.2.0.qualifier
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.plugin.core
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.ui.security
 Bundle-Vendor: Eclipse.org
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

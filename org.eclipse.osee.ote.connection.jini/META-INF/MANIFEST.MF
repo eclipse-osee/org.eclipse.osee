@@ -8,8 +8,9 @@ Bundle-Vendor: Boeing
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jini,
  net.jini
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network
 Export-Package: org.eclipse.osee.ote.connection.jini
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

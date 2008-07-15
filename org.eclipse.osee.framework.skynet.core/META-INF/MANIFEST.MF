@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,
  org.junit
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
  org.eclipse.osee.framework.skynet.core.artifact,
@@ -55,3 +55,4 @@ Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core.transaction,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -15,8 +15,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.team.svn,
  org.eclipse.team.svn.core,
  org.eclipse.team.svn.ui
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.svn,
  org.eclipse.osee.framework.svn.entry,
  org.eclipse.osee.framework.svn.enums
 Bundle-ClassPath: library.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

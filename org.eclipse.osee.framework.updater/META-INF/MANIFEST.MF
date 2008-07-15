@@ -10,9 +10,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.update.core,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.jdk.core
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.updater,
  org.eclipse.osee.framework.updater.core
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: .,
  dlResources/
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

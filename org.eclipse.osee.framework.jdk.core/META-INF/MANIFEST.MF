@@ -29,4 +29,5 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.xml.excel,
  org.eclipse.osee.framework.jdk.core.util.xml.parser,
  org.eclipse.osee.framework.jdk.core.validate
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
