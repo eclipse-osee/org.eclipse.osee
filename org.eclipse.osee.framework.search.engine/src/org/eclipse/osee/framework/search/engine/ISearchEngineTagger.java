@@ -15,9 +15,9 @@ import java.io.InputStream;
 /**
  * @author Roberto E. Escobar
  */
-public interface ISearchTagger {
+public interface ISearchEngineTagger {
 
-   public void tagAttribute(int attrId, long gammaId);
+   public void tagAttribute(long gammaId);
 
    public void tagFromXmlStream(InputStream inputStream);
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="attribute.tagger.provider.manager">
+	<implementation class="org.eclipse.osee.framework.search.engine.internal.AttributeTaggerProviderManager"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager"/>
+	</service>
+	<reference name="attribute.tagger.provider"
+		interface="org.eclipse.osee.framework.search.engine.IAttributeTaggerProvider"
+		bind="addAttributeTaggerProvider"
+		unbind="removeAttributeTaggerProvider"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

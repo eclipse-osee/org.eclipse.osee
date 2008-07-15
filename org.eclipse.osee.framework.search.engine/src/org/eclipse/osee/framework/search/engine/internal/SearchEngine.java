@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
+import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
-import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore;
-import org.eclipse.osee.framework.search.engine.utility.AttributeDataStore.AttributeData;
 
 /**
  * @author Roberto E. Escobar
@@ -34,18 +35,13 @@ public class SearchEngine implements ISearchEngine {
       AttributeSearch attributeSearch = new AttributeSearch(searchString, options);
       Set<IAttributeLocator> attributeLocators = attributeSearch.findMatches();
 
-      List<AttributeData> attributeDatas = AttributeDataStore.getAttribute(attributeLocators);
+      List<AttributeData> attributeDatas = AttributeDataStore.getInstance().getAttributes(attributeLocators);
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
 
       for (AttributeData attributeData : attributeDatas) {
-         String value = attributeData.getValue();
-         if (value.contains(searchString)) {
-            System.out.println("Matches: " + attributeData.getArtId());
+         if (Activator.getInstance().getTaggerManager().find(attributeData, searchString)) {
             joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
          }
-
-         // GET ACTUAL ATTRIBUTE CONTENT
-         // Perform Second Pass Search -- this needs to be extremely fast;
       }
       joinQuery.store();
       return String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size());

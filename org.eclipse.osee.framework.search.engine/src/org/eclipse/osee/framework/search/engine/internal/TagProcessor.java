@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
  */
 public class TagProcessor {
 
+   private TagProcessor() {
+   }
+
    public static void collectFromString(String value, ITagCollector tagCollector) throws UnsupportedEncodingException {
       collectFromInputStream(new ByteArrayInputStream(value.getBytes("UTF-8")), tagCollector);
    }
@@ -30,10 +33,16 @@ public class TagProcessor {
    public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) throws UnsupportedEncodingException {
       WordChunker chunker = new WordChunker(inputStream);
       for (String original : chunker) {
-         String target = WordsUtil.toSingular(WordsUtil.stripPossesive(original));
-         TagEncoder.encode(target, tagCollector);
-         for (String toEncode : WordsUtil.splitOnPunctuation(target)) {
-            TagEncoder.encode(toEncode, tagCollector);
+         boolean originalStored = false;
+         for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
+            String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
+            if (target.equals(original)) {
+               originalStored = true;
+            }
+            TagEncoder.encode(target, tagCollector);
+         }
+         if (!originalStored) {
+            TagEncoder.encode(original, tagCollector);
          }
       }
    }

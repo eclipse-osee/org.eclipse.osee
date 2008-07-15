@@ -8,19 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.test;
-
-import junit.framework.TestSuite;
+package org.eclipse.osee.framework.search.engine;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AllSearchEngineTests extends TestSuite {
+public class InvalidTaggerException extends Exception {
 
-   public AllSearchEngineTests() {
-      addTestSuite(TestWordsUtil.class);
-      addTestSuite(TestSearchDataStore.class);
-      addTestSuite(TestSearchEngine.class);
-   }
+   private static final long serialVersionUID = 8827972753892224287L;
 
 }

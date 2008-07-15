@@ -39,6 +39,7 @@ public class TagEncoder {
 
          if (c == '\t' || c == '\n' || c == '\r' || tagBitsPos == 60) {
             if (tagBitsPos > 10) {
+               printTag(text, tagBits);
                collector.addTag(tagBits);
             }
             tagBits = 0;
@@ -56,6 +57,11 @@ public class TagEncoder {
             tagBitsPos += 4;
          }
       }
+      printTag(text, tagBits);
       collector.addTag(tagBits);
+   }
+
+   private static void printTag(String value, Long tagBits) {
+      System.out.println(String.format("Tagged [%s] into [%d]", value, tagBits));
    }
 }

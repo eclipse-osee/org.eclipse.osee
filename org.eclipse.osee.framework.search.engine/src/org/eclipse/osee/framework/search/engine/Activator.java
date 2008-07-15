@@ -12,19 +12,15 @@ package org.eclipse.osee.framework.search.engine;
 
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.framework.search.engine.internal.SearchEngine;
-import org.eclipse.osee.framework.search.engine.internal.SearchEngineTagger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
    private static Activator instance;
-   private ServiceRegistration searchServiceRegistration;
-   private ServiceRegistration taggerServiceRegistration;
 
+   private ServiceTracker attributeTaggerProviderTracker;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
    private BundleContext context;
@@ -36,16 +32,16 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       Activator.instance = this;
       this.context = context;
+
       resourceLocatorManagerTracker = new ServiceTracker(context, IResourceLocatorManager.class.getName(), null);
       resourceLocatorManagerTracker.open();
 
       resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
       resourceManagementTracker.open();
 
-      searchServiceRegistration = context.registerService(ISearchEngine.class.getName(), new SearchEngine(), null);
-
-      taggerServiceRegistration =
-            context.registerService(ISearchTagger.class.getName(), new SearchEngineTagger(), null);
+      attributeTaggerProviderTracker =
+            new ServiceTracker(context, IAttributeTaggerProviderManager.class.getName(), null);
+      attributeTaggerProviderTracker.open();
    }
 
    /*
@@ -53,11 +49,8 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      searchServiceRegistration.unregister();
-      searchServiceRegistration = null;
-
-      taggerServiceRegistration.unregister();
-      taggerServiceRegistration = null;
+      attributeTaggerProviderTracker.close();
+      attributeTaggerProviderTracker = null;
 
       resourceManagementTracker.close();
       resourceManagementTracker = null;
@@ -75,6 +68,10 @@ public class Activator implements BundleActivator {
 
    public IResourceLocatorManager getResourceLocatorManager() {
       return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
+   }
+
+   public IAttributeTaggerProviderManager getTaggerManager() {
+      return (IAttributeTaggerProviderManager) attributeTaggerProviderTracker.getService();
    }
 
    public static Activator getInstance() {

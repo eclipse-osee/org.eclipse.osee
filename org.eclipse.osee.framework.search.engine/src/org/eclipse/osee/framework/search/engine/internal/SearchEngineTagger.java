@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
-import org.eclipse.osee.framework.search.engine.ISearchTagger;
+import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -26,7 +26,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchEngineTagger implements ISearchTagger {
+public class SearchEngineTagger implements ISearchEngineTagger {
 
    private ExecutorService executor;
 
@@ -35,11 +35,11 @@ public class SearchEngineTagger implements ISearchTagger {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagAttribute(int, long)
+    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagAttribute(java.lang.String, int, long)
     */
    @Override
-   public void tagAttribute(int attrId, long gammaId) {
-      this.executor.execute(new AttributeTagger(attrId, gammaId));
+   public void tagAttribute(long gammaId) {
+      this.executor.submit(new TaggerRunnable(gammaId));
    }
 
    /* (non-Javadoc)
@@ -72,11 +72,10 @@ public class SearchEngineTagger implements ISearchTagger {
        */
       @Override
       public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-         if (name.equalsIgnoreCase("attribute")) {
-            String attrId = attributes.getValue("attrId");
+         if (name.equalsIgnoreCase("entry")) {
             String gammaId = attributes.getValue("gammaId");
-            if (Strings.isValid(attrId) && Strings.isValid(gammaId)) {
-               tagAttribute(Integer.parseInt(attrId), Long.parseLong(gammaId));
+            if (Strings.isValid(gammaId)) {
+               tagAttribute(Long.parseLong(gammaId));
             }
          }
       }

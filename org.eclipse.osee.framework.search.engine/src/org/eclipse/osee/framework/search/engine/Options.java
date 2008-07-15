@@ -16,6 +16,7 @@ import java.util.Properties;
  * @author Roberto E. Escobar
  */
 public class Options {
+
    private Properties properties;
 
    public Options() {

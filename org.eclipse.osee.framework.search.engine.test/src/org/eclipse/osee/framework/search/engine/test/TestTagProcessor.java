@@ -10,17 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AllSearchEngineTests extends TestSuite {
+public class TestTagProcessor extends TestCase {
 
-   public AllSearchEngineTests() {
-      addTestSuite(TestWordsUtil.class);
-      addTestSuite(TestSearchDataStore.class);
-      addTestSuite(TestSearchEngine.class);
+   public void testTagFromString() {
+   }
+
+   public void testTagFromInputStream() {
+
    }
 
 }

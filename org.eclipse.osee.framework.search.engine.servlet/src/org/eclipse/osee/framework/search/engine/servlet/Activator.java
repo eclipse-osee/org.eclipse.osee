@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine.servlet;
 
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
-import org.eclipse.osee.framework.search.engine.ISearchTagger;
+import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
       searchServiceTracker = new ServiceTracker(context, ISearchEngine.class.getName(), null);
       searchServiceTracker.open();
 
-      taggerServiceTracker = new ServiceTracker(context, ISearchTagger.class.getName(), null);
+      taggerServiceTracker = new ServiceTracker(context, ISearchEngineTagger.class.getName(), null);
       taggerServiceTracker.open();
 
       httpTracker = new HttpServiceTracker(context);
@@ -67,8 +67,8 @@ public class Activator implements BundleActivator {
       return (ISearchEngine) searchServiceTracker.getService();
    }
 
-   public ISearchTagger getSearchTagger() {
-      return (ISearchTagger) taggerServiceTracker.getService();
+   public ISearchEngineTagger getSearchTagger() {
+      return (ISearchEngineTagger) taggerServiceTracker.getService();
    }
 
    private class HttpServiceTracker extends ServiceTracker {

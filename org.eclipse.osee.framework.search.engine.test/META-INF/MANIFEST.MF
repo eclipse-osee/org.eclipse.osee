@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse.org
 Eclipse-LazyStart: true
 Service-Component: OSGI-INF/tests.xml
 Import-Package: junit.framework;version="3.8.2",
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.search.engine,
  org.eclipse.osee.framework.search.engine.data,

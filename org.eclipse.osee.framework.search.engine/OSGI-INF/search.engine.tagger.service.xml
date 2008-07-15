@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="search.engine.tagger.service">
+	<implementation class="org.eclipse.osee.framework.search.engine.internal.SearchEngineTagger"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.search.engine.ISearchEngineTagger"/>
+	</service>
+</component>

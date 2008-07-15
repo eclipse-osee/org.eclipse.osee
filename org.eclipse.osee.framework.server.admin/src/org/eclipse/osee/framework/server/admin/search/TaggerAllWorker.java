@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.eclipse.osee.framework.search.engine.ISearchTagger;
+import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.server.admin.Activator;
 
 /**
@@ -25,7 +25,7 @@ class TaggerAllWorker extends BaseCmdWorker {
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
          "SELECT attr1.gamma_id FROM osee_define_attribute attr1, osee_define_attribute_type type1 WHERE attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
 
-   private ISearchTagger searchTagger;
+   private ISearchEngineTagger searchTagger;
 
    TaggerAllWorker() {
       super();

@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.search.engine.utility;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import org.eclipse.osee.framework.search.engine.Activator;
 
@@ -24,9 +27,17 @@ public class WordsUtil {
    private static final String OES_ENDING = "oes";
    private static final String ES_ENDING = "es";
    private static final String S_ENDING = "s";
+   private static final String VES_ENDING = "ves";
+   public static final String EMPTY_STRING = "";
+   private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch"};
+
+   private static final char[] PUNCTUATION =
+         new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
+               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~'};
 
    private static final Properties dictionary;
    static {
+      Arrays.sort(PUNCTUATION);
       dictionary = new Properties();
       try {
          URL url =
@@ -57,16 +68,37 @@ public class WordsUtil {
 
    public static String stripPossesive(String original) {
       String toReturn = original;
-      if (original.endsWith("'")) {
-         toReturn = replaceEndingWith(original, "'", "");
-      } else if (original.endsWith("'s")) {
-         toReturn = replaceEndingWith(original, "'s", "");
+      if (original != null && original.length() > 0) {
+         if (original.lastIndexOf('\'') == (original.length() - 1)) {
+            toReturn = replaceEndingWith(original, "'", "");
+         } else if (original.endsWith("'s")) {
+            toReturn = replaceEndingWith(original, "'s", "");
+         }
       }
       return toReturn;
    }
 
    public static String[] splitOnPunctuation(String original) {
-      return original.split("^[a-zA-Z0-9]");
+      List<String> toReturn = new ArrayList<String>();
+      StringBuffer buffer = new StringBuffer();
+      for (int index = 0; index < original.length(); index++) {
+         char c = original.charAt(index);
+         int pos = Arrays.binarySearch(PUNCTUATION, c);
+         if (pos < 0) {
+            buffer.append(c);
+         } else {
+            String value = buffer.toString().trim();
+            if (value.length() > 0) {
+               toReturn.add(value);
+            }
+            buffer.setLength(0);
+         }
+      }
+      if (buffer.length() > 0) {
+         toReturn.add(buffer.toString());
+         buffer.setLength(0);
+      }
+      return toReturn.toArray(new String[toReturn.size()]);
    }
 
    public static String toSingular(String word) {
@@ -80,10 +112,10 @@ public class WordsUtil {
          } else if (word.endsWith(ES_ENDING) && hasConstantBeforeEnding(word, ES_ENDING)) {
             String replaceWith = "e";
             String ending = ES_ENDING;
-            if (hasEitherSequenceBeforeEnding(word, ES_ENDING, "ss", "sh", "ch")) {
-               replaceWith = "";
+            if (hasEitherSequenceBeforeEnding(word, ES_ENDING, SPECIAL_ES_ENDING_CASES)) {
+               replaceWith = EMPTY_STRING;
             } else if (hasEitherSequenceBeforeEnding(word, ES_ENDING, "v")) {
-               ending = "ves";
+               ending = VES_ENDING;
                replaceWith = "f";
             }
             toReturn = replaceEndingWith(word, ending, replaceWith);
@@ -95,59 +127,4 @@ public class WordsUtil {
       }
       return toReturn;
    }
-
-   //   public static void main(String[] args) {
-   //      Map<String, String> testMap = new HashMap<String, String>();
-   //      testMap.put("tries", "try");
-   //      testMap.put("volcanoes", "volcano");
-   //      testMap.put("geese", "goose");
-   //      testMap.put("windows", "window");
-   //      testMap.put("glasses", "glass");
-   //      testMap.put("fishes", "fish");
-   //      testMap.put("houses", "house");
-   //      testMap.put("judges", "judge");
-   //      testMap.put("dishes", "dish");
-   //      testMap.put("phases", "phase");
-   //      testMap.put("witches", "witch");
-   //      testMap.put("baths", "bath");
-   //      testMap.put("calves", "calf");
-   //      testMap.put("lives", "life");
-   //      testMap.put("proofs", "proof");
-   //      testMap.put("boys", "boy");
-   //      testMap.put("dwarfs", "dwarf");
-   //      testMap.put("dwarves", "dwarf");
-   //      testMap.put("hooves", "hoof");
-   //      testMap.put("chairs", "chair");
-   //      testMap.put("heroes", "hero");
-   //      testMap.put("cantos", "canto");
-   //      testMap.put("porticos", "portico");
-   //      testMap.put("indeces", "index");
-   //      testMap.put("leaves", "leaf");
-   //      testMap.put("hello", "hello");
-   //      testMap.put("axes", "axis");
-   //      testMap.put("species", "species");
-   //      testMap.put("series", "series");
-   //      testMap.put("appendeces", "appendix");
-   //
-   //      long start = System.currentTimeMillis();
-   //      int errCount = 0;
-   //      StringBuilder messages = new StringBuilder();
-   //      for (String key : testMap.keySet()) {
-   //         String actual = WordsUtil.toSingular(key);
-   //         String expected = testMap.get(key);
-   //
-   //         if (actual.equals(expected) != true) {
-   //            messages.append(String.format("Value:[%s] Actual: [%s] Expected: [%s] Result:[ FAILED ] \n", key, actual,
-   //                  expected));
-   //            errCount++;
-   //         }
-   //      }
-   //      messages.append(String.format("Execution Time: %s ms", System.currentTimeMillis() - start));
-   //      if (errCount > 0) {
-   //         System.err.println(messages);
-   //      } else {
-   //         System.out.println(messages);
-   //         System.out.println("All Passed !");
-   //      }
-   //   }
 }

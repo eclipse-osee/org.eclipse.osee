@@ -16,5 +16,4 @@ package org.eclipse.osee.framework.search.engine;
 public interface ISearchEngine {
 
    public String search(String searchString, Options options) throws Exception;
-
 }
