@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.server.admin;
 
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.framework.search.engine.ISearchTagger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -21,6 +22,7 @@ public class Activator implements BundleActivator {
    private static Activator instance;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
+   private ServiceTracker searchTaggerTracker;
 
    /*
     * (non-Javadoc)
@@ -34,6 +36,9 @@ public class Activator implements BundleActivator {
 
       resourceLocatorManagerTracker = new ServiceTracker(context, IResourceLocatorManager.class.getName(), null);
       resourceLocatorManagerTracker.open();
+
+      searchTaggerTracker = new ServiceTracker(context, ISearchTagger.class.getName(), null);
+      searchTaggerTracker.open();
    }
 
    /*
@@ -47,6 +52,9 @@ public class Activator implements BundleActivator {
 
       resourceLocatorManagerTracker.close();
       resourceLocatorManagerTracker = null;
+
+      searchTaggerTracker.close();
+      searchTaggerTracker = null;
    }
 
    public IResourceManager getResourceManager() {
@@ -55,6 +63,10 @@ public class Activator implements BundleActivator {
 
    public IResourceLocatorManager getResourceLocatorManager() {
       return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
+   }
+
+   public ISearchTagger getSearchTagger() {
+      return (ISearchTagger) searchTaggerTracker.getService();
    }
 
    public static Activator getInstance() {
