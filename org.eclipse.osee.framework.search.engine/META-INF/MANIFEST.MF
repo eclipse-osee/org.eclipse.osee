@@ -29,6 +29,7 @@ Export-Package: org.eclipse.osee.framework.search.engine,
  org.eclipse.osee.framework.search.engine.data,
  org.eclipse.osee.framework.search.engine.utility
 Service-Component: OSGI-INF/attribute.tagger.provider.consumer.xml,
- OSGI-INF/default.attribute.provider.xml,
+ OSGI-INF/default.attribute.tagger.provider.xml,
+ OSGI-INF/xml.attribute.tagger.provider.xml,
  OSGI-INF/search.engine.service.xml,
  OSGI-INF/search.engine.tagger.service.xml
