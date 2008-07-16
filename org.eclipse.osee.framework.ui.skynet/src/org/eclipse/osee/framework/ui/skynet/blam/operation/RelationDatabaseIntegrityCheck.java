@@ -24,13 +24,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class RelationDatabaseIntegrityCheck extends AbstractBlam {
 
    private static final String NO_ADDRESSING_ARTIFACTS =
-         "select * from osee_Define_rel_link t1 where (a_art_id not in (select art_id from osee_Define_artifact_version t2, osee_Define_txs t3 where t2.gamma_id = t3.gamma_id) OR b_art_id not in (select art_id from osee_Define_artifact_version t4, osee_Define_txs t5 where t4.gamma_id = t5.gamma_id))";
+         "select * from osee_Define_rel_link t1 where (a_art_id not in (select art_id from osee_Define_artifact_version t2, osee_Define_txs t3 where t2.gamma_id = t3.gamma_id) OR b_art_id not in (select art_id from osee_Define_artifact_version t4, osee_Define_txs t5 where t4.gamma_id = t5.gamma_id)) order by rel_link_id";
 
    private static final String DELETED_A_ARTIFACTS =
-         "select rl1.* from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 where tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.a_art_id";
+         "select rl1.* from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 where tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.a_art_id order by rel_link_id";
 
    private static final String DELETED_B_ARTIFACTS =
-         "select rl1.* from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 where tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.b_art_id";
+         "select rl1.* from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 where tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.b_art_id order by rel_link_id";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
