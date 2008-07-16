@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -40,7 +39,7 @@ public class XViewerColumnLabelProvider implements ILabelProvider {
    public String getText(Object element) {
       if (!(element instanceof XViewerColumn)) return "";
       XViewerColumn xCol = (XViewerColumn) element;
-      return xCol.getNameAlternate() + " (" + xCol.getWidth() + ") " + (OseeAts.isAtsAdmin() ? " - " + xCol.getOrderNum() : "");
+      return xCol.getNameAlternate() + " (" + xCol.getWidth() + ") ";
    }
 
 }

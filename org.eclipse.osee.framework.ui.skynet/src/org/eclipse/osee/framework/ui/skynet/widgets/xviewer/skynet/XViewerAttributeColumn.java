@@ -17,16 +17,19 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XViewerAttributeColumn extends XViewerValueColumn {
 
-   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
-      super(viewer, name, attributeTypeName, width, defaultWidth, align, show, sortDataType, orderNum);
+   private final String attributeTypeName;
+
+   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(viewer, name, width, defaultWidth, align, show, sortDataType);
+      this.attributeTypeName = attributeTypeName;
    }
 
-   public XViewerAttributeColumn(String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
-      this(null, name, attributeTypeName, width, defaultWidth, align, show, sortDataType, orderNum);
+   public XViewerAttributeColumn(String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      this(null, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
    }
 
    public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align) {
-      this(viewer, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String, Integer.MAX_VALUE);
+      this(viewer, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
    }
 
    @Override
@@ -45,7 +48,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column) {
       try {
          if (element instanceof Artifact) {
-            return ((Artifact) element).getSoleAttributeValueAsString(column.getStoreName(), "");
+            return ((Artifact) element).getSoleAttributeValueAsString(attributeTypeName, "");
          }
          return super.getColumnText(element, column);
       } catch (Exception ex) {

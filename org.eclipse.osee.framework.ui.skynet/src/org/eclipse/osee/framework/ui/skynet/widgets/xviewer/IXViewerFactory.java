@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCu
 public interface IXViewerFactory {
    XViewerSorter createNewXSorter(XViewer viewer);
 
-   CustomizeData getDefaultTableCustomizeData();
+   CustomizeData getDefaultTableCustomizeData(XViewer xViewer);
 
    XViewerColumn getDefaultXViewerColumn(String name);
 

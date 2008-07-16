@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -72,8 +71,8 @@ public class XViewerSorter extends ViewerSorter {
    }
 
    private String getTreeColumnText(XViewerColumn xCol, Object obj) {
-      ITableLabelProvider labelProv = (ITableLabelProvider) treeViewer.getLabelProvider();
-      return labelProv.getColumnText(obj, xCol.getColumnNum());
+      XViewerLabelProvider labelProv = (XViewerLabelProvider) treeViewer.getLabelProvider();
+      return labelProv.getColumnText(obj, xCol);
    }
 
    public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {

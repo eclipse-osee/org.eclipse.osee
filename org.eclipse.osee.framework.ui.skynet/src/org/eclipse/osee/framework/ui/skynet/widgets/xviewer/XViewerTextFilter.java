@@ -37,7 +37,7 @@ public class XViewerTextFilter extends ViewerFilter {
       if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
       for (XViewerColumn xCol : xViewer.getCustomize().getCurrentCustData().getColumnData().getColumns()) {
          if (xCol.isShow()) {
-            String cellStr = labelProv.getColumnText(element, xCol.getColumnNum());
+            String cellStr = ((XViewerLabelProvider) labelProv).getColumnText(element, xCol);
             if (cellStr != null) {
                matcher = pattern.matcher(cellStr);
                if (matcher.find()) return true;

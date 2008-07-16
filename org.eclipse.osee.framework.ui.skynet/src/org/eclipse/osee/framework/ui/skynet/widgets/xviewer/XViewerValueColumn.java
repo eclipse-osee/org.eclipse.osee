@@ -1,5 +1,5 @@
 /*
- * Created on Jul 13, 2008
+ * Created on Jul 14, 2008
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
@@ -14,26 +14,23 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XViewerValueColumn extends XViewerColumn {
 
-   public XViewerValueColumn(XViewer viewer, String name, String storeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
-      super(viewer, name, width, defaultWidth, align, show, sortDataType, orderNum);
-      setStoreName(storeName);
+   public XViewerValueColumn(XViewer viewer, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(viewer, name, width, defaultWidth, align, show, sortDataType);
    }
 
-   public XViewerValueColumn(String name, String storeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
-      this(null, name, storeName, width, defaultWidth, align, show, sortDataType, orderNum);
-
-   }
-
-   public XViewerValueColumn(XViewer viewer, String name, String storeName, int width, int defaultWidth, int align) {
-      this(null, name, storeName, width, defaultWidth, align, true, SortDataType.String, Integer.MAX_VALUE);
-
+   public XViewerValueColumn(String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(name, width, defaultWidth, align, show, sortDataType);
    }
 
    public XViewerValueColumn(XViewer viewer, String xml) {
       super(viewer, xml);
    }
 
-   public Image getColumnImage(Object element, XViewerColumn column) {
+   public XViewerValueColumn(XViewer viewer, String name, int width, int defaultWidth, int align) {
+      super(viewer, name, width, defaultWidth, align);
+   }
+
+   public Image getColumnImage(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       return null;
    }
 

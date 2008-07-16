@@ -11,9 +11,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -31,32 +31,36 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
-      if (viewer.getXTreeColumn(columnIndex) != null) {
+      try {
          XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
-         if (xViewerColumn instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+         if (xViewerColumn != null) {
+            if (xViewerColumn instanceof XViewerValueColumn) {
+               return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+            }
+            return getColumnImage(element, viewer.getXTreeColumn(columnIndex));
          }
-         return getColumnImage(element, xViewerColumn);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return null;
    }
 
    public String getColumnText(Object element, int columnIndex) {
       try {
-         if (viewer.getXTreeColumn(columnIndex) != null) {
-            XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         if (xViewerColumn != null) {
             if (xViewerColumn instanceof XViewerValueColumn) {
                return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
             }
-            return getColumnText(element, xViewerColumn);
+            return getColumnText(element, viewer.getXTreeColumn(columnIndex));
          }
-         return "";
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
+      return "";
    }
 
-   protected abstract Image getColumnImage(Object element, XViewerColumn column);
+   public abstract Image getColumnImage(Object element, XViewerColumn column);
 
-   protected abstract String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException;
+   public abstract String getColumnText(Object element, XViewerColumn column);
 }

@@ -43,16 +43,13 @@ public class XResultData {
       rd.log("This is just a normal log message");
       rd.logWarning("This is a warning");
       rd.logError("This is an error");
-      rd.report("This is my report title");
 
-      rd = new XResultData(SkynetGuiPlugin.getLogger());
       rd.log("Here is a nice table");
-      StringBuffer sb = new StringBuffer();
-      sb.append(AHTML.beginMultiColumnTable(95, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
+      rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
       for (int x = 0; x < 3; x++)
-         sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
-      sb.append(AHTML.endMultiColumnTable());
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+      rd.addRaw(AHTML.endMultiColumnTable());
       rd.report("This is my report title");
    }
 

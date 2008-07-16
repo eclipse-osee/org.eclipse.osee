@@ -21,17 +21,14 @@ import org.eclipse.swt.widgets.TreeColumn;
 public class XViewerColumn {
 
    private XViewer xViewer;
-   private String displayName;
-   private String storeName;
+   private String systemName;
    private String alternateName = "";
    private int width;
    private int defaultWidth;
    private int align;
    private boolean sortForward = true; // if true, sort alphabetically; else reverse
-   private int columnNum = Integer.MAX_VALUE;
    private boolean show = true;
    private TreeColumn treeColumn;
-   private int orderNum = Integer.MAX_VALUE;
    private SortDataType sortDataType = SortDataType.String;
    private static ArrayList<XViewerColumn> registeredColumns = new ArrayList<XViewerColumn>();
    private String toolTip = "";
@@ -39,20 +36,19 @@ public class XViewerColumn {
       Date, Float, Percent, String, String_MultiLine, Boolean, Integer
    };
 
-   public XViewerColumn(XViewer xViewer, String displayName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
+   public XViewerColumn(XViewer xViewer, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
       super();
       this.xViewer = xViewer;
-      this.displayName = displayName;
+      this.systemName = name;
       this.defaultWidth = defaultWidth;
       this.width = defaultWidth;
       this.align = align;
       this.show = show;
-      this.orderNum = orderNum;
       this.sortDataType = sortDataType;
    }
 
-   public XViewerColumn(String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
-      this(null, name, width, defaultWidth, align, show, sortDataType, orderNum);
+   public XViewerColumn(String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      this(null, name, width, defaultWidth, align, show, sortDataType);
    }
 
    public XViewerColumn(XViewer xViewer, String xml) {
@@ -62,7 +58,7 @@ public class XViewerColumn {
 
    public boolean equals(Object obj) {
       if (obj instanceof XViewerColumn) {
-         return ((XViewerColumn) obj).getSystemName().equals(displayName);
+         return ((XViewerColumn) obj).getSystemName().equals(systemName);
       }
       return super.equals(obj);
    }
@@ -76,7 +72,7 @@ public class XViewerColumn {
    }
 
    public XViewerColumn(XViewer xViewer, String name, int width, int defaultWidth, int align) {
-      this(xViewer, name, width, defaultWidth, align, true, SortDataType.String, Integer.MAX_VALUE);
+      this(xViewer, name, width, defaultWidth, align, true, SortDataType.String);
    }
 
    public static String SYSTEM_NAME = "name";
@@ -91,20 +87,19 @@ public class XViewerColumn {
 
    public String toXml() {
       StringBuffer sb = new StringBuffer("<" + XTREECOLUMN_TAG + ">");
-      sb.append(AXml.addTagData(SYSTEM_NAME, displayName));
+      sb.append(AXml.addTagData(SYSTEM_NAME, systemName));
       sb.append(AXml.addTagData(ALTERNATE_NAME, alternateName));
       sb.append(AXml.addTagData(DEFAULT_WIDTH, defaultWidth + ""));
       sb.append(AXml.addTagData(WIDTH, (xViewer == null) ? width + "" : xViewer.getCurrentColumnWidth(this) + ""));
       sb.append(AXml.addTagData(ALIGN, getAlignStoreName(align)));
       sb.append(AXml.addTagData(SORT_FORWARD, sortForward + ""));
       sb.append(AXml.addTagData(SHOW, show + ""));
-      sb.append(AXml.addTagData(ORDER_NUM, orderNum + ""));
       sb.append("</" + XTREECOLUMN_TAG + ">");
       return sb.toString();
    }
 
    public void setFromXml(String xml) {
-      displayName = AXml.getTagData(xml, SYSTEM_NAME);
+      systemName = AXml.getTagData(xml, SYSTEM_NAME);
       alternateName = AXml.getTagData(xml, ALTERNATE_NAME);
       width = AXml.getTagIntData(xml, WIDTH);
       defaultWidth = AXml.getTagIntData(xml, DEFAULT_WIDTH);
@@ -113,7 +108,6 @@ public class XViewerColumn {
       align = getAlignStoreValue(AXml.getTagData(xml, ALIGN));
       sortForward = AXml.getTagBooleanData(xml, SORT_FORWARD);
       show = AXml.getTagBooleanData(xml, SHOW);
-      orderNum = AXml.getTagIntData(xml, ORDER_NUM);
    }
 
    public static String getSystemName(String xml) {
@@ -139,7 +133,7 @@ public class XViewerColumn {
    }
 
    public String toString() {
-      return displayName;
+      return systemName;
    }
 
    public int getAlign() {
@@ -147,12 +141,12 @@ public class XViewerColumn {
    }
 
    public String getNameAlternate() {
-      return displayName + (alternateName.equals("") ? "" : " (" + (alternateName + ")"));
+      return systemName + (alternateName.equals("") ? "" : " (" + (alternateName + ")"));
    }
 
    public void refreshColumn() {
       if (treeColumn == null) return;
-      treeColumn.setText(displayName);
+      treeColumn.setText(systemName);
       if (show)
          treeColumn.setWidth(width);
       else
@@ -165,11 +159,11 @@ public class XViewerColumn {
    }
 
    public String getSystemName() {
-      return displayName;
+      return systemName;
    }
 
    public void setSystemName(String name) {
-      this.displayName = name;
+      this.systemName = name;
    }
 
    public int getWidth() {
@@ -196,14 +190,6 @@ public class XViewerColumn {
       setSortForward(!sortForward);
    }
 
-   public int getColumnNum() {
-      return columnNum;
-   }
-
-   public void setColumnNum(int columnNum) {
-      this.columnNum = columnNum;
-   }
-
    public boolean isShow() {
       return show;
    }
@@ -218,14 +204,6 @@ public class XViewerColumn {
 
    public void setTreeColumn(TreeColumn treeColumn) {
       this.treeColumn = treeColumn;
-   }
-
-   public int getOrderNum() {
-      return orderNum;
-   }
-
-   public void setOrderNum(int orderNum) {
-      this.orderNum = orderNum;
    }
 
    public String getAlternateName() {
@@ -243,7 +221,7 @@ public class XViewerColumn {
       if (!alternateName.equals(""))
          return alternateName;
       else
-         return displayName;
+         return systemName;
    }
 
    /**
@@ -270,7 +248,7 @@ public class XViewerColumn {
    /**
     * @param treeViewer the treeViewer to set
     */
-   public void setTreeViewer(XViewer treeViewer) {
+   public void setXViewer(XViewer treeViewer) {
       this.xViewer = treeViewer;
    }
 
@@ -300,14 +278,6 @@ public class XViewerColumn {
     */
    public void setDefaultWidth(int defaultWidth) {
       this.defaultWidth = defaultWidth;
-   }
-
-   public String getStoreName() {
-      return storeName;
-   }
-
-   public void setStoreName(String storeName) {
-      this.storeName = storeName;
    }
 
 }

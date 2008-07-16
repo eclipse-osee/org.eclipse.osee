@@ -240,26 +240,9 @@ public class XViewer extends TreeViewer {
    }
 
    public XViewerColumn getXTreeColumn(int columnIndex) {
-      // Setting current customize data happens in a job, the currentCustData could be null
-      // depending on order of threads
-      if (customize.getCurrentCustData() != null) {
-         for (XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
-            if (xCol.getColumnNum() == columnIndex) return xCol;
-         }
-      }
-      return null;
+      return (XViewerColumn) getTree().getColumn(columnIndex).getData();
    }
 
-   public XViewerColumn getXTreeColumn(String columnName) {
-      // Setting current customize data happens in a job, the currentCustData could be null
-      // depending on order of threads
-      if (customize.getCurrentCustData() != null) {
-         for (XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
-            if (xCol.getDisplayName() == columnName) return xCol;
-         }
-      }
-      return null;
-   }
    Listener displayKeysListener = new Listener() {
       public void handleEvent(org.eclipse.swt.widgets.Event event) {
          if (event.keyCode == SWT.CTRL) {
@@ -380,11 +363,9 @@ public class XViewer extends TreeViewer {
    }
 
    public void addColumns() {
-      int colNum = 0;
       for (final XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
-         TreeColumn column = new TreeColumn(getTree(), xCol.getAlign(), colNum);
+         TreeColumn column = new TreeColumn(getTree(), xCol.getAlign());
          xCol.setTreeColumn(column);
-         xCol.setColumnNum(colNum++);
          column.setData(xCol);
          if (xCol.getToolTip().equals(""))
             column.setToolTipText(xCol.getDisplayName());
