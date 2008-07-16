@@ -70,7 +70,7 @@ public enum SQL3DataType {
    }
 
    public static SQL3DataType get(int type) {
-      if (typeToEnum == null) {
+      if (typeToEnum.isEmpty()) {
          for (SQL3DataType enumType : SQL3DataType.values()) {
             typeToEnum.put(enumType.sqlTypeNumber, enumType);
          }
