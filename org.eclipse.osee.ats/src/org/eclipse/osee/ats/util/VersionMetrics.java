@@ -42,36 +42,37 @@ public class VersionMetrics {
       StringBuffer sb = new StringBuffer(verArt.getDescriptiveName() + "\n");
       try {
          sb.append("Workflows: " + verArt.getTargetedForTeamArtifacts().size());
-         sb.append("Problem: " + getTeamWorkFlows(ChangeType.Problem).size() + " Improve: " + getTeamWorkFlows(ChangeType.Improvement) + " Support: " + getTeamWorkFlows(ChangeType.Support));
-         sb.append("Release Date: " + verArt.getReleaseDate());
+         sb.append(" Problem: " + getTeamWorkFlows(ChangeType.Problem).size() + " Improve: " + getTeamWorkFlows(
+               ChangeType.Improvement).size() + " Support: " + getTeamWorkFlows(ChangeType.Support).size());
+         sb.append(" Release Date: " + verArt.getReleaseDate());
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
-            sb.append("Prev Release Version: <not found>");
+            sb.append(" Prev Release Version: <not found>");
          } else {
-            sb.append("Prev Release Version \"" + prevVerMet + "\"   Release Date: " + verArt.getReleaseDate());
+            sb.append(" Prev Release Version \"" + prevVerMet + "\"   Release Date: " + verArt.getReleaseDate());
          }
-         sb.append("Start Date: " + getReleaseStartDate());
-         sb.append("Num Days: " + getNumberDaysInRelease());
+         sb.append(" Start Date: " + getReleaseStartDate());
+         sb.append(" Num Days: " + getNumberDaysInRelease());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return sb.toString();
    }
 
-   public Integer getNumberDaysInRelease()throws OseeCoreException, SQLException{
+   public Integer getNumberDaysInRelease() throws OseeCoreException, SQLException {
       Date startDate = getReleaseStartDate();
       if (startDate == null) return null;
       if (verArt.getReleaseDate() == null) return null;
       return XDate.calculateDifference(startDate, verArt.getReleaseDate());
    }
 
-   public Date getReleaseStartDate()throws OseeCoreException, SQLException{
+   public Date getReleaseStartDate() throws OseeCoreException, SQLException {
       VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
       if (prevVerMet == null) return null;
       return prevVerMet.getVerArt().getReleaseDate();
    }
 
-   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType)throws OseeCoreException, SQLException{
+   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException, SQLException {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
@@ -80,10 +81,19 @@ public class VersionMetrics {
       return teams;
    }
 
-   public VersionMetrics getPreviousVerMetViaReleaseDate()throws OseeCoreException, SQLException{
+   public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException, SQLException {
       if (verArt.getReleaseDate() == null) return null;
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
       if (index > 0) return verTeamMet.getReleasedOrderedVersions().get(index - 1);
+      return null;
+   }
+
+   public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException, SQLException {
+      if (verArt.getReleaseDate() == null) return null;
+      int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
+      if (index < verTeamMet.getReleasedOrderedVersions().size() - 1) {
+         return verTeamMet.getReleasedOrderedVersions().get(index + 1);
+      }
       return null;
    }
 

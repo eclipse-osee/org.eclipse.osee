@@ -98,7 +98,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                if (accessibleArts.size() == 0)
                   AWorkbench.popup("ERROR", "No Artifacts to edit");
                else
-                  AWorkbench.getActivePage().openEditor(new MassArtifactEditorInput(name, accessibleArts), EDITOR_ID);
+                  AWorkbench.getActivePage().openEditor(new MassArtifactEditorInput(name, accessibleArts, null),
+                        EDITOR_ID);
                if (accessControlFilteredResults) AWorkbench.popup("ERROR",
                      "Some Artifacts not loaded due to access control limitations.");
             } catch (PartInitException ex) {

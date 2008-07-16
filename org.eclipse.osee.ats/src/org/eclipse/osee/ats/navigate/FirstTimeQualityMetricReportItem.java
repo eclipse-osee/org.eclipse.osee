@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -69,13 +70,13 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          useTeamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
+         ld.setTitle(getName());
          try {
             ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
          } catch (MultipleAttributesExist ex) {
@@ -83,6 +84,10 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          }
          int result = ld.open();
          if (result == 0) {
+            if (ld.getResult().length == 0) {
+               AWorkbench.popup("ERROR", "You must select a team to operate against.");
+               return;
+            }
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
          } else
             return;
@@ -112,7 +117,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       public IStatus run(IProgressMonitor monitor) {
          try {
             XResultData resultData = new XResultData(AtsPlugin.getLogger());
-            String html = getTeamWorkflowReport(teamDef, monitor);
+            String html = getTeamWorkflowReport(getName(), teamDef, monitor);
             resultData.addRaw(html);
             resultData.report(getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {
@@ -123,6 +128,10 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       }
    }
 
+   private static String[] HEADER_STRINGS =
+         new String[] {"Version", "StartDate", "RelDate", "Num 1 + 2 Orig During Next Release Cycle",
+               "Num Non-Support Released", "Ratio Orig 1 and 2 Bugs/Number Released"};
+
    /**
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
     * next release / # of non-support actions released in that release
@@ -132,39 +141,57 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * @return
     * @throws SQLException
     */
-   public static String getTeamWorkflowReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       StringBuilder sb = new StringBuilder();
+      sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Version", "StartDate", "RelDate",
-            "Num 1 + 2 Orig During Release", "Num Non-Support Released", "Ratio Orig/Released"}));
+      sb.append(AHTML.addRowSpanMultiColumnTable(
+            "This report shows the ratio of 1+2 problem workflows created during next release cycle due to current release over the total non-support workflows during this release.",
+            HEADER_STRINGS.length));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(HEADER_STRINGS));
       VersionTeamMetrics teamMet = new VersionTeamMetrics(teamDef);
       Collection<VersionMetrics> verMets = teamMet.getReleasedOrderedVersions();
       monitor.beginTask("Processing Versions", verMets.size());
       for (VersionMetrics verMet : verMets) {
-         Date startDate = verMet.getReleaseStartDate();
-         Date endDate = verMet.getVerArt().getReleaseDate();
-         Integer numOrigDurning = null;
-         if (startDate != null && endDate != null) {
-            Collection<TeamWorkFlowArtifact> arts = teamMet.getWorkflowsOriginatedBetween(startDate, endDate);
+         Date thisReleaseStartDate = verMet.getReleaseStartDate();
+         Date thisReleaseEndDate = verMet.getVerArt().getReleaseDate();
+         Date nextReleaseStartDate = null;
+         Date nextReleaseEndDate = null;
+         VersionMetrics nextVerMet = verMet.getNextVerMetViaReleaseDate();
+         if (nextVerMet != null) {
+            nextReleaseStartDate = nextVerMet.getReleaseStartDate();
+            nextReleaseEndDate = nextVerMet.getVerArt().getReleaseDate();
+         }
+         Integer numOrigDurningNextReleaseCycle = null;
+         if (nextReleaseStartDate != null && nextReleaseEndDate != null) {
+            if (numOrigDurningNextReleaseCycle == null) {
+               numOrigDurningNextReleaseCycle = 0;
+            }
+            Collection<TeamWorkFlowArtifact> arts =
+                  teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
-                  if (numOrigDurning == null) numOrigDurning = new Integer(0);
-                  numOrigDurning++;
+               if (!team.getSmaMgr().isCancelled() && team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
+                  numOrigDurningNextReleaseCycle++;
                }
             }
          }
          Integer numNonSupportReleased = null;
-         if (endDate != null) {
-            numNonSupportReleased = verMet.getTeamWorkFlows(ChangeType.Problem, ChangeType.Improvement).size();
+         if (thisReleaseEndDate != null) {
+            numNonSupportReleased = 0;
+            for (TeamWorkFlowArtifact team : verMet.getTeamWorkFlows(ChangeType.Problem, ChangeType.Improvement)) {
+               if (!team.getSmaMgr().isCancelled()) {
+                  numNonSupportReleased++;
+               }
+            }
          }
          sb.append(AHTML.addRowMultiColumnTable(new String[] {
                verMet.getVerArt().getDescriptiveName(),
-               XDate.getDateStr(startDate, XDate.MMDDYY),
-               XDate.getDateStr(endDate, XDate.MMDDYY),
-               numOrigDurning == null ? "N/A" : String.valueOf(numOrigDurning),
+               XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
+               XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
+               numOrigDurningNextReleaseCycle == null ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
                numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-               numOrigDurning == null || numNonSupportReleased == 0 || numNonSupportReleased == null ? "N/A" : AtsLib.doubleToStrString(new Double(
-                     numOrigDurning) / numNonSupportReleased)}));
+               numOrigDurningNextReleaseCycle == null || numNonSupportReleased == 0 || numNonSupportReleased == null ? "N/A" : AtsLib.doubleToStrString(new Double(
+                     numOrigDurningNextReleaseCycle) / numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

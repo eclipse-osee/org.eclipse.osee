@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -105,24 +104,6 @@ public class XViewerCustomize {
    }
 
    /**
-    * @param xTreeCols
-    * @return order of columns based on column number and then system name
-    */
-   public static List<XViewerColumn> getColumnOrder(Collection<XViewerColumn> xTreeCols) {
-      List<XViewerColumn> sortCols = new ArrayList<XViewerColumn>(xTreeCols);
-      Collections.sort(sortCols, new Comparator<XViewerColumn>() {
-         public int compare(XViewerColumn o1, XViewerColumn o2) {
-            if (o1.getOrderNum() == o2.getOrderNum()) {
-               return o1.getSystemName().compareTo(o2.getSystemName());
-            } else {
-               return o1.getOrderNum() - o2.getOrderNum();
-            }
-         }
-      });
-      return sortCols;
-   }
-
-   /**
     * 
     */
    protected void setupMenu() {
@@ -169,8 +150,12 @@ public class XViewerCustomize {
          public void run() {
             TreeViewerReport tvr = new TreeViewerReport(xViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
+            int columnNum = 0;
             for (XViewerColumn xCol : xViewer.getCustomize().getCurrentCustData().getColumnData().getColumns()) {
-               if (!xCol.isShow()) ignoreCols.add(xCol.getColumnNum());
+               columnNum++;
+               if (!xCol.isShow()) {
+                  ignoreCols.add(columnNum);
+               }
             }
             tvr.setIgnoreColumns(ignoreCols);
             tvr.open();
@@ -216,9 +201,8 @@ public class XViewerCustomize {
       TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
       TreeItem treeItem = xViewer.getRightClickSelectedItem();
       if (treeCol != null) {
-         XViewerColumn xCol = xViewer.getXTreeColumn(treeCol.getText());
-         String data =
-               ((ITableLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol.getColumnNum());
+         XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+         String data = ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol);
          if (data != null && !data.equals("")) new HtmlDialog(treeCol.getText() + " Data", treeCol.getText() + " Data",
                data).open();
       }
@@ -420,7 +404,7 @@ public class XViewerCustomize {
     * @return the defaultCustData
     */
    public CustomizeData getTableDefaultCustData() {
-      CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData();
+      CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData(xViewer);
       if (custData.getName() == null || this.currentCustData.getName().equals("")) custData.setName(TABLE_DEFAULT_LABEL);
       custData.setNameSpace(xViewer.getViewerNamespace());
       return custData;

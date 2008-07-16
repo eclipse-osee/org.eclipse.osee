@@ -35,14 +35,12 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData() {
+   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
-      int x = 0;
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       for (MergeColumn atsXCol : MergeColumn.values()) {
          XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         newCol.setOrderNum(x++);
-         newCol.setTreeViewer(xViewer);
+         newCol.setXViewer(xViewer);
          cols.add(newCol);
       }
       custData.getColumnData().setColumns(cols);

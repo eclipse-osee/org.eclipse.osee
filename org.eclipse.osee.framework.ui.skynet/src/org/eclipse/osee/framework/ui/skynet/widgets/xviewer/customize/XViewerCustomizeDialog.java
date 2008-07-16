@@ -90,7 +90,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       getShell().setText(title);
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (SkynetGuiPlugin.getInstance() != null) SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
+      SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
 
       final Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -300,10 +300,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearFilterLabel = new Label(composite_7, SWT.PUSH);
-      if (SkynetGuiPlugin.getInstance() != null)
-         clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
-      else
-         clearFilterLabel.setText("clear");
+      clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
       clearFilterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -540,18 +537,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
     */
    private List<XViewerColumn> getConfigCustXViewerColumns() {
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
-      int x = 0;
       for (XViewerColumn xCol : getTableXViewerColumns(visibleColTable)) {
          xCol.setShow(true);
-         xCol.setOrderNum(x);
-         xCol.setColumnNum(x++);
-         xCol.setTreeViewer(xViewer);
+         xCol.setXViewer(xViewer);
          xCols.add(xCol);
       }
       for (XViewerColumn xCol : getTableXViewerColumns(hiddenColTable)) {
          xCol.setShow(false);
-         xCol.setOrderNum(x++);
-         xCol.setTreeViewer(xViewer);
+         xCol.setXViewer(xViewer);
          xCols.add(xCol);
       }
       return xCols;

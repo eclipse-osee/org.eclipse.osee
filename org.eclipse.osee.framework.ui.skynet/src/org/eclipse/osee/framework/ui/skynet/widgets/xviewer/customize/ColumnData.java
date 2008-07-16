@@ -43,9 +43,7 @@ public class ColumnData {
             xCol.setFromXml(colXml);
          xCols.add(xCol);
       }
-      int x = 0;
-      for (XViewerColumn xCol : XViewerCustomize.getColumnOrder(xCols)) {
-         xCol.setColumnNum(x++);
+      for (XViewerColumn xCol : xCols) {
          columns.add(xCol);
          nameToCol.put(xCol.getSystemName(), xCol);
       }

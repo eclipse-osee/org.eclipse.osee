@@ -53,7 +53,6 @@ public class XResultData {
       for (int x = 0; x < 3; x++)
          sb.append(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
       sb.append(AHTML.endMultiColumnTable());
-      rd.addRaw(sb.toString().replaceAll("\n", ""));
       rd.report("This is my report title");
    }
 

@@ -18,8 +18,10 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.TreeColumn;
 
 public class XChangeLabelProvider implements ITableLabelProvider {
    Font font = null;
@@ -33,6 +35,11 @@ public class XChangeLabelProvider implements ITableLabelProvider {
 
    public String getColumnText(Object element, int columnIndex) {
       try {
+         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
+         if (treeCol.getData() instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) treeCol.getData()).getColumnText(element,
+                  (XViewerValueColumn) treeCol.getData());
+         }
          if (element instanceof String) {
             if (columnIndex == 1)
                return (String) element;
@@ -99,28 +106,36 @@ public class XChangeLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
-      if (element instanceof String) return null;
-      XViewerColumn xCol = changeXViewer.getXTreeColumn(columnIndex);
-      if (xCol == null) return null;
-      ChangeColumn dCol = ChangeColumn.getAtsXColumn(xCol);
-      if (!xCol.isShow()) return null; // Since not shown, don't display
-
-      if (element instanceof Change) {
-         Change change = (Change) element;
-
-         if (dCol == ChangeColumn.Name) {
-            try {
-               return change.getItemKindImage();
-            } catch (IllegalArgumentException ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
-            } catch (Exception ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
-            }
-         } else if (dCol == ChangeColumn.Item_Type) {
-            return change.getItemTypeImage();
+      try {
+         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
+         if (treeCol.getData() instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) treeCol.getData()).getColumnImage(element,
+                  (XViewerValueColumn) treeCol.getData());
          }
-      }
+         if (element instanceof String) return null;
+         XViewerColumn xCol = changeXViewer.getXTreeColumn(columnIndex);
+         if (xCol == null) return null;
+         ChangeColumn dCol = ChangeColumn.getAtsXColumn(xCol);
+         if (!xCol.isShow()) return null; // Since not shown, don't display
 
+         if (element instanceof Change) {
+            Change change = (Change) element;
+
+            if (dCol == ChangeColumn.Name) {
+               try {
+                  return change.getItemKindImage();
+               } catch (IllegalArgumentException ex) {
+                  OSEELog.logException(XMergeContentProvider.class, ex, true);
+               } catch (Exception ex) {
+                  OSEELog.logException(XMergeContentProvider.class, ex, true);
+               }
+            } else if (dCol == ChangeColumn.Item_Type) {
+               return change.getItemTypeImage();
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
       return null;
    }
 }

@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -35,9 +34,10 @@ public class MassLabelProvider implements ITableLabelProvider {
 
    public String getColumnText(Object element, int columnIndex) {
       try {
-         XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
-         if (xViewerColumn instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
+         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
+         if (treeCol.getData() instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) treeCol.getData()).getColumnText(element,
+                  (XViewerValueColumn) treeCol.getData());
          }
          if (element instanceof String) {
             if (columnIndex == 1)
@@ -52,7 +52,6 @@ public class MassLabelProvider implements ITableLabelProvider {
             return "";
          }
 
-         TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
          String colName = treeCol.getText();
          if (!artifact.isAttributeTypeValid(colName)) {
             return "";
@@ -87,13 +86,18 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
-      XViewerColumn xViewerColumn = treeViewer.getXTreeColumn(columnIndex);
-      if (xViewerColumn instanceof XViewerValueColumn) {
-         return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+      try {
+         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
+         if (treeCol.getData() instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) treeCol.getData()).getColumnImage(element,
+                  (XViewerValueColumn) treeCol.getData());
+         }
+         Artifact artifact = (Artifact) element;
+         if (artifact == null || artifact.isDeleted()) return null;
+         if (columnIndex == 0) return artifact.getImage();
+      } catch (Exception ex) {
+         // do nothing
       }
-      Artifact artifact = (Artifact) element;
-      if (artifact == null || artifact.isDeleted()) return null;
-      if (columnIndex == 0) return artifact.getImage();
       return null;
    }
 

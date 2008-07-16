@@ -5,7 +5,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
@@ -16,13 +18,15 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerHridColumn extends XViewerValueColumn {
 
-   public XViewerHridColumn(String name, XViewer viewer, int columnNum) {
-      super(viewer, name == null ? "HRID" : name, "", 75, 75, SWT.LEFT);
-      setOrderNum(columnNum);
+   public XViewerHridColumn(String name, XViewer viewer) {
+      super(viewer, name, 75, 75, SWT.LEFT, true, SortDataType.String);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
+    */
    @Override
-   public String getColumnText(Object element, XViewerColumn column) {
+   public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getHumanReadableId();
       }

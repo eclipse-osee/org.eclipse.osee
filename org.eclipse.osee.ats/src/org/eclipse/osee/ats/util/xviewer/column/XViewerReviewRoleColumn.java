@@ -18,25 +18,32 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerUserRoleColumn extends XViewerValueColumn {
+public class XViewerReviewRoleColumn extends XViewerValueColumn {
 
    private final User user;
 
-   public XViewerUserRoleColumn(String name, XViewer viewer, int columnNum, User user) {
-      super(viewer, "Role", 75, 75, SWT.LEFT);
+   public XViewerReviewRoleColumn(XViewer viewer, User user) {
+      super(viewer, "Role", 75, 75, SWT.LEFT, true, SortDataType.String);
       this.user = user;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
+    */
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       if (element instanceof ReviewSMArtifact) {
-         String str = "";
-         for (UserRole role : ((ReviewSMArtifact) element).getUserRoleManager().getUserRoles()) {
-            if (role.getUser().equals(user)) str += role.getRole().name() + ", ";
-         }
-         return str.replaceFirst(", $", "");
+         return getRolesStr((ReviewSMArtifact) element, user);
       }
       return "";
+   }
+
+   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException, SQLException {
+      String str = "";
+      for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
+         if (role.getUser().equals(user)) str += role.getRole().name() + ", ";
+      }
+      return str.replaceFirst(", $", "");
    }
 
 }

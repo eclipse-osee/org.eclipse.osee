@@ -39,21 +39,30 @@ public class QueryLogLabelProvider extends XViewerLabelProvider {
       sharedImages = PlatformUI.getWorkbench().getSharedImages();
    }
 
-   protected Image getColumnImage(Object element, XViewerColumn column) {
-
-      if (element instanceof QueryRecord && column.getColumnNum() == 0) {
+   public Image getColumnImage(Object element, int columnIndex) {
+      if (element instanceof QueryRecord) {
          if (((QueryRecord) element).getSqlException() != null) {
             return sharedImages.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
          }
-      } else if (element instanceof Exception && column.getColumnNum() == 0) {
+      } else if (element instanceof Exception) {
          return sharedImages.getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-      } else if (element instanceof String && column.getColumnNum() == 0) {
+      } else if (element instanceof String) {
          return sharedImages.getImage(ISharedImages.IMG_OBJ_ELEMENT);
       }
       return null;
+
    }
 
-   protected String getColumnText(Object element, XViewerColumn column) {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
+    */
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn column) {
+      // Since getColumnimage is overridden, this method will not be called
+      return null;
+   }
+
+   public String getColumnText(Object element, XViewerColumn column) {
       String columnName = column.getDisplayName();
 
       if (element instanceof QueryRecord) {

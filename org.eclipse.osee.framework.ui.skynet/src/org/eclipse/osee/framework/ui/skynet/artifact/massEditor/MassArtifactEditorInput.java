@@ -24,25 +24,18 @@ import org.eclipse.ui.IPersistableElement;
 public class MassArtifactEditorInput implements IEditorInput {
 
    private final Collection<? extends Artifact> artifacts;
+
    private final String name;
-   private final List<XViewerColumn> xViewerColumns;
+
+   private final List<XViewerColumn> columns;
 
    /**
     * @param artifact
     */
-   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts) {
+   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, List<XViewerColumn> columns) {
       this.name = name;
       this.artifacts = artifacts;
-      this.xViewerColumns = null;
-   }
-
-   /**
-    * @param artifact
-    */
-   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, List<XViewerColumn> xViewerColumns) {
-      this.name = name;
-      this.artifacts = artifacts;
-      this.xViewerColumns = xViewerColumns;
+      this.columns = columns;
    }
 
    /* (non-Javadoc)
@@ -103,8 +96,11 @@ public class MassArtifactEditorInput implements IEditorInput {
       return null;
    }
 
-   public List<XViewerColumn> getXViewerColumns() {
-      return xViewerColumns;
+   /**
+    * @return the columns
+    */
+   public List<XViewerColumn> getColumns() {
+      return columns;
    }
 
 }

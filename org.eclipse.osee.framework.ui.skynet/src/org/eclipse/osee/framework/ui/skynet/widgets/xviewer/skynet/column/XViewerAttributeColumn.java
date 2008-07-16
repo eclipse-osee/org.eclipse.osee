@@ -11,15 +11,25 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerArtifactNameColumn extends XViewerValueColumn {
+public class XViewerAttributeColumn extends XViewerValueColumn {
 
-   public XViewerArtifactNameColumn(String name, XViewer viewer) {
-      super(viewer, name, 150, 150, SWT.LEFT, true, SortDataType.String);
+   private final String attributeTypeName;
+
+   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(viewer, name, width, defaultWidth, align, show, sortDataType);
+      this.attributeTypeName = attributeTypeName;
+   }
+
+   public XViewerAttributeColumn(String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      this(null, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
+   }
+
+   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align) {
+      this(viewer, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
    }
 
    /* (non-Javadoc)
@@ -28,9 +38,8 @@ public class XViewerArtifactNameColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getDescriptiveName();
+         return ((Artifact) element).getAttributesToString(attributeTypeName);
       }
       return super.getColumnText(element, column);
    }
-
 }

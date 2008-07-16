@@ -51,7 +51,7 @@ public enum XViewerTestColumns {
    public XViewerColumn getXViewerColumn(XViewerTestColumns atsXCol) {
       XViewerColumn xCol =
             new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
-                  atsXCol.sortDataType, 0);
+                  atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

@@ -18,11 +18,13 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerSmaStateColumn extends XViewerValueColumn {
 
-   public XViewerSmaStateColumn(XViewer viewer, int columnNum) {
-      super(viewer, "State", "", 75, 75, SWT.LEFT);
-      setOrderNum(columnNum);
+   public XViewerSmaStateColumn(XViewer viewer) {
+      super(viewer, "State", 75, 75, SWT.LEFT, true, SortDataType.String);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
+    */
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       if (element instanceof StateMachineArtifact) {

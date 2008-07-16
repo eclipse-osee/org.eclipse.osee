@@ -172,4 +172,11 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       return true;
    }
 
+   /**
+    * @return the xChangeViewer
+    */
+   public XChangeViewer getXChangeViewer() {
+      return xChangeViewer;
+   }
+
 }

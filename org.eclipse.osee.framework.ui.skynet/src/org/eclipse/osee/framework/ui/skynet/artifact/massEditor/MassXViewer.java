@@ -41,9 +41,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.AttributeSortDataType;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeSortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -129,6 +128,8 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
       try {
          super.handleAltLeftClick(treeColumn, treeItem);
+         // System.out.println("Column " + treeColumn.getText() + " item " +
+         // treeItem);
          String colName = treeColumn.getText();
          if (EXTRA_COLUMNS.contains(colName)) {
             AWorkbench.popup("ERROR", "Can't change the field " + colName);
@@ -271,19 +272,15 @@ public class MassXViewer extends XViewer implements IEventReceiver {
 
    public void resetColumns(Collection<? extends Artifact> artifacts) {
       CustomizeData custData = new CustomizeData();
-      int columnNum = 0;
+
       List<XViewerColumn> columns =
-            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getXViewerColumns();
-      if (columns != null) {
-         for (XViewerColumn newCol : columns) {
-            newCol.setOrderNum(columnNum++);
-            newCol.setTreeViewer(this);
-         }
-      }
-      // If editor input has no specified columns defined, create columns from all attribute types
+            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getColumns();
       if (columns == null) {
          columns = getDefaultArtifactColumns(this, artifacts);
          custData.getSortingData().setSortingNames(Arrays.asList("Name"));
+      }
+      for (XViewerColumn col : columns) {
+         col.setXViewer(this);
       }
 
       custData.getColumnData().setColumns(columns);
@@ -291,10 +288,9 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
    }
 
-   public static List<XViewerColumn> getDefaultArtifactColumns(XViewer viewer, Collection<? extends Artifact> artifacts) {
-      int columnNum = 0;
-      List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
+   public static List<XViewerColumn> getDefaultArtifactColumns(XViewer xViewer, Collection<? extends Artifact> artifacts) {
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
+
       try {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
@@ -303,26 +299,26 @@ public class MassXViewer extends XViewer implements IEventReceiver {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
+      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       Set<String> attrNames = new HashSet<String>();
       // Add Name first
-      cols.add(new XViewerArtifactNameColumn(null, viewer, columnNum++));
+      columns.add(new XViewerArtifactNameColumn("Name", null));
       attrNames.add("Name");
 
       // Add other attributes
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
-            XViewerColumn newCol = new XViewerColumn(viewer, attributeType.getName(), 75, 75, SWT.CENTER);
-            newCol.setSortDataType(AttributeSortDataType.getSortDataType(attributeType));
-            newCol.setOrderNum(columnNum++);
-            newCol.setTreeViewer(viewer);
-            cols.add(newCol);
+            XViewerColumn newCol = new XViewerColumn(xViewer, attributeType.getName(), 75, 75, SWT.CENTER);
+            newCol.setSortDataType(XViewerAttributeSortDataType.get(attributeType));
+            columns.add(newCol);
             attrNames.add(attributeType.getName());
          }
       }
-      cols.add(new XViewerHridColumn(null, viewer, columnNum++));
-      cols.add(new XViewerGuidColumn(viewer, columnNum++));
-      cols.add(new XViewerArtifactTypeColumn(null, viewer, columnNum++));
-      return cols;
+
+      columns.add(new XViewerHridColumn("ID", null));
+      columns.add(new XViewerGuidColumn("Guid", null));
+
+      return columns;
    }
 
    /**

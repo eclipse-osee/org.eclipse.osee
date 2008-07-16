@@ -35,7 +35,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       return new TaskXViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData() {
+   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
       // Title, State, POC, Percent_Complete, Hours_Spent, Resolution, Est_Hours, Remain_Hours
       List<AtsXColumn> taskColumnOrder =
@@ -53,8 +53,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       for (AtsXColumn atsXCol : taskColumnOrder) {
          XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
          newCol.setWidth(widths.get(x));
-         newCol.setOrderNum(x++);
-         newCol.setTreeViewer(xViewer);
+         newCol.setXViewer(xViewer);
          newCol.setShow(true);
          cols.add(newCol);
          handled.add(atsXCol);
@@ -64,8 +63,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       for (AtsXColumn atsXCol : AtsXColumn.values()) {
          if (!handled.contains(atsXCol)) {
             XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-            newCol.setOrderNum(x++);
-            newCol.setTreeViewer(xViewer);
+            newCol.setXViewer(xViewer);
             newCol.setShow(false);
             cols.add(newCol);
             handled.add(atsXCol);

@@ -33,14 +33,12 @@ public class XViewerTestFactory implements IXViewerFactory {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData()
     */
    @Override
-   public CustomizeData getDefaultTableCustomizeData() {
+   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
-      int x = 0;
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       for (XViewerTestColumns atsXCol : XViewerTestColumns.values()) {
          XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         newCol.setOrderNum(x++);
-         newCol.setTreeViewer(xViewer);
+         newCol.setXViewer(xViewer);
          cols.add(newCol);
       }
       custData.getColumnData().setColumns(cols);

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -37,16 +36,9 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData() {
+   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
-      int x = 0;
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-
-      XViewerColumn newCol = new XViewerColumn(xViewer, "Name", 150, 150, SWT.CENTER);
-      newCol.setOrderNum(x++);
-      newCol.setTreeViewer(xViewer);
-      cols.add(newCol);
-
       custData.getColumnData().setColumns(cols);
       return custData;
    }

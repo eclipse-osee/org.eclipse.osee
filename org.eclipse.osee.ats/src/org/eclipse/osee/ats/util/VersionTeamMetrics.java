@@ -20,10 +20,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
  * @author Donald G. Dunne
@@ -41,17 +44,33 @@ public class VersionTeamMetrics {
    }
 
    private void loadMetrics() throws OseeCoreException, SQLException {
+      bulkLoadArtifacts();
       orderReleasedVersions();
    }
 
+   private void bulkLoadArtifacts() throws OseeCoreException, SQLException {
+      RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
+            CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version,
+            AtsRelation.TeamWorkflowTargetedForVersion_Workflow, AtsRelation.SmaToTask_Task,
+            AtsRelation.ActionToWorkflow_Action);
+   }
+
+   private Map<TeamWorkFlowArtifact, Date> teamWorkflowToOrigDate = null;
+
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException, SQLException {
-      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
-         for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-            Date origDate = team.getSmaMgr().getLog().getCreationDate();
-            if (origDate != null) {
-               if (origDate.after(startDate) && origDate.before(endDate)) teams.add(team);
+      if (teamWorkflowToOrigDate == null) {
+         teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
+         for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
+            for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+               Date origDate = team.getSmaMgr().getLog().getCreationDate();
+               teamWorkflowToOrigDate.put(team, origDate);
             }
+         }
+      }
+      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
+      for (Entry<TeamWorkFlowArtifact, Date> entry : teamWorkflowToOrigDate.entrySet()) {
+         if (entry.getValue() != null && entry.getValue().after(startDate) && entry.getValue().before(endDate)) {
+            teams.add(entry.getKey());
          }
       }
       return teams;
@@ -60,7 +79,9 @@ public class VersionTeamMetrics {
    private void orderReleasedVersions() throws OseeCoreException, SQLException {
       for (VersionArtifact ver : verTeamDef.getVersionsArtifacts()) {
          VersionMetrics verMet = new VersionMetrics(ver, this);
-         if (ver.getReleaseDate() != null) relDateToVerMet.put(ver.getReleaseDate(), verMet);
+         if (ver.getReleaseDate() != null) {
+            relDateToVerMet.put(ver.getReleaseDate(), verMet);
+         }
          verMets.add(verMet);
       }
       Date[] releases = relDateToVerMet.keySet().toArray(new Date[relDateToVerMet.keySet().size()]);

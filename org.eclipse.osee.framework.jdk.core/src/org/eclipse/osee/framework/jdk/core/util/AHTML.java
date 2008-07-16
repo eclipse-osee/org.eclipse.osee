@@ -86,7 +86,7 @@ public class AHTML {
    }
 
    public static String getLabelStr(String labelFont, String str) {
-      return labelFont + "<b>" + textToHtml(str) + "</b></font>\r\n";
+      return labelFont + "<b>" + textToHtml(str) + "</b></font>";
    }
 
    public static String getLabelValueStr(String labelFont, String label, String value) {
@@ -94,11 +94,11 @@ public class AHTML {
    }
 
    public static String color(String color, String str) {
-      return "<font color=\"" + color + "\">" + str + "</font>\r\n";
+      return "<font color=\"" + color + "\">" + str + "</font>";
    }
 
    public static String boldColor(String color, String str) {
-      return "<font color=\"" + color + "\"><b>" + textToHtml(str) + "</b></font>\r\n";
+      return "<font color=\"" + color + "\"><b>" + textToHtml(str) + "</b></font>";
    }
 
    public static String bold(String str) {
@@ -106,7 +106,7 @@ public class AHTML {
    }
 
    public static String boldColorTags(String color, String str) {
-      return "<font color=\"" + color + "\"><b>" + str + "</b></font>\r\n";
+      return "<font color=\"" + color + "\"><b>" + str + "</b></font>";
    }
 
    public static String imageBlock(String description, String filename) {
@@ -116,33 +116,33 @@ public class AHTML {
    }
 
    public static String imageBlock(String description, String filenames[]) {
-      String str = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\r\n";
+      String str = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>";
       if (!description.equals("")) {
          str += description;
          str += AHTML.newline();
       }
       for (int i = 0; i < filenames.length; i++) {
-         str += "<IMG SRC=\"" + filenames[i] + "\"><br>\r\n";
+         str += "<IMG SRC=\"" + filenames[i] + "\"><br>";
       }
-      str += "</td></tr></table>\r\n";
+      str += "</td></tr></table>";
       return str;
    }
 
    public static String urlBlock(String description, String urls[]) {
-      String str = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\r\n";
+      String str = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
       if (!description.equals("")) {
          str += description;
          str += AHTML.newline();
       }
       for (int i = 0; i < urls.length; i++) {
-         str += "<A HREF=\"" + urls[i] + "\">" + urls[i] + "</A><br>\r\n";
+         str += "<A HREF=\"" + urls[i] + "\">" + urls[i] + "</A><br>";
       }
-      str += "</td></tr></table>\r\n";
+      str += "</td></tr></table>";
       return str;
    }
 
    public static String heading(int heading, String str, String id) {
-      return "<h" + heading + (id != null && !id.equals("") ? " id=\"" + id + "\"" : "") + ">" + textToHtml(str) + "</h" + heading + ">\r\n";
+      return "<h" + heading + (id != null && !id.equals("") ? " id=\"" + id + "\"" : "") + ">" + textToHtml(str) + "</h" + heading + ">";
    }
 
    public static String heading(int heading, String str) {
@@ -167,15 +167,15 @@ public class AHTML {
    }
 
    public static String para(String str) {
-      return "<p>" + textToHtml(str) + "</p>\r\n";
+      return "<p>" + textToHtml(str) + "</p>";
    }
 
    public static String italics(String str) {
-      return "<i>" + textToHtml(str) + "</i>\r\n";
+      return "<i>" + textToHtml(str) + "</i>";
    }
 
    public static String pre(String str) {
-      return "<pre>" + str + "</pre>\r\n";
+      return "<pre>" + str + "</pre>";
    }
 
    public static String newline() {
@@ -187,7 +187,7 @@ public class AHTML {
       for (int i = 0; i < num; i++) {
          str += "<br>";
       }
-      return str + "\r\n";
+      return str + "";
    }
 
    public static String name(int num) {
@@ -204,7 +204,7 @@ public class AHTML {
       if (str == null) {
          return "";
       }
-      return "<A NAME=\"" + str + "\">\r\n";
+      return "<A NAME=\"" + str + "\">";
    }
 
    /**
@@ -252,7 +252,7 @@ public class AHTML {
     */
    public static String simpleTable(String str, int width) {
       return new String(
-            "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">\r\n" + "<tr><td>" + str + "</td></tr>\r\n" + "</table>\r\n");
+            "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">" + "<tr><td>" + str + "</td></tr>" + "</table>");
    }
 
    /**
@@ -270,11 +270,11 @@ public class AHTML {
    public static String startBorderTable(int width, String bgcolor, String caption) {
       String capStr = "";
       if (!caption.equals("")) capStr = "<caption ALIGN=top>" + caption + "</caption>";
-      return "<table border=\"1\" align=\"center\" bgcolor=\"" + bgcolor + "\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">\r\n" + capStr + "<tr><td>";
+      return "<table border=\"1\" align=\"center\" bgcolor=\"" + bgcolor + "\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">" + capStr + "<tr><td>";
    }
 
    public static String endBorderTable() {
-      return "</td></tr>\r\n</table>\r\n";
+      return "</td></tr></table>";
    }
 
    /**
@@ -295,11 +295,11 @@ public class AHTML {
     * @return Return multi-column table string
     */
    public static String multiColumnTable(String[] str, int width) {
-      String s = "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\"><tr>\r\n";
+      String s = "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\"><tr>";
       for (int i = 0; i < str.length; i++) {
-         s += "<td>" + str[i] + "</td>\r\n";
+         s += "<td>" + str[i] + "</td>";
       }
-      s += "</tr></table>\r\n";
+      s += "</tr></table>";
       return s;
    }
 
@@ -316,7 +316,7 @@ public class AHTML {
    }
 
    public static String endMultiColumnTable() {
-      return "</table>\r\n";
+      return "</table>";
    }
 
    public static String addRowMultiColumnTable(String[] str) {
@@ -336,15 +336,14 @@ public class AHTML {
          if (show == null || show.equals("")) show = AHTML.addSpace(1);
          String colOptionStr = "";
          if (colOptions != null) colOptionStr = colOptions[i];
-         s +=
-               "<td" + ((colOptionStr != null && !colOptionStr.equals("")) ? colOptionStr : "") + ">" + show + "</td>\r\n";
+         s += "<td" + ((colOptionStr != null && !colOptionStr.equals("")) ? colOptionStr : "") + ">" + show + "</td>";
       }
       s += "</tr>";
       return s;
    }
 
    public static String addRowSpanMultiColumnTable(String str, int span) {
-      return "<tr><td colspan=" + span + ">" + str + "</td>\r\n</tr>";
+      return "<tr><td colspan=" + span + ">" + str + "</td></tr>";
    }
 
    public static class CellItem {
@@ -368,13 +367,13 @@ public class AHTML {
       for (CellItem item : items) {
          if (item.text == null || item.text.equals("")) item.text = ".";
          if (item.fgColor != null && item.bgColor != null)
-            s += "<td bgcolor=\"" + item.bgColor + "\">" + AHTML.color(item.fgColor, item.text) + "</td>\r\n";
+            s += "<td bgcolor=\"" + item.bgColor + "\">" + AHTML.color(item.fgColor, item.text) + "</td>";
          else if (item.bgColor != null)
-            s += "<td bgcolor=\"" + item.bgColor + "\">" + item.text + "</td>\r\n";
+            s += "<td bgcolor=\"" + item.bgColor + "\">" + item.text + "</td>";
          else if (item.fgColor != null)
-            s += "<td>" + AHTML.color(item.fgColor, item.text) + "</td>\r\n";
+            s += "<td>" + AHTML.color(item.fgColor, item.text) + "</td>";
          else
-            s += "<td>" + item.text + "</td>\r\n";
+            s += "<td>" + item.text + "</td>";
       }
       s += "</tr>";
       return s;
@@ -389,27 +388,27 @@ public class AHTML {
       String widthStr = "";
       for (int i = 0; i < str.length; i++) {
          if (width != null) widthStr = " width =\"" + width[i] + "\"";
-         s += "<th" + widthStr + ">" + str[i] + "</th>\r\n";
+         s += "<th" + widthStr + ">" + str[i] + "</th>";
       }
       s += "</tr>";
       return s;
    }
 
    public static String addSimpleTableRow(String str) {
-      String s = "<tr><td>" + str + "</td></tr>\r\n";
+      String s = "<tr><td>" + str + "</td></tr>";
       return s;
    }
 
    public static String beginSimpleTable() {
-      return new String("<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">\r\n");
+      return new String("<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">");
    }
 
    public static String beginSimpleTable(int border, int width) {
-      return new String("<table border=\"" + border + "\" cellpadding=\"10\" cellspacing=\"0\" width=\"+width+%\">\r\n");
+      return new String("<table border=\"" + border + "\" cellpadding=\"10\" cellspacing=\"0\" width=\"+width+%\">");
    }
 
    public static String endSimpleTable() {
-      return new String("</table>\r\n");
+      return new String("</table>");
    }
 
    public static String createTable(List<String> datas, String[] headers, int numColumns, int cellPadding, int border) {

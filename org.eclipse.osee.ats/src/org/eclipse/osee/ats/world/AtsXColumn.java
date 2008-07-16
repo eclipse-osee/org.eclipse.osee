@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -50,7 +50,7 @@ public enum AtsXColumn {
    Category_Col("Category", 80, SWT.LEFT, false, SortDataType.String, true, "Open field for user to be able to enter text to use for categorizing/sorting."),
    Category2_Col("Category2", 80, SWT.LEFT, false, SortDataType.String, true, "Open field for user to be able to enter text to use for categorizing/sorting."),
    Category3_Col("Category3", 80, SWT.LEFT, false, SortDataType.String, true, "Open field for user to be able to enter text to use for categorizing/sorting."),
-   Related_To_State_Col(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.String, true),
+   Related_To_State_Col("Related To State", ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), 80, SWT.LEFT, false, SortDataType.String, true, "State of the parent State Machine that this object is related to."),
    Estimated_Hours_Col("Estimated Hours", 40, SWT.CENTER, false, SortDataType.Float, true, "Hours estimated to implement the changes associated with this Action."),
    Weekly_Benefit_Hrs_Col("Weekly Benefit Hrs", 40, SWT.CENTER, false, SortDataType.Float, false, "Estimated number of hours that will be saved over a single year if this change is completed."),
    Remaining_Hours_Col("Remaining Hours", 40, SWT.CENTER, false, SortDataType.Float, false, "Hours that remain to complete the changes.\n\nEstimated Hours - (Estimated Hours * Percent Complete)."),
@@ -84,6 +84,7 @@ public enum AtsXColumn {
    Validation_Required_Col("Validation Required", 80, SWT.LEFT, false, SortDataType.String, false, "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
 
    private final String name;
+   private String storeName;
    private final int width;
    private final int align;
    private final boolean show;
@@ -91,7 +92,6 @@ public enum AtsXColumn {
    private final String desc;
    private static Map<String, AtsXColumn> nameToAtsXColumn = new HashMap<String, AtsXColumn>();
    private final boolean multiColumnEditable;
-   private final String storeName;
 
    public static AtsXColumn getAtsXColumn(XViewerColumn xCol) {
       if (nameToAtsXColumn.size() == 0) {
@@ -101,14 +101,10 @@ public enum AtsXColumn {
       return nameToAtsXColumn.get(xCol.getSystemName());
    }
 
-   public XViewerColumn getXViewerColumn() {
-      return AtsXColumn.getXViewerColumn(this);
-   }
-
-   public static XViewerColumn getXViewerColumn(AtsXColumn atsXCol) {
+   public XViewerColumn getXViewerColumn(AtsXColumn atsXCol) {
       XViewerColumn xCol =
             new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
-                  atsXCol.sortDataType, 0);
+                  atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else
@@ -116,19 +112,26 @@ public enum AtsXColumn {
       return xCol;
    }
 
-   public XViewerAttributeColumn getXViewerAttributeColumn(boolean show) {
-      return AtsXColumn.getXViewerAttributeColumn(this, show);
+   public XViewerColumn getXViewerAttributeColumn(boolean show) {
+      XViewerColumn xCol = AtsXColumn.getXViewerAttributeColumn(this);
+      xCol.setShow(show);
+      return xCol;
    }
 
-   public static XViewerAttributeColumn getXViewerAttributeColumn(AtsXColumn atsXCol, boolean show) {
+   public static XViewerColumn getXViewerAttributeColumn(AtsXColumn atsXCol) {
       XViewerAttributeColumn xCol =
-            new XViewerAttributeColumn(atsXCol.name, atsXCol.getStoreName(), atsXCol.width, atsXCol.width,
-                  atsXCol.align, show, atsXCol.sortDataType, 0);
+            new XViewerAttributeColumn(atsXCol.name,
+                  (atsXCol.getStoreName() != null ? atsXCol.getStoreName() : atsXCol.getName()), atsXCol.width,
+                  atsXCol.width, atsXCol.align, atsXCol.isShow(), atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else
          xCol.setToolTip(atsXCol.getDesc());
       return xCol;
+   }
+
+   private AtsXColumn(String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
+      this(name, width, align, show, sortDataType, multiColumnEditable, null);
    }
 
    private AtsXColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
@@ -136,21 +139,13 @@ public enum AtsXColumn {
             multiColumnEditable, atsAttribute.getDescription());
    }
 
-   private AtsXColumn(String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(name, name, width, align, show, sortDataType, multiColumnEditable);
-   }
-
-   private AtsXColumn(String name, String storeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(name, storeName, width, align, show, sortDataType, multiColumnEditable, null);
+   private AtsXColumn(String name, String storeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String desc) {
+      this(name, width, align, show, sortDataType, multiColumnEditable);
+      this.storeName = storeName;
    }
 
    private AtsXColumn(String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String desc) {
-      this(name, name, width, align, show, sortDataType, multiColumnEditable, desc);
-   }
-
-   private AtsXColumn(String name, String storeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String desc) {
       this.name = name;
-      this.storeName = storeName;
       this.width = width;
       this.align = align;
       this.show = show;
@@ -205,8 +200,18 @@ public enum AtsXColumn {
       return multiColumnEditable;
    }
 
+   /**
+    * @return the storeName
+    */
    public String getStoreName() {
       return storeName;
+   }
+
+   /**
+    * @param storeName the storeName to set
+    */
+   public void setStoreName(String storeName) {
+      this.storeName = storeName;
    }
 
 }
