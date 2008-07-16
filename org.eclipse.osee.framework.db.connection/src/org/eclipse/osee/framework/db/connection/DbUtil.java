@@ -46,6 +46,9 @@ public final class DbUtil {
     */
    public static void deferConstraintChecking(Connection connection) throws SQLException {
       // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+      String name = connection.getMetaData().getDatabaseProductName();
+      if (name.toLowerCase().contains("derby")) return;
+      
       PreparedStatement statement = connection.prepareStatement("SET CONSTRAINTS ALL DEFERRED");
 
       statement.execute();
