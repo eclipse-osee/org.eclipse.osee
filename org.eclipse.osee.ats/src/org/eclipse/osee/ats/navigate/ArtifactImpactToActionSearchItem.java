@@ -127,24 +127,23 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             rd.log("\n" + AHTML.bold(srchArt.getDescriptiveName()));
             monitor.subTask(str);
             int y = 1;
-            StringBuffer sb = new StringBuffer();
-            sb.append(AHTML.beginMultiColumnTable(95, 1));
-            sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Status", "HRID", "Title"}));
+            rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
+            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Status", "HRID", "Title"}));
 
             // Check for changes on working branches
             boolean workingBranchesFound = false;
             for (Branch branch : RevisionManager.getInstance().getOtherEdittedBranches(srchArt)) {
                Artifact assocArt = branch.getAssociatedArtifact();
                if (assocArt != null && !assocArt.equals(SkynetAuthentication.getUser(UserEnum.NoOne))) {
-                  sb.append(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                         assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
                } else {
-                  sb.append(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getBranchName()}));
                }
                workingBranchesFound = true;
             }
             if (!workingBranchesFound) {
-               sb.append(AHTML.addRowSpanMultiColumnTable("No Impacting Working Branches Found", 3));
+               rd.addRaw(AHTML.addRowSpanMultiColumnTable("No Impacting Working Branches Found", 3));
             }
             // Add committed changes
             boolean committedChanges = false;
@@ -159,17 +158,16 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                         ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
                               BranchPersistenceManager.getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
-                     sb.append(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
+                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Committed",
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));
                      committedChanges = true;
                   }
                }
             }
             if (!committedChanges) {
-               sb.append(AHTML.addRowSpanMultiColumnTable("No Impacting Actions Found", 3));
+               rd.addRaw(AHTML.addRowSpanMultiColumnTable("No Impacting Actions Found", 3));
             }
-            sb.append(AHTML.endMultiColumnTable());
-            rd.addRaw(sb.toString().replaceAll("\n", ""));
+            rd.addRaw(AHTML.endMultiColumnTable());
          }
       }
    }

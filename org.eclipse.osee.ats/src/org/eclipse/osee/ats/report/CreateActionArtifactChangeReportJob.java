@@ -92,12 +92,12 @@ public class CreateActionArtifactChangeReportJob extends Job {
     * 
     * @throws Exception
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd)throws OseeCoreException, SQLException{
+   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException, SQLException {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
-      StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(95));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
+      rd.addRaw(AHTML.beginMultiColumnTable(95));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
          String result =
@@ -106,38 +106,37 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          VersionArtifact verArt = teamArt.getSmaMgr().getTargetedForVersion();
-         processTeam(teamArt, verArt.getDescriptiveName(), byAttribute, sb);
+         processTeam(teamArt, verArt.getDescriptiveName(), byAttribute, rd);
          x++;
 
          //          System.err.println("Developmental purposes only, don't release with this");
          //          if (x >= 5)
          //          break;
       }
-      sb.append(AHTML.endMultiColumnTable());
-      rd.addRaw(sb.toString().replaceAll("\n", ""));
+      rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb)throws OseeCoreException, SQLException{
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, XResultData rd) throws OseeCoreException, SQLException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   modArt.getDescriptiveName(), attrStr, rpcrNum, "Content"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsDeleted()) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsRelChanged()) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Relation"}));
       }
    }
