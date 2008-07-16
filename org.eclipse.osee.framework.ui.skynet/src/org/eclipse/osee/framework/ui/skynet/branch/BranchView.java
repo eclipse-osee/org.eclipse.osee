@@ -151,6 +151,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private static final IParameter[] BRANCH_PARAMETER_DEF = new IParameter[] {new BranchIdParameter()};
    private static final String FAVORITE_KEY = "favorites_first";
    private static final String SHOW_TRANSACTIONS = "show_transactions";
+   private static final String SHOW_MERGE_BRANCHES = "show_merge_branches";
    private static final String FLAT_KEY = "flat";
    private static final String[] columnNames = {"", "Short Name", "Time Stamp", "Author", "Comment"};
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchView.class);
@@ -167,6 +168,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private FavoritesSorter sorter;
    private boolean disposed;
    private Action hideTransactions;
+   private Action hideMergeBranches;
 
    private synchronized IPreferenceChangeListener getSingleton() {
       if (preferenceChangeListener == null) {
@@ -184,6 +186,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   }
                   if (propertyName.equals(SHOW_TRANSACTIONS)) {
                      setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
+                     branchTable.refresh();
+                  }
+                  if (propertyName.equals(SHOW_MERGE_BRANCHES)) {
+                     setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, true));
                      branchTable.refresh();
                   }
                   if (propertyName.equals(FAVORITE_KEY)) {
@@ -375,6 +381,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
       toolbarManager.add(createFavoritesFirstAction());
       toolbarManager.add(createShowTransactionsAction());
+      if (OseeProperties.isDeveloper()) {
+         toolbarManager.add(createShowMergeBranchesAction());
+      }
       toolbarManager.add(new ParentBranchAction(this));
 
       loadPreferences();
@@ -1620,6 +1629,16 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       return hideTransactions;
    }
 
+   private Action createShowMergeBranchesAction() {
+      hideMergeBranches = new Action("Show Merge Branches", Action.AS_CHECK_BOX) {
+         @Override
+         public void run() {
+            getViewPreference().putBoolean(SHOW_MERGE_BRANCHES, isChecked());
+         }
+      };
+      return hideMergeBranches;
+   }
+
    public String getActionDescription() {
       return "";
    }
@@ -1829,6 +1848,16 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
          BranchContentProvider myBranchContentProvider = (BranchContentProvider) branchTable.getContentProvider();
          myBranchContentProvider.setShowTransactions(showTransactions);
+         myBranchContentProvider.refresh();
+      }
+   }
+
+   private void setShowMergeBranches(boolean showMergeBranches) {
+      if (branchTable != null && branchTable.getContentProvider() != null) {
+         hideMergeBranches.setChecked(showMergeBranches);
+
+         BranchContentProvider myBranchContentProvider = (BranchContentProvider) branchTable.getContentProvider();
+         myBranchContentProvider.setShowMergeBranches(showMergeBranches);
          myBranchContentProvider.refresh();
       }
    }

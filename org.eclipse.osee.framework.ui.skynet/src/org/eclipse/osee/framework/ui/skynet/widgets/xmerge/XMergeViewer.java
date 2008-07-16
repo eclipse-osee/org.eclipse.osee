@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -26,9 +27,9 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -56,6 +57,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -87,8 +89,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
     */
    public XMergeViewer() {
       super("Merge Manager");
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      SkynetEventManager.getInstance().unRegisterAll(this);
+      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class, this);
+
    }
 
    /*
@@ -297,6 +300,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
    @Override
    public void dispose() {
       xCommitViewer.dispose();
+      SkynetEventManager.getInstance().unRegisterAll(this);
    }
 
    @Override
@@ -359,11 +363,38 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       return xCommitViewer;
    }
 
-   public void onEvent(final Event event) {
+   public void onEvent(final Event eventArg) {
       if (xCommitViewer == null || xCommitViewer.getTree() == null || xCommitViewer.getTree().isDisposed()) return;
 
-      if (event instanceof TransactionEvent) {
-         refresh();
+      if (eventArg instanceof TransactionEvent) {
+         for (Event event : ((TransactionEvent) eventArg).getLocalEvents()) {
+            if (event instanceof TransactionArtifactModifiedEvent) {
+               Artifact artifact = ((TransactionArtifactModifiedEvent) event).getArtifact();
+               if (artifact.getBranch().equals(sourceBranch) || artifact.getBranch().equals(destBranch)) {
+                  for (Conflict conflict : conflicts) {
+                     try {
+                        if (artifact.equals(conflict.getSourceArtifact()) || artifact.equals(conflict.getDestArtifact())) {
+                           setInputData(sourceBranch, destBranch, tranId, mergeView);
+                           if (artifact.equals(conflict.getSourceArtifact())) {
+                              MessageDialog dialog =
+                                    new MessageDialog(
+                                          Display.getCurrent().getActiveShell().getShell(),
+                                          "Modifying Source artifact while merging",
+                                          null,
+                                          "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                          2, new String[] {"OK"}, 1);
+                              if (eventArg instanceof LocalTransactionEvent) {
+                                 dialog.open();
+                              }
+                           }
+                           return;
+                        }
+                     } catch (Exception ex) {
+                     }
+                  }
+               }
+            }
+         }
       }
    }
 

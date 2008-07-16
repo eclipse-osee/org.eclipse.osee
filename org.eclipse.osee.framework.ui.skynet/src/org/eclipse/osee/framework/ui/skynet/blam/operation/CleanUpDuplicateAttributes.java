@@ -1,0 +1,190 @@
+/*
+ * Created on Jul 7, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.ui.skynet.blam.operation;
+
+import java.sql.ResultSet;
+import java.util.LinkedList;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+
+/**
+ * @author Theron Virgin
+ */
+public class CleanUpDuplicateAttributes extends AbstractBlam {
+
+   private class DuplicateAttribute {
+      protected int artId;
+      protected int attrId1;
+      protected int attrId2;
+      protected String name;
+      protected String value1;
+      protected String value2;
+      protected String uri1;
+      protected String uri2;
+      protected int gamma1;
+      protected int gamma2;
+      protected int attrIDToDelete = 0;
+      protected LinkedList<Integer> branches1 = new LinkedList<Integer>();
+      protected LinkedList<Integer> branches2 = new LinkedList<Integer>();
+   }
+
+   private static final String GET_DUPLICATE_ATTRIBUTES =
+         "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_define_attribute attr1, osee_define_attribute attr2, osee_define_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_define_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id) AND EXISTS (SELECT 'x' FROM osee_define_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id) order by aty1.NAME, attr1.art_id";
+
+   private static final String BRANCHES_WITH_ONLY_ATTR =
+         "SELECT DISTINCT branch_id FROM osee_define_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) MINUS (SELECT DISTINCT branch_id FROM osee_define_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
+
+   //   private static final String SELECT_ATTR_TXS =
+   //         "SELECT * FROM osee_define_txs txs WHERE  txs.gamma_id  = (SELECT att.gamma_id FROM osee_define_attribute att where att.attr_id = ?)";
+   //
+   //   private static final String DELETE_ATTR_TXS =
+   //         "DELETE FROM osee_define_txs txs WHERE  txs.gamma_id  = (SELECT att.gamma_id FROM osee_define_attribute att where att.attr_id = ?)";
+
+   private static final String DELETE_ATTR = "DELETE FROM osee_define_attribute WHERE attr_id = ?";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
+      LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
+      ConnectionHandlerStatement connectionHandlerStatement = null;
+      ResultSet resultSet = null;
+
+      int x = 0;
+      try {
+         connectionHandlerStatement = ConnectionHandler.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
+         resultSet = connectionHandlerStatement.getRset();
+
+         System.out.println("\n\n\n\n\n\n\n\n\n\n\nFound the following Duplicate Attributes");
+         DuplicateAttribute duplicateAttribute;
+         while (resultSet.next()) {
+            duplicateAttribute = new DuplicateAttribute();
+            duplicateAttribute.artId = resultSet.getInt("art_id");
+            duplicateAttribute.attrId1 = resultSet.getInt("attr_id_1");
+            duplicateAttribute.attrId2 = resultSet.getInt("attr_id_2");
+            duplicateAttribute.name = resultSet.getString("name");
+            duplicateAttribute.value1 = resultSet.getString("value_1");
+            duplicateAttribute.value2 = resultSet.getString("value_2");
+            duplicateAttribute.uri1 = resultSet.getString("uri_1");
+            duplicateAttribute.uri2 = resultSet.getString("uri_2");
+            duplicateAttribute.gamma1 = resultSet.getInt("gamma_id_1");
+            duplicateAttribute.gamma2 = resultSet.getInt("gamma_id_2");
+
+            if ((duplicateAttribute.value1 != null && duplicateAttribute.value2 != null && duplicateAttribute.value1.equals(duplicateAttribute.value2)) || (duplicateAttribute.uri1 != null && duplicateAttribute.uri2 != null && duplicateAttribute.uri1.equals(duplicateAttribute.uri2)) || (duplicateAttribute.value1 == null && duplicateAttribute.value2 == null && duplicateAttribute.uri1 == null && duplicateAttribute.uri2 == null)) {
+               sameValues.add(duplicateAttribute);
+            } else {
+               diffValues.add(duplicateAttribute);
+            }
+         }
+
+      } finally {
+         DbUtil.close(connectionHandlerStatement);
+      }
+      System.out.println("ATTRIBUTES WITH THE SAME VALUES");
+      for (DuplicateAttribute loopDuplicate : sameValues) {
+
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, SQL3DataType.INTEGER,
+                        loopDuplicate.attrId1, SQL3DataType.INTEGER, loopDuplicate.attrId2);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               loopDuplicate.branches1.add(new Integer(resultSet.getInt("branch_id")));
+            }
+
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, SQL3DataType.INTEGER,
+                        loopDuplicate.attrId2, SQL3DataType.INTEGER, loopDuplicate.attrId1);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               loopDuplicate.branches2.add(new Integer(resultSet.getInt("branch_id")));
+            }
+            if (loopDuplicate.branches1.size() == 0) {
+               loopDuplicate.attrIDToDelete = loopDuplicate.attrId1;
+            } else if (loopDuplicate.branches2.size() == 0) {
+               loopDuplicate.attrIDToDelete = loopDuplicate.attrId2;
+            }
+
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         if (loopDuplicate.attrIDToDelete != 0) {
+            showRedText(loopDuplicate, x++);
+            //            ConnectionHandler.runPreparedUpdate(DELETE_ATTR_TXS, SQL3DataType.INTEGER, loopDuplicate.attrIDToDelete);
+            ConnectionHandler.runPreparedUpdate(DELETE_ATTR, SQL3DataType.INTEGER, loopDuplicate.attrIDToDelete);
+         } else {
+            showText(loopDuplicate, x++);
+         }
+      }
+      x = 0;
+      System.out.println("\nATTRIBUTES WITH DIFFERENT VALUES");
+
+      for (DuplicateAttribute loopDuplicate : diffValues) {
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, SQL3DataType.INTEGER,
+                        loopDuplicate.attrId1, SQL3DataType.INTEGER, loopDuplicate.attrId2);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               loopDuplicate.branches1.add(new Integer(resultSet.getInt("branch_id")));
+            }
+
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, SQL3DataType.INTEGER,
+                        loopDuplicate.attrId2, SQL3DataType.INTEGER, loopDuplicate.attrId1);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               loopDuplicate.branches2.add(new Integer(resultSet.getInt("branch_id")));
+            }
+            if (loopDuplicate.branches1.size() == 0) {
+               loopDuplicate.attrIDToDelete = loopDuplicate.attrId1;
+            } else if (loopDuplicate.branches2.size() == 0) {
+               loopDuplicate.attrIDToDelete = loopDuplicate.attrId2;
+            }
+
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         showText(loopDuplicate, x++);
+      }
+
+   }
+
+   @Override
+   public String getXWidgetsXml() {
+      return "<xWidgets></xWidgets>";
+   }
+
+   protected void showText(DuplicateAttribute duplicate, int x) {
+      System.out.println(String.format(
+            "%-4d Art ID = %-8d Attr_id_1 = %-8d Attr_id_2 = %-8d Name = %s   Value_1 = %s   Value_2 = %s    URI_1 = %s   URI_2 = %s  GAMMA_1 = %-8d  GAMMA_2 = %-8d  Delete = %-8d",
+            x, duplicate.artId, duplicate.attrId1, duplicate.attrId2, duplicate.name, duplicate.value1,
+            duplicate.value2, duplicate.uri1, duplicate.uri2, duplicate.gamma1, duplicate.gamma2,
+            duplicate.attrIDToDelete));
+   }
+
+   protected void showRedText(DuplicateAttribute duplicate, int x) {
+      System.err.println(String.format(
+            "%-4d Art ID = %-8d Attr_id_1 = %-8d Attr_id_2 = %-8d Name = %s   Value_1 = %s   Value_2 = %s    URI_1 = %s   URI_2 = %s  GAMMA_1 = %-8d  GAMMA_2 = %-8d  Delete = %-8d",
+            x, duplicate.artId, duplicate.attrId1, duplicate.attrId2, duplicate.name, duplicate.value1,
+            duplicate.value2, duplicate.uri1, duplicate.uri2, duplicate.gamma1, duplicate.gamma2,
+            duplicate.attrIDToDelete));
+   }
+}

@@ -891,11 +891,19 @@
     </Operation>
  </extension>
  <extension
-       id="Find Relations With Deleted Artifacts"
-       name="Find Relations With Deleted Artifacts"
+       id="Relation Database Integrity Check"
+       name="Relation Database Integrity Check"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindRelationsWithDeletedArtifacts">
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationDatabaseIntegrityCheck">
+    </Operation>
+ </extension>
+ <extension
+       id="Clean Up Duplicate Attributes"
+       name="Clean Up Duplicate Attributes"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.CleanUpDuplicateAttributes">
     </Operation>
  </extension>
  <extension

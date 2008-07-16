@@ -86,6 +86,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private boolean showChildBranchesAtMainLevel;
    private boolean showChildBranchesUnderParents;
    private boolean showTransactions;
+   private boolean showMergeBranches;
 
    //   private boolean myHideTransactions = false;
 
@@ -117,6 +118,10 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       this.showTransactions = showTransactions;
    }
 
+   public void setShowMergeBranches(boolean showMergeBranches) {
+      this.showMergeBranches = showMergeBranches;
+   }
+
    private final class ChildrenRunnable implements IContentProviderRunnable {
 
       @SuppressWarnings("unchecked")
@@ -129,7 +134,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                while (iter.hasNext()) {
                   Branch branch = iter.next();
 
-                  if ((!showChildBranchesAtMainLevel && branch.getParentBranch() != null) || (!OseeProperties.isDeveloper() && branch.isMergeBranch())) {
+                  if ((!showChildBranchesAtMainLevel && branch.getParentBranch() != null) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
                      iter.remove();
                   }
                }

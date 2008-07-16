@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
@@ -58,6 +59,20 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public boolean canModify(Object element, String property) {
       attrComp.updateLabel("");
+      if (element != null) {
+         if (element instanceof Item) {
+            element = ((Item) element).getData();
+         }
+         try {
+            Attribute<?> attribute = (Attribute<?>) element;
+
+            if (attribute instanceof WordAttribute) {
+               return false;
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+      }
       return property.equals("value");
    }
 
