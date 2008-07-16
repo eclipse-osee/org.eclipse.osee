@@ -184,7 +184,6 @@ public class HttpServer implements Runnable {
    }
 
    private static Map<String, Integer> determineRequestedPorts() {
-      OseeProperties properties = OseeProperties.getInstance();
       Map<String, Integer> ports = new HashMap<String, Integer>();
       List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.HttpServerPort",
@@ -193,7 +192,7 @@ public class HttpServer implements Runnable {
          String serviceName = element.getAttribute("serviceName");
          try {
             String portAttribute = "productionPort";
-            if (properties.isDeveloper()) {
+            if (OseeProperties.isDeveloper()) {
                portAttribute = "developmentPort";
             }
             Integer port = new Integer(element.getAttribute(portAttribute));
@@ -215,7 +214,7 @@ public class HttpServer implements Runnable {
          // User Specified Port take Precedence
          if (portToUse == 0) {
             portToUse =
-                  false != properties.isDeveloper() ? DEFAULT_HTTP_DEVELOPMENT_PORT : DEFAULT_HTTP_PRODUCTION_PORT;
+                  false != OseeProperties.isDeveloper() ? DEFAULT_HTTP_DEVELOPMENT_PORT : DEFAULT_HTTP_PRODUCTION_PORT;
          }
          ports.put(DEFAULT_SERVICE_NAME, portToUse);
 
