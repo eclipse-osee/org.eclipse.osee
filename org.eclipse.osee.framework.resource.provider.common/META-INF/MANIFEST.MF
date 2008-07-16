@@ -4,10 +4,11 @@ Bundle-Name: Resource Provider Common Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.common
 Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: Boeing
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.resource.common.io,
  org.osgi.framework;version="1.4.0"
 Require-Bundle: org.eclipse.osee.framework.resource.management
 Bundle-Activator: org.eclipse.osee.framework.resource.provider.common.Activator
 Export-Package: org.eclipse.osee.framework.resource.provider.common,
  org.eclipse.osee.framework.resource.provider.common.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

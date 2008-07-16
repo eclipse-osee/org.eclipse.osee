@@ -4,7 +4,8 @@ Bundle-Name: Common Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.common
 Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: Boeing
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.framework.resource.common.io
 Bundle-Activator: org.eclipse.osee.framework.resource.common.Activator
 Import-Package: org.osgi.framework;version="1.4.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

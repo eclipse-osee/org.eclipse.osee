@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.admin.conversion;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.provider.common.resources.CompressedResourceBridge;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 /**
  * @author Roberto E. Escobar
@@ -144,12 +144,13 @@ public class CompressedContentFix {
             Options options = new Options();
             IResource resource = resourceManager.acquire(locator, options);
 
-            ByteOutputStream outputStream = new ByteOutputStream();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             String oldEntryName = getContent(resource, outputStream);
             String extension = nativeExtension.get(artId);
             String newEntryName = generateFileName(nameMap.get(artId), hrid, extension);
 
-            byte[] compressed = Streams.compressStream(new ByteArrayInputStream(outputStream.getBytes()), newEntryName);
+            byte[] compressed =
+                  Streams.compressStream(new ByteArrayInputStream(outputStream.toByteArray()), newEntryName);
             IResource modifiedResource = new CompressedResourceBridge(compressed, locator.getLocation(), true);
             options.put(StandardOptions.Overwrite.name(), true);
             resourceManager.save(locator, modifiedResource, options);
