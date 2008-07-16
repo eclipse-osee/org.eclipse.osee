@@ -29,7 +29,7 @@ public class RelationTransactionData implements ITransactionData {
          "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order, b_order, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_define_txs txs1 set tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id FROM osee_define_tx_details txd1, osee_Define_rel_link rl3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs2.gamma_id = rl3.gamma_id AND rl3.rel_link_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
+      "UPDATE osee_Define_txs txs1 set tx_current = 0 WHERE 1 = (SELECT count(1) from osee_define_tx_details txd1, osee_Define_rel_link rl3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs2.gamma_id = rl3.gamma_id AND rl3.rel_link_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txs2.transaction_id AND txs1.gamma_id = txs2.gamma_id)";
 
    private static final int PRIME_NUMBER = 7;
 
