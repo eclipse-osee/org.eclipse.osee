@@ -37,6 +37,7 @@ public class OseeProperties {
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
+   private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
 
    private static boolean developer = false;
 
@@ -151,6 +152,23 @@ public class OseeProperties {
     * @return OSEE application server binary data path
     */
    public String getOseeApplicationServerData() {
-      return System.getProperty(OSEE_APPLICATION_SERVER_DATA, "");
+      String toReturn = System.getProperty(OSEE_APPLICATION_SERVER_DATA);
+      if (toReturn == null) {
+         String userHome = System.getProperty("user.home");
+         if (Strings.isValid(userHome)) {
+            toReturn = userHome;
+         }
+      }
+      return toReturn;
+   }
+
+   /**
+    * Gets whether local application server launch is required
+    * 
+    * @return <b>true</b> if local application server launch is required. <b>false</b> if local application server
+    *         launch is not required.
+    */
+   public boolean isLocalApplicationServerRequired() {
+      return getBooleanProperty(OSEE_LOCAL_APPLICATION_SERVER);
    }
 }

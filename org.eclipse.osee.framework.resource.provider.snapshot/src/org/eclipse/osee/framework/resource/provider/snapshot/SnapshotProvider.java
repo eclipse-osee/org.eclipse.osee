@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.resource.common.io.Files;
 import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -30,18 +31,11 @@ import org.eclipse.osee.framework.resource.provider.common.OptionsProcessor;
  */
 public class SnapshotProvider implements IResourceProvider {
 
-   private static final String PROP_BASE_PATH = "org.eclipse.osee.framework.resource.provider.attribute.basepath";
    private static final String SUPPORTED_PROTOCOL = "snapshot";
    private static String BASE_PATH = null;
 
    public SnapshotProvider() {
-      BASE_PATH = System.getProperty(PROP_BASE_PATH);
-      if (BASE_PATH == null) {
-         String userHome = System.getProperty("user.home");
-         if (userHome != null && userHome.length() > 0) {
-            BASE_PATH = userHome;
-         }
-      }
+      BASE_PATH = OseeProperties.getInstance().getOseeApplicationServerData();
    }
 
    /* (non-Javadoc)
