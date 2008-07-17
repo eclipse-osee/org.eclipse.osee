@@ -18,7 +18,8 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 public class TaggerCommands {
 
    private static TaggerCommands instance = null;
-   private TaggerAllWorker worker;
+   private TaggerAllWorker tagAllWorker;
+   private TaggerDropAllWorker dropAllWorker;
 
    public static TaggerCommands getInstance() {
       if (instance == null) {
@@ -28,23 +29,51 @@ public class TaggerCommands {
    }
 
    private TaggerCommands() {
-      this.worker = new TaggerAllWorker();
-      this.worker.setExecutionAllowed(true);
+      this.tagAllWorker = new TaggerAllWorker();
+      this.tagAllWorker.setExecutionAllowed(true);
+
+      this.dropAllWorker = new TaggerDropAllWorker();
+      this.dropAllWorker.setExecutionAllowed(true);
    }
 
-   public void executeStop(CommandInterpreter ci) {
-      if (this.worker.isRunning()) {
-         this.worker.setExecutionAllowed(false);
-      }
-   }
-
-   public void execute(CommandInterpreter ci) {
-      if (!this.worker.isRunning()) {
-         this.worker.setCommandInterpreter(ci);
-         this.worker.setExecutionAllowed(true);
-         Thread th = new Thread(worker);
-         th.setName("Tagg All Attributes");
+   public void startDropAll(CommandInterpreter ci) {
+      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
+         this.dropAllWorker.setCommandInterpreter(ci);
+         this.dropAllWorker.setExecutionAllowed(true);
+         Thread th = new Thread(dropAllWorker);
+         th.setName("Drop All Tags");
          th.start();
       }
+   }
+
+   public void stopDropAll(CommandInterpreter ci) {
+      if (this.dropAllWorker.isRunning()) {
+         this.dropAllWorker.setExecutionAllowed(false);
+      }
+   }
+
+   public void stopTagAll(CommandInterpreter ci) {
+      if (this.tagAllWorker.isRunning()) {
+         this.tagAllWorker.setExecutionAllowed(false);
+      }
+   }
+
+   public void startTagAll(CommandInterpreter ci) {
+      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
+         this.tagAllWorker.setCommandInterpreter(ci);
+         this.tagAllWorker.setExecutionAllowed(true);
+         Thread th = new Thread(tagAllWorker);
+         th.setName("Tagger All Attributes");
+         th.start();
+      }
+   }
+
+   public void getStatistics(CommandInterpreter ci) {
+      TaggerStats stats = new TaggerStats();
+      stats.setCommandInterpreter(ci);
+      stats.setExecutionAllowed(true);
+      Thread th = new Thread(stats);
+      th.setName("Tagger Statistics");
+      th.start();
    }
 }

@@ -21,11 +21,23 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 public class SearchTaggerCmd implements CommandProvider {
 
    public void _tag_all(CommandInterpreter ci) {
-      TaggerCommands.getInstance().execute(ci);
+      TaggerCommands.getInstance().startTagAll(ci);
    }
 
    public void _tag_all_stop(CommandInterpreter ci) {
-      TaggerCommands.getInstance().executeStop(ci);
+      TaggerCommands.getInstance().stopTagAll(ci);
+   }
+
+   public void _drop_all_tags(CommandInterpreter ci) {
+      TaggerCommands.getInstance().startDropAll(ci);
+   }
+
+   public void _drop_all_tags_stop(CommandInterpreter ci) {
+      TaggerCommands.getInstance().stopDropAll(ci);
+   }
+
+   public void _tagger_stats(CommandInterpreter ci) {
+      TaggerCommands.getInstance().getStatistics(ci);
    }
 
    public void _configini(CommandInterpreter ci) {
@@ -57,6 +69,8 @@ public class SearchTaggerCmd implements CommandProvider {
       sb.append("\n---OSEE Server Admin Commands---\n");
       sb.append("        tag_all - tag all attributes\n");
       sb.append("        tag_all_stop - stop tagging all attributes\n");
+      sb.append("        drop_all_tags - drops all tags\n");
+      sb.append("        drop_all_tags_stop - stop dropping all tags\n");
       return sb.toString();
    }
 }

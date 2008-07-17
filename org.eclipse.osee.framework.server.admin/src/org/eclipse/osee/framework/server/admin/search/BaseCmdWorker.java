@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -73,20 +70,10 @@ public abstract class BaseCmdWorker implements Runnable {
    public void run() {
       this.isRunning = true;
       long startTime = System.currentTimeMillis();
-      Connection connection = null;
       try {
-         connection = ConnectionHandler.getConnection();
-         doWork(connection, startTime);
-      } catch (SQLException ex) {
+         doWork(startTime);
+      } catch (Exception ex) {
          ci.printStackTrace(ex);
-      } finally {
-         if (connection != null) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-               ci.printStackTrace(ex);
-            }
-         }
       }
       ci.println(String.format("Done.  Elapsed Time = %s.", getElapsedTime(startTime)));
       this.isRunning = false;
@@ -101,5 +88,5 @@ public abstract class BaseCmdWorker implements Runnable {
       return String.format("%d:%02d:%02d", hours, leftOverMinutes, leftOverSeconds);
    }
 
-   protected abstract void doWork(Connection connection, long startTime);
+   protected abstract void doWork(long startTime) throws Exception;
 }
