@@ -11,7 +11,8 @@
 package org.eclipse.osee.framework.svn;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +21,17 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.xml.sax.SAXException;
@@ -53,14 +55,7 @@ public class CheckoutProjectSetJob extends Job {
    protected IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.OK_STATUS;
       try {
-         List<IWorkingSet> workingSets = new ArrayList<IWorkingSet>();
-         IWorkingSet workingSet = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName);
-         if (workingSet != null) {
-            workingSets.add(workingSet);
-         }
-         boolean result =
-               performImportProjectSet(monitor, getProjectSetPath(),
-                     workingSets.toArray(new IWorkingSet[workingSets.size()]));
+         boolean result = performImportProjectSet(monitor, getProjectSetPath(), workingSetName);
          if (result != true) {
             toReturn = Status.CANCEL_STATUS;
          }
@@ -76,21 +71,37 @@ public class CheckoutProjectSetJob extends Job {
       return file.getAbsolutePath();
    }
 
-   private boolean performImportProjectSet(IProgressMonitor monitor, String fileName, IWorkingSet[] workingSets) {
+   private boolean performImportProjectSet(IProgressMonitor monitor, String fileName, String workingSet) {
       boolean result = false;
       try {
-         ImportProjectSetOperation op = new ImportProjectSetOperation(null, fileName, workingSets);
-         op.run(monitor);
+         Class<?> clazz = Platform.getBundle("org.eclipse.team.ui").loadClass("org.eclipse.team.internal.ui.wizards.ImportProjectSetOperation");
+         Object object = null;
+         if (EclipseVersion.isVersion("3.3")) {
+            Constructor<?> constructor = clazz.getConstructor(IRunnableContext.class, String.class, String.class);
+            object = constructor.newInstance(null, fileName, workingSet);
+         } else if (EclipseVersion.isVersion("3.4")) {
+            List<IWorkingSet> workingSets = new ArrayList<IWorkingSet>();
+            IWorkingSet workingSetObject =
+                  PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(workingSetName);
+            if (workingSetObject != null) {
+               workingSets.add(workingSetObject);
+            }
+            Constructor<?> constructor =
+                  clazz.getConstructor(IRunnableContext.class, String.class, IWorkingSet[].class);
+            object = constructor.newInstance(null, fileName, workingSets.toArray(new IWorkingSet[workingSets.size()]));
+         } else {
+            throw new UnsupportedOperationException();
+         }
+         Method method = clazz.getDeclaredMethod("run", IProgressMonitor.class);
+         method.invoke(object, monitor);
          result = true;
-      } catch (InterruptedException e) {
-         result = true;
-      } catch (InvocationTargetException ex) {
-         result = handleInvocationTargetException(ex);
+      } catch (Exception ex) {
+         handleException(ex);
       }
       return result;
    }
 
-   private boolean handleInvocationTargetException(InvocationTargetException ex) {
+   private boolean handleException(Exception ex) {
       Throwable target = ex.getCause();
       if (target instanceof TeamException) {
          displayErrorMessage(true, null, target);

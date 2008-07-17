@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.svn;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -19,9 +20,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
@@ -214,7 +217,23 @@ public class SvnAPI {
                for (int i = 0; i < checkoutSet.length; i++) {
                   operateMap.put(resources2names.get(checkoutSet[i]), checkoutSet[i]);
                }
-               toReturn = new CheckoutOperation(operateMap, true, null, Depth.INFINITY, true);
+               try {
+                  Class<?> clazz =
+                        Platform.getBundle("org.eclipse.team.svn.core").loadClass(
+                              "org.eclipse.team.svn.core.operation.remote.CheckoutOperation");
+                  if (EclipseVersion.isVersion("3.3")) {
+                     Constructor<?> constructor =
+                           clazz.getConstructor(Map.class, boolean.class, String.class, boolean.class);
+                     toReturn = (CheckoutOperation) constructor.newInstance(operateMap, false, null, true);
+                  } else if (EclipseVersion.isVersion("3.4")) {
+                     Constructor<?> constructor =
+                           clazz.getConstructor(Map.class, boolean.class, String.class, int.class);
+                     toReturn =
+                           (CheckoutOperation) constructor.newInstance(operateMap, true, null, Depth.INFINITY, true);
+                  }
+               } catch (Exception ex) {
+                  throw new UnsupportedOperationException();
+               }
             }
          }
          return toReturn;
