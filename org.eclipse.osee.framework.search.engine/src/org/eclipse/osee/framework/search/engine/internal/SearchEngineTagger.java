@@ -20,6 +20,7 @@ import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,10 +34,12 @@ public class SearchEngineTagger implements ISearchEngineTagger {
 
    private ExecutorService executor;
    private List<FutureTask<?>> futureTasks;
+   private TaggerStatistics statistics;
 
    public SearchEngineTagger() {
+      this.statistics = new TaggerStatistics();
       this.futureTasks = new CopyOnWriteArrayList<FutureTask<?>>();
-      this.executor = Executors.newFixedThreadPool(2);
+      this.executor = Executors.newSingleThreadExecutor();
    }
 
    /* (non-Javadoc)
@@ -44,7 +47,7 @@ public class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public void tagAttribute(long gammaId) {
-      FutureTask<Object> futureTask = new FutureTaggingTask(gammaId);
+      FutureTask<Object> futureTask = new FutureTaggingTask(new TaggerRunnable(gammaId));
       this.futureTasks.add(futureTask);
       this.executor.submit(futureTask);
    }
@@ -73,6 +76,25 @@ public class SearchEngineTagger implements ISearchEngineTagger {
       return futureTasks.size();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#clearStatistics()
+    */
+   @Override
+   public void clearStatistics() {
+      this.statistics.clear();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#getStatistics()
+    */
+   @Override
+   public ITaggerStatistics getStatistics() {
+      try {
+         return this.statistics.clone();
+      } catch (CloneNotSupportedException ex) {
+         return TaggerStatistics.EMPTY_STATS;
+      }
+   }
    private final class AttributeXmlParser extends AbstractSaxHandler {
 
       /* (non-Javadoc)
@@ -97,12 +119,25 @@ public class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    private final class FutureTaggingTask extends FutureTask<Object> {
-      /**
-       * @param runnable
-       * @param result
+
+      private TaggerRunnable runnable;
+      private long waitStart;
+      private long waitTime;
+
+      public FutureTaggingTask(TaggerRunnable runnable) {
+         super(runnable, null);
+         this.runnable = runnable;
+         this.waitStart = System.currentTimeMillis();
+         this.waitTime = 0;
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.concurrent.FutureTask#run()
        */
-      public FutureTaggingTask(long gammaId) {
-         super(new TaggerRunnable(gammaId), null);
+      @Override
+      public void run() {
+         this.waitTime = System.currentTimeMillis() - this.waitStart;
+         super.run();
       }
 
       /* (non-Javadoc)
@@ -111,7 +146,7 @@ public class SearchEngineTagger implements ISearchEngineTagger {
       @Override
       protected void done() {
          futureTasks.remove(this);
+         statistics.addEntry(runnable.getGammaId(), runnable.getTotalTags(), waitTime, runnable.getProcessingTime());
       }
-
    }
 }

@@ -49,5 +49,17 @@ public interface ISearchEngineTagger {
     * 
     * @return number of items waiting to be tagged
     */
-   int getWorkersInQueue();
+   public int getWorkersInQueue();
+
+   /**
+    * Get statistics
+    * 
+    * @return tagger statistics
+    */
+   public ITaggerStatistics getStatistics();
+
+   /**
+    * Clear Statistics
+    */
+   public void clearStatistics();
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -75,5 +76,9 @@ public class TaggerCommands {
       Thread th = new Thread(stats);
       th.setName("Tagger Statistics");
       th.start();
+   }
+
+   public void clearStats() {
+      Activator.getInstance().getSearchTagger().clearStatistics();
    }
 }

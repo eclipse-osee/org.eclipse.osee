@@ -28,10 +28,14 @@ class TaggerRunnable implements Runnable, ITagCollector {
 
    private SearchTag searchTag;
    private long gammaId;
+   private int tagCount;
+   private long elapsedTime;
 
    protected TaggerRunnable(long gammaId) {
       this.searchTag = null;
       this.gammaId = gammaId;
+      this.tagCount = 0;
+      this.elapsedTime = 0;
    }
 
    /* (non-Javadoc)
@@ -50,13 +54,24 @@ class TaggerRunnable implements Runnable, ITagCollector {
       } catch (Exception ex) {
          OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
       } finally {
-         OseeLog.log(TaggerRunnable.class, Level.INFO, String.format("Tagged: [%d] in [%d] ms", gammaId,
-               System.currentTimeMillis() - start));
+         this.elapsedTime = System.currentTimeMillis() - start;
          if (searchTag != null) {
             searchTag.clear();
             searchTag = null;
          }
       }
+   }
+
+   public long getProcessingTime() {
+      return elapsedTime;
+   }
+
+   public int getTotalTags() {
+      return tagCount;
+   }
+
+   public long getGammaId() {
+      return gammaId;
    }
 
    /* (non-Javadoc)
@@ -65,6 +80,7 @@ class TaggerRunnable implements Runnable, ITagCollector {
    @Override
    public void addTag(Long codedTag) {
       searchTag.addTag(codedTag);
+      tagCount++;
       if (searchTag.size() >= MAXIMUM_CACHED_TAGS) {
          try {
             store();
@@ -77,5 +93,6 @@ class TaggerRunnable implements Runnable, ITagCollector {
 
    public void store() throws SQLException {
       SearchTagDataStore.storeTags(searchTag);
+      searchTag.clear();
    }
 }

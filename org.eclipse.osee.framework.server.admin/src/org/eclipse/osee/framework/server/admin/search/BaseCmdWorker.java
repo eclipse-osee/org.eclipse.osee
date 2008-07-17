@@ -80,7 +80,11 @@ public abstract class BaseCmdWorker implements Runnable {
    }
 
    protected String getElapsedTime(long startTime) {
-      long seconds = (System.currentTimeMillis() - startTime) / 1000;
+      return timeToString(System.currentTimeMillis() - startTime);
+   }
+
+   protected String timeToString(long value) {
+      long seconds = value / 1000;
       long leftOverSeconds = seconds % 60;
       long minutes = seconds / 60;
       long leftOverMinutes = minutes % 60;

@@ -40,6 +40,10 @@ public class SearchTaggerCmd implements CommandProvider {
       TaggerCommands.getInstance().getStatistics(ci);
    }
 
+   public void _tagger_stats_clear(CommandInterpreter ci) {
+      TaggerCommands.getInstance().clearStats();
+   }
+
    public void _configini(CommandInterpreter ci) {
       StringBuilder sb = new StringBuilder();
       sb.append("eclipse.ignoreApp=true\n");
@@ -71,6 +75,8 @@ public class SearchTaggerCmd implements CommandProvider {
       sb.append("        tag_all_stop - stop tagging all attributes\n");
       sb.append("        drop_all_tags - drops all tags\n");
       sb.append("        drop_all_tags_stop - stop dropping all tags\n");
+      sb.append("        tagger_stats - get tagger stats\n");
+      sb.append("        tagger_stats_clear - clear tagger stats\n");
       return sb.toString();
    }
 }
