@@ -1,5 +1,7 @@
 package org.eclipse.osee.ote.connection.jini;
 
+import java.io.File;
+import java.net.URI;
 import net.jini.core.lookup.ServiceItem;
 
 /**
@@ -48,6 +50,14 @@ public class JiniClientSideConnector extends JiniConnector {
    @Override
    public String getConnectorType() {
       return TYPE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.File)
+    */
+   @Override
+   public URI upload(File file) throws Exception {
+      return null;
    }
 
 }

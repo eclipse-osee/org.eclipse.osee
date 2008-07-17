@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.jini.JiniClassServer;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
-import org.eclipse.osee.ote.connection.jini.util.ExportClassLoader;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;

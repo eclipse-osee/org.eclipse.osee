@@ -7,7 +7,8 @@ Bundle-Activator: org.eclipse.osee.ote.connection.jini.Activator
 Bundle-Vendor: Boeing
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jini,
- net.jini
+ net.jini,
+ org.eclipse.osee.framework.plugin.core
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.jdk.core.util,

@@ -1,6 +1,8 @@
 package org.eclipse.osee.ote.connection.jini;
 
+import java.io.File;
 import java.io.Serializable;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.server.ExportException;
@@ -123,6 +125,14 @@ public class JiniServiceSideConnector extends JiniConnector {
    public void setProperty(String key, Serializable value) {
       super.setProperty(key, value);
       setAttributes(createEntries());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.File)
+    */
+   @Override
+   public URI upload(File file) throws Exception {
+      return null;
    }
 
 }

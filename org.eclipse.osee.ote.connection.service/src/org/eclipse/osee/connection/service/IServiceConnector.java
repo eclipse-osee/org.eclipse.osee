@@ -5,7 +5,9 @@
  */
 package org.eclipse.osee.connection.service;
 
+import java.io.File;
 import java.io.Serializable;
+import java.net.URI;
 
 /**
  * Provides a communication pipe to a service.
@@ -43,4 +45,14 @@ public interface IServiceConnector {
    void addPropertyChangeListener(IServicePropertyChangeListener listener);
 
    void removePropertyChangeListener(IServicePropertyChangeListener listener);
+
+   /**
+    * uploads a file to a service and creates an {@link URI} that the service can access.
+    * 
+    * @param file
+    * @return
+    * @throws Exception
+    */
+   URI upload(File file) throws Exception;
+
 }

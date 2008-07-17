@@ -5,7 +5,9 @@
  */
 package org.eclipse.osee.connection.service;
 
+import java.io.File;
 import java.io.Serializable;
+import java.net.URI;
 import java.util.HashSet;
 
 /**
@@ -100,6 +102,14 @@ public class LocalConnector implements IServiceConnector {
    @Override
    public void removePropertyChangeListener(IServicePropertyChangeListener listener) {
       propertyChangeListeners.remove(listener);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.connection.service.IServiceConnector#upload(java.io.File)
+    */
+   @Override
+   public URI upload(File file) throws Exception {
+      return file.toURI();
    }
 
 }
