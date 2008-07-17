@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -107,19 +107,17 @@ public class RelationContentProvider implements ITreeContentProvider {
             List<RelationLink> relations = artifact.getRelations(relationTypeSide);
 
             for (RelationLink relationLink : relations) {
-            	Artifact art = relationLink.getArtifactOnOtherSide(artifact);
-               SkynetEventManager.getInstance().register(RelationModifiedEvent.class,
-            		   art, relComp);
-               SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class,
-            		   art, relComp);
+               Artifact art = relationLink.getArtifactOnOtherSide(artifact);
+               SkynetEventManager.getInstance().register(RelationModifiedEvent.class, art, relComp);
+               SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, art, relComp);
             }
             SkynetEventManager.getInstance().register(RelationModifiedEvent.class, artifact, relComp);
             return relations.toArray();
          }
       } catch (SQLException ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       } catch (ArtifactDoesNotExist ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       return EMPTY_ARRAY;
