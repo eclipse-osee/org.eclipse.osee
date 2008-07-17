@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.tagger;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -38,20 +39,31 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
       return Strings.isValid(value) ? value : WordsUtil.EMPTY_STRING;
    }
 
+   protected InputStream getValueAsStream(AttributeData attributeData) throws Exception {
+      InputStream inputStream = null;
+      inputStream = getExtendedDataAsStream(attributeData);
+      if (inputStream == null) {
+         inputStream = new ByteArrayInputStream(attributeData.getStringValue().getBytes("UTF-8"));
+      }
+      return inputStream;
+   }
+
+   private InputStream getExtendedDataAsStream(AttributeData attributeData) throws Exception {
+      Options options = new Options();
+      options.put(StandardOptions.DecompressOnAquire.name(), true);
+      IResourceLocator locator =
+            Activator.getInstance().getResourceLocatorManager().getResourceLocator(attributeData.getUri());
+      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+      return resource.getContent();
+   }
+
    private String getExtendedData(AttributeData attributeData) {
       String toReturn = null;
       if (attributeData.isUriValid()) {
          InputStream inputStream = null;
          try {
-            Options options = new Options();
-            options.put(StandardOptions.DecompressOnAquire.name(), true);
-            IResourceLocator locator =
-                  Activator.getInstance().getResourceLocatorManager().getResourceLocator(attributeData.getUri());
-            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
-
-            inputStream = resource.getContent();
+            inputStream = getExtendedDataAsStream(attributeData);
             toReturn = Lib.inputStreamToString(inputStream);
-
          } catch (Exception ex) {
             OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
          } finally {
