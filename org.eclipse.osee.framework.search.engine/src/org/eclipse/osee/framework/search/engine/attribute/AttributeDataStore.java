@@ -26,7 +26,7 @@ public class AttributeDataStore {
    private static AttributeDataStore instance = null;
 
    private static final String SELECT_ATTRIBUTE =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_define_attribute attr1, osee_define_attribute_type attrtype, osee_define_txs txs1, osee_define_tx_details txd1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = ?";
+         "SELECT attr1.art_id, attr1.gamma_id, attr1.value, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_define_attribute attr1, osee_define_attribute_type attrtype, osee_define_txs txs1, osee_define_tx_details txd1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = ?";
 
    private AttributeDataStore() {
    }

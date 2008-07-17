@@ -132,51 +132,16 @@
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat ss:Format="0"/>
   </Style>
+  <Style ss:ID="s35">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
   <Style ss:ID="s36">
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
-  </Style>
-  <Style ss:ID="s37">
-   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
-  </Style>
-  <Style ss:ID="s38">
-   <Borders>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
-  <Style ss:ID="s39">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Borders/>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
-  <Style ss:ID="s40">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Borders/>
-   <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat ss:Format="0"/>
-  </Style>
-  <Style ss:ID="s41">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Font x:Family="Swiss" ss:Size="9"/>
-   <NumberFormat ss:Format="@"/>
-  </Style>
-  <Style ss:ID="s42">
-   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
-   <Borders>
-    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
-    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
-   </Borders>
-   <Font x:Family="Swiss" ss:Size="9"/>
-  </Style>
-  <Style ss:ID="s43">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -186,7 +151,7 @@
    <Font x:Family="Swiss" ss:Size="9"/>
    <NumberFormat/>
   </Style>
-  <Style ss:ID="s44">
+  <Style ss:ID="s37">
    <Alignment ss:Horizontal="Left" ss:Vertical="Bottom" ss:WrapText="1"/>
    <Borders>
     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
@@ -195,19 +160,54 @@
    </Borders>
    <Font x:Family="Swiss" ss:Size="9"/>
   </Style>
+  <Style ss:ID="s38">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s39">
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s40">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s41">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s42">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="0"/>
+  </Style>
+  <Style ss:ID="s43">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
    <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R32C1:R33C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="37" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="37" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
-   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="236.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="235.5"/>
    <Column ss:StyleID="s21" ss:Width="294.75"/>
    <Column ss:StyleID="s21" ss:Width="108.75"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="101.25"/>
-   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="106.5"/>
+   <Column ss:StyleID="s21" ss:Width="132.75"/>
    <Column ss:StyleID="s21" ss:Width="71.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="101.25"/>
    <Column ss:StyleID="s21" ss:Width="58.5"/>
@@ -251,6 +251,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">Attribute Data Provider</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Attribute Name</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">File Extension</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Tagger ID</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Default Value</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Validity Xml</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Min Occurrence</Data></Cell>
@@ -262,6 +263,7 @@
     <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.BooleanAttribute</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Developmental</Data></Cell>
+    <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s33"><Data ss:Type="String">yes</Data></Cell>
     <Cell ss:StyleID="s32"/>
@@ -275,6 +277,7 @@
     <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Row</Data></Cell>
     <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s33"/>
     <Cell ss:StyleID="s32"/>
     <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
@@ -287,6 +290,7 @@
     <Cell ss:StyleID="s32"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Summary</Data></Cell>
     <Cell ss:StyleID="s27"/>
+    <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s33"/>
     <Cell ss:StyleID="s32"/>
     <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
@@ -295,22 +299,23 @@
     <Cell ss:StyleID="s32"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s42"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</Data></Cell>
-    <Cell ss:StyleID="s42"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
-    <Cell ss:StyleID="s43"><Data ss:Type="String">GFE / CFE</Data></Cell>
-    <Cell ss:StyleID="s43"/>
-    <Cell ss:StyleID="s42"><Data ss:Type="String">Unspecified</Data></Cell>
-    <Cell ss:StyleID="s42"><Data ss:Type="String">&lt;GFE_CFE&gt;&lt;Enum&gt;CFE&lt;/Enum&gt;&lt;Enum&gt;GFE&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/GFE_CFE&gt;</Data></Cell>
-    <Cell ss:StyleID="s42"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s42"><Data ss:Type="Number">1</Data></Cell>
-    <Cell ss:StyleID="s44"/>
-    <Cell ss:StyleID="s44"/>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">GFE / CFE</Data></Cell>
+    <Cell ss:StyleID="s36"/>
+    <Cell ss:StyleID="s36"/>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">Unspecified</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">&lt;GFE_CFE&gt;&lt;Enum&gt;CFE&lt;/Enum&gt;&lt;Enum&gt;GFE&lt;/Enum&gt;&lt;Enum&gt;Unspecified&lt;/Enum&gt;&lt;/GFE_CFE&gt;</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Span="1"/>
    <Row ss:Index="16" ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s36"><Data ss:Type="String">Artifact Type Name</Data></Cell>
-    <Cell ss:StyleID="s36"><Data ss:Type="String">Attribute Name</Data></Cell>
+    <Cell ss:StyleID="s38"><Data ss:Type="String">Artifact Type Name</Data></Cell>
+    <Cell ss:StyleID="s38"><Data ss:Type="String">Attribute Name</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">Component</Data></Cell>
@@ -354,7 +359,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
    <Row ss:Index="29" ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s37"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String"># An artifact of type &quot;Artifact Type&quot; can be on side &quot;A&quot;, &quot;Side A Max&quot; number of times for relation links of type &quot;Relation Type&quot;.</Data></Cell>
@@ -373,7 +378,7 @@
       ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
-    <Cell ss:StyleID="s38"><Data ss:Type="String">Component</Data><NamedCell
+    <Cell ss:StyleID="s40"><Data ss:Type="String">Component</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">Functional decomposition </Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -384,19 +389,19 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s30"/>
-    <Cell ss:StyleID="s39"/>
-    <Cell ss:StyleID="s40"/>
-    <Cell ss:StyleID="s40"/>
+    <Cell ss:StyleID="s41"/>
+    <Cell ss:StyleID="s42"/>
+    <Cell ss:StyleID="s42"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s30"/>
-    <Cell ss:StyleID="s39"/>
-    <Cell ss:StyleID="s40"/>
-    <Cell ss:StyleID="s40"/>
+    <Cell ss:StyleID="s41"/>
+    <Cell ss:StyleID="s42"/>
+    <Cell ss:StyleID="s42"/>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
    <Row ss:AutoFitHeight="0">
-    <Cell ss:StyleID="s41"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
+    <Cell ss:StyleID="s43"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
@@ -413,7 +418,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>22</ActiveRow>
+     <ActiveRow>11</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

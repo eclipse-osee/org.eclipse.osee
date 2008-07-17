@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.search.engine.attribute;
 
 import java.net.URI;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -28,7 +29,9 @@ public class AttributeData {
       this.artId = artId;
       this.gammaId = gammaId;
       this.branchId = branchId;
-      this.taggerId = taggerId;
+      this.value = value;
+      this.uri = uri;
+      this.taggerId = Strings.isValid(taggerId) ? taggerId : "";
    }
 
    public int getArtId() {

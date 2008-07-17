@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
@@ -43,6 +44,7 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
    private HttpAttributeTagger() {
       this.taggingInfo = new StringBuffer();
       this.executor = Executors.newSingleThreadExecutor();
+      ConnectionHandler.addDbTransactionListener(this);
    }
 
    public static HttpAttributeTagger getInstance() {

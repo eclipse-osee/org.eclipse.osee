@@ -57,8 +57,10 @@ public class TagEncoder {
             tagBitsPos += 4;
          }
       }
-      printTag(text, tagBits);
-      collector.addTag(tagBits);
+      if (tagBits != 0) {
+         printTag(text, tagBits);
+         collector.addTag(tagBits);
+      }
    }
 
    private static void printTag(String value, Long tagBits) {

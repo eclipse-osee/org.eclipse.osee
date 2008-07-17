@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 /**
@@ -204,6 +205,10 @@ public class AttributeType implements Comparable<AttributeType> {
     * @return <b>true</b> if this attribute type is taggable. <b>false</b> if this is not taggable.
     */
    public boolean isTaggable() {
-      return taggerId != null;
+      boolean toReturn = false;
+      if (taggerId != null) {
+         toReturn = Strings.isValid(taggerId.trim());
+      }
+      return toReturn;
    }
 }

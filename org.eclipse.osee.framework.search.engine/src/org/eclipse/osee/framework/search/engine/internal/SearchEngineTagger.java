@@ -31,7 +31,7 @@ public class SearchEngineTagger implements ISearchEngineTagger {
    private ExecutorService executor;
 
    public SearchEngineTagger() {
-      this.executor = Executors.newSingleThreadExecutor();
+      this.executor = Executors.newFixedThreadPool(2);
    }
 
    /* (non-Javadoc)

@@ -27,12 +27,15 @@ public class TagProcessor {
    }
 
    public static void collectFromString(String value, ITagCollector tagCollector) throws UnsupportedEncodingException {
-      collectFromInputStream(new ByteArrayInputStream(value.getBytes("UTF-8")), tagCollector);
+      if (value != null && value.length() > 0) {
+         collectFromInputStream(new ByteArrayInputStream(value.getBytes("UTF-8")), tagCollector);
+      }
    }
 
    public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) throws UnsupportedEncodingException {
       WordChunker chunker = new WordChunker(inputStream);
       for (String original : chunker) {
+         original = original.toLowerCase();
          boolean originalStored = false;
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
