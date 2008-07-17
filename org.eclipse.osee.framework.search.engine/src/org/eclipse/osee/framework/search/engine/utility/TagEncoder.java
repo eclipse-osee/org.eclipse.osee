@@ -64,6 +64,6 @@ public class TagEncoder {
    }
 
    private static void printTag(String value, Long tagBits) {
-      System.out.println(String.format("Tagged [%s] into [%d]", value, tagBits));
+      //      System.out.println(String.format("Tagged [%s] into [%d]", value, tagBits));
    }
 }

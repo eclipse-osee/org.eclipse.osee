@@ -10,26 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.tagger;
 
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.internal.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
+import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 
 /**
  * @author Roberto E. Escobar
  */
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
-
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
-
-   private String removeWordMLTags(String str) {
-      str = paragraphPattern.matcher(Xml.unescape(str)).replaceAll(" ");
-      str = tagKiller.matcher(str).replaceAll("").trim();
-      return str;
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.search.engine.attribute.IAttributeTagger#find(org.eclipse.osee.framework.search.engine.attribute.AttributeData, java.lang.String)
@@ -39,7 +29,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
       boolean toReturn = false;
       if (Strings.isValid(value)) {
          value = value.toLowerCase();
-         toReturn = removeWordMLTags(getValue(attributeData)).toLowerCase().contains(value);
+         toReturn = WordsUtil.extractTextDataFromXMLTags(getValue(attributeData)).toLowerCase().contains(value);
       }
       return toReturn;
    }
@@ -49,6 +39,6 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
     */
    @Override
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {
-      TagProcessor.collectFromString(removeWordMLTags(getValue(attributeData)), collector);
+      TagProcessor.collectFromString(WordsUtil.extractTextDataFromXMLTags(getValue(attributeData)), collector);
    }
 }

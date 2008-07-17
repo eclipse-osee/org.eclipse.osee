@@ -117,4 +117,18 @@ public class TestWordsUtil extends TestCase {
                Arrays.deepToString(results));
       }
    }
+
+   private Map<String, String> getXmlMarkupRemovalData() {
+      Map<String, String> toReturn = new LinkedHashMap<String, String>();
+
+      return toReturn;
+   }
+
+   public void testXmlMarkupRemoval() {
+      Map<String, String> testMap = getXmlMarkupRemovalData();
+      for (String key : testMap.keySet()) {
+         String results = WordsUtil.extractTextDataFromXMLTags(key);
+         assertEquals(String.format("Original: [%s] ", key), testMap.get(key), results);
+      }
+   }
 }

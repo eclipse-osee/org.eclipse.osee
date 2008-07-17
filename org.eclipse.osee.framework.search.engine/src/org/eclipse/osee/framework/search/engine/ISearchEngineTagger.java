@@ -17,7 +17,37 @@ import java.io.InputStream;
  */
 public interface ISearchEngineTagger {
 
+   /**
+    * Create tags for attribute with gamma id.
+    * 
+    * @param gammaId attribute to tag
+    */
    public void tagAttribute(long gammaId);
 
+   /**
+    * Create tags for attributes specified in xml stream. <b>
+    * 
+    * <pre>
+    * The XML data is formatted as follows:
+    *    &lt;AttributeTag&gt;
+    *       &lt;entry gammaId=&quot;90&quot;/&gt;
+    *       &lt;entry gammaId=&quot;91&quot;/&gt;
+    *                .
+    *                .
+    *                .
+    *    &lt;AttributeTag&gt;
+    * </pre>
+    * 
+    * </b>
+    * 
+    * @param inputStream xml inputStream
+    */
    public void tagFromXmlStream(InputStream inputStream);
+
+   /**
+    * Get number of items waiting to be tagged
+    * 
+    * @return number of items waiting to be tagged
+    */
+   int getWorkersInQueue();
 }

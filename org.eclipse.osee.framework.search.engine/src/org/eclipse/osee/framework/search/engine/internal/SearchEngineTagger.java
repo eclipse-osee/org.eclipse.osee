@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
@@ -29,8 +32,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class SearchEngineTagger implements ISearchEngineTagger {
 
    private ExecutorService executor;
+   private List<FutureTask<?>> futureTasks;
 
    public SearchEngineTagger() {
+      this.futureTasks = new CopyOnWriteArrayList<FutureTask<?>>();
       this.executor = Executors.newFixedThreadPool(2);
    }
 
@@ -39,7 +44,9 @@ public class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public void tagAttribute(long gammaId) {
-      this.executor.submit(new TaggerRunnable(gammaId));
+      FutureTask<Object> futureTask = new FutureTaggingTask(gammaId);
+      this.futureTasks.add(futureTask);
+      this.executor.submit(futureTask);
    }
 
    /* (non-Javadoc)
@@ -56,6 +63,14 @@ public class SearchEngineTagger implements ISearchEngineTagger {
       } catch (IOException ex) {
          ex.printStackTrace();
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#getWorkersInQueue()
+    */
+   @Override
+   public int getWorkersInQueue() {
+      return futureTasks.size();
    }
 
    private final class AttributeXmlParser extends AbstractSaxHandler {
@@ -79,5 +94,24 @@ public class SearchEngineTagger implements ISearchEngineTagger {
             }
          }
       }
+   }
+
+   private final class FutureTaggingTask extends FutureTask<Object> {
+      /**
+       * @param runnable
+       * @param result
+       */
+      public FutureTaggingTask(long gammaId) {
+         super(new TaggerRunnable(gammaId), null);
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.concurrent.FutureTask#done()
+       */
+      @Override
+      protected void done() {
+         futureTasks.remove(this);
+      }
+
    }
 }

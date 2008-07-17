@@ -15,12 +15,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.search.engine.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class WordsUtil {
+   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
 
    private static final String VOWELS = "aeiou";
    private static final String IES_ENDING = "ies";
@@ -126,5 +130,12 @@ public class WordsUtil {
          }
       }
       return toReturn;
+   }
+
+   public static String extractTextDataFromXMLTags(String str) {
+      str = str.replaceAll("<w:binData\\s+.*?w:binData/>", " ");
+      str = paragraphPattern.matcher(Xml.unescape(str)).replaceAll(" ");
+      str = tagKiller.matcher(str).replaceAll(" ").trim();
+      return str;
    }
 }
