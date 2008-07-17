@@ -407,10 +407,8 @@ public class XViewerCustomize {
     */
    public CustomizeData getTableDefaultCustData() {
       CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData(xViewer);
-      if (custData != null) {
-         if (custData.getName() == null || this.currentCustData.getName().equals("")) custData.setName(TABLE_DEFAULT_LABEL);
-         custData.setNameSpace(xViewer.getViewerNamespace());
-      }
+      if (custData.getName() == null || this.currentCustData.getName().equals("")) custData.setName(TABLE_DEFAULT_LABEL);
+      custData.setNameSpace(xViewer.getViewerNamespace());
       return custData;
    }
 
