@@ -30,7 +30,7 @@ public class StaticStationInfo extends FormmatedEntry {
    public Date dateStarted;
 
    public StaticStationInfo() {
-      this("??", "??", "??", "??", "??", null);
+      this("??", "??", "??", "??", "??", new Date());
    }
 
    /**
