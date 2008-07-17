@@ -11,13 +11,21 @@
 package org.eclipse.osee.framework.search.engine.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.WordChunker;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
+import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Roberto E. Escobar
@@ -118,17 +126,92 @@ public class TestWordsUtil extends TestCase {
       }
    }
 
-   private Map<String, String> getXmlMarkupRemovalData() {
-      Map<String, String> toReturn = new LinkedHashMap<String, String>();
+   private String getFileName(String name) {
+      int index = name.lastIndexOf("/");
+      if (index > -1) {
+         name = name.substring(index + 1, name.length());
+      }
+      if (name.endsWith(".data.xml")) {
+         name = name.substring(0, name.length() - 9);
+      }
+      if (name.endsWith(".expected.txt")) {
+         name = name.substring(0, name.length() - 13);
+      }
+      return name;
+   }
+
+   private boolean isDataFile(String name) {
+      return name != null && name.endsWith(".data.xml");
+   }
+
+   private boolean isExpectedFile(String name) {
+      return name != null && name.endsWith(".expected.txt");
+   }
+
+   private Map<String, TestData<URL, URL>> getXmlMarkupRemovalData() {
+      Map<String, TestData<URL, URL>> toReturn = new LinkedHashMap<String, TestData<URL, URL>>();
+
+      try {
+         Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
+         Enumeration<?> urls = bundle.findEntries("data", "*.*", true);
+         while (urls.hasMoreElements()) {
+            URL url = (URL) urls.nextElement();
+            String name = getFileName(url.getPath());
+            if (Strings.isValid(name)) {
+               TestData<URL, URL> pair = toReturn.get(name);
+               if (pair == null) {
+                  pair = new TestData<URL, URL>();
+                  toReturn.put(name, pair);
+               }
+               if (isDataFile(url.getPath())) {
+                  pair.data = url;
+               } else if (isExpectedFile(url.getPath())) {
+                  pair.expected = url;
+               } else if (pair.data == null || pair.expected == null) {
+                  toReturn.remove(pair);
+               }
+            }
+         }
+      } catch (Exception ex) {
+         assertTrue("Error reading test data.", true);
+      }
 
       return toReturn;
    }
 
    public void testXmlMarkupRemoval() {
-      Map<String, String> testMap = getXmlMarkupRemovalData();
+      Map<String, TestData<URL, URL>> testMap = getXmlMarkupRemovalData();
       for (String key : testMap.keySet()) {
-         String results = WordsUtil.extractTextDataFromXMLTags(key);
-         assertEquals(String.format("Original: [%s] ", key), testMap.get(key), results);
+         TestData<URL, URL> testData = testMap.get(key);
+
+         InputStream dataStream = null;
+         InputStream expectedStream = null;
+         try {
+            dataStream = testData.data.openStream();
+            expectedStream = testData.expected.openStream();
+            String actual = Lib.inputStreamToString(new XmlTextInputStream(dataStream));
+            String expected = Lib.inputStreamToString(expectedStream);
+            assertEquals(String.format("Original: [%s] ", key), expected, actual);
+         } catch (Exception ex) {
+            assertTrue(String.format("Error getting test data for [%s]", key), true);
+         } finally {
+            if (dataStream != null) {
+               try {
+                  dataStream.close();
+               } catch (IOException ex) {
+               }
+            }
+            if (expectedStream != null) {
+               try {
+                  expectedStream.close();
+               } catch (IOException ex) {
+               }
+            }
+         }
       }
+   }
+   private class TestData<K, V> {
+      private K data;
+      private V expected;
    }
 }

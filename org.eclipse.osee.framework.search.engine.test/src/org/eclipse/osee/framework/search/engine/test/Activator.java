@@ -19,6 +19,8 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
    private static Activator instance;
+
+   private BundleContext bundleContext;
    private ServiceTracker searchServiceTracker;
    private ServiceTracker taggerServiceTracker;
 
@@ -28,7 +30,7 @@ public class Activator implements BundleActivator {
     */
    public void start(BundleContext context) throws Exception {
       instance = this;
-
+      this.bundleContext = context;
       searchServiceTracker = new ServiceTracker(context, ISearchEngine.class.getName(), null);
       searchServiceTracker.open();
 
@@ -46,11 +48,18 @@ public class Activator implements BundleActivator {
 
       taggerServiceTracker.close();
       taggerServiceTracker = null;
+
+      bundleContext = null;
+
       instance = null;
    }
 
    public static Activator getInstance() {
       return instance;
+   }
+
+   public BundleContext getBundleContext() {
+      return this.bundleContext;
    }
 
    public ISearchEngine getSearchEngine() {
