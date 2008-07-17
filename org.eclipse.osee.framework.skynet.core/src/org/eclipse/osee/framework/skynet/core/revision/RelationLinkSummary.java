@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.RelationChangeIcons;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -37,7 +38,7 @@ public class RelationLinkSummary extends ChangeSummary<RelationLinkChange> imple
    }
 
    protected Image getImage(ChangeType changeType, ModificationType modType) {
-      return RelationLinkChange.getImage(changeType, modType);
+      return RelationChangeIcons.getImage(changeType, modType);
    }
 
    /* (non-Javadoc)
