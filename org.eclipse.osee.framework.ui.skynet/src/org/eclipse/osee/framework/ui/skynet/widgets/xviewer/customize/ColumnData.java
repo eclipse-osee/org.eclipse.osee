@@ -35,7 +35,7 @@ public class ColumnData {
                   xml);
       while (columnMatch.find()) {
          String colXml = columnMatch.group(1);
-         String colName = XViewerColumn.getSystemName(colXml);
+         String colName = XViewerColumn.getColumnId(colXml);
          XViewerColumn xCol = xViewerFactory.getDefaultXViewerColumn(colName);
          if (xCol == null)
             xCol = new XViewerColumn(null, colXml);
@@ -45,7 +45,7 @@ public class ColumnData {
       }
       for (XViewerColumn xCol : xCols) {
          columns.add(xCol);
-         nameToCol.put(xCol.getSystemName(), xCol);
+         nameToCol.put(xCol.getId(), xCol);
       }
       return columns;
    }

@@ -45,7 +45,7 @@ public class SortingData {
       StringBuffer sb = new StringBuffer("Sort: ");
       for (XViewerColumn col : getSortXCols()) {
          if (col != null) {
-            sb.append(col.getSystemName());
+            sb.append(col.getId());
             sb.append(col.isSortForward() ? " (FWD) , " : " (REV) , ");
          }
       }
@@ -62,7 +62,7 @@ public class SortingData {
    public void setSortXCols(List<XViewerColumn> sortXCols) {
       sortingNames.clear();
       for (XViewerColumn xCol : sortXCols) {
-         sortingNames.add(xCol.getSystemName());
+         sortingNames.add(xCol.getId());
       }
    }
 

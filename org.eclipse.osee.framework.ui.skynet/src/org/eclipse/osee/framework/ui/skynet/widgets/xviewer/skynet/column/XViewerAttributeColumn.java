@@ -19,17 +19,22 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
 
    private final String attributeTypeName;
 
-   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, name, width, defaultWidth, align, show, sortDataType);
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(viewer, id, name, width, defaultWidth, align, show, sortDataType);
       this.attributeTypeName = attributeTypeName;
    }
 
-   public XViewerAttributeColumn(String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      this(null, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(viewer, id, name, width, defaultWidth, align, show, sortDataType, multiColumnEditable, description);
+      this.attributeTypeName = attributeTypeName;
    }
 
-   public XViewerAttributeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align) {
-      this(viewer, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
+   public XViewerAttributeColumn(String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      this(null, id, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
+   }
+
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align) {
+      this(viewer, id, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
    }
 
    /* (non-Javadoc)
@@ -41,5 +46,9 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
          return ((Artifact) element).getAttributesToString(attributeTypeName);
       }
       return super.getColumnText(element, column);
+   }
+
+   public String getAttributeTypeName() {
+      return attributeTypeName;
    }
 }

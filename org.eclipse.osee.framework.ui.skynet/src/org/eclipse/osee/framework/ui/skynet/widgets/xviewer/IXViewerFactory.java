@@ -22,7 +22,7 @@ public interface IXViewerFactory {
 
    CustomizeData getDefaultTableCustomizeData(XViewer xViewer);
 
-   XViewerColumn getDefaultXViewerColumn(String name);
+   XViewerColumn getDefaultXViewerColumn(String id);
 
    IXViewerCustomizeDefaults getXViewerCustomizeDefaults();
 

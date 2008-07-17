@@ -52,13 +52,13 @@ public enum MergeColumn {
          for (MergeColumn atsCol : MergeColumn.values())
             nameToAtsXColumn.put(atsCol.getName(), atsCol);
       }
-      return nameToAtsXColumn.get(xCol.getSystemName());
+      return nameToAtsXColumn.get(xCol.getId());
    }
 
    public XViewerColumn getXViewerColumn(MergeColumn atsXCol) {
       XViewerColumn xCol =
-            new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
-                  atsXCol.sortDataType);
+            new XViewerColumn("merge.view." + atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align,
+                  atsXCol.isShow(), atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

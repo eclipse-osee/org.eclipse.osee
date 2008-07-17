@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewCompletedDateColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaStateColumn;
-import org.eclipse.osee.ats.world.AtsXColumn;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -104,16 +104,16 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       columns.add(new XViewerArtifactTypeColumn("Type", null));
       columns.add(new XViewerHridColumn("ID", null));
-      columns.add(AtsXColumn.Legacy_PCR_Col.getXViewerAttributeColumn(true));
+      columns.add(WorldXViewerFactory.Legacy_PCR_Col);
       columns.add(new XViewerSmaStateColumn(null));
       columns.add(new XViewerReviewCompletedDateColumn("Completed", null));
       columns.add(new XViewerReviewRoleColumn(null, user));
-      columns.add(AtsXColumn.Related_To_State_Col.getXViewerAttributeColumn(true));
+      columns.add(WorldXViewerFactory.Related_To_State_Col);
       columns.add(new XViewerArtifactNameColumn("Name", null));
       columns.add(new XViewerGuidColumn("Guid", null));
       for (AttributeType attributeType : AttributeTypeManager.getTypes(AtsPlugin.getAtsBranch())) {
-         columns.add(new XViewerAttributeColumn(null, "review." + attributeType.getName(), attributeType.getName(), 75,
-               75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType)));
+         columns.add(new XViewerAttributeColumn(null, "attr." + attributeType.getName(), attributeType.getName(),
+               attributeType.getName(), 75, 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType)));
       }
       return columns;
    }

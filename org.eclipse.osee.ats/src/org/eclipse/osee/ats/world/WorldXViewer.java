@@ -74,6 +74,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -310,11 +311,15 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    }
 
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
-      final AtsXColumn aCol = AtsXColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
+      if (!(treeColumn.getData() instanceof XViewerAttributeColumn)) {
+         AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
+         return;
+      }
+      final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
       XResultData rData = new XResultData(AtsPlugin.getLogger());
-      final String attrName = getAttributeNameFromColumn(aCol);
+      final String attrName = xCol.getAttributeTypeName();
       if (attrName == null) {
-         AWorkbench.popup("ERROR", "Un-handled column " + treeColumn.getText());
+         AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return;
       }
       final Set<Artifact> useArts = new HashSet<Artifact>();
@@ -342,12 +347,12 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException, SQLException {
-                           ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
+                           ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
                         }
                      };
                txWrapper.execute();
             } else {
-               ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
+               ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
             }
          }
       } catch (Exception ex) {
@@ -355,34 +360,20 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
       }
    }
 
-   private String getAttributeNameFromColumn(AtsXColumn aCol) {
-      if (aCol == AtsXColumn.Notes_Col)
-         return ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Category_Col)
-         return ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Category2_Col)
-         return ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Category3_Col)
-         return ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Related_To_State_Col)
-         return ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Work_Package_Col)
-         return ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Deadline_Col)
-         return ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Estimated_Hours_Col)
-         return ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName();
-      else if (aCol == AtsXColumn.Description_Col) return ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName();
-      return null;
-   }
-
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      AtsXColumn aCol = AtsXColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
-      if (aCol == null) return false;
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (xCol == null || !xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      String attrName = getAttributeNameFromColumn(aCol);
+      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
+      if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
+         AWorkbench.popup("ERROR", "Column is not multi-editable " + treeColumn.getText());
+         return false;
+      }
+      // Currently don't know how to multi-edit anything but attribute
+      XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+      final String attrName = xCol.getAttributeTypeName();
+      if (attrName == null) {
+         AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
+         return false;
+      }
       if (attrName == null) return false;
       for (TreeItem item : treeItems) {
          if (item.getData() instanceof ActionArtifact) return false;
@@ -774,10 +765,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
       try {
          super.handleAltLeftClick(treeColumn, treeItem);
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
+         if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
          Artifact useArt = (Artifact) treeItem.getData();
          if (useArt instanceof ActionArtifact) {
             if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
@@ -786,45 +774,46 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
                return false;
          }
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
+         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          boolean modified = false;
-         if (aCol == AtsXColumn.Version_Target_Col)
+         if (xCol == WorldXViewerFactory.Version_Target_Col)
             modified =
                   smaMgr.promptChangeVersion(
                         AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
-         else if (aCol == AtsXColumn.Notes_Col)
+         else if (xCol == WorldXViewerFactory.Notes_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Percent_Rework_Col)
+         else if (xCol == WorldXViewerFactory.Percent_Rework_Col)
             modified = smaMgr.promptChangePercentAttribute(ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Estimated_Hours_Col)
+         else if (xCol == WorldXViewerFactory.Estimated_Hours_Col)
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Weekly_Benefit_Hrs_Col)
+         else if (xCol == WorldXViewerFactory.Weekly_Benefit_Hrs_Col)
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Estimated_Release_Date_Col)
+         else if (xCol == WorldXViewerFactory.Estimated_Release_Date_Col)
             modified = smaMgr.promptChangeEstimatedReleaseDate();
-         else if (aCol == AtsXColumn.Deadline_Col)
+         else if (xCol == WorldXViewerFactory.Deadline_Col)
             modified = smaMgr.promptChangeDate(ATSAttributes.DEADLINE_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Remaining_Hours_Col) {
+         else if (xCol == WorldXViewerFactory.Remaining_Hours_Col) {
             AWorkbench.popup("Calculated Field",
                   "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
             return false;
-         } else if (aCol == AtsXColumn.Man_Days_Needed_Col) {
+         } else if (xCol == WorldXViewerFactory.Man_Days_Needed_Col) {
             AWorkbench.popup(
                   "Calculated Field",
                   "Man Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + smaMgr.getSma().getManDayHrsPreference() + ")");
             return false;
-         } else if (aCol == AtsXColumn.Release_Date_Col)
+         } else if (xCol == WorldXViewerFactory.Release_Date_Col)
             modified = smaMgr.promptChangeReleaseDate();
-         else if (aCol == AtsXColumn.Work_Package_Col)
+         else if (xCol == WorldXViewerFactory.Work_Package_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Category_Col)
+         else if (xCol == WorldXViewerFactory.Category_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Category2_Col)
+         else if (xCol == WorldXViewerFactory.Category2_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY2_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Category3_Col)
+         else if (xCol == WorldXViewerFactory.Category3_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY3_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Change_Type_Col)
+         else if (xCol == WorldXViewerFactory.Change_Type_Col)
             modified = smaMgr.promptChangeType(persist);
-         else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(persist);
+         else if (xCol == WorldXViewerFactory.Priority_Col) modified = smaMgr.promptChangePriority(persist);
          if (modified) {
             update(useArt, null);
             return true;

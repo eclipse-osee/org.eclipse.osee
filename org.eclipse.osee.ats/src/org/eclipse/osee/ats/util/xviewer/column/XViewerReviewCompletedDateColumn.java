@@ -19,7 +19,7 @@ import org.eclipse.swt.SWT;
 public class XViewerReviewCompletedDateColumn extends XViewerValueColumn {
 
    public XViewerReviewCompletedDateColumn(String name, XViewer viewer) {
-      super(viewer, name, 150, 150, SWT.LEFT, true, SortDataType.String);
+      super(viewer, "ats.column.revicewCompleteDate", name, 150, 150, SWT.LEFT, true, SortDataType.String);
    }
 
    /* (non-Javadoc)

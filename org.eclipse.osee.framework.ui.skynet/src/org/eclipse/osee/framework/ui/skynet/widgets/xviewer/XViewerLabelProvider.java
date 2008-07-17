@@ -33,11 +33,13 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider {
    public Image getColumnImage(Object element, int columnIndex) {
       try {
          XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         // If not shown, don't process any further
+         if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn != null) {
             if (xViewerColumn instanceof XViewerValueColumn) {
                return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
             }
-            return getColumnImage(element, viewer.getXTreeColumn(columnIndex));
+            return getColumnImage(element, viewer.getXTreeColumn(columnIndex), columnIndex);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
@@ -48,11 +50,13 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider {
    public String getColumnText(Object element, int columnIndex) {
       try {
          XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         // If not shown, don't process any further
+         if (!xViewerColumn.isShow()) return "";
          if (xViewerColumn != null) {
             if (xViewerColumn instanceof XViewerValueColumn) {
                return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
             }
-            return getColumnText(element, viewer.getXTreeColumn(columnIndex));
+            return getColumnText(element, viewer.getXTreeColumn(columnIndex), columnIndex);
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -60,7 +64,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider {
       return "";
    }
 
-   public abstract Image getColumnImage(Object element, XViewerColumn column);
+   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex);
 
-   public abstract String getColumnText(Object element, XViewerColumn column);
+   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex);
 }

@@ -52,9 +52,9 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
     * 
     * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       for (MergeColumn atsXCol : MergeColumn.values()) {
-         if (atsXCol.getName().equals(name)) {
+         if (atsXCol.getName().equals(id)) {
             return atsXCol.getXViewerColumn(atsXCol);
          }
       }

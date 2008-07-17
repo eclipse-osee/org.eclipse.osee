@@ -14,20 +14,24 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XViewerValueColumn extends XViewerColumn {
 
-   public XViewerValueColumn(XViewer viewer, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, name, width, defaultWidth, align, show, sortDataType);
+   public XViewerValueColumn(XViewer viewer, String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(viewer, id, name, width, defaultWidth, align, show, sortDataType);
    }
 
-   public XViewerValueColumn(String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      super(name, width, defaultWidth, align, show, sortDataType);
+   public XViewerValueColumn(XViewer viewer, String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(viewer, id, name, width, defaultWidth, align, show, sortDataType, multiColumnEditable, description);
+   }
+
+   public XViewerValueColumn(String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+      super(id, name, width, defaultWidth, align, show, sortDataType);
    }
 
    public XViewerValueColumn(XViewer viewer, String xml) {
       super(viewer, xml);
    }
 
-   public XViewerValueColumn(XViewer viewer, String name, int width, int defaultWidth, int align) {
-      super(viewer, name, width, defaultWidth, align);
+   public XViewerValueColumn(XViewer viewer, String id, String name, int width, int defaultWidth, int align) {
+      super(viewer, id, name, width, defaultWidth, align);
    }
 
    public Image getColumnImage(Object element, XViewerColumn column) throws OseeCoreException, SQLException {

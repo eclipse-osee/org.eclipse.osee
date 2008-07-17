@@ -308,7 +308,9 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       // Add other attributes
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
-            XViewerColumn newCol = new XViewerColumn(xViewer, attributeType.getName(), 75, 75, SWT.CENTER);
+            XViewerColumn newCol =
+                  new XViewerColumn(xViewer, "attribute." + attributeType.getName(), attributeType.getName(), 75, 75,
+                        SWT.CENTER);
             newCol.setSortDataType(XViewerAttributeSortDataType.get(attributeType));
             columns.add(newCol);
             attrNames.add(attributeType.getName());

@@ -78,9 +78,9 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       for (AtsXColumn atsXCol : AtsXColumn.values()) {
-         if (atsXCol.getName().equals(name)) {
+         if (atsXCol.getName().equals(id)) {
             return atsXCol.getXViewerColumn(atsXCol);
          }
       }

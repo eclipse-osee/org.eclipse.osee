@@ -101,6 +101,7 @@ public class XViewer extends TreeViewer {
    }
 
    private TreeColumn rightClickSelectedColumn = null;
+   private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
 
    protected void createSupportWidgets(Composite parent) {
@@ -119,6 +120,7 @@ public class XViewer extends TreeViewer {
          public void handleEvent(Event event) {
             if (event.button == 3) {
                rightClickSelectedColumn = null;
+               rightClickSelectedColumnNum = null;
                rightClickSelectedItem = null;
                Point pt = new Point(event.x, event.y);
                rightClickSelectedItem = getTree().getItem(pt);
@@ -126,6 +128,7 @@ public class XViewer extends TreeViewer {
                for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
                   Rectangle rect = rightClickSelectedItem.getBounds(colNum);
                   if (rect.contains(pt)) {
+                     rightClickSelectedColumnNum = colNum;
                      rightClickSelectedColumn = getTree().getColumn(colNum);
                   }
                }
@@ -461,6 +464,10 @@ public class XViewer extends TreeViewer {
     */
    public TreeItem getRightClickSelectedItem() {
       return rightClickSelectedItem;
+   }
+
+   public Integer getRightClickSelectedColumnNum() {
+      return rightClickSelectedColumnNum;
    }
 
 }

@@ -51,13 +51,13 @@ public enum UserRoleColumn {
          for (UserRoleColumn atsCol : UserRoleColumn.values())
             nameToAtsXColumn.put(atsCol.getName(), atsCol);
       }
-      return nameToAtsXColumn.get(xCol.getSystemName());
+      return nameToAtsXColumn.get(xCol.getId());
    }
 
    public XViewerColumn getXViewerColumn(UserRoleColumn atsXCol) {
       XViewerColumn xCol =
-            new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
-                  atsXCol.sortDataType);
+            new XViewerColumn(atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align,
+                  atsXCol.isShow(), atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

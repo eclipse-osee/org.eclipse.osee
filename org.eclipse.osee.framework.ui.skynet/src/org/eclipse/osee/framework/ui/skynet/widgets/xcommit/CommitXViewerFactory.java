@@ -52,9 +52,9 @@ public class CommitXViewerFactory extends SkynetXViewerFactory {
     * 
     * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       for (CommitColumn atsXCol : CommitColumn.values()) {
-         if (atsXCol.getName().equals(name)) {
+         if (atsXCol.getName().equals(id)) {
             return atsXCol.getXViewerColumn(atsXCol);
          }
       }

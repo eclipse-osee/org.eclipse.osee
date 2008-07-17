@@ -54,7 +54,7 @@ public class SkynetXViewerFactory implements IXViewerFactory {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn(java.lang.String)
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       return null;
    }
 

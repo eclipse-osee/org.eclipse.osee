@@ -57,13 +57,13 @@ public class QueryLogLabelProvider extends XViewerLabelProvider {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public Image getColumnImage(Object element, XViewerColumn column) {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       // Since getColumnimage is overridden, this method will not be called
       return null;
    }
 
-   public String getColumnText(Object element, XViewerColumn column) {
-      String columnName = column.getDisplayName();
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
+      String columnName = xCol.getDisplayName();
 
       if (element instanceof QueryRecord) {
          QueryRecord record = (QueryRecord) element;

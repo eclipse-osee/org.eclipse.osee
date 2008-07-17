@@ -38,9 +38,12 @@ public class QueryLogXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
       List<XViewerColumn> defaultColumns = new ArrayList<XViewerColumn>();
-      defaultColumns.add(new XViewerColumn(QueryLogView.ITEM, 400, 400, SWT.LEFT, true, SortDataType.String));
-      defaultColumns.add(new XViewerColumn(QueryLogView.TIME, 100, 100, SWT.CENTER, true, SortDataType.String));
-      defaultColumns.add(new XViewerColumn(QueryLogView.DURATION, 100, 100, SWT.CENTER, true, SortDataType.Float));
+      defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.ITEM, QueryLogView.ITEM, 400, 400, SWT.LEFT,
+            true, SortDataType.String));
+      defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.TIME, QueryLogView.TIME, 100, 100, SWT.CENTER,
+            true, SortDataType.String));
+      defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.DURATION, QueryLogView.DURATION, 100, 100,
+            SWT.CENTER, true, SortDataType.Float));
       custData.getColumnData().setColumns(defaultColumns);
       return custData;
    }
@@ -50,9 +53,9 @@ public class QueryLogXViewerFactory extends SkynetXViewerFactory {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       for (XViewerColumn xCol : getDefaultTableCustomizeData(viewer).getColumnData().getColumns()) {
-         if (xCol.getSystemName().equals(name)) {
+         if (xCol.getId().equals(id)) {
             return xCol;
          }
       }

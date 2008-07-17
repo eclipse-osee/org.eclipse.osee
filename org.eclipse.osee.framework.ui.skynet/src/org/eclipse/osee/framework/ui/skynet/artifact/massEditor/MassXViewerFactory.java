@@ -48,9 +48,9 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
     */
-   public XViewerColumn getDefaultXViewerColumn(String name) {
+   public XViewerColumn getDefaultXViewerColumn(String id) {
       if (custData != null) for (XViewerColumn xCol : custData.getColumnData().getColumns())
-         if (xCol.getDisplayName().equals(name)) return xCol;
+         if (xCol.getDisplayName().equals(id)) return xCol;
       return null;
    }
 

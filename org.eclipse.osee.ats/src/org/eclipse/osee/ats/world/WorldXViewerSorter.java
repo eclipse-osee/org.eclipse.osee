@@ -46,11 +46,10 @@ public class WorldXViewerSorter extends XViewerSorter {
          if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
          XViewerColumn sortXCol =
                xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
-         AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
          IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
          IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
-         if (aCol == AtsXColumn.Change_Type_Col) {
+         if (sortXCol == WorldXViewerFactory.Change_Type_Col) {
             int compareInt =
                   getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
                         m2.getWorldViewChangeType().ordinal() + "");

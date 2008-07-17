@@ -42,8 +42,8 @@ public class XViewerSorter extends ViewerSorter {
       List<XViewerColumn> sortXCols = treeViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols();
       if (sortXCols == null || sortXCols.size() == 0) return 0;
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
-      String o1Str = getTreeColumnText(sortXCol, o1);
-      String o2Str = getTreeColumnText(sortXCol, o2);
+      String o1Str = getTreeColumnText(sortXCol, sortXColIndex, o1);
+      String o2Str = getTreeColumnText(sortXCol, sortXColIndex, o2);
 
       // System.out.println("sortForward.get(columnNum) *" +
       // sortXCol.isSortForward() + "*");
@@ -70,9 +70,9 @@ public class XViewerSorter extends ViewerSorter {
       return compare(viewer, o1, o2, 0);
    }
 
-   private String getTreeColumnText(XViewerColumn xCol, Object obj) {
+   private String getTreeColumnText(XViewerColumn xCol, int columnIndex, Object obj) {
       XViewerLabelProvider labelProv = (XViewerLabelProvider) treeViewer.getLabelProvider();
-      return labelProv.getColumnText(obj, xCol);
+      return labelProv.getColumnText(obj, xCol, columnIndex);
    }
 
    public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {

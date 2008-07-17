@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.ats.world.AtsXColumn;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,7 +48,7 @@ public class RemainingHoursStat extends WorkPageService {
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       label = toolkit.createLabel(workGroup, "", SWT.NONE);
-      label.setToolTipText(AtsXColumn.Remaining_Hours_Col.getDesc());
+      label.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
       refresh();
    }
 

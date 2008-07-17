@@ -19,7 +19,7 @@ import org.eclipse.swt.SWT;
 public class XViewerSmaStateColumn extends XViewerValueColumn {
 
    public XViewerSmaStateColumn(XViewer viewer) {
-      super(viewer, "State", 75, 75, SWT.LEFT, true, SortDataType.String);
+      super(viewer, "ats.column.smaState", "State", 75, 75, SWT.LEFT, true, SortDataType.String);
    }
 
    /* (non-Javadoc)

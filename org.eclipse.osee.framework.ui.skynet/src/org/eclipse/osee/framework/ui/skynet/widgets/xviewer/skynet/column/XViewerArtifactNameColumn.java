@@ -19,7 +19,7 @@ import org.eclipse.swt.SWT;
 public class XViewerArtifactNameColumn extends XViewerValueColumn {
 
    public XViewerArtifactNameColumn(String name, XViewer viewer) {
-      super(viewer, name, 150, 150, SWT.LEFT, true, SortDataType.String);
+      super(viewer, "framework.artifact.name." + name, name, 150, 150, SWT.LEFT, true, SortDataType.String);
    }
 
    /* (non-Javadoc)

@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
 public class XViewerArtifactTypeColumn extends XViewerValueColumn {
 
    public XViewerArtifactTypeColumn(String name, XViewer viewer) {
-      super(viewer, name, 150, 150, SWT.LEFT, true, SortDataType.String);
+      super(viewer, "framework.artifact.type." + name, name, 150, 150, SWT.LEFT, true, SortDataType.String);
    }
 
    /* (non-Javadoc)
