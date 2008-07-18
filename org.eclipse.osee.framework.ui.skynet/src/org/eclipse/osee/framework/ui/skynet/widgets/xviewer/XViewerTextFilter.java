@@ -38,10 +38,14 @@ public class XViewerTextFilter extends ViewerFilter {
       for (XViewerColumn xCol : xViewer.getCustomize().getCurrentCustData().getColumnData().getColumns()) {
          if (xCol.isShow()) {
             System.out.println("fix this, column index should not be 0");
-            String cellStr = ((XViewerLabelProvider) labelProv).getColumnText(element, xCol, 0);
-            if (cellStr != null) {
-               matcher = pattern.matcher(cellStr);
-               if (matcher.find()) return true;
+            try {
+               String cellStr = ((XViewerLabelProvider) labelProv).getColumnText(element, xCol, 0);
+               if (cellStr != null) {
+                  matcher = pattern.matcher(cellStr);
+                  if (matcher.find()) return true;
+               }
+            } catch (Exception ex) {
+               // do nothing
             }
          }
       }

@@ -57,16 +57,13 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return "";
-         if (xViewerColumn != null) {
-            if (xViewerColumn instanceof XViewerValueColumn) {
-               return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
-            }
-            return getColumnText(element, xViewerColumn, columnIndex);
+         if (xViewerColumn instanceof XViewerValueColumn) {
+            return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
          }
+         return getColumnText(element, xViewerColumn, columnIndex);
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
-      return "";
    }
 
    @Override

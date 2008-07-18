@@ -42,37 +42,39 @@ public class XViewerSorter extends ViewerSorter {
       List<XViewerColumn> sortXCols = treeViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols();
       if (sortXCols == null || sortXCols.size() == 0) return 0;
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
-      String o1Str = getTreeColumnText(sortXCol, sortXColIndex, o1);
-      String o2Str = getTreeColumnText(sortXCol, sortXColIndex, o2);
+      try {
+         String o1Str =
+               ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o1, sortXCol, sortXColIndex);
+         String o2Str =
+               ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o2, sortXCol, sortXColIndex);
 
-      // System.out.println("sortForward.get(columnNum) *" +
-      // sortXCol.isSortForward() + "*");
-      int compareInt = 0;
-      if (o1Str == null)
-         compareInt = -1;
-      else if (o2Str == null)
-         compareInt = 1;
-      else if (sortXCol.getSortDataType() == SortDataType.Date)
-         compareInt = getCompareForDate(o1Str, o2Str);
-      else if (sortXCol.getSortDataType() == SortDataType.Percent)
-         compareInt = getCompareForPercent(o1Str, o2Str);
-      else if (sortXCol.getSortDataType() == SortDataType.Float)
-         compareInt = getCompareForFloat(o1Str, o2Str);
-      else if (sortXCol.getSortDataType() == SortDataType.Integer)
-         compareInt = getCompareForInteger(o1Str, o2Str);
-      else
-         compareInt = getComparator().compare(o1Str, o2Str);
+         // System.out.println("sortForward.get(columnNum) *" +
+         // sortXCol.isSortForward() + "*");
+         int compareInt = 0;
+         if (o1Str == null)
+            compareInt = -1;
+         else if (o2Str == null)
+            compareInt = 1;
+         else if (sortXCol.getSortDataType() == SortDataType.Date)
+            compareInt = getCompareForDate(o1Str, o2Str);
+         else if (sortXCol.getSortDataType() == SortDataType.Percent)
+            compareInt = getCompareForPercent(o1Str, o2Str);
+         else if (sortXCol.getSortDataType() == SortDataType.Float)
+            compareInt = getCompareForFloat(o1Str, o2Str);
+         else if (sortXCol.getSortDataType() == SortDataType.Integer)
+            compareInt = getCompareForInteger(o1Str, o2Str);
+         else
+            compareInt = getComparator().compare(o1Str, o2Str);
 
-      return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+         return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+      return 0;
    }
 
    public int compare(Viewer viewer, Object o1, Object o2) {
       return compare(viewer, o1, o2, 0);
-   }
-
-   private String getTreeColumnText(XViewerColumn xCol, int columnIndex, Object obj) {
-      XViewerLabelProvider labelProv = (XViewerLabelProvider) treeViewer.getLabelProvider();
-      return labelProv.getColumnText(obj, xCol, columnIndex);
    }
 
    public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {
