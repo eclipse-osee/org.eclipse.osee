@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -52,7 +52,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String);
    public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID", null);
-   public static final XViewerColumn Created_Date_Col = new XViewerSmaCompletedDateColumn(null);
+   public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn(null);
    public static final XViewerColumn Version_Target_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + "versionTarget", "Version Target", 40, SWT.LEFT,
                true, SortDataType.String, false, "Date this workflow transitioned to the Completed state.");

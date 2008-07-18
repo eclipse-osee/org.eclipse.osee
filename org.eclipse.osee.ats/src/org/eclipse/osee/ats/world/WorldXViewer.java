@@ -364,7 +364,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
       if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
-         AWorkbench.popup("ERROR", "Column is not multi-editable " + treeColumn.getText());
          return false;
       }
       // Currently don't know how to multi-edit anything but attribute

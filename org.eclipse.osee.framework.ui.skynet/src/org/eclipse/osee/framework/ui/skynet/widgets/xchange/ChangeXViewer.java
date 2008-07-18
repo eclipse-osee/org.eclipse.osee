@@ -117,10 +117,8 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      ChangeColumn aCol = ChangeColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      return true;
+      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
+      return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
    @Override

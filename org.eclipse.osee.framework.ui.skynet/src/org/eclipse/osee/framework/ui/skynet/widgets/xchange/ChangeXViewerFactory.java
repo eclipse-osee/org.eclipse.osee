@@ -12,8 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -23,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeSortDataType;
@@ -34,10 +39,36 @@ import org.eclipse.swt.SWT;
  */
 public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
-   /**
-    * 
-    */
+   public static String COLUMN_NAMESPACE = "framework.change.";
+   public static final XViewerColumn Name =
+         new XViewerColumn(COLUMN_NAMESPACE + "artifactNames", "Artifact name(s)", 250, SWT.LEFT, true,
+               SortDataType.String, false);
+   public static final XViewerColumn Item_Type =
+         new XViewerColumn(COLUMN_NAMESPACE + "itemType", "Item Type", 100, SWT.LEFT, true, SortDataType.String, false);
+   public static final XViewerColumn Item_Kind =
+         new XViewerColumn(COLUMN_NAMESPACE + "itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false);
+   public static final XViewerColumn Change_Type =
+         new XViewerColumn(COLUMN_NAMESPACE + "changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
+               false);
+   // TODO Temporary column until dynamic attributes can be added
+   public static final XViewerColumn CSCI =
+         new XViewerColumn(COLUMN_NAMESPACE + "csci", "CSCI", 50, SWT.LEFT, true, SortDataType.String, false);
+   public static final XViewerColumn Is_Value =
+         new XViewerColumn(COLUMN_NAMESPACE + "isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
+   public static final XViewerColumn Was_Value =
+         new XViewerColumn(COLUMN_NAMESPACE + "wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
+
+   public static final List<XViewerColumn> columns =
+         Arrays.asList(Name, Item_Type, Item_Kind, Change_Type, CSCI, Is_Value, Was_Value);
+   public static Map<String, XViewerColumn> idToColumn = null;
+
    public ChangeXViewerFactory() {
+      if (idToColumn == null) {
+         idToColumn = new HashMap<String, XViewerColumn>();
+         for (XViewerColumn xCol : columns) {
+            idToColumn.put(xCol.getId(), xCol);
+         }
+      }
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {
@@ -46,14 +77,14 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
       CustomizeData custData = new CustomizeData();
-      List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (ChangeColumn atsXCol : ChangeColumn.values()) {
-         XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         newCol.setXViewer(xViewer);
-         cols.add(newCol);
+      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
+      for (XViewerColumn xCol : columns) {
+         xCol.setXViewer(xViewer);
+         cols.add(xCol);
       }
       try {
-         for (AttributeType attributeType : AttributeTypeManager.getTypes(getBranch(xViewer))) {
+         // TODO change from getcommonbranch to getBranch(xViewer) when fixed
+         for (AttributeType attributeType : AttributeTypeManager.getTypes(BranchPersistenceManager.getCommonBranch())) {
             XViewerAttributeFromChangeColumn newCol =
                   new XViewerAttributeFromChangeColumn(xViewer, attributeType.getName(), attributeType.getName(), 75,
                         75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType));
@@ -72,20 +103,6 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       if (branch == null) {
          TransactionId transId = ((ChangeXViewer) xViewer).getXChangeViewer().getTransactionId();
          if (transId != null) return transId.getBranch();
-      }
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      for (ChangeColumn atsXCol : ChangeColumn.values()) {
-         if (atsXCol.getName().equals(id)) {
-            return atsXCol.getXViewerColumn(atsXCol);
-         }
       }
       return null;
    }

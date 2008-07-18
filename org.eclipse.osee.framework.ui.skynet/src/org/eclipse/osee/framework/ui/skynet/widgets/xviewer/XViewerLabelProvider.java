@@ -11,8 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.sql.SQLException;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Color;
@@ -109,7 +111,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
       return null;
    }
 
-   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex);
+   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException;
 
-   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex);
+   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException;
 }
