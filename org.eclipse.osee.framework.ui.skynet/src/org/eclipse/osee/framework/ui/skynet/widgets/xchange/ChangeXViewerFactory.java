@@ -50,16 +50,13 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Change_Type =
          new XViewerColumn(COLUMN_NAMESPACE + "changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
                false);
-   // TODO Temporary column until dynamic attributes can be added
-   public static final XViewerColumn CSCI =
-         new XViewerColumn(COLUMN_NAMESPACE + "csci", "CSCI", 50, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Is_Value =
          new XViewerColumn(COLUMN_NAMESPACE + "isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Was_Value =
          new XViewerColumn(COLUMN_NAMESPACE + "wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    public static final List<XViewerColumn> columns =
-         Arrays.asList(Name, Item_Type, Item_Kind, Change_Type, CSCI, Is_Value, Was_Value);
+         Arrays.asList(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value);
    public static Map<String, XViewerColumn> idToColumn = null;
 
    public ChangeXViewerFactory() {
@@ -67,6 +64,18 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
          idToColumn = new HashMap<String, XViewerColumn>();
          for (XViewerColumn xCol : columns) {
             idToColumn.put(xCol.getId(), xCol);
+         }
+         try {
+            // TODO change from getcommonbranch to getBranch(xViewer) when fixed
+            for (AttributeType attributeType : AttributeTypeManager.getTypes(BranchPersistenceManager.getCommonBranch())) {
+               XViewerAttributeFromChangeColumn newCol =
+                     new XViewerAttributeFromChangeColumn(null, attributeType.getName(), attributeType.getName(), 75,
+                           75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType));
+               columns.add(newCol);
+               idToColumn.put(newCol.getId(), newCol);
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
       }
    }
@@ -82,18 +91,6 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
          xCol.setXViewer(xViewer);
          cols.add(xCol);
       }
-      try {
-         // TODO change from getcommonbranch to getBranch(xViewer) when fixed
-         for (AttributeType attributeType : AttributeTypeManager.getTypes(BranchPersistenceManager.getCommonBranch())) {
-            XViewerAttributeFromChangeColumn newCol =
-                  new XViewerAttributeFromChangeColumn(xViewer, attributeType.getName(), attributeType.getName(), 75,
-                        75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType));
-            newCol.setXViewer(xViewer);
-            cols.add(newCol);
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
       custData.getColumnData().setColumns(cols);
       return custData;
    }
@@ -105,6 +102,15 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
          if (transId != null) return transId.getBranch();
       }
       return null;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
+    */
+   public XViewerColumn getDefaultXViewerColumn(String id) {
+      return idToColumn.get(id);
    }
 
 }

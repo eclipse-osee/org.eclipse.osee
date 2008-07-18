@@ -33,7 +33,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -198,15 +200,19 @@ public class XViewerCustomize {
    }
 
    private void performViewCell() {
-      TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
-      TreeItem treeItem = xViewer.getRightClickSelectedItem();
-      if (treeCol != null) {
-         XViewerColumn xCol = (XViewerColumn) treeCol.getData();
-         String data =
-               ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol,
-                     xViewer.getRightClickSelectedColumnNum());
-         if (data != null && !data.equals("")) new HtmlDialog(treeCol.getText() + " Data", treeCol.getText() + " Data",
-               data).open();
+      try {
+         TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
+         TreeItem treeItem = xViewer.getRightClickSelectedItem();
+         if (treeCol != null) {
+            XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+            String data =
+                  ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol,
+                        xViewer.getRightClickSelectedColumnNum());
+            if (data != null && !data.equals("")) new HtmlDialog(treeCol.getText() + " Data",
+                  treeCol.getText() + " Data", data).open();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 

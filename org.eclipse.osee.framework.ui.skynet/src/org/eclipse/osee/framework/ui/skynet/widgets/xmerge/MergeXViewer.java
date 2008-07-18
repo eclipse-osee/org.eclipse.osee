@@ -98,10 +98,8 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      MergeColumn aCol = MergeColumn.getXColumn((XViewerColumn) treeColumn.getData());
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      return true;
+      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
+      return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
    @Override
@@ -178,7 +176,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       Conflict conflict = (Conflict) treeItem.getData();
       try {
          Shell shell = Display.getCurrent().getActiveShell().getShell();
-         if (treeColumn.getText().equals(MergeColumn.Source.getName())) {
+         if (treeColumn.getText().equals(MergeXViewerFactory.Source.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
             } else if (conflict.statusInformational()) {
@@ -186,7 +184,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
             } else {
                MergeUtility.setToSource(conflict, shell, true);
             }
-         } else if (treeColumn.getText().equals(MergeColumn.Destination.getName())) {
+         } else if (treeColumn.getText().equals(MergeXViewerFactory.Destination.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
             } else if (conflict.statusInformational()) {
@@ -194,7 +192,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
             } else {
                MergeUtility.setToDest(conflict, shell, true);
             }
-         } else if (treeColumn.getText().equals(MergeColumn.Merged.getName())) {
+         } else if (treeColumn.getText().equals(MergeXViewerFactory.Merged.getName())) {
             if (!(conflict.getConflictType().equals(Conflict.ConflictType.ARTIFACT))) {
                conWizard = new ConflictResolutionWizard(conflict);
                WizardDialog dialog = new WizardDialog(shell, conWizard);
@@ -205,7 +203,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
             } else if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
             }
-         } else if (treeColumn.getText().equals(MergeColumn.Conflict_Resolved.getName())) {
+         } else if (treeColumn.getText().equals(MergeXViewerFactory.Conflict_Resolved.getName())) {
             if (conflict.statusNotResolvable()) {
                if (MergeUtility.showArtifactDeletedConflict(conflict, shell)) {
                   xCommitViewer.refreshTable();

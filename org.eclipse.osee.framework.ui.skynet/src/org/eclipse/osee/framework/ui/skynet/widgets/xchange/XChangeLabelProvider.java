@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -36,11 +34,6 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException, SQLException {
-      if (cCol != null) {
-         if (cCol instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) cCol).getColumnText(element, cCol, columnIndex);
-         }
-      }
       try {
          if (!(element instanceof Change)) return "";
          Change change = (Change) element;
@@ -56,19 +49,6 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getIsValue();
          } else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
             return change.getWasValue();
-         }
-         // TODO Temporary column until dynamic attributes can be added
-         else if (cCol.equals(ChangeXViewerFactory.CSCI)) {
-            Artifact art = change.getArtifact();
-            if (art != null) {
-               if (art.isAttributeTypeValid("CSCI"))
-                  return art.getAttributesToString("CSCI");
-               else if (art.isAttributeTypeValid("Partition"))
-                  return art.getAttributesToString("Partition");
-               else
-                  return "";
-            } else
-               return XViewerCells.getCellExceptionString("Artifact was null.");
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -97,11 +77,6 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
-      if (xCol != null) {
-         if (xCol instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) xCol).getColumnImage(element, xCol, columnIndex);
-         }
-      }
       try {
          if (!(element instanceof Change)) return null;
          Change change = (Change) element;

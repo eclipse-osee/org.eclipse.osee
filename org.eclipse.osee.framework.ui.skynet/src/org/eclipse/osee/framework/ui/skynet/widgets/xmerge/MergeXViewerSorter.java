@@ -47,12 +47,11 @@ public class MergeXViewerSorter extends XViewerSorter {
          if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
          XViewerColumn sortXCol =
                xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
-         MergeColumn aCol = MergeColumn.getXColumn(sortXCol);
-         String value1 = labelProvider.getColumnText(o1, sortXColIndex, sortXCol, aCol);
-         String value2 = labelProvider.getColumnText(o2, sortXColIndex, sortXCol, aCol);
+         String value1 = labelProvider.getColumnText(o1, sortXCol, sortXColIndex);
+         String value2 = labelProvider.getColumnText(o2, sortXCol, sortXColIndex);
 
          if (o1 instanceof Conflict && o2 instanceof Conflict) {
-            if (aCol == MergeColumn.Conflict_Resolved) {
+            if (sortXCol == MergeXViewerFactory.Conflict_Resolved) {
                int compareInt =
                      new Integer(ConflictState.getValue(value1)).compareTo(new Integer(ConflictState.getValue(value2)));
                return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);

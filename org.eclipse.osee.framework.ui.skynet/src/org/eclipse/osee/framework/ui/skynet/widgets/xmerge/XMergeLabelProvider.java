@@ -12,20 +12,16 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
-public class XMergeLabelProvider implements ITableLabelProvider {
+public class XMergeLabelProvider extends XViewerLabelProvider {
    public static enum ConflictState {
       UNTOUCHED(2, " "),
       REVERT(1, "Must Be Reverted"),
@@ -72,74 +68,36 @@ public class XMergeLabelProvider implements ITableLabelProvider {
    private final static String INFORMATION_IMAGE = "issue.gif";
 
    public XMergeLabelProvider(MergeXViewer mergeXViewer) {
-      super();
+      super(mergeXViewer);
       this.mergeXViewer = mergeXViewer;
    }
 
-   public String getColumnText(Object element, int columnIndex) {
-      if (element instanceof String) {
-         if (columnIndex == 1)
-            return (String) element;
-         else
-            return "";
-      }
-
-      XViewerColumn xCol = mergeXViewer.getXTreeColumn(columnIndex);
-      if (xCol != null) {
-         MergeColumn aCol = MergeColumn.getXColumn(xCol);
-         try {
-            return getColumnText(element, columnIndex, xCol, aCol);
-         } catch (Exception ex) {
-            XViewerCells.getCellExceptionString(ex);
+   @Override
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
+      if (element instanceof Conflict) {
+         Conflict conflict = (Conflict) element;
+         if (aCol == MergeXViewerFactory.Conflict_Resolved) {
+            if (conflict.statusResolved()) return ConflictState.RESOLVED.getText();
+            if (conflict.statusEdited()) return ConflictState.MODIFIED.getText();
+            if (conflict.statusOutOfDate()) return ConflictState.CHANGED.getText();
+            if (conflict.statusUntouched()) return ConflictState.UNTOUCHED.getText();
+            if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
+            if (conflict.statusInformational()) return ConflictState.INFORMATIONAL.getText();
+         } else if (aCol == MergeXViewerFactory.Artifact_Name) {
+            return conflict.getArtifactName();
+         } else if (aCol == MergeXViewerFactory.Change_Item) {
+            return conflict.getChangeItem();
+         } else if (aCol == MergeXViewerFactory.Source) {
+            return conflict.getSourceDisplayData();
+         } else if (aCol == MergeXViewerFactory.Destination) {
+            return conflict.getDestDisplayData();
+         } else if (aCol == MergeXViewerFactory.Merged) {
+            return conflict.getMergeDisplayData();
+         } else if (aCol == MergeXViewerFactory.Type) {
+            return conflict.getArtifact().getArtifactTypeName();
          }
       }
-      return "";
-   }
-
-   /**
-    * Provided as optimization of subclassed classes so provider doesn't have to retrieve the same information that has
-    * already been retrieved
-    * 
-    * @param element
-    * @param columnIndex
-    * @param branch
-    * @param xCol
-    * @param aCol
-    * @return column string
-    * @throws SQLException
-    */
-   public String getColumnText(Object element, int columnIndex, XViewerColumn xCol, MergeColumn aCol) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
-      if (!xCol.isShow()) return AttributeConflict.NO_VALUE; // Since not shown, don't display
-      try {
-         if (element instanceof Conflict) {
-            Conflict conflict = (Conflict) element;
-            if (aCol == MergeColumn.Conflict_Resolved) {
-               if (conflict.statusResolved()) return ConflictState.RESOLVED.getText();
-               if (conflict.statusEdited()) return ConflictState.MODIFIED.getText();
-               if (conflict.statusOutOfDate()) return ConflictState.CHANGED.getText();
-               if (conflict.statusUntouched()) return ConflictState.UNTOUCHED.getText();
-               if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
-               if (conflict.statusInformational()) return ConflictState.INFORMATIONAL.getText();
-            } else if (aCol == MergeColumn.Artifact_Name) {
-               return conflict.getArtifactName();
-            } else if (aCol == MergeColumn.Change_Item) {
-               return conflict.getChangeItem();
-            } else if (aCol == MergeColumn.Source) {
-               return conflict.getSourceDisplayData();
-            } else if (aCol == MergeColumn.Destination) {
-               return conflict.getDestDisplayData();
-            } else if (aCol == MergeColumn.Merged) {
-               return conflict.getMergeDisplayData();
-            } else if (aCol == MergeColumn.Type) {
-               return conflict.getArtifact().getArtifactTypeName();
-            }
-
-         }
-
-      } catch (Exception ex) {
-         OSEELog.logException(XMergeLabelProvider.class, ex, true);
-      }
-      return AttributeConflict.NO_VALUE;
+      return "unhandled column";
    }
 
    public void dispose() {
@@ -161,29 +119,24 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       return mergeXViewer;
    }
 
-   public Image getColumnImage(Object element, int columnIndex) {
-      if (element instanceof String) return null;
-      XViewerColumn xCol = mergeXViewer.getXTreeColumn(columnIndex);
-      if (xCol == null) return null;
-      MergeColumn dCol = MergeColumn.getXColumn(xCol);
-      if (!xCol.isShow()) return null; // Since not shown, don't display
-
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException, SQLException {
       if (element instanceof Conflict) {
          try {
             Conflict conflict = (Conflict) element;
-            if (dCol == MergeColumn.Artifact_Name) {
+            if (dCol == MergeXViewerFactory.Artifact_Name) {
                return conflict.getArtifactImage();
-            } else if (dCol == MergeColumn.Type) {
+            } else if (dCol == MergeXViewerFactory.Type) {
                return conflict.getArtifact().getImage();
-            } else if (dCol == MergeColumn.Change_Item) {
+            } else if (dCol == MergeXViewerFactory.Change_Item) {
                return conflict.getImage();
-            } else if (dCol == MergeColumn.Source) {
+            } else if (dCol == MergeXViewerFactory.Source) {
                return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
-            } else if (dCol == MergeColumn.Destination) {
+            } else if (dCol == MergeXViewerFactory.Destination) {
                return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
-            } else if (dCol == MergeColumn.Merged) {
+            } else if (dCol == MergeXViewerFactory.Merged) {
                return getMergeImage(conflict);
-            } else if (dCol == MergeColumn.Conflict_Resolved) {
+            } else if (dCol == MergeXViewerFactory.Conflict_Resolved) {
                if (conflict.statusUntouched()) return null;
                if (conflict.statusEdited()) return SkynetGuiPlugin.getInstance().getImage(EDITED_IMAGE);
                if (conflict.statusResolved()) return SkynetGuiPlugin.getInstance().getImage(MARKED_MERGED_IMAGE);
@@ -194,9 +147,7 @@ public class XMergeLabelProvider implements ITableLabelProvider {
          } catch (Exception ex) {
             OSEELog.logException(XMergeLabelProvider.class, ex, true);
          }
-
       }
-
       return null;
    }
 
