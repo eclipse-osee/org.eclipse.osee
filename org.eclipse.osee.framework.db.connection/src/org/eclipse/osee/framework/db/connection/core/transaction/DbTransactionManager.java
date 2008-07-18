@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.db.connection.core.transaction;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -30,15 +32,15 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Robert A. Fisher
  */
 public final class DbTransactionManager extends KeyedLevelManager {
+   private final static List<IDbTransactionListener> listeners = new CopyOnWriteArrayList<IDbTransactionListener>();
+
    private boolean transactionNeedsRollback;
    private boolean priorCommit;
    private Connection connection;
-   private List<IDbTransactionListener> listeners;
 
    public DbTransactionManager() {
       this.transactionNeedsRollback = false;
       this.priorCommit = false;
-      this.listeners = new LinkedList<IDbTransactionListener>();
    }
 
    @Override
