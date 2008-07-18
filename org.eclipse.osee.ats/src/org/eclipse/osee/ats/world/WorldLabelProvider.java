@@ -11,18 +11,16 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
-public class WorldLabelProvider extends XViewerLabelProvider implements ITableColorProvider {
+public class WorldLabelProvider extends XViewerLabelProvider {
 
    private final WorldXViewer treeViewer;
    protected Font font;
@@ -144,20 +142,6 @@ public class WorldLabelProvider extends XViewerLabelProvider implements ITableCo
 
    public WorldXViewer getTreeViewer() {
       return treeViewer;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
-    */
-   public Color getBackground(Object element, int columnIndex) {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang.Object, int)
-    */
-   public Color getForeground(Object element, int columnIndex) {
-      return null;
    }
 
 }

@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
-import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.WorldXViewer;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -290,7 +290,7 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   public boolean handleChangeResolution()throws OseeCoreException, SQLException{
+   public boolean handleChangeResolution() throws OseeCoreException, SQLException {
       if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
@@ -305,36 +305,29 @@ public class TaskXViewer extends WorldXViewer {
       return false;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
    @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
       if (!isTasksEditable()) {
          AWorkbench.popup("ERROR", "Editing disabled for current state.");
          return false;
       }
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
       SMAManager taskSmaMgr = new SMAManager((TaskArtifact) treeItem.getData());
       boolean modified = false;
       try {
-         if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Estimated_Hours_Col) {
+         if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Estimated_Hours_Col) {
             modified = taskSmaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Title_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Title_Col) {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Related_To_State_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Related_To_State_Col) {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Assignees_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Assignees_Col) {
             modified = taskSmaMgr.promptChangeAssignees();
-         } else if (isUsingTaskResolutionOptions() && (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col)) {
+         } else if (isUsingTaskResolutionOptions() && (xCol == WorldXViewerFactory.Hours_Spent_State_Col || xCol == WorldXViewerFactory.Hours_Spent_Total_Col || xCol == WorldXViewerFactory.Percent_Complete_State_Col || xCol == WorldXViewerFactory.Percent_Complete_Total_Col)) {
             modified = handleChangeResolution();
-         } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Resolution_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Resolution_Col) {
             modified = handleChangeResolution();
-         } else if (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col) {
+         } else if (xCol == WorldXViewerFactory.Hours_Spent_State_Col || xCol == WorldXViewerFactory.Hours_Spent_Total_Col || xCol == WorldXViewerFactory.Percent_Complete_State_Col || xCol == WorldXViewerFactory.Percent_Complete_Total_Col) {
             modified = taskSmaMgr.promptChangeStatus(false);
          } else
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);
@@ -347,7 +340,7 @@ public class TaskXViewer extends WorldXViewer {
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      return false;
+      return super.handleAltLeftClick(treeColumn, treeItem, persist);
    }
 
    /**

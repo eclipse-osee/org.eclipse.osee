@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -40,6 +41,14 @@ public class XViewerValueColumn extends XViewerColumn {
 
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
       return "unhandled";
+   }
+
+   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
+      return null;
+   }
+
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+      return null;
    }
 
 }

@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.util.widgets.task;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -44,11 +44,10 @@ public class TaskXViewerSorter extends WorldXViewerSorter {
       if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
       XViewerColumn sortXCol =
             xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
-      AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
       IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
       IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
-      if (aCol == AtsXColumn.Assignees_Col) {
+      if (sortXCol == WorldXViewerFactory.Assignees_Col) {
          int compareInt =
                getComparator().compare(
                      (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
