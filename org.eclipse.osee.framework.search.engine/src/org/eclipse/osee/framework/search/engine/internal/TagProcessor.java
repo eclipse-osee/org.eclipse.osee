@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.util.Scanner;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagEncoder;
-import org.eclipse.osee.framework.search.engine.utility.WordChunker;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 
 /**
@@ -26,17 +25,35 @@ public class TagProcessor {
    private TagProcessor() {
    }
 
-   public static void collectFromString(String value, ITagCollector tagCollector) throws UnsupportedEncodingException {
+   public static void collectFromString(String value, ITagCollector tagCollector) {
       if (value != null && value.length() > 0) {
-         collectFromInputStream(new ByteArrayInputStream(value.getBytes("UTF-8")), tagCollector);
+         Scanner scanner = new Scanner(value);
+         while (scanner.hasNext()) {
+            processWord(scanner.next(), tagCollector);
+         }
       }
    }
 
-   public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) throws UnsupportedEncodingException {
-      WordChunker chunker = new WordChunker(inputStream);
-      for (String original : chunker) {
+   public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) {
+      Scanner scanner = new Scanner(inputStream, "UTF-8");
+      while (scanner.hasNext()) {
+         processWord(scanner.next(), tagCollector);
+      }
+   }
+
+   public static void collectFromScanner(Scanner sourceScanner, ITagCollector tagCollector) {
+      while (sourceScanner.hasNext()) {
+         Scanner innerScanner = new Scanner(sourceScanner.next());
+         while (innerScanner.hasNext()) {
+            processWord(innerScanner.next(), tagCollector);
+         }
+      }
+   }
+
+   private static void processWord(String original, ITagCollector tagCollector) {
+      boolean originalStored = false;
+      if (Strings.isValid(original)) {
          original = original.toLowerCase();
-         boolean originalStored = false;
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
             if (target.equals(original)) {

@@ -32,5 +32,4 @@ public class DefaultAttributeTaggerProvider extends BaseAttributeTaggerProvider 
       }
       return toReturn;
    }
-
 }

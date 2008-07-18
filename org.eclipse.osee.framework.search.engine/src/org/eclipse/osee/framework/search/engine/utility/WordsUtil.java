@@ -10,21 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.utility;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.search.engine.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class WordsUtil {
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
+   private static final Pattern SKIP_XML_TAGS = Pattern.compile("\\s*<.*?>\\s*", Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern SKIP_WORDML_TAGS =
+         Pattern.compile(".*?<w:t>|</w:t>.*", Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final String VOWELS = "aeiou";
    private static final String IES_ENDING = "ies";
@@ -132,10 +135,40 @@ public class WordsUtil {
       return toReturn;
    }
 
-   public static String extractTextDataFromXMLTags(String str) {
-      str = str.replaceAll("<w:binData\\s+.*?w:binData/>", " ");
-      str = paragraphPattern.matcher(Xml.unescape(str)).replaceAll(" ");
-      str = tagKiller.matcher(str).replaceAll(" ").trim();
-      return str;
+   public static Scanner inputStreamToXmlTextScanner(InputStream inputStream) {
+      Scanner scanner = new Scanner(inputStream, "UTF-8");
+      Pattern pattern = isWordML(inputStream) ? SKIP_WORDML_TAGS : SKIP_XML_TAGS;
+      return scanner.useDelimiter(pattern);
+   }
+
+   private static boolean isWordML(InputStream inputStream) {
+      boolean toReturn = false;
+      try {
+         inputStream.mark(250);
+         byte[] buffer = new byte[200];
+         int index = 0;
+         for (; index < buffer.length; index++) {
+            if (inputStream.available() > 0) {
+               buffer[index] = (byte) inputStream.read();
+            } else {
+               break;
+            }
+         }
+         if (index > 0) {
+            String header = new String(buffer).toLowerCase();
+            if (header.contains("word.document") || header.contains("worddocument")) {
+               toReturn = true;
+            }
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      } finally {
+         try {
+            inputStream.reset();
+         } catch (IOException ex) {
+            // Do Nothing
+         }
+      }
+      return toReturn;
    }
 }

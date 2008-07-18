@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -19,12 +19,11 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Scanner;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.search.engine.utility.WordChunker;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
-import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 import org.osgi.framework.Bundle;
 
 /**
@@ -95,12 +94,12 @@ public class TestWordsUtil extends TestCase {
       Map<String, String> testMap = getStripPossessiveData();
       for (String key : testMap.keySet()) {
          StringBuilder builder = new StringBuilder();
-         WordChunker chunker = new WordChunker(new ByteArrayInputStream(key.getBytes()));
-         for (String word : chunker) {
+         Scanner scanner = new Scanner(key);
+         while (scanner.hasNext()) {
             if (builder.length() > 0) {
                builder.append(" ");
             }
-            builder.append(WordsUtil.stripPossesive(word));
+            builder.append(WordsUtil.stripPossesive(scanner.next()));
          }
          assertEquals(String.format("Original: [%s] ", key), testMap.get(key), builder.toString());
       }
@@ -157,7 +156,7 @@ public class TestWordsUtil extends TestCase {
          while (urls.hasMoreElements()) {
             URL url = (URL) urls.nextElement();
             String name = getFileName(url.getPath());
-            if (Strings.isValid(name)) {
+            if (Strings.isValid(name) && (url.getPath().endsWith(".xml") || url.getPath().endsWith(".txt"))) {
                TestData<URL, URL> pair = toReturn.get(name);
                if (pair == null) {
                   pair = new TestData<URL, URL>();
@@ -187,9 +186,22 @@ public class TestWordsUtil extends TestCase {
          InputStream dataStream = null;
          InputStream expectedStream = null;
          try {
-            dataStream = testData.data.openStream();
-            expectedStream = testData.expected.openStream();
-            String actual = Lib.inputStreamToString(new XmlTextInputStream(dataStream));
+            dataStream = new BufferedInputStream(testData.data.openStream());
+            expectedStream = new BufferedInputStream(testData.expected.openStream());
+
+            StringBuilder builder = new StringBuilder();
+            Scanner scanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+            while (scanner.hasNext()) {
+               String value = scanner.next();
+               if (value.length() > 0) {
+                  builder.append(value);
+                  if (scanner.hasNext()) {
+                     builder.append(" ");
+                  }
+               }
+            }
+
+            String actual = builder.toString();
             String expected = Lib.inputStreamToString(expectedStream);
             assertEquals(String.format("Original: [%s] ", key), expected, actual);
          } catch (Exception ex) {
