@@ -31,17 +31,19 @@ public class OseeApplicationServerActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       OseeProperties oseeProperties = OseeProperties.getInstance();
 
-      if (oseeProperties.isLocalApplicationServerRequired() != false) {
-         Map<String, Bundle> bundles = new HashMap<String, Bundle>();
-         for (Bundle bundle : context.getBundles()) {
-            bundles.put(bundle.getSymbolicName(), bundle);
-         }
-         try {
-            String requiredBundles = (String) context.getBundle().getHeaders().get("Require-Bundle");
+      Map<String, Bundle> bundles = new HashMap<String, Bundle>();
+      for (Bundle bundle : context.getBundles()) {
+         bundles.put(bundle.getSymbolicName(), bundle);
+      }
+      try {
+         String requiredBundles = (String) context.getBundle().getHeaders().get("Require-Bundle");
+         if (oseeProperties.isLocalApplicationServerRequired() != false) {
             launchApplicationServer(requiredBundles, bundles);
-         } catch (Exception ex) {
-            throw new Exception(errorMessage, ex);
+         } else {
+//            startBundles(requiredBundles, bundles, false);
          }
+      } catch (Exception ex) {
+         throw new Exception(errorMessage, ex);
       }
    }
 
@@ -52,7 +54,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
    public void stop(BundleContext context) throws Exception {
    }
 
-   private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException {
+   private void startBundles(String requiredBundles, Map<String, Bundle> bundles, boolean start) throws BundleException {
       Pattern pattern = Pattern.compile("(.*)?;bundle-version=\"(.*)?\"");
       for (String entry : requiredBundles.split(",")) {
          Matcher matcher = pattern.matcher(entry);
@@ -61,10 +63,18 @@ public class OseeApplicationServerActivator implements BundleActivator {
             String requiredVersion = matcher.group(2);
             Bundle bundle = bundles.get(bundleName);
             if (bundle != null && isVersionAllowed(bundle, requiredVersion)) {
-               bundle.start();
+               if (start) {
+                  bundle.start();
+               } else {
+                  bundle.stop();
+               }
             }
          }
       }
+   }
+
+   private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException {
+      startBundles(requiredBundles, bundles, true);
       String message =
             String.format("Osee Application Server - port: [%s] data: [%s]", System.getProperty(
                   "org.osgi.service.http.port", "-1"), OseeProperties.getInstance().getOseeApplicationServerData());
