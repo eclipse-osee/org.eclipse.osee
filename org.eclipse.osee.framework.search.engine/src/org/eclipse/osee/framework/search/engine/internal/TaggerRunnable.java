@@ -74,11 +74,16 @@ class TaggerRunnable implements Runnable, ITagCollector {
       return gammaId;
    }
 
+   public void store() throws SQLException {
+      SearchTagDataStore.storeTags(searchTag);
+      searchTag.clear();
+   }
+
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.Long)
+    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String, java.lang.Long)
     */
    @Override
-   public void addTag(Long codedTag) {
+   public void addTag(String word, Long codedTag) {
       searchTag.addTag(codedTag);
       tagCount++;
       if (searchTag.size() >= MAXIMUM_CACHED_TAGS) {
@@ -89,10 +94,5 @@ class TaggerRunnable implements Runnable, ITagCollector {
                   ex);
          }
       }
-   }
-
-   public void store() throws SQLException {
-      SearchTagDataStore.storeTags(searchTag);
-      searchTag.clear();
    }
 }

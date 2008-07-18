@@ -8,14 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.internal;
+package org.eclipse.osee.framework.search.engine.utility;
 
 import java.io.InputStream;
 import java.util.Scanner;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
-import org.eclipse.osee.framework.search.engine.utility.TagEncoder;
-import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -42,11 +39,16 @@ public class TagProcessor {
    }
 
    public static void collectFromScanner(Scanner sourceScanner, ITagCollector tagCollector) {
-      while (sourceScanner.hasNext()) {
-         Scanner innerScanner = new Scanner(sourceScanner.next());
-         while (innerScanner.hasNext()) {
-            processWord(innerScanner.next(), tagCollector);
+      try {
+         while (sourceScanner.hasNext()) {
+            String entry = sourceScanner.next();
+            Scanner innerScanner = new Scanner(entry);
+            while (innerScanner.hasNext()) {
+               processWord(innerScanner.next(), tagCollector);
+            }
          }
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
    }
 

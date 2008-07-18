@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.search.engine.tagger;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
-import org.eclipse.osee.framework.search.engine.internal.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
+import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
  * @author Roberto E. Escobar

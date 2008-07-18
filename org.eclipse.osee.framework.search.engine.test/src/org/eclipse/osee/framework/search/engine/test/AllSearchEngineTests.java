@@ -20,7 +20,8 @@ public class AllSearchEngineTests extends TestSuite {
    public AllSearchEngineTests() {
       addTestSuite(TestWordsUtil.class);
       addTestSuite(TestSearchDataStore.class);
-      addTestSuite(TestSearchEngine.class);
+      addTestSuite(TestSearchEngine.class);//
+      addTestSuite(TestTagProcessor.class);
    }
 
 }

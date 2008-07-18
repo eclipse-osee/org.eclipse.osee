@@ -150,35 +150,31 @@ public class TestWordsUtil extends TestCase {
    private Map<String, TestData<URL, URL>> getXmlMarkupRemovalData() {
       Map<String, TestData<URL, URL>> toReturn = new LinkedHashMap<String, TestData<URL, URL>>();
 
-      try {
-         Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
-         Enumeration<?> urls = bundle.findEntries("data", "*.*", true);
-         while (urls.hasMoreElements()) {
-            URL url = (URL) urls.nextElement();
-            String name = getFileName(url.getPath());
-            if (Strings.isValid(name) && (url.getPath().endsWith(".xml") || url.getPath().endsWith(".txt"))) {
-               TestData<URL, URL> pair = toReturn.get(name);
-               if (pair == null) {
-                  pair = new TestData<URL, URL>();
-                  toReturn.put(name, pair);
-               }
-               if (isDataFile(url.getPath())) {
-                  pair.data = url;
-               } else if (isExpectedFile(url.getPath())) {
-                  pair.expected = url;
-               } else if (pair.data == null || pair.expected == null) {
-                  toReturn.remove(pair);
-               }
+      Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
+      Enumeration<?> urls = bundle.findEntries("data", "*.*", true);
+      while (urls.hasMoreElements()) {
+         URL url = (URL) urls.nextElement();
+         String name = getFileName(url.getPath());
+         if (Strings.isValid(name) && (url.getPath().endsWith(".xml") || url.getPath().endsWith(".expected.txt"))) {
+            TestData<URL, URL> pair = toReturn.get(name);
+            if (pair == null) {
+               pair = new TestData<URL, URL>();
+               toReturn.put(name, pair);
+            }
+            if (isDataFile(url.getPath())) {
+               pair.data = url;
+            } else if (isExpectedFile(url.getPath())) {
+               pair.expected = url;
+            } else if (pair.data == null || pair.expected == null) {
+               toReturn.remove(pair);
             }
          }
-      } catch (Exception ex) {
-         assertTrue("Error reading test data.", true);
       }
 
       return toReturn;
    }
 
-   public void testXmlMarkupRemoval() {
+   public void testXmlMarkupRemoval() throws IOException {
       Map<String, TestData<URL, URL>> testMap = getXmlMarkupRemovalData();
       for (String key : testMap.keySet()) {
          TestData<URL, URL> testData = testMap.get(key);
@@ -204,8 +200,6 @@ public class TestWordsUtil extends TestCase {
             String actual = builder.toString();
             String expected = Lib.inputStreamToString(expectedStream);
             assertEquals(String.format("Original: [%s] ", key), expected, actual);
-         } catch (Exception ex) {
-            assertTrue(String.format("Error getting test data for [%s]", key), true);
          } finally {
             if (dataStream != null) {
                try {

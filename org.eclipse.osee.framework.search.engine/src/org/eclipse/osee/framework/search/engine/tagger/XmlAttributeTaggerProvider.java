@@ -18,8 +18,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
-import org.eclipse.osee.framework.search.engine.internal.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
+import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 
 /**

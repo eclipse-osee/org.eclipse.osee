@@ -15,9 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.search.engine.Options;
-import org.eclipse.osee.framework.search.engine.internal.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
+import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -49,10 +49,10 @@ public final class AttributeSearch implements ITagCollector {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.Long)
+    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String, java.lang.Long)
     */
    @Override
-   public void addTag(Long codedTag) {
+   public void addTag(String word, Long codedTag) {
       tags.add(codedTag);
    }
 }

@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.search.engine.utility;
  */
 public interface ITagCollector {
 
-   public void addTag(Long codedTag);
+   public void addTag(String word, Long codedTag);
 }
