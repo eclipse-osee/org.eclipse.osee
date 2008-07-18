@@ -6,7 +6,8 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.sql.SQLException;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -16,10 +17,15 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerReviewCompletedDateColumn extends XViewerValueColumn {
+public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
 
-   public XViewerReviewCompletedDateColumn(String name, XViewer viewer) {
-      super(viewer, "ats.column.revicewCompleteDate", name, 150, 150, SWT.LEFT, true, SortDataType.String);
+   public XViewerSmaCreatedDateColumn(XViewer viewer) {
+      this("Created", viewer);
+   }
+
+   public XViewerSmaCreatedDateColumn(String name, XViewer viewer) {
+      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "createdDate", name, 80, 80, SWT.LEFT, true,
+            SortDataType.Date, false, "Date this workflow was created.");
    }
 
    /* (non-Javadoc)
@@ -27,8 +33,8 @@ public class XViewerReviewCompletedDateColumn extends XViewerValueColumn {
     */
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
-      if (element instanceof ReviewSMArtifact) {
-         return ((ReviewSMArtifact) element).getWorldViewCompletedDateStr();
+      if (element instanceof StateMachineArtifact) {
+         return ((StateMachineArtifact) element).getWorldViewCreatedDateStr();
       }
       return super.getColumnText(element, column);
    }

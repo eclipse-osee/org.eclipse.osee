@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewCompletedDateColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaStateColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -106,7 +106,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       columns.add(new XViewerHridColumn("ID", null));
       columns.add(WorldXViewerFactory.Legacy_PCR_Col);
       columns.add(new XViewerSmaStateColumn(null));
-      columns.add(new XViewerReviewCompletedDateColumn("Completed", null));
+      columns.add(new XViewerSmaCompletedDateColumn("Completed", null));
       columns.add(new XViewerReviewRoleColumn(null, user));
       columns.add(WorldXViewerFactory.Related_To_State_Col);
       columns.add(new XViewerArtifactNameColumn("Name", null));

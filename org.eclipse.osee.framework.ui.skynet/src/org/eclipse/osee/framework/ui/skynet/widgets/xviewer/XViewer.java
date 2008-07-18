@@ -368,6 +368,7 @@ public class XViewer extends TreeViewer {
    public void addColumns() {
       for (final XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
          TreeColumn column = new TreeColumn(getTree(), xCol.getAlign());
+         column.setMoveable(true);
          xCol.setTreeColumn(column);
          column.setData(xCol);
          if (xCol.getToolTip().equals(""))

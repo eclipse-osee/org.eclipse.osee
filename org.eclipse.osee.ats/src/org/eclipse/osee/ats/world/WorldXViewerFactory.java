@@ -17,12 +17,20 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerChangeTypeColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerPriorityColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaStateColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaVersionTargetedColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -30,39 +38,30 @@ import org.eclipse.swt.SWT;
  */
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
-   private static String COLUMN_NAMESPACE = "ats.column.";
-   public static final XViewerColumn Type_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".type", "Type", 80, SWT.LEFT, true, SortDataType.String, false);
-   public static final XViewerColumn State_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".state", "State", 70, SWT.LEFT, true, SortDataType.String, false);
-   public static final XViewerColumn Priority_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".priority", "Priority", 20, SWT.CENTER, true, SortDataType.String, false);
-   public static final XViewerColumn Change_Type_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Change Type", 22, SWT.LEFT, true, SortDataType.String, false);
+   public static String COLUMN_NAMESPACE = "ats.column.";
+   public static final XViewerColumn Type_Col = new XViewerArtifactTypeColumn("Type", null);
+   public static final XViewerColumn State_Col = new XViewerSmaStateColumn(null);
+   public static final XViewerColumn Priority_Col = new XViewerPriorityColumn(true);
+   public static final XViewerColumn Change_Type_Col = new XViewerChangeTypeColumn(true);
    public static final XViewerColumn Assignees_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Assignees", 100, SWT.LEFT, true, SortDataType.String, false);
-   public static final XViewerColumn Title_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Title", 200, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn(COLUMN_NAMESPACE + ".assignees", "Assignees", 100, SWT.LEFT, true, SortDataType.String,
+               false);
+   public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title", null);
    public static final XViewerColumn Actionable_Items_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".run", "Actionable Items", 80, SWT.LEFT, true, SortDataType.String,
                false, "Actionable Items that are impacted by this change.");
    public static final XViewerColumn User_Community_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "User Community", 60, SWT.LEFT, true, SortDataType.String, false,
-               "Program, Project or Group that caused the creation of this Action.");
-   public static final XViewerColumn ID_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "ID", 40, SWT.LEFT, true, SortDataType.String, false,
-               "Human Readable ID");
-   public static final XViewerColumn Created_Date_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Created Date", 80, SWT.LEFT, true, SortDataType.Date, false);
-   public static final XViewerColumn Version_Target_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Version Target", 40, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String);
+   public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID", null);
+   public static final XViewerColumn Created_Date_Col = new XViewerSmaCompletedDateColumn(null);
+   public static final XViewerColumn Version_Target_Col = new XViewerSmaVersionTargetedColumn(null);
    public static final XViewerColumn Team_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
+         new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
                "Team that has been assigned to work this Action.");
    public static final XViewerColumn Notes_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Notes", 80, SWT.LEFT, true, SortDataType.String, true);
+         new XViewerColumn(COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT, true, SortDataType.String, true);
    public static final XViewerColumn Deadline_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Deadline", 80, SWT.LEFT, true, SortDataType.Date, true,
+         new XViewerColumn(COLUMN_NAMESPACE + ".deadline", "Deadline", 80, SWT.LEFT, true, SortDataType.Date, true,
                "Date the changes need to be completed by.");
 
    // Aren't shown by default

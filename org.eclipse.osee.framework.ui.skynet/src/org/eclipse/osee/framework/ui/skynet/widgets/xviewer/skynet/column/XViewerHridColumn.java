@@ -19,7 +19,8 @@ import org.eclipse.swt.SWT;
 public class XViewerHridColumn extends XViewerValueColumn {
 
    public XViewerHridColumn(String name, XViewer viewer) {
-      super(viewer, "framework.hrid." + name, name, 75, 75, SWT.LEFT, true, SortDataType.String);
+      super(viewer, "framework.hrid." + name, name, 75, 75, SWT.LEFT, true, SortDataType.String, false,
+            "Human Readable ID");
    }
 
    /* (non-Javadoc)

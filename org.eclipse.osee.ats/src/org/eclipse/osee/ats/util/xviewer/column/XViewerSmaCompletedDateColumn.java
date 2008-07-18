@@ -3,10 +3,11 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
+package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -16,11 +17,15 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerGuidColumn extends XViewerValueColumn {
+public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
 
-   public XViewerGuidColumn(String name, XViewer viewer) {
-      super(viewer, "framework.guid." + name, name, 75, 75, SWT.LEFT, true, SortDataType.String, false,
-            "Globally Unique Identifier");
+   public XViewerSmaCompletedDateColumn(XViewer viewer) {
+      this("Completed", viewer);
+   }
+
+   public XViewerSmaCompletedDateColumn(String name, XViewer viewer) {
+      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, 80, SWT.LEFT, true,
+            SortDataType.Date, false, "Date this workflow transitioned to the Completed state.");
    }
 
    /* (non-Javadoc)
@@ -28,10 +33,10 @@ public class XViewerGuidColumn extends XViewerValueColumn {
     */
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
-      if (element instanceof Artifact) {
-         return ((Artifact) element).getGuid();
+      if (element instanceof StateMachineArtifact) {
+         return ((StateMachineArtifact) element).getWorldViewCompletedDateStr();
       }
-      return "";
+      return super.getColumnText(element, column);
    }
 
 }

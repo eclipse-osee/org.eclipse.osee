@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 
@@ -26,6 +27,11 @@ public class XViewerAtsAttributeColumn extends XViewerAttributeColumn {
 
    public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
       this(null, id, atsAttribute, width, defaultWidth, align, show, sortDataType);
+   }
+
+   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType) {
+      this(null, WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute, width, width,
+            align, show, sortDataType, false, atsAttribute.getDescription());
    }
 
    public XViewerAtsAttributeColumn(XViewer viewer, String id, ATSAttributes atsAttribute, int width, int defaultWidth, int align) {
