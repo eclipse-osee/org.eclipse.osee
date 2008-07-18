@@ -118,6 +118,11 @@ public class JoinUtility {
       }
    }
 
+   public static void deleteQuery(Class<? extends JoinQueryEntry> clazz, int queryId) throws Exception {
+      String deleteSql = clazz.newInstance().deleteSql;
+      ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), deleteSql, SQL3DataType.INTEGER, queryId);
+   }
+
    private interface IJoinRow {
       public Object[] toArray();
 
