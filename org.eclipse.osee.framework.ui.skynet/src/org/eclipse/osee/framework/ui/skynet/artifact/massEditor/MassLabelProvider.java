@@ -37,7 +37,7 @@ public class MassLabelProvider implements ITableLabelProvider {
          TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
          if (treeCol.getData() instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) treeCol.getData()).getColumnText(element,
-                  (XViewerValueColumn) treeCol.getData());
+                  (XViewerValueColumn) treeCol.getData(), columnIndex);
          }
          if (element instanceof String) {
             if (columnIndex == 1)
@@ -90,7 +90,7 @@ public class MassLabelProvider implements ITableLabelProvider {
          TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
          if (treeCol.getData() instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) treeCol.getData()).getColumnImage(element,
-                  (XViewerValueColumn) treeCol.getData());
+                  (XViewerValueColumn) treeCol.getData(), columnIndex);
          }
          Artifact artifact = (Artifact) element;
          if (artifact == null || artifact.isDeleted()) return null;

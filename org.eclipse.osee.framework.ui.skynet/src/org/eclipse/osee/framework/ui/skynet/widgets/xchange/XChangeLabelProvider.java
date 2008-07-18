@@ -38,7 +38,7 @@ public class XChangeLabelProvider implements ITableLabelProvider {
          TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
          if (treeCol.getData() instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) treeCol.getData()).getColumnText(element,
-                  (XViewerValueColumn) treeCol.getData());
+                  (XViewerValueColumn) treeCol.getData(), columnIndex);
          }
          if (element instanceof String) {
             if (columnIndex == 1)
@@ -110,7 +110,7 @@ public class XChangeLabelProvider implements ITableLabelProvider {
          TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
          if (treeCol.getData() instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) treeCol.getData()).getColumnImage(element,
-                  (XViewerValueColumn) treeCol.getData());
+                  (XViewerValueColumn) treeCol.getData(), columnIndex);
          }
          if (element instanceof String) return null;
          XViewerColumn xCol = changeXViewer.getXTreeColumn(columnIndex);

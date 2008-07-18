@@ -36,10 +36,10 @@ public class XViewerAttributeFromChangeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
       if (element instanceof Change) {
          return ((Change) element).getArtifact().getAttributesToString(attributeTypeName);
       }
-      return super.getColumnText(element, column);
+      return super.getColumnText(element, column, columnIndex);
    }
 }

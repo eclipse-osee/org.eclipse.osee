@@ -35,19 +35,19 @@ public class XViewerValueColumn extends XViewerColumn {
       super(viewer, id, name, width, defaultWidth, align);
    }
 
-   public Image getColumnImage(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
       return null;
    }
 
-   public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
       return "unhandled";
    }
 
-   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
+   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
       return null;
    }
 
-   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
       return null;
    }
 

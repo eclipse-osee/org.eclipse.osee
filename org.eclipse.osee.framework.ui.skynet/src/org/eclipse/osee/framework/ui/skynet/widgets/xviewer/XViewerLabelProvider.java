@@ -39,9 +39,10 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn != null) {
             if (xViewerColumn instanceof XViewerValueColumn) {
-               return ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn);
+               Image image = ((XViewerValueColumn) xViewerColumn).getColumnImage(element, xViewerColumn, columnIndex);
+               if (image != null) return image;
             }
-            return getColumnImage(element, viewer.getXTreeColumn(columnIndex), columnIndex);
+            return getColumnImage(element, xViewerColumn, columnIndex);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
@@ -56,9 +57,9 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          if (!xViewerColumn.isShow()) return "";
          if (xViewerColumn != null) {
             if (xViewerColumn instanceof XViewerValueColumn) {
-               return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn);
+               return ((XViewerValueColumn) xViewerColumn).getColumnText(element, xViewerColumn, columnIndex);
             }
-            return getColumnText(element, viewer.getXTreeColumn(columnIndex), columnIndex);
+            return getColumnText(element, xViewerColumn, columnIndex);
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -75,7 +76,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          if (xViewerColumn instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) xViewerColumn).getBackground(element, xViewerColumn, columnIndex);
          } else {
-            return getBackground(element, viewer.getXTreeColumn(columnIndex), columnIndex);
+            return getBackground(element, xViewerColumn, columnIndex);
          }
       } catch (Exception ex) {
          // do nothing
@@ -92,7 +93,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
          if (xViewerColumn instanceof XViewerValueColumn) {
             return ((XViewerValueColumn) xViewerColumn).getForeground(element, xViewerColumn, columnIndex);
          } else {
-            return getForeground(element, viewer.getXTreeColumn(columnIndex), columnIndex);
+            return getForeground(element, xViewerColumn, columnIndex);
          }
       } catch (Exception ex) {
          // do nothing
