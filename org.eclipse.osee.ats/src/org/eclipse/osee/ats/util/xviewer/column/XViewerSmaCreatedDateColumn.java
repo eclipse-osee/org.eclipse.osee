@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.sql.SQLException;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -33,8 +33,8 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
     */
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
-      if (element instanceof StateMachineArtifact) {
-         return ((StateMachineArtifact) element).getWorldViewCreatedDateStr();
+      if (element instanceof IWorldViewArtifact) {
+         return ((IWorldViewArtifact) element).getWorldViewCreatedDateStr();
       }
       return super.getColumnText(element, column, columnIndex);
    }
