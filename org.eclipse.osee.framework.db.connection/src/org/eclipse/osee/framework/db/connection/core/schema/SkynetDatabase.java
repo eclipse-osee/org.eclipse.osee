@@ -20,24 +20,7 @@ import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
  * @author Robert A. Fisher
  */
 public class SkynetDatabase {
-   public static final int ARTIFACT_TYPE_NAME_SIZE = 55;
-   public static final int ARTIFACT_TYPE_FACTORY_KEY_SIZE = 100;
-   public static final int ATTRIBUTE_CLASS_SIZE = 500;
-   public static final int ATTRIBUTE_DATA_SIZE = 500;
-   public static final int ATTRIBUTE_NAME_SIZE = 500;
-   public static final int ATTRIBUTE_XML_SIZE = 4000;
-   public static final int FACTORY_BUNDLE_SIZE = 500;
-   public static final int FACTORY_CLASS_SIZE = 500;
-   public static final int GUID_SIZE = 28;
-   public static final int RATIONALE_SIZE = 4000;
-   public static final int RELATION_NAME_SIZE = 50;
-   public static final int RELATION_PHRASING_SIZE = 50;
-   public static final int TAG_NAME_SIZE = 25;
-   public static final int TIP_TEXT_SIZE = 4000;
-   public static final int RELATION_TYPE_NAME_SIZE = 50;
    public static final int RELATION_SIDE_NAME_SIZE = 50;
-   public static final int RELATION_SHORT_NAME_SIZE = 20;
-   public static final int BRANCH_NAME_SIZE = 100;
    public static final int BRANCH_SHORT_NAME_SIZE = 25;
 
    public static final Table ARTIFACT_TABLE = new Table("OSEE_DEFINE_ARTIFACT");
@@ -62,7 +45,6 @@ public class SkynetDatabase {
    public static final Table BRANCH_TABLE_ACL = new Table("OSEE_DEFINE_BRANCH_ACL");
    public static final Table BRANCH_DELETE_HELPER = new Table("OSEE_BRANCH_DELETE_HELPER");
    public static final Table VALID_ATTRIBUTES_TABLE = new Table("OSEE_DEFINE_VALID_ATTRIBUTES");
-   public static final Table VALID_RELATIONS_TABLE = new Table("OSEE_DEFINE_VALID_RELATIONS");
    public static final Table PERMISSION_TABLE = new Table("OSEE_DEFINE_PERMISSION");
    public static final Table SEQUENCE_TABLE = new Table("OSEE_DEFINE_SEQUENCE");
    public static final Table OSEE_INFO_TABLE = new Table("OSEE_INFO");
