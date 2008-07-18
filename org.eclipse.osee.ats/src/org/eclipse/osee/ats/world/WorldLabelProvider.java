@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -38,9 +37,7 @@ public class WorldLabelProvider extends XViewerLabelProvider implements ITableCo
       try {
          if (!(element instanceof IWorldViewArtifact)) return null;
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
-         if (xCol == WorldXViewerFactory.Type_Col)
-            return ((Artifact) wva).getImage();
-         else if (xCol == WorldXViewerFactory.Change_Type_Col)
+         if (xCol == WorldXViewerFactory.Change_Type_Col)
             return wva.getWorldViewChangeType().getImage();
          else if (xCol == WorldXViewerFactory.Assignees_Col)
             return wva.getAssigneeImage();
@@ -58,10 +55,8 @@ public class WorldLabelProvider extends XViewerLabelProvider implements ITableCo
       try {
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
-         if (xCol == WorldXViewerFactory.Type_Col) return wva.getWorldViewType();
          if (xCol == WorldXViewerFactory.Actionable_Items_Col) return wva.getWorldViewActionableItems();
          if (xCol == WorldXViewerFactory.User_Community_Col) return wva.getWorldViewUserCommunity();
-         if (xCol == WorldXViewerFactory.Title_Col) return wva.getWorldViewTitle();
          if (xCol == WorldXViewerFactory.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();
          if (xCol == WorldXViewerFactory.Last_Modified_Col) return wva.getWorldViewLastUpdated();
          if (xCol == WorldXViewerFactory.Last_Statused_Col) return wva.getWorldViewLastStatused();
@@ -83,7 +78,6 @@ public class WorldLabelProvider extends XViewerLabelProvider implements ITableCo
          if (xCol == WorldXViewerFactory.State_Col) return wva.getWorldViewState();
          if (xCol == WorldXViewerFactory.Assignees_Col) return wva.getWorldViewActivePoc();
          if (xCol == WorldXViewerFactory.Created_Date_Col) return wva.getWorldViewCreatedDateStr();
-         if (xCol == WorldXViewerFactory.ID_Col) return wva.getWorldViewID();
          if (xCol == WorldXViewerFactory.Priority_Col) return wva.getWorldViewPriority();
          if (xCol == WorldXViewerFactory.Resolution_Col) return wva.getWorldViewResolution();
          if (xCol == WorldXViewerFactory.Decision_Col) return wva.getWorldViewDecision();

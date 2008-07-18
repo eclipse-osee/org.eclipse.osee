@@ -34,6 +34,11 @@ public class XViewerAtsAttributeColumn extends XViewerAttributeColumn {
             align, show, sortDataType, false, atsAttribute.getDescription());
    }
 
+   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
+      this(null, WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute, width, width,
+            align, show, sortDataType, multiColumnEditable, atsAttribute.getDescription());
+   }
+
    public XViewerAtsAttributeColumn(XViewer viewer, String id, ATSAttributes atsAttribute, int width, int defaultWidth, int align) {
       this(viewer, id, atsAttribute, width, defaultWidth, align, true, SortDataType.String);
    }

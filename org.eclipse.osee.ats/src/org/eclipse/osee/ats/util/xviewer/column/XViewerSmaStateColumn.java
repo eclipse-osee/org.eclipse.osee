@@ -6,7 +6,8 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.sql.SQLException;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -19,7 +20,8 @@ import org.eclipse.swt.SWT;
 public class XViewerSmaStateColumn extends XViewerValueColumn {
 
    public XViewerSmaStateColumn(XViewer viewer) {
-      super(viewer, "ats.column.smaState", "State", 75, 75, SWT.LEFT, true, SortDataType.String);
+      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "smaState", "State", 75, 75, SWT.LEFT, true,
+            SortDataType.String);
    }
 
    /* (non-Javadoc)
@@ -27,10 +29,9 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
     */
    @Override
    public String getColumnText(Object element, XViewerColumn column) throws OseeCoreException, SQLException {
-      if (element instanceof StateMachineArtifact) {
-         return ((StateMachineArtifact) element).getSmaMgr().getStateMgr().getCurrentStateName();
+      if (element instanceof IWorldViewArtifact) {
+         return ((IWorldViewArtifact) element).getWorldViewState();
       }
       return "";
    }
-
 }

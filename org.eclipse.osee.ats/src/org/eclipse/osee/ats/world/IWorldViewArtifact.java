@@ -19,11 +19,11 @@ import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
 
-   public Image getAssigneeImage() throws Exception;
+   public Image getAssigneeImage() throws OseeCoreException, SQLException;
 
    public String getWorldViewActionableItems() throws Exception;
 
-   public String getWorldViewActivePoc() throws Exception;
+   public String getWorldViewActivePoc() throws OseeCoreException, SQLException;
 
    public double getWorldViewAnnualCostAvoidance() throws Exception;
 
@@ -39,7 +39,7 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewCategory3() throws Exception;
 
-   public ChangeType getWorldViewChangeType() throws Exception;
+   public ChangeType getWorldViewChangeType() throws OseeCoreException, SQLException;
 
    public String getWorldViewChangeTypeStr() throws Exception;
 
@@ -125,7 +125,7 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewReviewReviewer() throws Exception;
 
-   public String getWorldViewState() throws Exception;
+   public String getWorldViewState() throws OseeCoreException, SQLException;
 
    public String getWorldViewTeam() throws Exception;
 
