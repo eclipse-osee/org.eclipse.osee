@@ -247,7 +247,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return getImage();
    }
 
-   private void checkImageRegistry() {
+   private synchronized void checkImageRegistry() {
       if (imageRegistry == null) {
          imageRegistry = new ImageRegistry();
 
