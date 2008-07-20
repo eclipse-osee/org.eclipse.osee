@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,8 +48,12 @@ public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    public Collection<Artifact> getArtifacts() throws Exception {
       ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
       if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
-         return ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
-               queryIdAndSize.object2, false);
+         Collection<Artifact> toReturn =
+               ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
+                     queryIdAndSize.object2, false);
+
+         JoinUtility.deleteQuery(JoinUtility.ArtifactJoinQuery.class, queryIdAndSize.object1.intValue());
+         return toReturn;
       }
       return java.util.Collections.emptyList();
    }
