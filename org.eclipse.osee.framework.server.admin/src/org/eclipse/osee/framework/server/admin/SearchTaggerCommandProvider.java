@@ -11,37 +11,45 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.io.File;
-import org.eclipse.osee.framework.server.admin.search.TaggerCommands;
+import org.eclipse.osee.framework.server.admin.search.SearchTaggerCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchTaggerCmd implements CommandProvider {
+public class SearchTaggerCommandProvider implements CommandProvider {
 
    public void _tag_all(CommandInterpreter ci) {
-      TaggerCommands.getInstance().startTagAll(ci);
+      SearchTaggerCommands.getInstance().startTagAll(ci);
    }
 
    public void _tag_all_stop(CommandInterpreter ci) {
-      TaggerCommands.getInstance().stopTagAll(ci);
+      SearchTaggerCommands.getInstance().stopTagAll(ci);
    }
 
    public void _drop_all_tags(CommandInterpreter ci) {
-      TaggerCommands.getInstance().startDropAll(ci);
+      SearchTaggerCommands.getInstance().startDropAll(ci);
    }
 
    public void _drop_all_tags_stop(CommandInterpreter ci) {
-      TaggerCommands.getInstance().stopDropAll(ci);
+      SearchTaggerCommands.getInstance().stopDropAll(ci);
    }
 
    public void _tagger_stats(CommandInterpreter ci) {
-      TaggerCommands.getInstance().getStatistics(ci);
+      SearchTaggerCommands.getInstance().getTaggerStatistics(ci);
    }
 
    public void _tagger_stats_clear(CommandInterpreter ci) {
-      TaggerCommands.getInstance().clearStats();
+      SearchTaggerCommands.getInstance().clearTaggerStats();
+   }
+
+   public void _search_stats(CommandInterpreter ci) {
+      SearchTaggerCommands.getInstance().getSearchStatistics(ci);
+   }
+
+   public void _search_stats_clear(CommandInterpreter ci) {
+      SearchTaggerCommands.getInstance().clearSearchStats();
    }
 
    public void _configini(CommandInterpreter ci) {
@@ -77,6 +85,8 @@ public class SearchTaggerCmd implements CommandProvider {
       sb.append("        drop_all_tags_stop - stop dropping all tags\n");
       sb.append("        tagger_stats - get tagger stats\n");
       sb.append("        tagger_stats_clear - clear tagger stats\n");
+      sb.append("        search_stats - get tagger stats\n");
+      sb.append("        search_stats_clear - clear tagger stats\n");
       return sb.toString();
    }
 }

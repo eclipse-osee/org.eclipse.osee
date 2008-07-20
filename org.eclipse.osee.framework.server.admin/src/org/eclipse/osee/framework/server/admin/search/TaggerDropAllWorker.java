@@ -11,11 +11,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 /**
  * @author Roberto E. Escobar
  */
-public class TaggerDropAllWorker extends BaseCmdWorker {
+class TaggerDropAllWorker extends BaseCmdWorker {
 
    private static final String TRUNCATE_SQL = "TRUNCATE osee_search_tags";
 
-   private static final String DELETE_TABLE_SQL = "DELETE FROM osee_search_tags";
+   //private static final String DELETE_TABLE_SQL = "DELETE FROM osee_search_tags";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(java.sql.Connection, long)

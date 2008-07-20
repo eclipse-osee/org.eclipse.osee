@@ -19,21 +19,23 @@ import org.eclipse.osee.framework.search.engine.Options;
  */
 class HttpSearchInfo {
 
+   private String branchId;
    private String queryString;
    private Options options;
 
    @SuppressWarnings("unchecked")
    public HttpSearchInfo(HttpServletRequest request) {
       this.options = new Options();
-      this.queryString = request.getParameter("query");
       Enumeration<String> enumeration = request.getParameterNames();
       while (enumeration.hasMoreElements()) {
          String name = enumeration.nextElement();
          String value = request.getParameter(name);
-         if (name.equals("query")) {
+         if (name.equalsIgnoreCase("query")) {
             this.queryString = value;
+         } else if (name.equalsIgnoreCase("branchId")) {
+            this.branchId = value;
          } else {
-            options.put(name, value);
+            options.put(name.toLowerCase(), value);
          }
       }
    }
@@ -44,6 +46,10 @@ class HttpSearchInfo {
 
    public String toString() {
       return queryString;
+   }
+
+   public int getBranchId() {
+      return Integer.parseInt(this.branchId);
    }
 
    public Options getOptions() {

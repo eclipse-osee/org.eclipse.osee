@@ -36,7 +36,7 @@ public class SearchEngineServlet extends HttpServlet {
       try {
          HttpSearchInfo searchInfo = new HttpSearchInfo(request);
          ISearchEngine searchEngine = Activator.getInstance().getSearchEngine();
-         String result = searchEngine.search(searchInfo.getQuery(), searchInfo.getOptions());
+         String result = searchEngine.search(searchInfo.getQuery(), searchInfo.getBranchId(), searchInfo.getOptions());
          response.setCharacterEncoding("UTF-8");
          response.setContentType("text/plain");
          if (result != null && result.isEmpty() != true) {

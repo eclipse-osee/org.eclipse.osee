@@ -16,20 +16,20 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 /**
  * @author Roberto E. Escobar
  */
-public class TaggerCommands {
+public class SearchTaggerCommands {
 
-   private static TaggerCommands instance = null;
+   private static SearchTaggerCommands instance = null;
    private TaggerAllWorker tagAllWorker;
    private TaggerDropAllWorker dropAllWorker;
 
-   public static TaggerCommands getInstance() {
+   public static SearchTaggerCommands getInstance() {
       if (instance == null) {
-         instance = new TaggerCommands();
+         instance = new SearchTaggerCommands();
       }
       return instance;
    }
 
-   private TaggerCommands() {
+   private SearchTaggerCommands() {
       this.tagAllWorker = new TaggerAllWorker();
       this.tagAllWorker.setExecutionAllowed(true);
 
@@ -69,7 +69,7 @@ public class TaggerCommands {
       }
    }
 
-   public void getStatistics(CommandInterpreter ci) {
+   public void getTaggerStatistics(CommandInterpreter ci) {
       TaggerStats stats = new TaggerStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
@@ -78,7 +78,20 @@ public class TaggerCommands {
       th.start();
    }
 
-   public void clearStats() {
+   public void clearTaggerStats() {
       Activator.getInstance().getSearchTagger().clearStatistics();
+   }
+
+   public void getSearchStatistics(CommandInterpreter ci) {
+      SearchStats stats = new SearchStats();
+      stats.setCommandInterpreter(ci);
+      stats.setExecutionAllowed(true);
+      Thread th = new Thread(stats);
+      th.setName("Search Statistics");
+      th.start();
+   }
+
+   public void clearSearchStats() {
+      Activator.getInstance().getSearchEngine().clearStatistics();
    }
 }

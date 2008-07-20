@@ -6,14 +6,14 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
-import org.eclipse.osee.framework.search.engine.ITaskStatistics;
 import org.eclipse.osee.framework.server.admin.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TaggerStats extends BaseCmdWorker {
+class TaggerStats extends BaseCmdWorker {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.server.admin.search.BaseCmdWorker#doWork(long)
@@ -39,7 +39,7 @@ public class TaggerStats extends BaseCmdWorker {
       println(String.format("Total Tags in System - [%d]\n", stats.getTagsInSystem()));
    }
 
-   private String toString(ITaskStatistics task) {
+   private String toString(ITagItemStatistics task) {
       return String.format("id: [%d] - [%d] ms waited to process [%d] tags in [%d] ms", task.getGammaId(),
             task.getWaitTime(), task.getTotalTags(), task.getProcessingTime());
    }

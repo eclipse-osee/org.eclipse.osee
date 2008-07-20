@@ -29,18 +29,18 @@ public class TestSearchDataStore extends TestCase {
       List<SearchTag> tags = new ArrayList<SearchTag>();
 
       SearchTag tag = new SearchTag(1, 2345);
-      tag.addTag(6);
-      tag.addTag(7);
+      tag.addTag(-6);
+      tag.addTag(-7);
       tags.add(tag);
 
       tag = new SearchTag(8, 91011);
-      tag.addTag(12);
-      tag.addTag(13);
+      tag.addTag(-12);
+      tag.addTag(-13);
       tags.add(tag);
 
       tag = new SearchTag(14, 15161718);
-      tag.addTag(19);
-      tag.addTag(20);
+      tag.addTag(-19);
+      tag.addTag(-20);
       tags.add(tag);
 
       return tags;

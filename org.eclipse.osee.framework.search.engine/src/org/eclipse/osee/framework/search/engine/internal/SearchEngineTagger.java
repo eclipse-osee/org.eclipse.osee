@@ -39,7 +39,7 @@ public class SearchEngineTagger implements ISearchEngineTagger {
    public SearchEngineTagger() {
       this.statistics = new TaggerStatistics();
       this.futureTasks = new CopyOnWriteArrayList<FutureTask<?>>();
-      this.executor = Executors.newSingleThreadExecutor();
+      this.executor = Executors.newFixedThreadPool(2);
    }
 
    /* (non-Javadoc)

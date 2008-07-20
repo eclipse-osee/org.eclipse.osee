@@ -11,39 +11,64 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.search.engine.Activator;
+import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
-import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
-import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchEngine implements ISearchEngine {
 
+   private SearchStatistics statistics;
+
+   public SearchEngine() {
+      this.statistics = new SearchStatistics();
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.search.engine.ISearchEngine#search(java.lang.String, org.eclipse.osee.framework.search.engine.Options)
     */
    @Override
-   public String search(String searchString, Options options) throws Exception {
-      AttributeSearch attributeSearch = new AttributeSearch(searchString, options);
-      Set<IAttributeLocator> attributeLocators = attributeSearch.findMatches();
+   public String search(String searchString, int branchId, Options options) throws Exception {
+      long startTime = System.currentTimeMillis();
+      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
+      List<AttributeData> attributes = attributeSearch.getMatchingAttributes();
 
-      List<AttributeData> attributeDatas = AttributeDataStore.getInstance().getAttributes(attributeLocators);
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-
-      for (AttributeData attributeData : attributeDatas) {
-         if (Activator.getInstance().getTaggerManager().find(attributeData, searchString)) {
+      IAttributeTaggerProviderManager manager = Activator.getInstance().getTaggerManager();
+      for (AttributeData attributeData : attributes) {
+         if (manager.find(attributeData, searchString)) {
             joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
          }
       }
       joinQuery.store();
+      statistics.addEntry(searchString, branchId, options, joinQuery.size(), System.currentTimeMillis() - startTime);
       return String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngine#clearStatistics()
+    */
+   @Override
+   public void clearStatistics() {
+      this.statistics.clear();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngine#getStatistics()
+    */
+   @Override
+   public SearchStatistics getStatistics() {
+      try {
+         return this.statistics.clone();
+      } catch (CloneNotSupportedException ex) {
+         return SearchStatistics.EMPTY_STATS;
+      }
    }
 }

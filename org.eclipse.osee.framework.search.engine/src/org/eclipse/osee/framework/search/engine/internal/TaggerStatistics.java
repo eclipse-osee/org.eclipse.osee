@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
-import org.eclipse.osee.framework.search.engine.ITaskStatistics;
+import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
@@ -71,11 +71,11 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics {
       return longestWaitTime;
    }
 
-   public ITaskStatistics getLongestTask() {
+   public ITagItemStatistics getLongestTask() {
       return longestTask;
    }
 
-   public ITaskStatistics getMostTagsTask() {
+   public ITagItemStatistics getMostTagsTask() {
       return mostTags;
    }
 

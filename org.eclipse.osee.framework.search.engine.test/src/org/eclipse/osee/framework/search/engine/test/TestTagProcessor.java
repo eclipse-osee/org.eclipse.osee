@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.search.engine.test;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -37,7 +39,7 @@ public class TestTagProcessor extends TestCase {
       while (urls.hasMoreElements()) {
          URL url = (URL) urls.nextElement();
          String name = getFileName(url.getPath());
-         if (Strings.isValid(name) && (url.getPath().endsWith(".xml") || url.getPath().endsWith(".tags.txt"))) {
+         if (Strings.isValid(name) && (url.getPath().endsWith(".data.xml") || url.getPath().endsWith(".tags.txt"))) {
             TestData<URL, URL> pair = toReturn.get(name);
             if (pair == null) {
                pair = new TestData<URL, URL>();
@@ -124,5 +126,23 @@ public class TestTagProcessor extends TestCase {
    private class TestData<K, V> {
       private K data;
       private V expected;
+   }
+
+   public void testTagWordFile() throws IOException {
+      String testFile =
+            "C:\\UserData\\osgiWorkspace\\org.eclipse.osee.framework.search.engine.test\\data\\srsMasterTemplate.299CU.xml";
+      InputStream dataStream = null;
+      try {
+         dataStream = new BufferedInputStream(new FileInputStream(new File(testFile)));
+         Scanner sourceScanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+         TagProcessor.collectFromScanner(sourceScanner, new ITagCollector() {
+            @Override
+            public void addTag(String word, Long codedTag) {
+               System.out.println("Word: [" + word + "] Tag: [" + codedTag + "]");
+            }
+         });
+      } finally {
+         dataStream.close();
+      }
    }
 }

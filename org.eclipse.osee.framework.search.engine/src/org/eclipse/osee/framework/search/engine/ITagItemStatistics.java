@@ -13,24 +13,14 @@ package org.eclipse.osee.framework.search.engine;
 /**
  * @author Roberto E. Escobar
  */
-public interface ITaggerStatistics {
+public interface ITagItemStatistics {
 
-   public long getAverageWaitTime();
+   public long getGammaId();
 
-   public long getAverageProcessingTime();
+   public int getTotalTags();
 
-   public int getTotalProcessed();
+   public long getProcessingTime();
 
-   public long getLongestProcessingTime();
-
-   public long getLongestWaitTime();
-
-   public long getTotalTags();
-
-   public ITagItemStatistics getLongestTask();
-
-   public ITagItemStatistics getMostTagsTask();
-
-   public long getTagsInSystem();
+   public long getWaitTime();
 
 }

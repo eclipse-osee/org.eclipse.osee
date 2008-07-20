@@ -32,9 +32,11 @@ public class TagProcessor {
    }
 
    public static void collectFromInputStream(InputStream inputStream, ITagCollector tagCollector) {
-      Scanner scanner = new Scanner(inputStream, "UTF-8");
-      while (scanner.hasNext()) {
-         processWord(scanner.next(), tagCollector);
+      if (inputStream != null) {
+         Scanner scanner = new Scanner(inputStream, "UTF-8");
+         while (scanner.hasNext()) {
+            processWord(scanner.next(), tagCollector);
+         }
       }
    }
 
@@ -42,13 +44,16 @@ public class TagProcessor {
       try {
          while (sourceScanner.hasNext()) {
             String entry = sourceScanner.next();
-            Scanner innerScanner = new Scanner(entry);
-            while (innerScanner.hasNext()) {
-               processWord(innerScanner.next(), tagCollector);
+            if (entry.length() > 0) {
+               Scanner innerScanner = new Scanner(entry);
+               while (innerScanner.hasNext()) {
+                  String entry1 = innerScanner.next();
+                  processWord(entry1, tagCollector);
+               }
             }
          }
       } catch (Exception ex) {
-         ex.printStackTrace();
+         // Do nothing
       }
    }
 
@@ -58,7 +63,7 @@ public class TagProcessor {
          original = original.toLowerCase();
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-            if (target.equals(original)) {
+            if (target.equals(original) || target.length() == 0) {
                originalStored = true;
             }
             TagEncoder.encode(target, tagCollector);

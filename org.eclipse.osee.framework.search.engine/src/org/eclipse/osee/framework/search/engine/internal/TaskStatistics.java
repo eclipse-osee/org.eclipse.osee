@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import org.eclipse.osee.framework.search.engine.ITaskStatistics;
+import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TaskStatistics implements Cloneable, ITaskStatistics {
+public class TaskStatistics implements Cloneable, ITagItemStatistics {
    private long gammaId;
    private int totalTags;
    private long processingTime;

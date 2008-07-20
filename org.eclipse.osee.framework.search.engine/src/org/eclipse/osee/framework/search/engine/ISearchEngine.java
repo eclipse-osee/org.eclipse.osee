@@ -10,10 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
+import org.eclipse.osee.framework.search.engine.internal.SearchStatistics;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface ISearchEngine {
 
-   public String search(String searchString, Options options) throws Exception;
+   /**
+    * Searches tagged items for matches meeting criteria specified. If branchId is less than 0, search will include all
+    * branches in the system.
+    * 
+    * @param searchString
+    * @param branchId
+    * @param options
+    * @return
+    * @throws Exception
+    */
+   public String search(String searchString, int branchId, Options options) throws Exception;
+
+   /**
+    * Get statistics
+    * 
+    * @return tagger statistics
+    */
+   SearchStatistics getStatistics();
+
+   /**
+    * Clear Statistics
+    */
+   void clearStatistics();
 }

@@ -155,7 +155,7 @@ public class TestWordsUtil extends TestCase {
       while (urls.hasMoreElements()) {
          URL url = (URL) urls.nextElement();
          String name = getFileName(url.getPath());
-         if (Strings.isValid(name) && (url.getPath().endsWith(".xml") || url.getPath().endsWith(".expected.txt"))) {
+         if (Strings.isValid(name) && (url.getPath().endsWith(".data.xml") || url.getPath().endsWith(".expected.txt"))) {
             TestData<URL, URL> pair = toReturn.get(name);
             if (pair == null) {
                pair = new TestData<URL, URL>();
@@ -181,12 +181,13 @@ public class TestWordsUtil extends TestCase {
 
          InputStream dataStream = null;
          InputStream expectedStream = null;
+         Scanner scanner = null;
          try {
             dataStream = new BufferedInputStream(testData.data.openStream());
             expectedStream = new BufferedInputStream(testData.expected.openStream());
 
             StringBuilder builder = new StringBuilder();
-            Scanner scanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+            scanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
             while (scanner.hasNext()) {
                String value = scanner.next();
                if (value.length() > 0) {
@@ -201,6 +202,9 @@ public class TestWordsUtil extends TestCase {
             String expected = Lib.inputStreamToString(expectedStream);
             assertEquals(String.format("Original: [%s] ", key), expected, actual);
          } finally {
+            if (scanner != null) {
+               scanner.close();
+            }
             if (dataStream != null) {
                try {
                   dataStream.close();
