@@ -244,30 +244,34 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          return;
       }
 
-      monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
-      boolean modified = true;
-      currentArtifactId = artifactGuidCache.getId(guid);
-      // New artifact
-      if (currentArtifactId == null) {
-         modified = false;
-         if (deleted) {
-            logger.log(Level.WARNING, "Initial creation of artifact " + hrid + " was a delete version");
+      try {
+         monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
+         boolean modified = true;
+         currentArtifactId = artifactGuidCache.getId(guid);
+         // New artifact
+         if (currentArtifactId == null) {
+            modified = false;
+            if (deleted) {
+               logger.log(Level.WARNING, "Initial creation of artifact " + hrid + " was a delete version");
+            }
+            currentArtifactId = Query.getNextSeqVal(ART_ID_SEQ);
+
+            ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
+            int artTypeId = artifactType.getArtTypeId();
+            artifactGuidCache.map(currentArtifactId, guid);
+            ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,
+                  SQL3DataType.VARCHAR, hrid, SQL3DataType.INTEGER, artTypeId, SQL3DataType.VARCHAR, guid);
          }
-         currentArtifactId = Query.getNextSeqVal(ART_ID_SEQ);
 
-         ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
-         int artTypeId = artifactType.getArtTypeId();
-         artifactGuidCache.map(currentArtifactId, guid);
-         ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,
-               SQL3DataType.VARCHAR, hrid, SQL3DataType.INTEGER, artTypeId, SQL3DataType.VARCHAR, guid);
+         int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
+         ModificationType modificationType = getModType(modified, deleted);
+
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
+               SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
+         insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
+      } catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage());
       }
-
-      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
-      ModificationType modificationType = getModType(modified, deleted);
-
-      ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
-            SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
    }
 
    @Override
