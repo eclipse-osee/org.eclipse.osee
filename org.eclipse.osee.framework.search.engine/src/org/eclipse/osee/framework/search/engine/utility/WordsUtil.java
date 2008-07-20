@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.search.engine.Activator;
 public class WordsUtil {
    private static final Pattern SKIP_XML_TAGS = Pattern.compile("\\s*<.*?>\\s*", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern SKIP_WORDML_TAGS =
-         Pattern.compile(".*?<w:t>|</w:t>.*", Pattern.DOTALL | Pattern.MULTILINE);
+         Pattern.compile("(.*?<w:t>\\s*)|(\\s*</w:t>.*)", Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final String VOWELS = "aeiou";
    private static final String IES_ENDING = "ies";
@@ -138,7 +138,7 @@ public class WordsUtil {
    public static Scanner inputStreamToXmlTextScanner(InputStream inputStream) {
       Scanner scanner = new Scanner(inputStream, "UTF-8");
       Pattern pattern = isWordML(inputStream) ? SKIP_WORDML_TAGS : SKIP_XML_TAGS;
-      return scanner.useDelimiter(pattern);
+      return scanner.useDelimiter(pattern).skip("\\s*");
    }
 
    private static boolean isWordML(InputStream inputStream) {
