@@ -28,9 +28,9 @@ class SearchStats extends BaseCmdWorker {
       println("\n----------------------------------------------");
       println("                  Search Stats                ");
       println("----------------------------------------------");
-      println(String.format("Total Searche - [%d]", stats.getTotalSearches()));
-      println(String.format("Search Time   - avg: [%s] ms - longest: [%s] ms", stats.getAverageSearchTime(),
+      println(String.format("Total Searches - [%d]", stats.getTotalSearches()));
+      println(String.format("Search Time    - avg: [%s] ms - longest: [%s] ms", stats.getAverageSearchTime(),
             stats.getLongestSearchTime()));
-      println(String.format("Longest Search - %s", stats.getLongestSearch()));
+      println(String.format("Longest Search  - %s", stats.getLongestSearch()));
    }
 }

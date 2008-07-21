@@ -30,12 +30,16 @@ public class JoinUtility {
    private static final String INSERT_INTO_JOIN_TRANSACTION =
          "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
 
+   private static final String INSERT_INTO_JOIN_SEARCH_TAGS =
+         "INSERT INTO osee_join_search_tags (query_id, insert_time, coded_tag_id) VALUES (?, ?, ?)";
+
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
+   private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
 
    public enum JoinItem {
-      TRANSACTION, ARTIFACT, ATTRIBUTE;
+      TRANSACTION, ARTIFACT, ATTRIBUTE, SEARCH_TAGS;
    }
 
    private JoinUtility() {
@@ -55,6 +59,10 @@ public class JoinUtility {
 
    public static AttributeJoinQuery createAttributeJoinQuery() {
       return new AttributeJoinQuery();
+   }
+
+   public static SearchTagJoinQuery createSearchTagJoinQuery() {
+      return new SearchTagJoinQuery();
    }
 
    private static abstract class JoinQueryEntry {
@@ -133,6 +141,9 @@ public class JoinUtility {
             break;
          case ATTRIBUTE:
             deleteSql = DELETE_FROM_JOIN_ATTRIBUTE;
+            break;
+         case SEARCH_TAGS:
+            deleteSql = DELETE_FROM_JOIN_SEARCH_TAGS;
             break;
          default:
             break;
@@ -296,4 +307,51 @@ public class JoinUtility {
       }
    }
 
+   public static final class SearchTagJoinQuery extends JoinQueryEntry {
+
+      private final class TagEntry implements IJoinRow {
+         private long value;
+
+         private TagEntry(long value) {
+            this.value = value;
+         }
+
+         public Object[] toArray() {
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.BIGINT, value};
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#equals(java.lang.Object)
+          */
+         @Override
+         public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (!(obj instanceof TagEntry)) return false;
+            TagEntry other = (TagEntry) obj;
+            return this.value == other.value;
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#hashCode()
+          */
+         @Override
+         public int hashCode() {
+            return (int) (37 * value);
+         }
+
+         public String toString() {
+            return String.format("tag=%d", value);
+         }
+      }
+
+      private SearchTagJoinQuery() {
+         super(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS);
+      }
+
+      public void add(long tag) {
+         entries.add(new TagEntry(tag));
+      }
+   }
 }

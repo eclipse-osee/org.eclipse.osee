@@ -45,7 +45,7 @@ class TaggerRunnable implements Runnable, ITagCollector {
    public void run() {
       long start = System.currentTimeMillis();
       try {
-         AttributeData attributeData = AttributeDataStore.getInstance().getAttribute(gammaId);
+         AttributeData attributeData = AttributeDataStore.getAttribute(gammaId);
          if (attributeData != null) {
             this.searchTag = new SearchTag(attributeData.getArtId(), attributeData.getGammaId());
             Activator.getInstance().getTaggerManager().tagIt(attributeData, this);

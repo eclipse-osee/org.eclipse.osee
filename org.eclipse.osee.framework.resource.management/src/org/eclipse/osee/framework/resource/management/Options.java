@@ -40,4 +40,12 @@ public class Options {
    public void put(String key, boolean value) {
       this.properties.put(key, Boolean.toString(value));
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      return properties.toString();
+   }
 }

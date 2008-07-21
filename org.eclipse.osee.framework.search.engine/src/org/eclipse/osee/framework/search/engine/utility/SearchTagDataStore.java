@@ -37,15 +37,10 @@ public class SearchTagDataStore {
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
-   private static final String SELECT_SEARCH_TAGS =
-         "select ost1.attr_id, ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
-
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
-   private static String getQuery(Options options) {
-      // TODO different query based on options
-      return SELECT_SEARCH_TAGS;
-   }
+   private static final String SELECT_SEARCH_TAGS =
+         "select ost1.attr_id, ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
    public static long getTotalTags() {
       final MutableInteger toReturn = new MutableInteger(-1);
@@ -127,7 +122,7 @@ public class SearchTagDataStore {
    public static Set<IAttributeLocator> fetchTagEntries(Options options, Long... codedTags) throws Exception {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
       for (Long codedTag : codedTags) {
-         DatabaseUtil.executeQuery(getQuery(options), new IRowProcessor() {
+         DatabaseUtil.executeQuery(SELECT_SEARCH_TAGS, new IRowProcessor() {
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
                toReturn.add(new AttributeVersion(resultSet.getInt("attr_id"), resultSet.getLong("gamma_id")));

@@ -10,47 +10,45 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.data;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.SearchTagJoinQuery;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
-import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class AttributeSearch implements ITagCollector {
-   private List<Long> tags;
+   private SearchTagJoinQuery tags;
    private String searchString;
    private int branchId;
    private Options options;
 
    public AttributeSearch(String searchString, int branchId, Options options) {
-      this.tags = new ArrayList<Long>();
+      this.tags = null;
       this.branchId = branchId;
       this.searchString = searchString;
       this.options = options;
    }
 
-   public List<AttributeData> getMatchingAttributes() throws Exception {
-      List<AttributeData> toReturn = null;
+   public Set<AttributeData> getMatchingAttributes() throws Exception {
+      Set<AttributeData> toReturn = null;
       try {
+         this.tags = JoinUtility.createSearchTagJoinQuery();
          TagProcessor.collectFromString(searchString, this);
-         Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(options, tags);
-         if (locators.isEmpty() != true) {
-            toReturn = AttributeDataStore.getInstance().getAttributes(branchId, locators);
-         }
+         this.tags.store();
+         toReturn = AttributeDataStore.getAttributesByTags(branchId, options, this.tags.getQueryId());
       } finally {
-         tags.clear();
+         tags.delete();
          tags = null;
       }
       if (toReturn == null) {
-         toReturn = Collections.emptyList();
+         toReturn = Collections.emptySet();
       }
       return toReturn;
    }
@@ -60,6 +58,6 @@ public final class AttributeSearch implements ITagCollector {
     */
    @Override
    public void addTag(String word, Long codedTag) {
-      tags.add(codedTag);
+      this.tags.add(codedTag);
    }
 }

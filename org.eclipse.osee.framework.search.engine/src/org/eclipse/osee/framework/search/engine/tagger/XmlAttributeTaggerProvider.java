@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.tagger;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -34,13 +33,8 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
          try {
             int index = 0;
             int searchStrSize = value.length();
-
-            inputStream = new XmlTextInputStream(new BufferedInputStream(getValueAsStream(attributeData)));
+            inputStream = new XmlTextInputStream(getValueAsStream(attributeData));
             while (inputStream.available() > 0) {
-               inputStream.read();
-               //               String source = scanner.next().toLowerCase();
-               //               for (int i = 0; i < source.length(); i++) {
-               //               char curr = source.charAt(i);
                char curr = (char) inputStream.read();
                char toCheck = value.charAt(index);
                if (curr == toCheck) {
@@ -52,7 +46,6 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
                } else {
                   index = 0;
                }
-               //               }
             }
          } catch (Exception ex) {
             OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
@@ -72,7 +65,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {
       InputStream inputStream = null;
       try {
-         inputStream = new BufferedInputStream(getValueAsStream(attributeData));
+         inputStream = getValueAsStream(attributeData);
          TagProcessor.collectFromInputStream(new XmlTextInputStream(inputStream), collector);
       } finally {
          if (inputStream != null) {

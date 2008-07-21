@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.search.engine.Activator;
@@ -37,12 +36,10 @@ public class SearchEngine implements ISearchEngine {
    @Override
    public String search(String searchString, int branchId, Options options) throws Exception {
       long startTime = System.currentTimeMillis();
-      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
-      List<AttributeData> attributes = attributeSearch.getMatchingAttributes();
-
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       IAttributeTaggerProviderManager manager = Activator.getInstance().getTaggerManager();
-      for (AttributeData attributeData : attributes) {
+      AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
+      for (AttributeData attributeData : attributeSearch.getMatchingAttributes()) {
          if (manager.find(attributeData, searchString)) {
             joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
          }
