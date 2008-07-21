@@ -234,7 +234,7 @@ public class XResultPage {
    }
 
    public void handleSave() {
-      Dialogs.saveHtmlDialog(html, true);
+      Dialogs.saveHtmlDialog(manipulatedHtml, true);
    }
 
 }
