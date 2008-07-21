@@ -1,23 +1,19 @@
 package net.jini;
 
 import java.net.URL;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
+
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plug-in class to be used in the desktop.
  */
-public class JiniPlugin extends Plugin {
+public class JiniPlugin implements BundleActivator {
 
    private static JiniPlugin plugin;
    private String[] serviceGroups;
-
-   public JiniPlugin() {
-      plugin = this;
-      serviceGroups = null;
-   }
+   private BundleContext context;
 
    public static JiniPlugin getInstance() {
       return plugin;
@@ -25,10 +21,11 @@ public class JiniPlugin extends Plugin {
 
    public String[] getJiniVersion() {
       //      if (serviceGroups == null) {
-      Bundle bundle = Platform.getBundle("net.jini");
+      Bundle bundle = context.getBundle();
       try {
+    	  
          if (bundle != null) {
-            URL home = FileLocator.resolve(bundle.getEntry("/"));
+            URL home = bundle.getEntry("/");
             String id = home.getFile();
             if (id.endsWith("/")) {
                id = id.substring(0, id.length() - 1);
@@ -44,4 +41,21 @@ public class JiniPlugin extends Plugin {
       //      }
       return serviceGroups;
    }
+
+/* (non-Javadoc)
+ * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+ */
+@Override
+public void start(BundleContext arg0) throws Exception {
+	plugin = this;
+	
+	serviceGroups = null;
+}
+
+/* (non-Javadoc)
+ * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+ */
+@Override
+public void stop(BundleContext arg0) throws Exception {
+}
 }

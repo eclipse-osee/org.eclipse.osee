@@ -40,7 +40,6 @@ Bundle-ClassPath: jini.jar,
  jini2_1/lib/tools.jar
 Bundle-Activator: net.jini.JiniPlugin
 Bundle-Vendor: Sun
-Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.jini.action,
  com.sun.jini.admin,
@@ -131,3 +130,4 @@ Export-Package: com.sun.jini.action,
  net.jini.url.httpmd,
  net.jini.url.https
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.osgi
