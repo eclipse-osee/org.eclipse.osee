@@ -51,6 +51,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       try {
+         // NOTE: HRID, Type, Title are handled by XViewerValueColumn values
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          if (xCol == WorldXViewerFactory.Actionable_Items_Col) return wva.getWorldViewActionableItems();
