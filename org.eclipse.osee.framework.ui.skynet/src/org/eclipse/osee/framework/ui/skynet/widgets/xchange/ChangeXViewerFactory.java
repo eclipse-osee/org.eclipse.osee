@@ -55,13 +55,18 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Was_Value =
          new XViewerColumn(COLUMN_NAMESPACE + "wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
-   public static final List<XViewerColumn> columns =
-         Arrays.asList(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value);
+   public static List<XViewerColumn> columns;
    public static Map<String, XViewerColumn> idToColumn = null;
 
    public ChangeXViewerFactory() {
+      loadColumnData();
+   }
+
+   private static synchronized void loadColumnData() {
       if (idToColumn == null) {
-         idToColumn = new HashMap<String, XViewerColumn>();
+         idToColumn = new HashMap<String, XViewerColumn>(50);
+         columns = new ArrayList<XViewerColumn>(50);
+         columns.addAll(Arrays.asList(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value));
          for (XViewerColumn xCol : columns) {
             idToColumn.put(xCol.getId(), xCol);
          }
