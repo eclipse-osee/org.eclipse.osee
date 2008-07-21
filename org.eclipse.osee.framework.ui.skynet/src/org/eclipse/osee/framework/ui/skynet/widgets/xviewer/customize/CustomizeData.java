@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.internal.Workbench;
 
 /**
  * @author Donald G. Dunne
@@ -35,11 +36,14 @@ public class CustomizeData {
    private FilterData filterData = new FilterData();
    private ColumnData columnData = new ColumnData();
    private Map<String, Image> imageMap = new HashMap<String, Image>();
+   private boolean isWorkbench = false;
 
    public CustomizeData() {
+      isWorkbench = Workbench.getInstance() != null && Workbench.getInstance().isRunning();
    }
 
    public CustomizeData(String xml, IXViewerFactory xViewerFactory) {
+      this();
       setFromXml(xml, xViewerFactory);
    }
 
@@ -52,8 +56,10 @@ public class CustomizeData {
    }
 
    public Image getImage(boolean isDefault) {
-      if (name.equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || name.equals(XViewerCustomize.CURRENT_LABEL)) return SkynetGuiPlugin.getInstance().getImage(
-            "customize.gif");
+      if (!isWorkbench) return null;
+      if (name.equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || name.equals(XViewerCustomize.CURRENT_LABEL)) {
+         return SkynetGuiPlugin.getInstance().getImage("customize.gif");
+      }
       String index = "" + personal + isDefault;
       if (imageMap.containsKey(index)) return imageMap.get(index);
       Image image = SkynetGuiPlugin.getInstance().getImage("customize.gif");

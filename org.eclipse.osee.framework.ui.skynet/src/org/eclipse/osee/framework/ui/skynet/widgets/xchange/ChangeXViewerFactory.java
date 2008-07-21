@@ -10,17 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -96,15 +92,6 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       }
       custData.getColumnData().setColumns(cols);
       return custData;
-   }
-
-   private Branch getBranch(XViewer xViewer) throws OseeCoreException, SQLException {
-      Branch branch = ((ChangeXViewer) xViewer).getXChangeViewer().getBranch();
-      if (branch == null) {
-         TransactionId transId = ((ChangeXViewer) xViewer).getXChangeViewer().getTransactionId();
-         if (transId != null) return transId.getBranch();
-      }
-      return null;
    }
 
    /*

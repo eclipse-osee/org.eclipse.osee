@@ -33,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
@@ -46,6 +47,10 @@ public class CustomizationDataSelectionDialog extends ListDialog {
    private XCheckBox saveGlobalCheck;
 
    public CustomizationDataSelectionDialog(XViewer xViewer, List<CustomizeData> custDatas) {
+      this(Display.getCurrent().getActiveShell(), xViewer, custDatas);
+   }
+
+   public CustomizationDataSelectionDialog(Shell parent, XViewer xViewer, List<CustomizeData> custDatas) {
       super(Display.getCurrent().getActiveShell());
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new CustomizeDataLabelProvider(xViewer));

@@ -52,6 +52,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -75,15 +76,17 @@ public class XViewerCustomize {
    protected Action copySelected;
    protected Action copySelectedCell;
    protected Action viewSelectedCell;
+   private final Shell parent;
 
    /**
     * @param factory
     */
-   public XViewerCustomize() {
-      this(null);
+   public XViewerCustomize(Shell parent) {
+      this(parent, null);
    }
 
-   public XViewerCustomize(IXViewerCustomizations xViewerCustomizations) {
+   public XViewerCustomize(Shell parent, IXViewerCustomizations xViewerCustomizations) {
+      this.parent = parent;
       this.xViewerCustomizations = xViewerCustomizations;
    }
 
@@ -174,7 +177,7 @@ public class XViewerCustomize {
                AWorkbench.popup("ERROR", "No Columns Are Multi-Editable");
                return;
             }
-            ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
+            ListDialog ld = new ListDialog(parent);
             ld.setMessage("Select Column to Edit");
             ld.setInput(editableColumns);
             ld.setLabelProvider(treeColumnLabelProvider);
@@ -232,7 +235,7 @@ public class XViewerCustomize {
          AWorkbench.popup("ERROR", "No Columns Are Available");
          return;
       }
-      ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell()) {
+      ListDialog ld = new ListDialog(parent) {
          /*
           * (non-Javadoc)
           * 

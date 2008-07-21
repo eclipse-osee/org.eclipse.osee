@@ -79,7 +79,7 @@ public class XViewer extends TreeViewer {
     * @param style
     */
    public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory) {
-      this(parent, style, namespace, xViewerFactory, new XViewerCustomize());
+      this(parent, style, namespace, xViewerFactory, new XViewerCustomize(Display.getCurrent().getActiveShell()));
    }
 
    public void dispose() {

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDa
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizeDefaults;
 import org.eclipse.swt.SWT;
 
 /**
@@ -92,7 +93,7 @@ public class XViewerTestFactory implements IXViewerFactory {
     */
    @Override
    public IXViewerCustomizeDefaults getXViewerCustomizeDefaults() {
-      return null;
+      return new XViewerCustomizeDefaults();
    }
 
 }

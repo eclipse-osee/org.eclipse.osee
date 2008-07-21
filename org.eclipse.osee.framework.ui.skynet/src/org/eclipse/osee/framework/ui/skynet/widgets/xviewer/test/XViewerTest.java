@@ -67,7 +67,7 @@ public class XViewerTest extends XViewer {
 
       XViewerTest xViewerTest =
             new XViewerTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, "xviewer.test",
-                  new XViewerTestFactory(), new XViewerCustomize(new XViewerCustomizations()));
+                  new XViewerTestFactory(), new XViewerCustomize(Shell_1, new XViewerCustomizations()));
       xViewerTest.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       xViewerTest.setContentProvider(new XViewerTestContentProvider(xViewerTest));
       xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));

@@ -18,6 +18,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCu
  * @author Andrew M. Finkbeiner
  */
 public interface IXViewerFactory {
+   /**
+    * Returns the default sorter to use for this xviewer
+    * 
+    * @param viewer
+    * @return
+    */
    XViewerSorter createNewXSorter(XViewer viewer);
 
    CustomizeData getDefaultTableCustomizeData(XViewer xViewer);

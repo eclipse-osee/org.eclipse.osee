@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.internal.Workbench;
 
 public class XViewerCustomizeDialog extends MessageDialog {
    private String title = "Customize Table";
@@ -71,6 +72,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private static String SET_AS_DEFAULT = " Set as Default ";
    private static String REMOVE_DEFAULT = "Remove Default";
    private CustomizeData defaultTableCustData;
+   private boolean inWorkbench = false;
 
    public XViewerCustomizeDialog(CustomizeData currentCustomizeData, XViewer xViewer) {
       this(currentCustomizeData, xViewer, Display.getCurrent().getActiveShell(), buttons, 0);
@@ -80,6 +82,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       super(parentShell, "", null, "", MessageDialog.NONE, buttons, defaultButton);
       this.currentCustomizeData = currentCustomizeData;
       this.xViewer = xViewer;
+      inWorkbench = Workbench.getInstance() != null && Workbench.getInstance().isRunning();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -93,7 +96,9 @@ public class XViewerCustomizeDialog extends MessageDialog {
       getShell().setText(title);
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
+      if (inWorkbench) {
+         SkynetGuiPlugin.getInstance().setHelp(parent, "table_customization");
+      }
 
       final Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -272,7 +277,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       sorterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearSorterLabel = new Label(composite_2, SWT.PUSH);
-      if (SkynetGuiPlugin.getInstance() != null)
+      if (inWorkbench)
          clearSorterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
       else
          clearSorterLabel.setText("clear");
@@ -303,7 +308,10 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       final Label clearFilterLabel = new Label(composite_7, SWT.PUSH);
-      clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      if (inWorkbench)
+         clearFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      else
+         clearFilterLabel.setText("clear");
       clearFilterLabel.addMouseListener(new MouseListener() {
          public void mouseDown(MouseEvent e) {
          }
@@ -656,7 +664,8 @@ public class XViewerCustomizeDialog extends MessageDialog {
       renameButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null && getVisibleTableSelection().size() == 1);
       moveDownButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
       moveUpButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
-      saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations(xViewer).isCustomizationPersistAvailable());
+      saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations(xViewer) != null && xViewer.getXViewerFactory().getXViewerCustomizations(
+            xViewer).isCustomizationPersistAvailable());
    }
 
    private void loadCustomizeTable() {
