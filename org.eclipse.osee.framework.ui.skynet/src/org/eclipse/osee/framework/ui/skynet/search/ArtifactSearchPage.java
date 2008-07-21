@@ -184,8 +184,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(
-               getSelectedBranch())) {
+         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(getSelectedBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
@@ -356,7 +355,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       createOrphanSearchControls(optionsComposite);
       createRelationSearchControls(optionsComposite);
       createHridSearchControls(optionsComposite);
-      addToSearchTypeList(new CorruptedArtifactSearchFilter(optionsComposite));
 
       searchTypeList.getCombo().select(5);
       searchTypeList.getCombo().setVisibleItemCount(7);
