@@ -178,16 +178,8 @@ public class XViewerColumn {
       return id;
    }
 
-   public void setId(String name) {
-      this.id = name;
-   }
-
    public int getWidth() {
       return width;
-   }
-
-   public void setWidth(int width) {
-      this.width = width;
    }
 
    public XViewer getTreeViewer() {

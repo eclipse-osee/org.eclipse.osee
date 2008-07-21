@@ -26,11 +26,35 @@ public interface IXViewerFactory {
     */
    XViewerSorter createNewXSorter(XViewer viewer);
 
+   /**
+    * Returns the default table customization for this viewer including column definitions, sorting and filtering (if
+    * any)
+    * 
+    * @param xViewer
+    * @return
+    */
    CustomizeData getDefaultTableCustomizeData(XViewer xViewer);
 
+   /**
+    * Returns the default column definition for the given id
+    * 
+    * @param id
+    * @return
+    */
    XViewerColumn getDefaultXViewerColumn(String id);
 
+   /**
+    * Provides the storage mechanism for save/load of users default customization
+    * 
+    * @return
+    */
    IXViewerCustomizeDefaults getXViewerCustomizeDefaults();
 
+   /**
+    * Provides the storage mechanism for save/load of personal/global customizations
+    * 
+    * @param xViewer
+    * @return
+    */
    IXViewerCustomizations getXViewerCustomizations(XViewer xViewer);
 }

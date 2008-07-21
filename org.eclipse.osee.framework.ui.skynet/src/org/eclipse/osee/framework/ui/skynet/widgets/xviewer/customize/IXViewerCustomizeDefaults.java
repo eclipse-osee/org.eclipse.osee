@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 /**
+ * Methods to implement if this XViewer allows the user to save a customization as their default
+ * 
  * @author Donald G. Dunne
  */
 public interface IXViewerCustomizeDefaults {

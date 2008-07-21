@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 import java.util.List;
 
 /**
+ * Methods to implement if this XViewer allows the user to save local/global customizations
+ * 
  * @author Donald G. Dunne
  */
 public interface IXViewerCustomizations {
