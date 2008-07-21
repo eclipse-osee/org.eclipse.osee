@@ -94,6 +94,7 @@ public class XResultView extends ViewPart implements IActionable {
          if (fPage == currentPage) action.setChecked(true);
          manager.add(action);
       }
+      manager.update(true);
    }
 
    public void addResultPage(XResultPage page) {
