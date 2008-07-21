@@ -159,7 +159,7 @@ public class XViewerColumn {
    }
 
    public String toString() {
-      return id;
+      return name + (alternateName != null && !alternateName.equals("") ? " (" + alternateName + ")" : "") + " - " + id + "";
    }
 
    public int getAlign() {
