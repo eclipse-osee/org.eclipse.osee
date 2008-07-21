@@ -81,6 +81,10 @@ public class XViewerCustomize {
    /**
     * @param factory
     */
+   public XViewerCustomize() {
+      this(Display.getCurrent().getActiveShell(), null);
+   }
+
    public XViewerCustomize(Shell parent) {
       this(parent, null);
    }

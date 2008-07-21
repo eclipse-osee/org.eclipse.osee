@@ -27,7 +27,7 @@ public class XViewerTestFactory implements IXViewerFactory {
    public static XViewerColumn Run_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 50, SWT.LEFT, true, SortDataType.String);
    public static XViewerColumn Name_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".name", "Name", 350, SWT.LEFT, true, SortDataType.String);
+         new XViewerColumn(COLUMN_NAMESPACE + ".name", "Name", 150, SWT.LEFT, true, SortDataType.String);
    public static XViewerColumn Schedule_Time =
          new XViewerColumn(COLUMN_NAMESPACE + ".startTime", "Start Time", 40, SWT.CENTER, true, SortDataType.String);
    public static XViewerColumn Run_Db =
@@ -35,14 +35,18 @@ public class XViewerTestFactory implements IXViewerFactory {
    public static XViewerColumn Task_Type =
          new XViewerColumn(COLUMN_NAMESPACE + ".taskType", "Task Type", 80, SWT.LEFT, true, SortDataType.String);
    public static XViewerColumn Category =
-         new XViewerColumn(COLUMN_NAMESPACE + ".category", "Category", 80, SWT.LEFT, true, SortDataType.String);
+         new XViewerColumn(COLUMN_NAMESPACE + ".category", "Category", 80, SWT.LEFT, false, SortDataType.String);
    public static XViewerColumn Notification =
-         new XViewerColumn(COLUMN_NAMESPACE + ".emailResults", "Email Results To", 80, SWT.LEFT, true,
+         new XViewerColumn(COLUMN_NAMESPACE + ".emailResults", "Email Results To", 150, SWT.LEFT, true,
                SortDataType.String);
    public static XViewerColumn Description =
-         new XViewerColumn(COLUMN_NAMESPACE + ".description", "Description", 700, SWT.LEFT, true, SortDataType.String);
+         new XViewerColumn(COLUMN_NAMESPACE + ".description", "Description", 75, SWT.LEFT, true, SortDataType.String);
+   public static XViewerColumn Other_Description =
+         new XViewerColumn(COLUMN_NAMESPACE + ".otherDescription", "Other Description", 75, SWT.LEFT, false,
+               SortDataType.String);
    public List<XViewerColumn> columns =
-         Arrays.asList(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description);
+         Arrays.asList(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description,
+               Other_Description);
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#createNewXSorter(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
