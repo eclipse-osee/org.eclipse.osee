@@ -797,14 +797,6 @@
     </menuContribution>
  </extension>
  <extension
-       id="PurgeDuplicateTypeData"
-       name="Purge Duplicate Type Data"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeDuplicateTypeData">
-    </Operation>
- </extension>
- <extension
        id="ValidateArtifactsToDelete"
        name="ValidateArtifactsToDelete"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
