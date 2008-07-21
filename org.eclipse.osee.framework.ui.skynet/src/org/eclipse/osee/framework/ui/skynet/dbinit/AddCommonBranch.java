@@ -40,12 +40,7 @@ public class AddCommonBranch implements IDbInitializationTask {
 
    public List<String> getSkynetDbTypeExtensionIds() {
       return Arrays.asList("org.eclipse.osee.framework.skynet.core.CommonBranch",
-            "org.eclipse.osee.framework.skynet.core.ProgramAndCommon", "lba.ats.config.tools.SkyNet_LbaAtsTools",
-            "org.eclipse.osee.ats.ATS_Skynet_Types", "lba.ats.config.blk3.mp.SkyNet_LBA_BLK3_MP",
-            "lba.ats.config.v11reu.processor.SkyNet_LBA_V11Reu_Processor",
-            "lba.ats.config.v13.processor.SkyNet_LBA_V13_Processor",
-            "lba.ats.config.v11reu.processor.SkyNet_LBA_V11Reu_Processor",
-            "lba.ats.config.deliverable.SkyNet_LbaAtsDeliverable");
+            "org.eclipse.osee.framework.skynet.core.ProgramAndCommon", "org.eclipse.osee.ats.ATS_Skynet_Types");
    }
 
    /*
