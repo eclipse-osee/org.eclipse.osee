@@ -31,9 +31,10 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private Map<String, String> parameters;
 
-   public RemoteArtifactSearch(String query, Map<String, Boolean> options) {
+   public RemoteArtifactSearch(String query, int branchId, Map<String, Boolean> options) {
       this.parameters = new HashMap<String, String>();
       this.parameters.put("query", query);
+      this.parameters.put("branchId", Integer.toString(branchId));
       if (options != null) {
          for (String optionName : options.keySet()) {
             this.parameters.put(optionName, options.get(optionName).toString());
@@ -52,7 +53,7 @@ public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
                      queryIdAndSize.object2, false);
 
-         JoinUtility.deleteQuery(JoinUtility.ArtifactJoinQuery.class, queryIdAndSize.object1.intValue());
+         JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
          return toReturn;
       }
       return java.util.Collections.emptyList();

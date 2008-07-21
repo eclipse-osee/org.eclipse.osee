@@ -34,6 +34,10 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
 
+   public enum JoinItem {
+      TRANSACTION, ARTIFACT, ATTRIBUTE;
+   }
+
    private JoinUtility() {
    }
 
@@ -54,7 +58,7 @@ public class JoinUtility {
    }
 
    private static abstract class JoinQueryEntry {
-      private final String deleteSql;
+      public final String deleteSql;
       private final String insertSql;
       private final int queryId;
       protected Set<IJoinRow> entries;
@@ -118,11 +122,26 @@ public class JoinUtility {
       }
    }
 
-   public static void deleteQuery(Class<? extends JoinQueryEntry> clazz, int queryId) throws Exception {
-      String deleteSql = clazz.newInstance().deleteSql;
-      ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), deleteSql, SQL3DataType.INTEGER, queryId);
+   public static void deleteQuery(JoinItem item, int queryId) throws Exception {
+      String deleteSql = null;
+      switch (item) {
+         case ARTIFACT:
+            deleteSql = DELETE_FROM_JOIN_ARTIFACT;
+            break;
+         case TRANSACTION:
+            deleteSql = DELETE_FROM_JOIN_TRANSACTION;
+            break;
+         case ATTRIBUTE:
+            deleteSql = DELETE_FROM_JOIN_ATTRIBUTE;
+            break;
+         default:
+            break;
+      }
+      if (deleteSql != null) {
+         ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), deleteSql, SQL3DataType.INTEGER,
+               queryId);
+      }
    }
-
    private interface IJoinRow {
       public Object[] toArray();
 

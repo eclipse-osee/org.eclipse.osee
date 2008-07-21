@@ -377,7 +377,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
          NewSearchUI.activateSearchResultView();
          NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-               searchComposite.getOptions()));
+               BranchPersistenceManager.getInstance().getDefaultBranch().getBranchId(), searchComposite.getOptions()));
       }
    }
 
