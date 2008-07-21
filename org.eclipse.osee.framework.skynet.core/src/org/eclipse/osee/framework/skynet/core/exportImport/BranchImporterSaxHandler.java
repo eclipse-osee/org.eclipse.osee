@@ -248,6 +248,10 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
          boolean modified = true;
          currentArtifactId = artifactGuidCache.getId(guid);
+
+         if (currentArtifactId != null && currentArtifactId == 6816) {
+            int i = 0;
+         }
          // New artifact
          if (currentArtifactId == null) {
             modified = false;

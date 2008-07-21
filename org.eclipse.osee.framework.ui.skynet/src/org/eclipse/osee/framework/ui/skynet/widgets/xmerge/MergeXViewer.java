@@ -174,6 +174,9 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       Conflict conflict = (Conflict) treeItem.getData();
+      if (conflict.statusCommitted()) {
+         return super.handleLeftClickInIconArea(treeColumn, treeItem);
+      }
       try {
          Shell shell = Display.getCurrent().getActiveShell().getShell();
          if (treeColumn.getText().equals(MergeXViewerFactory.Source.getName())) {

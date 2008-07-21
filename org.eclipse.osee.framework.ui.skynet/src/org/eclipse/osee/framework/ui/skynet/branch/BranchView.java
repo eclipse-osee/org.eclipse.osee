@@ -473,7 +473,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
             try {
                if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null) {
-                  MergeView.openViewUpon(selectedBranch, selectedBranch.getParentBranch(),
+                  MergeView.openView(selectedBranch, selectedBranch.getParentBranch(),
                         TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey());
                }
             } catch (Exception ex) {
@@ -1354,7 +1354,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             try {
                int result = dialog.open();
                if (result == 1) {
-                  MergeView.openViewUpon(fromBranch, toBranch, TransactionIdManager.getInstance().getStartEndPoint(
+                  MergeView.openView(fromBranch, toBranch, TransactionIdManager.getInstance().getStartEndPoint(
                         fromBranch).getKey());
                } else if (result == 2) {
                   BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true, true);

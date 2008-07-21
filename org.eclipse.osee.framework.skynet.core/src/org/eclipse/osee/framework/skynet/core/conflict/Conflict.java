@@ -15,14 +15,14 @@ import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class Conflict implements IAdaptable {
    public static enum Status {
 
-      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE(4), NOT_RESOLVABLE(5), COMMITED(6), INFORMATIONAL(7);
+      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE(4), NOT_RESOLVABLE(5), COMMITTED(6), INFORMATIONAL(7);
       private final int value;
 
       Status(int value) {
@@ -69,18 +69,17 @@ public abstract class Conflict implements IAdaptable {
    protected int destGamma;
    private int artId;
    private TransactionId toTransactionId;
-   private TransactionId fromTransactionId;
+   private TransactionId commitTransactionId;
    private Artifact artifact;
    private Artifact sourceArtifact;
    private Artifact destArtifact;
-   private final ModificationType modType;
-   private final ChangeType changeType;
    protected Branch mergeBranch;
    protected Branch sourceBranch;
    protected Branch destBranch;
-   
+
    private String sourceDiffFile = null;
    private String destDiffFile = null;
+
    /**
     * @param sourceGamma
     * @param destGamma
@@ -90,32 +89,20 @@ public abstract class Conflict implements IAdaptable {
     * @param transactionType
     * @param changeType
     */
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
-      this.fromTransactionId = fromTransactionId;
-      this.modType = modType;
-      this.changeType = changeType;
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.mergeBranch = mergeBranch;
+      this.commitTransactionId = commitTransactionId;
    }
 
-   /**
-    * @return the transactionType
-    */
-   public ModificationType getModificationType() {
-      return modType;
-   }
-
-   /**
-    * @return the changeType
-    */
-   public ChangeType getChangeType() {
-      return changeType;
+   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId commitTransactionId, Branch mergeBranch, Branch destBranch) {
+      this(sourceGamma, destGamma, artId, null, commitTransactionId, mergeBranch, null, destBranch);
    }
 
    /**
@@ -138,11 +125,17 @@ public abstract class Conflict implements IAdaptable {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Artifact getSourceArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public Artifact getSourceArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, OseeCoreException {
       if (sourceArtifact == null) {
-         sourceArtifact = ArtifactCache.getActive(artId, sourceBranch.getBranchId());
-         if (sourceArtifact == null) {
-            sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+         if (commitTransactionId == null) {
+            sourceArtifact = ArtifactCache.getActive(artId, sourceBranch.getBranchId());
+            if (sourceArtifact == null) {
+               sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+            }
+         } else {
+            sourceArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
+                        TransactionIdManager.getInstance().getStartEndPoint(mergeBranch).getKey());
          }
       }
       return sourceArtifact;
@@ -153,11 +146,18 @@ public abstract class Conflict implements IAdaptable {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Artifact getDestArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public Artifact getDestArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, OseeCoreException {
       if (destArtifact == null) {
-         destArtifact = ArtifactCache.getActive(artId, destBranch.getBranchId());
-         if (destArtifact == null) {
-            destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+         if (commitTransactionId == null) {
+            destArtifact = ArtifactCache.getActive(artId, destBranch.getBranchId());
+            if (destArtifact == null) {
+               destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+            }
+         } else {
+            destArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
+                        TransactionIdManager.getInstance().getPriorTransaction(commitTransactionId));
+
          }
       }
       return destArtifact;
@@ -225,24 +225,10 @@ public abstract class Conflict implements IAdaptable {
    }
 
    /**
-    * @param toTransactionId the toTransactionId to set
+    * @return the toTransactionId
     */
-   public void setToTransactionId(TransactionId toTransactionId) {
-      this.toTransactionId = toTransactionId;
-   }
-
-   /**
-    * @return the fromTransactionId
-    */
-   public TransactionId getFromTransactionId() {
-      return fromTransactionId;
-   }
-
-   /**
-    * @param fromTransactionId the fromTransactionId to set
-    */
-   public void setFromTransactionId(TransactionId fromTransactionId) {
-      this.fromTransactionId = fromTransactionId;
+   public TransactionId getCommitTransactionId() {
+      return commitTransactionId;
    }
 
    public Image getArtifactImage() throws OseeCoreException, SQLException {
@@ -250,7 +236,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public boolean okToOverwriteMerge() throws OseeCoreException {
-      if (status.equals(Status.RESOLVED) || status.equals(Status.COMMITED)) {
+      if (status.equals(Status.RESOLVED) || status.equals(Status.COMMITTED)) {
          return false;
       }
       return true;
@@ -263,7 +249,9 @@ public abstract class Conflict implements IAdaptable {
       if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
-                  getConflictType().Value(), passedStatus);
+                  getConflictType().Value(), passedStatus, TransactionIdManager.getInstance().getStartEndPoint(
+                        mergeBranch).getKey().getTransactionNumber(),
+                  this instanceof AttributeConflict ? ((AttributeConflict) this).getAttrId() : 0);
       return status;
    }
 
@@ -281,8 +269,8 @@ public abstract class Conflict implements IAdaptable {
       return status.equals(Status.RESOLVED);
    }
 
-   public boolean statusCommited() {
-      return status.equals(Status.COMMITED);
+   public boolean statusCommitted() {
+      return status.equals(Status.COMMITTED);
    }
 
    public boolean statusEdited() {

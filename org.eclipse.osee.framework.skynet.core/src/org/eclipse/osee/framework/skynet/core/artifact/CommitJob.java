@@ -210,7 +210,7 @@ class CommitJob extends Job {
                   ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
                         conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                         conflict.getSourceGamma());
-                  conflict.setStatus(Conflict.Status.COMMITED);
+                  conflict.setStatus(Conflict.Status.COMMITTED);
                }
                //TODO add source, destination values for merge branch history
             }

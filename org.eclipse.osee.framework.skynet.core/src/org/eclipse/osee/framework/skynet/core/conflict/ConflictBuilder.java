@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.sql.SQLException;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -27,8 +26,6 @@ public abstract class ConflictBuilder {
    protected int destGamma;
    protected int artId;
    protected TransactionId toTransactionId;
-   protected TransactionId fromTransactionId;
-   protected ModificationType modType;
    protected Branch sourceBranch;
    protected Branch destBranch;
 
@@ -45,14 +42,12 @@ public abstract class ConflictBuilder {
     * @param sourceBranch
     * @param destBranch
     */
-   public ConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, Branch sourceBranch, Branch destBranch) {
+   public ConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
-      this.fromTransactionId = fromTransactionId;
-      this.modType = modType;
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
    }

@@ -31,7 +31,7 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    private XViewer xViewer;
    public static String COLUMN_NAMESPACE = "framework.change.";
    public static final XViewerColumn Conflict_Resolved =
-         new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolved", 23, SWT.LEFT, true,
+         new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
                SortDataType.String, false);
    public static final XViewerColumn Artifact_Name =
          new XViewerColumn(COLUMN_NAMESPACE + "artifactName", "Artifact Name", 200, SWT.LEFT, true,

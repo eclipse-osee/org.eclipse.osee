@@ -77,11 +77,11 @@ public class EditWFCAttributeWizardPage extends WizardPage {
             } else if (event.widget == destButton) {
                MergeUtility.setToDest(conflict, getShell(), true);
             } else if (event.widget == sourceDiffButton) {
-               MergeUtility.showSourceCompareFile(conflict);
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), MergeUtility.getStartArtifact(conflict));
             } else if (event.widget == destDiffButton) {
-               MergeUtility.showDestCompareFile(conflict);
+               MergeUtility.showCompareFile(conflict.getDestArtifact(), MergeUtility.getStartArtifact(conflict));
             } else if (event.widget == sourceDestDiffButton) {
-               MergeUtility.showSourceDestCompareFile(conflict);
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getDestArtifact());
             }
          } catch (Exception ex) {
             OSEELog.logException(EditWFCAttributeWizardPage.class, ex, true);
@@ -155,6 +155,10 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       sourceDiffButton = createButton(SDIFF_TEXT, SDIFF_TOOLTIP, buttonComp);
       destDiffButton = createButton(DDIFF_TEXT, DDIFF_TOOLTIP, buttonComp);
       sourceDestDiffButton = createButton(SDDIFF_TEXT, SDDIFF_TOOLTIP, buttonComp);
+      if (MergeUtility.getStartArtifact(conflict) == null) {
+         sourceDiffButton.setEnabled(false);
+         destDiffButton.setEnabled(false);
+      }
 
       try {
          setResolution(XMergeLabelProvider.getMergeImage(conflict));

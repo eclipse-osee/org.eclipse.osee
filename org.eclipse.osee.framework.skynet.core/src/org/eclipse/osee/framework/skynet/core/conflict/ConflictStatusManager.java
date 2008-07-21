@@ -30,6 +30,8 @@ public class ConflictStatusManager {
          "SELECT source_gamma_id, dest_gamma_id, status  From " + "osee_define_conflict WHERE branch_id = ? AND conflict_id = ? AND " + "conflict_type = ?";
    private static final String MERGE_UPDATE_GAMMAS =
          "UPDATE osee_define_conflict SET source_gamma_id = ?, " + "dest_gamma_id = ?, status = ? WHERE branch_id = ? AND conflict_id = ? AND conflict_type = ?";
+   private static final String MERGE_BRANCH_GAMMAS =
+         "UPDATE osee_define_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_define_txs tx, osee_define_attribute atr WHERE tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
    private static final String MERGE_INSERT_STATUS =
          "INSERT INTO osee_define_conflict ( conflict_id, branch_id, source_gamma_id, " + "dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
@@ -46,7 +48,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus) throws SQLException {
+   public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus, int transactionId, int attrId) throws SQLException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
@@ -61,13 +63,17 @@ public class ConflictStatusManager {
          if (statusSet.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = statusSet.getInt("status");
-            if (((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITED.getValue()) {
+            if (((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITTED.getValue()) {
                if (intStatus == Status.RESOLVED.getValue()) {
                   intStatus = Status.OUT_OF_DATE.getValue();
                }
                ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
                      SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER, intStatus, SQL3DataType.INTEGER, branchID,
                      SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER, conflictType);
+               if (attrId != 0) {
+                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
+                        SQL3DataType.INTEGER, transactionId, SQL3DataType.INTEGER, attrId);
+               }
             }
             return Status.getStatus(intStatus);
          }

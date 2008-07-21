@@ -16,7 +16,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
-import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict.ConflictType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
@@ -84,44 +83,15 @@ public class MergeUtility {
     * This is not in the AttributeConflict because it relies on the renderer
     * that is in not in the skynet core package.
     */
-   public static void showSourceDestCompareFile(AttributeConflict attrConflict) {
-      if (attrConflict == null) return;
-      try {
-         IRenderer renderer =
-               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, attrConflict.getDestArtifact());
-         showDiff(attrConflict, renderer.compare(attrConflict.getDestArtifact(), attrConflict.getSourceArtifact(), "",
-               null, null, false));
-      } catch (Exception ex) {
-         OSEELog.logException(MergeUtility.class, ex, false);
-      }
+   public static void showCompareFile(Artifact art1, Artifact art2) throws Exception {
+      if (art1 == null || art2 == null) return;
+      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
+      showDiff(art1, renderer.compare(art1, art2, "", null, null, false));
    }
 
-   public static void showSourceCompareFile(Conflict conflict) {
-      if (conflict == null) return;
+   public static Artifact getStartArtifact(Conflict conflict) {
       try {
-         IRenderer renderer =
-               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, conflict.getDestArtifact());
-         showDiff(conflict, renderer.compare(getStartArtifact(conflict), conflict.getSourceArtifact(), "", null, null,
-               false));
-      } catch (Exception ex) {
-         OSEELog.logException(MergeUtility.class, ex, false);
-      }
-   }
-
-   public static void showDestCompareFile(Conflict conflict) {
-      if (conflict == null) return;
-      try {
-         IRenderer renderer =
-               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, conflict.getDestArtifact());
-         showDiff(conflict, renderer.compare(getStartArtifact(conflict), conflict.getDestArtifact(), "", null, null,
-               false));
-      } catch (Exception ex) {
-         OSEELog.logException(MergeUtility.class, ex, false);
-      }
-   }
-
-   private static Artifact getStartArtifact(Conflict conflict) {
-      try {
+         if (conflict.getSourceBranch() == null) return null;
          TransactionId id = TransactionIdManager.getInstance().getStartEndPoint(conflict.getSourceBranch()).getKey();
          return ArtifactPersistenceManager.getInstance().getArtifact(conflict.getArtifact().getGuid(), id);
 
@@ -131,12 +101,11 @@ public class MergeUtility {
       return null;
    }
 
-   private static void showDiff(Conflict conflict, String diffFile) {
+   private static void showDiff(Artifact artifact, String diffFile) {
       try {
-         IRenderer renderer =
-               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, conflict.getDestArtifact());
+         IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, artifact);
          if (renderer instanceof FileSystemRenderer) {
-            ((FileSystemRenderer) renderer).getAssociatedProgram(conflict.getArtifact()).execute(diffFile);
+            ((FileSystemRenderer) renderer).getAssociatedProgram(artifact).execute(diffFile);
          }
       } catch (Exception ex) {
          OSEELog.logException(MergeUtility.class, ex, false);

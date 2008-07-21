@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.sql.SQLException;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -37,8 +35,8 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
     * @param sourceBranch
     * @param destBranch
     */
-   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
-      super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, sourceBranch, destBranch);
+   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
+      super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.artTypeId = artTypeId;
       this.sourceModType = sourceModType;
       this.destModType = destModType;
@@ -49,8 +47,8 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
     */
    @Override
    public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws SQLException, OseeCoreException {
-      return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType,
-            ChangeType.CONFLICTING, mergeBranch, sourceBranch, destBranch, sourceModType, destModType, artTypeId);
+      return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, mergeBranch, sourceBranch,
+            destBranch, sourceModType, destModType, artTypeId);
    }
 
 }

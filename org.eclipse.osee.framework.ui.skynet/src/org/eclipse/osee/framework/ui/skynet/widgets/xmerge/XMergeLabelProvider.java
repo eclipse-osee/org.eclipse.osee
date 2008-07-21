@@ -28,7 +28,8 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       MODIFIED(3, "Modified"),
       CHANGED(4, "Artifact Changed After Resolution"),
       RESOLVED(5, "Resolved"),
-      INFORMATIONAL(6, "Informational");
+      INFORMATIONAL(6, "Informational"),
+      COMMITTED(7, "Committed");
 
       private final int value;
       private final String text;
@@ -83,6 +84,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             if (conflict.statusUntouched()) return ConflictState.UNTOUCHED.getText();
             if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
             if (conflict.statusInformational()) return ConflictState.INFORMATIONAL.getText();
+            if (conflict.statusCommitted()) return ConflictState.COMMITTED.getText();
          } else if (aCol == MergeXViewerFactory.Artifact_Name) {
             return conflict.getArtifactName();
          } else if (aCol == MergeXViewerFactory.Change_Item) {
@@ -139,7 +141,8 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             } else if (dCol == MergeXViewerFactory.Conflict_Resolved) {
                if (conflict.statusUntouched()) return null;
                if (conflict.statusEdited()) return SkynetGuiPlugin.getInstance().getImage(EDITED_IMAGE);
-               if (conflict.statusResolved()) return SkynetGuiPlugin.getInstance().getImage(MARKED_MERGED_IMAGE);
+               if (conflict.statusResolved() || conflict.statusCommitted()) return SkynetGuiPlugin.getInstance().getImage(
+                     MARKED_MERGED_IMAGE);
                if (conflict.statusOutOfDate()) return SkynetGuiPlugin.getInstance().getImage(OUT_OF_DATE_IMAGE);
                if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(NOT_RESOLVABLE_IMAGE);
                if (conflict.statusInformational()) return SkynetGuiPlugin.getInstance().getImage(INFORMATION_IMAGE);
