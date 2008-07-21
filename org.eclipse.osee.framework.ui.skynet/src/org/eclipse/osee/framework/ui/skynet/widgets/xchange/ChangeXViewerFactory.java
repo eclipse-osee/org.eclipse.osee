@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -71,8 +70,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
             idToColumn.put(xCol.getId(), xCol);
          }
          try {
-            // TODO change from getcommonbranch to getBranch(xViewer) when fixed
-            for (AttributeType attributeType : AttributeTypeManager.getTypes(BranchPersistenceManager.getCommonBranch())) {
+            for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
                XViewerAttributeFromChangeColumn newCol =
                      new XViewerAttributeFromChangeColumn(null, attributeType.getName(), attributeType.getName(), 75,
                            75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType));

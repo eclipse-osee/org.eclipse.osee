@@ -101,13 +101,17 @@ public class AttributeTypeManager {
    }
 
    /**
-    * use attribute validitiy to get attributes by branch instead
+    * use attribute validity to get attributes by branch instead
     * 
     * @return Returns all of the descriptors.
     * @throws Exception
     */
    @Deprecated
    public static Collection<AttributeType> getTypes(Branch branch) throws SQLException {
+      return getTypes();
+   }
+
+   public static Collection<AttributeType> getTypes() throws SQLException {
       ensurePopulated();
       return instance.idToTypeMap.values();
    }
