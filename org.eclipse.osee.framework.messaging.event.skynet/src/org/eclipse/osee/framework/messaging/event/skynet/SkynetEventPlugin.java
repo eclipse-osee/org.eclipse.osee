@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class SkynetEventPlugin extends OseeUiActivator {
+public class SkynetEventPlugin extends OseeActivator {
 
    private static SkynetEventPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.messaging.event.skynet";

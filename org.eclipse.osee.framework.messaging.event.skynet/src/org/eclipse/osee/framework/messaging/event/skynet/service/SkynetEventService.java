@@ -19,10 +19,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
+
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jini.JiniClassServer;
 import org.eclipse.osee.framework.jini.service.core.JiniService;
@@ -32,9 +34,9 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventListener;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventService;
 import org.eclipse.osee.framework.messaging.event.skynet.SkynetEventPlugin;
 import org.eclipse.osee.framework.messaging.event.skynet.filter.IEventFilter;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.server.BundleResourceFinder;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
 /**
  * Skynet Event Service handles event distribution to provide network assisted cache consistency for Skynet.
@@ -77,7 +79,7 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
       String serialNumber = "0.0";
       String description = "Skynet Event Service - Skynet Cache Network Manager";
 
-      OseeUiActivator plugin = SkynetEventPlugin.getInstance();
+      OseeActivator plugin = SkynetEventPlugin.getInstance();
       if (plugin != null) {
          dictionary = plugin.getBundle().getHeaders();
       }
