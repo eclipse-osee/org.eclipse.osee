@@ -247,9 +247,6 @@
 		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
-		<Index id="OSEE_REL_LINK_TYPE_TN_IDX" type="UNIQUE">
-			<AppliesTo id="TYPE_NAME"/>
-		</Index>
 	</Table>
 	
 	<Table name="OSEE_DEFINE_VALID_ATTRIBUTES" schema="OSEE">
