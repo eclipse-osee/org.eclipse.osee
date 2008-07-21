@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.search.engine.test;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
+import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 import org.osgi.framework.Bundle;
 
 /**
@@ -129,13 +128,13 @@ public class TestTagProcessor extends TestCase {
    }
 
    public void testTagWordFile() throws IOException {
-      String testFile =
-            "C:\\UserData\\osgiWorkspace\\org.eclipse.osee.framework.search.engine.test\\data\\srsMasterTemplate.299CU.xml";
+      // This is here to be able to look at tags generated from xml file source
+      Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
+      URL url = bundle.getEntry("data/test3.data.xml");
       InputStream dataStream = null;
       try {
-         dataStream = new BufferedInputStream(new FileInputStream(new File(testFile)));
-         Scanner sourceScanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
-         TagProcessor.collectFromScanner(sourceScanner, new ITagCollector() {
+         dataStream = new XmlTextInputStream(new BufferedInputStream(url.openStream()));
+         TagProcessor.collectFromInputStream(dataStream, new ITagCollector() {
             @Override
             public void addTag(String word, Long codedTag) {
                System.out.println("Word: [" + word + "] Tag: [" + codedTag + "]");

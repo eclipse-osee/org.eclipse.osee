@@ -42,7 +42,7 @@ public final class AttributeSearch implements ITagCollector {
       try {
          TagProcessor.collectFromString(searchString, this);
          Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(options, tags);
-         if (toReturn.isEmpty() != true) {
+         if (locators.isEmpty() != true) {
             toReturn = AttributeDataStore.getInstance().getAttributes(branchId, locators);
          }
       } finally {

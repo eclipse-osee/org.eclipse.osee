@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
 import org.eclipse.osee.framework.search.engine.Options;
 

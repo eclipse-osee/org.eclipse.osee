@@ -13,14 +13,13 @@ package org.eclipse.osee.framework.search.engine.tagger;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
-import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
+import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 
 /**
  * @author Roberto E. Escobar
@@ -36,23 +35,24 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
             int index = 0;
             int searchStrSize = value.length();
 
-            inputStream = new BufferedInputStream(getValueAsStream(attributeData));
-            Scanner scanner = WordsUtil.inputStreamToXmlTextScanner(inputStream);
-            while (scanner.hasNext()) {
-               String source = scanner.next().toLowerCase();
-               for (int i = 0; i < source.length(); i++) {
-                  char curr = source.charAt(i);
-                  char toCheck = value.charAt(index);
-                  if (curr == toCheck) {
-                     index++;
-                     if (index >= searchStrSize) {
-                        toReturn = true;
-                        break;
-                     }
-                  } else {
-                     index = 0;
+            inputStream = new XmlTextInputStream(new BufferedInputStream(getValueAsStream(attributeData)));
+            while (inputStream.available() > 0) {
+               inputStream.read();
+               //               String source = scanner.next().toLowerCase();
+               //               for (int i = 0; i < source.length(); i++) {
+               //               char curr = source.charAt(i);
+               char curr = (char) inputStream.read();
+               char toCheck = value.charAt(index);
+               if (curr == toCheck) {
+                  index++;
+                  if (index >= searchStrSize) {
+                     toReturn = true;
+                     break;
                   }
+               } else {
+                  index = 0;
                }
+               //               }
             }
          } catch (Exception ex) {
             OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
@@ -73,7 +73,7 @@ public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
       InputStream inputStream = null;
       try {
          inputStream = new BufferedInputStream(getValueAsStream(attributeData));
-         TagProcessor.collectFromScanner(WordsUtil.inputStreamToXmlTextScanner(inputStream), collector);
+         TagProcessor.collectFromInputStream(new XmlTextInputStream(inputStream), collector);
       } finally {
          if (inputStream != null) {
             inputStream.close();

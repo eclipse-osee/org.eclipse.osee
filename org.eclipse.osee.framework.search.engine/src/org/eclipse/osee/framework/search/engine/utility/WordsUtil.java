@@ -38,7 +38,7 @@ public class WordsUtil {
    public static final String EMPTY_STRING = "";
    private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch"};
 
-   private static final char[] PUNCTUATION =
+   private static char[] PUNCTUATION =
          new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
                '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~'};
 
@@ -108,6 +108,17 @@ public class WordsUtil {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
+   public static int countPuntuation(String original) {
+      int toReturn = 0;
+      for (int index = 0; index < original.length(); index++) {
+         int pos = Arrays.binarySearch(PUNCTUATION, original.charAt(index));
+         if (pos > 0) {
+            toReturn++;
+         }
+      }
+      return toReturn;
+   }
+
    public static String toSingular(String word) {
       word = word.toLowerCase();
       String toReturn = dictionary.getProperty(word);
@@ -141,7 +152,7 @@ public class WordsUtil {
       return scanner.useDelimiter(pattern);
    }
 
-   private static boolean isWordML(InputStream inputStream) {
+   public static boolean isWordML(InputStream inputStream) {
       boolean toReturn = false;
       try {
          inputStream.mark(250);
@@ -156,7 +167,7 @@ public class WordsUtil {
          }
          if (index > 0) {
             String header = new String(buffer).toLowerCase();
-            if (header.contains("word.document") || header.contains("worddocument")) {
+            if (header.contains("word.document") || header.contains("worddocument") || header.contains("<w:")) {
                toReturn = true;
             }
          }

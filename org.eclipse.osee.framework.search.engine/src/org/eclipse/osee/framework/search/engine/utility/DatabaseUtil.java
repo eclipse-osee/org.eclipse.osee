@@ -32,7 +32,7 @@ public class DatabaseUtil {
          }
       } finally {
          DbUtil.close(chStmt);
-         if (connection != null && connection.isClosed() != true) {
+         if (connection != null) {
             connection.close();
          }
       }

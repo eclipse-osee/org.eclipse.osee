@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
+import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 import org.osgi.framework.Bundle;
 
 /**
@@ -174,7 +175,54 @@ public class TestWordsUtil extends TestCase {
       return toReturn;
    }
 
-   public void testXmlMarkupRemoval() throws IOException {
+   //   public void testXmlMarkupRemovalScanner() throws IOException {
+   //      Map<String, TestData<URL, URL>> testMap = getXmlMarkupRemovalData();
+   //      for (String key : testMap.keySet()) {
+   //         TestData<URL, URL> testData = testMap.get(key);
+   //
+   //         InputStream dataStream = null;
+   //         InputStream expectedStream = null;
+   //         Scanner scanner = null;
+   //         try {
+   //            dataStream = new BufferedInputStream(testData.data.openStream());
+   //            expectedStream = new BufferedInputStream(testData.expected.openStream());
+   //
+   //            StringBuilder builder = new StringBuilder();
+   //            scanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+   //            while (scanner.hasNext()) {
+   //               String value = scanner.next();
+   //               if (value.length() > 0) {
+   //                  builder.append(value);
+   //                  if (scanner.hasNext()) {
+   //                     builder.append(" ");
+   //                  }
+   //               }
+   //            }
+   //
+   //            String actual = builder.toString();
+   //            String expected = Lib.inputStreamToString(expectedStream);
+   //            assertEquals(String.format("Original: [%s] ", key), expected, actual);
+   //         } finally {
+   //            if (scanner != null) {
+   //               scanner.close();
+   //            }
+   //            if (dataStream != null) {
+   //               try {
+   //                  dataStream.close();
+   //               } catch (IOException ex) {
+   //               }
+   //            }
+   //            if (expectedStream != null) {
+   //               try {
+   //                  expectedStream.close();
+   //               } catch (IOException ex) {
+   //               }
+   //            }
+   //         }
+   //      }
+   //   }
+
+   public void testXmlMarkupRemovalStream() throws IOException {
       Map<String, TestData<URL, URL>> testMap = getXmlMarkupRemovalData();
       for (String key : testMap.keySet()) {
          TestData<URL, URL> testData = testMap.get(key);
@@ -183,11 +231,11 @@ public class TestWordsUtil extends TestCase {
          InputStream expectedStream = null;
          Scanner scanner = null;
          try {
-            dataStream = new BufferedInputStream(testData.data.openStream());
+            dataStream = new XmlTextInputStream(new BufferedInputStream(testData.data.openStream()));
             expectedStream = new BufferedInputStream(testData.expected.openStream());
 
             StringBuilder builder = new StringBuilder();
-            scanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+            scanner = new Scanner(dataStream, "UTF-8");
             while (scanner.hasNext()) {
                String value = scanner.next();
                if (value.length() > 0) {
@@ -220,6 +268,7 @@ public class TestWordsUtil extends TestCase {
          }
       }
    }
+
    private class TestData<K, V> {
       private K data;
       private V expected;

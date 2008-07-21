@@ -32,44 +32,13 @@ public class XmlTextInputStream extends BufferedInputStream {
       this(new ByteArrayInputStream(input.getBytes("UTF-8")));
    }
 
-   private boolean isWordML() {
-      boolean toReturn = false;
-      try {
-         mark(1000);
-         byte[] buffer = new byte[1042];
-         int index = 0;
-         for (; index < buffer.length; index++) {
-            if (available() > 0) {
-               buffer[index] = (byte) readFromOriginalBuffer();
-            } else {
-               break;
-            }
-         }
-         if (index > 0) {
-            String header = new String(buffer).toLowerCase();
-            if (header.contains("word.document") || header.contains("worddocument")) {
-               toReturn = true;
-            }
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      } finally {
-         try {
-            reset();
-         } catch (IOException ex) {
-            // Do Nothing
-         }
-      }
-      return toReturn;
-   }
-
    /* (non-Javadoc)
     * @see java.io.BufferedInputStream#read()
     */
    @Override
    public synchronized int read() throws IOException {
       if (readHelper == null) {
-         readHelper = isWordML() ? new WordMlReadHelper() : new XmlReadHelper();
+         readHelper = WordsUtil.isWordML(in) ? new WordMlReadHelper() : new XmlReadHelper();
       }
       return readHelper.process(super.read());
    }
@@ -116,18 +85,26 @@ public class XmlTextInputStream extends BufferedInputStream {
    }
 
    private final class XmlReadHelper implements IReadHelper {
-      private boolean partOfTag = false;
+      private boolean partOfTag;
+      private boolean isCarriageReturn;
 
       public XmlReadHelper() {
          this.partOfTag = false;
+         this.isCarriageReturn = false;
       }
 
       public int process(int value) throws IOException {
          if ((char) value == '<') {
             this.partOfTag = true;
          }
-         while (this.partOfTag && available() > 0) {
+
+         while ((this.partOfTag || this.isCarriageReturn) && available() > 0) {
             value = readFromOriginalBuffer();
+            if (value == '\r' || value == '\n') {
+               this.isCarriageReturn = true;
+            } else {
+               this.isCarriageReturn = false;
+            }
             if ((char) value == '>') {
                this.partOfTag = false;
                value = available() > 0 ? ' ' : -1;
@@ -140,12 +117,14 @@ public class XmlTextInputStream extends BufferedInputStream {
    private final class WordMlReadHelper implements IReadHelper {
       private boolean partOfTag;
       private boolean collect;
+      private boolean isCarriageReturn;
       private StringBuilder buffer;
 
       public WordMlReadHelper() {
          this.buffer = new StringBuilder();
          this.partOfTag = false;
          this.collect = false;
+         this.isCarriageReturn = false;
       }
 
       public int process(int value) throws IOException {
@@ -153,13 +132,18 @@ public class XmlTextInputStream extends BufferedInputStream {
             partOfTag = true;
             buffer.append((char) value);
          }
-         while ((partOfTag || collect != true) && available() > 0) {
+         while ((partOfTag || collect != true || isCarriageReturn) && available() > 0) {
             value = readFromOriginalBuffer();
             if ((char) value == '<') {
                partOfTag = true;
             }
             if (partOfTag) {
                buffer.append((char) value);
+            }
+            if (value == '\r' || value == '\n') {
+               this.isCarriageReturn = true;
+            } else {
+               this.isCarriageReturn = false;
             }
             if ((char) value == '>') {
                partOfTag = false;

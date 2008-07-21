@@ -59,11 +59,11 @@ public class TagProcessor {
 
    private static void processWord(String original, ITagCollector tagCollector) {
       boolean originalStored = false;
-      if (Strings.isValid(original)) {
+      if (Strings.isValid(original) && (original.length() >= 2 || 0 == WordsUtil.countPuntuation(original))) {
          original = original.toLowerCase();
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-            if (target.equals(original) || target.length() == 0) {
+            if (target.equals(original)) {
                originalStored = true;
             }
             TagEncoder.encode(target, tagCollector);
