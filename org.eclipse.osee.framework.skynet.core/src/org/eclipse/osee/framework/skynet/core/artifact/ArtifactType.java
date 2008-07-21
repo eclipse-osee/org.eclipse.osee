@@ -286,19 +286,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
-    * @throws SQLException
-    */
-   public void delete() throws SQLException {
-      // delete existing artifact of this type
-      // for (Artifact artifact : artifactManager.getArtifactsFromSubtypeName(name,
-      // transactionId.getBranch())) {
-      // artifact.delete();
-      // }
-      // then delete the artifact type itself
-      // OSEE_DEFINE_ARTIFACT_TYPE needs a MODIFICATION_ID column to support deleting artifact types
-   }
-
-   /**
     * Only store the identifying data since a manager controls this object.
     * 
     * @param stream
