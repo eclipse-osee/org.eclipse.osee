@@ -12,12 +12,15 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FILE;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.JiniPlugin;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -27,6 +30,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,7 +63,8 @@ public class OSEEConfig {
             file = getFileFromExtensionPoint();
          }
          if (file == null) {
-            throw new NullPointerException("Unable to find a valid config file.");
+            OseeLog.log(OSEEConfig.class, Level.SEVERE, "Unable to find a valid config file.");
+            return;
          }
 
          logger.log(Level.INFO, "Using config file: " + file.getAbsolutePath());
