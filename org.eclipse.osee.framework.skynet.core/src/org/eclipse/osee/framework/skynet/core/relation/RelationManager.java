@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -334,22 +335,43 @@ public class RelationManager {
     * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
     * @throws SQLException
     */
-   public static void persistRelationsFor(Artifact artifact, RelationType relationType) throws SQLException {
-      List<RelationLink> selectedRelations;
-      if (relationType == null) {
-         selectedRelations = artifactToRelations.get(artifact);
-      } else {
-         selectedRelations = relationsByType.get(artifact, relationType);
-      }
+   public static void persistRelationsFor(Artifact artifact,
+			RelationType relationType) throws SQLException {
+		List<RelationLink> selectedRelations;
+		if (relationType == null) {
+			selectedRelations = artifactToRelations.get(artifact);
+		} else {
+			selectedRelations = relationsByType.get(artifact, relationType);
+		}
 
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (relation.isDirty()) {
-               RelationPersistenceManager.makePersistent(relation);
-            }
-         }
-      }
-   }
+		if (selectedRelations != null) {
+			for (RelationLink relation : selectedRelations) {
+				if (relation.isDirty()) {
+					RelationPersistenceManager.makePersistent(relation);
+
+					try {
+						Artifact artifactOnOtherSide = relation
+								.getArtifactOnOtherSide(artifact);
+						List<RelationLink> otherSideRelations = relationsByType.get(artifactOnOtherSide, relation.getRelationType());
+						for(int i = 0; i < otherSideRelations.size(); i++){
+							if(relation.equals(otherSideRelations.get(i))){
+								if(i+1 < otherSideRelations.size()){
+									RelationLink nextRelation = otherSideRelations.get(i+1);
+									if(nextRelation.isDirty()){
+										RelationPersistenceManager.makePersistent(nextRelation);
+									}
+								}
+							}
+						}
+					} catch (ArtifactDoesNotExist ex) {
+						OseeLog.log(RelationManager.class, Level.SEVERE, 
+								String.format("Unable to to persist other side relation order because the artifact on the other side of [%s, %s] doesn't exist. ", artifact.toString(), relation.toString()),ex);
+					}
+
+				}
+			}
+		}
+	}
 
    public static List<RelationLink> getRelationsAll(Artifact artifact) {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
