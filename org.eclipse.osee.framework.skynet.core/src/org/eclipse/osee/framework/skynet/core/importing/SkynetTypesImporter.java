@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -45,7 +45,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class SkynetTypesImporter implements RowProcessor {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTypesImporter.class);
    private static final Pattern nonJavaCharP = Pattern.compile("[^a-zA-Z_0-9]");
    private String upCaseEnums = "";
    private String normalEnums = "";
@@ -116,7 +115,7 @@ public class SkynetTypesImporter implements RowProcessor {
          }
 
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -164,7 +163,7 @@ public class SkynetTypesImporter implements RowProcessor {
                relationValidity.addValidityConstraints(row);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -193,7 +192,6 @@ public class SkynetTypesImporter implements RowProcessor {
       int minOccurrence = getQuantity(row[7]);
       int maxOccurrence = getQuantity(row[8]);
       String tipText = row[9];
-      
 
       AttributeTypeManager.createType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
             defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);

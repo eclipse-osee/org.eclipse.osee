@@ -70,7 +70,7 @@ public class PluginCoreActivator extends OseeActivator {
                bundle.start();
             }
          } catch (BundleException ex) {
-            OseeLog.log(OseeActivator.class.getName(), Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(OseeActivator.class, Level.SEVERE, ex);
          }
       }
    }

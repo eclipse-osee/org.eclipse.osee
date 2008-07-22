@@ -113,7 +113,7 @@ public class UsageLog {
                log.writeOutLog();
             } catch (SQLException ex) {
                running = false;
-               OseeLog.log(SkynetActivator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
       }
