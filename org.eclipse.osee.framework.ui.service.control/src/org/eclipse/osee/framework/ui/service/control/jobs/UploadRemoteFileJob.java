@@ -113,7 +113,7 @@ public class UploadRemoteFileJob extends Job {
                   throw new Exception("Unable to create remote path.");
                }
             } else {
-               throw new Exception("Unable to find remote path.");
+               throw new Exception("Unable to find remote path - user selected not to create it.");
             }
 
          } finally {

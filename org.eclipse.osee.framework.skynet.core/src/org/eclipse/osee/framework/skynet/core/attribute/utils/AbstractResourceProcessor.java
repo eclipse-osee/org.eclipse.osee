@@ -32,24 +32,24 @@ public abstract class AbstractResourceProcessor {
    protected abstract URL getStorageURL(DataStore dataStore) throws OseeDataStoreException;
 
    public void saveResource(DataStore dataStore) throws OseeDataStoreException {
+      InputStream inputStream = null;
       try {
-         InputStream inputStream = null;
-         try {
-            URL url = getStorageURL(dataStore);
-            inputStream = dataStore.getInputStream();
-            URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
-            if (uri != null) {
-               dataStore.setLocator(uri.toASCIIString());
-            }
-         } catch (Exception ex) {
-            throw new OseeDataStoreException("Error saving resource", ex);
-         } finally {
-            if (inputStream != null) {
-               inputStream.close();
-            }
+         URL url = getStorageURL(dataStore);
+         inputStream = dataStore.getInputStream();
+         URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
+         if (uri != null) {
+            dataStore.setLocator(uri.toASCIIString());
          }
       } catch (Exception ex) {
          throw new OseeDataStoreException("Error saving resource", ex);
+      } finally {
+         if (inputStream != null) {
+            try {
+               inputStream.close();
+            } catch (Exception ex) {
+               throw new OseeDataStoreException("Error closing stream during save resource", ex);
+            }
+         }
       }
    }
 
