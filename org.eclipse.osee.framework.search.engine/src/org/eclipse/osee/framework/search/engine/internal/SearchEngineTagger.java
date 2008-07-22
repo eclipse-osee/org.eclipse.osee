@@ -20,7 +20,9 @@ import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
+import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -43,13 +45,21 @@ public class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagAttribute(java.lang.String, int, long)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagAttribute(org.eclipse.osee.framework.search.engine.ITagDoneListener, long)
+    */
+   @Override
+   public void tagAttribute(ITagListener listener, long gammaId) {
+      FutureTask<Object> futureTask = new FutureTaggingTask(new TaggerRunnable(listener, gammaId));
+      this.futureTasks.add(futureTask);
+      this.executor.submit(futureTask);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchTagger#tagAttribute(long)
     */
    @Override
    public void tagAttribute(long gammaId) {
-      FutureTask<Object> futureTask = new FutureTaggingTask(new TaggerRunnable(gammaId));
-      this.futureTasks.add(futureTask);
-      this.executor.submit(futureTask);
+      tagAttribute(null, gammaId);
    }
 
    /* (non-Javadoc)
@@ -148,5 +158,13 @@ public class SearchEngineTagger implements ISearchEngineTagger {
          futureTasks.remove(this);
          statistics.addEntry(runnable.getGammaId(), runnable.getTotalTags(), waitTime, runnable.getProcessingTime());
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#deleteTags(int)
+    */
+   @Override
+   public int deleteTags(int joinQueryId) throws Exception {
+      return SearchTagDataStore.deleteTags(joinQueryId);
    }
 }

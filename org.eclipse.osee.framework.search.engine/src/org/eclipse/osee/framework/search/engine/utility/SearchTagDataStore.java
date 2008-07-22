@@ -37,6 +37,9 @@ public class SearchTagDataStore {
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
+   private static final String DELETE_SEARCH_TAGS_BY_JOIN =
+         "delete from osee_search_tags ost1 where 1 = (select count(1) from osee_join_transaction ojt1 where ojt1.gamma_id = ost1.gamma_id AND ojt1.query_id = ?)";
+
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
    private static final String SELECT_SEARCH_TAGS =
@@ -130,5 +133,21 @@ public class SearchTagDataStore {
          }, SQL3DataType.BIGINT, codedTag);
       }
       return toReturn;
+   }
+
+   public static int deleteTags(int joinQueryId) throws SQLException {
+      Connection connection = null;
+      int updated = -1;
+      try {
+         connection = OseeDbConnection.getConnection();
+         updated =
+               ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, SQL3DataType.INTEGER,
+                     joinQueryId);
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
+      }
+      return updated;
    }
 }

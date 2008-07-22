@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
@@ -46,8 +48,34 @@ public class TestSearchDataStore extends TestCase {
       return tags;
    }
 
-   public void testSearchTagDataStore() {
+   public void testSearchTagDataStore() throws Exception {
       List<SearchTag> testData = getTestSearchTagDataStoreData();
+      int totalTags = 0;
+      for (SearchTag searchTag : testData) {
+         totalTags += searchTag.size();
+      }
+
+      int updated = SearchTagDataStore.storeTags(testData);
+      assertEquals(totalTags, updated);
+
+      for (SearchTag tag : testData) {
+         for (Long codedTag : tag.getTags()) {
+            Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(new Options(), codedTag);
+            assertEquals(locators.size(), 1);
+            IAttributeLocator locator = locators.iterator().next();
+            assertEquals(locator.getAttrId(), tag.getAttrId());
+            assertEquals(locator.getGammaId(), tag.getGammaId());
+         }
+      }
+
+      List<IAttributeLocator> locators = Collections.castAll(testData);
+      updated = SearchTagDataStore.deleteTags(locators);
+      assertEquals(totalTags, updated);
+   }
+
+   public void testSearchTagDataStoreDeleteByQuery() throws Exception {
+      List<SearchTag> testData = getTestSearchTagDataStoreData();
+      TransactionJoinQuery joinQuery = null;
       try {
          int totalTags = 0;
          for (SearchTag searchTag : testData) {
@@ -66,13 +94,18 @@ public class TestSearchDataStore extends TestCase {
                assertEquals(locator.getGammaId(), tag.getGammaId());
             }
          }
-
-         List<IAttributeLocator> locators = Collections.castAll(testData);
-         updated = SearchTagDataStore.deleteTags(locators);
+         joinQuery = JoinUtility.createTransactionJoinQuery();
+         for (SearchTag tag : testData) {
+            joinQuery.add((int) tag.getGammaId(), -1);
+         }
+         joinQuery.store();
+         updated = SearchTagDataStore.deleteTags(joinQuery.getQueryId());
          assertEquals(totalTags, updated);
 
-      } catch (Exception ex) {
-         assertTrue(ex.getLocalizedMessage(), false);
+      } finally {
+         if (joinQuery != null) {
+            joinQuery.delete();
+         }
       }
    }
 }

@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
+import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
@@ -30,8 +31,10 @@ class TaggerRunnable implements Runnable, ITagCollector {
    private long gammaId;
    private int tagCount;
    private long elapsedTime;
+   private ITagListener listener;
 
-   protected TaggerRunnable(long gammaId) {
+   protected TaggerRunnable(ITagListener listener, long gammaId) {
+      this.listener = listener;
       this.searchTag = null;
       this.gammaId = gammaId;
       this.tagCount = 0;
@@ -58,6 +61,9 @@ class TaggerRunnable implements Runnable, ITagCollector {
          if (searchTag != null) {
             searchTag.clear();
             searchTag = null;
+         }
+         if (listener != null) {
+            listener.onComplete(getGammaId());
          }
       }
    }

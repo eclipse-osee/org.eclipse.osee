@@ -84,12 +84,13 @@ public abstract class BaseCmdWorker implements Runnable {
    }
 
    protected String timeToString(long value) {
+      long leftOverMs = value % 1000;
       long seconds = value / 1000;
       long leftOverSeconds = seconds % 60;
       long minutes = seconds / 60;
       long leftOverMinutes = minutes % 60;
       long hours = minutes / 60;
-      return String.format("%d:%02d:%02d", hours, leftOverMinutes, leftOverSeconds);
+      return String.format("%d:%02d:%02d.%03d", hours, leftOverMinutes, leftOverSeconds, leftOverMs);
    }
 
    protected abstract void doWork(long startTime) throws Exception;

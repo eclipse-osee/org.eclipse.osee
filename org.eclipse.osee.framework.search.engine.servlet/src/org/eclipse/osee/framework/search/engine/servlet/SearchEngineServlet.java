@@ -101,4 +101,30 @@ public class SearchEngineServlet extends HttpServlet {
          response.getWriter().close();
       }
    }
+
+   /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+   @Override
+   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      try {
+         String queryId = request.getParameter("queryId");
+         int value = Activator.getInstance().getSearchTagger().deleteTags(Integer.parseInt(queryId));
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
+         if (value > 0) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+         }
+      } catch (Exception ex) {
+         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+               request.toString()), ex);
+         response.getWriter().write(Lib.exceptionToString(ex));
+      } finally {
+         response.getWriter().flush();
+         response.getWriter().close();
+      }
+   }
 }

@@ -63,7 +63,7 @@ public class TagProcessor {
          original = original.toLowerCase();
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-            if (target.equals(original)) {
+            if (toEncode.equals(original)) {
                originalStored = true;
             }
             TagEncoder.encode(target, tagCollector);

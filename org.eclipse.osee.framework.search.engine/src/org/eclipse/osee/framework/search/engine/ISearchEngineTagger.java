@@ -25,6 +25,14 @@ public interface ISearchEngineTagger {
    public void tagAttribute(long gammaId);
 
    /**
+    * Create tags for attribute with gamma id. Notifies listener once tagging is complete.
+    * 
+    * @param listener object listening for tag events
+    * @param gammaId attribute to tag
+    */
+   public void tagAttribute(ITagListener listener, long gammaId);
+
+   /**
     * Create tags for attributes specified in xml stream. <b>
     * 
     * <pre>
@@ -62,4 +70,11 @@ public interface ISearchEngineTagger {
     * Clear Statistics
     */
    public void clearStatistics();
+
+   /**
+    * Delete tags specified by join query id
+    * 
+    * @param parseInt
+    */
+   public int deleteTags(int joinQueryId) throws Exception;
 }
