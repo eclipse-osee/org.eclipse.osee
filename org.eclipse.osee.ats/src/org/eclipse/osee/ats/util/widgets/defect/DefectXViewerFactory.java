@@ -23,11 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class DefectXViewerFactory extends SkynetXViewerFactory {
 
    private XViewer xViewer;
+   private static String NAMESPACE = "osee.ats.DefectXViewer";
 
-   /**
-    * 
-    */
    public DefectXViewerFactory() {
+      super(NAMESPACE);
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {
@@ -35,7 +34,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       int x = 0;
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();

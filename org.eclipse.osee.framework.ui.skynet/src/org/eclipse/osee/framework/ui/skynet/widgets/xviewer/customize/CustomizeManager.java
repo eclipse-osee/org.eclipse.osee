@@ -46,9 +46,10 @@ public class CustomizeManager {
       this.xViewer = xViewer;
       this.xViewerFactory = xViewerFactory;
       // Set customize to be user default, if selected, or table default
-      currentCustData = xViewerFactory.getXViewerCustomizations(xViewer).getUserDefaultCustData();
+      currentCustData = xViewerFactory.getXViewerCustomizations().getUserDefaultCustData();
       if (currentCustData == null) {
          currentCustData = getTableDefaultCustData();
+         currentCustData.setNameSpace(xViewerFactory.getNamespace());
       }
       xViewerFactory.getXViewerCustomMenu().init(xViewer);
    }
@@ -76,6 +77,7 @@ public class CustomizeManager {
 
    public void addColumns() {
       for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
+         xCol.setXViewer(xViewer);
          TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
          column.setMoveable(true);
          column.setData(xCol);
@@ -180,7 +182,7 @@ public class CustomizeManager {
     * @return the defaultCustData
     */
    public CustomizeData getTableDefaultCustData() {
-      CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData(xViewer);
+      CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData();
       if (custData.getName() == null || this.currentCustData.getName().equals("")) {
          custData.setName(TABLE_DEFAULT_LABEL);
       }
@@ -200,7 +202,7 @@ public class CustomizeManager {
    }
 
    public boolean isCustomizationUserDefault(CustomizeData custData) {
-      return xViewerFactory.getXViewerCustomizations(xViewer).isCustomizationUserDefault(custData);
+      return xViewerFactory.getXViewerCustomizations().isCustomizationUserDefault(custData);
    }
 
    public List<XViewerColumn> getSortXCols() {
@@ -213,11 +215,11 @@ public class CustomizeManager {
    }
 
    public List<CustomizeData> getSavedCustDatas() {
-      return xViewerFactory.getXViewerCustomizations(xViewer).getSavedCustDatas();
+      return xViewerFactory.getXViewerCustomizations().getSavedCustDatas();
    }
 
    public void saveCustomization(CustomizeData custData) throws Exception {
-      xViewerFactory.getXViewerCustomizations(xViewer).saveCustomization(custData);
+      xViewerFactory.getXViewerCustomizations().saveCustomization(custData);
    }
 
    /**
@@ -231,11 +233,11 @@ public class CustomizeManager {
    }
 
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
-      xViewerFactory.getXViewerCustomizations(xViewer).setUserDefaultCustData(newCustData, set);
+      xViewerFactory.getXViewerCustomizations().setUserDefaultCustData(newCustData, set);
    }
 
    public void deleteCustomization(CustomizeData custData) throws Exception {
-      xViewerFactory.getXViewerCustomizations(xViewer).deleteCustomization(custData);
+      xViewerFactory.getXViewerCustomizations().deleteCustomization(custData);
 
    }
 

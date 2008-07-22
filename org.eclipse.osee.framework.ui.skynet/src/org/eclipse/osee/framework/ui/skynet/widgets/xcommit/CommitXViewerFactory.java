@@ -22,25 +22,22 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class CommitXViewerFactory extends SkynetXViewerFactory {
 
-   private XViewer xViewer;
-
    /**
     * 
     */
    public CommitXViewerFactory() {
+      super("osee.skynet.gui.CommitXViewer");
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {
-      this.xViewer = xViewer;
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       for (CommitColumn atsXCol : CommitColumn.values()) {
          XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         newCol.setXViewer(xViewer);
          cols.add(newCol);
       }
       custData.getColumnData().setColumns(cols);

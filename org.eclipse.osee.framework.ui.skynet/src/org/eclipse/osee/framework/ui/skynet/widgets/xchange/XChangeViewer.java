@@ -120,7 +120,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
-      new ChangeDragAndDrop(tree, ChangeXViewer.NAMESPACE);
+      new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
    }
 
    public void createTaskActionBar(Composite parent) {

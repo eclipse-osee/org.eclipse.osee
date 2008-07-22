@@ -52,8 +52,10 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public static List<XViewerColumn> columns;
    public static Map<String, XViewerColumn> idToColumn = null;
+   public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
    public ChangeXViewerFactory() {
+      super(NAMESPACE);
       loadColumnData();
    }
 
@@ -83,14 +85,9 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : columns) {
-         xCol.setXViewer(xViewer);
-         cols.add(xCol);
-      }
-      custData.getColumnData().setColumns(cols);
+      custData.getColumnData().setColumns(columns);
       return custData;
    }
 

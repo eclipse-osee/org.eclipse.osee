@@ -11,48 +11,35 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizeDefaults;
 
 /**
  * @author Donald G. Dunne
  */
 public class SkynetXViewerFactory extends XViewerFactory {
 
-   private IXViewerCustomizeDefaults xViewerCustDefaults;
-   private IXViewerCustomizations xViewerCustomizations;
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizeDefaults()
+   /**
+    * @param namespace
     */
-   public IXViewerCustomizeDefaults getXViewerCustomizeDefaults() {
-      if (ConnectionHandler.isConnected()) {
-         if (xViewerCustDefaults == null) {
-            xViewerCustDefaults = new SkynetCustomizeDefaults(SkynetAuthentication.getUser());
-         }
-         return xViewerCustDefaults;
-      }
-      return new XViewerCustomizeDefaults();
+   public SkynetXViewerFactory(String namespace) {
+      super(namespace);
    }
+
+   private IXViewerCustomizations xViewerCustomizations;
 
    /*
     * (non-Javadoc)
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizations()
     */
-   public IXViewerCustomizations getXViewerCustomizations(XViewer xViewer) {
+   public IXViewerCustomizations getXViewerCustomizations() {
       try {
          if (ConnectionHandler.isConnected()) {
             if (xViewerCustomizations == null) {
-               xViewerCustomizations = new SkynetCustomizations(xViewer, getXViewerCustomizeDefaults());
+               xViewerCustomizations = new SkynetCustomizations(this);
             }
             return xViewerCustomizations;
          }
@@ -62,4 +49,5 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
       return new XViewerCustomizations();
    }
+
 }

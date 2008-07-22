@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -51,7 +52,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.internal.Workbench;
 
 public class XViewerCustomizeDialog extends MessageDialog {
    private String title = "Customize Table";
@@ -82,7 +82,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       super(parentShell, "", null, "", MessageDialog.NONE, buttons, defaultButton);
       this.currentCustomizeData = currentCustomizeData;
       this.xViewer = xViewer;
-      inWorkbench = Workbench.getInstance() != null && Workbench.getInstance().isRunning();
+      inWorkbench = Platform.isRunning();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -617,7 +617,10 @@ public class XViewerCustomizeDialog extends MessageDialog {
       CustomizeData custData = getCustTableSelection();
       if (custData.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custData.getName().equals(
             CustomizeManager.CURRENT_LABEL)) {
-         AWorkbench.popup("ERROR", "Can't set table default or current as default");
+         if (inWorkbench)
+            AWorkbench.popup("ERROR", "Can't set table default or current as default");
+         else
+            System.err.println("Can't set table default or current as default");
          return;
       }
       if (xViewer.getCustomizeMgr().isCustomizationUserDefault(custData)) {
@@ -635,9 +638,21 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void handleDeleteButton() {
       try {
          CustomizeData custSel = getCustTableSelection();
+         if (custSel.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custSel.getName().equals(
+               CustomizeManager.CURRENT_LABEL)) {
+            if (inWorkbench)
+               AWorkbench.popup("ERROR", "Can't delete defaults.");
+            else
+               System.err.println("Can't delete defaults");
+            return;
+         }
          if (custSel == null) return;
          if (!custSel.isPersonal() && !OseeAts.isAtsAdmin()) {
             AWorkbench.popup("ERROR", "Global Customizations can only be deleted by admin");
+            if (inWorkbench)
+               AWorkbench.popup("ERROR", "Global Customizations can only be deleted by admin");
+            else
+               System.err.println("Global Customizations can only be deleted by admin");
             return;
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Customization",
@@ -653,20 +668,19 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void updateButtonEnablements() {
       CustomizeData custData = getCustTableSelection();
-      setDefaultButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizeDefaults().isSaveDefaultsEnabled() && custTable.getTable().isFocusControl() && custData != null && !custData.getName().equals(
+      setDefaultButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getTable().isFocusControl() && custData != null && !custData.getName().equals(
             CustomizeManager.TABLE_DEFAULT_LABEL) && !custData.getName().equals(CustomizeManager.CURRENT_LABEL));
       if (custTable.getTable().isFocusControl() && custData != null) {
          setDefaultButton.setText(xViewer.getCustomizeMgr().isCustomizationUserDefault(custData) ? REMOVE_DEFAULT : SET_AS_DEFAULT);
          setDefaultButton.getParent().layout();
       }
-      deleteButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizeDefaults().isSaveDefaultsEnabled() && custTable.getTable().isFocusControl() && custData != null);
+      deleteButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getTable().isFocusControl() && custData != null);
       addItemButton.setEnabled(hiddenColTable.getTable().isFocusControl() && getHiddenTableSelection() != null);
       removeItemButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
       renameButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null && getVisibleTableSelection().size() == 1);
       moveDownButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
       moveUpButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
-      saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations(xViewer) != null && xViewer.getXViewerFactory().getXViewerCustomizations(
-            xViewer).isCustomizationPersistAvailable());
+      saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations() != null && xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable());
    }
 
    private void loadCustomizeTable() {

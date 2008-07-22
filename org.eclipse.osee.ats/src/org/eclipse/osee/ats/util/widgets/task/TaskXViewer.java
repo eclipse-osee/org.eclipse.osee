@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TaskXViewer extends WorldXViewer {
 
-   private static String NAMESPACE = "org.eclipse.osee.ats.TaskXViewer";
    private final XTaskViewer xTaskViewer;
    private final IDirtiableEditor editor;
    private final List<TaskResOptionDefinition> taskResOptionDefinitions;
@@ -59,7 +58,7 @@ public class TaskXViewer extends WorldXViewer {
     * @param style
     */
    public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, List<TaskResOptionDefinition> taskResOptionDefinition, XTaskViewer xTaskViewer) {
-      super(parent, style, NAMESPACE, new TaskXViewerFactory());
+      super(parent, style, new TaskXViewerFactory());
       this.editor = editor;
       this.taskResOptionDefinitions = taskResOptionDefinition;
       this.xTaskViewer = xTaskViewer;

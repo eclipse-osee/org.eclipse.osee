@@ -19,7 +19,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -32,7 +31,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class AutoRunXViewer extends XViewer {
 
-   private static String NAMESPACE = "osee.ats.UserRoleXViewer";
    private Set<IAutoRunTask> runList = new HashSet<IAutoRunTask>();
    private final XAutoRunViewer xAutoRunViewer;
 
@@ -41,11 +39,7 @@ public class AutoRunXViewer extends XViewer {
     * @param style
     */
    public AutoRunXViewer(Composite parent, int style, XAutoRunViewer xAutoRunViewer) {
-      this(parent, style, NAMESPACE, new AutoRunXViewerFactory(), xAutoRunViewer);
-   }
-
-   public AutoRunXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XAutoRunViewer xAutoRunViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
+      super(parent, style, new AutoRunXViewerFactory());
       this.xAutoRunViewer = xAutoRunViewer;
    }
 

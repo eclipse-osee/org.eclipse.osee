@@ -58,9 +58,8 @@ public class XViewer extends TreeViewer {
    private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
 
-   public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory) {
+   public XViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
       super(parent, style);
-      this.namespace = namespace;
       this.xViewerFactory = xViewerFactory;
       this.menuManager = new MenuManager();
       this.menuManager.setRemoveAllWhenShown(true);

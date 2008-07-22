@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -61,14 +60,9 @@ public class TaskXViewerFactory extends WorldXViewerFactory {
       return new TaskXViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : columns) {
-         xCol.setXViewer(xViewer);
-         cols.add(xCol);
-      }
-      custData.getColumnData().setColumns(cols);
+      custData.getColumnData().setColumns(columns);
       return custData;
    }
 

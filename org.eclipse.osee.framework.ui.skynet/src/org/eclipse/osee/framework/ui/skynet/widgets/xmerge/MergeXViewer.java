@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -40,8 +39,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class MergeXViewer extends XViewer implements IEventReceiver {
 
-   private static String NAMESPACE = "osee.skynet.gui.MergeXViewer";
-   private final XMergeViewer xCommitViewer;
+   private final XMergeViewer xMergeViewer;
    private Conflict[] conflicts;
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
@@ -50,14 +48,10 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
     * @param parent
     * @param style
     */
-   public MergeXViewer(Composite parent, int style, XMergeViewer xViewer) {
-      this(parent, style, NAMESPACE, new MergeXViewerFactory(), xViewer);
+   public MergeXViewer(Composite parent, int style, XMergeViewer xMergeViewer) {
+      super(parent, style, new MergeXViewerFactory());
       SkynetEventManager.getInstance().register(BranchEvent.class, this);
-   }
-
-   public MergeXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XMergeViewer xRoleViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
-      this.xCommitViewer = xRoleViewer;
+      this.xMergeViewer = xMergeViewer;
    }
 
    @Override
@@ -123,7 +117,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
     * @return the xUserRoleViewer
     */
    public XMergeViewer getXUserRoleViewer() {
-      return xCommitViewer;
+      return xMergeViewer;
    }
 
    /*
@@ -132,8 +126,8 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
    public void onEvent(Event event) {
-      if (xCommitViewer != null && xCommitViewer.getXViewer().getTree().isDisposed() != true) {
-         xCommitViewer.refresh();
+      if (xMergeViewer != null && xMergeViewer.getXViewer().getTree().isDisposed() != true) {
+         xMergeViewer.refresh();
       }
    }
 
@@ -201,7 +195,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Conflict_Resolved.getName())) {
             if (conflict.statusNotResolvable()) {
                if (MergeUtility.showArtifactDeletedConflict(conflict, shell)) {
-                  xCommitViewer.refreshTable();
+                  xMergeViewer.refreshTable();
                }
             } else if (conflict.statusInformational()) {
                MergeUtility.showInformationalConflict(shell);
@@ -213,7 +207,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       } catch (Exception ex) {
          OSEELog.logException(MergeXViewer.class, ex, true);
       }
-      xCommitViewer.loadTable();
+      xMergeViewer.loadTable();
       return super.handleLeftClickInIconArea(treeColumn, treeItem);
    }
 

@@ -5,20 +5,26 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
 public class XViewerTestFactory extends XViewerFactory {
+   /**
+    * @param namespace
+    */
+   public XViewerTestFactory() {
+      super("xviewer.test");
+   }
+
    private static String COLUMN_NAMESPACE = "xviewer.test";
    public static XViewerColumn Run_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 50, SWT.LEFT, true, SortDataType.String);
@@ -48,14 +54,9 @@ public class XViewerTestFactory extends XViewerFactory {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData()
     */
    @Override
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : columns) {
-         xCol.setXViewer(xViewer);
-         cols.add(xCol);
-      }
-      custData.getColumnData().setColumns(cols);
+      custData.getColumnData().setColumns(columns);
       return custData;
    }
 
@@ -70,6 +71,11 @@ public class XViewerTestFactory extends XViewerFactory {
          }
       }
       return null;
+   }
+
+   @Override
+   public IXViewerCustomizations getXViewerCustomizations() {
+      return new XViewerTestCustomizations();
    }
 
 }

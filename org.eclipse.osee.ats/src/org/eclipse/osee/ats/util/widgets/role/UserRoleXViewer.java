@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.util.EnumStringSingleSelectionDialog
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XPromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -39,20 +38,15 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class UserRoleXViewer extends XViewer {
 
-   private static String NAMESPACE = "osee.ats.UserRoleXViewer";
    private final XUserRoleViewer xUserRoleViewer;
 
    /**
     * @param parent
     * @param style
     */
-   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xViewer) {
-      this(parent, style, NAMESPACE, new UserRoleXViewerFactory(), xViewer);
-   }
-
-   public UserRoleXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XUserRoleViewer xRoleViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
-      this.xUserRoleViewer = xRoleViewer;
+   public UserRoleXViewer(Composite parent, int style, XUserRoleViewer xUserRoleViewer) {
+      super(parent, style, new UserRoleXViewerFactory());
+      this.xUserRoleViewer = xUserRoleViewer;
    }
 
    @Override

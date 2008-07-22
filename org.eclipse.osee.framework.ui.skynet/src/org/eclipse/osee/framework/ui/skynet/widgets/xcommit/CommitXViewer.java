@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.widgets.Composite;
@@ -39,21 +38,12 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class CommitXViewer extends XViewer implements IEventReceiver {
 
-   private static String NAMESPACE = "osee.skynet.gui.CommitXViewer";
    private final XCommitViewer xCommitViewer;
    private Branch workingBranch;
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public CommitXViewer(Composite parent, int style, XCommitViewer xViewer) {
-      this(parent, style, NAMESPACE, new CommitXViewerFactory(), xViewer);
+   public CommitXViewer(Composite parent, int style, XCommitViewer xRoleViewer) {
+      super(parent, style, new CommitXViewerFactory());
       SkynetEventManager.getInstance().register(BranchEvent.class, this);
-   }
-
-   public CommitXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XCommitViewer xRoleViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
       this.xCommitViewer = xRoleViewer;
    }
 

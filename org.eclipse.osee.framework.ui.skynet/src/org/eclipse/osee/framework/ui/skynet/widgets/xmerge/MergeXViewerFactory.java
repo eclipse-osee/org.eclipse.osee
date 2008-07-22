@@ -28,7 +28,6 @@ import org.eclipse.swt.SWT;
  */
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
-   private XViewer xViewer;
    public static String COLUMN_NAMESPACE = "framework.change.";
    public static final XViewerColumn Conflict_Resolved =
          new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
@@ -57,6 +56,7 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    public static Map<String, XViewerColumn> idToColumn = null;
 
    public MergeXViewerFactory() {
+      super("osee.skynet.gui.MergeXViewer");
       if (idToColumn == null) {
          idToColumn = new HashMap<String, XViewerColumn>();
          for (XViewerColumn xCol : columns) {
@@ -69,11 +69,10 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       for (XViewerColumn xCol : columns) {
-         xCol.setXViewer(xViewer);
          cols.add(xCol);
       }
       custData.getColumnData().setColumns(cols);

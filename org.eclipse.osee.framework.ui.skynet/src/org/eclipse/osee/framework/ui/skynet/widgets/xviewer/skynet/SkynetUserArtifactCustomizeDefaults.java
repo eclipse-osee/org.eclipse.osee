@@ -21,12 +21,13 @@ import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
 
 /**
+ * This class provides the functionality necessary to store the user's defaults in their User Artifact
+ * 
  * @author Donald G. Dunne
  */
-public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
+public class SkynetUserArtifactCustomizeDefaults {
 
    // XViewer.getViewerNamespace, CustomizeData.getName
    Set<String> defaultGuids = new HashSet<String>();
@@ -34,7 +35,7 @@ public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
    private static String DEFAULT_CUST_GUID_TAG = "defaultCustGuid";
    private User user;
 
-   public SkynetCustomizeDefaults(User user) {
+   public SkynetUserArtifactCustomizeDefaults(User user) {
       this.user = user;
       try {
          loadCustomizeDefaults();

@@ -82,6 +82,7 @@ public class OseeDictionary implements IDictionary {
    @SuppressWarnings("deprecation")
    private static void getIDictionaries() {
       dictionaries = new HashSet<IOseeDictionary>();
+      if (!Platform.isRunning()) return;
       IExtensionPoint point = null;
       try {
          point =

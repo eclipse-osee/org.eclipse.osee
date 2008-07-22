@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -228,7 +227,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col, Validation_Required_Col);
    public static Map<String, XViewerColumn> idToColumn = null;
 
+   private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
+
    public WorldXViewerFactory() {
+      super(NAMESPACE);
       if (idToColumn == null) {
          idToColumn = new HashMap<String, XViewerColumn>();
          for (XViewerColumn xCol : columns) {
@@ -241,14 +243,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       return new WorldXViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : columns) {
-         xCol.setXViewer(xViewer);
-         cols.add(xCol);
-      }
-      custData.getColumnData().setColumns(cols);
+      custData.getColumnData().setColumns(columns);
       return custData;
    }
 

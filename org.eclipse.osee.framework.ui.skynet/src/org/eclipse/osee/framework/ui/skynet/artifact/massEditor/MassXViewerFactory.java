@@ -22,21 +22,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
-   private XViewer xViewer;
    private CustomizeData custData;
+   private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
 
-   /**
-    * 
-    */
    public MassXViewerFactory() {
+      super(NAMESPACE);
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {
-      this.xViewer = xViewer;
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       custData.getColumnData().setColumns(cols);

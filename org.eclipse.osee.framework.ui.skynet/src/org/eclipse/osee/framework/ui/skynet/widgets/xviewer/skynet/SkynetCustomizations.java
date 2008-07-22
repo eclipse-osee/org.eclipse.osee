@@ -26,10 +26,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
 
 /**
@@ -40,13 +38,13 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    private Artifact globalCustomizationsArtifact;
    private List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(XViewerCustomize.class);
-   private final IXViewerCustomizeDefaults xViewerDefaults;
+   private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
    private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
-   private final XViewer xViewer;
+   private final SkynetXViewerFactory skynetXViewerFactory;
 
-   public SkynetCustomizations(XViewer xViewer, IXViewerCustomizeDefaults xViewerDefaults) {
-      this.xViewer = xViewer;
-      this.xViewerDefaults = xViewerDefaults;
+   public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) {
+      this.skynetXViewerFactory = skynetXViewerFactory;
+      this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(SkynetAuthentication.getUser());
       try {
          globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
       } catch (Throwable ex) {
@@ -123,9 +121,9 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          deleteArt = getGlobalCustomizationsArtifact();
       deleteCustomization(custData, deleteArt);
       // Remove item as default if set
-      if (xViewerDefaults.isDefaultCustomization(custData)) {
-         xViewerDefaults.removeDefaultCustomization(custData);
-         xViewerDefaults.save();
+      if (userArtifactDefaults.isDefaultCustomization(custData)) {
+         userArtifactDefaults.removeDefaultCustomization(custData);
+         userArtifactDefaults.save();
       }
 
    }
@@ -145,7 +143,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public CustomizeData getUserDefaultCustData() {
       for (CustomizeData custData : getSavedCustDatas()) {
-         if (xViewerDefaults.isDefaultCustomization(custData)) return custData;
+         if (userArtifactDefaults.isDefaultCustomization(custData)) return custData;
       }
       return null;
    }
@@ -157,14 +155,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
       // Remove old defaults
       for (CustomizeData custData : getSavedCustDatas()) {
-         if (xViewerDefaults.isDefaultCustomization(custData)) {
-            xViewerDefaults.removeDefaultCustomization(custData);
+         if (userArtifactDefaults.isDefaultCustomization(custData)) {
+            userArtifactDefaults.removeDefaultCustomization(custData);
          }
       }
       // Add new default
-      if (set) xViewerDefaults.setDefaultCustomization(newCustData);
+      if (set) userArtifactDefaults.setDefaultCustomization(newCustData);
       // persist
-      xViewerDefaults.save();
+      userArtifactDefaults.save();
    }
 
    private List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) {
@@ -177,7 +175,8 @@ public class SkynetCustomizations implements IXViewerCustomizations {
             for (Attribute<String> attr : attributes) {
                String str = attr.getValue();
                Matcher m =
-                     Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(str);
+                     Pattern.compile("name=\"(.*?)\".*?namespace=\"" + skynetXViewerFactory.getNamespace() + "\"").matcher(
+                           str);
                if (m.find()) {
                   CustomizeData custData = new CustomizeData(str);
                   custDatas.add(custData);

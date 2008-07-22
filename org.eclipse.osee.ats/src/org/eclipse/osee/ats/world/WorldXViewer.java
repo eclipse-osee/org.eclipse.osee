@@ -86,8 +86,6 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  */
 public class WorldXViewer extends XViewer implements IEventReceiver {
-
-   private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -103,11 +101,11 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
     * @param style
     */
    public WorldXViewer(Composite parent, int style) {
-      this(parent, style, NAMESPACE, new WorldXViewerFactory());
+      this(parent, style, new WorldXViewerFactory());
    }
 
-   public WorldXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory) {
-      super(parent, style, nameSpace, xViewerFactory);
+   public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
+      super(parent, style, xViewerFactory);
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
             handleDoubleClick();

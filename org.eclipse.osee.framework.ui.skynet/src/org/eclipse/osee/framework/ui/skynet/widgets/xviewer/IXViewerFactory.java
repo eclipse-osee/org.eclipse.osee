@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
 
 /**
@@ -31,10 +30,9 @@ public interface IXViewerFactory {
     * Returns the default table customization for this viewer including column definitions, sorting and filtering (if
     * any)
     * 
-    * @param xViewer
     * @return
     */
-   CustomizeData getDefaultTableCustomizeData(XViewer xViewer);
+   CustomizeData getDefaultTableCustomizeData();
 
    /**
     * Returns the default column definition for the given id
@@ -45,19 +43,11 @@ public interface IXViewerFactory {
    XViewerColumn getDefaultXViewerColumn(String id);
 
    /**
-    * Provides the storage mechanism for save/load of users default customization
-    * 
-    * @return
-    */
-   IXViewerCustomizeDefaults getXViewerCustomizeDefaults();
-
-   /**
     * Provides the storage mechanism for save/load of personal/global customizations
     * 
-    * @param xViewer
     * @return
     */
-   IXViewerCustomizations getXViewerCustomizations(XViewer xViewer);
+   IXViewerCustomizations getXViewerCustomizations();
 
    /**
     * Provides custom menu for XViewer
@@ -65,4 +55,11 @@ public interface IXViewerFactory {
     * @return
     */
    XViewerCustomize getXViewerCustomMenu();
+
+   /**
+    * Unique namespace for this viewer
+    * 
+    * @return
+    */
+   String getNamespace();
 }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -38,15 +37,10 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ChangeXViewer extends XViewer implements IEventReceiver {
 
-   public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
    private final XChangeViewer xChangeViewer;
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public ChangeXViewer(Composite parent, int style, XChangeViewer xViewer) {
-      this(parent, style, NAMESPACE, new ChangeXViewerFactory(), xViewer);
+   public ChangeXViewer(Composite parent, int style, XChangeViewer xRoleViewer) {
+      super(parent, style, new ChangeXViewerFactory());
       SkynetEventManager.getInstance().register(BranchEvent.class, this);
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
@@ -57,17 +51,13 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
             }
          };
       });
+      this.xChangeViewer = xRoleViewer;
    }
 
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
       Change change = getSelectedChanges().iterator().next();
       ArtifactEditor.editArtifact(change.getArtifact());
-   }
-
-   public ChangeXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XChangeViewer xRoleViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
-      this.xChangeViewer = xRoleViewer;
    }
 
    public ArrayList<Change> getSelectedChanges() {

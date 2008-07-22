@@ -43,19 +43,18 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class DefectXViewer extends XViewer {
 
-   private static String NAMESPACE = "osee.ats.DefectXViewer";
    private final XDefectViewer xDefectViewer;
 
    /**
     * @param parent
     * @param style
     */
-   public DefectXViewer(Composite parent, int style, XDefectViewer xViewer) {
-      this(parent, style, NAMESPACE, new DefectXViewerFactory(), xViewer);
+   public DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer) {
+      this(parent, style, new DefectXViewerFactory(), xDefectViewer);
    }
 
-   public DefectXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XDefectViewer xDefectViewer) {
-      super(parent, style, nameSpace, xViewerFactory);
+   public DefectXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, XDefectViewer xDefectViewer) {
+      super(parent, style, xViewerFactory);
       this.xDefectViewer = xDefectViewer;
    }
 

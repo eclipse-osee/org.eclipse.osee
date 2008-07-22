@@ -58,9 +58,7 @@ public class QueryLogView extends ViewPart implements IActionable {
       parent.setLayout(new GridLayout(1, false));
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      viewer =
-            new XViewer(parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION,
-                  "org.eclipse.osee.framework.ui.skynet.QueryLogView", new QueryLogXViewerFactory());
+      viewer = new XViewer(parent, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION, new QueryLogXViewerFactory());
       viewer.setContentProvider(new QueryLogContentProvider());
       viewer.setLabelProvider(new QueryLogLabelProvider(viewer));
       viewer.setInput(QueryLog.getInstance());

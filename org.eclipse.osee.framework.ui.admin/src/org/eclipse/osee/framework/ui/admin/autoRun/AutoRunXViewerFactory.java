@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.admin.autoRun;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
@@ -22,14 +21,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class AutoRunXViewerFactory extends SkynetXViewerFactory {
 
    public AutoRunXViewerFactory() {
+      super("osee.ats.UserRoleXViewer");
    }
 
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
+   public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
       for (AutoRunColumn atsXCol : AutoRunColumn.values()) {
          XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         newCol.setXViewer(xViewer);
          cols.add(newCol);
       }
       custData.getColumnData().setColumns(cols);

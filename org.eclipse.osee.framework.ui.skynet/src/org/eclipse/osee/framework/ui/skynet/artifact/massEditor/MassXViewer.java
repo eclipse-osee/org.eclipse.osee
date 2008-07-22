@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
@@ -66,7 +65,6 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class MassXViewer extends XViewer implements IEventReceiver {
 
-   private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
    private String title;
    private Collection<? extends Artifact> artifacts;
    private final IDirtiableEditor editor;
@@ -77,11 +75,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
     * @param style
     */
    public MassXViewer(Composite parent, int style, IDirtiableEditor editor) {
-      this(parent, style, NAMESPACE, new MassXViewerFactory(), editor);
-   }
-
-   public MassXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
-      super(parent, style, nameSpace, xViewerFactory);
+      super(parent, style, new MassXViewerFactory());
       this.editor = editor;
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
