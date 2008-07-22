@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -52,7 +51,7 @@ public class AttributeToTransactionOperation {
          "UPDATE " + ATTRIBUTE_VERSION_TABLE + " SET value = ?, uri = ? WHERE art_id = ? and attr_id = ? and attr_type_id = ? and gamma_id = ?";
 
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
-         "SELECT DISTINCT atr1.attr_id FROM osee_define_attribute atr1, osee_define_attribute_type aty1 WHERE atr1.art_id = ? AND atr1.attr_type_id = ?";
+         "SELECT att1.attr_id FROM osee_define_attribute att1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
 
    private final Artifact artifact;
    private final SkynetTransaction transaction;
@@ -82,7 +81,6 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   //TODO
    private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       ModType modType = null;
       ModificationType attrModType = null;
@@ -135,17 +133,17 @@ public class AttributeToTransactionOperation {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
-      //TODO: Only handles a max Occurrence of 1
+
+      // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
       if (attributeType.getMaxOccurrences() == 1) {
          try {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, SQL3DataType.INTEGER,
-                        artifact.getArtId(), SQL3DataType.INTEGER, attributeType.getAttrTypeId());
+                        artifact.getArtId(), SQL3DataType.INTEGER, attributeType.getAttrTypeId(), SQL3DataType.INTEGER,
+                        artifact.getBranch().getBranchId());
 
-            ResultSet resultSet = connectionHandlerStatement.getRset();
-
-            if (resultSet.next()) {
-               attrId = (resultSet.getInt("attr_id"));
+            if (connectionHandlerStatement.next()) {
+               attrId = connectionHandlerStatement.getRset().getInt("attr_id");
             }
          } finally {
             DbUtil.close(connectionHandlerStatement);
