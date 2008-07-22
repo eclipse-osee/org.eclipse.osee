@@ -286,7 +286,7 @@ public class XTaskViewer extends XWidget implements IActionable {
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomize().handleTableCustomization();
+            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

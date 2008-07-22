@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -37,6 +38,8 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          if (xCol == WorldXViewerFactory.Change_Type_Col)
             return wva.getWorldViewChangeType().getImage();
+         else if (xCol == WorldXViewerFactory.Type_Col)
+            return ((Artifact) element).getImage();
          else if (xCol == WorldXViewerFactory.Assignees_Col)
             return wva.getAssigneeImage();
          else if (xCol == WorldXViewerFactory.Deadline_Col) {
@@ -54,6 +57,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          // NOTE: HRID, Type, Title are handled by XViewerValueColumn values
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
+         if (xCol == WorldXViewerFactory.Type_Col) return wva.getWorldViewType();
          if (xCol == WorldXViewerFactory.Actionable_Items_Col) return wva.getWorldViewActionableItems();
          if (xCol == WorldXViewerFactory.User_Community_Col) return wva.getWorldViewUserCommunity();
          if (xCol == WorldXViewerFactory.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();

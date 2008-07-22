@@ -43,9 +43,8 @@ public class WorldXViewerSorter extends XViewerSorter {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       try {
-         if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
-         XViewerColumn sortXCol =
-               xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
+         if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) return 0;
+         XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
          IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
          IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 

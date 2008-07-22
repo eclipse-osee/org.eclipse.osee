@@ -56,8 +56,8 @@ public enum UserRoleColumn {
 
    public XViewerColumn getXViewerColumn(UserRoleColumn atsXCol) {
       XViewerColumn xCol =
-            new XViewerColumn(atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align,
-                  atsXCol.isShow(), atsXCol.sortDataType);
+            new XViewerColumn(atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.align, atsXCol.isShow(),
+                  atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

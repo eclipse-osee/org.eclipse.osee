@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDa
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.swt.SWT;
 
@@ -35,15 +34,16 @@ import org.eclipse.swt.SWT;
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public static String COLUMN_NAMESPACE = "ats.column.";
-   public static final XViewerColumn Type_Col = new XViewerArtifactTypeColumn("Type", null);
+   public static final XViewerColumn Type_Col =
+         new XViewerColumn("ats.column.type", "Type", 150, SWT.LEFT, true, SortDataType.String);
    public static final XViewerColumn State_Col =
-         new XViewerColumn("ats.column.smaState", "State", 75, 75, SWT.LEFT, true, SortDataType.String);
+         new XViewerColumn("ats.column.smaState", "State", 75, SWT.LEFT, true, SortDataType.String);
    public static final XViewerColumn Priority_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE, 20, SWT.CENTER, true, SortDataType.String);
    public static final XViewerColumn Change_Type_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.CHANGE_TYPE_ATTRIBUTE, 22, SWT.CENTER, true, SortDataType.String);
    public static final XViewerColumn Assignees_Col =
-         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + "assignees", "Assignees", 100, 100, SWT.LEFT, true,
+         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + "assignees", "Assignees", 100, SWT.LEFT, true,
                SortDataType.String);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title", null);
    public static final XViewerColumn Actionable_Items_Col =

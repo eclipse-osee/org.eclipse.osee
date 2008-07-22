@@ -283,10 +283,4 @@
             className="org.eclipse.osee.ats.operation.ReAssignATSObjectsToUser">
       </Operation>
    </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
-      <AutoRunTask
-            classname="org.eclipse.osee.ats.health.ValidateAttributeValues">
-      </AutoRunTask>
-   </extension>
 </plugin>

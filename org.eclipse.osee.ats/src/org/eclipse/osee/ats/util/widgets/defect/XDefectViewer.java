@@ -196,7 +196,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomize().handleTableCustomization();
+            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
@@ -288,7 +288,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork()throws OseeCoreException, SQLException{
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
                            deleteDefectHelper(items);
                         }
                      };
@@ -503,7 +503,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
     */
    @Override
-   public void saveToArtifact()throws OseeCoreException, SQLException{
+   public void saveToArtifact() throws OseeCoreException, SQLException {
       // DefectViewer uses artifact as storage mechanism; nothing to do here
    }
 
@@ -511,7 +511,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty()throws OseeCoreException, SQLException{
+   public Result isDirty() throws OseeCoreException, SQLException {
       // DefectViewer uses artifact as storage mechanism which already determines dirty
       return Result.FalseResult;
    }
@@ -520,7 +520,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert()throws OseeCoreException, SQLException{
+   public void revert() throws OseeCoreException, SQLException {
       // Nothing to revert cause artifact will be reverted
    }
 

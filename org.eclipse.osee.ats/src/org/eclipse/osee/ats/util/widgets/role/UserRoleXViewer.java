@@ -76,22 +76,8 @@ public class UserRoleXViewer extends XViewer {
       });
    }
 
-   @Override
-   public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      UserRoleColumn aCol = UserRoleColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      return true;
-   }
-
-   @Override
-   public boolean isColumnMultiEditEnabled() {
-      return true;
-   }
-
    public void updateEditMenuActions() {
       // MenuManager mm = getMenuManager();
-
       // EDIT MENU BLOCK
    }
 

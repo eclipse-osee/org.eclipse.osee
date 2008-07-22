@@ -186,7 +186,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomize().handleTableCustomization();
+            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
