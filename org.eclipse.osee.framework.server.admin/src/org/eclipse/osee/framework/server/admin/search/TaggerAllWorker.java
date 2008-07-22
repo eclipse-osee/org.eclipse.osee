@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.server.admin.Activator;
 class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
 
    private static final String GET_TAGGABLE_SQL_BODY =
-         " FROM osee_define_attribute attr1, osee_define_attribute_type type1,  osee_define_txs txs1, osee_define_tx_details txd1, osee_define_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL AND NOT type1.tagger_id = ''";
+         " FROM osee_define_attribute attr1, osee_define_attribute_type type1,  osee_define_txs txs1, osee_define_tx_details txd1, osee_define_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL AND type1.tagger_id <> ''";
 
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES = "SELECT attr1.gamma_id" + GET_TAGGABLE_SQL_BODY;
 
