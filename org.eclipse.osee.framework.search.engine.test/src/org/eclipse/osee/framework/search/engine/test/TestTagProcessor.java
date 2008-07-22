@@ -76,10 +76,9 @@ public class TestTagProcessor extends TestCase {
                      assertEquals(String.format("Test: [%s] word: [%s]", key, word), expectedTags.nextLong(),
                            codedTag.longValue());
                   } else {
-                     //                     assertTrue
-                     System.out.println(String.format(String.format(
-                           "Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", key, word, codedTag)));
-                     //                     , false);
+                     assertTrue(
+                           String.format("Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", key, word, codedTag),
+                           false);
                   }
                }
             });
