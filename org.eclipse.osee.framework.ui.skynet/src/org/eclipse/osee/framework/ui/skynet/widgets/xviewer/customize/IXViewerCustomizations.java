@@ -21,7 +21,7 @@ public interface IXViewerCustomizations {
 
    public void saveCustomization(CustomizeData custData) throws Exception;
 
-   public List<CustomizeData> getCustDatas();
+   public List<CustomizeData> getSavedCustDatas();
 
    public CustomizeData getUserDefaultCustData();
 

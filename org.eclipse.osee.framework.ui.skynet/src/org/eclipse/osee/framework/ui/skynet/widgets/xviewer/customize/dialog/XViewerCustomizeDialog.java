@@ -562,7 +562,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void handleSaveButton() {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
-      for (CustomizeData custData : xViewer.getCustomizeMgr().getCustDatas()) {
+      for (CustomizeData custData : xViewer.getCustomizeMgr().getSavedCustDatas()) {
          if (custData.isPersonal())
             custDatas.add(custData);
          else if (OseeAts.isAtsAdmin()) custDatas.add(custData);
@@ -601,7 +601,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
     * @return CustomizeData represented by the configuration area
     */
    private CustomizeData getConfigCustomizeCustData() {
-      CustomizeData custData = new CustomizeData(currentCustomizeData.getXml(), xViewer.getXViewerFactory());
+      CustomizeData custData = new CustomizeData(currentCustomizeData.getXml());
       custData.resetGuid();
       custData.getColumnData().setColumns(getConfigCustXViewerColumns());
       custData.getSortingData().setFromXml(sorterText.getText());
@@ -671,15 +671,15 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void loadCustomizeTable() {
       // Add stored customization data
-      List<CustomizeData> custDatas = xViewer.getCustomizeMgr().getCustDatas();
+      List<CustomizeData> custDatas = xViewer.getCustomizeMgr().getSavedCustDatas();
 
       // Add table default customization data
       defaultTableCustData = xViewer.getCustomizeMgr().getTableDefaultCustData();
       defaultTableCustData.setName(CustomizeManager.TABLE_DEFAULT_LABEL);
       custDatas.add(defaultTableCustData);
 
-      // Add current customization data
-      CustomizeData currentCustData = xViewer.getCustomizeMgr().getCurrentCustData();
+      // Add current customization data generated from actual table
+      CustomizeData currentCustData = xViewer.getCustomizeMgr().generateCustDataFromTable();
       currentCustData.setName(CustomizeManager.CURRENT_LABEL);
       custDatas.add(currentCustData);
 

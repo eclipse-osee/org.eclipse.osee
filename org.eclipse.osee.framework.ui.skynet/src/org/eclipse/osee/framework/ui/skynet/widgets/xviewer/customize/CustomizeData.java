@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.internal.Workbench;
 
@@ -32,9 +31,9 @@ public class CustomizeData {
    private String name;
    private String nameSpace;
    private boolean personal = false;
-   private SortingData sortingData = new SortingData(this);
-   private FilterData filterData = new FilterData();
-   private ColumnData columnData = new ColumnData();
+   protected SortingData sortingData = new SortingData(this);
+   protected FilterData filterData = new FilterData();
+   protected ColumnData columnData = new ColumnData();
    private Map<String, Image> imageMap = new HashMap<String, Image>();
    private boolean isWorkbench = false;
 
@@ -42,9 +41,9 @@ public class CustomizeData {
       isWorkbench = Workbench.getInstance() != null && Workbench.getInstance().isRunning();
    }
 
-   public CustomizeData(String xml, IXViewerFactory xViewerFactory) {
+   public CustomizeData(String xml) {
       this();
-      setFromXml(xml, xViewerFactory);
+      setFromXml(xml);
    }
 
    public void resetGuid() {
@@ -84,7 +83,7 @@ public class CustomizeData {
       return sb.toString();
    }
 
-   public void setFromXml(String xml, IXViewerFactory xViewerFactory) {
+   public void setFromXml(String xml) {
       Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"(.*?)\".*?guid=\"(.*?)\"").matcher(xml);
       if (m.find()) {
          name = m.group(1);
@@ -97,7 +96,7 @@ public class CustomizeData {
       }
       sortingData.setFromXml(xml);
       filterData.setFromXml(xml);
-      columnData.setFromXml(xml, xViewerFactory);
+      columnData.setFromXml(xml);
    }
 
    /**

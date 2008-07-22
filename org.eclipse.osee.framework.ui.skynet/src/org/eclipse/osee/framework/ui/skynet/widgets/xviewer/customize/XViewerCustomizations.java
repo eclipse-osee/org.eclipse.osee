@@ -27,7 +27,7 @@ public class XViewerCustomizations implements IXViewerCustomizations {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getCustDatas()
     */
-   public List<CustomizeData> getCustDatas() {
+   public List<CustomizeData> getSavedCustDatas() {
       return new ArrayList<CustomizeData>();
    }
 

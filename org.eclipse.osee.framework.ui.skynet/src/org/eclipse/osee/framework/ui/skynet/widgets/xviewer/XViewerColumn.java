@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +28,6 @@ public class XViewerColumn {
    private int align;
    private boolean sortForward = true; // if true, sort alphabetically; else reverse
    private boolean show = true;
-   private TreeColumn treeColumn;
    private SortDataType sortDataType = SortDataType.String;
    private static ArrayList<XViewerColumn> registeredColumns = new ArrayList<XViewerColumn>();
    private String toolTip = "";
@@ -182,14 +180,6 @@ public class XViewerColumn {
       this.show = show;
    }
 
-   public TreeColumn getTreeColumn() {
-      return treeColumn;
-   }
-
-   public void setTreeColumn(TreeColumn treeColumn) {
-      this.treeColumn = treeColumn;
-   }
-
    /**
     * @return alternateName if exists, otherwise systemName
     */
@@ -258,6 +248,10 @@ public class XViewerColumn {
 
    public void setMultiColumnEditable(boolean multiColumnEditable) {
       this.multiColumnEditable = multiColumnEditable;
+   }
+
+   public void setWidth(int width) {
+      this.width = width;
    }
 
 }

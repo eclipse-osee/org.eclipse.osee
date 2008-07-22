@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 public class SortingData {
 
    private static String XTREESORTER_TAG = "xSorter";
-   private static String COL_NAME_TAG = "name";
-   private List<String> sortingNames = new ArrayList<String>();
+   private static String COL_NAME_TAG = "id";
+   private List<String> sortingIds = new ArrayList<String>();
    private final CustomizeData custData;
 
    public SortingData(CustomizeData custData) {
@@ -32,11 +32,11 @@ public class SortingData {
    }
 
    public void clearSorter() {
-      sortingNames.clear();
+      sortingIds.clear();
    }
 
    public boolean isSorting() {
-      return sortingNames.size() > 0;
+      return sortingIds.size() > 0;
    }
 
    public String toString() {
@@ -54,32 +54,34 @@ public class SortingData {
 
    public List<XViewerColumn> getSortXCols() {
       List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (String name : getSortingNames())
-         cols.add(custData.getColumnData().getXColumn(name));
+      for (String id : getSortingNames())
+         cols.add(custData.getColumnData().getXColumn(id));
       return cols;
    }
 
    public void setSortXCols(List<XViewerColumn> sortXCols) {
-      sortingNames.clear();
+      sortingIds.clear();
       for (XViewerColumn xCol : sortXCols) {
-         sortingNames.add(xCol.getId());
+         sortingIds.add(xCol.getId());
       }
    }
 
    public String getXml() {
       StringBuffer sb = new StringBuffer("<" + XTREESORTER_TAG + ">");
-      for (String item : sortingNames)
+      // NOTE: Sorting direction is stored as part of the column data
+      for (String item : sortingIds)
          sb.append(AXml.addTagData(COL_NAME_TAG, item));
       sb.append("</" + XTREESORTER_TAG + ">");
       return sb.toString();
    }
 
    public void setFromXml(String xml) {
-      sortingNames.clear();
+      // NOTE: Sorting direction is stored as part of the column data
+      sortingIds.clear();
       String xmlSortStr = AXml.getTagData(xml, XTREESORTER_TAG);
       Matcher m = Pattern.compile("<" + COL_NAME_TAG + ">(.*?)</" + COL_NAME_TAG + ">").matcher(xmlSortStr);
       while (m.find()) {
-         sortingNames.add(m.group(1));
+         sortingIds.add(m.group(1));
       }
    }
 
@@ -87,18 +89,18 @@ public class SortingData {
     * @return the sortingNames
     */
    public List<String> getSortingNames() {
-      return sortingNames;
+      return sortingIds;
    }
 
    public void addSortingName(String name) {
-      if (!this.sortingNames.contains(name)) this.sortingNames.add(name);
+      if (!this.sortingIds.contains(name)) this.sortingIds.add(name);
    }
 
    /**
     * @param sortingNames the sortingNames to set
     */
    public void setSortingNames(List<String> sortingNames) {
-      this.sortingNames = sortingNames;
+      this.sortingIds = sortingNames;
    }
 
 }

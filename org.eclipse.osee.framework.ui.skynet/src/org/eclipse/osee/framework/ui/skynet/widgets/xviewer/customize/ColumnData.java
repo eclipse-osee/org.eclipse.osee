@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 
 /**
@@ -25,9 +24,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 public class ColumnData {
 
    List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-   Map<String, XViewerColumn> nameToCol = new HashMap<String, XViewerColumn>();
+   Map<String, XViewerColumn> idToColumn = new HashMap<String, XViewerColumn>();
 
-   public List<XViewerColumn> setFromXml(String xml, IXViewerFactory xViewerFactory) {
+   public List<XViewerColumn> setFromXml(String xml) {
       columns.clear();
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
       Matcher columnMatch =
@@ -35,23 +34,18 @@ public class ColumnData {
                   xml);
       while (columnMatch.find()) {
          String colXml = columnMatch.group(1);
-         String colName = XViewerColumn.getColumnId(colXml);
-         XViewerColumn xCol = xViewerFactory.getDefaultXViewerColumn(colName);
-         if (xCol == null)
-            xCol = new XViewerColumn(null, colXml);
-         else
-            xCol.setFromXml(colXml);
+         XViewerColumn xCol = new XViewerColumn(null, colXml);
          xCols.add(xCol);
       }
       for (XViewerColumn xCol : xCols) {
          columns.add(xCol);
-         nameToCol.put(xCol.getId(), xCol);
+         idToColumn.put(xCol.getId(), xCol);
       }
       return columns;
    }
 
-   public XViewerColumn getXColumn(String name) {
-      return nameToCol.get(name);
+   public XViewerColumn getXColumn(String id) {
+      return idToColumn.get(id);
    }
 
    /**
@@ -85,6 +79,10 @@ public class ColumnData {
     */
    public void setColumns(List<XViewerColumn> columns) {
       this.columns = columns;
+      idToColumn.clear();
+      for (XViewerColumn xCol : columns) {
+         idToColumn.put(xCol.getId(), xCol);
+      }
    }
 
 }

@@ -59,7 +59,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getCustDatas()
     */
-   public List<CustomizeData> getCustDatas() {
+   public List<CustomizeData> getSavedCustDatas() {
       loadCustomizationData();
       return custDatas;
    }
@@ -144,7 +144,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    }
 
    public CustomizeData getUserDefaultCustData() {
-      for (CustomizeData custData : getCustDatas()) {
+      for (CustomizeData custData : getSavedCustDatas()) {
          if (xViewerDefaults.isDefaultCustomization(custData)) return custData;
       }
       return null;
@@ -156,7 +156,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
       // Remove old defaults
-      for (CustomizeData custData : getCustDatas()) {
+      for (CustomizeData custData : getSavedCustDatas()) {
          if (xViewerDefaults.isDefaultCustomization(custData)) {
             xViewerDefaults.removeDefaultCustomization(custData);
          }
@@ -179,7 +179,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
                Matcher m =
                      Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(str);
                if (m.find()) {
-                  CustomizeData custData = new CustomizeData(str, xViewer.getXViewerFactory());
+                  CustomizeData custData = new CustomizeData(str);
                   custDatas.add(custData);
                }
             }

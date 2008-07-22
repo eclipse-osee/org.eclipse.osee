@@ -45,19 +45,26 @@ public class CustomizeManager {
    public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) {
       this.xViewer = xViewer;
       this.xViewerFactory = xViewerFactory;
-      currentCustData = xViewerFactory.getDefaultTableCustomizeData(xViewer);
+      // Set customize to be user default, if selected, or table default
+      currentCustData = xViewerFactory.getXViewerCustomizations(xViewer).getUserDefaultCustData();
+      if (currentCustData == null) {
+         currentCustData = getTableDefaultCustData();
+      }
       xViewerFactory.getXViewerCustomMenu().init(xViewer);
    }
 
    /**
-    * Clears out current columns and loads
+    * Clears out current columns, sorting and filtering and loads table customization
     */
    public void loadCustomization() {
-      loadCustomization(getDefaultCustData());
+      loadCustomization(currentCustData);
    }
 
-   public void loadCustomization(final CustomizeData custData) {
-      SetCustomizationJob job = new SetCustomizationJob(xViewer, custData);
+   /**
+    * Clears out current columns, sorting and filtering and loads table customization
+    */
+   public void loadCustomization(final CustomizeData newCustData) {
+      SetCustomizationJob job = new SetCustomizationJob(xViewer, newCustData);
       if (doCustomizeInCurrentThread()) {
          job.run(null);
       } else {
@@ -68,24 +75,21 @@ public class CustomizeManager {
    }
 
    public void addColumns() {
-      for (final XViewerColumn xCol : getCurrentCustData().getColumnData().getColumns()) {
+      for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
          TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
          column.setMoveable(true);
-         xCol.setTreeColumn(column);
          column.setData(xCol);
-         if (xCol.getToolTip().equals(""))
+         if (xCol.getToolTip().equals("")) {
             column.setToolTipText(xCol.getName());
-         else
+         } else {
             column.setToolTipText(xCol.getToolTip());
+         }
          column.setText(xCol.getName());
-         System.err.println("handle displaying name or alt name here");
          if (xCol.isShow()) {
-            int width = xCol.getWidth();
-            System.err.println("handle getting customized width here");
-            //            if (width == 0) width = xCol.getDefaultWidth();
-            column.setWidth(width);
-         } else
+            column.setWidth(xCol.getWidth());
+         } else {
             column.setWidth(0);
+         }
          column.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -95,7 +99,7 @@ public class CustomizeManager {
                   resetDefaultSorter();
                }
                if (xViewer.isCtrlKeyDown()) {
-                  List<XViewerColumn> currSortCols = getCurrentCustData().getSortingData().getSortXCols();
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
                   if (currSortCols == null) {
                      currSortCols = new ArrayList<XViewerColumn>();
                      currSortCols.add(xCol);
@@ -107,16 +111,16 @@ public class CustomizeManager {
                      } else
                         currSortCols.add(xCol);
                   }
-                  getCurrentCustData().getSortingData().setSortXCols(currSortCols);
+                  currentCustData.getSortingData().setSortXCols(currSortCols);
                } else {
 
                   List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
                   cols.add(xCol);
                   // If sorter already has this column sorted, reverse the sort
-                  List<XViewerColumn> currSortCols = getCurrentCustData().getSortingData().getSortXCols();
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
                   if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
                   // Set the newly sorted column
-                  getCurrentCustData().getSortingData().setSortXCols(cols);
+                  currentCustData.getSortingData().setSortXCols(cols);
                }
                xViewer.refresh();
                xViewer.updateStatusLabel();
@@ -152,8 +156,20 @@ public class CustomizeManager {
    /**
     * @return the currentCustData
     */
-   public CustomizeData getCurrentCustData() {
-      return currentCustData;
+   public CustomizeData generateCustDataFromTable() {
+      CustomizeData custData = new CustomizeData();
+      List<XViewerColumn> columns = new ArrayList<XViewerColumn>(15);
+      for (Integer index : xViewer.getTree().getColumnOrder()) {
+         TreeColumn treeCol = xViewer.getTree().getColumn(index);
+         XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+         xCol.setWidth(treeCol.getWidth());
+         xCol.setShow(treeCol.getWidth() > 0);
+         columns.add(xCol);
+      }
+      custData.columnData.setColumns(columns);
+      custData.sortingData.setFromXml(currentCustData.sortingData.getXml());
+      custData.filterData.setFromXml(currentCustData.filterData.getXml());
+      return custData;
    }
 
    public List<XViewerColumn> getCurrentTableColumns() {
@@ -165,30 +181,20 @@ public class CustomizeManager {
     */
    public CustomizeData getTableDefaultCustData() {
       CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData(xViewer);
-      if (custData.getName() == null || this.currentCustData.getName().equals("")) custData.setName(TABLE_DEFAULT_LABEL);
+      if (custData.getName() == null || this.currentCustData.getName().equals("")) {
+         custData.setName(TABLE_DEFAULT_LABEL);
+      }
       custData.setNameSpace(xViewer.getViewerNamespace());
       return custData;
    }
 
-   /**
-    * Return the customize data that will be used to customize the table. First, check for a user selected default.
-    * Second, check for a tableDefaultCustData set programatically.
-    * 
-    * @return the CustomizeData
-    */
-   public CustomizeData getDefaultCustData() {
-      if (xViewerFactory.getXViewerCustomizations(xViewer).getUserDefaultCustData() != null) return xViewerFactory.getXViewerCustomizations(
-            xViewer).getUserDefaultCustData();
-      return this.getTableDefaultCustData();
-   }
-
    public boolean doCustomizeInCurrentThread() {
-      return false;
+      return xViewer.doCustomizeInCurrentThread();
    }
 
    public String getSortingStr() {
-      if (getCurrentCustData().getSortingData().isSorting()) {
-         return getCurrentCustData().getSortingData().toString();
+      if (currentCustData.getSortingData().isSorting()) {
+         return currentCustData.getSortingData().toString();
       }
       return "";
    }
@@ -206,8 +212,8 @@ public class CustomizeManager {
       return loading;
    }
 
-   public List<CustomizeData> getCustDatas() {
-      return xViewerFactory.getXViewerCustomizations(xViewer).getCustDatas();
+   public List<CustomizeData> getSavedCustDatas() {
+      return xViewerFactory.getXViewerCustomizations(xViewer).getSavedCustDatas();
    }
 
    public void saveCustomization(CustomizeData custData) throws Exception {
@@ -225,17 +231,18 @@ public class CustomizeManager {
    }
 
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
-      AWorkbench.popup("ERROR", "Not implemented yet");
+      xViewerFactory.getXViewerCustomizations(xViewer).setUserDefaultCustData(newCustData, set);
    }
 
    public void deleteCustomization(CustomizeData custData) throws Exception {
-      AWorkbench.popup("ERROR", "Not implemented yet");
+      xViewerFactory.getXViewerCustomizations(xViewer).deleteCustomization(custData);
 
    }
 
    public boolean isSorting() {
       return currentCustData.getSortingData().isSorting();
    }
+
    public class SetCustomizationJob extends Job {
 
       private final CustomizeData newCustData;
@@ -258,16 +265,13 @@ public class CustomizeManager {
             public void run() {
                loading = true;
                if (fXViewer.getTree().isDisposed()) return;
-               CustomizeData custData = new CustomizeData(newCustData.getXml(), fXViewer.getXViewerFactory());
-               // Add any new columns that were added after this customization was saved
-               custData.getColumnData().addMissingColumns(getTableDefaultCustData().getColumnData());
-               currentCustData = custData;
-               if (getCurrentCustData().getName() == null || getCurrentCustData().getName().equals("")) {
-                  getCurrentCustData().setName(CURRENT_LABEL);
+               currentCustData = newCustData;
+               if (currentCustData.getName() == null || currentCustData.getName().equals("")) {
+                  currentCustData.setName(CURRENT_LABEL);
                }
-               getCurrentCustData().setNameSpace(fXViewer.getViewerNamespace());
-               fXViewer.getTextFilterComp().setCustData(custData);
-               if (getCurrentCustData().getSortingData().isSorting())
+               currentCustData.setNameSpace(fXViewer.getViewerNamespace());
+               fXViewer.getTextFilterComp().setCustData(newCustData);
+               if (currentCustData.getSortingData().isSorting())
                   fXViewer.resetDefaultSorter();
                else
                   fXViewer.setSorter(null);
