@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util;
 
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -42,12 +44,16 @@ public class AWorkbench {
    }
 
    public static void popup(final String title, final String message) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                  message);
-         }
-      });
+      if (!PlatformUI.isWorkbenchRunning()) {
+         OseeLog.log(AWorkbench.class, Level.SEVERE, message);
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                     message);
+            }
+         });
+      }
    }
 
    public static void popup(Composite comp, String title, String message) {

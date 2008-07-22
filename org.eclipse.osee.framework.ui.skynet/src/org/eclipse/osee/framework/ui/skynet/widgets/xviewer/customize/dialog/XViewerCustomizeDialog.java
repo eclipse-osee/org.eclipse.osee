@@ -333,7 +333,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
       // Customization Buttons
       renameButton = new Button(composite_1, SWT.NONE);
-      renameButton.setText("Rename");
+      renameButton.setText("Rename Column");
       renameButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -343,7 +343,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       });
 
       saveButton = new Button(composite_1, SWT.NONE);
-      saveButton.setText("Save");
+      saveButton.setText("Save Customization");
       saveButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {

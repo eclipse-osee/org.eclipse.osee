@@ -229,7 +229,16 @@ public class CustomizeManager {
     * @param newName
     */
    public void customizeColumnName(XViewerColumn xCol, String newName) {
-      AWorkbench.popup("ERROR", "Not implemented yet");
+      if (newName == "") {
+         XViewerColumn defaultXCol = xViewerFactory.getDefaultXViewerColumn(xCol.getId());
+         if (defaultXCol == null) {
+            AWorkbench.popup("ERROR", "Column not defined.  Can't retrieve default name.");
+            return;
+         }
+         xCol.setName(xCol.getName());
+      } else {
+         xCol.setName(newName);
+      }
    }
 
    public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {

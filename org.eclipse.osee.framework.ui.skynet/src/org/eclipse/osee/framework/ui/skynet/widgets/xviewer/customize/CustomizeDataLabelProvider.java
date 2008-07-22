@@ -33,7 +33,7 @@ public class CustomizeDataLabelProvider implements ILabelProvider {
    }
 
    public String getText(Object arg0) {
-      return " " + (((CustomizeData) arg0)).getName();
+      return (xViewer.getCustomizeMgr().isCustomizationUserDefault((CustomizeData) arg0) ? "(Default) " : "") + (((CustomizeData) arg0)).getName();
    }
 
    public void addListener(ILabelProviderListener arg0) {

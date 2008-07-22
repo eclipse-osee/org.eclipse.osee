@@ -52,7 +52,7 @@ public class XViewerTestCustomizations implements IXViewerCustomizations {
    public CustomizeData getUserDefaultCustData() {
       File file = new File(getDefaultFilename());
       if (!file.exists()) return null;
-      String defaultGuid = AFile.readFile(file);
+      String defaultGuid = AFile.readFile(file).replaceAll("\\s", "");
       if (defaultGuid != null) {
          for (CustomizeData custData : getSavedCustDatas()) {
             if (custData.getGuid().equals(defaultGuid)) {
@@ -78,7 +78,7 @@ public class XViewerTestCustomizations implements IXViewerCustomizations {
    public boolean isCustomizationUserDefault(CustomizeData custData) {
       File file = new File(getDefaultFilename());
       if (!file.exists()) return false;
-      String defaultGuid = AFile.readFile(getDefaultFilename());
+      String defaultGuid = AFile.readFile(getDefaultFilename()).replaceAll("\\s", "");
       return custData.getGuid().equals(defaultGuid);
    }
 
