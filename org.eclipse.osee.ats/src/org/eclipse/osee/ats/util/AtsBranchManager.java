@@ -105,10 +105,18 @@ public class AtsBranchManager {
                AWorkbench.popup("ERROR", "Can't access parent branch");
                return;
             }
-            MergeView.openViewUpon(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
+            MergeView.openView(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
                   getWorkingBranch()).getKey());
-         } else {
-            AWorkbench.popup("ERROR", "Showing Read-Only Merge View for Committed Branch\n\nNot Implemented Yet");
+
+         } else if (isCommittedBranch()) {
+            TransactionId transId =
+                  TransactionIdManager.getInstance().getNonEditableTransactionId(
+                        getTransactionId().getTransactionNumber());
+            if (transId == null) {
+               AWorkbench.popup("ERROR", "Can't access Commit Transaction");
+               return;
+            }
+            MergeView.openView(transId);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -496,8 +504,8 @@ public class AtsBranchManager {
 
          int result = dialog.open();
          if (commitPopup && result == 1) {
-            MergeView.openViewUpon(branch, branch.getParentBranch(),
-                  TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
+            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(
+                  branch).getKey());
          } else if (result == 2) {
             BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
          }
@@ -518,8 +526,8 @@ public class AtsBranchManager {
          if (result == 0) {
             BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
          } else if (result == 1) {
-            MergeView.openViewUpon(branch, branch.getParentBranch(),
-                  TransactionIdManager.getInstance().getStartEndPoint(branch).getKey());
+            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(
+                  branch).getKey());
          }
       }
 

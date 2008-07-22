@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.health;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,13 +27,16 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeSummary;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchContentProvider;
@@ -137,46 +140,114 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      foundChangeReport = true;
                   }
                   if (changes != null) {
-                     Set<Artifact> modArt = new HashSet<Artifact>();
-                     Set<Artifact> delArt = new HashSet<Artifact>();
-                     Set<Artifact> newArt = new HashSet<Artifact>();
+                     Map<Integer, Artifact> modArt = new HashMap<Integer, Artifact>();
+                     Map<Integer, Artifact> delArt = new HashMap<Integer, Artifact>();
+                     Map<Integer, Artifact> newArt = new HashMap<Integer, Artifact>();
                      for (Change change : changes) {
                         if (change.getItemKind().equals("Artifact")) {
                            if (change.getModificationType() == ModificationType.CHANGE) {
-                              modArt.add(change.getArtifact());
+                              modArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                            if (change.getModificationType() == ModificationType.DELETED) {
-                              delArt.add(change.getArtifact());
+                              delArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                            if (change.getModificationType() == ModificationType.NEW) {
-                              newArt.add(change.getArtifact());
+                              newArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                         }
                      }
-                     Set<Artifact> oldModArt = new HashSet<Artifact>();
-                     Set<Artifact> oldDelArt = new HashSet<Artifact>();
-                     Set<Artifact> oldNewArt = new HashSet<Artifact>();
+                     Map<Integer, Artifact> oldModArt = new HashMap<Integer, Artifact>();
+                     Map<Integer, Artifact> oldDelArt = new HashMap<Integer, Artifact>();
+                     Map<Integer, Artifact> oldNewArt = new HashMap<Integer, Artifact>();
                      for (ArtifactChange artifactChange : teamArt.getSmaMgr().getBranchMgr().getArtifactChanges()) {
-                        if (artifactChange.getModType() == ModificationType.CHANGE) {
+                        if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
                            // If there was at least one attribute changed, count it; don't count relation only changes
                            for (Object obj : BranchContentProvider.summarize(RevisionManager.getInstance().getTransactionChanges(
                                  artifactChange, artifactNameDescriptorCache))) {
-                              if ((obj instanceof AttributeSummary) || (obj instanceof AttributeChange)) {
-                                 oldModArt.add(artifactChange.getArtifact());
+
+                              if (obj instanceof AttributeSummary) {
+                                 for (AttributeChange attributeChange : ((AttributeSummary) obj).getChanges()) {
+                                    if (attributeChange.getChangeType() == ChangeType.OUTGOING) {
+                                       oldModArt.put(artifactChange.getArtifact().getArtId(),
+                                             artifactChange.getArtifact());
+                                    }
+                                 }
+                              }
+
+                              if (obj instanceof AttributeChange && ((AttributeChange) obj).getChangeType() == ChangeType.OUTGOING) {
+                                 oldModArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
                               }
                            }
                         }
+
+                        boolean newAndDeleted = false;
                         if (artifactChange.getModType() == ModificationType.DELETED) {
-                           oldDelArt.add(artifactChange.getArtifact());
+                           if (artifactChange.getArtifact().getArtId() == 244865) {
+                              int i = 1;
+                           }
+                           for (TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(
+                                 artifactChange.getArtifact(), false)) {
+
+                              for (RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(
+                                    transactionData)) {
+                                 if (teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && revisionChange instanceof ArtifactChange && revisionChange.getModType() == ModificationType.NEW) {
+                                    newAndDeleted = true;
+                                    break;
+                                 }
+                              }
+                              if (newAndDeleted) {
+                                 break;
+                              }
+                           }
+                           if (!newAndDeleted) {
+                              oldDelArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
+                           }
                         }
                         if (artifactChange.getModType() == ModificationType.NEW) {
-                           oldNewArt.add(artifactChange.getArtifact());
+                           oldNewArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
                         }
                      }
                      boolean modMismatch = false;
                      boolean newMismatch = false;
                      boolean delMismatch = false;
                      StringBuffer notes = new StringBuffer();
+
+                     for (Integer modArtifact : modArt.keySet()) {
+                        if (!oldModArt.containsKey(modArtifact)) {
+                           notes.append(" old mod missing: " + modArt.get(modArtifact).getDescriptiveName() + "<br>");
+                        }
+                     }
+
+                     for (Integer oldModArtifact : oldModArt.keySet()) {
+                        if (!modArt.containsKey(oldModArtifact)) {
+                           notes.append(" new mod missing: " + oldModArt.get(oldModArtifact).getDescriptiveName() + "<br>");
+                        }
+                     }
+
+                     for (Integer newArtifact : newArt.keySet()) {
+                        if (!oldNewArt.containsKey(newArtifact)) {
+                           notes.append(" old new missing: " + newArt.get(newArtifact).getDescriptiveName() + "<br>");
+                        }
+                     }
+
+                     for (Integer oldNewArtifact : oldNewArt.keySet()) {
+                        if (!newArt.containsKey(oldNewArtifact)) {
+                           notes.append(" new new missing: " + oldNewArt.get(oldNewArtifact).getDescriptiveName() + "<br>");
+                        }
+                     }
+
+                     for (Integer delArtifact : delArt.keySet()) {
+                        if (!oldDelArt.containsKey(delArtifact)) {
+                           notes.append(" old del missing: " + delArt.get(delArtifact).getInternalDescriptiveName() + "<br>");
+                        }
+                     }
+
+                     for (Integer oldDelArtifact : oldDelArt.keySet()) {
+                        if (!delArt.containsKey(oldDelArtifact)) {
+                           notes.append(" new del missing: " + oldDelArt.get(oldDelArtifact).getInternalDescriptiveName() + "<br>");
+                        }
+                     }
+
                      if (modArt.size() != oldModArt.size()) modMismatch = true;
                      if (newArt.size() != oldNewArt.size()) newMismatch = true;
                      if (delArt.size() != oldDelArt.size()) delMismatch = true;
