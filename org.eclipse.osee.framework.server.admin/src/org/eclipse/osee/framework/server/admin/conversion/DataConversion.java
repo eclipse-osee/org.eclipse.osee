@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -165,7 +166,7 @@ public class DataConversion {
                         ci.println("\tadd type " + typeName);
                      }
                   } catch (Exception ex) {
-                     OseeLog.log(Activator.class.getName(), Level.SEVERE, "Unable to save resource from DB.", ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, "Unable to save resource from DB.", ex);
                   }
                }
                count++;

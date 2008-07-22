@@ -14,10 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,7 +98,7 @@ public class ArtifactFileServlet extends HttpServlet {
 
    private void handleError(HttpServletResponse response, int status, String message, Throwable ex) throws IOException {
       response.setStatus(status);
-      OseeLog.log(Activator.class.getName(), Level.SEVERE, message, ex);
+      OseeLog.log(Activator.class, Level.SEVERE, message, ex);
       response.getWriter().write(Lib.exceptionToString(ex));
    }
 }

@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.search.engine.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -47,7 +49,7 @@ public class SearchEngineServlet extends HttpServlet {
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to respond to a search engine servlet request [%s]", request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
@@ -66,7 +68,7 @@ public class SearchEngineServlet extends HttpServlet {
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
@@ -90,7 +92,7 @@ public class SearchEngineServlet extends HttpServlet {
 
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {
@@ -119,7 +121,7 @@ public class SearchEngineServlet extends HttpServlet {
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Error submitting for tagging - [%s]",
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
                request.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       } finally {

@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import java.io.IOException;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -59,7 +61,7 @@ public class BranchManagerServlet extends HttpServlet {
             resp.getWriter().write("Unknown Error during branch creation.");
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format(
+         OseeLog.log(Activator.class, Level.SEVERE, String.format(
                "Failed to respond to a branch servlet request [%s]", req.toString()), ex);
          resp.getWriter().write(Lib.exceptionToString(ex));
       }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.server.admin.search;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -49,7 +50,7 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
       try {
          stmt =
                ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, true),
-                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : null);
+                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : new Object[0]);
          if (stmt.next()) {
             total = stmt.getRset().getInt(1);
          }
@@ -85,7 +86,7 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
          int total = getTotalItems(connection, branchId);
          stmt =
                ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, false),
-                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : null);
+                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : new Object[0]);
          int count = 0;
          this.isTagCompleteDone = true;
          while (isExecutionAllowed()) {

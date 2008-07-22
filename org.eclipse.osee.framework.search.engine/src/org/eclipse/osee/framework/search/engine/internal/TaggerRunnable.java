@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -55,7 +56,7 @@ class TaggerRunnable implements Runnable, ITagCollector {
             store();
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
       } finally {
          this.elapsedTime = System.currentTimeMillis() - start;
          if (searchTag != null) {
@@ -96,7 +97,7 @@ class TaggerRunnable implements Runnable, ITagCollector {
          try {
             store();
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class.getName(), Level.SEVERE, String.format("Unable to store tags [%s]", searchTag),
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags [%s]", searchTag),
                   ex);
          }
       }
