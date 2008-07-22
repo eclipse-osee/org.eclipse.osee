@@ -78,7 +78,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
             dbInfo.put(info.getDatabaseSetupDetails().getId(), info);
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -93,7 +93,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
             dbInfo.remove(info.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName));
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

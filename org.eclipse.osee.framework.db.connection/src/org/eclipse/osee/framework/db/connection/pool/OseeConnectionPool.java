@@ -74,7 +74,7 @@ public class OseeConnectionPool {
          connections.addElement(c);
          return c;
       } catch (Throwable th) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Unable to get database connection.", th);
+         OseeLog.log(Activator.class, Level.SEVERE, "Unable to get database connection.", th);
          throw new SQLException("Unable to get a database connection: " + th.getMessage());
       }
    }
@@ -91,7 +91,7 @@ public class OseeConnectionPool {
       Properties properties = dbInformation.getProperties();
       String dbUrl = dbInformation.getConnectionUrl();
 
-      OseeLog.log(Activator.class.getName(), Level.INFO, "Getting new connection: " + dbUrl);
+      OseeLog.log(Activator.class, Level.INFO, "Getting new connection: " + dbUrl);
       Connection connection = connectionFactory.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 

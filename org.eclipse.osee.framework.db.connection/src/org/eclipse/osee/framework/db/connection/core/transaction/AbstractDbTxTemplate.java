@@ -49,14 +49,14 @@ public abstract class AbstractDbTxTemplate {
    public void execute() throws Exception {
       try {
          ConnectionHandler.startTransactionLevel(this);
-         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
          ConnectionHandler.setTransactionLevelAsSuccessful(this);
-         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.FINEST, ex.getLocalizedMessage(), ex);
+         OseeLog.log(Activator.class, Level.FINEST, ex);
          handleTxException(ex);
       } finally {
          ConnectionHandler.endTransactionLevel(this);

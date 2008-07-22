@@ -27,7 +27,7 @@ public final class DbUtil {
          try {
             statement.close();
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -48,7 +48,7 @@ public final class DbUtil {
       // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
       String name = connection.getMetaData().getDatabaseProductName();
       if (name.toLowerCase().contains("derby")) return;
-      
+
       PreparedStatement statement = connection.prepareStatement("SET CONSTRAINTS ALL DEFERRED");
 
       statement.execute();

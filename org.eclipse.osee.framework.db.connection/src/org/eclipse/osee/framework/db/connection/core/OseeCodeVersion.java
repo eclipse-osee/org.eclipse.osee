@@ -46,8 +46,7 @@ public class OseeCodeVersion {
                }
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class.getName(), Level.SEVERE,
-                  "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
+            OseeLog.log(Activator.class, Level.SEVERE, "Can't access OseeVersion.txt\n" + Lib.exceptionToString(ex));
          }
       }
       return oseeVersion;

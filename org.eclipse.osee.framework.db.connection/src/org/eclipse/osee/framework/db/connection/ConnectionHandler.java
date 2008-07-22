@@ -135,7 +135,7 @@ public final class ConnectionHandler {
          try {
             connection.close();
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class.getName(), Level.WARNING,
+            OseeLog.log(Activator.class, Level.WARNING,
                   "Unable to close database connection: " + ex.getLocalizedMessage(), ex);
          } finally {
             connection = null;
@@ -168,7 +168,7 @@ public final class ConnectionHandler {
          try {
             connection.close();
          } catch (Exception ex) {
-            OseeLog.log(Activator.class.getName(), Level.WARNING,
+            OseeLog.log(Activator.class, Level.WARNING,
                   "Unable to close database connection: " + ex.getLocalizedMessage(), ex);
          }
          connection = null;
@@ -221,8 +221,8 @@ public final class ConnectionHandler {
          record.markEnd();
       } catch (SQLException ex) {
          record.setSqlException(ex);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql update failed: " + query, ex);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, Arrays.deepToString(data));
+         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: " + query, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, Arrays.deepToString(data));
          reGetConnection(overrideTransaction);
          throw ex;
       }
@@ -379,8 +379,7 @@ public final class ConnectionHandler {
             }
          }
          details.append("]\n");
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n",
-               ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
          throw ex;
       } finally {
          if (preparedStatement != null) {
@@ -396,7 +395,7 @@ public final class ConnectionHandler {
          if (update >= 0) {
             returnCount += update;
          } else if (Statement.EXECUTE_FAILED == update) {
-            OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql execute failes.");
+            OseeLog.log(Activator.class, Level.SEVERE, "sql execute failes.");
          } else if (Statement.SUCCESS_NO_INFO == update) {
             returnCount++;
          }
@@ -418,8 +417,7 @@ public final class ConnectionHandler {
          if (dataValue instanceof String) {
             int length = ((String) dataValue).length();
             if (length > 4000) {
-               OseeLog.log(Activator.class.getName(), Level.WARNING,
-                     "SQL value too long:" + length + "\nValue: " + dataValue);
+               OseeLog.log(Activator.class, Level.WARNING, "SQL value too long:" + length + "\nValue: " + dataValue);
                dataValue = ((String) dataValue).substring(0, 3999);
             }
          }
@@ -506,8 +504,7 @@ public final class ConnectionHandler {
             }
          }
          details.append("]\n");
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n",
-               ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
 
          reGetConnection(false);
          throw ex;
@@ -531,7 +528,7 @@ public final class ConnectionHandler {
       try {
          dbTransactionManager.get().endTransactionLevel(key);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

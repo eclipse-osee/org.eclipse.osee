@@ -65,8 +65,8 @@ public class Query {
                item = processor.process(chStmt.getRset());
                if (processor.validate(item)) collection.add(item);
             } catch (IllegalStateException ex) {
-               OseeLog.log(Activator.class.getName(), Level.SEVERE,
-                     "Encountered Exception when trying to acquire a collection.", ex);
+               OseeLog.log(Activator.class, Level.SEVERE, "Encountered Exception when trying to acquire a collection.",
+                     ex);
             }
          }
       } finally {

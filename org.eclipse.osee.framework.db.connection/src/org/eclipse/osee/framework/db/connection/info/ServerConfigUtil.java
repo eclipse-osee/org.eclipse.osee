@@ -73,18 +73,18 @@ public class ServerConfigUtil {
       String dbConnectionId = System.getProperty(DEFAULT_DB_CONNECTION);
       if (dbConnectionId != null) {
          if (servicesMap.containsKey(dbConnectionId)) {
-            OseeLog.log(Activator.class.getName(), Level.INFO, "Using DEFAULT_DB_CONNECTION: " + dbConnectionId);
+            OseeLog.log(Activator.class, Level.INFO, "Using DEFAULT_DB_CONNECTION: " + dbConnectionId);
             return buildDbInformation(dbConnectionId);
          }
          // Don't go to default if db connection id is specified but not valid
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Invalid DB Connection Id=> " + dbConnectionId);
+         OseeLog.log(Activator.class, Level.SEVERE, "Invalid DB Connection Id=> " + dbConnectionId);
          return null;
       }
       Set<String> keys = this.servicesMap.keySet();
       for (String key : keys) {
          DbSetupData serviceData = servicesMap.get(key);
          if (serviceData.isDefault()) {
-            OseeLog.log(Activator.class.getName(), Level.INFO, "Using DEFAULT_DB_CONNECTION: " + key);
+            OseeLog.log(Activator.class, Level.INFO, "Using DEFAULT_DB_CONNECTION: " + key);
             return buildDbInformation(key);
          }
       }

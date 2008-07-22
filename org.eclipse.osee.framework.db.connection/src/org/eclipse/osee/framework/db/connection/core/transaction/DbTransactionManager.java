@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.db.connection.core.transaction;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -55,7 +53,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
          dbName = dbName.toLowerCase();
          if (dbName.contains("mysql") || dbName.contains("derby")) {
             OseeLog.log(
-                  Activator.class.getName(),
+                  Activator.class,
                   Level.WARNING,
                   String.format(
                         "We are doing a naughty thing in DbTransactionManager line:66.  We skip defering constraint checking because we're using %s, " + "and we're checking the metaData to see if we are using %s.",
@@ -87,7 +85,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
             connection.setAutoCommit(priorCommit);
          }
       } catch (SQLException ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          transactionNeedsRollback = false;
          ConnectionHandler.repoolConnection(connection);
@@ -121,7 +119,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
                this.connection.close();
             }
          } catch (SQLException ex) {
-            OseeLog.log(Activator.class.getName(), Level.WARNING, ex.toString(), ex);
+            OseeLog.log(Activator.class, Level.WARNING, ex);
          }
       }
 
@@ -132,8 +130,8 @@ public final class DbTransactionManager extends KeyedLevelManager {
          if (connection != null) {
             try {
                connection.setAutoCommit(false);
-            } catch (SQLException e) {
-               OseeLog.log(Activator.class.getName(), Level.SEVERE, e.toString(), e);
+            } catch (SQLException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       }

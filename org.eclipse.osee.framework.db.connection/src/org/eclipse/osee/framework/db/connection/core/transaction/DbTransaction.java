@@ -51,14 +51,14 @@ public abstract class DbTransaction {
    public void execute() throws Exception {
       Connection connection = OseeDbConnection.getConnection();
       try {
-         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
          connection.setAutoCommit(false);
          DbUtil.deferConstraintChecking(connection);
          handleTxWork(connection);
          connection.commit();
-         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
-         OseeLog.log(Activator.class.getName(), Level.FINEST, ex.getLocalizedMessage(), ex);
+         OseeLog.log(Activator.class, Level.FINEST, ex);
          connection.rollback();
          handleTxException(ex);
       } finally {
@@ -66,12 +66,12 @@ public abstract class DbTransaction {
             try {
                connection.setAutoCommit(true);
             } catch (Exception ex) {
-               OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             try {
                connection.close();
             } catch (Exception ex) {
-               OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
          handleTxFinally();

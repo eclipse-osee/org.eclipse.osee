@@ -83,7 +83,7 @@ public class ConnectionHandlerStatement {
             statement.close();
          }
       } catch (SQLException ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

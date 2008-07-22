@@ -42,7 +42,7 @@ public class DBConnection {
          Properties properties = databaseService.getProperties();
          String dbUrl = databaseService.getConnectionUrl();
 
-         OseeLog.log(Activator.class.getName(), Level.INFO, "Getting new connection: " + dbUrl);
+         OseeLog.log(Activator.class, Level.INFO, "Getting new connection: " + dbUrl);
          Connection connection = connectionFactory.getConnection(properties, dbUrl);
          connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
@@ -57,7 +57,7 @@ public class DBConnection {
 
          return connection;
       } catch (Throwable th) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Unable to get database connection.", th);
+         OseeLog.log(Activator.class, Level.SEVERE, "Unable to get database connection.", th);
          throw new SQLException("Unable to get a database connection: " + th.getMessage());
       }
    }

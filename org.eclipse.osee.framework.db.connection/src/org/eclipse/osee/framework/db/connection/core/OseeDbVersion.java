@@ -106,7 +106,7 @@ public class OseeDbVersion {
          if (!OseeProperties.getInstance().isOverrideVersionCheck())
             throw new IllegalArgumentException(errorStr);
          else
-            OseeLog.log(Activator.class.getName(), Level.SEVERE, "Overriding Version Check - " + errorStr);
+            OseeLog.log(Activator.class, Level.SEVERE, "Overriding Version Check - " + errorStr);
       }
    }
 
@@ -127,7 +127,7 @@ public class OseeDbVersion {
          try {
             return (Date) formatter.parse(timestampStr);
          } catch (Exception ex) {
-            OseeLog.log(Activator.class.getName(), Level.SEVERE, "Couldn't process date: " + timestampStr);
+            OseeLog.log(Activator.class, Level.SEVERE, "Couldn't process date: " + timestampStr);
          }
       }
       return null;
