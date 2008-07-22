@@ -16,15 +16,18 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,6 +41,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
@@ -58,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
@@ -233,8 +238,8 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
-    * factories since all caching is performed by the factory.
+    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by factories
+    * since all caching is performed by the factory.
     * 
     * @param guid The guid of the artifact.
     * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
@@ -541,7 +546,6 @@ public class ArtifactPersistenceManager {
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
-      artifact.deleteAttributes();
       artifact.persistRelations();
       TagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
@@ -850,6 +854,16 @@ public class ArtifactPersistenceManager {
                ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, SQL3DataType.INTEGER,
                      transactionJoinId);
          int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, SQL3DataType.INTEGER, queryId);
+
+         try {
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("queryId", Integer.toString(transactionJoinId));
+            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+            String response = HttpProcessor.delete(new URL(url));
+
+         } catch (Exception ex) {
+            OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
+         }
 
          OseeLog.log(
                SkynetActivator.class,
