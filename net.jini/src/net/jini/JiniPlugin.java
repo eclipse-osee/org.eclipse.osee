@@ -25,11 +25,15 @@ public class JiniPlugin implements BundleActivator {
 
 			if (bundle != null) {
 				URL home = bundle.getEntry("/");
+				System.out.println(home.toString());
 				String id = home.getFile();
+				System.out.println(id);
 				if (id.endsWith("/")) {
 					id = id.substring(0, id.length() - 1);
+					System.out.println(id);
 				}
 				id = id.substring(id.lastIndexOf("/") + 1, id.length());
+				System.out.println(id);
 				serviceGroups = new String[1];
 				serviceGroups[0] = id;
 			}
