@@ -14,17 +14,11 @@ package org.eclipse.osee.framework.search.engine.data;
  * @author Roberto E. Escobar
  */
 public class AttributeVersion implements IAttributeLocator {
-   private int attrId;
    private long gammaId;
 
-   public AttributeVersion(int attrId, long gammaId) {
+   public AttributeVersion(long gammaId) {
       super();
-      this.attrId = attrId;
       this.gammaId = gammaId;
-   }
-
-   public int getAttrId() {
-      return attrId;
    }
 
    public long getGammaId() {
@@ -39,7 +33,7 @@ public class AttributeVersion implements IAttributeLocator {
       if (this == object) return true;
       if (!(object instanceof IAttributeLocator)) return false;
       IAttributeLocator other = (IAttributeLocator) object;
-      return other.getAttrId() == this.getAttrId() && other.getGammaId() == this.getGammaId();
+      return other.getGammaId() == this.getGammaId();
    }
 
    /* (non-Javadoc)
@@ -47,10 +41,10 @@ public class AttributeVersion implements IAttributeLocator {
     */
    @Override
    public int hashCode() {
-      return (int) (37 * getAttrId() * getGammaId());
+      return (int) (37 * getGammaId());
    }
 
    public String toString() {
-      return String.format("attrId: [%s] gammaId: [%d]", getAttrId(), getGammaId());
+      return String.format("gammaId: [%d]", getGammaId());
    }
 }

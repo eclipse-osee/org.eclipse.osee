@@ -15,7 +15,5 @@ package org.eclipse.osee.framework.search.engine.data;
  */
 public interface IAttributeLocator {
 
-   public int getAttrId();
-
    public long getGammaId();
 }
