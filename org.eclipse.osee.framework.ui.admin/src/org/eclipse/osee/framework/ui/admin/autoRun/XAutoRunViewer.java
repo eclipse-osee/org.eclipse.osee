@@ -186,7 +186,7 @@ public class XAutoRunViewer extends XWidget {
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            autoRunXViewer.getCustomize().handleTableCustomization();
+            autoRunXViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
       updateToolBarInfo();

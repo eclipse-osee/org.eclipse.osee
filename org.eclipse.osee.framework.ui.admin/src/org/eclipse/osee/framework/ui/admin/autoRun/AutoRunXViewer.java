@@ -21,7 +21,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -101,19 +100,6 @@ public class AutoRunXViewer extends XViewer {
             updateMenuActions();
          }
       });
-   }
-
-   @Override
-   public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      AutoRunColumn aCol = AutoRunColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      return true;
-   }
-
-   @Override
-   public boolean isColumnMultiEditEnabled() {
-      return true;
    }
 
    public void updateEditMenuActions() {
