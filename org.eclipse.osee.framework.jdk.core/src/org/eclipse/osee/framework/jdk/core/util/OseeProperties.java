@@ -34,8 +34,12 @@ public class OseeProperties {
    private static final String OSEE_AUTORUN = "osee.autoRun";
    private static final String OSEE_AUTORUN_NOTIFY = "osee.autoRunNotify";
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
+   @Deprecated
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
+   @Deprecated
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
+
+   private static final String OSEE_APPLICATION_SERVER_OVERRIDE = "osee.application.server.override";
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
 
@@ -138,10 +142,12 @@ public class OseeProperties {
       System.setProperty(OSEE_DB_CONFIG_INIT_CHOICE, value);
    }
 
+   @Deprecated
    public String getRemoteHttpServer() {
       return System.getProperty(OSEE_REMOTE_HTTP_SERVER, "");
    }
 
+   @Deprecated
    public String getRemoteHttpServerUploadPath() {
       return System.getProperty(OSEE_REMOTE_HTTP_UPLOAD_PATH, "");
    }
@@ -170,5 +176,15 @@ public class OseeProperties {
     */
    public boolean isLocalApplicationServerRequired() {
       return getBooleanProperty(OSEE_LOCAL_APPLICATION_SERVER);
+   }
+
+   /**
+    * Gets value entered for application server override. When specified, this system property sets the URL used to
+    * reference the application server.
+    * 
+    * @return application server URL to use instead of server specified in database
+    */
+   public String getOseeApplicationServerOverride() {
+      return System.getProperty(OSEE_APPLICATION_SERVER_OVERRIDE, "");
    }
 }

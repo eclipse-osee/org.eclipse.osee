@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.db.connection.core;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -32,7 +33,8 @@ public class OseeApplicationServer {
 
    public static String getOseeApplicationServer() throws SQLException {
       if (oseeServer == null) {
-         oseeServer = OseeInfo.getValue(key);
+         String overrideValue = OseeProperties.getInstance().getOseeApplicationServerOverride();
+         oseeServer = Strings.isValid(overrideValue) ? overrideValue : OseeInfo.getValue(key);
       }
       if (Strings.isValid(oseeServer) != true) {
          throw new SQLException("Invalid resource server address in DB. Check OSEE_INFO table.");
