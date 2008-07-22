@@ -1,7 +1,5 @@
 package net.jini;
 
-import java.net.URL;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,26 +19,8 @@ public class JiniPlugin implements BundleActivator {
 
 	public String[] getJiniVersion() {
 		Bundle bundle = context.getBundle();
-		try {
-
-			if (bundle != null) {
-				URL home = bundle.getEntry("/");
-				System.out.println(home.toString());
-				String id = home.getFile();
-				System.out.println(id);
-				if (id.endsWith("/")) {
-					id = id.substring(0, id.length() - 1);
-					System.out.println(id);
-				}
-				id = id.substring(id.lastIndexOf("/") + 1, id.length());
-				System.out.println(id);
-				serviceGroups = new String[1];
-				serviceGroups[0] = id;
-			}
-		} catch (Exception e) {
-			System.err.println("Failed to extract jini version");
-			e.printStackTrace();
-		}
+		serviceGroups = new String[1];
+		serviceGroups[0] = (String)bundle.getHeaders().get("Bundle-Version");
 		return serviceGroups;
 	}
 
