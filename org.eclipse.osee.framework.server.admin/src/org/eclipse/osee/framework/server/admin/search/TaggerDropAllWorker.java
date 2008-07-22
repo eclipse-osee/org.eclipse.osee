@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import java.sql.Connection;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 
 /**
@@ -31,8 +32,8 @@ class TaggerDropAllWorker extends BaseCmdWorker {
          String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
          if (dbName.contains("gresql")) {
             deleteSql = TRUNCATE_SQL;
-         } else if (dbName.contains("oracle")) {
-            deleteSql = TRUNCATE_ORACLE_SQL;
+//         } else if (dbName.contains("oracle")) {
+//            deleteSql = TRUNCATE_ORACLE_SQL;
          } else {
             deleteSql = DELETE_TABLE_SQL;
          }
