@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.server.admin.Activator;
@@ -31,6 +32,7 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
    private static final String COUNT_TAGGABLE_ATTRIBUTES = "SELECT count(1)" + GET_TAGGABLE_SQL_BODY;
 
    private static final String POSTGRESQL_CHECK = " AND type1.tagger_id <> ''";
+   private static final String RESTRICT_BY_BRANCH = " AND txd1.branch_id = ?";
 
    private ISearchEngineTagger searchTagger;
    private boolean isTagCompleteDone;
@@ -41,15 +43,13 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
       this.searchTagger = Activator.getInstance().getSearchTagger();
    }
 
-   private int getTotalItems(Connection connection) throws SQLException {
+   private int getTotalItems(Connection connection, int branchId) throws SQLException {
       int total = -1;
       ConnectionHandlerStatement stmt = null;
       try {
-         String query = COUNT_TAGGABLE_ATTRIBUTES;
-         if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
-            query += POSTGRESQL_CHECK;
-         }
-         stmt = ConnectionHandler.runPreparedQuery(connection, query);
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, true),
+                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : null);
          if (stmt.next()) {
             total = stmt.getRset().getInt(1);
          }
@@ -59,17 +59,33 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
       return total;
    }
 
+   private String getQuery(Connection connection, int branchId, boolean isCountQuery) throws SQLException {
+      StringBuilder builder = new StringBuilder();
+      builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
+      if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
+         builder.append(POSTGRESQL_CHECK);
+      }
+      if (branchId > -1) {
+         builder.append(RESTRICT_BY_BRANCH);
+      }
+      return builder.toString();
+   }
+
    protected void doWork(long startTime) throws Exception {
       Connection connection = null;
       ConnectionHandlerStatement stmt = null;
       try {
-         connection = ConnectionHandler.getConnection();
-         int total = getTotalItems(connection);
-         String query = FIND_ALL_TAGGABLE_ATTRIBUTES;
-         if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
-            query += POSTGRESQL_CHECK;
+         String arg = getCommandInterpreter().nextArgument();
+         int branchId = -1;
+         if (arg != null && arg.length() > 0) {
+            branchId = Integer.parseInt(arg);
          }
-         stmt = ConnectionHandler.runPreparedQuery(connection, query);
+         println(String.format("Tagging Attributes: [%s]", branchId > -1 ? branchId : "All Branches"));
+         connection = ConnectionHandler.getConnection();
+         int total = getTotalItems(connection, branchId);
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, false),
+                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : null);
          int count = 0;
          this.isTagCompleteDone = true;
          while (isExecutionAllowed()) {

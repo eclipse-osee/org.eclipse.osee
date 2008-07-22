@@ -41,6 +41,10 @@ public abstract class BaseCmdWorker implements Runnable {
       this.ci = ci;
    }
 
+   public CommandInterpreter getCommandInterpreter() {
+      return this.ci;
+   }
+
    public boolean isVerbose() {
       return isVerbose;
    }

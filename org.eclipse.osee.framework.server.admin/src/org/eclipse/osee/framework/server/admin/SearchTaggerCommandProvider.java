@@ -79,7 +79,7 @@ public class SearchTaggerCommandProvider implements CommandProvider {
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Server Admin Commands---\n");
-      sb.append("        tag_all - tag all attributes\n");
+      sb.append("        tag_all [<branchId>] - tag all attributes in a branch or tag all attributes in all branches if id not specified\n");
       sb.append("        tag_all_stop - stop tagging all attributes\n");
       sb.append("        drop_all_tags - drops all tags\n");
       sb.append("        drop_all_tags_stop - stop dropping all tags\n");
