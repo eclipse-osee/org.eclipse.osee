@@ -112,7 +112,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (EXTRA_COLUMNS.contains(treeColumn.getText())) return false;
-      return true;
+      return super.isColumnMultiEditable(treeColumn, treeItems);
    }
 
    @Override
@@ -284,7 +284,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       }
 
       custData.getColumnData().setColumns(columns);
-      getCustomize().setCustomization(custData);
+      getCustomizeMgr().loadCustomization(custData);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
    }
 
@@ -309,9 +309,8 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
             XViewerColumn newCol =
-                  new XViewerColumn(xViewer, "attribute." + attributeType.getName(), attributeType.getName(), 75, 75,
-                        SWT.CENTER);
-            newCol.setSortDataType(XViewerAttributeSortDataType.get(attributeType));
+                  new XViewerColumn("attribute." + attributeType.getName(), attributeType.getName(), 75, SWT.CENTER,
+                        false, XViewerAttributeSortDataType.get(attributeType));
             columns.add(newCol);
             attrNames.add(attributeType.getName());
          }

@@ -13,11 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
@@ -26,37 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCus
 /**
  * @author Donald G. Dunne
  */
-public class SkynetXViewerFactory implements IXViewerFactory {
+public class SkynetXViewerFactory extends XViewerFactory {
 
    private IXViewerCustomizeDefaults xViewerCustDefaults;
    private IXViewerCustomizations xViewerCustomizations;
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#createNewXSorter(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
-   public XViewerSorter createNewXSorter(XViewer viewer) {
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData()
-    */
-   public CustomizeData getDefaultTableCustomizeData(XViewer xViewer) {
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn(java.lang.String)
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      return null;
-   }
 
    /*
     * (non-Javadoc)
@@ -66,8 +36,7 @@ public class SkynetXViewerFactory implements IXViewerFactory {
    public IXViewerCustomizeDefaults getXViewerCustomizeDefaults() {
       if (ConnectionHandler.isConnected()) {
          if (xViewerCustDefaults == null) {
-            xViewerCustDefaults =
-                  new SkynetCustomizeDefaults(SkynetAuthentication.getUser());
+            xViewerCustDefaults = new SkynetCustomizeDefaults(SkynetAuthentication.getUser());
          }
          return xViewerCustDefaults;
       }

@@ -63,7 +63,7 @@ public class QueryLogLabelProvider extends XViewerLabelProvider {
    }
 
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
-      String columnName = xCol.getDisplayName();
+      String columnName = xCol.getName();
 
       if (element instanceof QueryRecord) {
          QueryRecord record = (QueryRecord) element;

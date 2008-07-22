@@ -50,7 +50,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
     */
    public XViewerColumn getDefaultXViewerColumn(String id) {
       if (custData != null) for (XViewerColumn xCol : custData.getColumnData().getColumns())
-         if (xCol.getDisplayName().equals(id)) return xCol;
+         if (xCol.getName().equals(id)) return xCol;
       return null;
    }
 

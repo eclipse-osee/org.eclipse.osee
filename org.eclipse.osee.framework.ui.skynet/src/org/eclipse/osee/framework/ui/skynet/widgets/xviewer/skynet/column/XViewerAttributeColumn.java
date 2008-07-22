@@ -20,7 +20,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
    private final String attributeTypeName;
 
    public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, id, name, width, defaultWidth, align, show, sortDataType);
+      super(viewer, id, name, width, align, show, sortDataType);
       this.attributeTypeName = attributeTypeName;
    }
 

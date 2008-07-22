@@ -170,7 +170,7 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xCommitViewer.getCustomize().handleTableCustomization();
+            xCommitViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

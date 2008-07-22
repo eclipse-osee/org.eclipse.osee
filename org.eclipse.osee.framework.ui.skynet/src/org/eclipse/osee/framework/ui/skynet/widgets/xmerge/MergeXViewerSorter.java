@@ -44,9 +44,8 @@ public class MergeXViewerSorter extends XViewerSorter {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       try {
-         if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
-         XViewerColumn sortXCol =
-               xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
+         if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) return 0;
+         XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
          String value1 = labelProvider.getColumnText(o1, sortXCol, sortXColIndex);
          String value2 = labelProvider.getColumnText(o2, sortXCol, sortXColIndex);
 

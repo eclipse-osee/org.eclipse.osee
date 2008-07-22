@@ -57,7 +57,7 @@ public class CustomizeData {
 
    public Image getImage(boolean isDefault) {
       if (!isWorkbench) return null;
-      if (name.equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || name.equals(XViewerCustomize.CURRENT_LABEL)) {
+      if (name.equals(CustomizeManager.TABLE_DEFAULT_LABEL) || name.equals(CustomizeManager.CURRENT_LABEL)) {
          return SkynetGuiPlugin.getInstance().getImage("customize.gif");
       }
       String index = "" + personal + isDefault;

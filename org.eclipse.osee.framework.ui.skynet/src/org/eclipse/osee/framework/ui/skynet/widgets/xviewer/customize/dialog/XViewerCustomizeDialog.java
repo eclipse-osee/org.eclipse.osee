@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeDataLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -149,8 +149,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((XViewerColumn) e1).getNameAlternate(),
-                  ((XViewerColumn) e2).getNameAlternate());
+            return getComparator().compare(((XViewerColumn) e1).toString(), ((XViewerColumn) e2).toString());
          }
       });
       hiddenColTable.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -539,7 +538,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void handleLoadSelCustButton() {
       CustomizeData custData = getCustTableSelection();
       if (custData != null) {
-         xViewer.getCustomize().setCustomization(getCustTableSelection());
+         xViewer.getCustomizeMgr().loadCustomization(getCustTableSelection());
       }
    }
 
@@ -563,7 +562,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void handleSaveButton() {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
-      for (CustomizeData custData : xViewer.getCustomize().getXViewerCustomizations().getCustDatas()) {
+      for (CustomizeData custData : xViewer.getCustomizeMgr().getCustDatas()) {
          if (custData.isPersonal())
             custDatas.add(custData);
          else if (OseeAts.isAtsAdmin()) custDatas.add(custData);
@@ -575,7 +574,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
             CustomizeData custXml = getConfigCustomizeCustData();
             custXml.setName(name);
             custXml.setPersonal(!diag.isSaveGlobal());
-            xViewer.getCustomize().getXViewerCustomizations().saveCustomization(custXml);
+            xViewer.getCustomizeMgr().saveCustomization(custXml);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
@@ -590,9 +589,11 @@ public class XViewerCustomizeDialog extends MessageDialog {
                   MessageDialog.QUESTION, new String[] {"OK", "Use Default", "Cancel"}, 0);
       int result = ed.open();
       if (result == 2) return;
-      if (result == 0)
-         xCol.setAlternateName(ed.getEntry());
-      else if (result == 1) xCol.setAlternateName("");
+      if (result == 0) {
+         xViewer.getCustomizeMgr().customizeColumnName(xCol, ed.getEntry());
+      } else if (result == 1) {
+         xViewer.getCustomizeMgr().customizeColumnName(xCol, "");
+      }
       visibleColTable.update(xCol, null);
    }
 
@@ -609,24 +610,24 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    private void handleLoadConfigCustButton() {
-      xViewer.getCustomize().setCustomization(getConfigCustomizeCustData());
+      xViewer.getCustomizeMgr().loadCustomization(getConfigCustomizeCustData());
    }
 
    private void handleSetDefaultButton() {
       CustomizeData custData = getCustTableSelection();
-      if (custData.getName().equals(XViewerCustomize.TABLE_DEFAULT_LABEL) || custData.getName().equals(
-            XViewerCustomize.CURRENT_LABEL)) {
+      if (custData.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custData.getName().equals(
+            CustomizeManager.CURRENT_LABEL)) {
          AWorkbench.popup("ERROR", "Can't set table default or current as default");
          return;
       }
-      if (xViewer.getCustomize().getXViewerCustomizations().isCustomizationUserDefault(custData)) {
+      if (xViewer.getCustomizeMgr().isCustomizationUserDefault(custData)) {
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove Default",
                "Remove \"" + custData + "\" as default for this table?")) {
-            xViewer.getCustomize().getXViewerCustomizations().setUserDefaultCustData(custData, false);
+            xViewer.getCustomizeMgr().setUserDefaultCustData(custData, false);
          }
       } else if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set Default",
             "Set \"" + custData + "\" as default for this table?")) {
-         xViewer.getCustomize().getXViewerCustomizations().setUserDefaultCustData(custData, true);
+         xViewer.getCustomizeMgr().setUserDefaultCustData(custData, true);
       }
       loadCustomizeTable();
    }
@@ -641,7 +642,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Customization",
                "Delete \"" + custSel + "\" customization?")) {
-            xViewer.getCustomize().getXViewerCustomizations().deleteCustomization(custSel);
+            xViewer.getCustomizeMgr().deleteCustomization(custSel);
             loadCustomizeTable();
             updateButtonEnablements();
          }
@@ -653,9 +654,9 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void updateButtonEnablements() {
       CustomizeData custData = getCustTableSelection();
       setDefaultButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizeDefaults().isSaveDefaultsEnabled() && custTable.getTable().isFocusControl() && custData != null && !custData.getName().equals(
-            XViewerCustomize.TABLE_DEFAULT_LABEL) && !custData.getName().equals(XViewerCustomize.CURRENT_LABEL));
+            CustomizeManager.TABLE_DEFAULT_LABEL) && !custData.getName().equals(CustomizeManager.CURRENT_LABEL));
       if (custTable.getTable().isFocusControl() && custData != null) {
-         setDefaultButton.setText(xViewer.getCustomize().getXViewerCustomizations().isCustomizationUserDefault(custData) ? REMOVE_DEFAULT : SET_AS_DEFAULT);
+         setDefaultButton.setText(xViewer.getCustomizeMgr().isCustomizationUserDefault(custData) ? REMOVE_DEFAULT : SET_AS_DEFAULT);
          setDefaultButton.getParent().layout();
       }
       deleteButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizeDefaults().isSaveDefaultsEnabled() && custTable.getTable().isFocusControl() && custData != null);
@@ -670,16 +671,16 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void loadCustomizeTable() {
       // Add stored customization data
-      List<CustomizeData> custDatas = xViewer.getCustomize().getXViewerCustomizations().getCustDatas();
+      List<CustomizeData> custDatas = xViewer.getCustomizeMgr().getCustDatas();
 
       // Add table default customization data
-      defaultTableCustData = xViewer.getCustomize().getTableDefaultCustData();
-      defaultTableCustData.setName(XViewerCustomize.TABLE_DEFAULT_LABEL);
+      defaultTableCustData = xViewer.getCustomizeMgr().getTableDefaultCustData();
+      defaultTableCustData.setName(CustomizeManager.TABLE_DEFAULT_LABEL);
       custDatas.add(defaultTableCustData);
 
       // Add current customization data
-      CustomizeData currentCustData = xViewer.getCustomize().getCurrentCustData();
-      currentCustData.setName(XViewerCustomize.CURRENT_LABEL);
+      CustomizeData currentCustData = xViewer.getCustomizeMgr().getCurrentCustData();
+      currentCustData.setName(CustomizeManager.CURRENT_LABEL);
       custDatas.add(currentCustData);
 
       custTable.setInput(custDatas);

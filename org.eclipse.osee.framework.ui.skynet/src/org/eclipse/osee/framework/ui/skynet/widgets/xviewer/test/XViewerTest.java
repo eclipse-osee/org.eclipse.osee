@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test.IXViewerTestTask.RunDb;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test.IXViewerTestTask.TaskType;
@@ -36,7 +35,7 @@ public class XViewerTest extends XViewer {
     * @param custom
     */
    public XViewerTest(Composite parent, int style, String namespace, IXViewerFactory viewerFactory, XViewerCustomize custom) {
-      super(parent, style, namespace, viewerFactory, custom);
+      super(parent, style, namespace, viewerFactory);
    }
 
    public boolean isScheduled(IXViewerTestTask autoRunTask) {
@@ -67,7 +66,7 @@ public class XViewerTest extends XViewer {
 
       XViewerTest xViewerTest =
             new XViewerTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, "xviewer.test",
-                  new XViewerTestFactory(), new XViewerCustomize(Shell_1, new XViewerCustomizations()));
+                  new XViewerTestFactory(), new XViewerCustomize());
       xViewerTest.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       xViewerTest.setContentProvider(new XViewerTestContentProvider(xViewerTest));
       xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));

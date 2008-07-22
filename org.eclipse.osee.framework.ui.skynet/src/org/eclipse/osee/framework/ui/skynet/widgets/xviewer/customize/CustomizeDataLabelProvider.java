@@ -22,15 +22,14 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CustomizeDataLabelProvider implements ILabelProvider {
 
-   private final XViewer viewer;
+   private final XViewer xViewer;
 
    public CustomizeDataLabelProvider(XViewer xViewer) {
-      viewer = xViewer;
+      this.xViewer = xViewer;
    }
 
    public Image getImage(Object arg0) {
-      return ((CustomizeData) arg0).getImage(viewer.getCustomize().getXViewerCustomizations().isCustomizationUserDefault(
-            (CustomizeData) arg0));
+      return ((CustomizeData) arg0).getImage(xViewer.getCustomizeMgr().isCustomizationUserDefault((CustomizeData) arg0));
    }
 
    public String getText(Object arg0) {

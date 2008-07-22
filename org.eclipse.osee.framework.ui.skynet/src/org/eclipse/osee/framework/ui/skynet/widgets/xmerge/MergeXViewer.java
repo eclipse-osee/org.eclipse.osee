@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -94,12 +92,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
       openMergeViewAction.setEnabled(true);
 
-   }
-
-   @Override
-   public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
-      return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
    @Override

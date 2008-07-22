@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
@@ -90,19 +89,6 @@ public class CommitXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
       openMergeViewAction.setEnabled(getSelectedBranches().size() == 1 && getSelectedBranches().iterator().next().isBaselineBranch());
 
-   }
-
-   @Override
-   public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      CommitColumn aCol = CommitColumn.getAtsXColumn((XViewerColumn) treeColumn.getData());
-      XViewerColumn xCol = getCustomize().getCurrentCustData().getColumnData().getXColumn(aCol.getName());
-      if (!xCol.isShow() || !aCol.isMultiColumnEditable()) return false;
-      return true;
-   }
-
-   @Override
-   public boolean isColumnMultiEditEnabled() {
-      return true;
    }
 
    public void updateMenuActions() {

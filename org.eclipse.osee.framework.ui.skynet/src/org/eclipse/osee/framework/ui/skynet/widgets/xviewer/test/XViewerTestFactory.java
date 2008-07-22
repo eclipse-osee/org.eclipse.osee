@@ -8,21 +8,17 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizeDefaults;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerTestFactory implements IXViewerFactory {
+public class XViewerTestFactory extends XViewerFactory {
    private static String COLUMN_NAMESPACE = "xviewer.test";
    public static XViewerColumn Run_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 50, SWT.LEFT, true, SortDataType.String);
@@ -47,14 +43,6 @@ public class XViewerTestFactory implements IXViewerFactory {
    public List<XViewerColumn> columns =
          Arrays.asList(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description,
                Other_Description);
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#createNewXSorter(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
-   @Override
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new XViewerSorter(xViewer);
-   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData()
@@ -82,22 +70,6 @@ public class XViewerTestFactory implements IXViewerFactory {
          }
       }
       return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizations(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
-    */
-   @Override
-   public IXViewerCustomizations getXViewerCustomizations(XViewer viewer) {
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizeDefaults()
-    */
-   @Override
-   public IXViewerCustomizeDefaults getXViewerCustomizeDefaults() {
-      return new XViewerCustomizeDefaults();
    }
 
 }

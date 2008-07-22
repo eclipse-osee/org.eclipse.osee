@@ -11,9 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -22,8 +20,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog.FilterDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -49,15 +47,18 @@ public class XViewer extends TreeViewer {
    public static final String MENU_GROUP_PRE = "XVIEWER MENU GROUP PRE";
    public static final String MENU_GROUP_POST = "XVIEWER MENU GROUP POST";
    private Label statusLabel;
-   protected XViewerCustomize customize;
    private String namespace;
    private MenuManager menuManager;
    private boolean ctrlKeyDown = false;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private boolean columnMultiEditEnabled = false;
+   private CustomizeManager customizeMgr;
+   private TreeColumn rightClickSelectedColumn = null;
+   private Integer rightClickSelectedColumnNum = null;
+   private TreeItem rightClickSelectedItem = null;
 
-   public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory, XViewerCustomize custom) {
+   public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory) {
       super(parent, style);
       this.namespace = namespace;
       this.xViewerFactory = xViewerFactory;
@@ -65,21 +66,12 @@ public class XViewer extends TreeViewer {
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(parent);
       this.filterDataUI = new FilterDataUI(this);
-      this.customize = custom;
-      this.customize.init(this);
+      customizeMgr = new CustomizeManager(this, xViewerFactory);
       createSupportWidgets(parent);
 
       Tree tree = getTree();
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-   }
-
-   /**
-    * @param parent
-    * @param style
-    */
-   public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory) {
-      this(parent, style, namespace, xViewerFactory, new XViewerCustomize(Display.getCurrent().getActiveShell()));
    }
 
    public void dispose() {
@@ -90,7 +82,7 @@ public class XViewer extends TreeViewer {
       Action customizeAction = new Action("Customize Table") {
 
          public void run() {
-            getCustomize().handleTableCustomization();
+            customizeMgr.handleTableCustomization();
          }
       };
       customizeAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("customize.gif"));
@@ -99,10 +91,6 @@ public class XViewer extends TreeViewer {
       IToolBarManager toolbarManager = viewPart.getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(customizeAction);
    }
-
-   private TreeColumn rightClickSelectedColumn = null;
-   private Integer rightClickSelectedColumnNum = null;
-   private TreeItem rightClickSelectedItem = null;
 
    protected void createSupportWidgets(Composite parent) {
 
@@ -181,13 +169,12 @@ public class XViewer extends TreeViewer {
       getTree().setMenu(getMenuManager().getMenu());
       filterDataUI.createWidgets(comp);
 
-      // Load the default customization if already set
-      if (customize != null && customize.getDefaultCustData() != null) customize.setCustomization(customize.getDefaultCustData());
+      customizeMgr.loadCustomization();
    }
 
    public int getCurrentColumnWidth(XViewerColumn xCol) {
       for (TreeColumn col : getTree().getColumns()) {
-         if (col.getText().equals(xCol.getDisplayName()) || col.getText().equals(xCol.getAlternateName())) {
+         if (col.getText().equals(xCol.getName())) {
             return col.getWidth();
          }
       }
@@ -239,7 +226,9 @@ public class XViewer extends TreeViewer {
    }
 
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      return false;
+      if (!isColumnMultiEditEnabled()) return false;
+      if (!(treeColumn.getData() instanceof XViewerColumn)) return false;
+      return (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable());
    }
 
    public XViewerColumn getXTreeColumn(int columnIndex) {
@@ -257,7 +246,7 @@ public class XViewer extends TreeViewer {
    };
 
    public void resetDefaultSorter() {
-      customize.resetDefaultSorter();
+      customizeMgr.resetDefaultSorter();
    }
 
    @Override
@@ -341,7 +330,7 @@ public class XViewer extends TreeViewer {
       if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
             ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
       sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-      sb.append(customize.getStatusLabelAddition());
+      sb.append(customizeMgr.getStatusLabelAddition());
       sb.append(filterDataUI.getStatusLabelAddition());
       sb.append(getStatusString());
       return sb.toString().replaceAll(" - $", "");
@@ -349,7 +338,7 @@ public class XViewer extends TreeViewer {
 
    public String getStatusLine2() {
       StringBuffer sb = new StringBuffer();
-      if (customize.getCurrentCustData() != null && customize.getCurrentCustData().getSortingData().isSorting()) sb.append(customize.getCurrentCustData().getSortingData().toString());
+      sb.append(customizeMgr.getSortingStr());
       return sb.toString().replaceFirst(", $", "");
    }
 
@@ -363,67 +352,6 @@ public class XViewer extends TreeViewer {
          status = getStatusLine1() + "\n" + line2;
       statusLabel.setText(status);
       statusLabel.getParent().getParent().layout();
-   }
-
-   public void addColumns() {
-      for (final XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
-         TreeColumn column = new TreeColumn(getTree(), xCol.getAlign());
-         column.setMoveable(true);
-         xCol.setTreeColumn(column);
-         column.setData(xCol);
-         if (xCol.getToolTip().equals(""))
-            column.setToolTipText(xCol.getDisplayName());
-         else
-            column.setToolTipText(xCol.getToolTip());
-         column.setText(xCol.getDisplayName());
-         if (xCol.isShow()) {
-            int width = xCol.getWidth();
-            if (width == 0) width = xCol.getDefaultWidth();
-            column.setWidth(width);
-         } else
-            column.setWidth(0);
-         column.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               super.widgetSelected(e);
-               // Add sorter if doesn't exist
-               if (getSorter() == null) resetDefaultSorter();
-               if (ctrlKeyDown) {
-                  List<XViewerColumn> currSortCols = customize.getCurrentCustData().getSortingData().getSortXCols();
-                  if (currSortCols == null) {
-                     currSortCols = new ArrayList<XViewerColumn>();
-                     currSortCols.add(xCol);
-                  } else {
-                     // If already selected this item, reverse the sort
-                     if (currSortCols.contains(xCol)) {
-                        for (XViewerColumn currXCol : currSortCols)
-                           if (currXCol.equals(xCol)) currXCol.reverseSort();
-                     } else
-                        currSortCols.add(xCol);
-                  }
-                  customize.getCurrentCustData().getSortingData().setSortXCols(currSortCols);
-               } else {
-
-                  List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-                  cols.add(xCol);
-                  // If sorter already has this column sorted, reverse the sort
-                  List<XViewerColumn> currSortCols = customize.getCurrentCustData().getSortingData().getSortXCols();
-                  if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
-                  // Set the newly sorted column
-                  customize.getCurrentCustData().getSortingData().setSortXCols(cols);
-               }
-               refresh();
-               updateStatusLabel();
-            }
-         });
-      }
-   }
-
-   /**
-    * @return Returns the customize.
-    */
-   public XViewerCustomize getCustomize() {
-      return customize;
    }
 
    public String getViewerNamespace() {
@@ -469,6 +397,14 @@ public class XViewer extends TreeViewer {
 
    public Integer getRightClickSelectedColumnNum() {
       return rightClickSelectedColumnNum;
+   }
+
+   public CustomizeManager getCustomizeMgr() {
+      return customizeMgr;
+   }
+
+   public boolean isCtrlKeyDown() {
+      return ctrlKeyDown;
    }
 
 }

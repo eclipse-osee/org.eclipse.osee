@@ -38,8 +38,8 @@ public class XViewerSorter extends ViewerSorter {
 
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
-      if (treeViewer.getCustomize().getCurrentCustData() == null) return 0;
-      List<XViewerColumn> sortXCols = treeViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols();
+      if (treeViewer.getCustomizeMgr().isLoading()) return 0;
+      List<XViewerColumn> sortXCols = treeViewer.getCustomizeMgr().getSortXCols();
       if (sortXCols == null || sortXCols.size() == 0) return 0;
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
       try {
@@ -78,7 +78,7 @@ public class XViewerSorter extends ViewerSorter {
    }
 
    public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {
-      List<XViewerColumn> sortXCols = treeViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols();
+      List<XViewerColumn> sortXCols = treeViewer.getCustomizeMgr().getSortXCols();
       int returnInt = (sortXCol.isSortForward() ? 1 : -1) * compareInt;
       // System.out.println("returnInt *" + returnInt + "*");
       if (returnInt == 0 && sortXCols.size() > (sortXColIndex + 1)) {

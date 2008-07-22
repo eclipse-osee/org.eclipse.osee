@@ -34,10 +34,10 @@ public class XViewerTextFilter extends ViewerFilter {
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       if (pattern == null) return true;
+      if (xViewer.getCustomizeMgr().isLoading()) return true;
       if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
-      for (XViewerColumn xCol : xViewer.getCustomize().getCurrentCustData().getColumnData().getColumns()) {
+      for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumns()) {
          if (xCol.isShow()) {
-            System.out.println("fix this, column index should not be 0");
             try {
                String cellStr = ((XViewerLabelProvider) labelProv).getColumnText(element, xCol, 0);
                if (cellStr != null) {

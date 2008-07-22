@@ -48,8 +48,8 @@ public enum CommitColumn {
 
    public XViewerColumn getXViewerColumn(CommitColumn atsXCol) {
       XViewerColumn xCol =
-            new XViewerColumn("commit.view." + atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align,
-                  atsXCol.isShow(), atsXCol.sortDataType);
+            new XViewerColumn("commit.view." + atsXCol.name, atsXCol.name, atsXCol.width, atsXCol.align, atsXCol.isShow(),
+                  atsXCol.sortDataType);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

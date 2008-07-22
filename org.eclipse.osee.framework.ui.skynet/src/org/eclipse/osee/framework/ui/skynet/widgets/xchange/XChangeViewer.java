@@ -162,7 +162,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xChangeViewer.getCustomize().handleTableCustomization();
+            xChangeViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

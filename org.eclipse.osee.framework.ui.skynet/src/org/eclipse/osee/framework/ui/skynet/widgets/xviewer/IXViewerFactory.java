@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizeDefaults;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -57,4 +58,11 @@ public interface IXViewerFactory {
     * @return
     */
    IXViewerCustomizations getXViewerCustomizations(XViewer xViewer);
+
+   /**
+    * Provides custom menu for XViewer
+    * 
+    * @return
+    */
+   XViewerCustomize getXViewerCustomMenu();
 }

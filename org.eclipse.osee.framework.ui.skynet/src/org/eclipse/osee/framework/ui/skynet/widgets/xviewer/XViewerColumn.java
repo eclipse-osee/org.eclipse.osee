@@ -23,11 +23,9 @@ public class XViewerColumn {
    private XViewer xViewer;
    private String id;
    private String name = "";
-   private String alternateName = "";
    private String description;
    private boolean multiColumnEditable = false;
    private int width;
-   private int defaultWidth;
    private int align;
    private boolean sortForward = true; // if true, sort alphabetically; else reverse
    private boolean show = true;
@@ -39,13 +37,12 @@ public class XViewerColumn {
       Date, Float, Percent, String, String_MultiLine, Boolean, Integer
    };
 
-   public XViewerColumn(XViewer xViewer, String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerColumn(XViewer xViewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super();
       this.xViewer = xViewer;
       this.id = id;
       this.name = name;
-      this.defaultWidth = defaultWidth;
-      this.width = defaultWidth;
+      this.width = width;
       this.align = align;
       this.show = show;
       this.sortDataType = sortDataType;
@@ -55,27 +52,19 @@ public class XViewerColumn {
    }
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      this(null, id, name, width, width, align, show, sortDataType, false, description);
+      this(null, id, name, width, align, show, sortDataType, false, description);
    }
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(null, id, name, width, width, align, show, sortDataType, false, null);
+      this(null, id, name, width, align, show, sortDataType, false, null);
    }
 
-   public XViewerColumn(XViewer xViewer, String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      this(xViewer, id, name, width, defaultWidth, align, show, sortDataType, false, null);
-   }
-
-   public XViewerColumn(String id, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      this(null, id, name, width, defaultWidth, align, show, sortDataType);
+   public XViewerColumn(XViewer xViewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
+      this(xViewer, id, name, width, align, show, sortDataType, false, null);
    }
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
-      this(null, id, name, width, width, align, show, sortDataType);
-   }
-
-   public XViewerColumn(XViewer xViewer, String id, String name, int width, int defaultWidth, int align) {
-      this(xViewer, id, name, width, defaultWidth, align, true, SortDataType.String);
+      this(null, id, name, width, align, show, sortDataType);
    }
 
    public XViewerColumn(XViewer xViewer, String xml) {
@@ -100,22 +89,17 @@ public class XViewerColumn {
 
    public static String ID = "id";
    public static String NAME = "name";
-   public static String ALTERNATE_NAME = "alt";
    public static String WIDTH = "wdth";
-   public static String DEFAULT_WIDTH = "defWdth";
    public static String ALIGN = "algn";
    public static String SORT_FORWARD = "srtFwd";
    public static String SHOW = "show";
-   public static String ORDER_NUM = "order";
    public static String XTREECOLUMN_TAG = "xCol";
 
    public String toXml() {
       StringBuffer sb = new StringBuffer("<" + XTREECOLUMN_TAG + ">");
       sb.append(AXml.addTagData(ID, id));
       sb.append(AXml.addTagData(NAME, name));
-      sb.append(AXml.addTagData(ALTERNATE_NAME, alternateName));
-      sb.append(AXml.addTagData(DEFAULT_WIDTH, defaultWidth + ""));
-      sb.append(AXml.addTagData(WIDTH, (xViewer == null) ? width + "" : xViewer.getCurrentColumnWidth(this) + ""));
+      sb.append(AXml.addTagData(WIDTH, width + ""));
       sb.append(AXml.addTagData(ALIGN, getAlignStoreName(align)));
       sb.append(AXml.addTagData(SORT_FORWARD, sortForward + ""));
       sb.append(AXml.addTagData(SHOW, show + ""));
@@ -126,11 +110,7 @@ public class XViewerColumn {
    public void setFromXml(String xml) {
       id = AXml.getTagData(xml, ID);
       name = AXml.getTagData(xml, NAME);
-      alternateName = AXml.getTagData(xml, ALTERNATE_NAME);
       width = AXml.getTagIntData(xml, WIDTH);
-      defaultWidth = AXml.getTagIntData(xml, DEFAULT_WIDTH);
-      // Handle old widths stored before defaultWidth addition
-      if (defaultWidth == 0) defaultWidth = width;
       align = getAlignStoreValue(AXml.getTagData(xml, ALIGN));
       sortForward = AXml.getTagBooleanData(xml, SORT_FORWARD);
       show = AXml.getTagBooleanData(xml, SHOW);
@@ -159,15 +139,11 @@ public class XViewerColumn {
    }
 
    public String toString() {
-      return name + (alternateName != null && !alternateName.equals("") ? " (" + alternateName + ")" : "") + " - " + id + "";
+      return name + " - " + id + "";
    }
 
    public int getAlign() {
       return align;
-   }
-
-   public String getNameAlternate() {
-      return id + (alternateName.equals("") ? "" : " (" + (alternateName + ")"));
    }
 
    public void setAlign(int align) {
@@ -214,22 +190,11 @@ public class XViewerColumn {
       this.treeColumn = treeColumn;
    }
 
-   public String getAlternateName() {
-      return alternateName;
-   }
-
-   public void setAlternateName(String showName) {
-      this.alternateName = showName;
-   }
-
    /**
     * @return alternateName if exists, otherwise systemName
     */
-   public String getDisplayName() {
-      if (!alternateName.equals(""))
-         return alternateName;
-      else
-         return name;
+   public String getName() {
+      return name;
    }
 
    /**
@@ -272,24 +237,6 @@ public class XViewerColumn {
     */
    public void setToolTip(String toolTip) {
       if (toolTip != null) this.toolTip = toolTip;
-   }
-
-   /**
-    * @return the defaultWidth
-    */
-   public int getDefaultWidth() {
-      return defaultWidth;
-   }
-
-   /**
-    * @param defaultWidth the defaultWidth to set
-    */
-   public void setDefaultWidth(int defaultWidth) {
-      this.defaultWidth = defaultWidth;
-   }
-
-   public String getName() {
-      return name;
    }
 
    public void setName(String name) {
