@@ -124,13 +124,6 @@ public class RelationLink {
       return dirty;
    }
 
-   @Deprecated
-   public void persist() throws SQLException {
-      if (dirty) {
-         RelationPersistenceManager.makePersistent(this);
-      }
-   }
-
    public void delete() throws ArtifactDoesNotExist, SQLException {
       if (!deleted) {
          markAsDeleted();

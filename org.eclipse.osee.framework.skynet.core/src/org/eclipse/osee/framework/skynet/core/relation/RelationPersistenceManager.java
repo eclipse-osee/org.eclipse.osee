@@ -15,8 +15,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
@@ -25,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -47,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransacti
  * @author Robert A. Fisher
  */
 public class RelationPersistenceManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
    private static final String UPDATE_RELATION_ORDERS =
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order=?, b_order=? WHERE gamma_id=?";
 
@@ -159,56 +155,4 @@ public class RelationPersistenceManager {
       }
       ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
    }
-
-   public void moveObjectB(Artifact sideAArt, Artifact sideBArt, IRelationEnumeration relSide, Direction dir) throws SQLException {
-      List<Artifact> arts = sideAArt.getRelatedArtifacts(relSide);
-      Artifact prevArt = null;
-      Artifact nextArt = null;
-      Object objs[] = arts.toArray();
-      for (int x = 0; x < arts.size(); x++) {
-         if (objs[x].equals(sideBArt)) {
-            if (x >= 1) prevArt = (Artifact) objs[x - 1];
-            if (x < objs.length - 1) nextArt = (Artifact) objs[x + 1];
-         }
-      }
-      RelationLink thisLink = null;
-      if (sideAArt.getRelations(relSide, sideBArt).size() == 1)
-         thisLink = sideAArt.getRelations(relSide, sideBArt).iterator().next();
-      else
-         logger.log(Level.SEVERE, "More than one link exists for sideBArt");
-      RelationLink prevLink = null;
-      if (prevArt != null) {
-         if (sideAArt.getRelations(relSide, prevArt).size() == 1)
-            prevLink = sideAArt.getRelations(relSide, prevArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for prevArt");
-      }
-      RelationLink nextLink = null;
-      if (nextArt != null) {
-         if (sideAArt.getRelations(relSide, nextArt).size() == 1)
-            nextLink = sideAArt.getRelations(relSide, nextArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for nextArt");
-      }
-
-      if (dir == Direction.Back && thisLink != null && prevLink != null) {
-         //         prevLink.getArtifactA().getLinkManager();
-         //         prevLink.getArtifactB().getLinkManager();
-         //         thisLink.getArtifactA().getLinkManager();
-         //         thisLink.getArtifactB().getLinkManager();
-         prevLink.swapAOrder(thisLink);
-         prevLink.persist();
-         thisLink.persist();
-      } else if (dir == Direction.Forward && thisLink != null && nextLink != null) {
-         //         nextLink.getArtifactA().getLinkManager();
-         //         nextLink.getArtifactB().getLinkManager();
-         //         thisLink.getArtifactA().getLinkManager();
-         //         thisLink.getArtifactB().getLinkManager();
-         nextLink.swapAOrder(thisLink);
-         nextLink.persist();
-         thisLink.persist();
-      }
-
-   }
-
 }
