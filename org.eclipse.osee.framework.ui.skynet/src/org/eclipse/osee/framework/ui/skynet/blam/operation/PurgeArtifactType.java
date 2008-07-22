@@ -27,8 +27,6 @@ public class PurgeArtifactType extends AbstractBlam {
    public static final String DELETE_VALID_ATTRIBUTE = "delete from osee_define_valid_attributes where art_type_id = ?";
    public static final String COUNT_ARTIFACT_OCCURRENCE =
          "select count(1) AS artCount FROM osee_define_artifact where art_type_id = ?";
-   public static final String DELETE_ARIFACT_TYPE_GAMMAS =
-         "delete from osee_define_txs txs3 where exists (select * from osee_define_artifact_type ary1, osee_define_txs txs2 where ary1.art_type_id = ? and ary1.gamma_id = txs2.gamma_id AND txs2.gamma_id = txs3.gamma_id)";
    public static final String DELETE_ARIFACT_TYPE = "delete from osee_define_artifact_type where art_type_id = ?";
 
    /* (non-Javadoc)
@@ -53,7 +51,6 @@ public class PurgeArtifactType extends AbstractBlam {
 
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE_GAMMAS, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, SQL3DataType.INTEGER, artTypeId);
    }
 
