@@ -36,7 +36,7 @@ public class WordsUtil {
    private static final String S_ENDING = "s";
    private static final String VES_ENDING = "ves";
    public static final String EMPTY_STRING = "";
-   private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch"};
+   private static final String[] SPECIAL_ES_ENDING_CASES = new String[] {"ss", "sh", "ch", "x"};
 
    private static char[] PUNCTUATION =
          new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
@@ -114,6 +114,19 @@ public class WordsUtil {
          int pos = Arrays.binarySearch(PUNCTUATION, original.charAt(index));
          if (pos > 0) {
             toReturn++;
+         }
+      }
+      return toReturn;
+   }
+
+   public static boolean endsWithPunctuation(String original) {
+      boolean toReturn = false;
+      int size = original.length();
+      if (size > 0) {
+         char c = original.charAt(size - 1);
+         int pos = Arrays.binarySearch(PUNCTUATION, c);
+         if (pos > 0) {
+            toReturn = true;
          }
       }
       return toReturn;

@@ -61,8 +61,12 @@ public class TestWordsUtil extends TestCase {
       testMap.put("leaves", "leaf");
       testMap.put("hello", "hello");
       testMap.put("axes", "axis");
+      testMap.put("boxes", "box");
+      testMap.put("foxes", "fox");
       testMap.put("species", "species");
       testMap.put("series", "series");
+      testMap.put("status", "status");
+      testMap.put("as", "as");
       testMap.put("appendeces", "appendix");
       return testMap;
    }

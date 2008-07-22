@@ -61,9 +61,11 @@ public class TagProcessor {
       boolean originalStored = false;
       if (Strings.isValid(original) && (original.length() >= 2 || 0 == WordsUtil.countPuntuation(original))) {
          original = original.toLowerCase();
+         String toCheck =
+               WordsUtil.endsWithPunctuation(original) ? original.substring(0, original.length() - 1) : original;
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-            if (toEncode.equals(original)) {
+            if (toEncode.equals(toCheck)) {
                originalStored = true;
             }
             TagEncoder.encode(target, tagCollector);

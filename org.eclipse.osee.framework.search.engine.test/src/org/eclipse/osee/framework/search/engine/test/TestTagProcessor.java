@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
@@ -68,17 +69,19 @@ public class TestTagProcessor extends TestCase {
             expectedStream = new BufferedInputStream(testData.expected.openStream());
             final Scanner expectedTags = new Scanner(expectedStream, "UTF-8");
             Scanner sourceScanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+            final MutableInteger count = new MutableInteger(0);
             TagProcessor.collectFromScanner(sourceScanner, new ITagCollector() {
                @Override
                public void addTag(String word, Long codedTag) {
+                  count.getValueAndInc();
                   if (expectedTags.hasNext()) {
-                     assertEquals(expectedTags.next(), word);
-                     assertEquals(String.format("Test: [%s] word: [%s]", key, word), expectedTags.nextLong(),
-                           codedTag.longValue());
+                     assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", count, key, word),
+                           expectedTags.next(), word);
+                     assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", count, key, word),
+                           expectedTags.nextLong(), codedTag.longValue());
                   } else {
-                     assertTrue(
-                           String.format("Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", key, word, codedTag),
-                           false);
+                     assertTrue(String.format("Line: [%d] Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", count,
+                           key, word, codedTag), false);
                   }
                }
             });

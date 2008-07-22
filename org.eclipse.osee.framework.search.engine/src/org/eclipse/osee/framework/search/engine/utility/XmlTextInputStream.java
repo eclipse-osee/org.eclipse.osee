@@ -20,8 +20,11 @@ import java.io.UnsupportedEncodingException;
  * @author Roberto E. Escobar
  */
 public class XmlTextInputStream extends BufferedInputStream {
+   private static final String START_PARAGRAPH = "<w:p";
+   private static final String STOP_PARAGRAPH = "</w:p";
    private static final String START_WORDML_TEXT = "<w:t>";
    private static final String END_WORDML_TEXT = "</w:t>";
+
    private IReadHelper readHelper;
 
    public XmlTextInputStream(InputStream inputStream) {
@@ -118,21 +121,24 @@ public class XmlTextInputStream extends BufferedInputStream {
       private boolean partOfTag;
       private boolean collect;
       private boolean isCarriageReturn;
+      private boolean isStartOfParagraph;
       private StringBuilder buffer;
 
       public WordMlReadHelper() {
          this.buffer = new StringBuilder();
          this.partOfTag = false;
          this.collect = false;
+         this.isStartOfParagraph = false;
          this.isCarriageReturn = false;
       }
 
       public int process(int value) throws IOException {
+         this.isStartOfParagraph = false;
          if ((char) value == '<') {
             partOfTag = true;
             buffer.append((char) value);
          }
-         while ((partOfTag || collect != true || isCarriageReturn) && available() > 0) {
+         while ((partOfTag || isCarriageReturn || (isStartOfParagraph != true && collect != true)) && available() > 0) {
             value = readFromOriginalBuffer();
             if ((char) value == '<') {
                partOfTag = true;
@@ -152,9 +158,16 @@ public class XmlTextInputStream extends BufferedInputStream {
                   this.collect = true;
                } else if (tag.equals(END_WORDML_TEXT)) {
                   this.collect = false;
+               } else if (tag.startsWith(START_PARAGRAPH)) {
+                  this.isStartOfParagraph = true;
+               } else if (tag.startsWith(STOP_PARAGRAPH)) {
+                  this.isStartOfParagraph = false;
                }
                buffer.delete(0, buffer.length());
                value = ' ';
+               if (this.isStartOfParagraph != true && available() > 0) {
+                  value = process(readFromOriginalBuffer());
+               }
             }
          }
          if (available() <= 0) {
