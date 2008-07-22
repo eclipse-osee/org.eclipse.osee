@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Ryan D. Brooks
  */
 public class RelationValidity {
-   private final HashSet<ValidityConstraint> validitySet;
    private final ArrayList<ValidityRow> validityArray;
    private final SkynetTypesImporter importer;
    private final Branch branch;
@@ -32,47 +30,7 @@ public class RelationValidity {
       super();
       this.importer = importer;
       this.branch = branch;
-      validitySet = new HashSet<ValidityConstraint>();
       validityArray = new ArrayList<ValidityRow>();
-   }
-
-   private class ValidityConstraint {
-      private final ArtifactType artifactType;
-      private final RelationType linkDescriptor;
-      private final int sideAmax;
-      private final int sideBmax;
-      private final Branch branch;
-
-      public ValidityConstraint(Branch branch, ArtifactType artifactType, RelationType linkDescriptor, int sideAmax, int sideBmax) {
-         this.artifactType = artifactType;
-         this.linkDescriptor = linkDescriptor;
-         this.sideAmax = sideAmax;
-         this.sideBmax = sideBmax;
-         this.branch = branch;
-      }
-
-      /* (non-Javadoc)
-       * @see java.lang.Object#equals(java.lang.Object)
-       */
-      @Override
-      public boolean equals(Object obj) {
-         if (obj instanceof ValidityConstraint) {
-            ValidityConstraint constraint = (ValidityConstraint) obj;
-            return artifactType.equals(constraint.artifactType) && linkDescriptor.equals(constraint.linkDescriptor);
-         }
-         return false;
-      }
-
-      /* (non-Javadoc)
-       * @see java.lang.Object#hashCode()
-       */
-      @Override
-      public int hashCode() {
-         int result = 17;
-         result = 37 * result + artifactType.hashCode();
-         result = 37 * result + linkDescriptor.hashCode();
-         return result;
-      }
    }
 
    public void addValidityConstraints(String[] row) throws SQLException {
