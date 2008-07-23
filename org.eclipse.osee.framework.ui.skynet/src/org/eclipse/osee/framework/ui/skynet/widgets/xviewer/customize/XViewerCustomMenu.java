@@ -54,7 +54,7 @@ import org.eclipse.ui.dialogs.ListDialog;
  * 
  * @author Donald G. Dunne
  */
-public class XViewerCustomize {
+public class XViewerCustomMenu {
 
    protected XViewer xViewer;
    private Clipboard clipboard = new Clipboard(null);
@@ -70,7 +70,7 @@ public class XViewerCustomize {
    /**
     * @param factory
     */
-   public XViewerCustomize() {
+   public XViewerCustomMenu() {
    }
 
    public void init(XViewer xviewer) {
@@ -137,7 +137,7 @@ public class XViewerCustomize {
             TreeViewerReport tvr = new TreeViewerReport(xViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
             int columnNum = 0;
-            for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumns()) {
+            for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumnsInOrder()) {
                columnNum++;
                if (!xCol.isShow()) {
                   ignoreCols.add(columnNum);

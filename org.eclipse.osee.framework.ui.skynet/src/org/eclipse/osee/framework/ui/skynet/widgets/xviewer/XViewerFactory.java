@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomMenu;
 
 /**
  * @author Donald G. Dunne
@@ -62,8 +62,8 @@ public class XViewerFactory implements IXViewerFactory {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomMenu()
     */
    @Override
-   public XViewerCustomize getXViewerCustomMenu() {
-      return new XViewerCustomize();
+   public XViewerCustomMenu getXViewerCustomMenu() {
+      return new XViewerCustomMenu();
    }
 
    public String getNamespace() {

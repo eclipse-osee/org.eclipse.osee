@@ -178,6 +178,16 @@ public class CustomizeManager {
       return currentCustData.getColumnData().getColumns();
    }
 
+   public List<XViewerColumn> getCurrentTableColumnsInOrder() {
+      List<XViewerColumn> columns = new ArrayList<XViewerColumn>(15);
+      for (Integer index : xViewer.getTree().getColumnOrder()) {
+         TreeColumn treeCol = xViewer.getTree().getColumn(index);
+         XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+         columns.add(xCol);
+      }
+      return columns;
+   }
+
    /**
     * @return the defaultCustData
     */
