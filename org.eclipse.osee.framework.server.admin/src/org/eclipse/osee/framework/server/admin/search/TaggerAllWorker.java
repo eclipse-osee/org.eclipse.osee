@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.server.admin.search;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -72,9 +71,29 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
       return builder.toString();
    }
 
+   private long[] getGammas(Connection connection, int branchId, int expectedTotal) throws SQLException {
+      long[] toReturn = new long[0];
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, false),
+                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : new Object[0]);
+
+         toReturn = new long[expectedTotal];
+         for (int index = 0; index < toReturn.length && stmt.next(); index++) {
+            toReturn[index] = stmt.getRset().getLong("gamma_id");
+            if (isExecutionAllowed() != true) {
+               break;
+            }
+         }
+      } finally {
+         DbUtil.close(stmt);
+      }
+      return toReturn;
+   }
+
    protected void doWork(long startTime) throws Exception {
       Connection connection = null;
-      ConnectionHandlerStatement stmt = null;
       try {
          String arg = getCommandInterpreter().nextArgument();
          int branchId = -1;
@@ -83,36 +102,29 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
          }
          println(String.format("Tagging Attributes: [%s]", branchId > -1 ? branchId : "All Branches"));
          connection = ConnectionHandler.getConnection();
-         int total = getTotalItems(connection, branchId);
-         stmt =
-               ConnectionHandler.runPreparedQuery(connection, getQuery(connection, branchId, false),
-                     branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : new Object[0]);
-         int count = 0;
-         this.isTagCompleteDone = true;
-         while (isExecutionAllowed()) {
-            if (this.isTagCompleteDone) {
-               if (stmt.next()) {
-                  long gammaId = stmt.getRset().getLong("gamma_id");
-                  this.isTagCompleteDone = false;
-                  searchTagger.tagAttribute(this, gammaId);
 
-                  count++;
-                  if (count % 100 == 0) {
-                     if (isVerbose()) {
-                        println(String.format("[%d of %d ] - Elapsed Time = %s.", count, total,
-                              getElapsedTime(startTime)));
-                     }
+         int total = getTotalItems(connection, branchId);
+         long[] toProcess = getGammas(connection, branchId, total);
+
+         this.isTagCompleteDone = true;
+         int index = 0;
+         while (isExecutionAllowed() && index < toProcess.length) {
+            if (this.isTagCompleteDone) {
+               this.isTagCompleteDone = false;
+               long gammaId = toProcess[index];
+               searchTagger.tagAttribute(this, gammaId);
+               index++;
+               if (index % 100 == 0) {
+                  if (isVerbose()) {
+                     println(String.format("[%d of %d ] - Elapsed Time = %s.", index, total, getElapsedTime(startTime)));
                   }
-               } else {
-                  break;
                }
             }
          }
          if (isVerbose()) {
-            println(String.format("[%d of %d ] - Elapsed Time = %s.", count, total, getElapsedTime(startTime)));
+            println(String.format("[%d of %d ] - Elapsed Time = %s.", index, total, getElapsedTime(startTime)));
          }
       } finally {
-         DbUtil.close(stmt);
          try {
             if (connection != null) {
                connection.close();
