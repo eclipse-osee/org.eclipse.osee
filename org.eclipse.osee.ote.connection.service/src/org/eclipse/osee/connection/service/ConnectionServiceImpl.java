@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 
 class ConnectionServiceImpl implements IConnectionService {
-
+	
    private final HashSet<IServiceConnector> connectors = new HashSet<IServiceConnector>();
-   private final HashSet<IConnectorListener> connectorListener = new HashSet<IConnectorListener>();
-
+   private final EventNotifier eventNotifier = new EventNotifier();
+   
    private boolean isStopped = false;
 
    /* (non-Javadoc)
@@ -28,13 +28,7 @@ class ConnectionServiceImpl implements IConnectionService {
    public synchronized void addConnectors(Collection<IServiceConnector> connectors) {
       checkState();
       this.connectors.addAll(connectors);
-      for (IConnectorListener listener : connectorListener) {
-         try {
-            listener.onConnectorsAdded(connectors);
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }
+      eventNotifier.notifyConnectorsAdded(connectors);
    }
 
    /* (non-Javadoc)
@@ -43,7 +37,7 @@ class ConnectionServiceImpl implements IConnectionService {
    @Override
    public synchronized void addListener(IConnectorListener listener) {
       checkState();
-      connectorListener.add(listener);
+      eventNotifier.addListener(listener);
       listener.onConnectorsAdded(connectors);
    }
 
@@ -85,13 +79,7 @@ class ConnectionServiceImpl implements IConnectionService {
    public synchronized void removeConnector(IServiceConnector connector) throws Exception {
       checkState();
       if (connectors.remove(connector)) {
-         for (IConnectorListener listener : connectorListener) {
-            try {
-               listener.onConnectorRemoved(connector);
-            } catch (Exception e) {
-               e.printStackTrace();
-            }
-         }
+         eventNotifier.notifyConnectorRemoved(connector);
          connector.stop();
       }
 
@@ -103,15 +91,12 @@ class ConnectionServiceImpl implements IConnectionService {
    @Override
    public synchronized void removeListener(IConnectorListener listener) {
       checkState();
-      connectorListener.remove(listener);
+      eventNotifier.removeListener(listener);
    }
 
    void stop() {
       isStopped = true;
-      for (IConnectorListener listener : connectorListener) {
-         listener.onConnectionServiceStopped();
-      }
-      connectorListener.clear();
+      eventNotifier.notifyServiceStopped();
       for (IServiceConnector connector : connectors) {
          try {
             connector.stop();
