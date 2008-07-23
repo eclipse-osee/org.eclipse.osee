@@ -57,7 +57,7 @@ public class SMARelationsComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(SMAManager smaMgr)throws OseeCoreException, SQLException{
+   public void create(SMAManager smaMgr) throws OseeCoreException, SQLException {
       this.smaMgr = smaMgr;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -85,7 +85,7 @@ public class SMARelationsComposite extends Composite {
    private void processArtifact(String name, Artifact thisArt) throws SQLException {
       for (AtsRelation side : sides) {
          for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
-            RelationLink rel = thisArt.getRelations(art).iterator().next();
+            RelationLink rel = thisArt.getRelations(side, art).iterator().next();
             toolkit.createLabel(
                   this,
                   name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + " \"" + art.getArtifactTypeName() + "\" ");
@@ -112,7 +112,7 @@ public class SMARelationsComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final ReviewSMArtifact reviewArt)throws OseeCoreException, SQLException{
+   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws OseeCoreException, SQLException {
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().size() == 0) return;
       actionableItemsLabel = toolkit.createLabel(this, "");
       Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
@@ -131,11 +131,11 @@ public class SMARelationsComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void refreshActionableItemsLabel()throws OseeCoreException, SQLException{
+   private void refreshActionableItemsLabel() throws OseeCoreException, SQLException {
       if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
-   public void refresh()throws OseeCoreException, SQLException{
+   public void refresh() throws OseeCoreException, SQLException {
       refreshActionableItemsLabel();
    }
 
