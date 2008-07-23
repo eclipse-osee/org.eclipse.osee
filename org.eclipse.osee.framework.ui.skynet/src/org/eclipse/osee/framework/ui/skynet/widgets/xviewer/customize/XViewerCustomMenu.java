@@ -30,12 +30,12 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -134,17 +134,7 @@ public class XViewerCustomMenu {
       };
       viewTableReport = new Action("View Table Report") {
          public void run() {
-            TreeViewerReport tvr = new TreeViewerReport(xViewer);
-            ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
-            int columnNum = 0;
-            for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumnsInOrder()) {
-               columnNum++;
-               if (!xCol.isShow()) {
-                  ignoreCols.add(columnNum);
-               }
-            }
-            tvr.setIgnoreColumns(ignoreCols);
-            tvr.open();
+            new XViewerTreeReport(xViewer).open();
          }
       };
       columnMultiEdit = new Action("Column Multi Edit") {

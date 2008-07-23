@@ -32,7 +32,7 @@ import org.eclipse.swt.SWT;
  */
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
-   public static String COLUMN_NAMESPACE = "ats.column.";
+   public static String COLUMN_NAMESPACE = "ats.column";
    public static final XViewerColumn Type_Col =
          new XViewerColumn("ats.column.type", "Type", 150, SWT.LEFT, true, SortDataType.String);
    public static final XViewerColumn State_Col =
