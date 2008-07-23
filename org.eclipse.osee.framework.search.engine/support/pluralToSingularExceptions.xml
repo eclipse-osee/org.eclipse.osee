@@ -42,4 +42,8 @@
 <entry key="status">status</entry>
 <entry key="srs">srs</entry>
 <entry key="pids">pids</entry>
+<entry key="provides">provides</entry>
+<entry key="chris">chris</entry>
+<entry key="processes">process</entry>
+<entry key="process">process</entry>
 </properties>
