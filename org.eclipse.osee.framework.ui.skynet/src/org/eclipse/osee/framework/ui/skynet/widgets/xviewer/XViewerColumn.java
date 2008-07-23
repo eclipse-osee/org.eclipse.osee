@@ -70,6 +70,7 @@ public class XViewerColumn {
       setFromXml(xml);
    }
 
+   @Override
    public boolean equals(Object obj) {
       if (obj instanceof XViewerColumn) {
          return ((XViewerColumn) obj).getId().equals(id);
@@ -77,9 +78,6 @@ public class XViewerColumn {
       return super.equals(obj);
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#hashCode()
-    */
    @Override
    public int hashCode() {
       return getId().hashCode();

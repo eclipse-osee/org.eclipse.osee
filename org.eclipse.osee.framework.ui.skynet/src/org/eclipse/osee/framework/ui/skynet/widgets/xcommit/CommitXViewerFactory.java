@@ -10,52 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
-import java.util.ArrayList;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
 public class CommitXViewerFactory extends SkynetXViewerFactory {
 
-   /**
-    * 
-    */
+   public static XViewerColumn Type_Col =
+         new XViewerColumn("osee.commit.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Status_Col =
+         new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Name_Col =
+         new XViewerColumn("osee.commit.name", "Name", 450, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Short_Name_Col =
+         new XViewerColumn("osee.commit.shortName", "Short Name", 200, SWT.LEFT, true, SortDataType.String, false);
+
    public CommitXViewerFactory() {
       super("osee.skynet.gui.CommitXViewer");
-   }
-
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new XViewerSorter(xViewer);
-   }
-
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (CommitColumn atsXCol : CommitColumn.values()) {
-         XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         cols.add(newCol);
-      }
-      custData.getColumnData().setColumns(cols);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      for (CommitColumn atsXCol : CommitColumn.values()) {
-         if (atsXCol.getName().equals(id)) {
-            return atsXCol.getXViewerColumn(atsXCol);
-         }
-      }
-      return null;
+      registerColumn(Type_Col, Status_Col, Name_Col, Short_Name_Col);
    }
 
 }

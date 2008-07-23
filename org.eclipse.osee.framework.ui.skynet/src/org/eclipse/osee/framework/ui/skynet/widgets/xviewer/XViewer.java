@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -75,6 +76,14 @@ public class XViewer extends TreeViewer {
 
    public void dispose() {
       filterDataUI.dispose();
+   }
+
+   @Override
+   public void setLabelProvider(IBaseLabelProvider labelProvider) {
+      if (!(labelProvider instanceof XViewerLabelProvider)) {
+         throw new IllegalArgumentException("Label Provider must extend XViewerLabelProvider");
+      }
+      super.setLabelProvider(labelProvider);
    }
 
    public void addCustomizeToViewToolbar(final ViewPart viewPart) {

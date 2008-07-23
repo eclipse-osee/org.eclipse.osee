@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.role;
 
-import java.util.ArrayList;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -23,41 +21,24 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class UserRoleXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "osee.ats.UserRoleXViewer";
+   public static XViewerColumn Role_Col =
+         new XViewerColumn("osee.userRole.role", "Role", 100, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn User_Col =
+         new XViewerColumn("osee.userRole.user", "User", 150, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Hours_Spent_Col =
+         new XViewerColumn("osee.userRole.hoursSpent", "Hours Spent", 80, SWT.LEFT, true, SortDataType.Float, false);
+   public static XViewerColumn Completed_Col =
+         new XViewerColumn("osee.userRole.completed", "Completed", 80, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Num_Major_Col =
+         new XViewerColumn("osee.userRole.major", "Major", 60, SWT.CENTER, true, SortDataType.Integer, false);
+   public static XViewerColumn Num_Minor_Col =
+         new XViewerColumn("osee.userRole.minor", "Minor", 60, SWT.CENTER, true, SortDataType.Integer, false);
+   public static XViewerColumn Num_Issues_Col =
+         new XViewerColumn("osee.userRole.issues", "Issues", 60, SWT.CENTER, true, SortDataType.Integer, false);
 
-   /**
-    * 
-    */
    public UserRoleXViewerFactory() {
       super(NAMESPACE);
-   }
-
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new XViewerSorter(xViewer);
-   }
-
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (UserRoleColumn atsXCol : UserRoleColumn.values()) {
-         XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         cols.add(newCol);
-      }
-      custData.getColumnData().setColumns(cols);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      for (UserRoleColumn atsXCol : UserRoleColumn.values()) {
-         if (atsXCol.getName().equals(id)) {
-            return atsXCol.getXViewerColumn(atsXCol);
-         }
-      }
-      return null;
+      registerColumn(Role_Col, User_Col, Hours_Spent_Col, Completed_Col, Num_Major_Col, Num_Minor_Col, Num_Issues_Col);
    }
 
 }

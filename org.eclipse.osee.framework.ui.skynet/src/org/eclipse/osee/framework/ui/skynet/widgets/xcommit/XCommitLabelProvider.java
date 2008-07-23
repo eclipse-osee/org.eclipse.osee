@@ -12,61 +12,47 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
-public class XCommitLabelProvider implements ITableLabelProvider {
+public class XCommitLabelProvider extends XViewerLabelProvider {
    Font font = null;
 
    private final CommitXViewer commitXViewer;
 
    public XCommitLabelProvider(CommitXViewer commitXViewer) {
-      super();
+      super(commitXViewer);
       this.commitXViewer = commitXViewer;
    }
 
-   public String getColumnText(Object element, int columnIndex) {
-      if (element instanceof String) {
-         if (columnIndex == 1)
-            return (String) element;
-         else
-            return "";
-      }
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
       Branch branch = ((Branch) element);
-      if (branch == null) return "";
-      XViewerColumn xCol = commitXViewer.getXTreeColumn(columnIndex);
-      if (xCol != null) {
-         CommitColumn aCol = CommitColumn.getAtsXColumn(xCol);
+      if (xCol.equals(CommitXViewerFactory.Name_Col)) {
+         if (branch.equals(commitXViewer.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
+               "nav_forward.gif");
+         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
+      } else if (xCol.equals(CommitXViewerFactory.Status_Col)) {
          try {
-            return getColumnText(element, columnIndex, branch, xCol, aCol);
-         } catch (SQLException ex) {
+            return getCommitStatusImage(branch);
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
       }
-      return "";
+      return null;
    }
 
-   /**
-    * Provided as optimization of subclassed classes so provider doesn't have to retrieve the same information that has
-    * already been retrieved
-    * 
-    * @param element
-    * @param columnIndex
-    * @param branch
-    * @param xCol
-    * @param aCol
-    * @return column string
-    * @throws SQLException
-    */
-   public String getColumnText(Object element, int columnIndex, Branch branch, XViewerColumn xCol, CommitColumn aCol) throws SQLException {
-      if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (aCol == CommitColumn.Type_Col) {
+   @Override
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+      Branch branch = ((Branch) element);
+      if (xCol.equals(CommitXViewerFactory.Type_Col)) {
          if (branch.equals(commitXViewer.getWorkingBranch()))
             return "Working";
          else if (branch.equals(commitXViewer.getWorkingBranch().getParentBranch()))
@@ -79,15 +65,15 @@ public class XCommitLabelProvider implements ITableLabelProvider {
             }
          }
          return "";
-      } else if (aCol == CommitColumn.Status_Col) {
+      } else if (xCol.equals(CommitXViewerFactory.Status_Col)) {
          if (branch.equals(commitXViewer.getWorkingBranch()))
             return "";
          else if (branch.equals(commitXViewer.getWorkingBranch().getParentBranch()) || branch.isBaselineBranch()) return isCommittedInto(branch) ? "Committed" : "UnCommitted";
          return "";
-      } else if (aCol == CommitColumn.Name_Col)
+      } else if (xCol.equals(CommitXViewerFactory.Name_Col))
          return branch.getBranchName();
-      else if (aCol == CommitColumn.Short_Name_Col) return branch.getBranchShortName();
-      return "Unhandled Column";
+      else if (xCol.equals(CommitXViewerFactory.Short_Name_Col)) return branch.getBranchShortName();
+      return "unhandled column";
    }
 
    public void dispose() {
@@ -107,27 +93,6 @@ public class XCommitLabelProvider implements ITableLabelProvider {
 
    public CommitXViewer getTreeViewer() {
       return commitXViewer;
-   }
-
-   public Image getColumnImage(Object element, int columnIndex) {
-      if (element instanceof String) return null;
-      Branch branch = (Branch) element;
-      XViewerColumn xCol = commitXViewer.getXTreeColumn(columnIndex);
-      if (xCol == null) return null;
-      CommitColumn dCol = CommitColumn.getAtsXColumn(xCol);
-      if (!xCol.isShow()) return null; // Since not shown, don't display
-      if (dCol == CommitColumn.Name_Col) {
-         if (branch.equals(commitXViewer.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
-               "nav_forward.gif");
-         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
-      } else if (dCol == CommitColumn.Status_Col) {
-         try {
-            return getCommitStatusImage(branch);
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
-      }
-      return null;
    }
 
    private boolean isCommittedInto(Branch branch) {

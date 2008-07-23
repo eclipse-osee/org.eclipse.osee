@@ -10,43 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.autoRun;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
 public class AutoRunXViewerFactory extends SkynetXViewerFactory {
 
+   public static XViewerColumn Run_Col =
+         new XViewerColumn("osee.autoRun.run", "Run", 40, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Name_Col =
+         new XViewerColumn("osee.autoRun.name", "Name", 350, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Schedule_Time =
+         new XViewerColumn("osee.autoRun.start", "24 Hour Start", 40, SWT.CENTER, true, SortDataType.String, false);
+   public static XViewerColumn Run_Db =
+         new XViewerColumn("osee.autoRun.runDb", "Run DB", 80, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Task_Type =
+         new XViewerColumn("osee.autoRun.taskType", "Task Type", 80, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Category =
+         new XViewerColumn("osee.autoRun.category", "Category", 80, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Notification =
+         new XViewerColumn("osee.autoRun.emailTo", "Email Results To", 80, SWT.LEFT, true, SortDataType.String, false);
+   public static XViewerColumn Description =
+         new XViewerColumn("osee.autoRun.description", "Description", 700, SWT.LEFT, true, SortDataType.String, false);
+   public List<XViewerColumn> columns =
+         Arrays.asList(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description);
+
    public AutoRunXViewerFactory() {
       super("osee.ats.UserRoleXViewer");
-   }
-
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (AutoRunColumn atsXCol : AutoRunColumn.values()) {
-         XViewerColumn newCol = atsXCol.getXViewerColumn(atsXCol);
-         cols.add(newCol);
-      }
-      custData.getColumnData().setColumns(cols);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.skynet.gui.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      for (AutoRunColumn atsXCol : AutoRunColumn.values()) {
-         if (atsXCol.getName().equals(id)) {
-            return atsXCol.getXViewerColumn(atsXCol);
-         }
-      }
-      return null;
+      registerColumn(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description);
    }
 
 }

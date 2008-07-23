@@ -10,65 +10,68 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
+import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.TreeColumn;
 
-public class MassLabelProvider implements ITableLabelProvider {
+public class MassLabelProvider extends XViewerLabelProvider {
 
-   private final MassXViewer treeViewer;
+   private final MassXViewer xViewer;
 
-   public MassLabelProvider(MassXViewer treeViewer) {
-      super();
-      this.treeViewer = treeViewer;
+   public MassLabelProvider(MassXViewer xViewer) {
+      super(xViewer);
+      this.xViewer = xViewer;
    }
 
-   public String getColumnText(Object element, int columnIndex) {
-      try {
-         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
-         if (treeCol.getData() instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) treeCol.getData()).getColumnText(element,
-                  (XViewerValueColumn) treeCol.getData(), columnIndex);
-         }
-         if (element instanceof String) {
-            if (columnIndex == 1)
-               return (String) element;
-            else
-               return "";
-         }
-         Artifact artifact = (Artifact) element;
-         if (artifact == null || artifact.isDeleted()) return "";
-         // Handle case where columns haven't been loaded yet
-         if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
-            return "";
-         }
-
-         String colName = treeCol.getText();
-         if (!artifact.isAttributeTypeValid(colName)) {
-            return "";
-         }
-         if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
-            try {
-               return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
-            } catch (OseeCoreException ex) {
-               return "";
-            }
-         }
-
-         return artifact.getAttributesToString(colName);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         return XViewerCells.getCellExceptionString(ex);
+   @Override
+   public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException, SQLException {
+      if (col instanceof XViewerValueColumn) {
+         return ((XViewerValueColumn) col).getColumnImage(element, (XViewerValueColumn) col, columnIndex);
       }
+      Artifact artifact = (Artifact) element;
+      if (artifact == null || artifact.isDeleted()) return null;
+      if (columnIndex == 0) return artifact.getImage();
+      return null;
+   }
+
+   @Override
+   public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException, SQLException {
+      if (col instanceof XViewerValueColumn) {
+         return ((XViewerValueColumn) col).getColumnText(element, (XViewerValueColumn) col, columnIndex);
+      }
+      if (element instanceof String) {
+         if (columnIndex == 1)
+            return (String) element;
+         else
+            return "";
+      }
+      Artifact artifact = (Artifact) element;
+      if (artifact == null || artifact.isDeleted()) return "";
+      // Handle case where columns haven't been loaded yet
+      if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
+         return "";
+      }
+
+      String colName = col.getName();
+      if (!artifact.isAttributeTypeValid(colName)) {
+         return "";
+      }
+      if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
+         try {
+            return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+         } catch (OseeCoreException ex) {
+            return "";
+         }
+      }
+
+      return artifact.getAttributesToString(colName);
    }
 
    public boolean isLabelProperty(Object element, String property) {
@@ -82,30 +85,9 @@ public class MassLabelProvider implements ITableLabelProvider {
    }
 
    public MassXViewer getTreeViewer() {
-      return treeViewer;
+      return xViewer;
    }
 
-   public Image getColumnImage(Object element, int columnIndex) {
-      try {
-         TreeColumn treeCol = getTreeViewer().getTree().getColumn(columnIndex);
-         if (treeCol.getData() instanceof XViewerValueColumn) {
-            return ((XViewerValueColumn) treeCol.getData()).getColumnImage(element,
-                  (XViewerValueColumn) treeCol.getData(), columnIndex);
-         }
-         Artifact artifact = (Artifact) element;
-         if (artifact == null || artifact.isDeleted()) return null;
-         if (columnIndex == 0) return artifact.getImage();
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return null;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-    */
    public void dispose() {
    }
 }

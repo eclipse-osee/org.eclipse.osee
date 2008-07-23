@@ -5,12 +5,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 
-import java.util.Arrays;
-import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.swt.SWT;
 
@@ -18,12 +15,6 @@ import org.eclipse.swt.SWT;
  * @author Donald G. Dunne
  */
 public class XViewerTestFactory extends XViewerFactory {
-   /**
-    * @param namespace
-    */
-   public XViewerTestFactory() {
-      super("xviewer.test");
-   }
 
    private static String COLUMN_NAMESPACE = "xviewer.test";
    public static XViewerColumn Run_Col =
@@ -46,31 +37,11 @@ public class XViewerTestFactory extends XViewerFactory {
    public static XViewerColumn Other_Description =
          new XViewerColumn(COLUMN_NAMESPACE + ".otherDescription", "Other Description", 75, SWT.LEFT, false,
                SortDataType.String);
-   public List<XViewerColumn> columns =
-         Arrays.asList(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description,
-               Other_Description);
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultTableCustomizeData()
-    */
-   @Override
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      custData.getColumnData().setColumns(columns);
-      return custData;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn(java.lang.String)
-    */
-   @Override
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      for (XViewerColumn xCol : columns) {
-         if (xCol.getId().equals(id)) {
-            return xCol;
-         }
-      }
-      return null;
+   public XViewerTestFactory() {
+      super("xviewer.test");
+      registerColumn(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Category, Notification, Description,
+            Other_Description);
    }
 
    @Override

@@ -10,16 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.swt.SWT;
 
@@ -29,63 +21,31 @@ import org.eclipse.swt.SWT;
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
    public static String COLUMN_NAMESPACE = "framework.change.";
-   public static final XViewerColumn Conflict_Resolved =
+   public static XViewerColumn Conflict_Resolved =
          new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
                SortDataType.String, false);
-   public static final XViewerColumn Artifact_Name =
+   public static XViewerColumn Artifact_Name =
          new XViewerColumn(COLUMN_NAMESPACE + "artifactName", "Artifact Name", 200, SWT.LEFT, true,
                SortDataType.String, false);
-   public static final XViewerColumn Type =
+   public static XViewerColumn Type =
          new XViewerColumn(COLUMN_NAMESPACE + "artifactType", "Artifact Type", 150, SWT.LEFT, true,
                SortDataType.String, false);
-   public static final XViewerColumn Change_Item =
+   public static XViewerColumn Change_Item =
          new XViewerColumn(COLUMN_NAMESPACE + "conflictingItem", "Conflicting Item", 150, SWT.LEFT, true,
                SortDataType.String, false);
-   public static final XViewerColumn Source =
+   public static XViewerColumn Source =
          new XViewerColumn(COLUMN_NAMESPACE + "sourceValue", "Source Value", 100, SWT.LEFT, true, SortDataType.String,
                false);
-   public static final XViewerColumn Destination =
+   public static XViewerColumn Destination =
          new XViewerColumn(COLUMN_NAMESPACE + "destinationValue", "Destination Value", 100, SWT.LEFT, true,
                SortDataType.String, false);
-   public static final XViewerColumn Merged =
+   public static XViewerColumn Merged =
          new XViewerColumn(COLUMN_NAMESPACE + "mergedValue", "Merged Value", 100, SWT.LEFT, true, SortDataType.String,
                false);
 
-   public static final List<XViewerColumn> columns =
-         Arrays.asList(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged);
-   public static Map<String, XViewerColumn> idToColumn = null;
-
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");
-      if (idToColumn == null) {
-         idToColumn = new HashMap<String, XViewerColumn>();
-         for (XViewerColumn xCol : columns) {
-            idToColumn.put(xCol.getId(), xCol);
-         }
-      }
-   }
-
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new XViewerSorter(xViewer);
-   }
-
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : columns) {
-         cols.add(xCol);
-      }
-      custData.getColumnData().setColumns(cols);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      return idToColumn.get(id);
+      registerColumn(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged);
    }
 
 }

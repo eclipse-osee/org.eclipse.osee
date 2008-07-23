@@ -132,10 +132,9 @@ public class DefectXViewer extends XViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
-      if (aCol == DefectColumn.User_Col) {
+      if (xCol.equals(DefectXViewerFactory.User_Col)) {
          return handleAltLeftClick(treeColumn, treeItem);
-      } else if (aCol == DefectColumn.Injection_Activity_Col) {
+      } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
          return handleAltLeftClick(treeColumn, treeItem);
       }
       return false;
@@ -147,18 +146,17 @@ public class DefectXViewer extends XViewer {
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
+         XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
          DefectItem defectItem = (DefectItem) treeItem.getData();
          boolean modified = false;
-         if (aCol == DefectColumn.Closed_Col) {
+         if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
             modified = true;
             defectItem.setClosed(!defectItem.isClosed());
          }
-         if (aCol == DefectColumn.Severity_Col) {
+         if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
             return handleAltLeftClick(treeColumn, treeItem);
          }
-         if (aCol == DefectColumn.Disposition_Col) {
+         if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
             return handleAltLeftClick(treeColumn, treeItem);
          }
          if (modified) {
@@ -185,43 +183,42 @@ public class DefectXViewer extends XViewer {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
          DefectItem defectItem = (DefectItem) treeItem.getData();
          boolean modified = false;
-         if (aCol == DefectColumn.Created_Date_Col) {
-            Date selDate = XPromptChange.promptChangeDate(aCol.getName(), defectItem.getDate());
+         if (xCol.equals(DefectXViewerFactory.Created_Date_Col)) {
+            Date selDate = XPromptChange.promptChangeDate(xCol.getName(), defectItem.getDate());
             if (selDate != null) {
                modified = true;
                defectItem.setDate(selDate);
             }
-         } else if (aCol == DefectColumn.Closed_Col) {
-            Boolean closed = XPromptChange.promptChangeBoolean(aCol.getName(), aCol.getName(), defectItem.isClosed());
+         } else if (xCol.equals(DefectXViewerFactory.Closed_Col)) {
+            Boolean closed = XPromptChange.promptChangeBoolean(xCol.getName(), xCol.getName(), defectItem.isClosed());
             if (closed != null && (defectItem.isClosed() != closed)) {
                modified = true;
                defectItem.setClosed(closed);
             }
-         } else if (aCol == DefectColumn.Description_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Description_Col)) {
             String desc =
-                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getDescription(), null, Option.MULTI_LINE);
+                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getDescription(), null, Option.MULTI_LINE);
             if (desc != null && !defectItem.getDescription().equals(desc)) {
                modified = true;
                defectItem.setDescription(desc);
             }
-         } else if (aCol == DefectColumn.Resolution_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Resolution_Col)) {
             String resolution =
-                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getResolution(), null, Option.MULTI_LINE);
+                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getResolution(), null, Option.MULTI_LINE);
             if (resolution != null && !defectItem.getResolution().equals(resolution)) {
                modified = true;
                defectItem.setResolution(resolution);
             }
-         } else if (aCol == DefectColumn.Location_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Location_Col)) {
             String desc =
-                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getLocation(), null, Option.MULTI_LINE);
+                  XPromptChange.promptChangeString(xCol.getName(), defectItem.getLocation(), null, Option.MULTI_LINE);
             if (desc != null && !defectItem.getLocation().equals(desc)) {
                modified = true;
                defectItem.setLocation(desc);
             }
-         } else if (aCol == DefectColumn.User_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.User_Col)) {
             UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
             int result = ld.open();
             if (result == 0) {
@@ -231,9 +228,9 @@ public class DefectXViewer extends XViewer {
                   defectItem.setUser(selectedUser);
                }
             }
-         } else if (aCol == DefectColumn.Severity_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Severity_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Severity.strValues(),
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Severity.strValues(),
                         defectItem.getSeverity().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
@@ -241,9 +238,9 @@ public class DefectXViewer extends XViewer {
                   defectItem.setSeverity(Severity.valueOf((String) enumDialog.getResult()[0]));
                }
             }
-         } else if (aCol == DefectColumn.Disposition_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Disposition_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Disposition.strValues(),
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Disposition.strValues(),
                         defectItem.getDisposition().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
@@ -251,9 +248,9 @@ public class DefectXViewer extends XViewer {
                   defectItem.setDisposition(Disposition.valueOf((String) enumDialog.getResult()[0]));
                }
             }
-         } else if (aCol == DefectColumn.Injection_Activity_Col) {
+         } else if (xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
-                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), InjectionActivity.strValues(),
+                  XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
                         defectItem.getInjectionActivity().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
@@ -275,5 +272,4 @@ public class DefectXViewer extends XViewer {
       }
       return false;
    }
-
 }

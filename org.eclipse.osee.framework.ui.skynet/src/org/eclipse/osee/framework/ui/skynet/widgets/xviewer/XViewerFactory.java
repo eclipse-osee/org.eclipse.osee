@@ -6,10 +6,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
 
 /**
  * @author Donald G. Dunne
@@ -17,9 +20,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCus
 public class XViewerFactory implements IXViewerFactory {
 
    private final String namespace;
+   private List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+   private Map<String, XViewerColumn> idToColumn = new HashMap<String, XViewerColumn>();
 
    public XViewerFactory(String namespace) {
       this.namespace = namespace;
+   }
+
+   public void registerColumn(XViewerColumn... columns) {
+      for (XViewerColumn xCol : columns) {
+         this.columns.add(xCol);
+         idToColumn.put(xCol.getId(), xCol);
+      }
    }
 
    /* (non-Javadoc)
@@ -37,8 +49,7 @@ public class XViewerFactory implements IXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       custData.setNameSpace(namespace);
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      custData.getColumnData().setColumns(cols);
+      custData.getColumnData().setColumns(columns);
       return custData;
    }
 
@@ -47,7 +58,7 @@ public class XViewerFactory implements IXViewerFactory {
     */
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
-      return null;
+      return idToColumn.get(id);
    }
 
    /* (non-Javadoc)
@@ -68,6 +79,10 @@ public class XViewerFactory implements IXViewerFactory {
 
    public String getNamespace() {
       return namespace;
+   }
+
+   public List<XViewerColumn> getColumns() {
+      return columns;
    }
 
 }

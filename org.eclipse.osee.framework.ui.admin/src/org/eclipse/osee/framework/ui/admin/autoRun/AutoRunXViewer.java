@@ -140,7 +140,7 @@ public class AutoRunXViewer extends XViewer {
     */
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (treeColumn.getText().equals(AutoRunColumn.Run_Col.getName())) {
+      if (treeColumn.getText().equals(AutoRunXViewerFactory.Run_Col.getName())) {
          toggleRun((IAutoRunTask) treeItem.getData());
          refresh();
       }

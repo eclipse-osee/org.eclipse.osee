@@ -135,11 +135,10 @@ public class UserRoleXViewer extends XViewer {
       try {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         UserRoleColumn aCol = UserRoleColumn.getAtsXColumn(xCol);
+         XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
          UserRole userRole = (UserRole) treeItem.getData();
          boolean modified = false;
-         if (aCol == UserRoleColumn.Hours_Spent_Col) {
+         if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
             String hours =
                   XPromptChange.promptChangeFloat(aCol.getName(),
                         userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent());
@@ -147,16 +146,16 @@ public class UserRoleXViewer extends XViewer {
                modified = true;
                userRole.setHoursSpent(hours.equals("") ? 0 : (new Double(hours)).doubleValue());
             }
-         } else if (aCol == UserRoleColumn.Num_Minor_Col || aCol == UserRoleColumn.Num_Major_Col || aCol == UserRoleColumn.Num_Issues_Col) {
+         } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
             AWorkbench.popup("ERROR", "Field is calculated");
-         } else if (aCol == UserRoleColumn.Completed_Col) {
+         } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             if (userRole.getHoursSpent() == null) {
                AWorkbench.popup("ERROR", "Must enter Hours Spent");
                return false;
             }
             modified = true;
             userRole.setCompleted(!userRole.isCompleted());
-         } else if (aCol == UserRoleColumn.User_Col) {
+         } else if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
             UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
             int result = ld.open();
             if (result == 0) {
@@ -166,7 +165,7 @@ public class UserRoleXViewer extends XViewer {
                   userRole.setUser(selectedUser);
                }
             }
-         } else if (aCol == UserRoleColumn.Role_Col) {
+         } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
             EnumStringSingleSelectionDialog enumDialog =
                   XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Role.strValues(),
                         userRole.getRole().name());

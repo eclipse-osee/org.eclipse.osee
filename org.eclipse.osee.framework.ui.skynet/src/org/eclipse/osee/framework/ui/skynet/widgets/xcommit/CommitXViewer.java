@@ -25,12 +25,8 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -110,35 +106,6 @@ public class CommitXViewer extends XViewer implements IEventReceiver {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((Branch) item.getData());
       return arts;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         CommitColumn aCol = CommitColumn.getAtsXColumn(xCol);
-         Branch userRole = (Branch) treeItem.getData();
-         boolean modified = false;
-         AWorkbench.popup("ERROR", "Not handled");
-
-         if (modified) {
-            //            xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false);
-            xCommitViewer.notifyXModifiedListeners();
-            update(userRole, null);
-            return true;
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiDebug.class, ex, true);
-      }
-      return false;
    }
 
    /**
