@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.tagger;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -25,52 +28,70 @@ import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
  */
 public class XmlAttributeTaggerProvider extends BaseAttributeTaggerProvider {
 
-   public boolean find(AttributeData attributeData, String value) {
-      boolean toReturn = false;
-      if (Strings.isValid(value)) {
-         value = value.toLowerCase();
-         InputStream inputStream = null;
-         try {
-            int index = 0;
-            int searchStrSize = value.length();
-            inputStream = new XmlTextInputStream(getValueAsStream(attributeData));
-            while (inputStream.available() > 0) {
-               char curr = (char) inputStream.read();
-               char toCheck = value.charAt(index);
-               if (curr == toCheck) {
-                  index++;
-                  if (index >= searchStrSize) {
-                     toReturn = true;
-                     break;
-                  }
-               } else {
-                  index = 0;
-               }
-            }
-         } catch (Exception ex) {
-            OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
-         } finally {
-            if (inputStream != null) {
-               try {
-                  inputStream.close();
-               } catch (IOException ex) {
-                  OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex.toString(), ex);
-               }
-            }
-         }
-      }
-      return toReturn;
-   }
+	public boolean find(AttributeData attributeData, String value) {
+		boolean toReturn = false;
+		if (Strings.isValid(value)) {
+			value = value.toLowerCase();
+			List<String> wordToSearch = new ArrayList<String>();
+			Scanner wordScanner = null;
+			try {
+				Scanner scanner1 = new Scanner(value);
+				try {
+					while (scanner1.hasNext()) {
+						String entry = scanner1.next();
+						if (Strings.isValid(entry)) {
+							wordToSearch.add(entry);
+						}
+					}
+				} finally {
+					scanner1.close();
+				}
 
-   public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception {
-      InputStream inputStream = null;
-      try {
-         inputStream = getValueAsStream(attributeData);
-         TagProcessor.collectFromInputStream(new XmlTextInputStream(inputStream), collector);
-      } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
-      }
-   }
+				int index = 0;
+				int totalToSearch = wordToSearch.size();
+				wordScanner = new Scanner(new XmlTextInputStream(
+						getValueAsStream(attributeData)), "UTF-8");
+				while (wordScanner.hasNext()) {
+					String word = wordScanner.next().toLowerCase();
+					if (Strings.isValid(word)) {
+						if (word.contains(wordToSearch.get(index))) {
+							index++;
+							if (index >= totalToSearch) {
+								toReturn = true;
+								break;
+							}
+						} else {
+							index = 0;
+						}
+					}
+				}
+
+			} catch (Exception ex) {
+				OseeLog.log(XmlAttributeTaggerProvider.class, Level.SEVERE, ex
+						.toString(), ex);
+			} finally {
+				wordToSearch.clear();
+				wordToSearch = null;
+				if (wordScanner != null) {
+					wordScanner.close();
+					wordScanner = null;
+				}
+			}
+		}
+		return toReturn;
+	}
+
+	public void tagIt(AttributeData attributeData, ITagCollector collector)
+			throws Exception {
+		InputStream inputStream = null;
+		try {
+			inputStream = getValueAsStream(attributeData);
+			TagProcessor.collectFromInputStream(new XmlTextInputStream(
+					inputStream), collector);
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
+	}
 }
