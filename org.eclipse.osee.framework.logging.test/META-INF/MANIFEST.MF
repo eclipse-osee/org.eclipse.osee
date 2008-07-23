@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.logging.test
+Bundle-Version: 0.3.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.logging.test.Activator
+Bundle-Vendor: Boeing
+Eclipse-LazyStart: true
+Import-Package: org.eclipse.osee.framework.logging,
+ org.osgi.framework;version="1.3.0"
+Require-Bundle: org.junit
