@@ -17,6 +17,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.ui.skynet.TableViewerReport;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ViewPart;
@@ -38,7 +40,9 @@ public class ViewerReportHandler extends AbstractHandler {
          IWorkbenchPartSite myIWorkbenchPartSite = view.getSite();
          Object selectionProvider = myIWorkbenchPartSite.getSelectionProvider();
 
-         if (selectionProvider instanceof TableViewer) {
+         if (selectionProvider instanceof XViewer) {
+            (new XViewerTreeReport((XViewer) selectionProvider)).open();
+         } else if (selectionProvider instanceof TableViewer) {
             (new TableViewerReport((TableViewer) selectionProvider)).open();
          } else if (selectionProvider instanceof TreeViewer) {
             (new TreeViewerReport((TreeViewer) selectionProvider)).open();
