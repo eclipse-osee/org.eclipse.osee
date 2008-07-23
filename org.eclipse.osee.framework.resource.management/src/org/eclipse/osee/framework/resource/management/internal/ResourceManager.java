@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.exception.EmptyResourceException;
 import org.eclipse.osee.framework.resource.management.exception.InvalidLocatorException;
 
 /**
@@ -129,12 +128,7 @@ public class ResourceManager implements IResourceManager {
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
       IResourceProvider provider = getProvider(locator);
       notifyPreOnSave(locator, resource, options);
-      IResourceLocator actualLocator = null;
-      if (resource.getContent().available() > 0) {
-         actualLocator = provider.save(locator, resource, options);
-      } else {
-         throw new EmptyResourceException();
-      }
+      IResourceLocator actualLocator = provider.save(locator, resource, options);
       notifyPostOnSave(locator, resource, options);
       return actualLocator;
    }
