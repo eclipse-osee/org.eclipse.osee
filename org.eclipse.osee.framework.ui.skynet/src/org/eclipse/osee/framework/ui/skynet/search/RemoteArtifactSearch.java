@@ -47,16 +47,21 @@ public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
+      Collection<Artifact> toReturn = null;
       ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
       if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
-         Collection<Artifact> toReturn =
-               ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
-                     queryIdAndSize.object2, false);
-
-         JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
-         return toReturn;
+         try {
+            toReturn =
+                  ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
+                        queryIdAndSize.object2, false);
+         } finally {
+            JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+         }
       }
-      return java.util.Collections.emptyList();
+      if (toReturn == null) {
+         toReturn = java.util.Collections.emptyList();
+      }
+      return toReturn;
    }
 
    /* (non-Javadoc)
