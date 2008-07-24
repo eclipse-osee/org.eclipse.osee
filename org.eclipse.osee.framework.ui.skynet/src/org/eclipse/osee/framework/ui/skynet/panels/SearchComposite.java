@@ -247,7 +247,9 @@ public class SearchComposite extends Composite implements Listener {
    private void initializeOptions(Map<String, Boolean> options) {
       for (String option : options.keySet()) {
          Button button = getOrCreateOptionsButton(option);
-         button.setSelection(options.get(option));
+         Boolean isSelected = options.get(option);
+         button.setSelection(isSelected);
+         this.optionsMap.put(option, isSelected);
       }
    }
 
