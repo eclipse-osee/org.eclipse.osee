@@ -28,21 +28,20 @@ import org.eclipse.swt.SWT;
  */
 public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
-   public static String COLUMN_NAMESPACE = "framework.change.";
    public static XViewerColumn Name =
-         new XViewerColumn(COLUMN_NAMESPACE + "artifactNames", "Artifact name(s)", 250, SWT.LEFT, true,
+         new XViewerColumn("framework.change.artifactNames", "Artifact name(s)", 250, SWT.LEFT, true,
                SortDataType.String, false);
    public static XViewerColumn Item_Type =
-         new XViewerColumn(COLUMN_NAMESPACE + "itemType", "Item Type", 100, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.itemType", "Item Type", 100, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Item_Kind =
-         new XViewerColumn(COLUMN_NAMESPACE + "itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Change_Type =
-         new XViewerColumn(COLUMN_NAMESPACE + "changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.change.changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
                false);
    public static XViewerColumn Is_Value =
-         new XViewerColumn(COLUMN_NAMESPACE + "isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Was_Value =
-         new XViewerColumn(COLUMN_NAMESPACE + "wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
