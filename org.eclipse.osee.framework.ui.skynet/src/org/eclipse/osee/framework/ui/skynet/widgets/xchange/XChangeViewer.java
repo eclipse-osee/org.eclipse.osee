@@ -24,7 +24,12 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
@@ -79,6 +84,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       super("Change Report");
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
    }
 
    /*
@@ -226,6 +235,12 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
 
    public void onEvent(final Event event) {
       if (xChangeViewer == null || xChangeViewer.getTree() == null || xChangeViewer.getTree().isDisposed()) return;
+
+      if (event instanceof BranchEvent) {
+         if (branch != null && branch.getBranchId() == ((BranchEvent) event).getBranchId()) {
+            xChangeViewer.getTree().setEnabled(false);
+         }
+      }
       if (event instanceof TransactionEvent) {
          //TODO Add event 
       }

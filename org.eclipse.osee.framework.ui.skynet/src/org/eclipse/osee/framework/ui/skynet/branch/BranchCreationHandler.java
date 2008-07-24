@@ -99,9 +99,6 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
                if (selective) {
-                  // String[] programTypes = new String[] {"Folder", "General Document", "Root
-                  // Artifact"};
-
                   Set<String> allArtifactTypes = new HashSet<String>();
                   for (ArtifactType artifactType : ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch())) {
                      allArtifactTypes.add(artifactType.getName());

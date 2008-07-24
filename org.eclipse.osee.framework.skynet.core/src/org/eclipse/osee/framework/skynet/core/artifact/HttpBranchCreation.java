@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -36,13 +37,22 @@ public class HttpBranchCreation {
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
-   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException, OseeCoreException {
+   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
       parameters.put("authorId", Integer.toString(getAuthorId()));
       parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranch().getBranchId()));
       parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(associatedArtifact)));
+
+      if (compressArtTypeIds != null && !compressArtTypeIds.isEmpty()) {
+         parameters.put("compressArtTypes", Collections.toString(",", compressArtTypeIds));
+      }
+
+      if (preserveArtTypeIds != null && !preserveArtTypeIds.isEmpty()) {
+         parameters.put("preserveArtTypes", Collections.toString(",", preserveArtTypeIds));
+      }
+
       parameters.put(
             "creationComment",
             BranchPersistenceManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");

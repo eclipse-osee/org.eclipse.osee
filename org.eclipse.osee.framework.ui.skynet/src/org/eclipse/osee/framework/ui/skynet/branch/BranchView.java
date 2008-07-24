@@ -822,7 +822,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private void createCommitIntoCommand(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Commit Into", "commitTransaction");
       menuManager.add(subMenuManager);
-      createBranchSelectionMenu(subMenuManager, new CommitHandler(menuManager, false));
+      createBranchSelectionMenu(subMenuManager, new CommitHandler(menuManager, false, false));
    }
 
    private String addDeleteBranchCommand(MenuManager menuManager) {
@@ -1309,10 +1309,13 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    private class CommitHandler extends AbstractSelectionEnabledHandler {
       private boolean useParentBranch;
+      private boolean archiveSourceBranch;
 
-      public CommitHandler(MenuManager menuManager, boolean useParentBranch) {
+      public CommitHandler(MenuManager menuManager, boolean useParentBranch, boolean archiveSourceBranch) {
          super(menuManager);
          this.useParentBranch = useParentBranch;
+         this.archiveSourceBranch = archiveSourceBranch;
+
       }
 
       @Override
@@ -1329,7 +1332,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                toBranch =
                      BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true, false);
+            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
          } catch (ConflictDetectionException ex) {
             MessageDialog dialog;
             if (OseeProperties.isDeveloper()) {
@@ -1417,7 +1420,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private void createCommitCommand(MenuManager menuManager) {
       addCommitCommand(menuManager);
       handlerService.activateHandler(getSite().getId() + ".commitIntoParentCommand", new CommitHandler(menuManager,
-            true));
+            true, true));
    }
 
    private String addBranchCommand(MenuManager menuManager) {

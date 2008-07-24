@@ -112,9 +112,6 @@ public class BranchCreator {
    private static final String INSERT_TX_FOR_HISTORY =
          "INSERT INTO " + TRANSACTIONS_TABLE.columnsForInsert("transaction_id", "gamma_id", "mod_type", "tx_current");
 
-   //   private static final String INSERT_DEFAULT_BRANCH_NAMES =
-   //         "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
-
    private static final String MERGE_BRANCH_INSERT =
          "INSERT INTO osee_define_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
 
@@ -424,9 +421,9 @@ public class BranchCreator {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws OseeCoreException, SQLException {
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException, SQLException {
       return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, preserveMetaData, compressArtTypes, preserveArtTypes);
+            associatedArtifact, preserveMetaData, compressArtTypeIds, preserveArtTypeIds);
    }
 
    /**

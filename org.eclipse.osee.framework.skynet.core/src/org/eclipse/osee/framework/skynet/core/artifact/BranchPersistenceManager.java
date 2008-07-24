@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -721,39 +720,21 @@ public class BranchPersistenceManager {
     * @throws SQLException
     */
    public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException, SQLException {
-      Collection<ArtifactType> compressArtTypes =
-            ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
-
       return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, false, compressArtTypes, null);
+            associatedArtifact, false, null, null);
    }
 
-   /**
-    * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws SQLException
-    */
-   public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException, SQLException {
-      Collection<ArtifactType> preserveArtTypes =
-            ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
-
-      return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, false, null, preserveArtTypes);
-   }
-
-   private Set<ArtifactType> getSubtypeDescriptors(String[] artTypeNames) throws SQLException, OseeCoreException {
-      Set<ArtifactType> artifactTypes;
+   private Set<Integer> getSubtypeDescriptors(String[] artTypeNames) throws SQLException, OseeCoreException {
+      Set<Integer> artifactTypeIds;
       if (artTypeNames == null) {
-         artifactTypes = new HashSet<ArtifactType>(0);
+         artifactTypeIds = new HashSet<Integer>(0);
       } else {
-         artifactTypes = new HashSet<ArtifactType>(artTypeNames.length);
+         artifactTypeIds = new HashSet<Integer>(artTypeNames.length);
          for (String typeName : artTypeNames) {
-            artifactTypes.add(ArtifactTypeManager.getType(typeName));
+            artifactTypeIds.add(ArtifactTypeManager.getType(typeName) != null ? ArtifactTypeManager.getType(typeName).getArtTypeId() : -1);
          }
       }
-      return artifactTypes;
+      return artifactTypeIds;
    }
 
    /**
@@ -761,12 +742,13 @@ public class BranchPersistenceManager {
     * 
     * @return The created Branch
     */
+
    public Branch createBranchWithFiltering(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, String[] compressArtTypeNames, String[] preserveArtTypeNames) throws Exception {
-      Set<ArtifactType> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames);
-      Set<ArtifactType> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames);
+      Set<Integer> compressArtTypeIds = getSubtypeDescriptors(compressArtTypeNames);
+      Set<Integer> preserveArtTypeIds = getSubtypeDescriptors(preserveArtTypeNames);
 
       return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            associatedArtifact, true, compressArtTypes, preserveArtTypes);
+            associatedArtifact, true, compressArtTypeIds, preserveArtTypeIds);
    }
 
    /**
