@@ -46,12 +46,57 @@ public class CustomizeManager {
       this.xViewer = xViewer;
       this.xViewerFactory = xViewerFactory;
       // Set customize to be user default, if selected, or table default
-      currentCustData = xViewerFactory.getXViewerCustomizations().getUserDefaultCustData();
-      if (currentCustData == null) {
+      CustomizeData userCustData = xViewerFactory.getXViewerCustomizations().getUserDefaultCustData();
+      if (userCustData != null) {
+         currentCustData = resolveLoadedCustomizeData(userCustData);
+      } else {
          currentCustData = getTableDefaultCustData();
          currentCustData.setNameSpace(xViewerFactory.getNamespace());
       }
       xViewerFactory.getXViewerCustomMenu().init(xViewer);
+   }
+
+   /**
+    * Since saved customize data is stored as xml, all the columns need to be resolved to the columns available from the
+    * factory
+    * 
+    * @param loadedCustData
+    * @return
+    */
+   public CustomizeData resolveLoadedCustomizeData(CustomizeData loadedCustData) {
+      // Otherwise, have to resolve what was saved with what is valid for this table and available from the factory
+      CustomizeData resolvedCustData = new CustomizeData();
+      resolvedCustData.setName(loadedCustData.getName());
+      resolvedCustData.setNameSpace(loadedCustData.getNameSpace());
+      /* 
+       * Need to resolve columns with what factory has which gets correct class/subclass of XViewerColumn and allows for removal of old and addition of new columns
+       */
+      List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
+      for (XViewerColumn storedCol : loadedCustData.getColumnData().getColumns()) {
+         XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
+         // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
+         if (resolvedCol != null && resolvedCol.getWidth() > 0) {
+            resolvedCol.setWidth(storedCol.getWidth());
+            resolvedCol.setName(storedCol.getName());
+            resolvedCol.setShow(storedCol.isShow() || storedCol.getWidth() > 0);
+            resolvedCol.setSortForward(storedCol.isSortForward());
+            resolvedColumns.add(resolvedCol);
+         }
+      }
+      /*
+       * Add extra columns that were added to the table since storage of this custData
+       */
+      for (XViewerColumn extraCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
+         if (!resolvedColumns.contains(extraCol)) {
+            // Since column wasn't saved, don't show it
+            extraCol.setShow(false);
+            resolvedColumns.add(extraCol);
+         }
+      }
+      resolvedCustData.getColumnData().setColumns(resolvedColumns);
+      resolvedCustData.getFilterData().setFromXml(loadedCustData.getFilterData().getXml());
+      resolvedCustData.getSortingData().setFromXml(loadedCustData.getSortingData().getXml());
+      return resolvedCustData;
    }
 
    /**
@@ -177,7 +222,11 @@ public class CustomizeManager {
    }
 
    public List<CustomizeData> getSavedCustDatas() {
-      return xViewerFactory.getXViewerCustomizations().getSavedCustDatas();
+      List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
+      for (CustomizeData savedCustData : xViewerFactory.getXViewerCustomizations().getSavedCustDatas()) {
+         custDatas.add(resolveLoadedCustomizeData(savedCustData));
+      }
+      return custDatas;
    }
 
    public void saveCustomization(CustomizeData custData) throws Exception {

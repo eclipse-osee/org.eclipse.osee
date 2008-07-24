@@ -713,44 +713,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       if (selection.size() == 0) return null;
       Iterator<?> i = selection.iterator();
       CustomizeData storedCustData = (CustomizeData) i.next();
-      // Since they were generated from the current table and factory, table and current cust datas are valid as is
-      if (storedCustData.isCurrentTableCustData() || storedCustData.isCurrentTableCustData()) {
-         return storedCustData;
-      }
-      // Otherwise, have to resolve what was saved with what is valid for this table and available from the factory
-      CustomizeData generatedCustData = new CustomizeData();
-      generatedCustData.setName(storedCustData.getName());
-      generatedCustData.setName(storedCustData.getNameSpace());
-      /* 
-       * Need to resolve columns with what factory has which gets correct class/subclass of XViewerColumn and allows for removal of old and addition of new columns
-       */
-      List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
-      for (XViewerColumn storedCol : storedCustData.getColumnData().getColumns()) {
-         XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
-         // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
-         if (resolvedCol != null && resolvedCol.getWidth() > 0) {
-            resolvedCol.setWidth(storedCol.getWidth());
-            resolvedCol.setName(storedCol.getName());
-            resolvedCol.setShow(storedCol.isShow() || storedCol.getWidth() > 0);
-            resolvedCol.setSortForward(storedCol.isSortForward());
-            resolvedColumns.add(resolvedCol);
-         }
-      }
-      /*
-       * Add extra columns that were added to the table since storage of this custData
-       */
-      for (XViewerColumn extraCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
-         if (!resolvedColumns.contains(extraCol)) {
-            // Since column wasn't saved, don't show it
-            extraCol.setShow(false);
-            resolvedColumns.add(extraCol);
-         }
-      }
-      generatedCustData.getColumnData().setColumns(resolvedColumns);
-      generatedCustData.getFilterData().setFromXml(storedCustData.getFilterData().getXml());
-      generatedCustData.getSortingData().setFromXml(storedCustData.getSortingData().getXml());
-
-      return generatedCustData;
+      return storedCustData;
    }
 
    private List<XViewerColumn> getVisibleTableSelection() {
