@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.application.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +25,29 @@ import org.osgi.framework.BundleException;
 public class OseeApplicationServerActivator implements BundleActivator {
    private static final String errorMessage =
          "Error launching application server - did you forget to set the following vmargs ?\n-Dorg.osgi.service.http.port=<port>\n-Dosgi.compatibility.bootdelegation=true\n-Dequinox.ds.debug=true\n-Dosee.application.server.data=<FILE SYSTEM PATH>";
+
+   private enum Operation {
+      START, STOP;
+   }
+
+   private static final List<String> STOPPABLE_BUNDLE_LIST;
+   static {
+      STOPPABLE_BUNDLE_LIST = new ArrayList<String>();
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.common");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.locator.attribute");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.locator.snapshot");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.management");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.common");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.attribute");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.provider.snapshot");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.search.engine");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.server.admin");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.resource.management.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.branch.management.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.artifact.servlet");
+      STOPPABLE_BUNDLE_LIST.add("org.eclipse.osee.framework.search.engine.servlet");
+   }
 
    /*
     * (non-Javadoc)
@@ -40,7 +65,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
          if (oseeProperties.isLocalApplicationServerRequired() != false) {
             launchApplicationServer(requiredBundles, bundles);
          } else {
-//            startBundles(requiredBundles, bundles, false);
+            processBundles(requiredBundles, bundles, Operation.STOP);
          }
       } catch (Exception ex) {
          throw new Exception(errorMessage, ex);
@@ -54,8 +79,9 @@ public class OseeApplicationServerActivator implements BundleActivator {
    public void stop(BundleContext context) throws Exception {
    }
 
-   private void startBundles(String requiredBundles, Map<String, Bundle> bundles, boolean start) throws BundleException {
+   private void processBundles(String requiredBundles, Map<String, Bundle> bundles, Operation operation) throws BundleException {
       Pattern pattern = Pattern.compile("(.*)?;bundle-version=\"(.*)?\"");
+      boolean isStart = operation.equals(Operation.START);
       for (String entry : requiredBundles.split(",")) {
          Matcher matcher = pattern.matcher(entry);
          while (matcher.find()) {
@@ -63,9 +89,9 @@ public class OseeApplicationServerActivator implements BundleActivator {
             String requiredVersion = matcher.group(2);
             Bundle bundle = bundles.get(bundleName);
             if (bundle != null && isVersionAllowed(bundle, requiredVersion)) {
-               if (start) {
+               if (isStart) {
                   bundle.start();
-               } else {
+               } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
                   bundle.stop();
                }
             }
@@ -74,7 +100,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
    }
 
    private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException {
-      startBundles(requiredBundles, bundles, true);
+      processBundles(requiredBundles, bundles, Operation.START);
       String message =
             String.format("Osee Application Server - port: [%s] data: [%s]", System.getProperty(
                   "org.osgi.service.http.port", "-1"), OseeProperties.getInstance().getOseeApplicationServerData());
