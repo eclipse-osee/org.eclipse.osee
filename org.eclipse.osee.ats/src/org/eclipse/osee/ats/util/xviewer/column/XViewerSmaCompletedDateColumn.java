@@ -24,8 +24,8 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
    }
 
    public XViewerSmaCompletedDateColumn(String name, XViewer viewer) {
-      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, 80, SWT.LEFT, true,
-            SortDataType.Date, false, "Date this workflow transitioned to the Completed state.");
+      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, SWT.LEFT, true, SortDataType.Date,
+            false, "Date this workflow transitioned to the Completed state.");
    }
 
    /* (non-Javadoc)

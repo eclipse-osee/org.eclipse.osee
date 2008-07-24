@@ -25,27 +25,23 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     * 
     * @param col
     */
-   public XViewerAttributeColumn(XViewerColumn col) {
-      super(col);
-      this.attributeTypeName = ((XViewerAttributeColumn) col).attributeTypeName;
+   public XViewerAttributeColumn copy() {
+      return new XViewerAttributeColumn(getTreeViewer(), getId(), getAttributeTypeName(), getName(), getWidth(),
+            getAlign(), isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType) {
       super(viewer, id, name, width, align, show, sortDataType);
       this.attributeTypeName = attributeTypeName;
    }
 
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(viewer, id, name, width, defaultWidth, align, show, sortDataType, multiColumnEditable, description);
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(viewer, id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeTypeName = attributeTypeName;
    }
 
-   public XViewerAttributeColumn(String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      this(null, id, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
-   }
-
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align) {
-      this(viewer, id, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
+   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align) {
+      this(viewer, id, name, attributeTypeName, width, align, true, SortDataType.String);
    }
 
    /* (non-Javadoc)

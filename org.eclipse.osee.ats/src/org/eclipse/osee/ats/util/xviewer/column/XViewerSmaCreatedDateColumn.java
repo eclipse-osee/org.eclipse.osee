@@ -24,8 +24,8 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
    }
 
    public XViewerSmaCreatedDateColumn(String name, XViewer viewer) {
-      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "createdDate", name, 80, 80, SWT.LEFT, true,
-            SortDataType.Date, false, "Date this workflow was created.");
+      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "createdDate", name, 80, SWT.LEFT, true, SortDataType.Date,
+            false, "Date this workflow was created.");
    }
 
    /* (non-Javadoc)

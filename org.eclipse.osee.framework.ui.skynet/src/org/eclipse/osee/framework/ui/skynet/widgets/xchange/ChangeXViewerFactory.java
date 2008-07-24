@@ -36,8 +36,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Item_Kind =
          new XViewerColumn("framework.change.itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Change_Type =
-         new XViewerColumn("framework.change.changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
-               false);
+         new XViewerColumn("framework.change.changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Is_Value =
          new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
    public static XViewerColumn Was_Value =
@@ -51,8 +50,8 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       try {
          for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
             XViewerAttributeFromChangeColumn newCol =
-                  new XViewerAttributeFromChangeColumn(null, attributeType.getName(), attributeType.getName(), 75, 75,
-                        SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType));
+                  new XViewerAttributeFromChangeColumn(null, attributeType.getName(), attributeType.getName(), 75,
+                        SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
             registerColumn(newCol);
          }
       } catch (Exception ex) {

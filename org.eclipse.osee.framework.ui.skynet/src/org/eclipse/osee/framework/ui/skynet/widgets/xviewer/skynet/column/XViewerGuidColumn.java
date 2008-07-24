@@ -19,7 +19,7 @@ import org.eclipse.swt.SWT;
 public class XViewerGuidColumn extends XViewerValueColumn {
 
    public XViewerGuidColumn(String name, XViewer viewer) {
-      super(viewer, "framework.guid." + name, name, 75, 75, SWT.LEFT, true, SortDataType.String, false,
+      super(viewer, "framework.guid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false,
             "Globally Unique Identifier");
    }
 

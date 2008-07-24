@@ -79,7 +79,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                true);
    public static XViewerAtsAttributeColumn Legacy_PCR_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".legacyPcrId", ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, 40,
-               40, SWT.LEFT, false, SortDataType.String);
+               SWT.LEFT, false, SortDataType.String);
    public static final XViewerColumn Decision_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".decision", "Decision", 150, SWT.LEFT, false, SortDataType.String, false);
    public static final XViewerColumn Resolution_Col =
@@ -87,7 +87,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                false);
    public static XViewerAtsAttributeColumn Estimated_Release_Date_Col =
          new XViewerAtsAttributeColumn(null, COLUMN_NAMESPACE + ".estimatedReleaseDate",
-               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE, 80, 80, SWT.LEFT, false, SortDataType.Date, false,
+               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.Date, false,
                "Date the changes will be made available to the users.");
    public static final XViewerColumn Release_Date_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".releaseDate", ATSAttributes.RELEASE_DATE_ATTRIBUTE.getDisplayName(),
@@ -106,7 +106,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                true, "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static XViewerAtsAttributeColumn Related_To_State_Col =
          new XViewerAtsAttributeColumn(null, COLUMN_NAMESPACE + ".relatedToState",
-               ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, 80, 80, SWT.LEFT, false, SortDataType.String, true,
+               ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.String, true,
                "State of the parent State Machine that this object is related to.");
    public static final XViewerColumn Estimated_Hours_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".estimatedHours", "Estimated Hours", 40, SWT.CENTER, false,

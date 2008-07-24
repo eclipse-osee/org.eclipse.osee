@@ -28,9 +28,8 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
     * 
     * @param col
     */
-   public XViewerReviewRoleColumn(XViewerColumn col) {
-      super(col);
-      this.user = ((XViewerReviewRoleColumn) col).user;
+   public XViewerReviewRoleColumn copy() {
+      return new XViewerReviewRoleColumn(getTreeViewer(), getUser());
    }
 
    public XViewerReviewRoleColumn(XViewer viewer, User user) {
@@ -55,6 +54,10 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
          if (role.getUser().equals(user)) str += role.getRole().name() + ", ";
       }
       return str.replaceFirst(", $", "");
+   }
+
+   public User getUser() {
+      return user;
    }
 
 }

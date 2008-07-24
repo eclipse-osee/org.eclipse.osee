@@ -25,22 +25,14 @@ public class XViewerAttributeFromChangeColumn extends XViewerValueColumn {
     * 
     * @param col
     */
-   public XViewerAttributeFromChangeColumn(XViewerColumn col) {
-      super(col);
-      this.attributeTypeName = ((XViewerAttributeFromChangeColumn) col).attributeTypeName;
+   public XViewerAttributeFromChangeColumn copy() {
+      return new XViewerAttributeFromChangeColumn(getTreeViewer(), getName(), getAttributeTypeName(), getWidth(),
+            getAlign(), isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerAttributeFromChangeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
+   public XViewerAttributeFromChangeColumn(XViewer viewer, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(viewer, "attribute." + name, name, width, align, show, sortDataType);
       this.attributeTypeName = attributeTypeName;
-   }
-
-   public XViewerAttributeFromChangeColumn(String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
-      this(null, name, attributeTypeName, width, defaultWidth, align, show, sortDataType);
-   }
-
-   public XViewerAttributeFromChangeColumn(XViewer viewer, String name, String attributeTypeName, int width, int defaultWidth, int align) {
-      this(viewer, name, attributeTypeName, width, defaultWidth, align, true, SortDataType.String);
    }
 
    /* (non-Javadoc)
@@ -52,5 +44,9 @@ public class XViewerAttributeFromChangeColumn extends XViewerValueColumn {
          return ((Change) element).getArtifact().getAttributesToString(attributeTypeName);
       }
       return super.getColumnText(element, column, columnIndex);
+   }
+
+   public String getAttributeTypeName() {
+      return attributeTypeName;
    }
 }

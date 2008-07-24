@@ -61,7 +61,7 @@ public class XViewerFactory implements IXViewerFactory {
       // Return a copy so don't corrupt original definition of column
       XViewerColumn col = idToColumn.get(id);
       if (col == null) return null;
-      return new XViewerColumn(col);
+      return col.copy();
    }
 
    /* (non-Javadoc)
@@ -88,7 +88,7 @@ public class XViewerFactory implements IXViewerFactory {
       // Return a copy so don't corrupt original definition of column
       List<XViewerColumn> columnCopy = new ArrayList<XViewerColumn>();
       for (XViewerColumn xCol : columns) {
-         columnCopy.add(new XViewerColumn(xCol));
+         columnCopy.add(xCol.copy());
       }
       return columnCopy;
    }

@@ -49,13 +49,12 @@ public class XViewerColumn {
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
-    * XViewerColumn need to extend this constructor to copy extra stored fields
+    * XViewerColumn need to extend this method to copy extra stored fields
     * 
     * @param col
     */
-   public XViewerColumn(XViewerColumn xCol) {
-      this(xCol.id, xCol.name, xCol.width, xCol.align, xCol.show, xCol.sortDataType, xCol.multiColumnEditable,
-            xCol.description);
+   public XViewerColumn copy() {
+      return new XViewerColumn(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
