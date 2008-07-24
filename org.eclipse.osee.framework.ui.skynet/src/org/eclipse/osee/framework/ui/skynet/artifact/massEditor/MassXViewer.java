@@ -296,7 +296,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       Set<String> attrNames = new HashSet<String>();
       // Add Name first
-      columns.add(new XViewerArtifactNameColumn("Name", null));
+      columns.add(new XViewerArtifactNameColumn("Name"));
       attrNames.add("Name");
 
       // Add other attributes
@@ -310,8 +310,8 @@ public class MassXViewer extends XViewer implements IEventReceiver {
          }
       }
 
-      columns.add(new XViewerHridColumn("ID", null));
-      columns.add(new XViewerGuidColumn("Guid", null));
+      columns.add(new XViewerHridColumn("ID"));
+      columns.add(new XViewerGuidColumn("Guid"));
 
       return columns;
    }

@@ -102,15 +102,15 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private static List<XViewerColumn> getColumns(User user) throws OseeCoreException, SQLException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      columns.add(new XViewerArtifactTypeColumn("Type", null));
-      columns.add(new XViewerHridColumn("ID", null));
+      columns.add(new XViewerArtifactTypeColumn("Type"));
+      columns.add(new XViewerHridColumn("ID"));
       columns.add(WorldXViewerFactory.Legacy_PCR_Col);
       columns.add(new XViewerSmaStateColumn(null));
       columns.add(new XViewerSmaCompletedDateColumn("Completed", null));
       columns.add(new XViewerReviewRoleColumn(null, user));
       columns.add(WorldXViewerFactory.Related_To_State_Col);
-      columns.add(new XViewerArtifactNameColumn("Name", null));
-      columns.add(new XViewerGuidColumn("Guid", null));
+      columns.add(new XViewerArtifactNameColumn("Name"));
+      columns.add(new XViewerGuidColumn("Guid"));
       for (AttributeType attributeType : AttributeTypeManager.getTypes(AtsPlugin.getAtsBranch())) {
          columns.add(new XViewerAttributeColumn("attr." + attributeType.getName(), attributeType.getName(),
                attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false,

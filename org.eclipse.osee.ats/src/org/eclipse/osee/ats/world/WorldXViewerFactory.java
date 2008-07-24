@@ -46,14 +46,14 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Assignees_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".assignees", "Assignees", 100, SWT.LEFT, true,
                SortDataType.String, false, null);
-   public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title", null);
+   public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE, 80, SWT.LEFT, true,
                SortDataType.String, false, "Actionable Items that are impacted by this change.");
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
-   public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID", null);
+   public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID");
    public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn(null);
    public static final XViewerColumn Version_Target_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Version Target", 40, SWT.LEFT,
