@@ -451,11 +451,18 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" type="TIMESTAMP" />
-		<Constraint schema="OSEE" id="OSEE_JOIN_SEARCH_TAGS_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, CODED_TAG_ID" />
+		<Constraint schema="OSEE" id="OSEE_JOIN_SEARCH_TAGS_Q_C_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, CODED_TAG_ID" />
 		<Index id="OSEE_JOIN_SEARCH_TAGS_Q_IDX">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
+	   
+	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
+		<Constraint schema="OSEE" id="OSEE_JOIN_GAMMA_Q_G_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, GAMMA_ID" />
+	</Table>   
 	   
    <Table name="OSEE_TAG_ART_MAP" schema="OSEE">
 		<Column id="TAG_ID" defaultValue="not null" type="INTEGER" />

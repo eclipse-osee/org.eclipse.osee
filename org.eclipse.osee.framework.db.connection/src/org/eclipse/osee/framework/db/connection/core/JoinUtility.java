@@ -33,13 +33,37 @@ public class JoinUtility {
    private static final String INSERT_INTO_JOIN_SEARCH_TAGS =
          "INSERT INTO osee_join_search_tags (query_id, insert_time, coded_tag_id) VALUES (?, ?, ?)";
 
+   private static final String INSERT_INTO_TAG_GAMMA_QUEUE =
+         "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";
+
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
    private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
+   private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
 
    public enum JoinItem {
-      TRANSACTION, ARTIFACT, ATTRIBUTE, SEARCH_TAGS;
+      TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
+      ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
+      ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
+      SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
+      TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE);
+
+      private final String deleteSql;
+      private final String insertSql;
+
+      JoinItem(String insertSql, String deleteSql) {
+         this.deleteSql = deleteSql;
+         this.insertSql = insertSql;
+      }
+
+      String getDeleteSql() {
+         return deleteSql;
+      }
+
+      String getInsertSql() {
+         return insertSql;
+      }
    }
 
    private JoinUtility() {
@@ -65,18 +89,20 @@ public class JoinUtility {
       return new SearchTagJoinQuery();
    }
 
+   public static TagQueueJoinQuery createTagQueueJoinQuery() {
+      return new TagQueueJoinQuery();
+   }
+
    private static abstract class JoinQueryEntry {
-      public final String deleteSql;
-      private final String insertSql;
+      public final JoinItem joinItem;
       private final int queryId;
       protected Set<IJoinRow> entries;
       private boolean wasStored;
       private int storedSize;
 
-      public JoinQueryEntry(String insertSql, String deleteSql) {
+      public JoinQueryEntry(JoinItem joinItem) {
          this.wasStored = false;
-         this.deleteSql = deleteSql;
-         this.insertSql = insertSql;
+         this.joinItem = joinItem;
          this.queryId = getNewQueryId();
          this.entries = new HashSet<IJoinRow>();
          this.storedSize = -1;
@@ -100,7 +126,7 @@ public class JoinUtility {
             for (IJoinRow joinArray : entries) {
                data.add(joinArray.toArray());
             }
-            ConnectionHandler.runPreparedUpdate(connection, insertSql, data);
+            ConnectionHandler.runPreparedUpdate(connection, joinItem.getInsertSql(), data);
             this.storedSize = this.entries.size();
             this.wasStored = true;
             this.entries.clear();
@@ -112,7 +138,9 @@ public class JoinUtility {
       public int delete(Connection connection) throws SQLException {
          int updated = 0;
          if (queryId != -1) {
-            updated = ConnectionHandler.runPreparedUpdate(connection, deleteSql, SQL3DataType.INTEGER, queryId);
+            updated =
+                  ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), SQL3DataType.INTEGER,
+                        queryId);
          }
          return updated;
       }
@@ -131,26 +159,9 @@ public class JoinUtility {
    }
 
    public static void deleteQuery(JoinItem item, int queryId) throws Exception {
-      String deleteSql = null;
-      switch (item) {
-         case ARTIFACT:
-            deleteSql = DELETE_FROM_JOIN_ARTIFACT;
-            break;
-         case TRANSACTION:
-            deleteSql = DELETE_FROM_JOIN_TRANSACTION;
-            break;
-         case ATTRIBUTE:
-            deleteSql = DELETE_FROM_JOIN_ATTRIBUTE;
-            break;
-         case SEARCH_TAGS:
-            deleteSql = DELETE_FROM_JOIN_SEARCH_TAGS;
-            break;
-         default:
-            break;
-      }
-      if (deleteSql != null) {
-         ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), deleteSql, SQL3DataType.INTEGER,
-               queryId);
+      if (item != null) {
+         ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), item.getDeleteSql(),
+               SQL3DataType.INTEGER, queryId);
       }
    }
    private interface IJoinRow {
@@ -201,7 +212,7 @@ public class JoinUtility {
       }
 
       private TransactionJoinQuery() {
-         super(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION);
+         super(JoinItem.TRANSACTION);
       }
 
       public void add(int gammaId, int transactionId) {
@@ -251,7 +262,7 @@ public class JoinUtility {
       }
 
       private ArtifactJoinQuery() {
-         super(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT);
+         super(JoinItem.ARTIFACT);
       }
 
       public void add(int art_id, int branch_id) {
@@ -299,7 +310,7 @@ public class JoinUtility {
       }
 
       private AttributeJoinQuery() {
-         super(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE);
+         super(JoinItem.ATTRIBUTE);
       }
 
       public void add(String value) {
@@ -347,11 +358,59 @@ public class JoinUtility {
       }
 
       private SearchTagJoinQuery() {
-         super(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS);
+         super(JoinItem.SEARCH_TAGS);
       }
 
       public void add(long tag) {
          entries.add(new TagEntry(tag));
+      }
+   }
+
+   public static final class TagQueueJoinQuery extends JoinQueryEntry {
+
+      private final class GammaEntry implements IJoinRow {
+         private long gammaId;
+
+         private GammaEntry(long gammaId) {
+            this.gammaId = gammaId;
+         }
+
+         public Object[] toArray() {
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.BIGINT, gammaId};
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#equals(java.lang.Object)
+          */
+         @Override
+         public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (!(obj instanceof GammaEntry)) return false;
+            GammaEntry other = (GammaEntry) obj;
+            return this.gammaId == other.gammaId;
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#hashCode()
+          */
+         @Override
+         public int hashCode() {
+            return (int) (37 * gammaId);
+         }
+
+         public String toString() {
+            return String.format("gammaId=%d", gammaId);
+         }
+      }
+
+      private TagQueueJoinQuery() {
+         super(JoinItem.TAG_GAMMA_QUEUE);
+      }
+
+      public void add(long gammaId) {
+         entries.add(new GammaEntry(gammaId));
       }
    }
 }
