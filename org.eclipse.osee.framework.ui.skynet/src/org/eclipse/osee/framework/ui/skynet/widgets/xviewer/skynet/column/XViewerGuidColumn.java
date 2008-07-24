@@ -22,6 +22,16 @@ public class XViewerGuidColumn extends XViewerValueColumn {
             "Globally Unique Identifier");
    }
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    * 
+    * @param col
+    */
+   public XViewerGuidColumn copy() {
+      return new XViewerGuidColumn(getName());
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */

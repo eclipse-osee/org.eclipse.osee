@@ -105,9 +105,9 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       columns.add(new XViewerArtifactTypeColumn("Type"));
       columns.add(new XViewerHridColumn("ID"));
       columns.add(WorldXViewerFactory.Legacy_PCR_Col);
-      columns.add(new XViewerSmaStateColumn(null));
-      columns.add(new XViewerSmaCompletedDateColumn("Completed", null));
-      columns.add(new XViewerReviewRoleColumn(null, user));
+      columns.add(new XViewerSmaStateColumn());
+      columns.add(new XViewerSmaCompletedDateColumn("Completed"));
+      columns.add(new XViewerReviewRoleColumn(user));
       columns.add(WorldXViewerFactory.Related_To_State_Col);
       columns.add(new XViewerArtifactNameColumn("Name"));
       columns.add(new XViewerGuidColumn("Guid"));

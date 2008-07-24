@@ -22,6 +22,16 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
       super("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, "Artifact Type");
    }
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    * 
+    * @param col
+    */
+   public XViewerArtifactTypeColumn copy() {
+      return new XViewerArtifactTypeColumn(getName());
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */

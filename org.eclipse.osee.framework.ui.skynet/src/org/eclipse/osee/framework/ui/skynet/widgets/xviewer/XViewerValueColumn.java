@@ -17,7 +17,7 @@ public class XViewerValueColumn extends XViewerColumn {
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
-    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     * 
     * @param col
     */

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
@@ -19,13 +18,23 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
 
-   public XViewerSmaCompletedDateColumn(XViewer viewer) {
-      this("Completed", viewer);
+   public XViewerSmaCompletedDateColumn() {
+      this("Completed");
    }
 
-   public XViewerSmaCompletedDateColumn(String name, XViewer viewer) {
+   public XViewerSmaCompletedDateColumn(String name) {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
             "Date this workflow transitioned to the Completed state.");
+   }
+
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerSmaCompletedDateColumn copy() {
+      return new XViewerSmaCompletedDateColumn(getName());
    }
 
    /* (non-Javadoc)

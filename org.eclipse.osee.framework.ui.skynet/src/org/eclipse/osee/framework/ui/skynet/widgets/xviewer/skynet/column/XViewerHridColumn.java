@@ -21,6 +21,16 @@ public class XViewerHridColumn extends XViewerValueColumn {
       super("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Human Readable ID");
    }
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    * 
+    * @param col
+    */
+   public XViewerHridColumn copy() {
+      return new XViewerHridColumn(getName());
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
