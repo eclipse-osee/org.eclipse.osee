@@ -88,12 +88,21 @@ public class CustomizeManager {
          if (resolvedCol == null) {
             String name = storedCol.getName().replaceAll(" ", "");
             resolvedCol = oldNameToColumnId.get(name);
+            // First try to match by .<oldname>
             if (resolvedCol == null) {
                for (XViewerColumn xCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
                   String colId = xCol.getId().toLowerCase();
                   String oldName = "." + name.toLowerCase();
-                  //                  System.out.println("ColId [" + colId + "] OldName [" + oldName + "]\n");
-                  if (xCol.getId().endsWith(name) || colId.endsWith(oldName)) {
+                  if (colId.endsWith(oldName)) {
+                     resolvedCol = xCol;
+                     oldNameToColumnId.put(name, resolvedCol);
+                  }
+               }
+            }
+            // Then try to match by id endswith name 
+            if (resolvedCol == null) {
+               for (XViewerColumn xCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
+                  if (xCol.getId().endsWith(name)) {
                      resolvedCol = xCol;
                      oldNameToColumnId.put(name, resolvedCol);
                   }
@@ -351,7 +360,7 @@ public class CustomizeManager {
             TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
             column.setMoveable(true);
             column.setData(xCol);
-            if (xCol.getToolTip().equals("")) {
+            if (xCol.getToolTip() == null || xCol.getToolTip().equals("")) {
                column.setToolTipText(xCol.getName());
             } else {
                column.setToolTipText(xCol.getToolTip());
