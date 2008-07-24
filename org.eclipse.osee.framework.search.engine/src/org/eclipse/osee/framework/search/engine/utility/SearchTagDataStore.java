@@ -37,7 +37,7 @@ public class SearchTagDataStore {
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
    private static final String DELETE_SEARCH_TAGS_BY_JOIN =
-         "delete from osee_search_tags ost1 where ost1.gamma_id = (select ojt1.gamma_id from osee_join_transaction ojt1 where ojt1.query_id = ?)";
+         "delete from osee_search_tags ost1 where ost1.gamma_id in (select ojt1.gamma_id from osee_join_transaction ojt1 where ojt1.query_id = ?)";
 
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
