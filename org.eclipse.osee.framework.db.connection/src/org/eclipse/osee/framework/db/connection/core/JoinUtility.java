@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -41,6 +43,8 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
    private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
    private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
+
+   private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
 
    public enum JoinItem {
       TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
@@ -91,6 +95,20 @@ public class JoinUtility {
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() {
       return new TagQueueJoinQuery();
+   }
+
+   public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws SQLException {
+      List<Integer> toReturn = new ArrayList<Integer>();
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 0, SELECT_TAG_GAMMA_QUEUE_QUERIES);
+         while (chStmt.next()) {
+            toReturn.add(chStmt.getRset().getInt("query_id"));
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+      return toReturn;
    }
 
    private static abstract class JoinQueryEntry {
@@ -158,12 +176,18 @@ public class JoinUtility {
       }
    }
 
-   public static void deleteQuery(JoinItem item, int queryId) throws Exception {
+   public static void deleteQuery(Connection connection, JoinItem item, int queryId) throws Exception {
       if (item != null) {
-         ConnectionHandler.runPreparedUpdate(ConnectionHandler.getConnection(), item.getDeleteSql(),
-               SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(connection, item.getDeleteSql(), SQL3DataType.INTEGER, queryId);
       }
    }
+
+   public static void deleteQuery(JoinItem item, int queryId) throws Exception {
+      if (item != null) {
+         ConnectionHandler.runPreparedUpdate(item.getDeleteSql(), SQL3DataType.INTEGER, queryId);
+      }
+   }
+
    private interface IJoinRow {
       public Object[] toArray();
 
