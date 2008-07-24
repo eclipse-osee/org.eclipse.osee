@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.branch.management.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -46,15 +47,25 @@ public class BranchCreation implements IBranchCreation {
       return createRootBranchTx.getNewBranchId();
    }
 
-   public int createChildBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId) throws Exception {
-      CreateChildBranchTx createChildBranchTx =
-            new CreateChildBranchTx(parentBranchId, childBranchShortName, childBranchName, creationComment,
-                  associatedArtifactId, authorId);
-      createChildBranchTx.execute();
-      return createChildBranchTx.getNewBranchId();
+   public int createChildBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, boolean branchWithFiltering, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws Exception {
+      int branchId;
+      
+      if(branchWithFiltering){
+    	  CreateBranchWithFiltering createBranchWithFiltering = new CreateBranchWithFiltering(parentBranchId, childBranchShortName, childBranchName, creationComment,
+                  associatedArtifactId, authorId, compressArtTypeIds, preserveArtTypeIds);
+    	  createBranchWithFiltering.execute();
+          branchId = createBranchWithFiltering.getNewBranchId();
+      }else{
+		   CreateChildBranchTx createChildBranchTx =
+	            new CreateChildBranchTx(parentBranchId, childBranchShortName, childBranchName, creationComment,
+	                  associatedArtifactId, authorId);
+	      createChildBranchTx.execute();
+	      branchId = createChildBranchTx.getNewBranchId();
+      }
+      return branchId;
    }
-
-   private abstract class CreateBranchTx extends DbTransaction {
+   
+   public static abstract class CreateBranchTx extends DbTransaction {
       protected String childBranchShortName;
       protected String childBranchName;
       protected int parentBranchId;
@@ -131,6 +142,13 @@ public class BranchCreation implements IBranchCreation {
 
       public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException;
 
+	/**
+	 * @return the parentBranchId
+	 */
+	public int getParentBranchId() {
+		return parentBranchId;
+	}
+
    }
 
    private final class CreateRootBranchTx extends CreateBranchTx {
@@ -175,4 +193,5 @@ public class BranchCreation implements IBranchCreation {
          System.out.println(String.format("Create child branch - updated [%d] records", updates));
       }
    }
+
 }

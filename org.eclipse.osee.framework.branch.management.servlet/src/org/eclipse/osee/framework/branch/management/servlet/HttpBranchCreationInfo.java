@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
@@ -30,6 +31,8 @@ class HttpBranchCreationInfo {
    private int associatedArtifactId;
    private int authorId;
    private String staticBranchName;
+   private String[] compressArtTypeIds;
+   private String[] preserveArtTypeIds;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws Exception {
       isFunctionValid(req.getParameter("function"));
@@ -64,6 +67,15 @@ class HttpBranchCreationInfo {
       }
       authorId = Integer.parseInt(authorIdStr);
       staticBranchName = req.getParameter("staticBranchName");
+      
+      String compressArtTypeIdsString = req.getParameter("compressArtTypes");
+	  if (compressArtTypeIdsString != null) {
+		  compressArtTypeIds = compressArtTypeIdsString.split(",");
+	  }
+      String preserveArtTypeIdsString = req.getParameter("preserveArtTypes");
+      if(preserveArtTypeIdsString != null){
+    	  preserveArtTypeIds = preserveArtTypeIdsString.split(",");
+      }
    }
 
    private void isFunctionValid(String function) throws Exception {
@@ -132,5 +144,23 @@ class HttpBranchCreationInfo {
    public BranchCreationFunction getFunction() {
       return function;
    }
+
+	/**
+	 * @return the preserveArtTypes
+	 */
+	public String[] getPreserveArtTypeIds() {
+		return preserveArtTypeIds;
+	}
+	
+	/**
+	 * @return the compressArtTypes
+	 */
+	public String[] getCompressArtTypeIds() {
+		return compressArtTypeIds;
+	}
+	
+	public boolean branchWithFiltering(){
+		return (getCompressArtTypeIds() != null && getCompressArtTypeIds().length > 0) || (getPreserveArtTypeIds() != null && getPreserveArtTypeIds().length > 0);
+	}
 
 }

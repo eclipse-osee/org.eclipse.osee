@@ -46,7 +46,7 @@ public class BranchManagerServlet extends HttpServlet {
                branchId =
                      Activator.getInstance().getBranchCreation().createChildBranch(info.getParentBranchId(),
                            info.getBranchShortName(), info.getBranchName(), info.getCreationComment(),
-                           info.getAssociatedArtifactId(), info.getAuthorId());
+                           info.getAssociatedArtifactId(), info.getAuthorId(), info.branchWithFiltering(), info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
                break;
             case createRootBranch:
                branchId =
