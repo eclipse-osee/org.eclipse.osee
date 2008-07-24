@@ -60,7 +60,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private TableViewer custTable;
    private TableViewer hiddenColTable;
    private TableViewer visibleColTable;
-   private CustomizeData currentCustomizeData;
    private Text sorterText;
    private Text filterText;
    // Select Customization Buttons
@@ -74,13 +73,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private CustomizeData defaultTableCustData;
    private boolean inWorkbench = false;
 
-   public XViewerCustomizeDialog(CustomizeData currentCustomizeData, XViewer xViewer) {
-      this(currentCustomizeData, xViewer, Display.getCurrent().getActiveShell(), buttons, 0);
+   public XViewerCustomizeDialog(XViewer xViewer) {
+      this(xViewer, Display.getCurrent().getActiveShell());
    }
 
-   private XViewerCustomizeDialog(CustomizeData currentCustomizeData, XViewer xViewer, Shell parentShell, String[] buttons, int defaultButton) {
-      super(parentShell, "", null, "", MessageDialog.NONE, buttons, defaultButton);
-      this.currentCustomizeData = currentCustomizeData;
+   private XViewerCustomizeDialog(XViewer xViewer, Shell parentShell) {
+      super(parentShell, "", null, "", MessageDialog.NONE, buttons, 0);
       this.xViewer = xViewer;
       inWorkbench = Platform.isRunning();
       setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -112,7 +110,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
       // Column Configuration
       final Group configureColumnsGroup = new Group(comp, SWT.NONE);
-      configureColumnsGroup.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 3));
+      configureColumnsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
       configureColumnsGroup.setText("Configure Customization");
       final GridLayout gridLayout = new GridLayout();
       gridLayout.marginWidth = 3;
@@ -135,7 +133,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       hiddenColTable = new TableViewer(hiddenTableComp, SWT.BORDER | SWT.MULTI);
       final Table table_1 = hiddenColTable.getTable();
       final GridData gd_table_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2);
-      gd_table_1.widthHint = 150;
+      gd_table_1.widthHint = 300;
       table_1.setLayoutData(gd_table_1);
       hiddenColTable.setLabelProvider(new XViewerColumnLabelProvider());
       hiddenColTable.setContentProvider(new ArrayTreeContentProvider());
@@ -250,7 +248,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColTable = new TableViewer(visibleTableComp, SWT.BORDER | SWT.MULTI);
       final Table table = visibleColTable.getTable();
       final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gd_table.widthHint = 150;
+      gd_table.widthHint = 300;
       table.setLayoutData(gd_table);
       visibleColTable.setLabelProvider(new XViewerColumnLabelProvider());
       visibleColTable.setContentProvider(new ArrayTreeContentProvider());
@@ -573,10 +571,10 @@ public class XViewerCustomizeDialog extends MessageDialog {
       if (diag.open() == 0) {
          String name = diag.getEnteredName();
          try {
-            CustomizeData custXml = getConfigCustomizeCustData();
-            custXml.setName(name);
-            custXml.setPersonal(!diag.isSaveGlobal());
-            xViewer.getCustomizeMgr().saveCustomization(custXml);
+            CustomizeData custData = getConfigCustomizeCustData();
+            custData.setName(name);
+            custData.setPersonal(!diag.isSaveGlobal());
+            xViewer.getCustomizeMgr().saveCustomization(custData);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
@@ -605,6 +603,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private CustomizeData getConfigCustomizeCustData() {
       CustomizeData custData = new CustomizeData();
       custData.resetGuid();
+      custData.setNameSpace(xViewer.getXViewerFactory().getNamespace());
       custData.getColumnData().setColumns(getConfigCustXViewerColumns());
       custData.getSortingData().setFromXml(sorterText.getText());
       custData.getFilterData().setFilterText(filterText.getText());
@@ -713,10 +712,45 @@ public class XViewerCustomizeDialog extends MessageDialog {
       IStructuredSelection selection = (IStructuredSelection) custTable.getSelection();
       if (selection.size() == 0) return null;
       Iterator<?> i = selection.iterator();
-      CustomizeData custData = (CustomizeData) i.next();
-      // Add columns that were added after this customization was saved
-      custData.getColumnData().addMissingColumns(defaultTableCustData.getColumnData());
-      return custData;
+      CustomizeData storedCustData = (CustomizeData) i.next();
+      // Since they were generated from the current table and factory, table and current cust datas are valid as is
+      if (storedCustData.isCurrentTableCustData() || storedCustData.isCurrentTableCustData()) {
+         return storedCustData;
+      }
+      // Otherwise, have to resolve what was saved with what is valid for this table and available from the factory
+      CustomizeData generatedCustData = new CustomizeData();
+      generatedCustData.setName(storedCustData.getName());
+      generatedCustData.setName(storedCustData.getNameSpace());
+      /* 
+       * Need to resolve columns with what factory has which gets correct class/subclass of XViewerColumn and allows for removal of old and addition of new columns
+       */
+      List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
+      for (XViewerColumn storedCol : storedCustData.getColumnData().getColumns()) {
+         XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
+         // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
+         if (resolvedCol != null && resolvedCol.getWidth() > 0) {
+            resolvedCol.setWidth(storedCol.getWidth());
+            resolvedCol.setName(storedCol.getName());
+            resolvedCol.setShow(storedCol.isShow() || storedCol.getWidth() > 0);
+            resolvedCol.setSortForward(storedCol.isSortForward());
+            resolvedColumns.add(resolvedCol);
+         }
+      }
+      /*
+       * Add extra columns that were added to the table since storage of this custData
+       */
+      for (XViewerColumn extraCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
+         if (!resolvedColumns.contains(extraCol)) {
+            // Since column wasn't saved, don't show it
+            extraCol.setShow(false);
+            resolvedColumns.add(extraCol);
+         }
+      }
+      generatedCustData.getColumnData().setColumns(resolvedColumns);
+      generatedCustData.getFilterData().setFromXml(storedCustData.getFilterData().getXml());
+      generatedCustData.getSortingData().setFromXml(storedCustData.getSortingData().getXml());
+
+      return generatedCustData;
    }
 
    private List<XViewerColumn> getVisibleTableSelection() {

@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.internal.Workbench;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +38,15 @@ public class CustomizeData {
    private boolean isWorkbench = false;
 
    public CustomizeData() {
-      isWorkbench = Workbench.getInstance() != null && Workbench.getInstance().isRunning();
+      isWorkbench = Platform.isRunning();
+   }
+
+   public boolean isTableDefaultCustData() {
+      return name.equals(CustomizeManager.TABLE_DEFAULT_LABEL);
+   }
+
+   public boolean isCurrentTableCustData() {
+      return name.equals(CustomizeManager.CURRENT_LABEL);
    }
 
    public CustomizeData(String xml) {

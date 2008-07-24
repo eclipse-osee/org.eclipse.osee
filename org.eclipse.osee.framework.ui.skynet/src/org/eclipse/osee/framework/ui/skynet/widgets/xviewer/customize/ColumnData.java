@@ -48,17 +48,6 @@ public class ColumnData {
       return idToColumn.get(id);
    }
 
-   /**
-    * Because a stored set of columns may not have new columns that were added later, this method is called to add such
-    * columns to the set.
-    * 
-    * @param colData
-    */
-   public void addMissingColumns(ColumnData colData) {
-      for (XViewerColumn newXCol : colData.columns)
-         if (!columns.contains(newXCol)) columns.add(newXCol);
-   }
-
    public String getXml() {
       StringBuffer sb = new StringBuffer();
       for (XViewerColumn xCol : columns) {

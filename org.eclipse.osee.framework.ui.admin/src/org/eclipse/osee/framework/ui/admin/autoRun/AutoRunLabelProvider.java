@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup;
-import org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunTask;
+import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.swt.graphics.Font;
@@ -35,7 +35,7 @@ public class AutoRunLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
-      AutoRunTask autoRunTask = (AutoRunTask) element;
+      IAutoRunTask autoRunTask = (IAutoRunTask) element;
       if (autoRunXViewer.getXAutoRunViewer().isLaunchNewWorkbench()) {
          if (aCol.equals(AutoRunXViewerFactory.Run_Col)) return autoRunXViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage(
                "chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif");
@@ -55,7 +55,7 @@ public class AutoRunLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
-      AutoRunTask autoRunTask = (AutoRunTask) element;
+      IAutoRunTask autoRunTask = (IAutoRunTask) element;
       if (aCol.equals(AutoRunXViewerFactory.Run_Col)) return "";
       if (aCol.equals(AutoRunXViewerFactory.Name_Col)) return autoRunTask.getAutoRunUniqueId();
       if (aCol.equals(AutoRunXViewerFactory.Schedule_Time)) return autoRunTask.get24HourStartTime();

@@ -87,7 +87,7 @@ public class CustomizeManager {
    }
 
    public void handleTableCustomization() {
-      (new XViewerCustomizeDialog(currentCustData, xViewer)).open();
+      (new XViewerCustomizeDialog(xViewer)).open();
    }
 
    /**
