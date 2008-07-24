@@ -15,8 +15,7 @@ Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.sql,
  org.eclipse.osee.framework.database.sql.datatype,
  org.eclipse.osee.framework.database.utility
-Require-Bundle: org.eclipse.ui,
- org.eclipse.ui.ide,
+Require-Bundle: 
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.resources,

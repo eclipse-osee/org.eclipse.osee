@@ -14,15 +14,15 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
 /**
  * The main plug-in class to be used in the desktop.
  * 
  * @author Ryan D. Brooks
  */
-public class DatabaseActivator extends OseeUiActivator {
+public class DatabaseActivator extends OseeActivator {
 
    // The shared instance.
    private static DatabaseActivator plugin;

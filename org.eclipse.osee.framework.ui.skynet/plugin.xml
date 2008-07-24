@@ -16,6 +16,21 @@
  <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
+
+<extension
+      point="org.eclipse.ui.popupMenus">
+   <objectContribution
+         adaptable="true"
+         id="osee.database.projectContribution"
+         objectClass="org.eclipse.core.resources.IResource">
+      <action
+            class="org.eclipse.osee.framework.ui.skynet.GenerateTypeEnumAction"
+            id="osee.define.popup.open.artifact"
+            label="Generate Type Classes"
+            menubarPath="osee.define.menu.main/main"/>
+   </objectContribution>
+   
+</extension>
  <extension
        point="org.eclipse.ui.commands">
     <command

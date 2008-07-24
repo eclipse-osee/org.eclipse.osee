@@ -11,20 +11,7 @@
          <run class="org.eclipse.osee.framework.database.ConfigDatabase"/>
       </application>
    </extension>
-<extension
-      point="org.eclipse.ui.popupMenus">
-   <objectContribution
-         adaptable="true"
-         id="osee.database.projectContribution"
-         objectClass="org.eclipse.core.resources.IResource">
-      <action
-            class="org.eclipse.osee.framework.database.GenerateTypeEnumAction"
-            id="osee.define.popup.open.artifact"
-            label="Generate Type Classes"
-            menubarPath="osee.define.menu.main/main"/>
-   </objectContribution>
-   
-</extension>
+
 <extension
       id="BackupTableData"
       point="org.eclipse.osee.framework.database.IDbInitializationTask">
