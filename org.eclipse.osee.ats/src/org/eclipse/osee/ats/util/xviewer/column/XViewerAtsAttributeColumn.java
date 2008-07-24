@@ -20,8 +20,10 @@ public class XViewerAtsAttributeColumn extends XViewerAttributeColumn {
    }
 
    public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute.getDisplayName(),
-            atsAttribute.getStoreName(), width, align, show, sortDataType, multiColumnEditable, description);
+      super(
+            WorldXViewerFactory.COLUMN_NAMESPACE + "." + atsAttribute.getDisplayName().replaceAll(" ", "").toLowerCase(),
+            atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
+            multiColumnEditable, description);
    }
 
 }

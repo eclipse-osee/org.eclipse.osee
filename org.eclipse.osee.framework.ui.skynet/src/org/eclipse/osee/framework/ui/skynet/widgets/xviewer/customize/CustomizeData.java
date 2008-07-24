@@ -173,4 +173,11 @@ public class CustomizeData {
    public String getGuid() {
       return guid;
    }
+
+   /**
+    * @param guid the guid to set
+    */
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
 }

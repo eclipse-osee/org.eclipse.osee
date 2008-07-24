@@ -25,7 +25,7 @@ public class ATSAttributes {
 
    public static final ATSAttributes BRANCH_METRICS_ATTRIBUTE = new ATSAttributes("Branch Metrics");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
-   public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE = new ATSAttributes("Actionable Item");
+   public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE = new ATSAttributes("Actionable Items");
    public static final ATSAttributes TEAM_DEFINITION_GUID_ATTRIBUTE = new ATSAttributes("Team Definition");
    public static final ATSAttributes TITLE_ATTRIBUTE =
          new ATSAttributes("Title", "Name", "Enter clear and consise title that can be generally understood.");
@@ -65,7 +65,7 @@ public class ATSAttributes {
    public static final ATSAttributes CANCEL_REASON_ATTRIBUTE =
          new ATSAttributes("Cancel Reason", "Reason for cancellation of this ATS object.");
    public static final ATSAttributes SMA_NOTE_ATTRIBUTE =
-         new ATSAttributes("Note", "ats.SMA Note", "Notes applicable to ATS object");
+         new ATSAttributes("Notes", "ats.SMA Note", "Notes applicable to ATS object");
    public static final ATSAttributes WORK_PACKAGE_ATTRIBUTE =
          new ATSAttributes("Work Package", "Designated accounting work package for completing workflow.");
    public static final ATSAttributes CATEGORY_ATTRIBUTE =

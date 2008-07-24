@@ -20,11 +20,11 @@ import org.eclipse.swt.SWT;
 public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
 
    public XViewerSmaCreatedDateColumn(XViewer viewer) {
-      this("Created", viewer);
+      this("Created Date", viewer);
    }
 
    public XViewerSmaCreatedDateColumn(String name, XViewer viewer) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + "createdDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".createdDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
             "Date this workflow was created.");
    }
 

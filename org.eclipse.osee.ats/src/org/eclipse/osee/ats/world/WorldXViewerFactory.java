@@ -36,7 +36,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Type_Col =
          new XViewerColumn("ats.column.type", "Type", 150, SWT.LEFT, true, SortDataType.String, false, null);
    public static final XViewerColumn State_Col =
-         new XViewerColumn("ats.column.smaState", "State", 75, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("ats.column.state", "State", 75, SWT.LEFT, true, SortDataType.String, false, null);
    public static final XViewerColumn Priority_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE, 20, SWT.CENTER, true,
                SortDataType.String, false, null);
@@ -44,19 +44,19 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(ATSAttributes.CHANGE_TYPE_ATTRIBUTE, 22, SWT.CENTER, true, SortDataType.String,
                false, null);
    public static final XViewerColumn Assignees_Col =
-         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + "assignees", "Assignees", 100, SWT.LEFT, true,
+         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".assignees", "Assignees", 100, SWT.LEFT, true,
                SortDataType.String, false, null);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title", null);
    public static final XViewerColumn Actionable_Items_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".run", "Actionable Items", 80, SWT.LEFT, true, SortDataType.String,
-               false, "Actionable Items that are impacted by this change.");
+         new XViewerAtsAttributeColumn(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE, 80, SWT.LEFT, true,
+               SortDataType.String, false, "Actionable Items that are impacted by this change.");
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID", null);
    public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn(null);
    public static final XViewerColumn Version_Target_Col =
-         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + "versionTarget", "Version Target", 40, SWT.LEFT,
+         new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Version Target", 40, SWT.LEFT,
                true, SortDataType.String, false, "Date this workflow transitioned to the Completed state.");
    public static final XViewerColumn Team_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
@@ -118,7 +118,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".estimatedHours", "Estimated Hours", 40, SWT.CENTER, false,
                SortDataType.Float, true, "Hours estimated to implement the changes associated with this Action.");
    public static final XViewerColumn Weekly_Benefit_Hrs_Col =
-         new XViewerColumn(COLUMN_NAMESPACE + ".weeklyBenefit", "Weekly Benefit Hrs", 40, SWT.CENTER, false,
+         new XViewerColumn(COLUMN_NAMESPACE + ".weeklyBenefitHrs", "Weekly Benefit Hrs", 40, SWT.CENTER, false,
                SortDataType.Float, false,
                "Estimated number of hours that will be saved over a single year if this change is completed.");
    public static final XViewerColumn Remaining_Hours_Col =

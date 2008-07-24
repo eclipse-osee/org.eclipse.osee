@@ -11,12 +11,16 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -56,6 +60,8 @@ public class CustomizeManager {
       xViewerFactory.getXViewerCustomMenu().init(xViewer);
    }
 
+   private Map<String, XViewerColumn> oldNameToColumnId = new HashMap<String, XViewerColumn>();
+
    /**
     * Since saved customize data is stored as xml, all the columns need to be resolved to the columns available from the
     * factory
@@ -67,13 +73,33 @@ public class CustomizeManager {
       // Otherwise, have to resolve what was saved with what is valid for this table and available from the factory
       CustomizeData resolvedCustData = new CustomizeData();
       resolvedCustData.setName(loadedCustData.getName());
+      resolvedCustData.setPersonal(loadedCustData.isPersonal());
+      resolvedCustData.setGuid(loadedCustData.getGuid());
       resolvedCustData.setNameSpace(loadedCustData.getNameSpace());
       /* 
        * Need to resolve columns with what factory has which gets correct class/subclass of XViewerColumn and allows for removal of old and addition of new columns
        */
       List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
       for (XViewerColumn storedCol : loadedCustData.getColumnData().getColumns()) {
+         // Ignore column if not shown
+         if (storedCol.getWidth() == 0) continue;
          XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
+         // if not found, may have been stored without namespace; try to resolve for backward compatibility
+         if (resolvedCol == null) {
+            String name = storedCol.getName().replaceAll(" ", "");
+            resolvedCol = oldNameToColumnId.get(name);
+            if (resolvedCol == null) {
+               for (XViewerColumn xCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
+                  String colId = xCol.getId().toLowerCase();
+                  String oldName = "." + name.toLowerCase();
+                  //                  System.out.println("ColId [" + colId + "] OldName [" + oldName + "]\n");
+                  if (xCol.getId().endsWith(name) || colId.endsWith(oldName)) {
+                     resolvedCol = xCol;
+                     oldNameToColumnId.put(name, resolvedCol);
+                  }
+               }
+            }
+         }
          // Only handle columns that the factory supports and only resolve shown columns (rest will be loaded later)
          if (resolvedCol != null && resolvedCol.getWidth() > 0) {
             resolvedCol.setWidth(storedCol.getWidth());
@@ -81,6 +107,12 @@ public class CustomizeManager {
             resolvedCol.setShow(storedCol.isShow() || storedCol.getWidth() > 0);
             resolvedCol.setSortForward(storedCol.isSortForward());
             resolvedColumns.add(resolvedCol);
+         }
+         if (resolvedCol == null) {
+            OSEELog.logWarning(
+                  SkynetGuiPlugin.class,
+                  "XViewer Conversion for saved Customization \"" + loadedCustData.getName() + "\" dropped unresolved column Name: \"" + storedCol.getName() + "\"  Id: \"" + storedCol.getId() + "\".  Delete customization and re-save to resolve.",
+                  false);
          }
       }
       /*
