@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
@@ -18,7 +17,7 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerHridColumn extends XViewerValueColumn {
 
-   public XViewerHridColumn(String name, XViewer viewer) {
+   public XViewerHridColumn(String name) {
       super("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Human Readable ID");
    }
 

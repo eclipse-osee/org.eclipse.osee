@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.swt.SWT;
@@ -18,7 +17,7 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerArtifactNameColumn extends XViewerValueColumn {
 
-   public XViewerArtifactNameColumn(String name, XViewer viewer) {
+   public XViewerArtifactNameColumn(String name) {
       super("framework.artifact.name." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, null);
    }
 
