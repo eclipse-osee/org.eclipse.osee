@@ -6,7 +6,7 @@ Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.derby.Activator
 Bundle-ActivationPolicy: lazy
 OseeEarlyStart: true
-Import-Package: org.apache.derby.jdbc,
+Import-Package: org.apache.derby.jdbc;resolution:=optional,
  org.eclipse.osee.framework.db.connection,
  org.osgi.framework;version="1.4.0"
 Export-Package: org.eclipse.osee.framework.derby
