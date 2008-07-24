@@ -52,7 +52,7 @@ public class TestSearchDataStore extends TestCase {
       List<SearchTag> testData = getTestSearchTagDataStoreData();
       int totalTags = 0;
       for (SearchTag searchTag : testData) {
-         totalTags += searchTag.size();
+         totalTags += searchTag.cacheSize();
       }
 
       int updated = SearchTagDataStore.storeTags(testData);
@@ -78,7 +78,7 @@ public class TestSearchDataStore extends TestCase {
       try {
          int totalTags = 0;
          for (SearchTag searchTag : testData) {
-            totalTags += searchTag.size();
+            totalTags += searchTag.cacheSize();
          }
 
          int updated = SearchTagDataStore.storeTags(testData);

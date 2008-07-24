@@ -18,19 +18,19 @@ import java.io.InputStream;
 public interface ISearchEngineTagger {
 
    /**
-    * Create tags for attribute with gamma id.
+    * Create tags for queue query id.
     * 
-    * @param gammaId attribute to tag
+    * @param queryId queryId to tag
     */
-   public void tagAttribute(long gammaId);
+   public void tagByQueueQueryId(int queryId);
 
    /**
-    * Create tags for attribute with gamma id. Notifies listener once tagging is complete.
+    * Create tags for queue query id. Notifies listener once tagging is complete.
     * 
     * @param listener object listening for tag events
-    * @param gammaId attribute to tag
+    * @param queryId queryId to tag
     */
-   public void tagAttribute(ITagListener listener, long gammaId);
+   public void tagByQueueQueryId(ITagListener listener, int queryId);
 
    /**
     * Create tags for attributes specified in xml stream. <b>
@@ -50,7 +50,14 @@ public interface ISearchEngineTagger {
     * 
     * @param inputStream xml inputStream
     */
-   public void tagFromXmlStream(InputStream inputStream);
+   public void tagFromXmlStream(InputStream inputStream) throws Exception;
+
+   /**
+    * Delete tags specified by join query id
+    * 
+    * @param parseInt
+    */
+   public int deleteTags(int joinQueryId) throws Exception;
 
    /**
     * Get number of items waiting to be tagged
@@ -71,10 +78,4 @@ public interface ISearchEngineTagger {
     */
    public void clearStatistics();
 
-   /**
-    * Delete tags specified by join query id
-    * 
-    * @param parseInt
-    */
-   public int deleteTags(int joinQueryId) throws Exception;
 }

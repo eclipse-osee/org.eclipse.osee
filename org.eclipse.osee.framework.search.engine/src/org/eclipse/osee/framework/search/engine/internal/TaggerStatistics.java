@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
-import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
+import org.eclipse.osee.framework.search.engine.ITagListener;
+import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TaggerStatistics implements Cloneable, ITaggerStatistics {
+public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListener {
    public static final TaggerStatistics EMPTY_STATS = new TaggerStatistics();
-   private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, 0, 0, 0);
+   private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, 0, 0);
 
    private long averageWaitTime;
    private long averageProcessingTime;
@@ -83,22 +84,8 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics {
       return SearchTagDataStore.getTotalTags();
    }
 
-   public void addEntry(long gammaId, int totalTags, long waitTime, long processingTime) {
-      this.totalTags += totalTags;
-      this.totalProcessed++;
-      this.totalWaitTime += waitTime;
-      this.totalProcessingTime += processingTime;
-      this.averageWaitTime = totalWaitTime / this.totalProcessed;
-      this.averageProcessingTime = totalProcessingTime / this.totalProcessed;
+   synchronized public void addEntry(long gammaId, int totalTags, long waitTime, long processingTime) {
 
-      TaskStatistics newTask = new TaskStatistics(gammaId, totalTags, processingTime, waitTime);
-      if (newTask.getProcessingTime() > this.longestTask.getProcessingTime()) {
-         this.longestTask = newTask;
-      }
-      if (newTask.getTotalTags() > this.mostTags.getTotalTags()) {
-         this.mostTags = newTask;
-      }
-      this.longestWaitTime = Math.max(this.longestWaitTime, waitTime);
    }
 
    /* (non-Javadoc)
@@ -117,5 +104,34 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics {
       other.longestTask = this.longestTask.clone();
       other.mostTags = this.mostTags.clone();
       return other;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeTagComplete(int, long, int, long)
+    */
+   @Override
+   public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+      this.totalTags += totalTags;
+      this.totalProcessed++;
+      this.totalProcessingTime += processingTime;
+      this.averageProcessingTime = totalProcessingTime / this.totalProcessed;
+
+      TaskStatistics newTask = new TaskStatistics(gammaId, totalTags, processingTime);
+      if (newTask.getProcessingTime() > this.longestTask.getProcessingTime()) {
+         this.longestTask = newTask;
+      }
+      if (newTask.getTotalTags() > this.mostTags.getTotalTags()) {
+         this.mostTags = newTask;
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long)
+    */
+   @Override
+   public void onTagQueryIdTagComplete(int queryId, long processingTime) {
+      //      this.totalWaitTime += waitTime;
+      //      this.averageWaitTime = totalWaitTime / this.totalProcessed;
+      //      this.longestWaitTime = Math.max(this.longestWaitTime, waitTime);
    }
 }

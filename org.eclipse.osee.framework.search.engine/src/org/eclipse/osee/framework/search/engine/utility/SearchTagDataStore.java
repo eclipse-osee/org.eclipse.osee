@@ -87,7 +87,7 @@ public class SearchTagDataStore {
       return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
    }
 
-   public static int storeTags(Collection<SearchTag> searchTags) throws Exception {
+   public static int storeTags(Collection<SearchTag> searchTags) throws SQLException {
       return storeTags(searchTags.toArray(new SearchTag[searchTags.size()]));
    }
 

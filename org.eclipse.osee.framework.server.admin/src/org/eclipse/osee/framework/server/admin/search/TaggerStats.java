@@ -40,7 +40,7 @@ class TaggerStats extends BaseCmdWorker {
    }
 
    private String toString(ITagItemStatistics task) {
-      return String.format("id: [%d] - [%d] ms waited to process [%d] tags in [%d] ms", task.getGammaId(),
-            task.getWaitTime(), task.getTotalTags(), task.getProcessingTime());
+      return String.format("id: [%d] - processed [%d] tags in [%d] ms", task.getGammaId(), task.getTotalTags(),
+            task.getProcessingTime());
    }
 }

@@ -20,7 +20,4 @@ public interface ITagItemStatistics {
    public int getTotalTags();
 
    public long getProcessingTime();
-
-   public long getWaitTime();
-
 }

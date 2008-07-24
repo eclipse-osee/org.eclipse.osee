@@ -19,14 +19,12 @@ public class TaskStatistics implements Cloneable, ITagItemStatistics {
    private long gammaId;
    private int totalTags;
    private long processingTime;
-   private long waitTime;
 
-   TaskStatistics(long gammaId, int totalTags, long processingTime, long waitTime) {
+   TaskStatistics(long gammaId, int totalTags, long processingTime) {
       super();
       this.gammaId = gammaId;
       this.totalTags = totalTags;
       this.processingTime = processingTime;
-      this.waitTime = waitTime;
    }
 
    public long getGammaId() {
@@ -41,10 +39,6 @@ public class TaskStatistics implements Cloneable, ITagItemStatistics {
       return processingTime;
    }
 
-   public long getWaitTime() {
-      return waitTime;
-   }
-
    /* (non-Javadoc)
     * @see java.lang.Object#clone()
     */
@@ -54,7 +48,6 @@ public class TaskStatistics implements Cloneable, ITagItemStatistics {
       other.gammaId = this.gammaId;
       other.totalTags = this.totalTags;
       other.processingTime = this.processingTime;
-      other.waitTime = this.waitTime;
       return other;
    }
 }

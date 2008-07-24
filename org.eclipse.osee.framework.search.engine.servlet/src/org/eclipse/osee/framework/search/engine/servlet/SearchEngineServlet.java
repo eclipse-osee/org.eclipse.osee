@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.search.engine.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -63,8 +61,8 @@ public class SearchEngineServlet extends HttpServlet {
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
-         long gammaId = Long.parseLong(request.getParameter("gammaId"));
-         Activator.getInstance().getSearchTagger().tagAttribute(gammaId);
+         int queryId = Integer.parseInt(request.getParameter("queryId"));
+         Activator.getInstance().getSearchTagger().tagByQueueQueryId(queryId);
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -10,8 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -24,21 +33,27 @@ import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 /**
  * @author Roberto E. Escobar
  */
-class TaggerRunnable implements Runnable, ITagCollector {
+class TaggerRunnable implements Runnable {
    private static final int MAXIMUM_CACHED_TAGS = 1000;
 
-   private SearchTag searchTag;
-   private long gammaId;
-   private int tagCount;
+   private int tagQueueQueryId;
    private long elapsedTime;
-   private ITagListener listener;
+   private List<ITagListener> listeners;
+   private Deque<SearchTag> searchTags;
+   private TagCollector collector;
 
-   protected TaggerRunnable(ITagListener listener, long gammaId) {
-      this.listener = listener;
-      this.searchTag = null;
-      this.gammaId = gammaId;
-      this.tagCount = 0;
+   protected TaggerRunnable(int tagQueueQueryId) {
+      this.listeners = new ArrayList<ITagListener>();
+      this.collector = new TagCollector();
+      this.tagQueueQueryId = tagQueueQueryId;
+      this.searchTags = new LinkedList<SearchTag>();
       this.elapsedTime = 0;
+   }
+
+   public void addListener(ITagListener listener) {
+      if (listener != null) {
+         this.listeners.add(listener);
+      }
    }
 
    /* (non-Javadoc)
@@ -47,56 +62,143 @@ class TaggerRunnable implements Runnable, ITagCollector {
    @Override
    public void run() {
       long start = System.currentTimeMillis();
+      Collection<AttributeData> attributeDatas = null;
       try {
-         AttributeData attributeData = AttributeDataStore.getAttribute(gammaId);
-         if (attributeData != null) {
-            this.searchTag = new SearchTag(attributeData.getGammaId());
-            Activator.getInstance().getTaggerManager().tagIt(attributeData, this);
-            store();
+         attributeDatas = AttributeDataStore.getAttribute(getTagQueueQueryId());
+         try {
+
+            for (AttributeData attributeData : attributeDatas) {
+               SearchTag searchTag = new SearchTag(attributeData.getGammaId());
+               this.collector.setCurrent(searchTag);
+               this.searchTags.add(searchTag);
+               long tagItem = System.currentTimeMillis();
+               try {
+                  Activator.getInstance().getTaggerManager().tagIt(attributeData, collector);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag));
+               } finally {
+                  notifyOnTagQueryIdTagComplete(searchTag.getGammaId(), searchTag.getRunningTotal(),
+                        (tagItem - System.currentTimeMillis()));
+               }
+               checkSizeStoreIfNeeeded();
+            }
+            store(this.searchTags);
+            Connection connection = null;
+            try {
+               connection = OseeDbConnection.getConnection();
+               JoinUtility.deleteQuery(JoinItem.TAG_GAMMA_QUEUE, getTagQueueQueryId());
+            } finally {
+               if (connection != null) {
+                  connection.close();
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
+                  getTagQueueQueryId()));
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag [%s]", searchTag), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - tagQueueQueryId [%d]",
+               getTagQueueQueryId()), ex);
       } finally {
+         this.collector.clearCurrent();
          this.elapsedTime = System.currentTimeMillis() - start;
-         if (searchTag != null) {
-            searchTag.clear();
-            searchTag = null;
+         for (SearchTag searchTag : searchTags) {
+            searchTag.clearCache();
          }
-         if (listener != null) {
-            listener.onComplete(getGammaId());
+         notifyOnTagQueryIdTagComplete();
+      }
+      listeners.clear();
+   }
+
+   private void notifyOnTagQueryIdTagComplete() {
+      if (listeners != null) {
+         for (ITagListener listener : listeners) {
+            try {
+               listener.onTagQueryIdTagComplete(tagQueueQueryId, elapsedTime);
+            } catch (Exception ex) {
+               OseeLog.log(TaggerRunnable.class, Level.SEVERE, String.format("Error notifying listener: [%s] ",
+                     listener.getClass().getName()), ex);
+            }
          }
       }
    }
 
-   public long getProcessingTime() {
+   private void notifyOnTagQueryIdTagComplete(long gammaId, int totalTags, long processingTime) {
+      if (listeners != null) {
+         for (ITagListener listener : listeners) {
+            try {
+               listener.onAttributeTagComplete(tagQueueQueryId, gammaId, totalTags, processingTime);
+            } catch (Exception ex) {
+               OseeLog.log(TaggerRunnable.class, Level.SEVERE, String.format("Error notifying listener: [%s] ",
+                     listener.getClass().getName()), ex);
+            }
+         }
+      }
+   }
+
+   public long getQueryIdProcessingTime() {
       return elapsedTime;
    }
 
-   public int getTotalTags() {
-      return tagCount;
+   public int getTagQueueQueryId() {
+      return tagQueueQueryId;
    }
 
-   public long getGammaId() {
-      return gammaId;
+   public Collection<SearchTag> getSearchTags() {
+      return searchTags;
    }
 
-   public void store() throws SQLException {
-      SearchTagDataStore.storeTags(searchTag);
-      searchTag.clear();
+   private void checkSizeStoreIfNeeeded() throws SQLException {
+      int cummulative = 0;
+      boolean needsStorage = false;
+      for (SearchTag item : this.searchTags) {
+         cummulative += item.cacheSize();
+         if (cummulative >= MAXIMUM_CACHED_TAGS) {
+            needsStorage = true;
+            break;
+         }
+      }
+      if (needsStorage) {
+         store(this.searchTags);
+      }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String, java.lang.Long)
-    */
-   @Override
-   public void addTag(String word, Long codedTag) {
-      searchTag.addTag(codedTag);
-      tagCount++;
-      if (searchTag.size() >= MAXIMUM_CACHED_TAGS) {
-         try {
-            store();
-         } catch (SQLException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags [%s]", searchTag), ex);
+   private void store(Collection<SearchTag> toStore) throws SQLException {
+      store(toStore.toArray(new SearchTag[toStore.size()]));
+   }
+
+   private void store(SearchTag... toStore) throws SQLException {
+      SearchTagDataStore.storeTags(toStore);
+      for (SearchTag item : toStore) {
+         item.clearCache();
+      }
+   }
+
+   private final class TagCollector implements ITagCollector {
+      private SearchTag currentTag;
+
+      public void setCurrent(SearchTag searchTag) {
+         this.currentTag = searchTag;
+      }
+
+      public void clearCurrent() {
+         this.currentTag = null;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String, java.lang.Long)
+       */
+      @Override
+      public void addTag(String word, Long codedTag) {
+         if (currentTag != null) {
+            currentTag.addTag(codedTag);
+            if (currentTag.cacheSize() >= MAXIMUM_CACHED_TAGS) {
+               try {
+                  store(currentTag);
+               } catch (SQLException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags [%s]", currentTag), ex);
+               }
+            }
          }
       }
    }

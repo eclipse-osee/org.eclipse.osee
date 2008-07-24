@@ -6,8 +6,8 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import java.sql.Connection;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 
 /**
  * @author Roberto E. Escobar
@@ -27,13 +27,13 @@ class TaggerDropAllWorker extends BaseCmdWorker {
    protected void doWork(long startTime) throws Exception {
       Connection connection = null;
       try {
-         connection = ConnectionHandler.getConnection();
+         connection = OseeDbConnection.getConnection();
          String deleteSql = null;
          String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
          if (dbName.contains("gresql")) {
             deleteSql = TRUNCATE_SQL;
-//         } else if (dbName.contains("oracle")) {
-//            deleteSql = TRUNCATE_ORACLE_SQL;
+            //         } else if (dbName.contains("oracle")) {
+            //            deleteSql = TRUNCATE_ORACLE_SQL;
          } else {
             deleteSql = DELETE_TABLE_SQL;
          }
