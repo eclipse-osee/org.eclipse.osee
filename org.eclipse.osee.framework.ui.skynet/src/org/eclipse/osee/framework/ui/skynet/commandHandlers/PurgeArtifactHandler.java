@@ -73,10 +73,8 @@ public class PurgeArtifactHandler extends AbstractHandler {
                         @Override
                         protected void handleTxWork() throws OseeCoreException, SQLException {
                            for (Artifact artifactToPurge : artifacts) {
-                              if (!artifactToPurge.isDeleted()) {
                                  fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
                                  artifactToPurge.purgeFromBranch();
-                              }
                               fMonitor.worked(1);
                            }
                            fMonitor.done();
