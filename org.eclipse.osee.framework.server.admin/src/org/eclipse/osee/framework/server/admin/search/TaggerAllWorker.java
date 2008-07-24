@@ -154,7 +154,7 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       if (queryIds.contains(queryId)) {
          processed++;
-         if (processed % 100 == 0) {
+         if (processed % 1000 == 0) {
             if (isVerbose()) {
                println(String.format("[%d of %d ] - Elapsed Time = %s.", processed, total,
                      getElapsedTime(this.startTime)));
