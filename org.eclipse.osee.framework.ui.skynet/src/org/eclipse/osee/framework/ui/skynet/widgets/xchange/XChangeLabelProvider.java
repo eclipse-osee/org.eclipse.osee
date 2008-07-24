@@ -49,6 +49,10 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
             return change.getIsValue();
          } else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
             return change.getWasValue();
+         } else if (cCol.equals(ChangeXViewerFactory.Artifact_Type)) {
+            return change.getArtifact().getArtifactTypeName();
+         } else if (cCol.equals(ChangeXViewerFactory.Hrid)) {
+            return change.getArtifact().getHumanReadableId();
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

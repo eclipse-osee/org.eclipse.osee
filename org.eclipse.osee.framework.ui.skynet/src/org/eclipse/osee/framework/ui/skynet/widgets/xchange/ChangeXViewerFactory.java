@@ -44,14 +44,19 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
    public static XViewerColumn Was_Value =
-         new XViewerColumn("framework.change.wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false,
+         new XViewerColumn("framework.change.wasValue", "Was Value", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
+   public static XViewerColumn Artifact_Type =
+         new XViewerColumn("framework.change.artifactType", "Artifact Type", 75, SWT.LEFT, true, SortDataType.String,
+               false, null);
+   public static XViewerColumn Hrid =
+         new XViewerColumn("framework.change.hrid", "HRID", 50, SWT.LEFT, false, SortDataType.String, false, null);
 
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
    public ChangeXViewerFactory() {
       super(NAMESPACE);
-      registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value);
+      registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid);
       try {
          for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
             XViewerAttributeFromChangeColumn newCol =
