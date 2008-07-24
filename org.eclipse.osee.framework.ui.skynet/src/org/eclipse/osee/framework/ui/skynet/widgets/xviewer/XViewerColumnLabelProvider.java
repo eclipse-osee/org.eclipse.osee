@@ -39,6 +39,6 @@ public class XViewerColumnLabelProvider implements ILabelProvider {
    public String getText(Object element) {
       if (!(element instanceof XViewerColumn)) return "";
       XViewerColumn xCol = (XViewerColumn) element;
-      return xCol.toString();
+      return xCol.getDisplayName();
    }
 }

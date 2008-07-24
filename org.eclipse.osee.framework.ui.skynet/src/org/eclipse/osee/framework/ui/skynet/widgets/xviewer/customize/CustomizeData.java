@@ -58,10 +58,6 @@ public class CustomizeData {
       guid = GUID.generateGuidStr();
    }
 
-   public String toString() {
-      return name;
-   }
-
    public Image getImage(boolean isDefault) {
       if (!isWorkbench) return null;
       if (name.equals(CustomizeManager.TABLE_DEFAULT_LABEL) || name.equals(CustomizeManager.CURRENT_LABEL)) {
@@ -105,6 +101,10 @@ public class CustomizeData {
       sortingData.setFromXml(xml);
       filterData.setFromXml(xml);
       columnData.setFromXml(xml);
+   }
+
+   public String toString() {
+      return "[" + name + "][" + nameSpace + "][" + guid + "][" + columnData + "][" + filterData + "][" + sortingData + "]";
    }
 
    /**

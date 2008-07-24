@@ -41,4 +41,9 @@ public class FilterData {
    public void setFromXml(String xml) {
       filterText = AXml.getTagData(xml, FILTER_TAG);
    }
+
+   public String toString() {
+      return "filterData:[" + filterText + "]";
+   }
+
 }

@@ -44,6 +44,15 @@ public class ColumnData {
       return columns;
    }
 
+   public String toString() {
+      StringBuffer sb = new StringBuffer("columnData:[");
+      for (XViewerColumn xCol : columns) {
+         sb.append(xCol);
+      }
+      sb.append("]");
+      return sb.toString();
+   }
+
    public XViewerColumn getXColumn(String id) {
       return idToColumn.get(id);
    }

@@ -181,6 +181,8 @@ public class CustomizeManager {
     */
    public CustomizeData generateCustDataFromTable() {
       CustomizeData custData = new CustomizeData();
+      custData.setName(CustomizeManager.CURRENT_LABEL);
+      custData.setNameSpace(xViewer.getXViewerFactory().getNamespace());
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>(15);
       for (Integer index : xViewer.getTree().getColumnOrder()) {
          TreeColumn treeCol = xViewer.getTree().getColumn(index);

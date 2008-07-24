@@ -125,8 +125,12 @@ public class XViewerColumn {
          return SWT.LEFT;
    }
 
+   public String getDisplayName() {
+      return name + " - " + id + " - width:" + width;
+   }
+
    public String toString() {
-      return name + " - " + id + "";
+      return "column:[" + name + "][" + id + "][" + width + "][" + show + "][" + align + "]";
    }
 
    public int getAlign() {

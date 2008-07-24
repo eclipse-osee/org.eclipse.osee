@@ -548,7 +548,9 @@ public class XViewerCustomizeDialog extends MessageDialog {
       for (XViewerColumn xCol : getTableXViewerColumns(visibleColTable)) {
          xCol.setShow(true);
          // Have to restore the default width, cause it was set to 0 to make column disappear
-         xCol.setWidth(xViewer.getCustomizeMgr().getDefaultWidth(xCol.getId()));
+         if (xCol.getWidth() == 0) {
+            xCol.setWidth(xViewer.getCustomizeMgr().getDefaultWidth(xCol.getId()));
+         }
          xCol.setXViewer(xViewer);
          xCols.add(xCol);
       }
