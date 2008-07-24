@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.ats.feature_0.1.0.qualifier.jar" id="org.eclipse.osee.ats.feature" version="0.1.0.qualifier"/>
+   <feature url="features/org.eclipse.osee.define.feature_0.1.0.qualifier.jar" id="org.eclipse.osee.define.feature" version="0.1.0.qualifier"/>
+   <feature url="features/org.eclipse.osee.framework.feature_0.1.0.qualifier.jar" id="org.eclipse.osee.framework.feature" version="0.1.0.qualifier"/>
+   <feature url="features/org.eclipse.osee.framework.ui.feature_0.1.0.qualifier.jar" id="org.eclipse.osee.framework.ui.feature" version="0.1.0.qualifier"/>
+   <feature url="features/org.eclipse.osee.required_0.3.0.qualifier.jar" id="org.eclipse.osee.required" version="0.3.0.qualifier"/>
+</site>
