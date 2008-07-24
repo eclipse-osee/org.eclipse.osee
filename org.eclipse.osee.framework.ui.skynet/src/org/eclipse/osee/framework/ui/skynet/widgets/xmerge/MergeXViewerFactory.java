@@ -20,27 +20,26 @@ import org.eclipse.swt.SWT;
  */
 public class MergeXViewerFactory extends SkynetXViewerFactory {
 
-   public static String COLUMN_NAMESPACE = "framework.change.";
    public static XViewerColumn Conflict_Resolved =
-         new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
+         new XViewerColumn("framework.merge.conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
                SortDataType.String, false, null);
    public static XViewerColumn Artifact_Name =
-         new XViewerColumn(COLUMN_NAMESPACE + "artifactName", "Artifact Name", 200, SWT.LEFT, true,
-               SortDataType.String, false, null);
+         new XViewerColumn("framework.merge.artifactName", "Artifact Name", 200, SWT.LEFT, true, SortDataType.String,
+               false, null);
    public static XViewerColumn Type =
-         new XViewerColumn(COLUMN_NAMESPACE + "artifactType", "Artifact Type", 150, SWT.LEFT, true,
-               SortDataType.String, false, null);
+         new XViewerColumn("framework.merge.artifactType", "Artifact Type", 150, SWT.LEFT, true, SortDataType.String,
+               false, null);
    public static XViewerColumn Change_Item =
-         new XViewerColumn(COLUMN_NAMESPACE + "conflictingItem", "Conflicting Item", 150, SWT.LEFT, true,
+         new XViewerColumn("framework.merge.conflictingItem", "Conflicting Item", 150, SWT.LEFT, true,
                SortDataType.String, false, null);
    public static XViewerColumn Source =
-         new XViewerColumn(COLUMN_NAMESPACE + "sourceValue", "Source Value", 100, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.merge.sourceValue", "Source Value", 100, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static XViewerColumn Destination =
-         new XViewerColumn(COLUMN_NAMESPACE + "destinationValue", "Destination Value", 100, SWT.LEFT, true,
+         new XViewerColumn("framework.merge.destinationValue", "Destination Value", 100, SWT.LEFT, true,
                SortDataType.String, false, null);
    public static XViewerColumn Merged =
-         new XViewerColumn(COLUMN_NAMESPACE + "mergedValue", "Merged Value", 100, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn("framework.merge.mergedValue", "Merged Value", 100, SWT.LEFT, true, SortDataType.String,
                false, null);
 
    public MergeXViewerFactory() {

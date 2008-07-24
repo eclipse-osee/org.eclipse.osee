@@ -77,7 +77,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
       if (element instanceof Conflict) {
          Conflict conflict = (Conflict) element;
-         if (aCol == MergeXViewerFactory.Conflict_Resolved) {
+         if (aCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
             if (conflict.statusResolved()) return ConflictState.RESOLVED.getText();
             if (conflict.statusEdited()) return ConflictState.MODIFIED.getText();
             if (conflict.statusOutOfDate()) return ConflictState.CHANGED.getText();
@@ -85,17 +85,17 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             if (conflict.statusNotResolvable()) return ConflictState.REVERT.getText();
             if (conflict.statusInformational()) return ConflictState.INFORMATIONAL.getText();
             if (conflict.statusCommitted()) return ConflictState.COMMITTED.getText();
-         } else if (aCol == MergeXViewerFactory.Artifact_Name) {
+         } else if (aCol.equals(MergeXViewerFactory.Artifact_Name)) {
             return conflict.getArtifactName();
-         } else if (aCol == MergeXViewerFactory.Change_Item) {
+         } else if (aCol.equals(MergeXViewerFactory.Change_Item)) {
             return conflict.getChangeItem();
-         } else if (aCol == MergeXViewerFactory.Source) {
+         } else if (aCol.equals(MergeXViewerFactory.Source)) {
             return conflict.getSourceDisplayData();
-         } else if (aCol == MergeXViewerFactory.Destination) {
+         } else if (aCol.equals(MergeXViewerFactory.Destination)) {
             return conflict.getDestDisplayData();
-         } else if (aCol == MergeXViewerFactory.Merged) {
+         } else if (aCol.equals(MergeXViewerFactory.Merged)) {
             return conflict.getMergeDisplayData();
-         } else if (aCol == MergeXViewerFactory.Type) {
+         } else if (aCol.equals(MergeXViewerFactory.Type)) {
             return conflict.getArtifact().getArtifactTypeName();
          }
       }
@@ -126,19 +126,19 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       if (element instanceof Conflict) {
          try {
             Conflict conflict = (Conflict) element;
-            if (dCol == MergeXViewerFactory.Artifact_Name) {
+            if (dCol.equals(MergeXViewerFactory.Artifact_Name)) {
                return conflict.getArtifactImage();
-            } else if (dCol == MergeXViewerFactory.Type) {
+            } else if (dCol.equals(MergeXViewerFactory.Type)) {
                return conflict.getArtifact().getImage();
-            } else if (dCol == MergeXViewerFactory.Change_Item) {
+            } else if (dCol.equals(MergeXViewerFactory.Change_Item)) {
                return conflict.getImage();
-            } else if (dCol == MergeXViewerFactory.Source) {
+            } else if (dCol.equals(MergeXViewerFactory.Source)) {
                return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
-            } else if (dCol == MergeXViewerFactory.Destination) {
+            } else if (dCol.equals(MergeXViewerFactory.Destination)) {
                return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
-            } else if (dCol == MergeXViewerFactory.Merged) {
+            } else if (dCol.equals(MergeXViewerFactory.Merged)) {
                return getMergeImage(conflict);
-            } else if (dCol == MergeXViewerFactory.Conflict_Resolved) {
+            } else if (dCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
                if (conflict.statusUntouched()) return null;
                if (conflict.statusEdited()) return SkynetGuiPlugin.getInstance().getImage(EDITED_IMAGE);
                if (conflict.statusResolved() || conflict.statusCommitted()) return SkynetGuiPlugin.getInstance().getImage(
