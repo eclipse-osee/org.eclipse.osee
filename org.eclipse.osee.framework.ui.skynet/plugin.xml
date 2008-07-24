@@ -708,6 +708,13 @@
    </command>
 			<command commandId="org.eclipse.ui.edit.copy">
          </command>
+   <separator
+         name="artifactSearchViewPurgeSeparator"
+         visible="true">
+   </separator>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
+   </command>
 		</menuContribution>
 	</extension>
  <extension
