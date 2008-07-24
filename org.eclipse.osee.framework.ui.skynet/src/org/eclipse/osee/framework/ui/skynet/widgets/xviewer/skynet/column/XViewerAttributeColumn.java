@@ -19,6 +19,17 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
 
    private final String attributeTypeName;
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerAttributeColumn(XViewerColumn col) {
+      super(col);
+      this.attributeTypeName = ((XViewerAttributeColumn) col).attributeTypeName;
+   }
+
    public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType) {
       super(viewer, id, name, width, align, show, sortDataType);
       this.attributeTypeName = attributeTypeName;

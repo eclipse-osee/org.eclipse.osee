@@ -49,7 +49,7 @@ public class XViewerFactory implements IXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
       custData.setNameSpace(namespace);
-      custData.getColumnData().setColumns(columns);
+      custData.getColumnData().setColumns(getColumns());
       return custData;
    }
 
@@ -58,7 +58,10 @@ public class XViewerFactory implements IXViewerFactory {
     */
    @Override
    public XViewerColumn getDefaultXViewerColumn(String id) {
-      return idToColumn.get(id);
+      // Return a copy so don't corrupt original definition of column
+      XViewerColumn col = idToColumn.get(id);
+      if (col == null) return null;
+      return new XViewerColumn(col);
    }
 
    /* (non-Javadoc)
@@ -82,7 +85,12 @@ public class XViewerFactory implements IXViewerFactory {
    }
 
    public List<XViewerColumn> getColumns() {
-      return columns;
+      // Return a copy so don't corrupt original definition of column
+      List<XViewerColumn> columnCopy = new ArrayList<XViewerColumn>();
+      for (XViewerColumn xCol : columns) {
+         columnCopy.add(new XViewerColumn(xCol));
+      }
+      return columnCopy;
    }
 
 }

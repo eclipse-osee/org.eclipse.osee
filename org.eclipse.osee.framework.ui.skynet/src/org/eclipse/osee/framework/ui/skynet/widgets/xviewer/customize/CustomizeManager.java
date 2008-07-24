@@ -75,62 +75,6 @@ public class CustomizeManager {
       }
    }
 
-   public void addColumns() {
-      for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
-         xCol.setXViewer(xViewer);
-         TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
-         column.setMoveable(true);
-         column.setData(xCol);
-         if (xCol.getToolTip().equals("")) {
-            column.setToolTipText(xCol.getName());
-         } else {
-            column.setToolTipText(xCol.getToolTip());
-         }
-         column.setText(xCol.getName());
-         if (xCol.isShow()) {
-            column.setWidth(xCol.getWidth());
-         } else {
-            column.setWidth(0);
-         }
-         column.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               super.widgetSelected(e);
-               // Add sorter if doesn't exist
-               if (xViewer.getSorter() == null) {
-                  resetDefaultSorter();
-               }
-               if (xViewer.isCtrlKeyDown()) {
-                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
-                  if (currSortCols == null) {
-                     currSortCols = new ArrayList<XViewerColumn>();
-                     currSortCols.add(xCol);
-                  } else {
-                     // If already selected this item, reverse the sort
-                     if (currSortCols.contains(xCol)) {
-                        for (XViewerColumn currXCol : currSortCols)
-                           if (currXCol.equals(xCol)) currXCol.reverseSort();
-                     } else
-                        currSortCols.add(xCol);
-                  }
-                  currentCustData.getSortingData().setSortXCols(currSortCols);
-               } else {
-
-                  List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-                  cols.add(xCol);
-                  // If sorter already has this column sorted, reverse the sort
-                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
-                  if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
-                  // Set the newly sorted column
-                  currentCustData.getSortingData().setSortXCols(cols);
-               }
-               xViewer.refresh();
-               xViewer.updateStatusLabel();
-            }
-         });
-      }
-   }
-
    public void resetDefaultSorter() {
       XViewerSorter sorter = xViewer.getXViewerFactory().createNewXSorter(xViewer);
       xViewer.setSorter(sorter);
@@ -209,6 +153,14 @@ public class CustomizeManager {
          return currentCustData.getSortingData().toString();
       }
       return "";
+   }
+
+   public int getDefaultWidth(String id) {
+      XViewerColumn xCol = xViewerFactory.getDefaultXViewerColumn(id);
+      if (xCol == null)
+         return 75;
+      else
+         return xCol.getWidth();
    }
 
    public boolean isCustomizationUserDefault(CustomizeData custData) {
@@ -309,6 +261,63 @@ public class CustomizeManager {
          if (monitor != null) monitor.done();
          return Status.OK_STATUS;
       }
+
+      public void addColumns() {
+         for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
+            xCol.setXViewer(xViewer);
+            TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
+            column.setMoveable(true);
+            column.setData(xCol);
+            if (xCol.getToolTip().equals("")) {
+               column.setToolTipText(xCol.getName());
+            } else {
+               column.setToolTipText(xCol.getToolTip());
+            }
+            column.setText(xCol.getName());
+            if (xCol.isShow()) {
+               column.setWidth(xCol.getWidth());
+            } else {
+               column.setWidth(0);
+            }
+            column.addSelectionListener(new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  super.widgetSelected(e);
+                  // Add sorter if doesn't exist
+                  if (xViewer.getSorter() == null) {
+                     resetDefaultSorter();
+                  }
+                  if (xViewer.isCtrlKeyDown()) {
+                     List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                     if (currSortCols == null) {
+                        currSortCols = new ArrayList<XViewerColumn>();
+                        currSortCols.add(xCol);
+                     } else {
+                        // If already selected this item, reverse the sort
+                        if (currSortCols.contains(xCol)) {
+                           for (XViewerColumn currXCol : currSortCols)
+                              if (currXCol.equals(xCol)) currXCol.reverseSort();
+                        } else
+                           currSortCols.add(xCol);
+                     }
+                     currentCustData.getSortingData().setSortXCols(currSortCols);
+                  } else {
+
+                     List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
+                     cols.add(xCol);
+                     // If sorter already has this column sorted, reverse the sort
+                     List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                     if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
+                     // Set the newly sorted column
+                     currentCustData.getSortingData().setSortXCols(cols);
+                  }
+                  xViewer.refresh();
+                  xViewer.updateStatusLabel();
+               }
+            });
+         }
+      }
+
    };
 
 }

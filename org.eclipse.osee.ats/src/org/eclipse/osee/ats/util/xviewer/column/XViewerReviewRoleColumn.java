@@ -22,6 +22,17 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
 
    private final User user;
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerReviewRoleColumn(XViewerColumn col) {
+      super(col);
+      this.user = ((XViewerReviewRoleColumn) col).user;
+   }
+
    public XViewerReviewRoleColumn(XViewer viewer, User user) {
       super(viewer, "ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String);
       this.user = user;

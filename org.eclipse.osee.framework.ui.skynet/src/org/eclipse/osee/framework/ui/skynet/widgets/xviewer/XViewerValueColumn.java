@@ -15,6 +15,16 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XViewerValueColumn extends XViewerColumn {
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerValueColumn(XViewerColumn col) {
+      super(col);
+   }
+
    public XViewerValueColumn(XViewer viewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
       super(viewer, id, name, width, align, show, sortDataType);
    }

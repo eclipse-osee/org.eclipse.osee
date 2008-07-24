@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
-import java.util.ArrayList;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.swt.SWT;
 
@@ -29,7 +28,6 @@ public class XViewerColumn {
    private boolean sortForward = true; // if true, sort alphabetically; else reverse
    private boolean show = true;
    private SortDataType sortDataType = SortDataType.String;
-   private static ArrayList<XViewerColumn> registeredColumns = new ArrayList<XViewerColumn>();
    private String toolTip = "";
    public enum SortDataType {
       Date, Float, Percent, String, String_MultiLine, Boolean, Integer
@@ -47,6 +45,17 @@ public class XViewerColumn {
       this.multiColumnEditable = multiColumnEditable;
       this.description = description;
       this.toolTip = this.name;
+   }
+
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerColumn(XViewerColumn xCol) {
+      this(xCol.id, xCol.name, xCol.width, xCol.align, xCol.show, xCol.sortDataType, xCol.multiColumnEditable,
+            xCol.description);
    }
 
    public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -197,13 +206,6 @@ public class XViewerColumn {
     */
    public void setSortDataType(SortDataType sortDataType) {
       this.sortDataType = sortDataType;
-   }
-
-   /**
-    * @return the registeredColumns
-    */
-   public static ArrayList<XViewerColumn> getRegisteredColumns() {
-      return registeredColumns;
    }
 
    /**
