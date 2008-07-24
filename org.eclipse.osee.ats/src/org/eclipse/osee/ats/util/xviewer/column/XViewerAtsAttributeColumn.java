@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.util.xviewer.column;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 
 /**
@@ -15,32 +14,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
  */
 public class XViewerAtsAttributeColumn extends XViewerAttributeColumn {
 
-   public XViewerAtsAttributeColumn(XViewer viewer, String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
-            false, atsAttribute.getDescription());
-   }
-
-   public XViewerAtsAttributeColumn(XViewer viewer, String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(viewer, id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
+   public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
             multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType) {
-      this(null, id, atsAttribute, width, align, show, sortDataType);
-   }
-
-   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType) {
-      this(null, WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute, width, align,
-            show, sortDataType, false, atsAttribute.getDescription());
-   }
-
-   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(null, WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute, width, align,
-            show, sortDataType, multiColumnEditable, atsAttribute.getDescription());
-   }
-
-   public XViewerAtsAttributeColumn(XViewer viewer, String id, ATSAttributes atsAttribute, int width, int defaultWidth, int align) {
-      this(viewer, id, atsAttribute, width, align, true, SortDataType.String);
+   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + atsAttribute.getDisplayName(), atsAttribute.getDisplayName(),
+            atsAttribute.getStoreName(), width, align, show, sortDataType, multiColumnEditable, description);
    }
 
 }

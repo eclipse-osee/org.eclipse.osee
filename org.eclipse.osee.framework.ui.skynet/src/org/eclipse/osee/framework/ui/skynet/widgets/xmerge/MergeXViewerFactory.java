@@ -23,25 +23,25 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    public static String COLUMN_NAMESPACE = "framework.change.";
    public static XViewerColumn Conflict_Resolved =
          new XViewerColumn(COLUMN_NAMESPACE + "conflictResolved", "Conflict Resolution", 43, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Artifact_Name =
          new XViewerColumn(COLUMN_NAMESPACE + "artifactName", "Artifact Name", 200, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Type =
          new XViewerColumn(COLUMN_NAMESPACE + "artifactType", "Artifact Type", 150, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Change_Item =
          new XViewerColumn(COLUMN_NAMESPACE + "conflictingItem", "Conflicting Item", 150, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Source =
          new XViewerColumn(COLUMN_NAMESPACE + "sourceValue", "Source Value", 100, SWT.LEFT, true, SortDataType.String,
-               false);
+               false, null);
    public static XViewerColumn Destination =
          new XViewerColumn(COLUMN_NAMESPACE + "destinationValue", "Destination Value", 100, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Merged =
          new XViewerColumn(COLUMN_NAMESPACE + "mergedValue", "Merged Value", 100, SWT.LEFT, true, SortDataType.String,
-               false);
+               false, null);
 
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");

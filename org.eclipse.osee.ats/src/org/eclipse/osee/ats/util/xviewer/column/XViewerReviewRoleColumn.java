@@ -33,7 +33,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    }
 
    public XViewerReviewRoleColumn(XViewer viewer, User user) {
-      super(viewer, "ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String);
+      super("ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String, false, null);
       this.user = user;
    }
 

@@ -22,20 +22,12 @@ public class XViewerValueColumn extends XViewerColumn {
     * @param col
     */
    public XViewerValueColumn copy() {
-      return new XViewerValueColumn(getTreeViewer(), getId(), getName(), getWidth(), getAlign(), isShow(),
-            getSortDataType(), isMultiColumnEditable(), getDescription());
+      return new XViewerValueColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerValueColumn(XViewer viewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, id, name, width, align, show, sortDataType);
-   }
-
-   public XViewerValueColumn(XViewer viewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(viewer, id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
-   public XViewerValueColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
-      super(id, name, width, align, show, sortDataType);
+   public XViewerValueColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    public XViewerValueColumn(XViewer viewer, String xml) {

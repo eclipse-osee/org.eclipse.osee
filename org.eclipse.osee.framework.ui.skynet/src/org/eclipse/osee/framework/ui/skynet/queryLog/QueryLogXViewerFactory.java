@@ -37,11 +37,11 @@ public class QueryLogXViewerFactory extends SkynetXViewerFactory {
       CustomizeData custData = new CustomizeData();
       List<XViewerColumn> defaultColumns = new ArrayList<XViewerColumn>();
       defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.ITEM, QueryLogView.ITEM, 400, SWT.LEFT, true,
-            SortDataType.String));
+            SortDataType.String, false, null));
       defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.TIME, QueryLogView.TIME, 100, SWT.CENTER, true,
-            SortDataType.String));
+            SortDataType.String, false, null));
       defaultColumns.add(new XViewerColumn("queryLog." + QueryLogView.DURATION, QueryLogView.DURATION, 100, SWT.CENTER,
-            true, SortDataType.Float));
+            true, SortDataType.Float, false, null));
       custData.getColumnData().setColumns(defaultColumns);
       return custData;
    }

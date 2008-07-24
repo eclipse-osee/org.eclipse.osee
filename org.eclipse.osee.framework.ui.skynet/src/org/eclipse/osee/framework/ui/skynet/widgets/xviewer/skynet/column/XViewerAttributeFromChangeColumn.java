@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 
@@ -26,12 +25,12 @@ public class XViewerAttributeFromChangeColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerAttributeFromChangeColumn copy() {
-      return new XViewerAttributeFromChangeColumn(getTreeViewer(), getName(), getAttributeTypeName(), getWidth(),
-            getAlign(), isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
+      return new XViewerAttributeFromChangeColumn(getName(), getAttributeTypeName(), getWidth(), getAlign(), isShow(),
+            getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerAttributeFromChangeColumn(XViewer viewer, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(viewer, "attribute." + name, name, width, align, show, sortDataType);
+   public XViewerAttributeFromChangeColumn(String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super("attribute." + name, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeTypeName = attributeTypeName;
    }
 

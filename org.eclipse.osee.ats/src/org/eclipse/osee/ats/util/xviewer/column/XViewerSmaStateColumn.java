@@ -20,7 +20,8 @@ import org.eclipse.swt.SWT;
 public class XViewerSmaStateColumn extends XViewerValueColumn {
 
    public XViewerSmaStateColumn(XViewer viewer) {
-      super(viewer, WorldXViewerFactory.COLUMN_NAMESPACE + "smaState", "State", 75, SWT.LEFT, true, SortDataType.String);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + "smaState", "State", 75, SWT.LEFT, true, SortDataType.String, false,
+            null);
    }
 
    /* (non-Javadoc)

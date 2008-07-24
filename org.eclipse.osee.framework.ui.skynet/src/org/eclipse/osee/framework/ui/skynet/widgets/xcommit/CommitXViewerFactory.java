@@ -21,13 +21,13 @@ import org.eclipse.swt.SWT;
 public class CommitXViewerFactory extends SkynetXViewerFactory {
 
    public static XViewerColumn Type_Col =
-         new XViewerColumn("osee.commit.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("osee.commit.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Status_Col =
-         new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("osee.commit.status", "Status", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Name_Col =
-         new XViewerColumn("osee.commit.name", "Name", 450, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("osee.commit.name", "Name", 450, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Short_Name_Col =
-         new XViewerColumn("osee.commit.shortName", "Short Name", 200, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("osee.commit.shortName", "Short Name", 200, SWT.LEFT, true, SortDataType.String, false, null);
 
    public CommitXViewerFactory() {
       super("osee.skynet.gui.CommitXViewer");

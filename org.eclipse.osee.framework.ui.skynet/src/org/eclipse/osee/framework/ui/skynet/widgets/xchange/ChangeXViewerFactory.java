@@ -30,17 +30,22 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public static XViewerColumn Name =
          new XViewerColumn("framework.change.artifactNames", "Artifact name(s)", 250, SWT.LEFT, true,
-               SortDataType.String, false);
+               SortDataType.String, false, null);
    public static XViewerColumn Item_Type =
-         new XViewerColumn("framework.change.itemType", "Item Type", 100, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.itemType", "Item Type", 100, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn Item_Kind =
-         new XViewerColumn("framework.change.itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.itemKind", "Item Kind", 70, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn Change_Type =
-         new XViewerColumn("framework.change.changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.changeType", "Change Type", 50, SWT.LEFT, true, SortDataType.String,
+               false, null);
    public static XViewerColumn Is_Value =
-         new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.isValue", "Is Value", 150, SWT.LEFT, true, SortDataType.String, false,
+               null);
    public static XViewerColumn Was_Value =
-         new XViewerColumn("framework.change.wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
+         new XViewerColumn("framework.change.wasValue", "Was Value", 300, SWT.LEFT, true, SortDataType.String, false,
+               null);
 
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
@@ -50,8 +55,8 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       try {
          for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
             XViewerAttributeFromChangeColumn newCol =
-                  new XViewerAttributeFromChangeColumn(null, attributeType.getName(), attributeType.getName(), 75,
-                        SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+                  new XViewerAttributeFromChangeColumn(attributeType.getName(), attributeType.getName(), 75, SWT.LEFT,
+                        false, XViewerAttributeSortDataType.get(attributeType), false, null);
             registerColumn(newCol);
          }
       } catch (Exception ex) {

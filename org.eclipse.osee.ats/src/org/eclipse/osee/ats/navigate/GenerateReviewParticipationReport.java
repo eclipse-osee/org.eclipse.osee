@@ -112,8 +112,9 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       columns.add(new XViewerArtifactNameColumn("Name", null));
       columns.add(new XViewerGuidColumn("Guid", null));
       for (AttributeType attributeType : AttributeTypeManager.getTypes(AtsPlugin.getAtsBranch())) {
-         columns.add(new XViewerAttributeColumn(null, "attr." + attributeType.getName(), attributeType.getName(),
-               attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType)));
+         columns.add(new XViewerAttributeColumn("attr." + attributeType.getName(), attributeType.getName(),
+               attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false,
+               null));
       }
       return columns;
    }

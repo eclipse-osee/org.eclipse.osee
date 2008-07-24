@@ -8,7 +8,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
 
@@ -26,22 +25,13 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerAttributeColumn copy() {
-      return new XViewerAttributeColumn(getTreeViewer(), getId(), getAttributeTypeName(), getName(), getWidth(),
-            getAlign(), isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
+      return new XViewerAttributeColumn(getId(), getAttributeTypeName(), getName(), getWidth(), getAlign(), isShow(),
+            getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType) {
-      super(viewer, id, name, width, align, show, sortDataType);
+   public XViewerAttributeColumn(String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeTypeName = attributeTypeName;
-   }
-
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(viewer, id, name, width, align, show, sortDataType, multiColumnEditable, description);
-      this.attributeTypeName = attributeTypeName;
-   }
-
-   public XViewerAttributeColumn(XViewer viewer, String id, String name, String attributeTypeName, int width, int align) {
-      this(viewer, id, name, attributeTypeName, width, align, true, SortDataType.String);
    }
 
    /* (non-Javadoc)

@@ -33,9 +33,8 @@ public class XViewerColumn {
       Date, Float, Percent, String, String_MultiLine, Boolean, Integer
    };
 
-   public XViewerColumn(XViewer xViewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super();
-      this.xViewer = xViewer;
       this.id = id;
       this.name = name;
       this.width = width;
@@ -55,22 +54,6 @@ public class XViewerColumn {
     */
    public XViewerColumn copy() {
       return new XViewerColumn(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
-   public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      this(null, id, name, width, align, show, sortDataType, false, description);
-   }
-
-   public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(null, id, name, width, align, show, sortDataType, false, null);
-   }
-
-   public XViewerColumn(XViewer xViewer, String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
-      this(xViewer, id, name, width, align, show, sortDataType, false, null);
-   }
-
-   public XViewerColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType) {
-      this(null, id, name, width, align, show, sortDataType);
    }
 
    public XViewerColumn(XViewer xViewer, String xml) {
