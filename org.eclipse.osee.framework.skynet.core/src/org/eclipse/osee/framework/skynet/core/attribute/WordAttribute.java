@@ -40,4 +40,10 @@ public class WordAttribute extends StringAttribute {
       value = WordUtil.removeWordMarkupSmartTags(value);
       return super.subClassSetValue(value);
    }
+
+   public boolean mergeMarkupPresent() {
+      String temp = getValue();
+      if (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"")) return true;
+      return false;
+   }
 }

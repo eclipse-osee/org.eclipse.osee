@@ -289,6 +289,10 @@ public abstract class Conflict implements IAdaptable {
       return status.equals(Status.INFORMATIONAL);
    }
 
+   public boolean statusEditable() {
+      return !(status.equals(Status.RESOLVED) || status.equals(Status.COMMITTED) || status.equals(Status.INFORMATIONAL) || status.equals(Status.NOT_RESOLVABLE));
+   }
+
    public int getMergeBranchID() {
       return mergeBranch.getBranchId();
    }

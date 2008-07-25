@@ -103,7 +103,6 @@ public class ArtifactConflict extends Conflict {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
-   @Override
    public Status computeStatus() throws OseeCoreException, SQLException {
       if (!sourceDeleted)
          return super.computeStatus(getArtifact().getArtId(), Status.NOT_RESOLVABLE);

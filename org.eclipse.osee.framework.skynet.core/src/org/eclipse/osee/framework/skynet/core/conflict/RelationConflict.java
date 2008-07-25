@@ -50,7 +50,6 @@ public class RelationConflict extends Conflict {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
-   @Override
    public Status computeStatus() throws SQLException {
       return null;
    }

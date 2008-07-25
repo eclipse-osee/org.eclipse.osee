@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -300,7 +301,6 @@ public class AttributeConflict extends Conflict {
       if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
    }
 
-   @Override
    public Status computeStatus() throws OseeCoreException, SQLException {
       return super.computeStatus(attrId, Status.UNTOUCHED);
    }
@@ -346,6 +346,14 @@ public class AttributeConflict extends Conflict {
 
    public boolean isWordAttribute() {
       return isWordAttribute;
+   }
+
+   public void setStatus(Status status) throws OseeCoreException, SQLException {
+      if (status.equals(Status.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+         throw new MergeChangesInArtifactException(
+               "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.");
+      }
+      super.setStatus(status);
    }
 
 }
