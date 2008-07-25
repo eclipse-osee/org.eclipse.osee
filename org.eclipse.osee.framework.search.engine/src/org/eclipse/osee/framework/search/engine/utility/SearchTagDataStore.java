@@ -32,7 +32,8 @@ import org.eclipse.osee.framework.search.engine.data.SearchTag;
  */
 public class SearchTagDataStore {
 
-   private static String INSERT_SEARCH_TAG = "insert into osee_search_tags (gamma_id, coded_tag_id) values (?,?)";
+   private static String INSERT_SEARCH_TAG_BODY =
+         "insert into osee_search_tags (gamma_id, coded_tag_id) select ?, ? %s where not exists (select 1 from osee_search_tags ost1 where ost1.gamma_id = ? and ost1.coded_tag_id = ?)";
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
@@ -59,6 +60,17 @@ public class SearchTagDataStore {
          // Do Nothing
       }
       return toReturn.getValue();
+   }
+
+   private static String getInsertSQL(Connection connection) throws SQLException {
+      String dummyTable = "";
+      String dbName = connection.getMetaData().getDatabaseProductName();
+      if (dbName.contains("oracle") || dbName.contains("mysql")) {
+         dummyTable = "FROM DUAL";
+      } else if (dbName.contains("derby")) {
+         dummyTable = "FROM sysibm.sysdummy1"; // 
+      }
+      return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
    }
 
    public static int deleteTags(Collection<IAttributeLocator> locators) throws Exception {
@@ -98,15 +110,14 @@ public class SearchTagDataStore {
          updated = -1;
          try {
             connection = OseeDbConnection.getConnection();
-            deleteTags(connection, searchTags);
-
             List<Object[]> data = new ArrayList<Object[]>();
             for (SearchTag searchTag : searchTags) {
                for (Long codedTag : searchTag.getTags()) {
-                  data.add(new Object[] {SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag});
+                  data.add(new Object[] {SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag,
+                        SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag});
                }
             }
-            updated = ConnectionHandler.runPreparedUpdate(connection, INSERT_SEARCH_TAG, data);
+            updated = ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
          } finally {
             if (connection != null && connection.isClosed() != true) {
                connection.close();

@@ -73,6 +73,7 @@ class TaggerRunnable implements Runnable {
                this.searchTags.add(searchTag);
                long tagItem = System.currentTimeMillis();
                try {
+                  SearchTagDataStore.deleteTags(searchTag);
                   Activator.getInstance().getTaggerManager().tagIt(attributeData, collector);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag));
