@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.feature"
       label="OSEE Framework (Incubation)"
-      version="0.1.0.qualifier"
+      version="0.4.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -23,22 +23,42 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
       <import plugin="org.junit"/>
-      <import plugin="org.eclipse.team.ui"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.polarion.eclipse.team.svn.connector"/>
-      <import plugin="org.eclipse.team.svn"/>
-      <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.eclipse.team.svn.ui"/>
+      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.pde.core"/>
-      <import plugin="org.eclipse.draw2d"/>
-      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.equinox.ds" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.mortbay.jetty" version="5.1.14" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services" version="3.1.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.util" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.http.servlet" version="1.0.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.http.jetty" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.logging" version="1.0.4" match="greaterOrEqual"/>
+      <import plugin="javax.servlet" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.logging" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.db.connection" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.common" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.locator.attribute" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.locator.snapshot" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.management" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.provider.common" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.provider.attribute" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.provider.snapshot" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.branch.management" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.search.engine" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.server.admin" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.resource.management.servlet" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.branch.management.servlet" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.artifact.servlet" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.search.engine.servlet" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.app"/>
+      <import plugin="org.eclipse.osee.framework.database" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
    </requires>
 
    <plugin
@@ -78,13 +98,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.svn"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -131,20 +144,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ote.connection.jini"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ote.connection.service"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -201,13 +200,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.resource.management.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.resource.management.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
