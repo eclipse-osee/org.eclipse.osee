@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.ui.feature"
       label="OSEE Framework UI (Incubation)"
-      version="0.1.0.qualifier"
+      version="0.4.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -42,29 +42,24 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.junit"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.update.ui"/>
       <import plugin="net.jini"/>
       <import plugin="org.eclipse.osee.framework.jini"/>
+      <import plugin="com.jcraft.jsch"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="javax.mail"/>
-      <import plugin="org.eclipse.osee.framework.svn"/>
+      <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.draw2d"/>
-      <import plugin="com.jcraft.jsch"/>
+      <import plugin="javax.mail"/>
       <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osee.framework.db.connection"/>
+      <import plugin="org.eclipse.osee.framework.logging"/>
+      <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.zest.core"/>
+      <import plugin="org.eclipse.zest.layouts"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.nebula.widgets.calendarcombo"/>
    </requires>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.calendarcombo"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.framework.ui.admin"
