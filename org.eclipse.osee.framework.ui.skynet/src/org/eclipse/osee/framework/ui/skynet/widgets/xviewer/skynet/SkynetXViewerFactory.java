@@ -59,8 +59,9 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
             XViewerAttributeColumn newCol =
-                  new XViewerAttributeColumn(attributeType.getName(), attributeType.getName(), attributeType.getName(),
-                        75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+                  new XViewerAttributeColumn(attributeType.getName(), "Attribute \"" + attributeType.getName() + "\"",
+                        attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType),
+                        false, null);
             registerColumn(newCol);
          }
       } catch (Exception ex) {
