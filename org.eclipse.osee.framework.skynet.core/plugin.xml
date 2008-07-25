@@ -8,7 +8,7 @@
    <extension-point id="Tagger" name="Tagger" schema="schema/Tagger.exsd"/>
    <extension-point id="TaggerCustomization" name="TaggerCustomization" schema="schema/TaggerCustomization.exsd"/>
    <extension-point id="HttpServerPort" name="HttpServerPort" schema="schema/HttpServerPort.exsd"/>
-   <extension-point id="SkynetDbTypes" name="SkynetDbTypes" schema="schema/SkynetDbTypes.exsd"/>
+   <extension-point id="OseeTypes" name="OseeTypes" schema="schema/OseeTypes.exsd"/>
    <extension-point id="AtsLib" name="AtsLib" schema="schema/AtsLib.exsd"/>
    <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="schema/DefaultInitialBranchProvider.exsd"/>
    <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="schema/ArtifactAnnotation.exsd"/>
@@ -184,7 +184,7 @@
       <extension
             id="CommonBranch"
             name="Common Branch"
-            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
          <ExcelFile
                file="support/CommonBranch.xml">
          </ExcelFile>
@@ -192,7 +192,7 @@
       <extension
             id="ProgramBranch"
             name="Program Branch"
-            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
          <ExcelFile
                file="support/ProgramBranch.xml">
          </ExcelFile>
@@ -200,7 +200,7 @@
       <extension
             id="ProgramAndCommon"
             name="Program And Common Branches"
-            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
          <ExcelFile
                file="support/ProgramAndCommon.xml">
          </ExcelFile>

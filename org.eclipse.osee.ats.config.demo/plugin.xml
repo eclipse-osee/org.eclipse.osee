@@ -53,7 +53,7 @@
    <extension
          id="Demo_Common_Skynet_Types"
          name="Demo_Common_Skynet_Types"
-         point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
             file="support/Demo_Common_Skynet_Types.xml">
       </ExcelFile>
@@ -73,7 +73,7 @@
    <extension
          id="Demo_Program_Skynet_Types"
          name="Demo_Program_Skynet_Types"
-         point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <ExcelFile
             file="support/Demo_Program_Skynet_Types.xml">
       </ExcelFile>
