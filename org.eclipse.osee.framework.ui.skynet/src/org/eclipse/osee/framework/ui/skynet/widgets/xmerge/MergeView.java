@@ -71,6 +71,8 @@ public class MergeView extends ViewPart implements IActionable {
    private XMergeViewer xMergeViewer;
    private Conflict[] conflicts;
 
+   private static final String START_MERGING = "";
+
    /*
     *   Code development
     *   BranchView.getBranchView().
@@ -178,6 +180,7 @@ public class MergeView extends ViewPart implements IActionable {
             addDestBranchDefaultMenuItem(menuManager);
             menuManager.add(new Separator());
             addEditArtifactMenuItem(menuManager);
+            addMergeMenuItem(menuManager);
             menuManager.add(new Separator());
             addPreviewMenuItem(menuManager);
             addDiffMenuItem(menuManager);
@@ -192,6 +195,7 @@ public class MergeView extends ViewPart implements IActionable {
       createDestBranchDefaultMenuItem(menuManager);
       menuManager.add(new Separator());
       createEditArtifactMenuItem(menuManager);
+      createMergeMenuItem(menuManager);
       menuManager.add(new Separator());
       createPreviewMenuItem(menuManager);
       createDiffMenuItem(menuManager);
@@ -380,8 +384,51 @@ public class MergeView extends ViewPart implements IActionable {
          public boolean isEnabled() {
             List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
             attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || conflicts.get(
-                  0).statusCommitted()) return false;
+            if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
+                  0).statusEditable()) return false;
+            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            return attributeConflict.isWordAttribute();
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    */
+   private String addMergeMenuItem(MenuManager menuManager) {
+      CommandContributionItem mergeArtifactCommand;
+      mergeArtifactCommand =
+            Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
+                  "Merge Source & Destination Artifacts", null, null, null, "E", null,
+                  "Merge_Source_Destination_Artifact");
+      menuManager.add(mergeArtifactCommand);
+      return mergeArtifactCommand.getId();
+   }
+
+   /**
+    * @param menuManager
+    */
+   private void createMergeMenuItem(MenuManager menuManager) {
+
+      handlerService.activateHandler(addMergeMenuItem(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         private AttributeConflict attributeConflict;
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            if (attributeConflict != null) {
+               MergeUtility.launchMerge(attributeConflict, Display.getCurrent().getActiveShell().getShell());
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
+            attributeConflict = null;
+            if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
+                  0).statusEditable()) return false;
             attributeConflict = ((AttributeConflict) conflicts.get(0));
             return attributeConflict.isWordAttribute();
          }
@@ -605,33 +652,34 @@ public class MergeView extends ViewPart implements IActionable {
             if (attributeConflict != null) {
                switch (diffToShow) {
                   case 1:
-                     MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                           MergeUtility.getStartArtifact(attributeConflict));
+                     MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
+                           attributeConflict.getSourceArtifact(), false);
                      break;
                   case 2:
-                     MergeUtility.showCompareFile(attributeConflict.getDestArtifact(),
-                           MergeUtility.getStartArtifact(attributeConflict));
+                     MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
+                           attributeConflict.getDestArtifact(), false);
                      break;
                   case 3:
                      MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                           attributeConflict.getDestArtifact());
+                           attributeConflict.getDestArtifact(), false);
                      break;
                   case 4:
-                     MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                           attributeConflict.getArtifact());
+                     MergeUtility.showCompareFile(attributeConflict.getArtifact(),
+                           attributeConflict.getSourceArtifact(), false);
                      break;
                   case 5:
-                     MergeUtility.showCompareFile(attributeConflict.getDestArtifact(), attributeConflict.getArtifact());
+                     MergeUtility.showCompareFile(attributeConflict.getArtifact(), attributeConflict.getDestArtifact(),
+                           false);
                      break;
                }
             } else if (artifactConflict != null) {
                if (diffToShow == 1) {
                   MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                        MergeUtility.getStartArtifact(attributeConflict));
+                        MergeUtility.getStartArtifact(attributeConflict), false);
                }
                if (diffToShow == 2) {
                   MergeUtility.showCompareFile(attributeConflict.getDestArtifact(),
-                        MergeUtility.getStartArtifact(attributeConflict));
+                        MergeUtility.getStartArtifact(attributeConflict), false);
                }
             }
          } catch (Exception ex) {

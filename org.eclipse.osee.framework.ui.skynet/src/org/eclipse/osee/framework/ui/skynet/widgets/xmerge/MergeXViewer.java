@@ -16,10 +16,12 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -160,11 +162,11 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       Conflict conflict = (Conflict) treeItem.getData();
+      Shell shell = Display.getCurrent().getActiveShell().getShell();
       if (conflict.statusCommitted()) {
          return super.handleLeftClickInIconArea(treeColumn, treeItem);
       }
       try {
-         Shell shell = Display.getCurrent().getActiveShell().getShell();
          if (treeColumn.getText().equals(MergeXViewerFactory.Source.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showArtifactDeletedConflict(conflict, shell);
@@ -204,6 +206,8 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
             }
          }
 
+      } catch (MergeChangesInArtifactException ex) {
+         MessageDialog.openError(shell, "Error", ex.getMessage());
       } catch (Exception ex) {
          OSEELog.logException(MergeXViewer.class, ex, true);
       }

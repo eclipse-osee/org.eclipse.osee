@@ -15,7 +15,9 @@ import java.sql.SQLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
+import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict.ConflictType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -45,6 +48,8 @@ public class MergeUtility {
          "This Artifact has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Artifact will need to be reverted on the source branch.  \n\nReverting the artifact is irreversible and you will need to restart OSEE after reverting to see changes.";
    public static final String INFORMATIONAL_CONFLICT =
          "This Artifact has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the artifact on the destination branch.";
+   public static final String OPEN_MERGE_DIALOG =
+         "This will open a window that will allow side by side merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin a side by side merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.";
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
@@ -69,7 +74,7 @@ public class MergeUtility {
 
    public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       boolean proceed = true;
-      if (conflict.statusResolved()) {
+      if (!conflict.statusEditable()) {
          MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
          return false;
       }
@@ -83,10 +88,10 @@ public class MergeUtility {
     * This is not in the AttributeConflict because it relies on the renderer
     * that is in not in the skynet core package.
     */
-   public static void showCompareFile(Artifact art1, Artifact art2) throws Exception {
+   public static void showCompareFile(Artifact art1, Artifact art2, boolean editable) throws Exception {
       if (art1 == null || art2 == null) return;
       IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
-      showDiff(art1, renderer.compare(art1, art2, "", null, null, false));
+      showDiff(art1, renderer.compare(art1, art2, "", null, null, false, editable));
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -137,5 +142,41 @@ public class MergeUtility {
             new MessageDialog(shell, "Informational Conflict", null, INFORMATIONAL_CONFLICT, 2, new String[] {"OK"}, 1);
       dialog.open();
       return false;
+   }
+
+   public static void launchMerge(AttributeConflict attributeConflict, Shell shell) {
+
+      try {
+         if (attributeConflict.getAttribute() instanceof WordAttribute) {
+            if (!attributeConflict.statusEditable()) {
+               MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
+               return;
+            }
+            String[] buttons;
+            if (attributeConflict.mergeEqualsSource() || attributeConflict.mergeEqualsDestination() || attributeConflict.statusUntouched()) {
+               buttons = new String[] {"Cancel", "Begin New Merge"};
+            } else {
+               buttons = new String[] {"Cancel", "Begin New Merge", "Continue with last Merge"};
+            }
+
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell().getShell(), "Merge Word Artifacts", null,
+                        OPEN_MERGE_DIALOG, 4, buttons, 2);
+            int response = dialog.open();
+            if (response == 1) {
+               attributeConflict.setToSource();
+               MergeUtility.showCompareFile(attributeConflict.getArtifact(), attributeConflict.getDestArtifact(), true);
+               attributeConflict.markStatusToReflectEdit();
+            } else if (response == 2) {
+               RendererManager.getInstance().editInJob(attributeConflict.getArtifact(), "EDIT_ARTIFACT");
+               attributeConflict.markStatusToReflectEdit();
+            }
+
+         }
+
+      } catch (Exception ex) {
+         OSEELog.logException(MergeView.class, ex, true);
+      }
+
    }
 }

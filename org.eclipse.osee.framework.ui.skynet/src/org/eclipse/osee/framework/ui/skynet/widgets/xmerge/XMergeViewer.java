@@ -217,19 +217,19 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             if (conflicts.length != 0) {
                if (conflicts[0].getSourceBranch() != null) {
 
-               try {
-                  ChangeView.open(conflicts[0].getSourceBranch());
+                  try {
+                     ChangeView.open(conflicts[0].getSourceBranch());
                   } catch (Exception ex) {
                      OSEELog.logException(XMergeViewer.class, ex, true);
                   }
                } else {
                   try {
                      ChangeView.open(conflicts[0].getCommitTransactionId().getTransactionNumber());
-               } catch (Exception ex) {
-                  OSEELog.logException(XMergeViewer.class, ex, true);
+                  } catch (Exception ex) {
+                     OSEELog.logException(XMergeViewer.class, ex, true);
+                  }
                }
             }
-         }
          }
       });
 
@@ -275,12 +275,12 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
          if (!(conflicts.length == 0)) {
             Conflict[] artifactChanges = new Conflict[0];
             if (conflicts[0].getToTransactionId() != null) {
-            setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                  conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
+               setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
+                     conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
             } else {
                setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getCommitTransactionId()).toArray(
                      artifactChanges));
-         }
+            }
          }
       } catch (Exception ex) {
          OSEELog.logException(XMergeViewer.class, ex, true);
@@ -388,28 +388,28 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             if (event instanceof TransactionArtifactModifiedEvent) {
                Artifact artifact = ((TransactionArtifactModifiedEvent) event).getArtifact();
                Branch branch = artifact.getBranch();
-                  for (Conflict conflict : conflicts) {
-                     try {
+               for (Conflict conflict : conflicts) {
+                  try {
                      if (conflict.getSourceBranch() == null) return;
                      if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
                         setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans);
-                           if (artifact.equals(conflict.getSourceArtifact())) {
-                              MessageDialog dialog =
-                                    new MessageDialog(
-                                          Display.getCurrent().getActiveShell().getShell(),
-                                          "Modifying Source artifact while merging",
-                                          null,
-                                          "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
-                                          2, new String[] {"OK"}, 1);
-                              if (eventArg instanceof LocalTransactionEvent) {
-                                 dialog.open();
-                              }
+                        if (artifact.equals(conflict.getSourceArtifact())) {
+                           MessageDialog dialog =
+                                 new MessageDialog(
+                                       Display.getCurrent().getActiveShell().getShell(),
+                                       "Modifying Source artifact while merging",
+                                       null,
+                                       "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                       2, new String[] {"OK"}, 1);
+                           if (eventArg instanceof LocalTransactionEvent) {
+                              dialog.open();
                            }
-                           return;
+                        }
+                        return;
                      } else if (artifact.equals(conflict.getArtifact()) && branch.equals(conflict.getMergeBranch())) {
                         loadTable();
-                        }
-                     } catch (Exception ex) {
+                     }
+                  } catch (Exception ex) {
                   }
                }
             }
@@ -467,9 +467,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
          protected IStatus run(IProgressMonitor monitor) {
             try {
                if (commitTrans == null) {
-               conflicts =
-                     RevisionManager.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
-                           new Conflict[0]);
+                  conflicts =
+                        RevisionManager.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                              new Conflict[0]);
                } else {
                   conflicts = RevisionManager.getInstance().getConflictsPerBranch(commitTrans).toArray(new Conflict[0]);
                }
@@ -497,8 +497,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       };
       Jobs.startJob(job);
       if (sourceBranch != null) {
-      refreshAssociatedArtifactItem(sourceBranch);
-   }
+         refreshAssociatedArtifactItem(sourceBranch);
+      }
    }
 
    public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
@@ -517,10 +517,10 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       xCommitViewer.setConflicts(conflicts);
       if (conflicts != null && conflicts.length != 0) {
          if (sourceBranch != null) {
-         displayLabelText =
+            displayLabelText =
                   "Source Branch :  " + sourceBranch.getBranchName() + "\nDestination Branch :  " + destBranch.getBranchName();
          } else {
-            displayLabelText = "Commit Transaction ID :  " + commitTrans;
+            displayLabelText = "Commit Transaction ID :  " + commitTrans + " " + commitTrans.getComment();
          }
          if (resolved == (conflicts.length - informational)) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);

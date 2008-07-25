@@ -116,6 +116,7 @@ public class WordTemplateProcessor {
    private Set<String> ignoreAttributeExtensions;
    private int previousTemplateCopyIndex;
    private boolean isEditMode;
+   private boolean isSingleEdit;
 
    public WordTemplateProcessor() throws CoreException {
       this(null, null);
@@ -192,15 +193,17 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode) throws Exception {
+   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode, boolean isSingleEdit) throws Exception {
       this.isEditMode = isEditMode;
+      this.isSingleEdit = isSingleEdit;
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
-      outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
-      //modifications to the template must be done before the matcher
-      template = wordMl.setHeadingNumbers(outlineNumber, template);
+         outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
+         //modifications to the template must be done before the matcher
+         template = wordMl.setHeadingNumbers(outlineNumber, template);
+         
       template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);
@@ -462,7 +465,7 @@ public class WordTemplateProcessor {
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       boolean performedOutLining = false;
 
-      if (outlining) {
+      if (outlining && !isSingleEdit) {
          performedOutLining = true;
          String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);

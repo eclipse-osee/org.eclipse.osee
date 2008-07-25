@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AIFile;
  */
 public abstract class FileRenderer extends FileSystemRenderer {
    private ResourceAttributes readonlyfileAttributes;
+   private Random generator = new Random();
    private static final FileWatcher watcher = new FileWatcher(3, TimeUnit.SECONDS);
    static {
       watcher.addListener(new ArtifactEditFileWatcher());
@@ -84,6 +86,11 @@ public abstract class FileRenderer extends FileSystemRenderer {
       return workingFile;
    }
 
+   protected void addFileToWatcher(IFolder baseFolder, String fileName) {
+      IFile workingFile = baseFolder.getFile(fileName);
+      watcher.addFile(workingFile.getLocation().toFile());
+   }
+
    protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws Exception {
       StringBuilder name = new StringBuilder(100);
 
@@ -102,6 +109,8 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
          name.append(" ");
          name.append((new Date()).toString().replaceAll(":", ";"));
+         name.append("-");
+         name.append(generator.nextInt(99) + 1);
          name.append(".");
          name.append(getAssociatedExtension(artifact));
       } else {

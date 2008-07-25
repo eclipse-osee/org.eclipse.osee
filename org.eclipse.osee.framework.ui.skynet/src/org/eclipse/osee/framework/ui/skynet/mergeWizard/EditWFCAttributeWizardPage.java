@@ -36,6 +36,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private AttributeConflict conflict;
    private String changeType = "";
    private Button editButton;
+   private Button mergeButton;
    private Button clearButton;
    private Button sourceButton;
    private Button destButton;
@@ -43,8 +44,10 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private Button destDiffButton;
    private Button sourceDestDiffButton;
    private Label imageLabel;
-   private static final String MERGE_TEXT = "Open Document Editor";
-   private static final String MERGE_TOOLTIP = "Make additional changes using the Document/Merge Editor";
+   private static final String EDIT_TEXT = "Open Document Editor";
+   private static final String EDIT_TOOLTIP = "Make additional changes using the Document/Merge Editor";
+   private static final String MERGE_TEXT = "Merge Source and Destination";
+   private static final String MERGE_TOOLTIP = "Use the new inline merging";
    private static final String CLEAR_TEXT = "Clear the Document";
    private static final String CLEAR_TOOLTIP = "Reinitializes the merge for this Document";
    private static final String SOURCE_TEXT = "Populate with Source Data";
@@ -77,11 +80,14 @@ public class EditWFCAttributeWizardPage extends WizardPage {
             } else if (event.widget == destButton) {
                MergeUtility.setToDest(conflict, getShell(), true);
             } else if (event.widget == sourceDiffButton) {
-               MergeUtility.showCompareFile(conflict.getSourceArtifact(), MergeUtility.getStartArtifact(conflict));
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), MergeUtility.getStartArtifact(conflict),
+                     false);
             } else if (event.widget == destDiffButton) {
-               MergeUtility.showCompareFile(conflict.getDestArtifact(), MergeUtility.getStartArtifact(conflict));
+               MergeUtility.showCompareFile(conflict.getDestArtifact(), MergeUtility.getStartArtifact(conflict), false);
             } else if (event.widget == sourceDestDiffButton) {
-               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getDestArtifact());
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getDestArtifact(), false);
+            } else if (event.widget == mergeButton) {
+               MergeUtility.launchMerge(conflict, getShell());
             }
          } catch (Exception ex) {
             OSEELog.logException(EditWFCAttributeWizardPage.class, ex, true);
@@ -137,7 +143,8 @@ public class EditWFCAttributeWizardPage extends WizardPage {
 
       new Label(composite, SWT.NONE);
 
-      editButton = createButton(MERGE_TEXT, MERGE_TOOLTIP, composite);
+      editButton = createButton(EDIT_TEXT, EDIT_TOOLTIP, composite);
+      mergeButton = createButton(MERGE_TEXT, MERGE_TOOLTIP, composite);
       new Label(composite, SWT.NONE);
       sourceButton = createButton(SOURCE_TEXT, SOURCE_TOOLTIP, composite);
       destButton = createButton(DEST_TEXT, DEST_TOOLTIP, composite);

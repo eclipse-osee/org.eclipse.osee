@@ -145,7 +145,7 @@ public class WordRenderer extends FileRenderer {
                      monitor.done();
                      return Status.CANCEL_STATUS;
                   }
-                  compare(baseFile, newerFile, fileName, false);
+                  compare(baseFile, newerFile, fileName, false, plugin.getPluginFile("support/compareDocs.vbs"));
                }
                createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
             } catch (Exception ex) {
@@ -198,7 +198,7 @@ public class WordRenderer extends FileRenderer {
       getAssociatedProgram(artifact).execute(diffFile);
    }
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -207,13 +207,21 @@ public class WordRenderer extends FileRenderer {
       IFile newerFile;
 
       if (baseVersion != null) {
-         baseFile = renderForDiff(monitor, baseVersion, option);
+         if (editable) {
+            baseFile = renderForDiffEdit(monitor, baseVersion, option);
+         } else {
+            baseFile = renderForDiff(monitor, baseVersion, option);
+         }
       } else {
          baseFile = renderForDiff(monitor, branch, option);
       }
 
       if (newerVersion != null) {
-         newerFile = renderForDiff(monitor, newerVersion, option);
+         if (editable) {
+            newerFile = renderForDiffEdit(monitor, newerVersion, option);
+         } else {
+            newerFile = renderForDiff(monitor, newerVersion, option);
+         }
       } else {
          newerFile = renderForDiff(monitor, branch, null);
       }
@@ -224,7 +232,7 @@ public class WordRenderer extends FileRenderer {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
@@ -235,12 +243,18 @@ public class WordRenderer extends FileRenderer {
          diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
       }
 
-      compare(baseFile, newerFile, diffPath, visible);
+      if (editable && baseVersion != null) {
+         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs2.vbs"));
+         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
+               diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+      } else {
+         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs.vbs"));
+      }
+
       return diffPath;
    }
 
-   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible) throws IOException, InterruptedException {
-      File vbDiffScript = plugin.getPluginFile("support/compareDocs.vbs");
+   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
 
       // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
       String cmd[] =
@@ -409,12 +423,12 @@ public class WordRenderer extends FileRenderer {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       final BlamVariableMap variableMap = new BlamVariableMap();
       String template;
+      boolean isSingleEdit = artifacts.size() == 1;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
          template = getTemplate(null, presentationType, option);
       } else {
-         boolean isSingleEdit = artifacts.size() == 1;
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType, option);
 
@@ -450,12 +464,12 @@ public class WordRenderer extends FileRenderer {
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);
 
       boolean renderInEditMode = false;
-      if (PresentationType.EDIT == presentationType) {
+      if (PresentationType.EDIT == presentationType && !isSingleEdit) {
          renderInEditMode = true;
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode);
+      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode, isSingleEdit);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {

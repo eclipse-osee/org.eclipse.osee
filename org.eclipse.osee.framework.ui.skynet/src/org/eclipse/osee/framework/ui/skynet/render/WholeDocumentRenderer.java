@@ -132,7 +132,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -141,13 +141,21 @@ public class WholeDocumentRenderer extends FileRenderer {
       IFile newerFile;
 
       if (baseVersion != null) {
-         baseFile = renderForDiff(monitor, baseVersion, option);
+         if (editable) {
+            baseFile = renderForDiffEdit(monitor, baseVersion, option);
+         } else {
+            baseFile = renderForDiff(monitor, baseVersion, option);
+         }
       } else {
          baseFile = renderForDiff(monitor, branch, option);
       }
 
       if (newerVersion != null) {
-         newerFile = renderForDiff(monitor, newerVersion, option);
+         if (editable) {
+            newerFile = renderForDiffEdit(monitor, newerVersion, option);
+         } else {
+            newerFile = renderForDiff(monitor, newerVersion, option);
+         }
       } else {
          newerFile = renderForDiff(monitor, branch, null);
       }
@@ -158,7 +166,7 @@ public class WholeDocumentRenderer extends FileRenderer {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
@@ -169,13 +177,18 @@ public class WholeDocumentRenderer extends FileRenderer {
          diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
       }
 
-      compare(baseFile, newerFile, diffPath, visible);
+      if (editable && baseVersion != null) {
+         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs2.vbs"));
+         addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
+               diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+      } else {
+         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs.vbs"));
+      }
 
       return diffPath;
    }
 
-   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible) throws IOException, InterruptedException {
-      File vbDiffScript = plugin.getPluginFile("support/compareDocs.vbs");
+   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
 
       // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
       String cmd[] =

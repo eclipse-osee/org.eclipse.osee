@@ -48,7 +48,7 @@ public interface IRenderer {
 
    public boolean supportsPrint();
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible) throws Exception;
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception;
 
    public List<String> getCompareOptions() throws Exception;
 

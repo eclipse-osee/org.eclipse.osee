@@ -139,6 +139,15 @@ public abstract class FileSystemRenderer extends Renderer {
       return renderToFileSystem(monitor, baseFolder, artifact, artifact.getBranch(), option, PresentationType.DIFF);
    }
 
+   public IFile renderForDiffEdit(IProgressMonitor monitor, Artifact artifact, String option) throws Exception {
+      if (artifact == null) {
+         throw new IllegalArgumentException("Artifact can not be null.");
+      }
+
+      IFolder baseFolder = getRenderFolder(artifact.getBranch(), PresentationType.EDIT);
+      return renderToFileSystem(monitor, baseFolder, artifact, artifact.getBranch(), option, PresentationType.EDIT);
+   }
+
    public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws Exception;
 
    public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception;
