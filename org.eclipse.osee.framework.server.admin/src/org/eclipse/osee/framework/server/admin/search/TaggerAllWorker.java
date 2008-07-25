@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -101,7 +102,7 @@ class TaggerAllWorker extends BaseCmdWorker implements ITagListener {
                cacheCount = 0;
                joinQuery.store(connection);
                queryIds.add(joinQuery.getQueryId());
-               searchTagger.tagByQueueQueryId(joinQuery.getQueryId());
+               searchTagger.tagByQueueQueryId(this, joinQuery.getQueryId());
                joinQuery = null;
             }
          }
