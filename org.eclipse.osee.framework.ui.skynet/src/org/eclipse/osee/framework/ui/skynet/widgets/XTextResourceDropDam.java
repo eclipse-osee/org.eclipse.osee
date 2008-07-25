@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.svn.VersionControl;
 import org.eclipse.osee.framework.ui.plugin.util.AJavaProject;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.swt.dnd.DND;
@@ -96,7 +96,7 @@ public class XTextResourceDropDam extends XTextDam {
                      // do nothing
                   }
                   sb.append(iFile.getName());
-                  String ver = VersionControl.getInstance().getRepositoryEntry(file).getVersion();
+                  String ver = "unknown";//TODO properly abstract out version control (team providers?) so that we can get the version - VersionControl.getInstance().getRepositoryEntry(file).getVersion();
                   if (ver != null) {
                      if (ver.equals("unknown")) ver = "enter version here";
                      sb.append(" (" + ver + ")");
