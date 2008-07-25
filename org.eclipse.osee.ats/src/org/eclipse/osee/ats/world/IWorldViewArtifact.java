@@ -81,6 +81,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewLegacyPCR() throws OseeCoreException, SQLException;
 
+   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException;
+
    public double getWorldViewManDaysNeeded() throws OseeCoreException, SQLException;
 
    public String getWorldViewNotes() throws OseeCoreException, SQLException;

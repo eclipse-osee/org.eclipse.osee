@@ -343,4 +343,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
+   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
+      StateMachineArtifact sma = getParentSMA();
+      if (sma != null) return sma.getWorldViewSWEnhancement();
+      return "";
+   }
+
 }

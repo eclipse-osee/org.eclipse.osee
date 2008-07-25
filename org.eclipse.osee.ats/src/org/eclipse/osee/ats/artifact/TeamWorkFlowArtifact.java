@@ -588,4 +588,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       }
       return null;
    }
+
+   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
+      return getSoleAttributeValue(ATSAttributes.SW_ENHANCEMENT_ATTRIBUTE.getStoreName(), "");
+   }
+
 }

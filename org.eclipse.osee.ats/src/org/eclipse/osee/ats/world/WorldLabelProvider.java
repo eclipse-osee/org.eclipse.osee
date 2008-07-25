@@ -85,6 +85,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
          if (xCol.equals(WorldXViewerFactory.Decision_Col)) return wva.getWorldViewDecision();
          if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
+         if (xCol.equals(WorldXViewerFactory.SW_Enhancement_Col)) return wva.getWorldViewSWEnhancement();
          if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);
          if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) return AtsLib.doubleToStrString(wva.getWorldViewEstimatedHours());

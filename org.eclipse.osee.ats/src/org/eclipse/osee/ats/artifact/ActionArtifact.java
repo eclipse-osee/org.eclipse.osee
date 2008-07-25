@@ -1416,4 +1416,21 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return "(see children)";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewSWEnhancement()
+    */
+   @Override
+   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
+      Set<String> strs = new HashSet<String>();
+      try {
+         // Roll up version if same for all children
+         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+            if (team.getWorldViewPercentRework() > 0) strs.add(team.getWorldViewSWEnhancement());
+         }
+         return Collections.toString(",", strs);
+      } catch (SQLException ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
+   }
+
 }

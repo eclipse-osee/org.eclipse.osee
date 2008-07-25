@@ -80,6 +80,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static XViewerAtsAttributeColumn Legacy_PCR_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".legacyPcrId", ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, 40,
                SWT.LEFT, false, SortDataType.String, false, null);
+   public static XViewerColumn SW_Enhancement_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".swEnhancement", "SW Enhancement", 150, SWT.LEFT, false,
+               SortDataType.String, false, null);
    public static final XViewerColumn Decision_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".decision", "Decision", 150, SWT.LEFT, false, SortDataType.String,
                false, null);
@@ -217,15 +220,16 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn[] WorldViewColumns =
          new XViewerColumn[] {Type_Col, State_Col, Priority_Col, Change_Type_Col, Assignees_Col, Title_Col,
                Actionable_Items_Col, User_Community_Col, ID_Col, Created_Date_Col, Version_Target_Col, Team_Col,
-               Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col, Decision_Col,
-               Resolution_Col, Estimated_Release_Date_Col, Release_Date_Col, Work_Package_Col, Category_Col,
-               Category2_Col, Category3_Col, Related_To_State_Col, Estimated_Hours_Col, Weekly_Benefit_Hrs_Col,
-               Remaining_Hours_Col, Percent_Complete_State_Col, Percent_Complete_State_Task_Col,
-               Percent_Complete_State_Review_Col, Percent_Complete_Total_Col, Hours_Spent_State_Col,
-               Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col, Total_Hours_Spent_Col,
-               Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col, Review_Reviewer_Col,
-               Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col, Percent_Rework_Col,
-               Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col, Validation_Required_Col};
+               Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col, SW_Enhancement_Col,
+               Decision_Col, Resolution_Col, Estimated_Release_Date_Col, Release_Date_Col, Work_Package_Col,
+               Category_Col, Category2_Col, Category3_Col, Related_To_State_Col, Estimated_Hours_Col,
+               Weekly_Benefit_Hrs_Col, Remaining_Hours_Col, Percent_Complete_State_Col,
+               Percent_Complete_State_Task_Col, Percent_Complete_State_Review_Col, Percent_Complete_Total_Col,
+               Hours_Spent_State_Col, Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col,
+               Total_Hours_Spent_Col, Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col,
+               Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col,
+               Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
+               Validation_Required_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
