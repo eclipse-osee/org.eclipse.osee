@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+
 import net.jini.core.entry.Entry;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
@@ -20,6 +21,7 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
+
 import org.eclipse.osee.connection.service.EnhancedProperties;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
@@ -68,9 +70,16 @@ public abstract class JiniConnector implements IServiceConnector {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#stop()
-    */
+   @Override
+	public Object findExport(Object callback) throws Exception {
+		return exports.get(callback);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.osee.connection.service.IServiceConnector#stop()
+	 */
    @Override
    public void stop() throws Exception {
       for (Exporter exporter : exports.values()) {

@@ -87,10 +87,20 @@ public class LocalConnector implements IServiceConnector {
    @Override
    public void unexport(Object callback) throws Exception {
    }
+   
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.connection.service.IServiceConnector#addPropertyChangeListener(org.eclipse.osee.connection.service.IServicePropertyChangeListener)
-    */
+   @Override
+   public Object findExport(Object callback) throws Exception {
+		return callback;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.eclipse.osee.connection.service.IServiceConnector#
+	 * addPropertyChangeListener
+	 * (org.eclipse.osee.connection.service.IServicePropertyChangeListener)
+	 */
    @Override
    public void addPropertyChangeListener(IServicePropertyChangeListener listener) {
       propertyChangeListeners.add(listener);

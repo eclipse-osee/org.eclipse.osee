@@ -40,6 +40,15 @@ public interface IServiceConnector {
     */
    Object export(Object callback) throws Exception;
 
+   /**
+	 * finds the matching exported representation of supplied object
+	 * 
+	 * @param callback
+	 * @return
+	 * @throws Exception
+	 */
+   Object findExport(Object callback) throws Exception;
+   
    void unexport(Object callback) throws Exception;
 
    void addPropertyChangeListener(IServicePropertyChangeListener listener);
