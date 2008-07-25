@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.logging.Level;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -35,9 +37,9 @@ public class AtsAdmin {
          }
          if (!atsAdmin) {
             if (!searched) {
-               atsAdminArtifact =
+            	searched = true;
+            	atsAdminArtifact =
                      ArtifactQuery.getArtifactFromTypeAndName("Artifact", "AtsAdmin", AtsPlugin.getAtsBranch());
-               searched = true;
             }
             if (atsAdminArtifact != null) {
                atsAdmin =
@@ -47,7 +49,7 @@ public class AtsAdmin {
          }
          OseeProperties.getInstance().setDeveloper(atsAdmin);
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+    	  OseeLog.log(AtsAdmin.class, Level.INFO, ex);
       }
       return atsAdmin;
    }

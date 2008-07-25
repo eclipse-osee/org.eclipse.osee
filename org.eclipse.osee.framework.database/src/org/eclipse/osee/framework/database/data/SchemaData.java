@@ -36,7 +36,6 @@ public class SchemaData implements Xmlizable {
    private List<TableElement> tableDefinitions;
    private SchemaDataLookup schemaLookup;
 
-   @SuppressWarnings("unused")
    private boolean isSorted;
 
    public SchemaData() {
