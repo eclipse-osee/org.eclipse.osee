@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.define.feature"
       label="Define (Incubation)"
-      version="0.1.0.qualifier"
+      version="0.4.0.qualifier"
       provider-name="Eclipse.org"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -21,6 +21,23 @@
    <url>
       <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
    </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.osee.framework.skynet.core"/>
+      <import plugin="org.eclipse.osee.framework.ui.skynet"/>
+      <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
+      <import plugin="org.eclipse.osee.framework.database"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.osee.framework.db.connection"/>
+      <import plugin="org.eclipse.pde.core"/>
+   </requires>
 
    <plugin
          id="org.eclipse.osee.define"
