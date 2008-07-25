@@ -23,6 +23,8 @@ public class ATSAttributes {
    private final String description;
    private static Map<String, ATSAttributes> attrNameToAttr = new HashMap<String, ATSAttributes>();
 
+   public static final ATSAttributes SW_ENHANCEMENT_ATTRIBUTE =
+         new ATSAttributes("lba.SW Enhancement", "SW Enhancement", "SW Enhancement field from TRAX");
    public static final ATSAttributes BRANCH_METRICS_ATTRIBUTE = new ATSAttributes("Branch Metrics");
    public static final ATSAttributes ROLE_ATTRIBUTE = new ATSAttributes("Role");
    public static final ATSAttributes ACTIONABLE_ITEM_GUID_ATTRIBUTE = new ATSAttributes("Actionable Item");
