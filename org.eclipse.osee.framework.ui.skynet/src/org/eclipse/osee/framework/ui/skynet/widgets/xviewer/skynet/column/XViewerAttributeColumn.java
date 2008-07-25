@@ -25,7 +25,7 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerAttributeColumn copy() {
-      return new XViewerAttributeColumn(getId(), getAttributeTypeName(), getName(), getWidth(), getAlign(), isShow(),
+      return new XViewerAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(), isShow(),
             getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 

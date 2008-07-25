@@ -42,9 +42,9 @@ public class TaskLabelProvider extends WorldLabelProvider {
       TaskArtifact taskArt = (TaskArtifact) element;
       if (taskArt == null) return "";
       if (taskArt.isDeleted()) {
-         if (col == WorldXViewerFactory.ID_Col)
+         if (col.equals(WorldXViewerFactory.ID_Col))
             return taskArt.getHumanReadableId();
-         else if (col == WorldXViewerFactory.Title_Col)
+         else if (col.equals(WorldXViewerFactory.Title_Col))
             return taskArt.getInternalDescriptiveName();
          else
             return "<deleted>";
@@ -58,14 +58,14 @@ public class TaskLabelProvider extends WorldLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) {
       if (!col.isShow()) return null; // Since not shown, don't display
-      if (col == WorldXViewerFactory.Title_Col) return ((TaskArtifact) element).getImage();
+      if (col.equals(WorldXViewerFactory.Title_Col)) return ((TaskArtifact) element).getImage();
       return super.getColumnImage(element, col, columnIndex);
    }
 
    @Override
    public Color getForeground(Object element, XViewerColumn col, int columnIndex) {
       try {
-         if (col == WorldXViewerFactory.Resolution_Col) {
+         if (col.equals(WorldXViewerFactory.Resolution_Col)) {
             TaskArtifact taskArt = (TaskArtifact) element;
             if (taskArt != null) {
                TaskResOptionDefinition def = taskXViewer.getTaskResOptionDefinition(taskArt.getWorldViewResolution());

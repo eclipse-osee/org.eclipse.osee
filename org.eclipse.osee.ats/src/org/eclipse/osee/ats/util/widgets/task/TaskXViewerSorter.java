@@ -46,7 +46,7 @@ public class TaskXViewerSorter extends WorldXViewerSorter {
       IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
       IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
-      if (sortXCol == WorldXViewerFactory.Assignees_Col) {
+      if (sortXCol.equals(WorldXViewerFactory.Assignees_Col)) {
          int compareInt =
                getComparator().compare(
                      (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),

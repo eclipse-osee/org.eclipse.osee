@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
@@ -21,7 +17,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
@@ -54,7 +49,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
    public static final XViewerColumn ID_Col = new XViewerHridColumn("HRID");
-   public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn(null);
+   public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn();
    public static final XViewerColumn Version_Target_Col =
          new XViewerColumn(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Version Target", 40, SWT.LEFT,
                true, SortDataType.String, false, "Date this workflow transitioned to the Completed state.");
@@ -219,8 +214,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".validationRequired", "Validation Required", 80, SWT.LEFT, false,
                SortDataType.String, false,
                "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
-   public static final List<XViewerColumn> columns =
-         Arrays.asList(Type_Col, State_Col, Priority_Col, Change_Type_Col, Assignees_Col, Title_Col,
+   public static final XViewerColumn[] WorldViewColumns =
+         new XViewerColumn[] {Type_Col, State_Col, Priority_Col, Change_Type_Col, Assignees_Col, Title_Col,
                Actionable_Items_Col, User_Community_Col, ID_Col, Created_Date_Col, Version_Target_Col, Team_Col,
                Notes_Col, Deadline_Col, Annual_Cost_Avoidance_Col, Description_Col, Legacy_PCR_Col, Decision_Col,
                Resolution_Col, Estimated_Release_Date_Col, Release_Date_Col, Work_Package_Col, Category_Col,
@@ -230,38 +225,16 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col, Total_Hours_Spent_Col,
                Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col, Review_Reviewer_Col,
                Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Man_Days_Needed_Col, Percent_Rework_Col,
-               Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col, Validation_Required_Col);
-   public static Map<String, XViewerColumn> idToColumn = null;
-
+               Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col, Validation_Required_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
-      if (idToColumn == null) {
-         idToColumn = new HashMap<String, XViewerColumn>();
-         for (XViewerColumn xCol : columns) {
-            idToColumn.put(xCol.getId(), xCol);
-         }
-      }
+      registerColumn(WorldViewColumns);
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new WorldXViewerSorter(xViewer);
-   }
-
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      custData.getColumnData().setColumns(columns);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
-    */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      return idToColumn.get(id);
    }
 
 }

@@ -48,7 +48,7 @@ public class WorldXViewerSorter extends XViewerSorter {
          IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
          IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
-         if (sortXCol == WorldXViewerFactory.Change_Type_Col) {
+         if (sortXCol.equals(WorldXViewerFactory.Change_Type_Col)) {
             int compareInt =
                   getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
                         m2.getWorldViewChangeType().ordinal() + "");
