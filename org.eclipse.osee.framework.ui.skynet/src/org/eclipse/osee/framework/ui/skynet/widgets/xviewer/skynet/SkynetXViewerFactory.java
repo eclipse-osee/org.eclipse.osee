@@ -11,10 +11,15 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomizations;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -50,4 +55,16 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return new XViewerCustomizations();
    }
 
+   public void registerAllAttributeColumns() {
+      try {
+         for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
+            XViewerAttributeColumn newCol =
+                  new XViewerAttributeColumn(attributeType.getName(), attributeType.getName(), attributeType.getName(),
+                        75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+            registerColumn(newCol);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+   }
 }

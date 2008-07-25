@@ -10,17 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeSortDataType;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeFromChangeColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -57,16 +51,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public ChangeXViewerFactory() {
       super(NAMESPACE);
       registerColumn(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, Artifact_Type, Hrid);
-      try {
-         for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
-            XViewerAttributeFromChangeColumn newCol =
-                  new XViewerAttributeFromChangeColumn(attributeType.getName(), attributeType.getName(), 75, SWT.LEFT,
-                        false, XViewerAttributeSortDataType.get(attributeType), false, null);
-            registerColumn(newCol);
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
+      registerAllAttributeColumns();
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {

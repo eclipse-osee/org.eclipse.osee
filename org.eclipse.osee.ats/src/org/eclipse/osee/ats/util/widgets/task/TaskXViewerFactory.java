@@ -15,13 +15,13 @@ import java.util.List;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskXViewerFactory extends XViewerFactory {
+public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    public static final List<XViewerColumn> TaskViewerVisibleColumns =
          Arrays.asList(WorldXViewerFactory.Title_Col, WorldXViewerFactory.State_Col, WorldXViewerFactory.Assignees_Col,
@@ -50,6 +50,7 @@ public class TaskXViewerFactory extends XViewerFactory {
             registerColumn(newCol);
          }
       }
+      registerAllAttributeColumns();
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {

@@ -231,6 +231,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public WorldXViewerFactory() {
       super(NAMESPACE);
       registerColumn(WorldViewColumns);
+      registerAllAttributeColumns();
    }
 
    public XViewerSorter createNewXSorter(XViewer xViewer) {

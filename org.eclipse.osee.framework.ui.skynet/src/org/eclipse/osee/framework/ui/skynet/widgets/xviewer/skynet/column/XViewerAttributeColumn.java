@@ -7,6 +7,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn;
@@ -41,6 +43,12 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getAttributesToString(attributeTypeName);
+      }
+      if (element instanceof Change) {
+         return ((Change) element).getArtifact().getAttributesToString(attributeTypeName);
+      }
+      if (element instanceof Conflict) {
+         return ((Conflict) element).getArtifact().getAttributesToString(attributeTypeName);
       }
       return super.getColumnText(element, column, columnIndex);
    }
