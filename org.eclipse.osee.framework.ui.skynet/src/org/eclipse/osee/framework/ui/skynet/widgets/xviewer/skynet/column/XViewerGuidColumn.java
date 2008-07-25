@@ -18,8 +18,11 @@ import org.eclipse.swt.SWT;
 public class XViewerGuidColumn extends XViewerValueColumn {
 
    public XViewerGuidColumn(String name) {
-      super("framework.guid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false,
-            "Globally Unique Identifier");
+      this("framework.guid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Globally Unique Identifier");
+   }
+
+   public XViewerGuidColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -29,7 +32,8 @@ public class XViewerGuidColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerGuidColumn copy() {
-      return new XViewerGuidColumn(getName());
+      return new XViewerGuidColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
    /* (non-Javadoc)

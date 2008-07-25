@@ -23,6 +23,10 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
             null);
    }
 
+   public XViewerSmaStateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   }
+
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn need to extend this constructor to copy extra stored fields
@@ -30,7 +34,8 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerSmaStateColumn copy() {
-      return new XViewerSmaStateColumn();
+      return new XViewerSmaStateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
    /* (non-Javadoc)

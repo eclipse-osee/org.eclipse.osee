@@ -28,11 +28,17 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerReviewRoleColumn copy() {
-      return new XViewerReviewRoleColumn(getUser());
+      return new XViewerReviewRoleColumn(getUser(), getId(), getName(), getWidth(), getAlign(), isShow(),
+            getSortDataType(), isMultiColumnEditable(), getDescription());
    }
 
    public XViewerReviewRoleColumn(User user) {
       super("ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String, false, null);
+      this.user = user;
+   }
+
+   public XViewerReviewRoleColumn(User user, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.user = user;
    }
 

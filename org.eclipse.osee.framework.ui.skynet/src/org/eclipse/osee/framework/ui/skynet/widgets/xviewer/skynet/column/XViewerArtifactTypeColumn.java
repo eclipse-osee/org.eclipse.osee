@@ -19,7 +19,11 @@ import org.eclipse.swt.graphics.Image;
 public class XViewerArtifactTypeColumn extends XViewerValueColumn {
 
    public XViewerArtifactTypeColumn(String name) {
-      super("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, "Artifact Type");
+      this("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, "Artifact Type");
+   }
+
+   public XViewerArtifactTypeColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -29,7 +33,8 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerArtifactTypeColumn copy() {
-      return new XViewerArtifactTypeColumn(getName());
+      return new XViewerArtifactTypeColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
    /* (non-Javadoc)

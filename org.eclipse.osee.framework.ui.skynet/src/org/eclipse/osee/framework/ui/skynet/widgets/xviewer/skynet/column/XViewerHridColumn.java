@@ -18,7 +18,11 @@ import org.eclipse.swt.SWT;
 public class XViewerHridColumn extends XViewerValueColumn {
 
    public XViewerHridColumn(String name) {
-      super("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Human Readable ID");
+      this("framework.hrid." + name, name, 75, SWT.LEFT, true, SortDataType.String, false, "Human Readable ID");
+   }
+
+   public XViewerHridColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -28,7 +32,8 @@ public class XViewerHridColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerHridColumn copy() {
-      return new XViewerHridColumn(getName());
+      return new XViewerHridColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
    /* (non-Javadoc)

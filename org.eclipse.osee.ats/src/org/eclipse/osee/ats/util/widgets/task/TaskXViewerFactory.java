@@ -29,7 +29,7 @@ public class TaskXViewerFactory extends XViewerFactory {
                WorldXViewerFactory.Resolution_Col, WorldXViewerFactory.Estimated_Hours_Col,
                WorldXViewerFactory.Remaining_Hours_Col, WorldXViewerFactory.Related_To_State_Col,
                WorldXViewerFactory.Notes_Col);
-   public static List<Integer> widths = Arrays.asList(450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80);
+   public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {
       super("org.eclipse.osee.ats.TaskXViewer");
@@ -38,7 +38,7 @@ public class TaskXViewerFactory extends XViewerFactory {
       for (XViewerColumn taskCol : TaskViewerVisibleColumns) {
          XViewerColumn newCol = taskCol.copy();
          newCol.setShow(true);
-         newCol.setWidth(widths.get(widthIndex++));
+         newCol.setWidth(widths[widthIndex++]);
          registerColumn(newCol);
       }
       // Add remaining columns from world columns

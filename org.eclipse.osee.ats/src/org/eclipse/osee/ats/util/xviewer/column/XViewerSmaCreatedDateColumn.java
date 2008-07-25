@@ -27,6 +27,10 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
             "Date this workflow was created.");
    }
 
+   public XViewerSmaCreatedDateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   }
+
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn need to extend this constructor to copy extra stored fields
@@ -34,7 +38,8 @@ public class XViewerSmaCreatedDateColumn extends XViewerValueColumn {
     * @param col
     */
    public XViewerSmaCreatedDateColumn copy() {
-      return new XViewerSmaCreatedDateColumn(getName());
+      return new XViewerSmaCreatedDateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
+            isMultiColumnEditable(), getDescription());
    }
 
    /* (non-Javadoc)
