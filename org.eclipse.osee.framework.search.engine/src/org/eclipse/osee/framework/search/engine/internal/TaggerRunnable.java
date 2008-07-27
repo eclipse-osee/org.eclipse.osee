@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
@@ -99,6 +100,7 @@ class TaggerRunnable implements Runnable {
             collector.setCurrent(searchTag);
             SearchTagDataStore.deleteTags(searchTag);
             Activator.getInstance().getTaggerManager().tagIt(attributeData, collector);
+            checkSizeStoreIfNeeeded();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag));
          } finally {
@@ -106,7 +108,6 @@ class TaggerRunnable implements Runnable {
             notifyOnAttributeTagComplete(searchTag.getGammaId(), searchTag.cacheSize(),
                   (System.currentTimeMillis() - startItemTime));
          }
-         checkSizeStoreIfNeeeded();
       }
    }
 

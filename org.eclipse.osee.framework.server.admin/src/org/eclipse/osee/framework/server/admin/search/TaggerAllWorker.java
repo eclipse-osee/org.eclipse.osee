@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -160,8 +161,10 @@ class TaggerAllWorker extends BaseCmdWorker {
       public void storeAndAddQueryId(Connection connection, TagQueueJoinQuery joinQuery) throws SQLException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
+            synchronized (queryIdMap) {
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);
             Activator.getInstance().getSearchTagger().tagByQueueQueryId(this, joinQuery.getQueryId());
+            }
          }
       }
 
@@ -186,12 +189,14 @@ class TaggerAllWorker extends BaseCmdWorker {
        */
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+    	  synchronized (queryIdMap) {
          if (queryIdMap.containsKey(queryId)) {
             attributesProcessed++;
             if (attributesProcessed % 1000 == 0) {
                printStats();
             }
          }
+    	  }
       }
 
       /* (non-Javadoc)
