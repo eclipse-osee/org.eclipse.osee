@@ -15,17 +15,23 @@ package org.eclipse.osee.framework.search.engine;
  */
 public interface ITaggerStatistics {
 
-   public long getAverageWaitTime();
+   public long getLongestQueryIdWaitTime();
 
-   public long getAverageProcessingTime();
+   public long getLongestQueryIdProcessingTime();
 
-   public int getTotalProcessed();
+   public long getAverageQueryIdWaitTime();
 
-   public long getLongestProcessingTime();
+   public int getTotalQueryIdsProcessed();
 
-   public long getLongestWaitTime();
+   public long getAverageQueryIdProcessingTime();
+
+   public long getAverageAttributeProcessingTime();
 
    public long getTotalTags();
+
+   public int getTotalAttributesProcessed();
+
+   public long getLongestAttributeProcessingTime();
 
    public ITagItemStatistics getLongestTask();
 

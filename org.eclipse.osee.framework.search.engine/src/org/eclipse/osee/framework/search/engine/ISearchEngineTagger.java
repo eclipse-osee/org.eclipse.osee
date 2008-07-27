@@ -53,6 +53,21 @@ public interface ISearchEngineTagger {
    public void tagFromXmlStream(InputStream inputStream) throws Exception;
 
    /**
+    * Stop tagging items by queue query id
+    * 
+    * @param queryId
+    * @return number of items stopped
+    */
+   public int stopTaggingByQueueQueryId(int... queryId);
+
+   /**
+    * Stops all tagging
+    * 
+    * @return number of items stopped
+    */
+   public int stopAllTagging();
+
+   /**
     * Delete tags specified by join query id
     * 
     * @param parseInt

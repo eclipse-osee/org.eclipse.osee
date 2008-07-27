@@ -27,15 +27,18 @@ class TaggerStats extends BaseCmdWorker {
       println("\n----------------------------------------------");
       println("                  Tagger Stats                ");
       println("----------------------------------------------");
-      println(String.format("Processing Time - avg: [%s] ms - longest: [%s] ms", stats.getAverageProcessingTime(),
-            stats.getLongestProcessingTime()));
-      println(String.format("Wait Time       - avg: [%s] ms - longest: [%s] ms", stats.getAverageWaitTime(),
-            stats.getLongestWaitTime()));
-      println(String.format("Max to process  - %s", toString(stats.getLongestTask())));
-      println(String.format("Max tags        - %s", toString(stats.getMostTagsTask())));
-      println(String.format("Processed       - items: [%d] - generated [%d] tags", stats.getTotalProcessed(),
-            stats.getTotalTags()));
-      println(String.format("Pending Items   - [%d]", tagger.getWorkersInQueue()));
+      println(String.format("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms",
+            stats.getAverageQueryIdProcessingTime(), stats.getLongestQueryIdProcessingTime()));
+      println(String.format("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms",
+            stats.getAverageQueryIdWaitTime(), stats.getLongestQueryIdWaitTime()));
+
+      println(String.format("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms",
+            stats.getAverageAttributeProcessingTime(), stats.getLongestAttributeProcessingTime()));
+      println(String.format("Attribute with longest processing time - %s", toString(stats.getLongestTask())));
+      println(String.format("Attribute with most tags - %s", toString(stats.getMostTagsTask())));
+      println(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]", stats.getTotalQueryIdsProcessed(),
+            stats.getTotalAttributesProcessed(), stats.getTotalTags()));
+      println(String.format("Total Query Ids Waiting to be Processing - [%d]", tagger.getWorkersInQueue()));
       println(String.format("Total Tags in System - [%d]\n", stats.getTagsInSystem()));
    }
 

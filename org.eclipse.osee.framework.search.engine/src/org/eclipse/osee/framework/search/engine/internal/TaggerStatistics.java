@@ -20,15 +20,19 @@ import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
  */
 public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListener {
    public static final TaggerStatistics EMPTY_STATS = new TaggerStatistics();
-   private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, 0, 0);
+   private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, -1, -1);
 
-   private long averageWaitTime;
-   private long averageProcessingTime;
+   private long averageQueryIdWaitTime;
+   private long averageAttributeProcessingTime;
+   private long averageQueryIdProcessingTime;
    private long totalTags;
-   private int totalProcessed;
-   private long totalWaitTime;
-   private long totalProcessingTime;
-   private long longestWaitTime;
+   private int totalAttributesProcessed;
+   private int totalQueryIdsProcessed;
+   private long totalQueryIdWaitTime;
+   private long totalQueryIdProcessingTime;
+   private long totalAttributeProcessingTime;
+   private long longestQueryIdWaitTime;
+   private long longestQueryIdProcessingTime;
    private TaskStatistics longestTask;
    private TaskStatistics mostTags;
 
@@ -37,39 +41,55 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
    }
 
    public void clear() {
-      this.averageWaitTime = 0;
+      this.averageQueryIdWaitTime = 0;
       this.totalTags = 0;
-      this.averageProcessingTime = 0;
-      this.totalProcessed = 0;
-      this.totalWaitTime = 0;
-      this.totalProcessingTime = 0;
-      this.longestWaitTime = 0;
+      this.averageAttributeProcessingTime = 0;
+      this.averageQueryIdProcessingTime = 0;
+      this.totalAttributesProcessed = 0;
+      this.totalQueryIdsProcessed = 0;
+      this.totalQueryIdWaitTime = 0;
+      this.totalAttributeProcessingTime = 0;
+      this.totalQueryIdProcessingTime = 0;
+      this.longestQueryIdWaitTime = 0;
+      this.longestQueryIdProcessingTime = 0;
       this.longestTask = DEFAULT_TASK_STATS;
       this.mostTags = DEFAULT_TASK_STATS;
    }
 
-   public long getAverageWaitTime() {
-      return averageWaitTime;
+   public long getLongestQueryIdWaitTime() {
+      return longestQueryIdWaitTime;
    }
 
-   public long getAverageProcessingTime() {
-      return averageProcessingTime;
+   public long getLongestQueryIdProcessingTime() {
+      return longestQueryIdProcessingTime;
+   }
+
+   public long getAverageQueryIdWaitTime() {
+      return averageQueryIdWaitTime;
+   }
+
+   public int getTotalQueryIdsProcessed() {
+      return this.totalQueryIdsProcessed;
+   }
+
+   public long getAverageQueryIdProcessingTime() {
+      return averageQueryIdProcessingTime;
+   }
+
+   public long getAverageAttributeProcessingTime() {
+      return averageAttributeProcessingTime;
    }
 
    public long getTotalTags() {
       return totalTags;
    }
 
-   public int getTotalProcessed() {
-      return totalProcessed;
+   public int getTotalAttributesProcessed() {
+      return totalAttributesProcessed;
    }
 
-   public long getLongestProcessingTime() {
+   public long getLongestAttributeProcessingTime() {
       return longestTask.getProcessingTime();
-   }
-
-   public long getLongestWaitTime() {
-      return longestWaitTime;
    }
 
    public ITagItemStatistics getLongestTask() {
@@ -84,23 +104,23 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
       return SearchTagDataStore.getTotalTags();
    }
 
-   synchronized public void addEntry(long gammaId, int totalTags, long waitTime, long processingTime) {
-
-   }
-
    /* (non-Javadoc)
     * @see java.lang.Object#clone()
     */
    @Override
    protected ITaggerStatistics clone() throws CloneNotSupportedException {
       TaggerStatistics other = (TaggerStatistics) super.clone();
-      other.averageProcessingTime = this.averageProcessingTime;
-      other.averageWaitTime = this.averageWaitTime;
+      other.averageAttributeProcessingTime = this.averageAttributeProcessingTime;
+      other.averageQueryIdProcessingTime = this.averageQueryIdProcessingTime;
+      other.averageQueryIdWaitTime = this.averageQueryIdWaitTime;
       other.totalTags = this.totalTags;
-      other.totalProcessed = this.totalProcessed;
-      other.totalWaitTime = this.totalWaitTime;
-      other.totalProcessingTime = this.totalProcessingTime;
-      other.longestWaitTime = this.longestWaitTime;
+      other.totalAttributesProcessed = this.totalAttributesProcessed;
+      other.totalQueryIdsProcessed = this.totalQueryIdsProcessed;
+      other.totalAttributeProcessingTime = this.totalAttributeProcessingTime;
+      other.totalQueryIdProcessingTime = this.totalQueryIdProcessingTime;
+      other.totalQueryIdWaitTime = this.totalQueryIdWaitTime;
+      other.longestQueryIdWaitTime = this.longestQueryIdWaitTime;
+      other.longestQueryIdProcessingTime = this.longestQueryIdProcessingTime;
       other.longestTask = this.longestTask.clone();
       other.mostTags = this.mostTags.clone();
       return other;
@@ -112,9 +132,9 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
    @Override
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
       this.totalTags += totalTags;
-      this.totalProcessed++;
-      this.totalProcessingTime += processingTime;
-      this.averageProcessingTime = totalProcessingTime / this.totalProcessed;
+      this.totalAttributesProcessed++;
+      this.totalAttributeProcessingTime += processingTime;
+      this.averageAttributeProcessingTime = this.totalAttributeProcessingTime / this.totalAttributesProcessed;
 
       TaskStatistics newTask = new TaskStatistics(gammaId, totalTags, processingTime);
       if (newTask.getProcessingTime() > this.longestTask.getProcessingTime()) {
@@ -129,9 +149,15 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
     * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long)
     */
    @Override
-   public void onTagQueryIdTagComplete(int queryId, long processingTime) {
-      //      this.totalWaitTime += waitTime;
-      //      this.averageWaitTime = totalWaitTime / this.totalProcessed;
-      //      this.longestWaitTime = Math.max(this.longestWaitTime, waitTime);
+   public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
+      this.totalQueryIdsProcessed++;
+      this.totalQueryIdWaitTime += waitTime;
+      this.totalQueryIdProcessingTime += processingTime;
+
+      this.averageQueryIdWaitTime = totalQueryIdWaitTime / this.totalQueryIdsProcessed;
+      this.averageQueryIdProcessingTime = totalQueryIdProcessingTime / this.totalQueryIdsProcessed;
+
+      this.longestQueryIdProcessingTime = Math.max(this.longestQueryIdProcessingTime, processingTime);
+      this.longestQueryIdWaitTime = Math.max(this.longestQueryIdWaitTime, waitTime);
    }
 }
