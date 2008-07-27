@@ -146,7 +146,6 @@ class TaggerAllWorker extends BaseCmdWorker {
        * @param connection
        */
       public void cancelProcessing(Connection connection) {
-         synchronized (queryIdMap) {
             Set<Integer> list = queryIdMap.keySet();
             int[] toStop = new int[list.size()];
             int index = 0;
@@ -155,16 +154,13 @@ class TaggerAllWorker extends BaseCmdWorker {
                index++;
             }
             Activator.getInstance().getSearchTagger().stopTaggingByQueueQueryId(toStop);
-         }
       }
 
       public void storeAndAddQueryId(Connection connection, TagQueueJoinQuery joinQuery) throws SQLException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
-            synchronized (queryIdMap) {
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);
             Activator.getInstance().getSearchTagger().tagByQueueQueryId(this, joinQuery.getQueryId());
-            }
          }
       }
 
@@ -189,14 +185,12 @@ class TaggerAllWorker extends BaseCmdWorker {
        */
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
-    	  synchronized (queryIdMap) {
          if (queryIdMap.containsKey(queryId)) {
             attributesProcessed++;
             if (attributesProcessed % 1000 == 0) {
                printStats();
             }
          }
-    	  }
       }
 
       /* (non-Javadoc)
@@ -204,13 +198,11 @@ class TaggerAllWorker extends BaseCmdWorker {
        */
       @Override
       public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
-         synchronized (queryIdMap) {
             TagQueueJoinQuery joinQuery = this.queryIdMap.get(queryId);
             if (joinQuery != null) {
                this.queryIdMap.remove(joinQuery);
                queriesProcessed++;
             }
-         }
       }
    }
 }

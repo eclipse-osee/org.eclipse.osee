@@ -43,7 +43,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    public SearchEngineTagger() {
       this.statistics = new TaggerStatistics();
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
-      this.executor = Executors.newFixedThreadPool(3);
+      this.executor = Executors.newFixedThreadPool(1);
       this.executor.submit(new StartUpRunnable(this));
    }
 

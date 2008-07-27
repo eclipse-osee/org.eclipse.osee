@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -92,13 +93,13 @@ class TaggerRunnable implements Runnable {
 
    private void processAttributes(Collection<AttributeData> attributeDatas) throws SQLException {
       TagCollector collector = new TagCollector();
+      deleteOldSearchTags(attributeDatas);
       for (AttributeData attributeData : attributeDatas) {
          long startItemTime = System.currentTimeMillis();
          SearchTag searchTag = new SearchTag(attributeData.getGammaId());
          this.searchTags.add(searchTag);
          try {
             collector.setCurrent(searchTag);
-            SearchTagDataStore.deleteTags(searchTag);
             Activator.getInstance().getTaggerManager().tagIt(attributeData, collector);
             checkSizeStoreIfNeeeded();
          } catch (Exception ex) {
@@ -111,6 +112,24 @@ class TaggerRunnable implements Runnable {
       }
    }
 
+   private void deleteOldSearchTags(Collection<AttributeData> attributeDatas) throws SQLException {
+	      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
+	      Connection connection = null;
+	      try {
+	    	 connection = OseeDbConnection.getConnection();
+	    	 for(AttributeData attributeData : attributeDatas){
+	    	  txJoin.add((int)attributeData.getGammaId(), -1);
+	      	}
+	      	txJoin.store();
+	      	SearchTagDataStore.deleteTags(txJoin.getQueryId());
+	      } finally {
+	    	  txJoin.delete(connection);
+	    	  if(connection != null){
+	    		  connection.close();
+	    	  }
+	      }
+   }
+   
    private void removeQueryIdFromTagQueue() throws Exception {
       Connection connection = null;
       try {
