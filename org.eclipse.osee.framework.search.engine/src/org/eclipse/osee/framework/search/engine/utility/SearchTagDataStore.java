@@ -110,14 +110,14 @@ public class SearchTagDataStore {
          updated = -1;
          try {
             connection = OseeDbConnection.getConnection();
-            List<Object[]> data = new ArrayList<Object[]>();
             for (SearchTag searchTag : searchTags) {
+               List<Object[]> data = new ArrayList<Object[]>();
                for (Long codedTag : searchTag.getTags()) {
                   data.add(new Object[] {SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag,
                         SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag});
                }
+               updated += ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
             }
-            updated = ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
          } finally {
             if (connection != null && connection.isClosed() != true) {
                connection.close();

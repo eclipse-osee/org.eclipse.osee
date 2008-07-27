@@ -42,6 +42,25 @@ public class SearchTag implements IAttributeLocator {
       return attributeVersion.getGammaId();
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (!(object instanceof SearchTag)) return false;
+      SearchTag other = (SearchTag) object;
+      return other.getGammaId() == this.getGammaId();
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return attributeVersion.hashCode();
+   }
+
    public Set<Long> getTags() {
       return this.codedTags;
    }
