@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,8 +41,7 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
    }
 
    protected InputStream getValueAsStream(AttributeData attributeData) throws Exception {
-      InputStream inputStream = null;
-      inputStream = getExtendedDataAsStream(attributeData);
+      InputStream inputStream = getExtendedDataAsStream(attributeData);
       if (inputStream == null) {
          inputStream = new ByteArrayInputStream(attributeData.getStringValue().getBytes("UTF-8"));
       }
@@ -49,12 +49,16 @@ public abstract class BaseAttributeTaggerProvider implements IAttributeTaggerPro
    }
 
    private InputStream getExtendedDataAsStream(AttributeData attributeData) throws Exception {
-      Options options = new Options();
-      options.put(StandardOptions.DecompressOnAquire.name(), true);
-      IResourceLocator locator =
+	  InputStream toReturn = null;
+	  if (attributeData.isUriValid()) {
+         Options options = new Options();
+         options.put(StandardOptions.DecompressOnAquire.name(), true);
+         IResourceLocator locator =
             Activator.getInstance().getResourceLocatorManager().getResourceLocator(attributeData.getUri());
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
-      return resource.getContent();
+         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+         toReturn = resource.getContent();
+	  }
+	  return toReturn;
    }
 
    private String getExtendedData(AttributeData attributeData) {

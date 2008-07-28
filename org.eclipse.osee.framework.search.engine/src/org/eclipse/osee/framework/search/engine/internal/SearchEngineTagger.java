@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
@@ -176,17 +177,6 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       @Override
       protected void done() {
          futureTasks.remove(runnable.getTagQueueQueryId());
-      }
-
-      /* (non-Javadoc)
-       * @see java.util.concurrent.FutureTask#cancel(boolean)
-       */
-      @Override
-      public boolean cancel(boolean mayInterruptIfRunning) {
-         if (mayInterruptIfRunning) {
-            this.runnable.setCancelled(true);
-         }
-         return super.cancel(mayInterruptIfRunning);
       }
    }
 

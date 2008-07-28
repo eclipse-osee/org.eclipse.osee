@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.search.engine.attribute;
 
 import java.net.URI;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeData {
+   private final static String EMPTY_STRING = "";
    private int artId;
    private long gammaId;
    private int branchId;
@@ -29,19 +31,13 @@ public class AttributeData {
       this.artId = artId;
       this.gammaId = gammaId;
       this.branchId = branchId;
-      this.value = value;
-      this.uri = uri;
-      this.taggerId = Strings.isValid(taggerId) ? taggerId : "";
+      this.value = Strings.isValid(value) ? value : EMPTY_STRING;
+      this.uri = Strings.isValid(uri) ? uri : EMPTY_STRING;
+      this.taggerId = Strings.isValid(taggerId) ? taggerId : EMPTY_STRING;
    }
 
    protected AttributeData(long gammaId, String value, String uri, String taggerId) {
-      super();
-      this.artId = -1;
-      this.gammaId = gammaId;
-      this.branchId = -1;
-      this.value = value;
-      this.uri = uri;
-      this.taggerId = Strings.isValid(taggerId) ? taggerId : "";
+      this(-1, gammaId, -1, value, uri, taggerId);
    }
 
    public int getArtId() {
@@ -72,7 +68,7 @@ public class AttributeData {
       boolean toReturn = false;
       try {
          String value = getUri();
-         if (value != null && value.length() > 0) {
+         if (Strings.isValid(value)) {
             URI uri = new URI(value);
             if (uri != null) {
                toReturn = true;
