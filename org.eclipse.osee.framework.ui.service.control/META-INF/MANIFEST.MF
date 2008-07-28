@@ -3,13 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Control Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.service.control;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-ClassPath: control.jar
 Bundle-Activator: org.eclipse.osee.framework.ui.service.control.ControlPlugin
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.framework.ui.service.control,
  org.eclipse.osee.framework.ui.service.control.actions,
  org.eclipse.osee.framework.ui.service.control.data,
  org.eclipse.osee.framework.ui.service.control.dialogs,
+ org.eclipse.osee.framework.ui.service.control.jobs,
  org.eclipse.osee.framework.ui.service.control.managers,
  org.eclipse.osee.framework.ui.service.control.managers.interfaces,
  org.eclipse.osee.framework.ui.service.control.menu,
@@ -17,6 +17,7 @@ Export-Package: org.eclipse.osee.framework.ui.service.control,
  org.eclipse.osee.framework.ui.service.control.view,
  org.eclipse.osee.framework.ui.service.control.widgets,
  org.eclipse.osee.framework.ui.service.control.wizards.launcher,
+ org.eclipse.osee.framework.ui.service.control.wizards.launcher.data,
  org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages,
  org.eclipse.osee.framework.ui.service.control.wizards.launcher.widgets
 Require-Bundle: org.eclipse.ui,
