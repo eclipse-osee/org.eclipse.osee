@@ -39,6 +39,7 @@ class TaggerStats extends BaseCmdWorker {
       println(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]", stats.getTotalQueryIdsProcessed(),
             stats.getTotalAttributesProcessed(), stats.getTotalTags()));
       println(String.format("Total Query Ids Waiting to be Processing - [%d]", tagger.getWorkersInQueue()));
+      println(String.format("Total Query Ids in Tag Queue Table - [%d]", stats.getTotalQueryIdsInQueue()));
       println(String.format("Total Tags in System - [%d]\n", stats.getTagsInSystem()));
    }
 

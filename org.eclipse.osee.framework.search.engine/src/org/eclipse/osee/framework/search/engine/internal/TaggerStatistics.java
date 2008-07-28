@@ -104,6 +104,10 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
       return SearchTagDataStore.getTotalTags();
    }
 
+   public long getTotalQueryIdsInQueue() {
+      return SearchTagDataStore.getTotalQueryIdsInQueue();
+   }
+
    /* (non-Javadoc)
     * @see java.lang.Object#clone()
     */

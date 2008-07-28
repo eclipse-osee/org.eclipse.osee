@@ -39,4 +39,6 @@ public interface ITaggerStatistics {
 
    public long getTagsInSystem();
 
+   public long getTotalQueryIdsInQueue();
+
 }

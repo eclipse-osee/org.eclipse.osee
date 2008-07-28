@@ -75,9 +75,9 @@ public interface ISearchEngineTagger {
    public int deleteTags(int joinQueryId) throws Exception;
 
    /**
-    * Get number of items waiting to be tagged
+    * Get number of workers waiting to execute tagging operation
     * 
-    * @return number of items waiting to be tagged
+    * @return number of workers waiting to tag
     */
    public int getWorkersInQueue();
 

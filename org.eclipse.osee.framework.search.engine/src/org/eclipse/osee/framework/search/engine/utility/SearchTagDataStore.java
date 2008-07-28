@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.type.MutableDouble;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
@@ -42,24 +42,44 @@ public class SearchTagDataStore {
 
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
+   private static final String SELECT_TOTAL_QUERY_IDS_IN_QUEUE =
+         "select count(DISTINCT query_id) from osee_tag_gamma_queue";
+
    private static final String SELECT_SEARCH_TAGS =
          "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
-   public static long getTotalTags() {
-      final MutableInteger toReturn = new MutableInteger(-1);
+   public static long getTotalQueryIdsInQueue() {
+      final MutableDouble toReturn = new MutableDouble(-1);
       try {
-         DatabaseUtil.executeQuery(SELECT_TOTAL_TAGS, new IRowProcessor() {
+         DatabaseUtil.executeQuery(SELECT_TOTAL_QUERY_IDS_IN_QUEUE, new IRowProcessor() {
 
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
-               toReturn.setValue(resultSet.getInt(1));
+               toReturn.setValue(resultSet.getLong(1));
             }
 
          });
       } catch (Exception ex) {
          // Do Nothing
       }
-      return toReturn.getValue();
+      return (long) toReturn.getValue();
+   }
+
+   public static long getTotalTags() {
+      final MutableDouble toReturn = new MutableDouble(-1);
+      try {
+         DatabaseUtil.executeQuery(SELECT_TOTAL_TAGS, new IRowProcessor() {
+
+            @Override
+            public void processRow(ResultSet resultSet) throws Exception {
+               toReturn.setValue(resultSet.getLong(1));
+            }
+
+         });
+      } catch (Exception ex) {
+         // Do Nothing
+      }
+      return (long) toReturn.getValue();
    }
 
    private static String getInsertSQL(Connection connection) throws SQLException {

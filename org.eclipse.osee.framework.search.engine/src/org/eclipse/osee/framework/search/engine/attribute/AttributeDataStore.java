@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
  */
 public class AttributeDataStore {
 
-   private static final String SELECT_ATTRIBUTE =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_define_attribute attr1, osee_define_attribute_type attrtype, osee_define_txs txs1, osee_define_tx_details txd1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
+   private static final String LOAD_ATTRIBUTE =
+         "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id FROM osee_define_attribute attr1, osee_define_attribute_type attrtype, osee_tag_gamma_queue tgq1 WHERE attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
 
    private static final String RESTRICT_BRANCH = " AND txd1.branch_id = ?";
 
@@ -38,12 +38,11 @@ public class AttributeDataStore {
 
    public static Collection<AttributeData> getAttribute(final int tagQueueQueryId) throws Exception {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
-      DatabaseUtil.executeQuery(SELECT_ATTRIBUTE, new IRowProcessor() {
+      DatabaseUtil.executeQuery(LOAD_ATTRIBUTE, new IRowProcessor() {
          @Override
          public void processRow(ResultSet resultSet) throws Exception {
-            attributeData.add(new AttributeData(resultSet.getInt("art_id"), resultSet.getLong("gamma_id"),
-                  resultSet.getInt("branch_id"), resultSet.getString("value"), resultSet.getString("uri"),
-                  resultSet.getString("tagger_id")));
+            attributeData.add(new AttributeData(resultSet.getLong("gamma_id"), resultSet.getString("value"),
+                  resultSet.getString("uri"), resultSet.getString("tagger_id")));
          }
       }, SQL3DataType.INTEGER, tagQueueQueryId);
       return attributeData;

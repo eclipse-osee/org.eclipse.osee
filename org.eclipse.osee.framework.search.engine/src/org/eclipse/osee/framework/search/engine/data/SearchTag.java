@@ -20,14 +20,22 @@ public class SearchTag implements IAttributeLocator {
 
    private AttributeVersion attributeVersion;
    private Set<Long> codedTags;
+   private int runningTotal;
 
    public SearchTag(long gammaId) {
       this.attributeVersion = new AttributeVersion(gammaId);
       this.codedTags = new HashSet<Long>();
+      this.runningTotal = 0;
    }
 
    public void addTag(long codedTag) {
-      this.codedTags.add(codedTag);
+      if (this.codedTags.add(codedTag)) {
+         runningTotal++;
+      }
+   }
+
+   public int getTotalTags() {
+      return runningTotal;
    }
 
    public int cacheSize() {
@@ -66,6 +74,7 @@ public class SearchTag implements IAttributeLocator {
    }
 
    public String toString() {
-      return String.format("%s with %d tags cached", attributeVersion.toString(), cacheSize());
+      return String.format("%s with %d tags cached - total [%d]", attributeVersion.toString(), cacheSize(),
+            getTotalTags());
    }
 }

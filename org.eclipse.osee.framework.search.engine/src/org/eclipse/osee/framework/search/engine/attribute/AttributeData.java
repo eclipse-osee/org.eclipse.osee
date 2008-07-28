@@ -34,6 +34,16 @@ public class AttributeData {
       this.taggerId = Strings.isValid(taggerId) ? taggerId : "";
    }
 
+   protected AttributeData(long gammaId, String value, String uri, String taggerId) {
+      super();
+      this.artId = -1;
+      this.gammaId = gammaId;
+      this.branchId = -1;
+      this.value = value;
+      this.uri = uri;
+      this.taggerId = Strings.isValid(taggerId) ? taggerId : "";
+   }
+
    public int getArtId() {
       return artId;
    }

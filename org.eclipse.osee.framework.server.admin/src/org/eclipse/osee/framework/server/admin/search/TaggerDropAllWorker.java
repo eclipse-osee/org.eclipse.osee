@@ -16,7 +16,7 @@ class TaggerDropAllWorker extends BaseCmdWorker {
 
    private static final String TRUNCATE_SQL = "TRUNCATE osee_search_tags";
 
-   private static final String TRUNCATE_ORACLE_SQL = "TRUNCATE TABLE osee_search_tags";
+   //private static final String TRUNCATE_ORACLE_SQL = "TRUNCATE TABLE osee_search_tags";
 
    private static final String DELETE_TABLE_SQL = "DELETE FROM osee_search_tags";
 

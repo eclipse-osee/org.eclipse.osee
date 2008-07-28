@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
@@ -45,6 +44,7 @@ class TaggerRunnable implements Runnable {
    private long processingTime;
    private long waitStart;
    private long waitTime;
+   private boolean isCancelled;
 
    TaggerRunnable(int tagQueueQueryId) {
       this.listeners = new HashSet<ITagListener>();
@@ -53,12 +53,21 @@ class TaggerRunnable implements Runnable {
       this.waitStart = System.currentTimeMillis();
       this.waitTime = 0;
       this.processingTime = 0;
+      this.isCancelled = false;
    }
 
    public void addListener(ITagListener listener) {
       if (listener != null) {
          this.listeners.add(listener);
       }
+   }
+
+   public void setCancelled(boolean isCancelled) {
+      this.isCancelled = isCancelled;
+   }
+
+   public boolean isCancelled() {
+      return this.isCancelled;
    }
 
    /* (non-Javadoc)
@@ -72,8 +81,10 @@ class TaggerRunnable implements Runnable {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(getTagQueueQueryId());
          try {
             processAttributes(attributeDatas);
-            store(this.searchTags);
-            removeQueryIdFromTagQueue();
+            if (isCancelled() != true) {
+               store(this.searchTags);
+               removeQueryIdFromTagQueue();
+            }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
                   getTagQueueQueryId()));
@@ -95,6 +106,9 @@ class TaggerRunnable implements Runnable {
       TagCollector collector = new TagCollector();
       deleteOldSearchTags(attributeDatas);
       for (AttributeData attributeData : attributeDatas) {
+         if (isCancelled()) {
+            break;
+         }
          long startItemTime = System.currentTimeMillis();
          SearchTag searchTag = new SearchTag(attributeData.getGammaId());
          this.searchTags.add(searchTag);
@@ -106,30 +120,30 @@ class TaggerRunnable implements Runnable {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag));
          } finally {
             collector.clearCurrent();
-            notifyOnAttributeTagComplete(searchTag.getGammaId(), searchTag.cacheSize(),
+            notifyOnAttributeTagComplete(searchTag.getGammaId(), searchTag.getTotalTags(),
                   (System.currentTimeMillis() - startItemTime));
          }
       }
    }
 
    private void deleteOldSearchTags(Collection<AttributeData> attributeDatas) throws SQLException {
-	      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
-	      Connection connection = null;
-	      try {
-	    	 connection = OseeDbConnection.getConnection();
-	    	 for(AttributeData attributeData : attributeDatas){
-	    	  txJoin.add((int)attributeData.getGammaId(), -1);
-	      	}
-	      	txJoin.store();
-	      	SearchTagDataStore.deleteTags(txJoin.getQueryId());
-	      } finally {
-	    	  txJoin.delete(connection);
-	    	  if(connection != null){
-	    		  connection.close();
-	    	  }
-	      }
+      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
+      Connection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         for (AttributeData attributeData : attributeDatas) {
+            txJoin.add((int) attributeData.getGammaId(), -1);
+         }
+         txJoin.store();
+         SearchTagDataStore.deleteTags(txJoin.getQueryId());
+      } finally {
+         txJoin.delete(connection);
+         if (connection != null) {
+            connection.close();
+         }
+      }
    }
-   
+
    private void removeQueryIdFromTagQueue() throws Exception {
       Connection connection = null;
       try {
