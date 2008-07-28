@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
@@ -72,11 +71,11 @@ class TaggerRunnable implements Runnable {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(getTagQueueQueryId());
          try {
             processAttributes(attributeDatas);
-               store(this.searchTags);
-               removeQueryIdFromTagQueue();
+            store(this.searchTags);
+            removeQueryIdFromTagQueue();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags - tagQueueQueryId [%d]",
-                  getTagQueueQueryId()));
+                  getTagQueueQueryId()), ex);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - tagQueueQueryId [%d]",
@@ -103,7 +102,7 @@ class TaggerRunnable implements Runnable {
             Activator.getInstance().getTaggerManager().tagIt(attributeData, collector);
             checkSizeStoreIfNeeeded();
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag));
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", searchTag), ex);
          } finally {
             collector.clearCurrent();
             notifyOnAttributeTagComplete(searchTag.getGammaId(), searchTag.getTotalTags(),
@@ -212,14 +211,6 @@ class TaggerRunnable implements Runnable {
       public void addTag(String word, Long codedTag) {
          if (currentTag != null) {
             currentTag.addTag(codedTag);
-            // Difficult to determine whether its a repeat
-            //            if (currentTag.cacheSize() >= MAXIMUM_CACHED_TAGS) {
-            //               try {
-            //                  store(currentTag);
-            //               } catch (SQLException ex) {
-            //                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to store tags [%s]", currentTag), ex);
-            //               }
-            //            }
          }
       }
    }

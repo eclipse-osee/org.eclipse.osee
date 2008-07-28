@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.search.engine.attribute;
 
 import java.net.URI;
-
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
