@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 public class GroupSelection {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GroupSelection.class);
    private static final GroupSelection instance = new GroupSelection();
-   private Map<String, List<String>> initGroups;
+   private final Map<String, List<String>> initGroups = new LinkedHashMap<String, List<String>>();
    private String choice = null;
 
    /**
@@ -41,7 +41,6 @@ public class GroupSelection {
     */
    private GroupSelection() {
       super();
-      initGroups = new LinkedHashMap<String, List<String>>();
       populateDbInitChoices();
    }
 
@@ -88,12 +87,12 @@ public class GroupSelection {
     */
    public List<String> getDbInitTasks() {
       if (choice == null) {
-    	 if(initGroups.keySet().size() == 1){
-    		 String[] keys = initGroups.keySet().toArray(new String[1]);
-    		 choice = keys[0];
-    	 } else {
-    		 chooser("Select Init Group To Run.", new ArrayList<String>(initGroups.keySet()));
-    	 }
+         if (initGroups.keySet().size() == 1) {
+            String[] keys = initGroups.keySet().toArray(new String[1]);
+            choice = keys[0];
+         } else {
+            chooser("Select Init Group To Run.", new ArrayList<String>(initGroups.keySet()));
+         }
       }
       return initGroups.get(choice);
    }
