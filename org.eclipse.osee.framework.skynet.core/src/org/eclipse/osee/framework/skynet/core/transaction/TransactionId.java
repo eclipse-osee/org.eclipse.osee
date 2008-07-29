@@ -146,4 +146,32 @@ public class TransactionId implements Serializable {
       result = 37 * result + transactionNumber;
       return result;
    }
+
+   /**
+    * @return the time
+    */
+   public Date getTime() {
+      return time;
+   }
+
+   /**
+    * @return the authorArtId
+    */
+   public int getAuthorArtId() {
+      return authorArtId;
+   }
+
+   /**
+    * @return the commitArtId
+    */
+   public int getCommitArtId() {
+      return commitArtId;
+   }
+
+   /**
+    * @return the txType
+    */
+   public TransactionDetailsType getTxType() {
+      return txType;
+   }
 }

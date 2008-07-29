@@ -188,15 +188,6 @@ public class SkynetTransaction {
       }
    }
 
-   private void updateLastModified() throws SQLException {
-      for (ITransactionData transactionData : transactionItems.keySet()) {
-         if (transactionData instanceof ArtifactTransactionData) {
-            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
-            artifact.setLastModified(transactionDate);
-         }
-      }
-   }
-
    // Supports adding new artifacts to the artifact table and
    // updating attributes that are not versioned.
    public boolean executeBatchToTransactions(IProgressMonitor monitor) throws SQLException {

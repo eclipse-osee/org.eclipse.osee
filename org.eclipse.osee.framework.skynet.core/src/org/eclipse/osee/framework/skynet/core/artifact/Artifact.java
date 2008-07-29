@@ -89,7 +89,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private TransactionId transactionId;
    private int artId;
    private int gammaId;
-   private Date lastModified;
    private boolean linksLoaded;
    private boolean historical;
 
@@ -1567,13 +1566,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Date getLastModified() throws OseeCoreException, SQLException {
-      return lastModified;
-   }
-
-   /**
-    * @param lastModified the lastModified to set
-    */
-   public void setLastModified(Date lastModified) {
-      this.lastModified = lastModified;
+      return transactionId.getTime();
    }
 }
