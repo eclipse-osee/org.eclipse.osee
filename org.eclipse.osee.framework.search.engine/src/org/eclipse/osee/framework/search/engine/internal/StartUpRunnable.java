@@ -41,7 +41,7 @@ final class StartUpRunnable implements Runnable {
          for (Integer queryId : queries) {
             tagger.tagByQueueQueryId(queryId);
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OseeLog.log(SearchEngineTagger.class, Level.SEVERE, "Error during start-up.", ex);
       } finally {
          if (connection != null) {
