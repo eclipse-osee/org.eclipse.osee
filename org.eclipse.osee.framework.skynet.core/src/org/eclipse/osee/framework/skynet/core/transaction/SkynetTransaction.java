@@ -169,7 +169,7 @@ public class SkynetTransaction {
          ModificationType modType = transactionData.getModificationType();
 
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
-               transactionData.getTransactionId(), SQL3DataType.INTEGER, transactionData.getGammaId(),
+               transactionData.getTransactionId().getTransactionNumber(), SQL3DataType.INTEGER, transactionData.getGammaId(),
                SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER, modType.getCurrentValue());
 
          //Add specific object values to the their tables
