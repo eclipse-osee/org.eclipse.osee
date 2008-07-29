@@ -221,13 +221,13 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   public static void initializeAttribute(Artifact artifact, int atttributeTypeId, String value, String uri, int attributeId, int gamma_id) {
+   public static void initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gamma_id, Object... data) {
       try {
          AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
          attributeType = AttributeTypeManager.getTypeWithWordContentCheck(artifact, attributeType.getName());
 
          Attribute<?> attribute = artifact.createAttribute(attributeType, false);
-         attribute.getAttributeDataProvider().loadData(value, uri);
+         attribute.getAttributeDataProvider().loadData(data);
          attribute.setIds(attributeId, gamma_id);
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

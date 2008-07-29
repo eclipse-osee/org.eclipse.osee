@@ -20,8 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -60,6 +62,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
@@ -335,13 +339,24 @@ public class RemoteEventManager implements IServiceLookupListener {
 
             if (event instanceof NetworkArtifactModifiedEvent) {
                for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
+            	  boolean attributeNeedsCreation = true;
                   for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
                      if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
                         if (attribute.isDirty()) {
                            dirtyAttributeName.add(attribute.getNameValueDescription());
                         }
                         attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                        attribute.setGammaId(skynetAttributeChange.getGammaId());
+                        attributeNeedsCreation = false;
+                        break;
                      }
+                  }
+                  if(attributeNeedsCreation){
+                  	AttributeToTransactionOperation.initializeAttribute(artifact, 
+                  			AttributeTypeManager.getType(skynetAttributeChange.getName()).getAttrTypeId(), 
+                  			skynetAttributeChange.getAttributeId(),
+                  			skynetAttributeChange.getGammaId(),
+                  			skynetAttributeChange.getData());
                   }
                }
                modType = ModType.Changed;

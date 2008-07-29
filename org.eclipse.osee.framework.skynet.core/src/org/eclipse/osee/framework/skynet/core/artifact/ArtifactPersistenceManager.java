@@ -450,7 +450,7 @@ public class ArtifactPersistenceManager {
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
             AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-                  rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
+                  rSet.getInt("attr_id"), rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
          }
       } finally {
          DbUtil.close(chStmt);

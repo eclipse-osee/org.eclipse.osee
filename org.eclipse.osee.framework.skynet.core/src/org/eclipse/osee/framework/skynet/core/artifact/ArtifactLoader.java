@@ -355,7 +355,7 @@ public final class ArtifactLoader {
                continue;
             }
             AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-                  rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
+                 rSet.getInt("attr_id"), rSet.getInt("gamma_id"),  rSet.getString("value"), rSet.getString("uri"));
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
