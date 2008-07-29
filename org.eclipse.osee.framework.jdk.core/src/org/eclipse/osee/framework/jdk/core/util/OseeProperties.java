@@ -147,7 +147,7 @@ public class OseeProperties {
          for (int index = 0; index < entries.length; index++) {
             String toName = entries[index];
             if (index + 1 < entries.length) {
-               String filePath = entries[index++];
+               String filePath = entries[++index];
                if (Strings.isValid(toName) && Strings.isValid(filePath)) {
                   toReturn.put(toName, filePath);
                }
