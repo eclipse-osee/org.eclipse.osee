@@ -31,6 +31,12 @@
          </DatabaseTask>
       </extension>
       <extension
+            point="org.eclipse.osee.framework.database.IDbInitializationTask">
+         <DatabaseTask
+               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbBranchDataImport">
+         </DatabaseTask>
+      </extension>
+      <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
          <ArtifactImage
                ArtifactTypeName="Heading"

@@ -34,6 +34,7 @@ public class OseeProperties {
    private static final String OSEE_AUTORUN = "osee.autoRun";
    private static final String OSEE_AUTORUN_NOTIFY = "osee.autoRunNotify";
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
+   private static final String OSEE_DB_IMPORT_SKYNET_BRANCH = "osee.db.import.skynet.branch";
    @Deprecated
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
    @Deprecated
@@ -132,8 +133,12 @@ public class OseeProperties {
       return false;
    }
 
-   public String getDBConfigInitChoice() {
+   public String getDbConfigInitChoice() {
       return System.getProperty(OSEE_DB_CONFIG_INIT_CHOICE, "");
+   }
+
+   public String getDbOseeSkynetBranchImport() {
+      return System.getProperty(OSEE_DB_IMPORT_SKYNET_BRANCH, "");
    }
 
    public void setDBConfigInitChoice(String value) {
@@ -185,4 +190,5 @@ public class OseeProperties {
    public String getOseeApplicationServerOverride() {
       return System.getProperty(OSEE_APPLICATION_SERVER_OVERRIDE, "");
    }
+
 }

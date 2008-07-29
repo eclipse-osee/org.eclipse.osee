@@ -109,7 +109,7 @@ public class GroupSelection {
    }
 
    private String chooser(String message, List<String> choices) {
-      String configChoice = OseeProperties.getInstance().getDBConfigInitChoice();
+      String configChoice = OseeProperties.getInstance().getDbConfigInitChoice();
       int selection = -1;
       if (false != Strings.isValid(configChoice)) {
          selection = choices.indexOf(configChoice);
