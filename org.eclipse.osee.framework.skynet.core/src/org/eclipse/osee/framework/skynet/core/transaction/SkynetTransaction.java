@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -60,13 +61,6 @@ public class SkynetTransaction {
    private List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
    private List<Event> localEvents = new LinkedList<Event>();
    private Map<ITransactionData, ITransactionData> transactionItems = new HashMap<ITransactionData, ITransactionData>();
-
-   // IMPORTANT: The transactionNumber for this transaction is kept in addition to the TransactionId reference
-   //            since the number in the TransactionId may be updated from events, and the number of this
-   //            exact transaction must be known over the life of this transaction despite the head transaction
-   //            potentially moving on from other transactions occurring in parallel.
-   private Integer transactionNumber;
-   private Date transactionDate;
 
    public SkynetTransaction(Branch branch) throws SQLException {
       this(branch, SkynetAuthentication.getUser());
@@ -129,7 +123,7 @@ public class SkynetTransaction {
          if (deleteTransactionDetail) {
             localEvents = null;
             remoteEvents = null;
-            ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, SQL3DataType.INTEGER, transactionNumber);
+            ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, SQL3DataType.INTEGER, transactionId.getTransactionNumber());
          } else {
             for (ITransactionData transactionData : transactionItems.keySet()) {
                if (transactionData instanceof ArtifactTransactionData) {
@@ -170,7 +164,7 @@ public class SkynetTransaction {
 
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
                transactionData.getTransactionId().getTransactionNumber(), SQL3DataType.INTEGER, transactionData.getGammaId(),
-               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER, modType.getCurrentValue());
+               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,  TxChange.CURRENT.getValue());
 
          //Add specific object values to the their tables
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
@@ -251,7 +245,7 @@ public class SkynetTransaction {
     * @return Returns the transactionId.
     */
    public Integer getTransactionNumber() {
-      return transactionNumber;
+      return transactionId.getTransactionNumber();
    }
 
    /**
