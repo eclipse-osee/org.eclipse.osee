@@ -55,7 +55,7 @@ public class TransactionIdManager {
                "gamma_id");
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
-         "INSERT INTO osee_define_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type";
+         "INSERT INTO osee_define_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
 
@@ -98,7 +98,7 @@ public class TransactionIdManager {
 
    public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws SQLException {
       Integer transactionNumber = SkynetDatabase.getNextTransactionId();
-      if (comment == null){
+      if (comment == null) {
          comment = "";
       }
       int authorArtId = -1;
