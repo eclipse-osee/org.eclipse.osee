@@ -52,14 +52,14 @@ public class SortRelationsByBranch extends AbstractBlam {
 
          List<Branch> branches = BranchPersistenceManager.getBranches();
          List<Branch> branchesToSort = new ArrayList<Branch>(branches.size());
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Common"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Block III - FTB0"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("Block III - FTB2"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("MYII V11"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("AH-64 MSA PDSP"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("LBA Help - FAQs - Instructions"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("MYII V13"));
-         branchesToSort.add(BranchPersistenceManager.getInstance().getBranch("V11_REU"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("Common"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("Block III - FTB0"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("Block III - FTB2"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("MYII V11"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("AH-64 MSA PDSP"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("LBA Help - FAQs - Instructions"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("MYII V13"));
+         branchesToSort.add(BranchPersistenceManager.getBranch("V11_REU"));
 
          for (Branch branch : branches) {
             if (!branchesToSort.contains(branch)) {

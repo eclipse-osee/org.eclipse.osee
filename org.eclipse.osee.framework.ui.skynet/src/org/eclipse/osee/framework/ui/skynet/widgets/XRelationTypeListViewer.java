@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
  */
 public class XRelationTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XRelationTypeListViewer";
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
 
    /**
     * @param branch
@@ -31,7 +30,7 @@ public class XRelationTypeListViewer extends XTypeListViewer {
 
       setContentProvider(new DefaultBranchContentProvider(new RelationTypeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(branchPersistenceManager.getDefaultBranch());
+      input.add(BranchPersistenceManager.getDefaultBranch());
 
       setInput(input);
    }

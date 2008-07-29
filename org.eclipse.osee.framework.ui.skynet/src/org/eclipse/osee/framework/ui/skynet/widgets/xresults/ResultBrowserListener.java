@@ -71,7 +71,7 @@ public class ResultBrowserListener implements LocationListener {
          } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openBranch) {
             event.doit = false;
             int branchId = new Integer(value);
-            Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+            Branch branch = BranchPersistenceManager.getBranch(branchId);
             BranchView.revealBranch(branch);
          }
       } catch (Exception ex) {

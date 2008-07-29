@@ -15,6 +15,7 @@ import java.util.Iterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 
@@ -56,7 +57,7 @@ public final class SkynetSelections {
       return false;
    }
 
-   public static boolean twoTransactionsSelectedOnSameBranch(IStructuredSelection selection) throws SQLException, BranchDoesNotExist {
+   public static boolean twoTransactionsSelectedOnSameBranch(IStructuredSelection selection) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       if (selection.size() == 2) {
          Iterator<?> iter = selection.iterator();
          Object obj1 = boilDownObject(iter.next());

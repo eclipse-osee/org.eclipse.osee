@@ -46,7 +46,6 @@ public class ConflictTestManager {
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private static int NUMBER_OF_CONFLICTS = 0;
    private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 0;
@@ -94,12 +93,13 @@ public class ConflictTestManager {
       TransactionId parentTransactionId;
       Branch branch;
       try {
-         branch = branchPersistenceManager.getBranch("Block III Main");
+         branch = BranchPersistenceManager.getBranch("Block III Main");
       } catch (Exception ex) {
-         branch = branchPersistenceManager.getBranch("SAW_Bld_1");
+         branch = BranchPersistenceManager.getBranch("SAW_Bld_1");
       }
       parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-      destBranch = branchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
+      destBranch =
+            BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 
@@ -116,7 +116,8 @@ public class ConflictTestManager {
       // Create the source branch
 
       parentTransactionId = transactionIdManager.getEditableTransactionId(destBranch);
-      sourceBranch = branchPersistenceManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
+      sourceBranch =
+            BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);
@@ -174,11 +175,11 @@ public class ConflictTestManager {
       Branch dBranch = null;
       Branch mBranch = null;
       try {
-         sBranch = branchPersistenceManager.getBranch(SOURCE_BRANCH);
+         sBranch = BranchPersistenceManager.getBranch(SOURCE_BRANCH);
       } catch (Exception ex) {
       }
       if (sBranch == null) {
-         for (Branch branch : branchPersistenceManager.getArchivedBranches()) {
+         for (Branch branch : BranchPersistenceManager.getArchivedBranches()) {
             if (branch.getBranchName().equals(SOURCE_BRANCH)) {
                sBranch = branch;
                break;
@@ -186,11 +187,11 @@ public class ConflictTestManager {
          }
       }
       try {
-         dBranch = branchPersistenceManager.getBranch(DEST_BRANCH);
+         dBranch = BranchPersistenceManager.getBranch(DEST_BRANCH);
       } catch (Exception ex) {
       }
       if (dBranch == null) {
-         for (Branch branch : branchPersistenceManager.getArchivedBranches()) {
+         for (Branch branch : BranchPersistenceManager.getArchivedBranches()) {
             if (branch.getBranchName().equals(DEST_BRANCH)) {
                dBranch = branch;
                break;
@@ -198,18 +199,18 @@ public class ConflictTestManager {
          }
       }
       try {
-         mBranch = branchPersistenceManager.getMergeBranch(sBranch.getBranchId(), dBranch.getBranchId());
+         mBranch = BranchPersistenceManager.getMergeBranch(sBranch.getBranchId(), dBranch.getBranchId());
       } catch (Exception ex) {
       }
 
       if (mBranch != null) {
-         branchPersistenceManager.deleteBranch(mBranch).join();
+         BranchPersistenceManager.deleteBranch(mBranch).join();
       }
       if (sBranch != null) {
-         branchPersistenceManager.deleteBranch(sBranch).join();
+         BranchPersistenceManager.deleteBranch(sBranch).join();
       }
       if (dBranch != null) {
-         branchPersistenceManager.deleteBranch(dBranch).join();
+         BranchPersistenceManager.deleteBranch(dBranch).join();
       }
    }
 

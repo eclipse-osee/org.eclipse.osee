@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
@@ -259,7 +260,15 @@ public class SkynetAuthentication {
 
       instance.loadUsersCache();
       User user = instance.userIdToUserCache.get(userId);
-      if (user == null) throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.");
+      if (user == null) {
+         try {
+            user =
+                  (User) ArtifactQuery.getArtifactFromAttribute("User Id", userId,
+                        BranchPersistenceManager.getCommonBranch());
+         } catch (ArtifactDoesNotExist ex) {
+            throw new UserNotInDatabase("the user with id " + userId + " was not found.");
+         }
+      }
       return user;
    }
 

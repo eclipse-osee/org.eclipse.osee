@@ -83,7 +83,7 @@ public class UpdateArtifactJob extends UpdateJob {
 
    private void processUpdate() throws Exception {
       int branchId = Branch.getBranchIdFromBranchFolderName(workingFile.getParentFile().getName());
-      Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+      Branch branch = BranchPersistenceManager.getBranch(branchId);
       FileInputStream myFileInputStream = new FileInputStream(workingFile);
 
       String guid = WordUtil.getGUIDFromFileInputStream(myFileInputStream);

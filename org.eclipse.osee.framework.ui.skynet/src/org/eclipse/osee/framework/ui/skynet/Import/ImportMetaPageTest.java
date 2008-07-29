@@ -26,7 +26,7 @@ public class ImportMetaPageTest extends TestCase {
       ImportMetaPage page = new ImportMetaPage(null);
       page.createControl(AWorkbench.getActivePage().getWorkbenchWindow().getShell());
 
-      assertEquals(page.getSelectedBranch(), BranchPersistenceManager.getInstance().getDefaultBranch());
+      assertEquals(page.getSelectedBranch(), BranchPersistenceManager.getDefaultBranch());
    }
 
 }

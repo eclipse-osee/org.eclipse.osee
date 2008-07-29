@@ -51,7 +51,7 @@ public class ChangeView extends ViewPart implements IActionable {
    private static String HELP_CONTEXT_ID = "ChangeView";
    private XChangeViewer xChangeViewer;
    private Branch branch;
-   private int transactionNumber;
+   private TransactionId transactionId;
 
    /**
     * @author Donald G. Dunne
@@ -62,15 +62,15 @@ public class ChangeView extends ViewPart implements IActionable {
 
    public static void open(Branch branch) throws SQLException {
       if (branch == null) throw new IllegalArgumentException("Branch can't be null");
-      ChangeView.openViewUpon(branch, -1);
+      ChangeView.openViewUpon(branch, null);
    }
 
-   public static void open(int transactionNumber) throws SQLException {
-      if (transactionNumber < 0) throw new IllegalArgumentException("Branch can't be null");
-      ChangeView.openViewUpon(null, transactionNumber);
+   public static void open(TransactionId transactionId) throws SQLException {
+      if (transactionId == null) throw new IllegalArgumentException("TransactionId can't be null");
+      ChangeView.openViewUpon(null, transactionId);
    }
 
-   private static void openViewUpon(final Branch branch, final int transactionNumber) {
+   private static void openViewUpon(final Branch branch, final TransactionId transactionId) {
       Job job = new Job("Open Change View") {
 
          @Override
@@ -81,9 +81,9 @@ public class ChangeView extends ViewPart implements IActionable {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      ChangeView changeView =
                            (ChangeView) page.showView(VIEW_ID,
-                                 String.valueOf(branch != null ? branch.getBranchId() : transactionNumber),
+                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId),
                                  IWorkbenchPage.VIEW_VISIBLE);
-                     changeView.explore(branch, transactionNumber);
+                     changeView.explore(branch, transactionId);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -142,21 +142,15 @@ public class ChangeView extends ViewPart implements IActionable {
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
    }
 
-   private void explore(final Branch branch, final int transactionNumber) throws SQLException, BranchDoesNotExist {
+   private void explore(final Branch branch, final TransactionId transactionId) throws SQLException, BranchDoesNotExist {
       if (xChangeViewer != null) {
          this.branch = branch;
-         this.transactionNumber = transactionNumber;
-         xChangeViewer.setInputData(branch, transactionNumber);
-         if (branch != null) {
-            setPartName("Change Report: " + branch.getBranchShortName());
+         this.transactionId = transactionId;
+         xChangeViewer.setInputData(branch, transactionId);
+         if (branch == null) {
+            setPartName("Change Report: " + transactionId.getBranch().getBranchShortestName() + " - " + transactionId.getComment());
          } else {
-            TransactionId transId =
-                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
-            if (transId != null)
-               setPartName("Change Report: " + transId.getBranch().getBranchShortestName() + " - " + transId.getComment());
-            else
-               setPartName("Change Report: " + BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
-                     transactionNumber));
+            setPartName("Change Report: " + branch.getBranchShortName());
          }
       }
    }
@@ -179,10 +173,10 @@ public class ChangeView extends ViewPart implements IActionable {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
 
-      if (branch != null) {
-         memento.putInteger(BRANCH_ID, branch.getBranchId());
+      if (branch == null) {
+         memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
       } else {
-         memento.putInteger(TRANSACTION_NUMBER, transactionNumber);
+         memento.putInteger(BRANCH_ID, branch.getBranchId());
       }
    }
 
@@ -198,11 +192,11 @@ public class ChangeView extends ViewPart implements IActionable {
             if (memento != null) {
                branchId = memento.getInteger(BRANCH_ID);
                if (branchId != null) {
-                  openViewUpon(BranchPersistenceManager.getInstance().getBranch(branchId), -1);
+                  openViewUpon(BranchPersistenceManager.getBranch(branchId), null);
                } else {
-                  transactionId = memento.getInteger(TRANSACTION_NUMBER);
+                  int transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
                   if (transactionId != null) {
-                     openViewUpon(null, transactionId);
+                     openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber));
                   }
                }
             }

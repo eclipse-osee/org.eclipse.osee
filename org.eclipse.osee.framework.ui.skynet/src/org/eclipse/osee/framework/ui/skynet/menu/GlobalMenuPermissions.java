@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
  * @author Donald G. Dunne
  */
 public class GlobalMenuPermissions {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
    private boolean isLocked;
    private boolean accessToRemoveLock;
    private boolean writePermission;
@@ -82,7 +80,8 @@ public class GlobalMenuPermissions {
                      PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);
          defaultBranchReadable =
-               AccessControlManager.checkObjectPermission(branchManager.getDefaultBranch(), PermissionEnum.READ);
+               AccessControlManager.checkObjectPermission(BranchPersistenceManager.getDefaultBranch(),
+                     PermissionEnum.READ);
          accessToRemoveLock &= AccessControlManager.canUnlockObject(objectArtifact, SkynetAuthentication.getUser());
 
          // acquire the name of the subject that has the lock

@@ -53,9 +53,9 @@ public class DemoDbUtil {
 
    public static void setDefaultBranch(Branch branch) throws Exception {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Setting default branch to \"" + branch + "\".", false);
-      BranchPersistenceManager.getInstance().setDefaultBranch(branch);
+      BranchPersistenceManager.setDefaultBranch(branch);
       sleep(2000L);
-      Branch defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+      Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Current Default == \"" + defaultBranch + "\".", false);
    }
 
@@ -74,11 +74,11 @@ public class DemoDbUtil {
    public static Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr) throws Exception {
       OSEELog.logInfo(
             OseeAtsConfigDemoPlugin.class,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName(),
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchPersistenceManager.getDefaultBranch().getBranchName(),
             false);
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%",
-                  BranchPersistenceManager.getInstance().getDefaultBranch());
+                  BranchPersistenceManager.getDefaultBranch());
 
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Found " + arts.size() + " Artifacts", false);
       return arts;
@@ -91,7 +91,7 @@ public class DemoDbUtil {
    public static Artifact getInterfaceInitializationSoftwareRequirement() throws Exception {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.", false);
       return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
-            BranchPersistenceManager.getInstance().getDefaultBranch());
+            BranchPersistenceManager.getDefaultBranch());
    }
 
 }

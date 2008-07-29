@@ -20,10 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -283,7 +281,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   if (event instanceof NetworkRenameBranchEvent) {
                      int branchId = ((NetworkRenameBranchEvent) event).getBranchId();
                      try {
-                        Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+                        Branch branch = BranchPersistenceManager.getBranch(branchId);
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         eventManager.kick(new RemoteRenameBranchEvent(this, branchId, branch.getBranchName(),
@@ -295,11 +293,11 @@ public class RemoteEventManager implements IServiceLookupListener {
                      eventManager.kick(new RemoteNewBranchEvent(this, ((NetworkNewBranchEvent) event).getBranchId()));
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
-                     BranchPersistenceManager.getInstance().removeBranchFromCache(branchId);
+                     BranchPersistenceManager.removeBranchFromCache(branchId);
                      eventManager.kick(new RemoteDeletedBranchEvent(this, branchId));
                   } else if (event instanceof NetworkCommitBranchEvent) {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
-                     BranchPersistenceManager.getInstance().removeBranchFromCache(branchId);
+                     BranchPersistenceManager.removeBranchFromCache(branchId);
                      eventManager.kick(new RemoteCommitBranchEvent(this, branchId));
                   } else if (event instanceof NetworkBroadcastEvent) {
                      handleBroadcastMessageEvent((NetworkBroadcastEvent) event);
@@ -383,7 +381,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 
       try {
          RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
-         Branch branch = BranchPersistenceManager.getInstance().getBranch(event.getBranchId());
+         Branch branch = BranchPersistenceManager.getBranch(event.getBranchId());
          org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType modType = null;
          Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
          Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());

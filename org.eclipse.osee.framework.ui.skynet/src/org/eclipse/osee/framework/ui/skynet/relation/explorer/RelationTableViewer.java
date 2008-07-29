@@ -68,7 +68,7 @@ public class RelationTableViewer {
       try {
          fullDescriptorList =
                new ArrayList<ArtifactType>(
-                     ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
+                     ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch()));
          defaultArtifactType = ArtifactTypeManager.getType(Requirements.TEST_SCRIPT);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

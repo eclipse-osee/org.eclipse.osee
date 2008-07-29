@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -88,15 +89,13 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
       return fromTransactionNumber + TOKEN + toTransactionNumber;
    }
 
-   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, SQLException, BranchDoesNotExist {
+   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) {
          throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
       }
 
-      TransactionIdManager manager = TransactionIdManager.getInstance();
-      return new ArtifactInTransactionSearch(
-            manager.getPossiblyEditableTransactionIfFromCache(Integer.parseInt(values[0])),
-            manager.getPossiblyEditableTransactionIfFromCache(Integer.parseInt(values[1])));
+      return new ArtifactInTransactionSearch(TransactionIdManager.getTransactionId(Integer.parseInt(values[0])),
+            TransactionIdManager.getTransactionId(Integer.parseInt(values[1])));
    }
 }

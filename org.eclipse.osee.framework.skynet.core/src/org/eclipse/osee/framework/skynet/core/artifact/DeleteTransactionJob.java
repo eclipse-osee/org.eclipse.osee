@@ -71,9 +71,6 @@ public class DeleteTransactionJob extends Job {
    private final static String DELETE_ARTIFACT_VERSIONS = "DELETE FROM osee_define_artifact_version " + DELETE_POSTFIX;
    private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_define_attribute " + DELETE_POSTFIX;
    private final static String DELETE_RELATIONS = "DELETE FROM osee_define_rel_link " + DELETE_POSTFIX;
-
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-
    private final int[] txIdsToDelete;
 
    /**
@@ -148,8 +145,8 @@ public class DeleteTransactionJob extends Job {
          for (int index = 0; index < txsToDelete.length; index++) {
             monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));
             int fromTx = txsToDelete[index];
-            TransactionId fromTransaction = transactionIdManager.getPossiblyEditableTransactionId(fromTx);
-            TransactionId previousTransaction = transactionIdManager.getPriorTransaction(fromTransaction);
+            TransactionId fromTransaction = TransactionIdManager.getTransactionId(fromTx);
+            TransactionId previousTransaction = TransactionIdManager.getPriorTransaction(fromTransaction);
 
             fromToTxData.put(fromTransaction.getBranch(), new TxDeleteInfo(fromTransaction, previousTransaction));
 
@@ -210,7 +207,7 @@ public class DeleteTransactionJob extends Job {
             }
          }
          return toReturn != Integer.MAX_VALUE ? toReturn : -1;
-		}
+      }
 
       private void updateTxCurrent(Connection conn, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> txToDelete) throws SQLException {
          monitor.subTask("Updating Previous Tx to Current");

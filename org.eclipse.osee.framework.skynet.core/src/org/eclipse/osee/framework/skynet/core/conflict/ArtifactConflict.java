@@ -32,7 +32,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Theron Virgin
  */
 public class ArtifactConflict extends Conflict {
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactConflict.class);
    private static final String CHANGE_ITEM = "Artifact State";
    private static final String ARTIFACT_DELETED = "DELETED";
@@ -71,7 +70,7 @@ public class ArtifactConflict extends Conflict {
 
       try {
          Artifact artifact;
-         Branch defaultBranch = branchPersistenceManager.getDefaultBranch();
+         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
          if (defaultBranch.equals(sourceBranch)) {
             artifact = getSourceArtifact();
             if (adapter.isInstance(artifact)) {

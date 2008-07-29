@@ -28,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Ryan D. Brooks
  */
 public class ParentBranchAction extends Action {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static IInputValidator inputValidator = new NonBlankValidator("The Branch name can not be blank.");
 
    /**
@@ -68,7 +67,8 @@ public class ParentBranchAction extends Action {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
 
       // Create branch, import skynet types and initialize
-      Branch branch = branchManager.createRootBranch(branchShortName, branchName, null, skynetTypeImport, true);
+      Branch branch =
+            BranchPersistenceManager.createRootBranch(branchShortName, branchName, null, skynetTypeImport, true);
 
       try {
          if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) BranchView.getBranchView().forcePopulateView();

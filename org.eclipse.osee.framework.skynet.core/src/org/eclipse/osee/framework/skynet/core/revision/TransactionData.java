@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -82,8 +83,8 @@ public class TransactionData {
       return branch;
    }
 
-   public TransactionId getTransactionId() throws SQLException, BranchDoesNotExist {
-      return TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(transactionNumber);
+   public TransactionId getTransactionId() throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+      return TransactionIdManager.getTransactionId(transactionNumber);
    }
 
    /**

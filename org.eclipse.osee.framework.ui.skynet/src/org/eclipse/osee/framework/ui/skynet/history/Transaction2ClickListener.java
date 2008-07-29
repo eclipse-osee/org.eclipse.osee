@@ -16,8 +16,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -42,12 +40,9 @@ public class Transaction2ClickListener implements IDoubleClickListener {
 
    private void openArtifact(TransactionData transactionData) {
       try {
-         TransactionId transactionId =
-               TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                     transactionData.getTransactionNumber());
          Artifact artifact =
                ArtifactPersistenceManager.getInstance().getArtifactFromId(transactionData.getAssociatedArtId(),
-                     transactionId);
+                     transactionData.getTransactionId());
          ArtifactEditor.editArtifact(artifact);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

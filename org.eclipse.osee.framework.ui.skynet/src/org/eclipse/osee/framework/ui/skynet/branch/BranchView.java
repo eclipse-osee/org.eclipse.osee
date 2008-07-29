@@ -474,7 +474,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             try {
                if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null) {
                   MergeView.openView(selectedBranch, selectedBranch.getParentBranch(),
-                        TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey());
+                        TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
                }
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -690,7 +690,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
             if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
                   "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
-               BranchPersistenceManager.getInstance().deleteTransactions(new JobChangeAdapter() {
+               BranchPersistenceManager.deleteTransactions(new JobChangeAdapter() {
 
                   /* (non-Javadoc)
                    * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
@@ -775,15 +775,14 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       public Object execute(ExecutionEvent event) throws ExecutionException {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
          try {
-            Branch toBranch =
-                  BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+            Branch toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
 
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Move Transactions",
                   "All selected transactions will be moved to branch " + toBranch.getBranchName())) {
                Iterator<JobbedNode> iter = selection.iterator();
                while (iter.hasNext()) {
                   TransactionData transactionData = (TransactionData) iter.next().getBackingData();
-                  BranchPersistenceManager.getInstance().moveTransaction(transactionData.getTransactionId(), toBranch);
+                  BranchPersistenceManager.moveTransaction(transactionData.getTransactionId(), toBranch);
                }
             }
          } catch (Exception ex) {
@@ -848,7 +847,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
             if (dialog.open() == 0) {
-               BranchPersistenceManager.getInstance().deleteBranch(selectedBranch);
+               BranchPersistenceManager.deleteBranch(selectedBranch);
             }
 
             return null;
@@ -857,7 +856,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
          }
       });
    }
@@ -927,7 +926,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
          }
       });
    }
@@ -1173,7 +1172,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getDefaultBranch();
          }
       });
 
@@ -1329,10 +1328,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             if (useParentBranch) {
                toBranch = fromBranch.getParentBranch();
             } else {
-               toBranch =
-                     BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
+               toBranch = BranchPersistenceManager.getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
+            BranchPersistenceManager.commitBranch(fromBranch, toBranch, archiveSourceBranch, false);
          } catch (ConflictDetectionException ex) {
             MessageDialog dialog;
             if (OseeProperties.isDeveloper()) {
@@ -1357,10 +1355,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             try {
                int result = dialog.open();
                if (result == 1) {
-                  MergeView.openView(fromBranch, toBranch, TransactionIdManager.getInstance().getStartEndPoint(
-                        fromBranch).getKey());
+                  MergeView.openView(fromBranch, toBranch, TransactionIdManager.getStartEndPoint(fromBranch).getKey());
                } else if (result == 2) {
-                  BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true, true);
+                  BranchPersistenceManager.commitBranch(fromBranch, toBranch, true, true);
                }
             } catch (Exception exc) {
                logger.log(Level.SEVERE, "Commit Branch Failed", exc);
@@ -1881,8 +1878,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    public void setDefaultBranch(Branch newDefaultBranch) {
-      Branch oldDefaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
-      BranchPersistenceManager.getInstance().setDefaultBranch(newDefaultBranch);
+      Branch oldDefaultBranch = BranchPersistenceManager.getDefaultBranch();
+      BranchPersistenceManager.setDefaultBranch(newDefaultBranch);
       branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);
    }
 }

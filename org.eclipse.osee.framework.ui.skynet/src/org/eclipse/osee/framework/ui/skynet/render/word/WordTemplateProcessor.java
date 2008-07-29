@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -98,8 +97,6 @@ public class WordTemplateProcessor {
    private static final Pattern internalOutlineElementsPattern =
          Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private static final String[] NUMBER =
          new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
@@ -200,10 +197,10 @@ public class WordTemplateProcessor {
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
-         outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
-         //modifications to the template must be done before the matcher
-         template = wordMl.setHeadingNumbers(outlineNumber, template);
-         
+      outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
+      //modifications to the template must be done before the matcher
+      template = wordMl.setHeadingNumbers(outlineNumber, template);
+
       template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);

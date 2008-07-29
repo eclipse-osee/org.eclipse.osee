@@ -80,7 +80,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
 
          for (Artifact artifact : artifacts) {
             readPermission &= AccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
-            reportBranch &= (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch());
+            reportBranch &= (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch());
          }
          isEnabled = readPermission && reportBranch;
       }

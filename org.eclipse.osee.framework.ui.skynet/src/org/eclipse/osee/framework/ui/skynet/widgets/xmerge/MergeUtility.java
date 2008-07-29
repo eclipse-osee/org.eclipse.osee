@@ -97,7 +97,7 @@ public class MergeUtility {
    public static Artifact getStartArtifact(Conflict conflict) {
       try {
          if (conflict.getSourceBranch() == null) return null;
-         TransactionId id = TransactionIdManager.getInstance().getStartEndPoint(conflict.getSourceBranch()).getKey();
+         TransactionId id = TransactionIdManager.getStartEndPoint(conflict.getSourceBranch()).getKey();
          return ArtifactPersistenceManager.getInstance().getArtifact(conflict.getArtifact().getGuid(), id);
 
       } catch (Exception ex) {

@@ -198,7 +198,7 @@ public class BranchImportPage extends WizardDataTransferPage {
 
       Branch defaultBranch;
       if (destinationBranch == null) {
-         defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+         defaultBranch = BranchPersistenceManager.getDefaultBranch();
       } else {
          defaultBranch = destinationBranch;
       }

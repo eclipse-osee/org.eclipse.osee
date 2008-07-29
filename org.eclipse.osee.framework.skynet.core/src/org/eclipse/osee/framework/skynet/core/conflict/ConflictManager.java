@@ -31,7 +31,7 @@ public class ConflictManager {
       if (originalConflicts == null) {
          originalConflicts =
                RevisionManager.getInstance().getConflictsPerBranch(fromBranch, toBranch,
-                     TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey());
+                     TransactionIdManager.getStartEndPoint(fromBranch).getKey());
       }
       return originalConflicts;
    }

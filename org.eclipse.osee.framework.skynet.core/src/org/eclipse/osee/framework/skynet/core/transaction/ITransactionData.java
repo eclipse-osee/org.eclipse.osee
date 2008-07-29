@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.transaction.data;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -28,7 +28,7 @@ public interface ITransactionData {
 
    public int getGammaId();
 
-   public int getTransactionId();
+   public TransactionId getTransactionId();
 
    public ModificationType getModificationType();
 

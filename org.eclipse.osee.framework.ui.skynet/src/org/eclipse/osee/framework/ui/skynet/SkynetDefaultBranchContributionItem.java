@@ -29,7 +29,6 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class SkynetDefaultBranchContributionItem extends SkynetContributionItem {
    private static final String ID = "skynet.defaultBranch";
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final Image ENABLED = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static final Image DISABLED = ENABLED;
    private static final String ENABLED_TOOLTIP = "The default branch that Skynet is working from.";
@@ -50,7 +49,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
             int result = branchSelection.open();
             if (result == Window.OK) {
-               BranchPersistenceManager.getInstance().setDefaultBranch(branchSelection.getSelection());
+               BranchPersistenceManager.setDefaultBranch(branchSelection.getSelection());
             }
          }
       });
@@ -63,9 +62,9 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    }
 
    private void updateInfo() {
-      setText(branchPersistenceManager.getDefaultBranch().getDisplayName());
+      setText(BranchPersistenceManager.getDefaultBranch().getDisplayName());
       setToolTipText(ENABLED_TOOLTIP + "\nDouble-click to change.");
-      setImage(BranchLabelProvider.getBranchImage(branchPersistenceManager.getDefaultBranch()));
+      setImage(BranchLabelProvider.getBranchImage(BranchPersistenceManager.getDefaultBranch()));
    }
 
    public static void addTo(IStatusLineManager manager) {

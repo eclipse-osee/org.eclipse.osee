@@ -37,7 +37,6 @@ public class ChangeReportInput implements Serializable {
    private static final String BRANCH_INPUT = "branchInput";
    private static final String NAME = "name";
    private static final String TO_NUMBER = "toNumber";
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private TransactionId baseParentTransactionId;
    private TransactionId baseTransaction;
    private TransactionId toTransaction;
@@ -53,7 +52,7 @@ public class ChangeReportInput implements Serializable {
     * @throws BranchDoesNotExist
     */
    public ChangeReportInput(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      this("Change Report: " + branch.getDisplayName(), transactionIdManager.getStartEndPoint(branch),
+      this("Change Report: " + branch.getDisplayName(), TransactionIdManager.getStartEndPoint(branch),
             branch.getParentBranch() != null);
    }
 
@@ -75,7 +74,7 @@ public class ChangeReportInput implements Serializable {
     * @throws BranchDoesNotExist
     */
    public ChangeReportInput(String name, TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      this(name, transactionIdManager.getPriorTransaction(transactionId), transactionId);
+      this(name, TransactionIdManager.getPriorTransaction(transactionId), transactionId);
    }
 
    /**
@@ -109,7 +108,7 @@ public class ChangeReportInput implements Serializable {
 
       // Attempt to get the branched transaction number for the parent branch
       if (detectConflicts) {
-         this.baseParentTransactionId = transactionIdManager.getParentBaseTransaction(baseTransaction.getBranch());
+         this.baseParentTransactionId = TransactionIdManager.getParentBaseTransaction(baseTransaction.getBranch());
 
          if (this.baseParentTransactionId == null) {
             logger.log(Level.SEVERE,
@@ -136,7 +135,7 @@ public class ChangeReportInput implements Serializable {
       this.baseTransaction = baseTransaction;
       this.toTransaction = toTransaction;
       this.forceRefresh = false;
-      this.checksum = transactionIdManager.getTransactionRangeChecksum(baseTransaction, toTransaction).getValue();
+      this.checksum = TransactionIdManager.getTransactionRangeChecksum(baseTransaction, toTransaction).getValue();
 
       this.name = name;
 
@@ -181,7 +180,7 @@ public class ChangeReportInput implements Serializable {
    public void setForceRefresh(boolean forceRefresh) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       this.forceRefresh = forceRefresh;
       if (branchInput && this.forceRefresh == true) {
-         toTransaction = transactionIdManager.getNonEditableStartEndPoint(baseTransaction.getBranch()).getValue();
+         toTransaction = TransactionIdManager.getStartEndPoint(baseTransaction.getBranch()).getValue();
       }
    }
 
@@ -218,7 +217,6 @@ public class ChangeReportInput implements Serializable {
    public static ChangeReportInput loadFromMemento(IMemento memento) throws SQLException {
       if (memento == null) throw new IllegalArgumentException("memento can not be null");
 
-      TransactionIdManager transactionManager = TransactionIdManager.getInstance();
       Integer transactionNumber;
       TransactionId priorBaseParentTransactionId = null;
       TransactionId priorBaseTransactionId = null;
@@ -227,21 +225,21 @@ public class ChangeReportInput implements Serializable {
       try {
          transactionNumber = memento.getInteger(BASE_PARENT_NUMBER);
          if (transactionNumber != null) {
-            priorBaseParentTransactionId = transactionManager.getNonEditableTransactionId(transactionNumber);
+            priorBaseParentTransactionId = TransactionIdManager.getTransactionId(transactionNumber);
          }
          transactionNumber = memento.getInteger(BASE_NUMBER);
          if (transactionNumber != null) {
-            priorBaseTransactionId = transactionManager.getNonEditableTransactionId(transactionNumber);
+            priorBaseTransactionId = TransactionIdManager.getTransactionId(transactionNumber);
          }
 
          boolean priorBranchInput = Boolean.parseBoolean(memento.getString(BRANCH_INPUT));
          transactionNumber = memento.getInteger(TO_NUMBER);
          if (transactionNumber != null) {
-            priorToTransactionId = transactionManager.getNonEditableTransactionId(transactionNumber);
+            priorToTransactionId = TransactionIdManager.getTransactionId(transactionNumber);
 
             if (priorBranchInput) {
                priorToTransactionId =
-                     transactionManager.getNonEditableStartEndPoint(priorToTransactionId.getBranch()).getValue();
+                     TransactionIdManager.getStartEndPoint(priorToTransactionId.getBranch()).getValue();
             }
          }
 

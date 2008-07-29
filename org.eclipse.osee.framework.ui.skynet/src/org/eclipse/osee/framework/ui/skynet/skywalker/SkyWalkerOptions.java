@@ -155,7 +155,7 @@ public class SkyWalkerOptions {
          String guid = AXml.getTagData(xml, "guid");
          if (guid != null && !guid.equals("")) {
             String branchId = AXml.getTagData(xml, "branchId");
-            Branch branch = BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(branchId));
+            Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchId));
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art != null) {
                setArtifact(art);

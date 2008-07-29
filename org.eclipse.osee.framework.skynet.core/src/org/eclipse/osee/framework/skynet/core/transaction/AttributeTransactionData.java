@@ -8,13 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.transaction.data;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -22,32 +20,37 @@ import org.eclipse.osee.framework.skynet.core.change.TxChange;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactTransactionData implements ITransactionData {
-   private static final String INSERT_INTO_ARTIFACT_VERSION_TABLE =
-         "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
+public class AttributeTransactionData implements ITransactionData {
+   private static final String INSERT_ATTRIBUTE =
+         "INSERT INTO osee_define_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-   "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = " +
-   "(SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_txs txs2, osee_Define_artifact_version at3 " +
-   "WHERE txs2.transaction_id = txd1.transaction_id AND txs2.gamma_id = at3.gamma_id " +
-   "AND txd1.branch_id = ? AND at3.art_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
-   
-   private static final int PRIME_NUMBER = 3;
+         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_txs txs2, osee_define_attribute at3 WHERE txs2.transaction_id = txd1.transaction_id AND txs2.gamma_id = at3.gamma_id AND txd1.branch_id = ? AND at3.attr_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
 
+   private static final int PRIME_NUMBER = 5;
+
+   private int artId;
+   private int attrId;
+   private int attrTypeId;
+   private String value;
+   private int gammaId;
+   private TransactionId transactionId;
+   private String uri;
+   private ModificationType modificationType;
+   private Branch branch;
    private List<Object> dataItems = new LinkedList<Object>();
    private List<Object> notCurrentDataItems = new LinkedList<Object>();
-   private int gammaId;
-   private int transactionId;
-   private ModificationType modificationType;
-   private Artifact artifact;
-   private Branch branch;
 
-   public ArtifactTransactionData(Artifact artifact, int gammaId, int transactionId, ModificationType modificationType, Branch branch) {
+   public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, TransactionId transactionId, String uri, ModificationType modificationType, Branch branch) {
       super();
+      this.artId = artId;
+      this.attrId = attrId;
+      this.attrTypeId = attrTypeId;
+      this.value = value;
       this.gammaId = gammaId;
       this.transactionId = transactionId;
+      this.uri = uri;
       this.modificationType = modificationType;
-      this.artifact = artifact;
       this.branch = branch;
 
       populateDataList();
@@ -58,28 +61,34 @@ public class ArtifactTransactionData implements ITransactionData {
     */
    private void populateDataList() {
       dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(artifact.getArtId());
+      dataItems.add(artId);
+      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(attrId);
+      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(attrTypeId);
+      dataItems.add(SQL3DataType.VARCHAR);
+      dataItems.add(value);
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(gammaId);
+      dataItems.add(SQL3DataType.VARCHAR);
+      dataItems.add(uri);
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 
       notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(branch.getBranchId());
       notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(artifact.getArtId());
+      notCurrentDataItems.add(attrId);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeSql()
     */
    public String getTransactionChangeSql() {
-      return INSERT_INTO_ARTIFACT_VERSION_TABLE;
+      return INSERT_ATTRIBUTE;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeData()
     */
    public List<Object> getTransactionChangeData() {
@@ -91,8 +100,8 @@ public class ArtifactTransactionData implements ITransactionData {
     */
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof ArtifactTransactionData) {
-         return ((ArtifactTransactionData) obj).artifact.getArtId() == artifact.getArtId();
+      if (obj instanceof AttributeTransactionData) {
+         return ((AttributeTransactionData) obj).attrId == attrId;
       }
       return false;
    }
@@ -102,7 +111,7 @@ public class ArtifactTransactionData implements ITransactionData {
     */
    @Override
    public int hashCode() {
-      return artifact.getArtId() * PRIME_NUMBER;
+      return attrId * PRIME_NUMBER;
    }
 
    /* (non-Javadoc)
@@ -115,7 +124,7 @@ public class ArtifactTransactionData implements ITransactionData {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionId()
     */
-   public int getTransactionId() {
+   public TransactionId getTransactionId() {
       return transactionId;
    }
 
@@ -134,25 +143,29 @@ public class ArtifactTransactionData implements ITransactionData {
    }
 
    /**
-    * @return the artifact
+    * @return the artId
     */
-   public Artifact getArtifact() {
-      return artifact;
+   public int getArtId() {
+      return artId;
+   }
+
+   public String getUri() {
+      return uri;
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getUpdatePreviousCurrentSql()
-    */
-   @Override
-   public String setPreviousTxNotCurrentSql() {
-      return SET_PREVIOUS_TX_NOT_CURRENT;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTx_NotCurrentData()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
     */
    @Override
    public List<Object> getPreviousTxNotCurrentData() {
       return notCurrentDataItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#setPreviousTxNotCurrentSql()
+    */
+   @Override
+   public String setPreviousTxNotCurrentSql() {
+      return SET_PREVIOUS_TX_NOT_CURRENT;
    }
 }

@@ -33,11 +33,9 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -75,7 +73,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
    private static final String NOT_CHANGES = "No changes were found";
    private Label extraInfoLabel;
    private Branch branch;
-   private int transactionNumber;
+   private TransactionId transactionId;
 
    /**
     * @param label
@@ -162,7 +160,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            setInputData(branch, transactionNumber);
+            setInputData(branch, transactionId);
          }
       });
 
@@ -265,9 +263,9 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       return xChangeViewer.getInput();
    }
 
-   public void setInputData(final Branch branch, final int transactionNumber) {
+   public void setInputData(final Branch branch, final TransactionId transactionId) {
       this.branch = branch;
-      this.transactionNumber = transactionNumber;
+      this.transactionId = transactionId;
 
       extraInfoLabel.setText(LOADING);
 
@@ -283,7 +281,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
                   changes = RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
                } else {
                   changes =
-                        RevisionManager.getInstance().getChangesPerTransaction(transactionNumber).toArray(new Change[0]);
+                        RevisionManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
@@ -294,22 +292,17 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
                            xChangeViewer.setChanges(changes);
                            xChangeViewer.refresh();
                         } else {
-                           TransactionId transId =
-                                 hasBranch ? null : TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
-                                       transactionNumber);
                            String infoLabel =
                                  String.format(
                                        "Changes %s to branch: %s\n%s",
                                        hasBranch ? "made" : "committed",
-                                       hasBranch ? branch : "(" + transId.getTransactionNumber() + ") " + transId.getBranch(),
-                                       hasBranch ? "" : "Comment: " + transId.getComment());
+                                       hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
+                                       hasBranch ? "" : "Comment: " + transactionId.getComment());
                            extraInfoLabel.setText(infoLabel);
                            xChangeViewer.setChanges(changes);
                            loadTable();
                         }
                      } catch (SQLException ex) {
-                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
-                     } catch (BranchDoesNotExist ex) {
                         OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
                      }
                   }
@@ -386,19 +379,12 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
       if (branch != null) sb.append("\nBranch: " + branch);
-      sb.append("\nTransaction Id: " + transactionNumber);
+      sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
       return sb.toString();
    }
 
-   /**
-    * @return the transactionNumber
-    */
-   public int getTransactionNumber() {
-      return transactionNumber;
-   }
-
    public TransactionId getTransactionId() throws OseeCoreException, SQLException {
-      return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(getTransactionNumber());
+      return transactionId;
    }
 
    /**

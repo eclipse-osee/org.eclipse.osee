@@ -105,7 +105,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
          }
       });
       try {
-         treeViewer.setInput(AttributeTypeManager.getTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
+         treeViewer.setInput(AttributeTypeManager.getTypes(BranchPersistenceManager.getDefaultBranch()));
          treeViewer.setCheckedElements(objs.toArray(new Object[objs.size()]));
       } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.toString(), ex);

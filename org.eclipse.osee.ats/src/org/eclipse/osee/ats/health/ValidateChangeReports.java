@@ -130,7 +130,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                   if (teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) {
                      changes =
                            RevisionManager.getInstance().getChangesPerTransaction(
-                                 teamArt.getSmaMgr().getBranchMgr().getTransactionId().getTransactionNumber());
+                                 teamArt.getSmaMgr().getBranchMgr().getTransactionId());
                      foundChangeReport = true;
 
                   } else if (teamArt.getSmaMgr().getBranchMgr().isWorkingBranch()) {

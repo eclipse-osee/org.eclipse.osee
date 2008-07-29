@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
 
 /**
  * Controls all aspects of saving and recovering relations. The data-store happens to be a database, but that should be
@@ -133,7 +133,7 @@ public class RelationPersistenceManager {
                link.getRelationType().getTypeName(), SkynetAuthentication.getUser().getArtId()));
       }
 
-      transaction.addTransactionDataItem(new RelationTransactionData(link, gammaId, transaction.getTransactionNumber(),
+      transaction.addTransactionDataItem(new RelationTransactionData(link, gammaId, transaction.getTransactionId(),
             modId, transaction.getBranch()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),

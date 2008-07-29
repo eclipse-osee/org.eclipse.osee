@@ -196,6 +196,7 @@ public class RevisionManager implements IEventReceiver {
       return transactionDetails;
    }
 
+   @Deprecated
    public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws SQLException {
       checkCommitArtifactToTransactionCache();
 
@@ -308,8 +309,9 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws ArtifactDoesNotExist
+    * @throws TransactionDoesNotExist
     */
-   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
+   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist, TransactionDoesNotExist {
       IArtifactNameDescriptorResolver resolver = new ArtifactNameDescriptorResolver(tData.getBranch());
 
       return getTransactionChanges(OUTGOING, tData.getTransactionId(), tData.getTransactionId(),
@@ -350,13 +352,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws BranchDoesNotExist
     * @throws ArtifactDoesNotExist
     */
-   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
-
-      TransactionId fromTransactionId =
-            TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
-      TransactionId toTransactionId =
-            TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(toTransactionNumber);
-
+   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
       Collection<RevisionChange> changes =
             getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId, artifactNameDescriptorResolver);
       changes.addAll(getArtifactChanges(fromTransactionId, toTransactionId, artId));
@@ -391,8 +387,8 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public Collection<Change> getChangesPerTransaction(int transactionNumber) throws SQLException, OseeCoreException {
-      return getChangesPerBranch(null, transactionNumber);
+   public Collection<Change> getChangesPerTransaction(TransactionId transactionId) throws SQLException, OseeCoreException {
+      return getChangesPerBranch(null, transactionId);
    }
 
    /**
@@ -405,7 +401,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws OseeCoreException
     */
    public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws SQLException, OseeCoreException {
-      return getChangesPerBranch(sourceBranch, -1);
+      return getChangesPerBranch(sourceBranch, null);
    }
 
    /**
@@ -417,19 +413,17 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionNumber) throws SQLException, OseeCoreException {
+   private Collection<Change> getChangesPerBranch(Branch sourceBranch, TransactionId transactionId) throws SQLException, OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean hasBranch = sourceBranch != null;
 
-      loadNewOrDeletedArtifactChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
-      loadAttributeChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
-      loadRelationChanges(sourceBranch, transactionNumber, artIds, changes, newAndDeletedArtifactIds);
+      loadNewOrDeletedArtifactChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
+      loadAttributeChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
+      loadRelationChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
 
-      Branch branch =
-            hasBranch ? sourceBranch : BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
-                  transactionNumber);
+      Branch branch = hasBranch ? sourceBranch : transactionId.getBranch();
 
       if (!hasBranch) {
          for (Change change : changes) {
@@ -459,7 +453,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
       boolean hasBranch = sourceBranch != null;
@@ -470,7 +464,7 @@ public class RevisionManager implements IEventReceiver {
          //Changes per a branch
          if (hasBranch) {
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                  TransactionIdManager.getInstance().getStartEndPoint(sourceBranch);
+                  TransactionIdManager.getStartEndPoint(sourceBranch);
 
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
@@ -481,12 +475,12 @@ public class RevisionManager implements IEventReceiver {
          }
          //Changes per a transaction
          else {
-            toTransactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
-            fromTransactionId = TransactionIdManager.getInstance().getPriorTransaction(toTransactionId);
+            toTransactionId = transactionId;
+            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES, SQL3DataType.INTEGER,
-                        transactionNumber);
+                        toTransactionId.getTransactionNumber());
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -521,7 +515,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
+   private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          //Changes per a branch
@@ -532,7 +526,8 @@ public class RevisionManager implements IEventReceiver {
          }//Changes per a transaction
          else {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, SQL3DataType.INTEGER, transactionNumber);
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, SQL3DataType.INTEGER,
+                        transactionId.getTransactionNumber());
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -564,7 +559,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
@@ -587,7 +582,7 @@ public class RevisionManager implements IEventReceiver {
                         sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                  TransactionIdManager.getInstance().getStartEndPoint(sourceBranch);
+                  TransactionIdManager.getStartEndPoint(sourceBranch);
 
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
@@ -595,10 +590,10 @@ public class RevisionManager implements IEventReceiver {
          else {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
-                        transactionNumber);
+                        transactionId.getTransactionNumber());
 
-            toTransactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionNumber);
-            fromTransactionId = TransactionIdManager.getInstance().getPriorTransaction(toTransactionId);
+            toTransactionId = transactionId;
+            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
          AttributeChanged attributeChanged;
@@ -695,8 +690,8 @@ public class RevisionManager implements IEventReceiver {
                   new AttributeConflict(resultSet.getInt("source_gamma_id"), resultSet.getInt("dest_gamma_id"),
                         resultSet.getInt("art_id"), commitTransaction, resultSet.getString("source_value"),
                         resultSet.getInt("attr_id"), resultSet.getInt("attr_type_id"),
-                        BranchPersistenceManager.getInstance().getBranch(resultSet.getInt("merge_branch_id")),
-                        BranchPersistenceManager.getInstance().getBranch(resultSet.getInt("dest_branch_id")));
+                        BranchPersistenceManager.getBranch(resultSet.getInt("merge_branch_id")),
+                        BranchPersistenceManager.getBranch(resultSet.getInt("dest_branch_id")));
             conflicts.add(attributeConflict);
 
             attributeConflict.computeStatus();
@@ -730,8 +725,8 @@ public class RevisionManager implements IEventReceiver {
       if (artIdSet.isEmpty()) return conflicts;
 
       Branch mergeBranch =
-            BranchPersistenceManager.getInstance().getOrCreateMergeBranch(sourceBranch, destinationBranch,
-                  new ArrayList<Integer>(artIdSet));
+            BranchPersistenceManager.getOrCreateMergeBranch(sourceBranch, destinationBranch, new ArrayList<Integer>(
+                  artIdSet));
 
       if (mergeBranch == null) throw new BranchMergeException("Could not create the Merge Branch.");
 
@@ -1047,8 +1042,8 @@ public class RevisionManager implements IEventReceiver {
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      return getDeletedArtifactChanges(null, null,
-            TransactionIdManager.getInstance().getPriorTransaction(transactionId), transactionId, null);
+      return getDeletedArtifactChanges(null, null, TransactionIdManager.getPriorTransaction(transactionId),
+            transactionId, null);
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
@@ -1144,8 +1139,7 @@ public class RevisionManager implements IEventReceiver {
                ResultSet rset = chStmt.getRset();
                while (rset.next()) {
                   artIdToMinOver.put(rset.getInt("art_id"),
-                        TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                              rset.getInt("base_tx")));
+                        TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
                }
             } finally {
                DbUtil.close(chStmt);
@@ -1164,8 +1158,7 @@ public class RevisionManager implements IEventReceiver {
                ResultSet rset = chStmt1.getRset();
                while (rset.next()) {
                   artIdToMaxUnder.put(rset.getInt("art_id"),
-                        TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                              rset.getInt("base_tx")));
+                        TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
                }
             } finally {
                DbUtil.close(chStmt1);
@@ -1236,9 +1229,7 @@ public class RevisionManager implements IEventReceiver {
          try {
             ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
 
-            TransactionId transactionId =
-                  TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                        set.getInt("deleted_transaction"));
+            TransactionId transactionId = TransactionIdManager.getTransactionId(set.getInt("deleted_transaction"));
             int artId = set.getInt("art_id");
             Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, transactionId);
 
@@ -1358,7 +1349,7 @@ public class RevisionManager implements IEventReceiver {
    }
 
    public boolean branchHasChanges(Branch branch) throws IllegalStateException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
-      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getInstance().getStartEndPoint(branch);
+      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
    }
 
@@ -1387,7 +1378,7 @@ public class RevisionManager implements IEventReceiver {
             ResultSet rset = chStmt.getRset();
 
             while (rset.next()) {
-               otherBranches.add(BranchPersistenceManager.getInstance().getBranch(rset.getInt("branch_id")));
+               otherBranches.add(BranchPersistenceManager.getBranch(rset.getInt("branch_id")));
             }
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);

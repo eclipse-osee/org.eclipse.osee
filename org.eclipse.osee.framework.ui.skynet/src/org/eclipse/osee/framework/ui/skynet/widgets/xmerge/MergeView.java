@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +25,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -299,7 +302,7 @@ public class MergeView extends ViewPart implements IActionable {
     */
    private String addDestBranchDefaultMenuItem(MenuManager menuManager) {
       CommandContributionItem setDestBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) {
+      if (conflicts != null && conflicts.length != 0 && conflicts[0].getDestBranch() == BranchPersistenceManager.getDefaultBranch()) {
          setDestBranchDefaultCommand =
                Commands.getLocalCommandContribution(getSite(), "setDestBranchDefaultCommand",
                      "Set Destination as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
@@ -329,7 +332,7 @@ public class MergeView extends ViewPart implements IActionable {
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getDestBranch());
             } else {
-               BranchPersistenceManager.getInstance().setDefaultBranch(conflicts[0].getDestBranch());
+               BranchPersistenceManager.setDefaultBranch(conflicts[0].getDestBranch());
             }
             return null;
          }
@@ -337,7 +340,7 @@ public class MergeView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabled() {
             if (conflicts == null || conflicts.length == 0) return false;
-            return conflicts[0].getDestBranch() != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return conflicts[0].getDestBranch() != BranchPersistenceManager.getDefaultBranch();
          }
       });
    }
@@ -440,7 +443,7 @@ public class MergeView extends ViewPart implements IActionable {
     */
    private String addSourceBranchDefaultMenuItem(MenuManager menuManager) {
       CommandContributionItem setSourceBranchDefaultCommand;
-      if (conflicts != null && conflicts.length != 0 && conflicts[0].getSourceBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) {
+      if (conflicts != null && conflicts.length != 0 && conflicts[0].getSourceBranch() == BranchPersistenceManager.getDefaultBranch()) {
          setSourceBranchDefaultCommand =
                Commands.getLocalCommandContribution(getSite(), "setSourceBranchDefaultCommand",
                      "Set Source as Default Branch", null, null, SkynetGuiPlugin.getInstance().getImageDescriptor(
@@ -468,7 +471,7 @@ public class MergeView extends ViewPart implements IActionable {
             if (branchView != null) {
                branchView.setDefaultBranch(conflicts[0].getSourceBranch());
             } else {
-               BranchPersistenceManager.getInstance().setDefaultBranch(conflicts[0].getSourceBranch());
+               BranchPersistenceManager.setDefaultBranch(conflicts[0].getSourceBranch());
             }
             return null;
          }
@@ -476,7 +479,7 @@ public class MergeView extends ViewPart implements IActionable {
          @Override
          public boolean isEnabled() {
             if (conflicts == null || conflicts.length == 0 || conflicts[0].getSourceBranch() == null) return false;
-            return conflicts[0].getSourceBranch() != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return conflicts[0].getSourceBranch() != BranchPersistenceManager.getDefaultBranch();
          }
       });
    }
@@ -515,20 +518,17 @@ public class MergeView extends ViewPart implements IActionable {
       try {
          Integer sourceBranchId = null;
          Integer destBranchId = null;
-         Integer transactionId = null;
-         Integer commitTransaction = null;
 
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               commitTransaction = memento.getInteger(COMMIT_NUMBER);
+               Integer commitTransaction = memento.getInteger(COMMIT_NUMBER);
                if (commitTransaction != null) {
-                  openViewUpon(null, null, null, TransactionIdManager.getInstance().getNonEditableTransactionId(
-                        commitTransaction));
+                  openViewUpon(null, null, null, TransactionIdManager.getTransactionId(commitTransaction));
                   return;
                }
                sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
-               final Branch sourceBranch = BranchPersistenceManager.getInstance().getBranch(sourceBranchId);
+               final Branch sourceBranch = BranchPersistenceManager.getBranch(sourceBranchId);
                if (sourceBranch == null) {
                   OSEELog.logWarning(SkynetGuiPlugin.class,
                         "Merge View can't init due to invalid source branch id " + sourceBranchId, false);
@@ -536,23 +536,23 @@ public class MergeView extends ViewPart implements IActionable {
                   return;
                }
                destBranchId = memento.getInteger(DEST_BRANCH_ID);
-               final Branch destBranch = BranchPersistenceManager.getInstance().getBranch(destBranchId);
+               final Branch destBranch = BranchPersistenceManager.getBranch(destBranchId);
                if (destBranch == null) {
                   OSEELog.logWarning(SkynetGuiPlugin.class,
                         "Merge View can't init due to invalid destination branch id " + sourceBranchId, false);
                   xMergeViewer.setLabel("Could not restore this Merge View");
                   return;
                }
-               transactionId = memento.getInteger(TRANSACTION_NUMBER);
-               final TransactionId transId =
-                     TransactionIdManager.getInstance().getNonEditableTransactionId(transactionId);
-               if (transId == null) {
-                  OSEELog.logWarning(SkynetGuiPlugin.class,
-                        "Merge View can't init due to invalid transaction id " + transactionId, false);
-                  xMergeViewer.setLabel("Could not restore this Merge View");
+               try {
+                  TransactionId transactionId =
+                        TransactionIdManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
+                  openViewUpon(sourceBranch, destBranch, transactionId, null);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                        "Merge View can't init due to invalid transaction id " + transactionId);
+                  xMergeViewer.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
                   return;
                }
-               openViewUpon(sourceBranch, destBranch, transId, null);
             }
          }
       } catch (Exception ex) {

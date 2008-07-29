@@ -191,19 +191,17 @@ public class ArtifactRequest implements IHttpServerRequest {
    }
 
    private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, NumberFormatException, BranchDoesNotExist {
-      BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
       final Branch branch;
       if (Strings.isValid(branchId)) {
-         branch = branchManager.getBranch(Integer.parseInt(branchId));
+         branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchId));
       } else {
-         branch = branchManager.getBranch(branchName);
+         branch = BranchPersistenceManager.getBranch(branchName);
       }
       return ArtifactQuery.getArtifactFromId(guid, branch, true);
    }
 
    private Artifact getArtifactBasedOnTransactionNumber(String guid, int transactioNumber) throws Exception {
-      TransactionId transactionId =
-            TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactioNumber);
+      TransactionId transactionId = TransactionIdManager.getTransactionId(transactioNumber);
       return ArtifactPersistenceManager.getInstance().getArtifact(guid, transactionId);
    }
 }

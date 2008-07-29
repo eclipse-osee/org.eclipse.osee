@@ -34,7 +34,7 @@ public class AddCommonBranch implements IDbInitializationTask {
    public void run(Connection connection) throws Exception {
 
       // Create branch, import skynet types and initialize
-      BranchPersistenceManager.getInstance().createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID,
+      BranchPersistenceManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID,
             Branch.COMMON_BRANCH_CONFIG_ID, getSkynetDbTypeExtensionIds(), true);
    }
 

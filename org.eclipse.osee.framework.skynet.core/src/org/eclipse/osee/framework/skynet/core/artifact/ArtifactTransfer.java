@@ -180,7 +180,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, IOException, BranchDoesNotExist {
       int artID = dataIn.readInt();
       int branchId = dataIn.readInt();
-      return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getInstance().getBranch(branchId));
+      return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getBranch(branchId));
    }
 
    /**

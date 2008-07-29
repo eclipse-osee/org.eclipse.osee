@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 public class SkynetTransactionManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransactionManager.class);
    private static final SkynetTransactionManager transactionManager = new SkynetTransactionManager();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private ThreadKeyLocal<Branch, SkynetTransactionBuilder> transactionBuilder;
    private ThreadKeyLocal<Branch, LevelManager> levelManager;
 
@@ -132,24 +131,18 @@ public class SkynetTransactionManager {
    }
 
    private final class LevelManager extends KeyedLevelManager implements IDbTransactionListener {
-      private Branch branch;
-      private int revertTransactionNumber;
-      private Collection<SkynetTransaction> transactions;
+      private Branch branch = null;
+      private Collection<SkynetTransaction> transactions = new ArrayList<SkynetTransaction>();
       private boolean rollback;
 
       public LevelManager() {
-         this.branch = null;
-         this.revertTransactionNumber = 0;
-         this.transactions = new ArrayList<SkynetTransaction>();
       }
 
       @Override
       protected void onInitialEntry() throws SQLException {
          super.onInitialEntry();
-
          this.rollback = false;
          ConnectionHandler.addDbTransactionListener(this);
-         revertTransactionNumber = transactionIdManager.getEditableTransactionId(branch).getTransactionNumber();
       }
 
       public void startTransactionLevel(Branch branch, Object key) throws SQLException {
@@ -194,12 +187,6 @@ public class SkynetTransactionManager {
                for (SkynetTransaction transaction : transactions) {
                   transaction.kickEvents();
                }
-            } else {
-               try {
-				transactionIdManager.updateEditableTransactionId(revertTransactionNumber, branch);
-				} catch (SQLException ex) {
-					logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-				}
             }
             transactions.clear();
          }

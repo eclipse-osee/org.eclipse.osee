@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
  * @author Robert A. Fisher
  */
 public class ConflictingArtifactSearch implements ISearchPrimitive {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final String TOKEN = ";";
    private static final String CONFLICT_TABLE =
          "((SELECT art_id " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
@@ -128,8 +127,8 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
       String childBranch;
 
       try {
-         parentBranch = branchManager.getBranch(parentBranchId).getBranchName();
-         childBranch = branchManager.getBranch(childBranchId).getBranchName();
+         parentBranch = BranchPersistenceManager.getBranch(parentBranchId).getBranchName();
+         childBranch = BranchPersistenceManager.getBranch(childBranchId).getBranchName();
       } catch (Exception ex) {
          parentBranch = Integer.toString(parentBranchId);
          childBranch = Integer.toString(childBranchId);

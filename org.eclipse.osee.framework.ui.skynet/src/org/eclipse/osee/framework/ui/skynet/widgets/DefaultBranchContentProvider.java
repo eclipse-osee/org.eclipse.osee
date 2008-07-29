@@ -72,6 +72,6 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IEven
    }
 
    public Object[] getElements(Object inputElement) {
-      return provider.getElements(BranchPersistenceManager.getInstance().getDefaultBranch());
+      return provider.getElements(BranchPersistenceManager.getDefaultBranch());
    }
 }

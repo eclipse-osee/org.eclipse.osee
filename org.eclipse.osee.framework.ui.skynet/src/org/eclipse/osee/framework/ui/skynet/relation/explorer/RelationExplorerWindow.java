@@ -298,7 +298,7 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
+                     artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getDefaultBranch());
                      artifact.setSoleAttributeValue("Name", model.getName());
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();

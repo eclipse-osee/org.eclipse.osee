@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class WorkspaceFileArtifact extends Artifact {
    public static final String ARTIFACT_NAME = "Workspace File";
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    /**
     * @param parentFactory
@@ -45,7 +44,9 @@ public class WorkspaceFileArtifact extends Artifact {
       ArtifactDescriptorDialog dialog = null;
 
       try {
-         artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branchManager.getDefaultBranch());
+         artifact =
+               ArtifactQuery.getArtifactFromAttribute("Content URL", location,
+                     BranchPersistenceManager.getDefaultBranch());
       } catch (ArtifactDoesNotExist ex) {
          Collection<ArtifactType> descriptors =
                ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
@@ -59,7 +60,7 @@ public class WorkspaceFileArtifact extends Artifact {
          descriptorSelected = dialog.open();
          if (descriptorSelected == 0) {
             descriptor = dialog.getEntry();
-            artifact = descriptor.makeNewArtifact(branchManager.getDefaultBranch());
+            artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getDefaultBranch());
             artifact.setSoleAttributeValue("Content URL", location);
             artifact.setSoleAttributeValue("Name", new File(location).getName());
             artifact.persistAttributes();

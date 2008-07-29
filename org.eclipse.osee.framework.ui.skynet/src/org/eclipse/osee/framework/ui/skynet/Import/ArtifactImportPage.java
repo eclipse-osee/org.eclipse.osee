@@ -262,7 +262,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       Branch defaultBranch;
       if (destinationArtifact == null) {
-         defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+         defaultBranch = BranchPersistenceManager.getDefaultBranch();
       } else {
          defaultBranch = destinationArtifact.getBranch();
       }

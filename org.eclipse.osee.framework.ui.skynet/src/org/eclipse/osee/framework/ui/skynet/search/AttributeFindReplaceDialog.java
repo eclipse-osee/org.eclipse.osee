@@ -100,7 +100,7 @@ public class AttributeFindReplaceDialog extends Dialog {
    private void setInputs() {
       try {
          cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(
-               BranchPersistenceManager.getInstance().getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
+               BranchPersistenceManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (SQLException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});

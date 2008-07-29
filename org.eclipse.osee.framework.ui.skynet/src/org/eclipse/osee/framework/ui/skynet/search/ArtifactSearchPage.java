@@ -127,7 +127,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private Branch getSelectedBranch() {
-      return BranchPersistenceManager.getInstance().getDefaultBranch();
+      return BranchPersistenceManager.getDefaultBranch();
    }
 
    /**

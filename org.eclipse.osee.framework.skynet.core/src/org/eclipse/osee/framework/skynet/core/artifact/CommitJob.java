@@ -161,7 +161,7 @@ class CommitJob extends Job {
 
          if (fromBranch != null) {
             newTransactionNumber =
-                  BranchPersistenceManager.getInstance().addCommitTransactionToDatabase(toBranch, fromBranch,
+                  BranchPersistenceManager.addCommitTransactionToDatabase(toBranch, fromBranch,
                         userToBlame);
             fromBranchId = fromBranch.getBranchId();
             AccessControlManager.getInstance().removeAllPermissionsFromBranch(fromBranch);

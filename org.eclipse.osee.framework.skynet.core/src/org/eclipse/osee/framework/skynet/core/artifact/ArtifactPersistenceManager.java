@@ -68,12 +68,13 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -228,7 +229,7 @@ public class ArtifactPersistenceManager {
 
    private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) throws SQLException {
       transaction.addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma,
-            transaction.getTransactionNumber(), modType, transaction.getBranch()));
+            transaction.getTransactionId(), modType, transaction.getBranch()));
    }
 
    private void addArtifactData(Artifact artifact, SkynetTransaction transaction) throws SQLException {
@@ -238,8 +239,8 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by factories
-    * since all caching is performed by the factory.
+    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
+    * factories since all caching is performed by the factory.
     * 
     * @param guid The guid of the artifact.
     * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
@@ -253,17 +254,17 @@ public class ArtifactPersistenceManager {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, null, artId, false);
    }
 
-   private Artifact getArtifactInternal(TransactionId transactionId, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
+   private Artifact getArtifactInternal(TransactionId transactionLimit, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
       // First try to acquire the artifact from cache
       Artifact artifact;
       Object data;
       String idString;
       if (useGuid) {
-         artifact = ArtifactCache.getHistorical(guid, transactionId.getTransactionNumber());
+         artifact = ArtifactCache.getHistorical(guid, transactionLimit.getTransactionNumber());
          data = guid;
          idString = "guid \"" + guid + "\"";
       } else {
-         artifact = ArtifactCache.getHistorical(artId, transactionId.getTransactionNumber());
+         artifact = ArtifactCache.getHistorical(artId, transactionLimit.getTransactionNumber());
          data = artId;
          idString = "id \"" + artId + "\"";
       }
@@ -274,23 +275,23 @@ public class ArtifactPersistenceManager {
          try {
             chStmt =
                   ConnectionHandler.runPreparedQuery(1, query, sqlDataType, data, SQL3DataType.INTEGER,
-                        transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                        transactionId.getBranch().getBranchId());
+                        transactionLimit.getTransactionNumber(), SQL3DataType.INTEGER,
+                        transactionLimit.getBranch().getBranchId());
 
             ResultSet rSet = chStmt.getRset();
             if (!rSet.next()) {
                throw new IllegalStateException(
-                     "The artifact with " + idString + " or does not exist for transaction \"" + transactionId + "\"");
+                     "The artifact with " + idString + " does not exist for transaction \"" + transactionLimit + "\"");
             }
 
             ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
             ArtifactFactory factory = artifactType.getFactory();
+            TransactionId transactionId = TransactionIdManager.getTransactionId(rSet);
 
             artifact =
-                  factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getInt("gamma_id"), rSet.getString("guid"),
-                        rSet.getString("human_readable_id"), artifactType.getFactoryKey(), transactionId.getBranch(),
-                        artifactType, rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")),
-                        rSet.getDate("time"), true);
+                  factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getString("guid"),
+                        rSet.getString("human_readable_id"), artifactType, rSet.getInt("gamma_id"), transactionId,
+                        ModificationType.getMod(rSet.getInt("mod_type")), true);
 
             setAttributesOnHistoricalArtifact(artifact);
 

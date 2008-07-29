@@ -328,11 +328,11 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (historicalSearch.getSelection()) {
          searchQuery =
                new HistoricalArtifactSearchQuery(txtSearch.getText().replace('*', '%'),
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
       } else if (radNameSearch.getSelection()) {
          searchQuery =
                new ArtifactNameSearchQuery(txtSearch.getText().replace('*', '%'),
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
       } else if (radIndexSearch.getSelection()) {
          for (String tag : Tagger.tokenizeAndSplit(txtSearch.getText())) {
             ISearchPrimitive primitive =
@@ -341,7 +341,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
             filterList.addFilter(new FilterModel(primitive, "", "", ""), false);
          }
          searchQuery =
-               new FilterArtifactSearchQuery(filterList, BranchPersistenceManager.getInstance().getDefaultBranch());
+               new FilterArtifactSearchQuery(filterList, BranchPersistenceManager.getDefaultBranch());
       } else {
          throw new IllegalStateException("unexpected search type radio button state");
       }
@@ -368,7 +368,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          btnSearch.setEnabled(Strings.isValid(value));
       }
       if (branchLabel != null && branchLabel.isDisposed() != true) {
-         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
+         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getDefaultBranch() + "\"");
       }
    }
 
@@ -377,7 +377,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
          NewSearchUI.activateSearchResultView();
          NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-               BranchPersistenceManager.getInstance().getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+               BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
       }
    }
 

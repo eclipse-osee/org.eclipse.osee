@@ -82,7 +82,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
          Set<Artifact> verificationTests = new HashSet<Artifact>();
          Artifact verificationHeader =
                ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
          for (String str : new String[] {"A", "B", "C"}) {
             Artifact newArt =
@@ -98,7 +98,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
          Set<Artifact> validationTests = new HashSet<Artifact>();
          Artifact validationHeader =
                ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          if (validationHeader == null) throw new IllegalStateException("Could not find Validation Tests header");
          for (String str : new String[] {"1", "2", "3"}) {
             Artifact newArt =
@@ -114,7 +114,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
          Set<Artifact> integrationTests = new HashSet<Artifact>();
          Artifact integrationHeader =
                ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          if (integrationHeader == null) throw new IllegalStateException("Could not find integration Tests header");
          for (String str : new String[] {"X", "Y", "Z"}) {
             Artifact newArt =

@@ -26,4 +26,13 @@ public enum TransactionDetailsType {
    public int getId() {
       return id;
    }
+
+   public static TransactionDetailsType toEnum(int value) {
+      for (TransactionDetailsType txType : values()) {
+         if (txType.getId() == value) {
+            return txType;
+         }
+      }
+      return null;
+   }
 }

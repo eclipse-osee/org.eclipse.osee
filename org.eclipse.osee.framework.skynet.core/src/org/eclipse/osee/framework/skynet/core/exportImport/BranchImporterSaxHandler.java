@@ -34,7 +34,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Stack;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,7 +44,8 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -62,10 +62,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class BranchImporterSaxHandler extends BranchSaxHandler {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchImporterSaxHandler.class);
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final TransactionIdManager transactionManager = TransactionIdManager.getInstance();
-
    private static final String INSERT_ARTIFACT_VERSION =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final String INSERT_ATTRIBUTE =
@@ -157,24 +153,25 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                parentBranch = supportingBranch;
             }
 
-            TransactionId parentTransactionId = transactionManager.getPriorTransaction(time, parentBranch);
+            TransactionId parentTransactionId =
+                  TransactionIdManager.getInstance().getPriorTransaction(time, parentBranch);
 
             Branch newBranch = null;
             try {
-               newBranch = branchManager.getBranch(name);
+               newBranch = BranchPersistenceManager.getBranch(name);
             } catch (IllegalArgumentException ex) {
                // We don't mind not being able to get the branch, that is the normal case for new
                // data
             }
             if (newBranch != null) {
-               logger.log(Level.WARNING, "Branch " + name + " already imported, skipping");
+               OseeLog.log(SkynetActivator.class, Level.WARNING, "Branch " + name + " already imported, skipping");
                curBranch.push(null);
                return;
             }
 
             transactionKeys.push(new Object());
             ConnectionHandler.startTransactionLevel(transactionKeys.peek());
-            newBranch = branchManager.createWorkingBranch(parentTransactionId, null, name, null);
+            newBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, name, null);
 
             // Fix the associatedArtId if it is available
             if (associatedArtGuid != null) {
@@ -222,8 +219,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
             SQL3DataType.TIMESTAMP, time, SQL3DataType.VARCHAR, comment, SQL3DataType.INTEGER,
             authorId == null ? -1 : authorId, SQL3DataType.INTEGER, curBranch.peek().getBranchId());
-
-      transactionManager.updateEditableTransactionId(currentTransactionId, curBranch.peek());
    }
 
    @Override
@@ -249,14 +244,12 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          boolean modified = true;
          currentArtifactId = artifactGuidCache.getId(guid);
 
-         if (currentArtifactId != null && currentArtifactId == 6816) {
-            int i = 0;
-         }
          // New artifact
          if (currentArtifactId == null) {
             modified = false;
             if (deleted) {
-               logger.log(Level.WARNING, "Initial creation of artifact " + hrid + " was a delete version");
+               OseeLog.log(SkynetActivator.class, Level.WARNING,
+                     "Initial creation of artifact " + hrid + " was a delete version");
             }
             currentArtifactId = Query.getNextSeqVal(ART_ID_SEQ);
 
@@ -274,7 +267,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
          insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
       } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage());
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -356,13 +349,13 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       Integer aArtId = artifactGuidCache.getId(aguid);
       if (aArtId == null) {
-         logger.log(Level.WARNING,
+         OseeLog.log(SkynetActivator.class, Level.WARNING,
                "Link " + guid + " side A guid " + aguid + " could not be resolved to an artId. Link not imported");
          return;
       }
       Integer bArtId = artifactGuidCache.getId(bguid);
       if (bArtId == null) {
-         logger.log(Level.WARNING,
+         OseeLog.log(SkynetActivator.class, Level.WARNING,
                "Link " + guid + " side B guid " + bguid + " could not be resolved to an artId. Link not imported");
          return;
       }

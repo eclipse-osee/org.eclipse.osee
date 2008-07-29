@@ -219,7 +219,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
             String guid = memento.getString(ARTIFACT_GUID);
             if (guid != null) {
                artifact =
-                     ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getDefaultBranch());
+                     ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getDefaultBranch());
             }
          }
       } catch (ArtifactDoesNotExist ex) {

@@ -142,7 +142,7 @@ public class SkyWalkerView extends ViewPart {
       try {
          if (storedGuid != null) {
             Artifact art =
-                  ArtifactQuery.getArtifactFromId(storedGuid, BranchPersistenceManager.getInstance().getBranch(
+                  ArtifactQuery.getArtifactFromId(storedGuid, BranchPersistenceManager.getBranch(
                         Integer.parseInt(storedBrandId)));
             if (art != null) explore(art);
          }

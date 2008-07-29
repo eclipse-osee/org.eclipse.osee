@@ -63,7 +63,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       EntryDialog ed =
             new EntryDialog(
                   getName(),
-                  "Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
+                  "Searching on current default branch \"" + BranchPersistenceManager.getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search (no wildcards)");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry());
          job.setUser(true);
@@ -97,7 +97,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       private void getMatrixItems() throws OseeCoreException, SQLException {
          final Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactsFromName("%" + artifactName + "%",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {
@@ -120,7 +120,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on default branch \"" + BranchPersistenceManager.getDefaultBranch().getBranchName() + "\"");
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getDescriptiveName());
             System.out.println(str);

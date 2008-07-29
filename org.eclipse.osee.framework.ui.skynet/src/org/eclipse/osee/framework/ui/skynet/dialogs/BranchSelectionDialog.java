@@ -92,7 +92,7 @@ public class BranchSelectionDialog extends ElementTreeSelectionDialog {
 
    private void initialize() {
       try {
-         List<Branch> branchList = BranchPersistenceManager.getInstance().getRootBranches();
+         List<Branch> branchList = BranchPersistenceManager.getRootBranches();
          setInput(branchList);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, "Unable to get root branches.", ex);

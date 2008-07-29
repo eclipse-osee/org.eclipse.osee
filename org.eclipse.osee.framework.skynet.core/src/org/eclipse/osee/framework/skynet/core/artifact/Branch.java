@@ -93,7 +93,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       this.branchType = branchType;
 
       this.birthPlace.getStackTrace();
-      BranchPersistenceManager.getInstance().cache(this);
+      BranchPersistenceManager.cache(this);
    }
 
    public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) {
@@ -201,7 +201,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    public Branch getParentBranch() throws SQLException {
       if (parentBranch == null && parentBranchId != NULL_PARENT_BRANCH_ID) {
          try {
-            parentBranch = BranchPersistenceManager.getInstance().getBranch(parentBranchId);
+            parentBranch = BranchPersistenceManager.getBranch(parentBranchId);
          } catch (BranchDoesNotExist ex) {
             OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
@@ -251,7 +251,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public void archive() throws SQLException {
-      BranchPersistenceManager.getInstance().archive(this);
+      BranchPersistenceManager.archive(this);
    }
 
    @Override

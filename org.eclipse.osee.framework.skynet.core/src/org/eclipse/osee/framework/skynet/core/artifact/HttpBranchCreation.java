@@ -99,7 +99,7 @@ public class HttpBranchCreation {
          response =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("branch", parameters)));
          int branchId = Integer.parseInt(response);
-         branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+         branch = BranchPersistenceManager.getBranch(branchId);
       } catch (NumberFormatException ex) {
          throw new OseeCoreException(response);
       } catch (Exception ex) {

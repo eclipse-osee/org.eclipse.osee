@@ -40,9 +40,9 @@ public class GroupListDialog extends ArtifactListDialog {
                arts.add(art);
             }
          }
-         if (!BranchPersistenceManager.getInstance().getDefaultBranch().equals(
+         if (!BranchPersistenceManager.getDefaultBranch().equals(
                BranchPersistenceManager.getCommonBranch())) {
-            for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getInstance().getDefaultBranch())) {
+            for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getDefaultBranch())) {
                if (!art.getDescriptiveName().equals(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME)) {
                   arts.add(art);
                }

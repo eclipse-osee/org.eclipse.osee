@@ -65,7 +65,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
       String levelKey = httpRequest.getParameter(LEVELS_KEY);
 
       try {
-         Branch branch = BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(branchKey));
+         Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(branchKey));
 
          Artifact artifact = null;
          if (Strings.isValid(guidLevel)) {

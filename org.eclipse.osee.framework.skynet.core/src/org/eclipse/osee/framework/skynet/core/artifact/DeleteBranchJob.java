@@ -66,7 +66,6 @@ class DeleteBranchJob extends Job {
          "DELETE FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("branch_id") + " = ?";
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private final Branch branch;
 
@@ -191,7 +190,7 @@ class DeleteBranchJob extends Job {
             monitor.subTask("Delete Branch");
             ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, SQL3DataType.INTEGER, branch.getBranchId());
             monitor.worked(1);
-            branchManager.removeBranchFromCache(branch.getBranchId());
+            BranchPersistenceManager.removeBranchFromCache(branch.getBranchId());
          }
       }
 

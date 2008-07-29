@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
@@ -29,10 +27,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -42,12 +38,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
@@ -56,24 +48,18 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 public class SkynetTransaction {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransaction.class);
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE =
-         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
-               "branch_id", "tx_type");
+
+   private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_define_tx_details WHERE transaction_id =?";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
          "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
-
-   private static final String DELETE_TRANSACTION_DETAIL =
-         "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
-
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private final Map<String, List<Object[]>> preparedBatch;
+   private final Map<String, List<Object[]>> preparedBatch = new HashMap<String, List<Object[]>>();
    private String transactionName;
    private String comment;
    private TransactionId transactionId;
    private final Branch branch;
-   private List<ISkynetEvent> remoteEvents;
-   private List<Event> localEvents;
-   private Map<ITransactionData, ITransactionData> transactionItems;
+   private List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
+   private List<Event> localEvents = new LinkedList<Event>();
+   private Map<ITransactionData, ITransactionData> transactionItems = new HashMap<ITransactionData, ITransactionData>();
 
    // IMPORTANT: The transactionNumber for this transaction is kept in addition to the TransactionId reference
    //            since the number in the TransactionId may be updated from events, and the number of this
@@ -90,49 +76,16 @@ public class SkynetTransaction {
       this(branch, SkynetAuthentication.getUser(), comment);
    }
 
-   /**
-    * 
-    */
    @SuppressWarnings("unchecked")
    public SkynetTransaction(Branch branch, User userToBlame) throws SQLException {
       this(branch, userToBlame, "");
    }
 
-   /**
-    * 
-    */
    @SuppressWarnings("unchecked")
    public SkynetTransaction(Branch branch, User userToBlame, String comment) throws SQLException {
-      super();
-
       this.branch = branch;
-      this.comment = "";
-      this.remoteEvents = new LinkedList<ISkynetEvent>();
-      this.localEvents = new LinkedList<Event>();
       this.comment = comment;
-
-      Pair<Integer, TransactionId> nextTranData = transactionIdManager.createNextTransactionId(branch);
-      this.transactionNumber = nextTranData.getKey();
-      this.transactionId = nextTranData.getValue();
-      List datas = new LinkedList();
-
-      int blameArtId = -1;
-      if (userToBlame == null || !userToBlame.isInDb()) {
-         if (!SkynetDbInit.isDbInit()) {
-            blameArtId = SkynetAuthentication.getNoOneArtifactId();
-         }
-      } else {
-         blameArtId = userToBlame.getArtId();
-      }
-
-      transactionDate = GlobalTime.GreenwichMeanTimestamp();
-      datas.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.VARCHAR, getComment(),
-            SQL3DataType.TIMESTAMP, transactionDate, SQL3DataType.INTEGER, blameArtId, SQL3DataType.INTEGER,
-            branch.getBranchId(), SQL3DataType.INTEGER, TransactionDetailsType.NonBaselined.getId()});
-      ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
-
-      preparedBatch = new HashMap<String, List<Object[]>>();
-      transactionItems = new HashMap<ITransactionData, ITransactionData>();
+      transactionId = TransactionIdManager.createNextTransactionId(branch, userToBlame, comment);
    }
 
    public void addToBatch(String sql, Object... data) {
@@ -166,7 +119,6 @@ public class SkynetTransaction {
          }
 
          setArtifactsNotDirty();
-         updateLastModified();
       } catch (SQLException ex) {
          deleteTransactionDetail = true;
          transactionCleanUp();
@@ -179,7 +131,11 @@ public class SkynetTransaction {
             remoteEvents = null;
             ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, SQL3DataType.INTEGER, transactionNumber);
          } else {
-            transactionId.setLastSavedTransactionNumber(transactionNumber);
+            for (ITransactionData transactionData : transactionItems.keySet()) {
+               if (transactionData instanceof ArtifactTransactionData) {
+                  ((ArtifactTransactionData) transactionData).updateArtifact();
+               }
+            }
          }
       }
    }

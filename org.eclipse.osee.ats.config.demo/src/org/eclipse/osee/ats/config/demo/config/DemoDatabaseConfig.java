@@ -73,7 +73,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
    }
 
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws Exception {
-      Branch branch = BranchPersistenceManager.getInstance().getBranch(branchName);
+      Branch branch = BranchPersistenceManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
       verArt.persistAttributes();
@@ -122,7 +122,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.Demo_Program_Skynet_Types");
 
-      BranchPersistenceManager.getInstance().createRootBranch(null, branchName, branchName, skynetTypeImport, true);
+      BranchPersistenceManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
    private void createVersionArtifacts() throws Exception {

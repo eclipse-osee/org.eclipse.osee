@@ -16,8 +16,10 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
  * Describes information associated with a transaction.
@@ -27,25 +29,26 @@ import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 public class TransactionId implements Serializable {
    private static final long serialVersionUID = 7295589339029402964L;
    private int transactionNumber;
-   private Branch branch;
-   private String comment;
-   // This will only differ from the transactionNumber for TransactionId's that are head
-   // and when there is a SkynetTransaction in progress
-   private int lastSavedTransactionNumber;
+   private final Branch branch;
+   private final String comment;
+   private final Date time;
+   private final int authorArtId;
+   private final int commitArtId;
+   private final TransactionDetailsType txType;
 
    /**
     * @param transactionNumber
     * @param branch
     * @param comment
     */
-   public TransactionId(int transactionNumber, Branch branch, String comment) {
-      if (branch == null) throw new IllegalArgumentException(
-            "Branch can not be null. TransactionNumber = " + transactionNumber);
-
+   public TransactionId(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
       this.branch = branch;
       this.comment = comment;
-      this.lastSavedTransactionNumber = transactionNumber;
+      this.time = time;
+      this.authorArtId = authorArtId;
+      this.commitArtId = commitArtId;
+      this.txType = txType;
    }
 
    /**
@@ -111,9 +114,10 @@ public class TransactionId implements Serializable {
     * @throws ObjectStreamException
     * @throws SQLException
     * @throws BranchDoesNotExist
+    * @throws TransactionDoesNotExist
     */
-   private Object readResolve() throws ObjectStreamException, SQLException, BranchDoesNotExist {
-      return TransactionIdManager.getInstance().getNonEditableTransactionId(transactionNumber);
+   private Object readResolve() throws ObjectStreamException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+      return TransactionIdManager.getTransactionId(transactionNumber);
    }
 
    /*
@@ -141,19 +145,5 @@ public class TransactionId implements Serializable {
       int result = 17;
       result = 37 * result + transactionNumber;
       return result;
-   }
-
-   /**
-    * @return the lastSavedTransactionNumber
-    */
-   protected int getLastSavedTransactionNumber() {
-      return lastSavedTransactionNumber;
-   }
-
-   /**
-    * @param lastSavedTransactionNumber the lastSavedTransactionNumber to set
-    */
-   protected void setLastSavedTransactionNumber(int lastSavedTransactionNumber) {
-      this.lastSavedTransactionNumber = lastSavedTransactionNumber;
    }
 }

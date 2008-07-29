@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Jeff C. Phillips
  */
 public abstract class XTypeListViewer extends XListViewer {
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
 
    public XTypeListViewer(String name) {
       super(name);
@@ -34,14 +33,14 @@ public abstract class XTypeListViewer extends XListViewer {
       Branch branch = null;
       try {
          if (keyedBranchName != null) {
-            branch = branchPersistenceManager.getKeyedBranch(keyedBranchName);
+            branch = BranchPersistenceManager.getKeyedBranch(keyedBranchName);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       if (branch == null) {
-         branch = branchPersistenceManager.getDefaultBranch();
+         branch = BranchPersistenceManager.getDefaultBranch();
       }
       return branch;
    }

@@ -112,7 +112,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       branchList.setLayoutData(gridData);
 
       try {
-         Branch defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
 
          int defaultBranchIndex = 0;
          for (Branch branch : BranchPersistenceManager.getBranches()) {

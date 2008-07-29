@@ -27,7 +27,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class RevealInArtifactExplorer extends AbstractHandler {
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private Artifact artifact;
 
    /* (non-Javadoc)
@@ -64,7 +63,7 @@ public class RevealInArtifactExplorer extends AbstractHandler {
          }
 
          artifact = artifacts.iterator().next();
-         isEnabled = artifact.getBranch() == branchPersistenceManager.getDefaultBranch();
+         isEnabled = artifact.getBranch() == BranchPersistenceManager.getDefaultBranch();
       }
       return isEnabled;
    }

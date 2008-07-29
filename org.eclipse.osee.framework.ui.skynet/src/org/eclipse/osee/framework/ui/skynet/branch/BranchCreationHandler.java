@@ -50,7 +50,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchCreationHandler.class);
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private TreeViewer branchTable;
    private boolean selective;
@@ -111,10 +110,10 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
 
                   // Preserve software reqts
                   String[] preserveTypes = new String[] {Requirements.SOFTWARE_REQUIREMENT};
-                  branchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(), null,
-                        compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
+                  BranchPersistenceManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(),
+                        null, compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
                } else {
-                  branchManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
+                  BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, dialog.getEntry(), null);
                }
             }
          };

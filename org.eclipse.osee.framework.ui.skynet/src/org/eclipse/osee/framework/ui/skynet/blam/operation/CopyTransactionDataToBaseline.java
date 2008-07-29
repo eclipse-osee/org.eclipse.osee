@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class CopyTransactionDataToBaseline extends AbstractBlam {
    private static final String COPY_TX_DATA =
          "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs WHERE transaction_id = ?";
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
@@ -32,8 +31,8 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       int txNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
-      TransactionId fromTransactionId = transactionIdManager.getPossiblyEditableTransactionId(txNumber);
-      TransactionId baseLineTransaction = transactionIdManager.getStartEndPoint(branch).getValue();
+      TransactionId fromTransactionId = TransactionIdManager.getTransactionId(txNumber);
+      TransactionId baseLineTransaction = TransactionIdManager.getStartEndPoint(branch).getValue();
 
       ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, SQL3DataType.INTEGER, baseLineTransaction,
             SQL3DataType.INTEGER, fromTransactionId);

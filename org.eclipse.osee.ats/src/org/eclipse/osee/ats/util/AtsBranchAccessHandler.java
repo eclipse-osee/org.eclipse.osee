@@ -49,7 +49,7 @@ public class AtsBranchAccessHandler implements IEventReceiver {
       try {
          if (event instanceof LocalNewBranchEvent) {
             Branch branch =
-                  BranchPersistenceManager.getInstance().getBranch(((LocalNewBranchEvent) event).getBranchId());
+                  BranchPersistenceManager.getBranch(((LocalNewBranchEvent) event).getBranchId());
             Artifact artifact = branch.getAssociatedArtifact();
             if (artifact instanceof StateMachineArtifact) {
                ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().updateBranchAccessControl();

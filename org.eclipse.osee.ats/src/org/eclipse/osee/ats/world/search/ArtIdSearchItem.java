@@ -40,17 +40,17 @@ public class ArtIdSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
-            BranchPersistenceManager.getInstance().getDefaultBranch(), false)) {
+            BranchPersistenceManager.getDefaultBranch(), false)) {
          artifacts.add(art);
       }
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(Arrays.asList(enteredIds.split(",")),
-            BranchPersistenceManager.getInstance().getDefaultBranch())) {
+            BranchPersistenceManager.getDefaultBranch())) {
          artifacts.add(art);
       }
       if (artifacts.size() == 0) {
          AWorkbench.popup(
                "ERROR",
-               "Didn't find any artifacts on default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
+               "Didn't find any artifacts on default branch \"" + BranchPersistenceManager.getDefaultBranch() + "\"");
       }
       return artifacts;
    }

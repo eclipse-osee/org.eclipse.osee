@@ -87,7 +87,7 @@ public class AtsBranchManager {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
-         BranchPersistenceManager.getInstance().setDefaultBranch(getWorkingBranch());
+         BranchPersistenceManager.setDefaultBranch(getWorkingBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -105,18 +105,11 @@ public class AtsBranchManager {
                AWorkbench.popup("ERROR", "Can't access parent branch");
                return;
             }
-            MergeView.openView(getWorkingBranch(), branch, TransactionIdManager.getInstance().getStartEndPoint(
-                  getWorkingBranch()).getKey());
+            MergeView.openView(getWorkingBranch(), branch,
+                  TransactionIdManager.getStartEndPoint(getWorkingBranch()).getKey());
 
          } else if (isCommittedBranch()) {
-            TransactionId transId =
-                  TransactionIdManager.getInstance().getNonEditableTransactionId(
-                        getTransactionId().getTransactionNumber());
-            if (transId == null) {
-               AWorkbench.popup("ERROR", "Can't access Commit Transaction");
-               return;
-            }
-            MergeView.openView(transId);
+            MergeView.openView(getTransactionId());
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -157,7 +150,7 @@ public class AtsBranchManager {
          } else if (!MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
          }
-         Job job = BranchPersistenceManager.getInstance().deleteBranch(branch);
+         Job job = BranchPersistenceManager.deleteBranch(branch);
          job.join();
 
          AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
@@ -181,7 +174,7 @@ public class AtsBranchManager {
                "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
       }
       try {
-         return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(tranSet.iterator().next());
+         return TransactionIdManager.getTransactionId(tranSet.iterator().next());
       } catch (Exception ex) {
          // there may be times where the transaction id cache is not up-to-date yet; don't throw error
       }
@@ -214,7 +207,7 @@ public class AtsBranchManager {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranch()) {
-            ChangeView.open(getTransactionId().getTransactionNumber());
+            ChangeView.open(getTransactionId());
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
@@ -247,7 +240,7 @@ public class AtsBranchManager {
     * @throws SQLException
     */
    public Branch getWorkingBranch() throws SQLException, MultipleBranchesExist {
-      Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
+      Set<Branch> branches = BranchPersistenceManager.getAssociatedArtifactBranches(smaMgr.getSma());
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {
@@ -334,7 +327,7 @@ public class AtsBranchManager {
                Integer branchId =
                      verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
                if (branchId != null && branchId > 0) {
-                  parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+                  parentBranch = BranchPersistenceManager.getBranch(branchId);
                }
             } catch (BranchDoesNotExist ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -349,7 +342,7 @@ public class AtsBranchManager {
                   ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleAttributeValue(
                         ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
             if (branchId != null && branchId > 0) {
-               parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+               parentBranch = BranchPersistenceManager.getBranch(branchId);
             }
          } catch (OseeCoreException ex) {
             // do nothing
@@ -388,8 +381,8 @@ public class AtsBranchManager {
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws OseeCoreException, SQLException {
-            BranchPersistenceManager.getInstance().createWorkingBranch(parentTransactionId, finalBranchShortName,
-                  branchName, stateMachineArtifact);
+            BranchPersistenceManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
+                  stateMachineArtifact);
          }
       };
 
@@ -479,7 +472,7 @@ public class AtsBranchManager {
       }
       ConflictManager conflictManager = new ConflictManager(branch.getParentBranch(), branch);
       if (!popup) {
-         BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+         BranchPersistenceManager.commitBranch(branch, true, true);
       } else if (conflictManager.getRemainingConflicts().size() > 0) {
 
          MessageDialog dialog;
@@ -504,10 +497,9 @@ public class AtsBranchManager {
 
          int result = dialog.open();
          if (commitPopup && result == 1) {
-            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(
-                  branch).getKey());
+            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
          } else if (result == 2) {
-            BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+            BranchPersistenceManager.commitBranch(branch, true, true);
          }
       } else {
          StringBuffer sb =
@@ -524,10 +516,9 @@ public class AtsBranchManager {
                      MessageDialog.QUESTION, new String[] {"Ok", "Launch Merge Manager", "Cancel"}, 0);
          int result = dialog.open();
          if (result == 0) {
-            BranchPersistenceManager.getInstance().commitBranch(branch, true, true);
+            BranchPersistenceManager.commitBranch(branch, true, true);
          } else if (result == 1) {
-            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(
-                  branch).getKey());
+            MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
          }
       }
 
@@ -635,7 +626,7 @@ public class AtsBranchManager {
    public Boolean isChangesOnWorkingBranch() throws SQLException, MultipleBranchesExist, BranchDoesNotExist, TransactionDoesNotExist {
       if (isWorkingBranch()) {
          Pair<TransactionId, TransactionId> transactionToFrom =
-               TransactionIdManager.getInstance().getStartEndPoint(getWorkingBranch());
+               TransactionIdManager.getStartEndPoint(getWorkingBranch());
          if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
             return false;
          }

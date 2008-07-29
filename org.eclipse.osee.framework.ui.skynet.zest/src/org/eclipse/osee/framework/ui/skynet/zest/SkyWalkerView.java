@@ -66,7 +66,7 @@ public class SkyWalkerView extends ViewPart implements IActionable {
 
       });
       try {
-         viewer.setInput(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getInstance().getDefaultBranch()));
+         viewer.setInput(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getDefaultBranch()));
       } catch (Exception ex) {
          ex.printStackTrace();
       }

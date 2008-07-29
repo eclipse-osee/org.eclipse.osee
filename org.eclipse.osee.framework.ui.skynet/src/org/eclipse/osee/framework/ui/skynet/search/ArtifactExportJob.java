@@ -35,7 +35,6 @@ import org.eclipse.search.ui.text.Match;
  */
 public class ArtifactExportJob extends Job {
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationMatrixExportJob.class);
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private IStructuredSelection selection;
    private Collection<Artifact> artifacts;
    private String exportFilename;
@@ -64,7 +63,7 @@ public class ArtifactExportJob extends Job {
       try {
          FullPortableExport exporter = new FullPortableExport();
          if (artifacts == null && selection == null) {
-            exporter.createArtifactSheets(branchPersistenceManager.getDefaultBranch());
+            exporter.createArtifactSheets(BranchPersistenceManager.getDefaultBranch());
             exporter.createRelationsSheet();
          } else {
             if (artifacts == null) {

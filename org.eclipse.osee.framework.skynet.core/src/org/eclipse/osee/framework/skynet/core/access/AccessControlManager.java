@@ -476,7 +476,7 @@ public class AccessControlManager {
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              BranchPersistenceManager.getInstance().getBranch(artifactAccessObject.getBranchId()));
+                              BranchPersistenceManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -579,9 +579,9 @@ public class AccessControlManager {
       Branch branch = null;
       try {
          if (object instanceof BranchAccessObject) {
-            branch = BranchPersistenceManager.getInstance().getBranch(((BranchAccessObject) object).getBranchId());
+            branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());
          } else if (object instanceof ArtifactAccessObject) {
-            branch = BranchPersistenceManager.getInstance().getBranch(((ArtifactAccessObject) object).getBranchId());
+            branch = BranchPersistenceManager.getBranch(((ArtifactAccessObject) object).getBranchId());
          }
       } catch (BranchDoesNotExist ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);

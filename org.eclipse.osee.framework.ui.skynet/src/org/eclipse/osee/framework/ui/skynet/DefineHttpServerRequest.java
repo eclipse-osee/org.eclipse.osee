@@ -67,7 +67,7 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
     * @see org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest#processRequest(org.eclipse.osee.framework.skynet.core.linking.HttpRequest, org.eclipse.osee.framework.skynet.core.linking.HttpResponse)
     */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
-      final Branch branch = BranchPersistenceManager.getInstance().getDefaultBranch();
+      final Branch branch = BranchPersistenceManager.getDefaultBranch();
       String guid = httpRequest.getParameter("guid");
       try {
          final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);

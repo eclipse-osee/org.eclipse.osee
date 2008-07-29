@@ -39,7 +39,7 @@ public class InPlaceSmartTagRemover extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
       int txNumber = Integer.parseInt(variableMap.getString("Transaction Number"));
-      TransactionId transactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(txNumber);
+      TransactionId transactionId = TransactionIdManager.getTransactionId(txNumber);
       ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
 
       monitor.beginTask("Update Templates", artifacts.size());

@@ -39,8 +39,6 @@ public class UpdateFromParentBranch extends AbstractBlam {
    private static final String INSERT_UPDATED_LINKS_GAMMAS =
          "INSERT INTO osee_Define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT DISTINCT ?, tx1.gamma_id, tx1.mod_type, tx1.tx_current FROM osee_Define_txs tx1, osee_Define_tx_details td1, osee_Define_rel_link rl1, osee_join_artifact ja1 WHERE td1.branch_id = ? AND td1.transaction_id = tx1.transaction_id AND tx1.tx_current = " + TxChange.CURRENT.getValue() + " AND tx1.gamma_id = rl1.gamma_id AND td1.branch_id = ja1.branch_id AND (rl1.a_art_id = ja1.art_id OR rl1.b_art_id = ja1.art_id) AND ja1.query_id = ?";
 
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
@@ -56,7 +54,7 @@ public class UpdateFromParentBranch extends AbstractBlam {
 
       Branch parentBranch = childBranch.getParentBranch();
       int baselineTransactionNumber =
-            transactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();
+            TransactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();
       int queryId = ArtifactLoader.getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
       List<Object[]> datas = new LinkedList<Object[]>();

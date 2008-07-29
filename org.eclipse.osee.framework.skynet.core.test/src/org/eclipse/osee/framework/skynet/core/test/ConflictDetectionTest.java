@@ -53,7 +53,7 @@ public class ConflictDetectionTest extends TestCase {
       try {
          conflicts =
                revisionManager.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionIdManager.getInstance().getStartEndPoint(
+                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
                            ConflictTestManager.getSourceBranch()).getKey());
       } catch (Exception ex) {
          fail(ex.getMessage());

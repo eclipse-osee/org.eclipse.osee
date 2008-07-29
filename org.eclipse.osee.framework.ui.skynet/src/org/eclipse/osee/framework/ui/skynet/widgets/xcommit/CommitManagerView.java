@@ -147,7 +147,7 @@ public class CommitManagerView extends ViewPart implements IActionable {
                if (artId > 0) {
                   int branchId = memento.getInteger("branchId");
                   if (branchId > 0) {
-                     Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+                     Branch branch = BranchPersistenceManager.getBranch(branchId);
                      Artifact artifact = ArtifactQuery.getArtifactFromId(artId, branch);
                      explore((IBranchArtifact) artifact);
                   }

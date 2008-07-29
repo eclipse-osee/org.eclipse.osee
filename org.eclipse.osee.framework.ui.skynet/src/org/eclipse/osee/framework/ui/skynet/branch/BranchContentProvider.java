@@ -74,7 +74,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final SnapshotPersistenceManager snapshotManager = SnapshotPersistenceManager.getInstance();
    private static final RevisionManager revisionManager = RevisionManager.getInstance();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private static final Object[] EMPTY_ARRAY = new Object[0];
    private static final String EMPTY_REPORT = "No changes";
    private static final Object[] EMPTY_REPORT_CHILDREN = new Object[] {EMPTY_REPORT};
@@ -290,7 +289,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException, SQLException {
       TransactionId priorTransaction;
       try {
-         priorTransaction = transactionIdManager.getPriorTransaction(toTransaction);
+         priorTransaction = TransactionIdManager.getPriorTransaction(toTransaction);
       } catch (TransactionDoesNotExist ex) {
          priorTransaction = null;
       }
@@ -299,7 +298,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
    private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException, SQLException {
       TransactionId headParentTransaction =
-            baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
+            baseParentTransaction == null ? null : TransactionIdManager.getStartEndPoint(
                   baseParentTransaction.getBranch()).getValue();
 
       Collection<ArtifactChange> deletedArtChanges =

@@ -57,7 +57,7 @@ public class BranchSelectComposite extends Composite implements Listener {
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       this.entryChanged = false;
       this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
-      this.currentBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+      this.currentBranch = BranchPersistenceManager.getDefaultBranch();
       createControl(this);
    }
 
@@ -116,7 +116,7 @@ public class BranchSelectComposite extends Composite implements Listener {
             toReturn = (Branch) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
-                  toReturn = BranchPersistenceManager.getInstance().getBranch(branchName);
+                  toReturn = BranchPersistenceManager.getBranch(branchName);
                } catch (Exception ex) {
                   logger.log(Level.SEVERE, ex.toString(), ex);
                }
@@ -187,7 +187,7 @@ public class BranchSelectComposite extends Composite implements Listener {
          String toStore = values[i];
          if (Strings.isValid(toStore)) {
             try {
-               Branch branch = BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(toStore));
+               Branch branch = BranchPersistenceManager.getBranch(Integer.parseInt(toStore));
 
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getBranchName();

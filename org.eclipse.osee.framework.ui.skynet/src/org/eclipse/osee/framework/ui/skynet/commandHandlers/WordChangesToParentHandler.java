@@ -25,9 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -62,10 +61,9 @@ public class WordChangesToParentHandler extends AbstractHandler {
             Artifact secondArtifact = null;
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();
 
-            TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
             secondArtifact =
-                  selectedArtifactChange.getModType() == DELETED ? null : artifactManager.getArtifactFromId(
-                        selectedArtifactChange.getArtifact().getArtId(), transactionId);
+                  selectedArtifactChange.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
+                        selectedArtifactChange.getArtifact().getArtId(), parentBranch);
 
             RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
 

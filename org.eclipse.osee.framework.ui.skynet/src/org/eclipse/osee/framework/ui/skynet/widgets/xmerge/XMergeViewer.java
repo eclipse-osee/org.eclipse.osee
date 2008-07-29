@@ -224,7 +224,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
                   }
                } else {
                   try {
-                     ChangeView.open(conflicts[0].getCommitTransactionId().getTransactionNumber());
+                     ChangeView.open(conflicts[0].getCommitTransactionId());
                   } catch (Exception ex) {
                      OSEELog.logException(XMergeViewer.class, ex, true);
                   }

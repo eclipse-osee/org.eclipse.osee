@@ -555,10 +555,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                Artifact secondArtifact = null;
                Branch parentBranch = firstArtifact.getBranch().getParentBranch();
 
-               TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
                secondArtifact =
-                     selectedItem.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                           selectedItem.getArtifact().getArtId(), transactionId);
+                     selectedItem.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
+                           selectedItem.getArtifact().getArtId(), parentBranch);
 
                RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
 
@@ -614,9 +613,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                Artifact selectedArtifact = selectedItem.getArtifact();
 
                RevisionHistoryView revisionHistoryView =
-                     (RevisionHistoryView) page.showView(
-                           RevisionHistoryView.VIEW_ID,
-                           selectedArtifact.getGuid(),
+                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
                            IWorkbenchPage.VIEW_VISIBLE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
@@ -840,8 +837,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               Pair<TransactionId, TransactionId> transactionToFrom =
-                     TransactionIdManager.getInstance().getStartEndPoint(branch);
+               Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getStartEndPoint(branch);
                if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
                   AWorkbench.popup("Information", "There are no changes on this branch.");
                   monitor.done();
@@ -1027,7 +1023,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      modifiedWordArtifactSelected && change.getChangeType() == ChangeType.CONFLICTING;
                boolean validDiffParent = wordArtifactSelected && parentBranch != null;
 
-               showInExplorer.setEnabled(artifactSelected && reportBranch == BranchPersistenceManager.getInstance().getDefaultBranch());
+               showInExplorer.setEnabled(artifactSelected && reportBranch == BranchPersistenceManager.getDefaultBranch());
 
                copyMenuItem.setEnabled(readPermission);
                // showFinalWordVersionMenuItem.setEnabled(wordArtifactSelected
@@ -1276,8 +1272,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          monitor.subTask("Calculating change set");
 
          Collection<RevisionChange> revisionChanges =
-               RevisionManager.getInstance().getAllTransactionChanges(OUTGOING,
-                     baseTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId, null);
+               RevisionManager.getInstance().getAllTransactionChanges(OUTGOING, baseTransactionId, toTransactionId,
+                     artId, null);
          int worstSize = revisionChanges.size();
          Collection<Long> attributeGammas = new ArrayList<Long>(worstSize);
          Collection<Long> linkGammas = new ArrayList<Long>(worstSize);

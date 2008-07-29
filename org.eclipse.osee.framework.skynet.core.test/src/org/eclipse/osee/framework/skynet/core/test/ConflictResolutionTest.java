@@ -49,10 +49,9 @@ public class ConflictResolutionTest extends TestCase {
    public void testResolveConflicts() {
       try {
          Collection<Conflict> conflicts =
-               RevisionManager.getInstance().getConflictsPerBranch(
-                     ConflictTestManager.getSourceBranch(),
+               RevisionManager.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getInstance().getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
+                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
@@ -68,10 +67,9 @@ public class ConflictResolutionTest extends TestCase {
          }
 
          conflicts =
-               RevisionManager.getInstance().getConflictsPerBranch(
-                     ConflictTestManager.getSourceBranch(),
+               RevisionManager.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
-                     TransactionIdManager.getInstance().getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
+                     TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
 
          for (Conflict conflict : conflicts) {
             assertTrue(

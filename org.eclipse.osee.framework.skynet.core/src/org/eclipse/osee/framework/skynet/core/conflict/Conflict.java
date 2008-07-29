@@ -135,7 +135,7 @@ public abstract class Conflict implements IAdaptable {
          } else {
             sourceArtifact =
                   ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getInstance().getStartEndPoint(mergeBranch).getKey());
+                        TransactionIdManager.getStartEndPoint(mergeBranch).getKey());
          }
       }
       return sourceArtifact;
@@ -156,7 +156,7 @@ public abstract class Conflict implements IAdaptable {
          } else {
             destArtifact =
                   ArtifactPersistenceManager.getInstance().getArtifactFromId(artId,
-                        TransactionIdManager.getInstance().getPriorTransaction(commitTransactionId));
+                        TransactionIdManager.getPriorTransaction(commitTransactionId));
 
          }
       }
@@ -249,8 +249,8 @@ public abstract class Conflict implements IAdaptable {
       if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
-                  getConflictType().Value(), passedStatus, TransactionIdManager.getInstance().getStartEndPoint(
-                        mergeBranch).getKey().getTransactionNumber(),
+                  getConflictType().Value(), passedStatus,
+                  TransactionIdManager.getStartEndPoint(mergeBranch).getKey().getTransactionNumber(),
                   this instanceof AttributeConflict ? ((AttributeConflict) this).getAttrId() : 0);
       return status;
    }

@@ -89,7 +89,6 @@ import org.osgi.framework.Bundle;
 public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IEventReceiver {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
    private IHandlerService handlerService;
@@ -511,7 +510,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
 
       try {
-         for (RelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchPersistenceManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             addReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -525,7 +524,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       try {
 
-         for (RelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchPersistenceManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             createReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -733,31 +732,32 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set All Partitions",
                   "Set All Partitions on Artifacts\n\n" + sb.toString())) {
 
-               AbstractSkynetTxTemplate partitionsTx = new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
+               AbstractSkynetTxTemplate partitionsTx =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
-                     for (Artifact art : arts) {
-                        for (String partition : partitions) {
-                           boolean found = false;
-                           for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
-                              if (attr.toString().equals(partition)) {
-                                 found = true;
-                                 break;
+                        @Override
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                           for (Artifact art : arts) {
+                              for (String partition : partitions) {
+                                 boolean found = false;
+                                 for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                                    if (attr.toString().equals(partition)) {
+                                       found = true;
+                                       break;
+                                    }
+                                 }
+                                 if (!found) {
+                                    art.addAttribute(Requirements.PARTITION, partition);
+                                 }
                               }
-                           }
-                           if (!found) {
-                              art.addAttribute(Requirements.PARTITION, partition);
-                           }
-                        }
-                        for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
-                           if (attr.toString().equals("Unspecified")) attr.delete();
-                        }
+                              for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                                 if (attr.toString().equals("Unspecified")) attr.delete();
+                              }
 
-                        art.persistAttributes();
-                     }
-                  }
-               };
+                              art.persistAttributes();
+                           }
+                        }
+                     };
                try {
                   partitionsTx.execute();
                } catch (Exception ex) {

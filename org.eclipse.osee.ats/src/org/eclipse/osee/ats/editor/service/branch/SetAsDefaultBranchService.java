@@ -115,7 +115,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IEvent
       try {
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
             Pair<TransactionId, TransactionId> transactionToFrom =
-                  TransactionIdManager.getInstance().getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
+                  TransactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
             enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
          } else {
             enabled = smaMgr.getBranchMgr().getTransactionId() != null;

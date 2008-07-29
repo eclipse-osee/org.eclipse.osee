@@ -221,7 +221,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            UniversalGroup.addGroup(ed.getEntry(), BranchPersistenceManager.getInstance().getDefaultBranch());
+            UniversalGroup.addGroup(ed.getEntry(), BranchPersistenceManager.getDefaultBranch());
             treeViewer.refresh();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -241,7 +241,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
          AbstractSkynetTxTemplate unrelateTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
                   @Override
                   protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (GroupExplorerItem item : items) {
@@ -273,7 +273,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
          AbstractSkynetTxTemplate deleteUniversalGroupTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
                   @Override
                   protected void handleTxWork() throws OseeCoreException, SQLException {
                      for (GroupExplorerItem item : items) {
@@ -359,7 +359,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       try {
          if (event instanceof TransactionEvent) {
             Artifact topArt =
-                  UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
+                  UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
             if (topArt == null) {
                refresh();
                return;
@@ -407,7 +407,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       Artifact topArt = null;
       try {
          topArt =
-               UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
+               UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
@@ -555,7 +555,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                         final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                         AbstractSkynetTxTemplate relateArtifactTx =
-                              new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+                              new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
 
                                  @Override
                                  protected void handleTxWork() throws OseeCoreException, SQLException {
@@ -653,7 +653,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
             return;
          }
          AbstractSkynetTxTemplate relateArtifactTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
 
                   @Override
                   protected void handleTxWork() throws OseeCoreException, SQLException {

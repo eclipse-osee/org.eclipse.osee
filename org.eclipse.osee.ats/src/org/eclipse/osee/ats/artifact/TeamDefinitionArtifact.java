@@ -374,7 +374,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, BranchDoesNotExist {
       Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
       if (branchId != null && branchId > 0) {
-         return BranchPersistenceManager.getInstance().getBranch(branchId);
+         return BranchPersistenceManager.getBranch(branchId);
       } else {
          Artifact parent = getParent();
          if (parent instanceof TeamDefinitionArtifact) {

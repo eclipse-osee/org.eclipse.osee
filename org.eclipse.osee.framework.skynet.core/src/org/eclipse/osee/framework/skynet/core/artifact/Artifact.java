@@ -53,10 +53,12 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -64,6 +66,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
@@ -83,7 +86,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private String humanReadableId;
    private ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
-   private int transactionId;
+   private TransactionId transactionId;
    private int artId;
    private int gammaId;
    private Date lastModified;
@@ -1254,7 +1257,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       String name = getDescriptiveName();
 
       if (isHistorical()) {
-         name += " [Rev:" + transactionId + "]";
+         name += " [Rev:" + transactionId.getTransactionNumber() + "]";
       }
 
       return name;
@@ -1328,7 +1331,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return the transaction number for this artifact if it is historical, otherwise 0
     */
    public int getTransactionNumber() {
-      return transactionId;
+      return transactionId.getTransactionNumber();
    }
 
    /**
@@ -1544,8 +1547,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelatedArtifactsAll(this);
    }
 
-   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, Date lastModified, boolean historical) {
-      this.lastModified = lastModified;
+   /**
+    * This method should never be called from outside the OSEE Application Framework
+    * 
+    * @param gammaId
+    * @param transactionId
+    * @param modType
+    * @param lastModified
+    * @param historical
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
+    * @throws SQLException
+    */
+   public void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
       this.deleted = modType == ModificationType.DELETED;
       this.gammaId = gammaId;
       this.transactionId = transactionId;

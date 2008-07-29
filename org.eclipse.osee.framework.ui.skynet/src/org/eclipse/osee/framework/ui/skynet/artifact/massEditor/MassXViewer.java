@@ -166,7 +166,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
                Artifact artifact = arts.iterator().next();
-               if (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) event.data =
+               if (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch()) event.data =
                      new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
             }
          }
@@ -176,7 +176,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
                Artifact artifact = arts.iterator().next();
-               if (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) event.doit = true;
+               if (artifact.getBranch() == BranchPersistenceManager.getDefaultBranch()) event.doit = true;
             }
          }
       });

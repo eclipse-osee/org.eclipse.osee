@@ -37,7 +37,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Theron Virgin
  */
 public class AttributeConflict extends Conflict {
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeConflict.class);
    public static final String EMPTY_XML = "<w:p><w:r><w:t></w:t></w:r></w:p>";
    public final static String NO_VALUE = "";
@@ -179,7 +178,7 @@ public class AttributeConflict extends Conflict {
 
       try {
          Artifact artifact;
-         Branch defaultBranch = branchPersistenceManager.getDefaultBranch();
+         Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
          if (defaultBranch.equals(sourceBranch)) {
             artifact = getSourceArtifact();
             if (adapter.isInstance(artifact)) {

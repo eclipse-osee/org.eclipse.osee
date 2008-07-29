@@ -91,7 +91,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             Branch branch = (Branch) element;
             boolean favorite = SkynetAuthentication.getUser().isFavoriteBranch(branch);
             boolean action = branch.isChangeManaged();
-            boolean isDefault = element.equals(BranchPersistenceManager.getInstance().getDefaultBranch());
+            boolean isDefault = element.equals(BranchPersistenceManager.getDefaultBranch());
 
             if (favorite && action) {
                return isDefault ? favoriteDefaultChangedManagedBranchImage : favoriteChangeManagedBranchImage;

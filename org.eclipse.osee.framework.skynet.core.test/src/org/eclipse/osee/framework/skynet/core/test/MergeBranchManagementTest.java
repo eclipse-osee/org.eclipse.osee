@@ -50,9 +50,8 @@ public class MergeBranchManagementTest extends TestCase {
    public void testGetMergeBranchNotCreated() {
 
       try {
-         BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
          Branch mergeBranch =
-               branchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
+            BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
                      ConflictTestManager.getDestBranch().getBranchId());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
@@ -67,9 +66,8 @@ public class MergeBranchManagementTest extends TestCase {
     */
    public void testGetMergeBranchCreated() {
       try {
-         BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
          Branch mergeBranch =
-               branchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
+               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
                      ConflictTestManager.getDestBranch().getBranchId());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);

@@ -92,7 +92,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactEditor.class);
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private int previewPageIndex;
    private int attributesPageIndex;
    private int newAttributesPageIndex;
@@ -360,7 +359,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(getEditorInput().getArtifact().getBranch().equals(branchManager.getDefaultBranch()));
+      item.setEnabled(getEditorInput().getArtifact().getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -373,7 +372,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       });
       item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
-            branchManager.getDefaultBranch()));
+            BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
@@ -394,7 +393,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       });
       item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
-            branchManager.getDefaultBranch()));
+            BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -505,7 +504,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private void checkEnabledTooltems() {
       if (!attributeComposite.isDisposed()) {
-         boolean areBranchesEqual = getEditorInput().getArtifact().getBranch().equals(branchManager.getDefaultBranch());
+         boolean areBranchesEqual =
+               getEditorInput().getArtifact().getBranch().equals(BranchPersistenceManager.getDefaultBranch());
          boolean isEditAllowed = getEditorInput().getArtifact().isReadOnly() != true;
 
          previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
@@ -603,9 +603,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          ((RemoteTransactionEvent) event).fireSingleEvent(editor);
       } else if (event instanceof DefaultBranchChangedEvent) {
          try {
-            if (artifact.getBranch().equals(branchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
+            if (artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                try {
-                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
+                        BranchPersistenceManager.getDefaultBranch()));
                } catch (ArtifactDoesNotExist ex) {
                   System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
                   AWorkbench.getActivePage().closeEditor(this, false);
@@ -617,7 +618,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
          try {
-            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
+                  BranchPersistenceManager.getDefaultBranch()));
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
             AWorkbench.getActivePage().closeEditor(this, false);

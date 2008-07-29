@@ -36,7 +36,7 @@ public class ArtifactTypeValidityCache {
    private void populateCache() throws SQLException, OseeCoreException {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
 
-      for (Branch branch : BranchPersistenceManager.getInstance().getRootBranches()) {
+      for (Branch branch : BranchPersistenceManager.getRootBranches()) {
          branchToartifactTypeMap.put(branch, artifactTypes);
       }
    }

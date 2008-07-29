@@ -201,7 +201,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Branch parentBranch = BranchPersistenceManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
-            BranchPersistenceManager.getInstance().createWorkingBranch(
+            BranchPersistenceManager.createWorkingBranch(
                   TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
                   childBranchName, SkynetAuthentication.getUser(UserEnum.NoOne));
       return childBranch;
@@ -232,7 +232,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, navArt);
          art.persistAttributesAndRelations();
       }
@@ -245,7 +245,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, robotArt);
          art.persistAttributesAndRelations();
       }
@@ -307,7 +307,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       branchArtifact.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                  BranchPersistenceManager.getInstance().getDefaultBranch());
+                  BranchPersistenceManager.getDefaultBranch());
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
       branchArtifact.persistAttributesAndRelations();
 
@@ -350,7 +350,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          Artifact comArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+                     BranchPersistenceManager.getDefaultBranch());
 
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
          art.persistAttributesAndRelations();

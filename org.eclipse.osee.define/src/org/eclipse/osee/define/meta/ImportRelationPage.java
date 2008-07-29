@@ -37,7 +37,6 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  * @author Ryan D. Brooks
  */
 public class ImportRelationPage extends WizardDataTransferPage {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private Button btnSingleFile;
    private Text txtSingleFile;
    private String currentFileSelection;
@@ -151,7 +150,7 @@ public class ImportRelationPage extends WizardDataTransferPage {
 
          File file = new File(txtSingleFile.getText());
          // TODO this branch needs to be selected from the wizard not hard coded
-         Job job = new ImportRelationJob(file, branchManager.getDefaultBranch());
+         Job job = new ImportRelationJob(file, BranchPersistenceManager.getDefaultBranch());
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();

@@ -123,7 +123,7 @@ public class AtsLib implements IAtsLib {
 
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
       try {
-         Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+         Branch branch = BranchPersistenceManager.getBranch(branchId);
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
          openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

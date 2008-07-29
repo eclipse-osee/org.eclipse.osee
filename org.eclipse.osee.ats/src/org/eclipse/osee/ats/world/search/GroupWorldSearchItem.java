@@ -55,7 +55,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    public void getProduct() {
       if (groupName == null) return;
       if (group == null) group =
-            UniversalGroup.getGroups(groupName, BranchPersistenceManager.getInstance().getDefaultBranch()).iterator().next();
+            UniversalGroup.getGroups(groupName, BranchPersistenceManager.getDefaultBranch()).iterator().next();
       if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 

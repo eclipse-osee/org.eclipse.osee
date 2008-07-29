@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 
 /**
  * This class is responsible for persisting an attribute for a particular artifact. Upon completion the attribute will
@@ -125,7 +125,7 @@ public class AttributeToTransactionOperation {
    private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws OseeCoreException {
       return new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), dao.getValue(), attribute.getGammaId(),
-            transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());
+            transaction.getTransactionId(), dao.getUri(), attrModType, transaction.getBranch());
    }
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
@@ -168,7 +168,7 @@ public class AttributeToTransactionOperation {
 
       int gammaId = SkynetDatabase.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
+            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionId(), null,
             ModificationType.DELETED, transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));

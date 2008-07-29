@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
@@ -43,9 +41,7 @@ import org.eclipse.swt.widgets.MenuItem;
  * @author Jeff C. Phillips
  */
 public class ArtifactPreviewMenu {
-
    private static final RendererManager rendererManager = RendererManager.getInstance();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private static final String PREVIEW_WITH_RECURSE = "PREVIEW_WITH_RECURSE";
    private static final String PREVIEW_ARTIFACT = "PREVIEW_ARTIFACT";
@@ -101,11 +97,9 @@ public class ArtifactPreviewMenu {
                   } else if (object instanceof TransactionData) {
                      TransactionData firstTransactionData = (TransactionData) object;
 
-                     TransactionId firstTransactionId =
-                           transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
                      artifact =
                            ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                                 firstTransactionData.getAssociatedArtId(), firstTransactionId);
+                                 firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId());
                   }
 
                   if (artifact != null) {
@@ -148,10 +142,8 @@ public class ArtifactPreviewMenu {
                else if (firstElement instanceof TransactionData) {
                   TransactionData firstTransactionData = (TransactionData) firstElement;
 
-                  TransactionId firstTransactionId =
-                        transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
                   selectedItems.add(ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        firstTransactionData.getAssociatedArtId(), firstTransactionId));
+                        firstTransactionData.getAssociatedArtId(), firstTransactionData.getTransactionId()));
                } else {
                   TreeViewerUtility.getPreorderSelection((TreeViewer) viewer, selectedItems);
                }
