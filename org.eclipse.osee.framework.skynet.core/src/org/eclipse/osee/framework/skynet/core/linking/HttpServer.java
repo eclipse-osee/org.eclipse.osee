@@ -209,7 +209,7 @@ public class HttpServer implements Runnable {
             logger.log(Level.WARNING, String.format("Invalid Port for: [%s][%s]", element.getName(), serviceName), ex);
          }
       }
-      int portToUse = Integer.getInteger(OseeProperties.OSEE_HTTP_PORT, 0);
+      int portToUse = Integer.getInteger(OseeProperties.OSEE_LOCAL_HTTP_WORKER_PORT, 0);
       if (ports.containsKey(DEFAULT_SERVICE_NAME) == false || portToUse != 0) {
          // User Specified Port take Precedence
          if (portToUse == 0) {

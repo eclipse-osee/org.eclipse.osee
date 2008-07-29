@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.info;
 
-import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.DEFAULT_DB_CONNECTION;
+import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_DB_CONNECTION_ID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +70,7 @@ public class ServerConfigUtil {
    }
 
    public DbInformation getDefaultService() {
-      String dbConnectionId = System.getProperty(DEFAULT_DB_CONNECTION);
+      String dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
       if (dbConnectionId != null) {
          if (servicesMap.containsKey(dbConnectionId)) {
             OseeLog.log(Activator.class, Level.INFO, "Using DEFAULT_DB_CONNECTION: " + dbConnectionId);

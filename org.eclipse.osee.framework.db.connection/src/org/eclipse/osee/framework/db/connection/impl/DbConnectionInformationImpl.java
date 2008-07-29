@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.db.connection.impl;
 
-import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.DEFAULT_DB_CONNECTION;
+import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_DB_CONNECTION_ID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,7 +35,7 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
 
    public DbConnectionInformationImpl() {
       dbInfo = new HashMap<String, DbInformation>();
-      dbConnectionId = System.getProperty(DEFAULT_DB_CONNECTION);
+      dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
    }
 
    /* (non-Javadoc)
