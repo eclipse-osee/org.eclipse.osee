@@ -77,7 +77,7 @@ public class RelationPersistenceManager {
       try {
          relationPersistTx.execute();
       } catch (Exception ex) {
-         throw new SQLException(ex.getLocalizedMessage());
+         throw new SQLException(ex);
       }
    }
 

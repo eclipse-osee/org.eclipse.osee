@@ -55,8 +55,4 @@ public enum ModificationType implements Serializable {
    public TxChange getTxChange() {
       return this == DELETED ? TxChange.DELETED : TxChange.CURRENT;
    }
-
-   public int getCurrentValue() {
-      return getTxChange().ordinal();
-   }
 }

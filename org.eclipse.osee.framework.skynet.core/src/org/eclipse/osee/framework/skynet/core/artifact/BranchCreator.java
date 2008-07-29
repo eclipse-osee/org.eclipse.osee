@@ -217,7 +217,7 @@ public class BranchCreator {
             ModificationType modType = gammaAndMod.getValue();
             txAddressData.add(new Object[] {SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
                   gammaAndMod.getKey(), SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,
-                  modType.getCurrentValue()});
+                  TxChange.CURRENT.getValue()});
          }
          ConnectionHandler.runPreparedUpdateBatch(INSERT_TX_FOR_HISTORY, txAddressData);
          txAddressData.clear();
