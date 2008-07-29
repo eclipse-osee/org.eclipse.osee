@@ -73,6 +73,7 @@ public class GroupSelection {
       List<String> initTasks = new ArrayList<String>();
       initTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbInit");
       dbInitTasks.addAll(0, initTasks);
+      dbInitTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbBranchDataImport");
    }
 
    public void addChoice(String listName, List<String> dbInitTasks, boolean bareBones) {

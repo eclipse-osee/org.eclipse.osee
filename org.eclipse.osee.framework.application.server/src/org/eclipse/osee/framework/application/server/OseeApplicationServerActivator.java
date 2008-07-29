@@ -79,7 +79,7 @@ public class OseeApplicationServerActivator implements BundleActivator {
    public void stop(BundleContext context) throws Exception {
    }
 
-   private void processBundles(String requiredBundles, Map<String, Bundle> bundles, Operation operation) throws BundleException {
+   private void processBundles(String requiredBundles, Map<String, Bundle> bundles, Operation operation) throws BundleException, InterruptedException {
       Pattern pattern = Pattern.compile("(.*)?;bundle-version=\"(.*)?\"");
       boolean isStart = operation.equals(Operation.START);
       for (String entry : requiredBundles.split(",")) {
@@ -89,17 +89,26 @@ public class OseeApplicationServerActivator implements BundleActivator {
             String requiredVersion = matcher.group(2);
             Bundle bundle = bundles.get(bundleName);
             if (bundle != null && isVersionAllowed(bundle, requiredVersion)) {
-               if (isStart) {
-                  bundle.start();
-               } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
-                  bundle.stop();
+               try {
+                  if (isStart) {
+                     bundle.start();
+                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
+                     bundle.stop();
+                  }
+               } catch (Exception ex) {
+                  this.wait(1000);
+                  if (isStart) {
+                     bundle.start();
+                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
+                     bundle.stop();
+                  } 
                }
             }
          }
       }
    }
 
-   private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException {
+   private void launchApplicationServer(String requiredBundles, Map<String, Bundle> bundles) throws BundleException, InterruptedException {
       processBundles(requiredBundles, bundles, Operation.START);
       String message =
             String.format("Osee Application Server - port: [%s] data: [%s]", System.getProperty(

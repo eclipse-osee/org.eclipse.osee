@@ -98,7 +98,9 @@ public class TransactionIdManager {
 
    public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws SQLException {
       Integer transactionNumber = SkynetDatabase.getNextTransactionId();
-
+      if (comment == null){
+         comment = "";
+      }
       int authorArtId = -1;
       if (userToBlame == null || !userToBlame.isInDb()) {
          if (!SkynetDbInit.isDbInit()) {

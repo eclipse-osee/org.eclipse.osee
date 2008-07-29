@@ -38,7 +38,7 @@ import org.osgi.framework.Bundle;
  * @see BranchPersistenceManager#createRootBranch(String, String, String, Collection, boolean)
  */
 public class MasterSkynetTypesImport {
-   private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.SkynetDbTypes";
+   private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.OseeTypes";
    private Logger logger = ConfigUtil.getConfigFactory().getLogger(MasterSkynetTypesImport.class);
    private static MasterSkynetTypesImport instance;
 
