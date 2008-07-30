@@ -25,8 +25,10 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.apache.commons.lang"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.osee.framework.ui.plugin"/>
+      <import plugin="net.jini"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.pde.core"/>
@@ -58,7 +60,6 @@
       <import plugin="org.eclipse.osee.framework.search.engine.servlet" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="org.eclipse.osee.framework.database" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
    </requires>
 
    <plugin
@@ -117,23 +118,11 @@
          version="0.0.0"/>
 
    <plugin
-         id="net.jini"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.eclipse.osee.framework.feature.source"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.osee.framework.db.connection"
@@ -255,13 +244,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.demo.db.connection"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.derby"
          download-size="0"
          install-size="0"
@@ -283,5 +265,3 @@
          unpack="false"/>
 
 </feature>
-
-
