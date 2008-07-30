@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -96,12 +98,13 @@ public class OseeApplicationServerActivator implements BundleActivator {
                      bundle.stop();
                   }
                } catch (Exception ex) {
-                  this.wait(1000);
+                  OseeLog.log(OseeApplicationServerActivator.class, Level.SEVERE, ex);
+                  Thread.sleep(1000);
                   if (isStart) {
                      bundle.start();
                   } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
                      bundle.stop();
-                  } 
+                  }
                }
             }
          }
