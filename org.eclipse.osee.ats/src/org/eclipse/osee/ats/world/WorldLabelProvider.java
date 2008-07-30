@@ -58,6 +58,8 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          if (xCol.equals(WorldXViewerFactory.Type_Col)) return wva.getWorldViewType();
+         if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
+         if (xCol.equals(WorldXViewerFactory.Type_Col)) return wva.getWorldViewType();
          if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) return wva.getWorldViewActionableItems();
          if (xCol.equals(WorldXViewerFactory.User_Community_Col)) return wva.getWorldViewUserCommunity();
          if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Col)) return wva.getWorldViewNumberOfTasks();
@@ -84,7 +86,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Priority_Col)) return wva.getWorldViewPriority();
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
          if (xCol.equals(WorldXViewerFactory.Decision_Col)) return wva.getWorldViewDecision();
-         if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
          if (xCol.equals(WorldXViewerFactory.SW_Enhancement_Col)) return wva.getWorldViewSWEnhancement();
          if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
                wva.getWorldViewWeeklyBenefit(), true);

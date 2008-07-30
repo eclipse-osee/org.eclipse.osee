@@ -77,8 +77,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Description_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".description", "Description", 150, SWT.LEFT, false, SortDataType.String,
                true, null);
-   public static XViewerAtsAttributeColumn Legacy_PCR_Col =
-         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".legacyPcrId", ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, 40,
+   public static XViewerColumn Legacy_PCR_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".legacyPcr", ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getDisplayName(), 40,
                SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn SW_Enhancement_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".swEnhancement", "SW Enhancement", 150, SWT.LEFT, false,
@@ -89,10 +89,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Resolution_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".resolution", "Resolution", 150, SWT.LEFT, false, SortDataType.String,
                false, null);
-   public static XViewerAtsAttributeColumn Estimated_Release_Date_Col =
-         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".estimatedReleaseDate",
-               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE, 80, SWT.LEFT, false, SortDataType.Date, false,
-               "Date the changes will be made available to the users.");
+   public static XViewerColumn Estimated_Release_Date_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".estimatedReleaseDate",
+               ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getDisplayName(), 80, SWT.LEFT, false, SortDataType.Date,
+               false, "Date the changes will be made available to the users.");
    public static final XViewerColumn Release_Date_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".releaseDate", ATSAttributes.RELEASE_DATE_ATTRIBUTE.getDisplayName(),
                80, SWT.LEFT, false, SortDataType.Date, false, "Date the changes were made available to the users.");

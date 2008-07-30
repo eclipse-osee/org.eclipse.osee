@@ -14,16 +14,31 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
  */
 public class XViewerAtsAttributeColumn extends XViewerAttributeColumn {
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    * 
+    * @param col
+    */
+   public XViewerAtsAttributeColumn copy() {
+      return new XViewerAtsAttributeColumn(getId(), getName(), getAttributeTypeName(), getWidth(), getAlign(),
+            isShow(), getSortDataType(), isMultiColumnEditable(), getDescription());
+   }
+
    public XViewerAtsAttributeColumn(String id, ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
+      this(id, atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
             multiColumnEditable, description);
    }
 
    public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(
+      this(
             WorldXViewerFactory.COLUMN_NAMESPACE + "." + (atsAttribute.getDisplayName().replaceAll(" ", "").toLowerCase()),
             atsAttribute.getDisplayName(), atsAttribute.getStoreName(), width, align, show, sortDataType,
             multiColumnEditable, description);
+   }
+
+   public XViewerAtsAttributeColumn(String id, String name, String attributeTypeName, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, attributeTypeName, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
 }
