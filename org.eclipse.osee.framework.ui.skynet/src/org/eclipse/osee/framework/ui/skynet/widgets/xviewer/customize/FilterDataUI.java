@@ -109,9 +109,11 @@ public class FilterDataUI {
          if (!isXViewerTextFiltered()) xViewer.addFilter(xViewerFilter);
          xViewerFilter.setFilterText(custData.getFilterData().getFilterText());
          if (filterLabel != null) {
-            if (SkynetGuiPlugin.getInstance() != null) filterLabel.setImage(SkynetGuiPlugin.getInstance().getImage(
-                  "clear.gif"));
-            filterLabel.setText("clear");
+            if (SkynetGuiPlugin.getInstance() != null) {
+               filterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+            } else {
+               filterLabel.setText("clear");
+            }
             filterLabel.getParent().layout();
          }
       }
