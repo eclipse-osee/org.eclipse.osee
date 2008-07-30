@@ -223,11 +223,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
 
          // Create History tab
-         if (smaMgr.showTaskTab()) {
-            historyComposite = new SMAHistoryComposite(smaMgr, getContainer(), SWT.NONE);
-            historyPageIndex = addPage(historyComposite);
-            setPageText(historyPageIndex, "History");
-         }
+         historyComposite = new SMAHistoryComposite(smaMgr, getContainer(), SWT.NONE);
+         historyPageIndex = addPage(historyComposite);
+         setPageText(historyPageIndex, "History");
 
          setActivePage(workFlowPageIndex);
       } catch (Exception ex) {

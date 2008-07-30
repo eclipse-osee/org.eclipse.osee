@@ -46,7 +46,6 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          if (!TaskViewerVisibleColumns.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);
-            newCol.setWidth(0);
             registerColumn(newCol);
          }
       }
