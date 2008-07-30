@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
+
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.data.SchemaData;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.osgi.framework.Bundle;
 
@@ -52,7 +55,7 @@ public class SkynetDbInit extends DbInitializationTask {
 
    public void run(Connection connection) throws Exception {
       setIsInDbInit(true);
-      setPreArtifactCreation(true);
+      SkynetAuthentication.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
       Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
@@ -120,19 +123,5 @@ public class SkynetDbInit extends DbInitializationTask {
       for (String sequenceName : SkynetDatabase.sequences) {
          seqManager.initializeSequence(sequenceName);
       }
-   }
-
-   /**
-    * @return the isPreArtifactCreation
-    */
-   public static boolean isPreArtifactCreation() {
-      return isPreArtifactCreation;
-   }
-
-   /**
-    * @param isPreArtifactCreation the isPreArtifactCreation to set
-    */
-   public static void setPreArtifactCreation(boolean isPreArtifactCreation) {
-      SkynetDbInit.isPreArtifactCreation = isPreArtifactCreation;
    }
 }

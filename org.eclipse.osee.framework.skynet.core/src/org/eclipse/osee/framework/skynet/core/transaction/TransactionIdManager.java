@@ -103,7 +103,7 @@ public class TransactionIdManager {
       }
       int authorArtId = -1;
       if (userToBlame == null || !userToBlame.isInDb()) {
-         if (!SkynetDbInit.isDbInit()) {
+         if (SkynetAuthentication.isBasicUsersCreated()) {
             authorArtId = SkynetAuthentication.getNoOneArtifactId();
          }
       } else {

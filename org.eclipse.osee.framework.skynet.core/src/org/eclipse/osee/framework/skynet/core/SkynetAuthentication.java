@@ -62,8 +62,10 @@ public class SkynetAuthentication {
    private String[] sortedActiveUserNameCache;
    private User currentUser;
    private boolean duringUserCreation;
-
-   private static final SkynetAuthentication instance = new SkynetAuthentication();
+   private boolean basicUsersCreated = true;
+   
+   
+private static final SkynetAuthentication instance = new SkynetAuthentication();
 
    private SkynetAuthentication() {
       firstTimeThrough = true;
@@ -157,7 +159,7 @@ public class SkynetAuthentication {
 
    private synchronized User getAuthenticatedUser() {
       try {
-         if (SkynetDbInit.isPreArtifactCreation()) {
+         if (!isBasicUsersCreated()) {
             return BootStrapUser.getInstance();
          } else {
             if (firstTimeThrough) {
@@ -334,4 +336,13 @@ public class SkynetAuthentication {
       }
       return instance.noOneArtifactId;
    }
+   
+   public static boolean isBasicUsersCreated() {
+		return instance.basicUsersCreated;
+   }
+
+	public static void setBasicUsersCreated(boolean basicUsersCreated) {
+		instance.basicUsersCreated = basicUsersCreated;
+	}
+   
 }

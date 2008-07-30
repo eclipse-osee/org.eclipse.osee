@@ -31,7 +31,7 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
       for (UserEnum userEnum : UserEnum.values()) {
          SkynetAuthentication.createUser(userEnum);
       }
-
+      SkynetAuthentication.setBasicUsersCreated(true);
       // Create Global Preferences artifact that lives on common branch
       GlobalPreferences.createGlobalPreferencesArtifact();
 
