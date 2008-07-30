@@ -372,12 +372,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            if (e1.toString().startsWith("-"))
+            if (((CustomizeData) e1).getName().startsWith("-"))
                return -1;
-            else if (e2.toString().startsWith("-"))
+            else if (((CustomizeData) e2).getName().startsWith("-"))
                return 1;
             else
-               return getComparator().compare(e1.toString(), e2.toString());
+               return getComparator().compare(((CustomizeData) e1).getName(), ((CustomizeData) e2).getName());
          }
       });
       custTable.addDoubleClickListener(new IDoubleClickListener() {
