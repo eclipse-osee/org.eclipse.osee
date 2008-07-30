@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
@@ -323,8 +322,8 @@ public class TransactionIdManager {
             TransactionDetailsType txType = TransactionDetailsType.toEnum(rSet.getInt("tx_type"));
 
             transactionId =
-                  new TransactionId(transactionNumber, branch, rSet.getString("osee_comment"), rSet.getDate("time"),
-                        rSet.getInt("author"), rSet.getInt("commit_art_id"), txType);
+                  new TransactionId(transactionNumber, branch, rSet.getString("osee_comment"),
+                        rSet.getTimestamp("time"), rSet.getInt("author"), rSet.getInt("commit_art_id"), txType);
             instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
          } finally {
             DbUtil.close(chStmt);
