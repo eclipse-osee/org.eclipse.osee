@@ -96,6 +96,7 @@ public class CustomizeManager {
                   if (colId.endsWith(oldName)) {
                      resolvedCol = xCol;
                      oldNameToColumnId.put(name, resolvedCol);
+                     break;
                   }
                }
             }
@@ -105,6 +106,7 @@ public class CustomizeManager {
                   if (xCol.getId().endsWith(name)) {
                      resolvedCol = xCol;
                      oldNameToColumnId.put(name, resolvedCol);
+                     break;
                   }
                }
             }
