@@ -72,6 +72,7 @@ public class XViewer extends TreeViewer {
       Tree tree = getTree();
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
+      setUseHashlookup(true);
    }
 
    public void dispose() {

@@ -326,7 +326,9 @@ public class CustomizeManager {
       // Create new columns
       addColumns();
       xViewer.updateStatusLabel();
-      ((XViewerLabelProvider) xViewer.getLabelProvider()).clearXViewerColumnIndexCache();
+      if (xViewer.getLabelProvider() instanceof XViewerLabelProvider) {
+         ((XViewerLabelProvider) xViewer.getLabelProvider()).clearXViewerColumnIndexCache();
+      }
       loading = false;
    }
 
