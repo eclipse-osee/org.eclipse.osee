@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -28,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog.XViewerCustomizeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 
 /**
@@ -149,20 +144,6 @@ public class CustomizeManager {
       loadCustomization(currentCustData);
    }
 
-   /**
-    * Clears out current columns, sorting and filtering and loads table customization
-    */
-   public void loadCustomization(final CustomizeData newCustData) {
-      SetCustomizationJob job = new SetCustomizationJob(xViewer, newCustData);
-      if (doCustomizeInCurrentThread()) {
-         job.run(null);
-      } else {
-         job.setUser(true);
-         job.setPriority(Job.SHORT);
-         job.schedule();
-      }
-   }
-
    public void resetDefaultSorter() {
       XViewerSorter sorter = xViewer.getXViewerFactory().createNewXSorter(xViewer);
       xViewer.setSorter(sorter);
@@ -243,10 +224,6 @@ public class CustomizeManager {
       return custData;
    }
 
-   public boolean doCustomizeInCurrentThread() {
-      return xViewer.doCustomizeInCurrentThread();
-   }
-
    public String getSortingStr() {
       if (currentCustData.getSortingData().isSorting()) {
          return currentCustData.getSortingData().toString();
@@ -319,108 +296,85 @@ public class CustomizeManager {
       return currentCustData.getSortingData().isSorting();
    }
 
-   public class SetCustomizationJob extends Job {
-
-      private final CustomizeData newCustData;
-      private final XViewer fXViewer;
-
-      public SetCustomizationJob(final XViewer fXViewer, final CustomizeData newCustData) {
-         super("Loading Customization " + newCustData.getName());
-         this.fXViewer = fXViewer;
-         this.newCustData = newCustData;
+   /**
+    * Clears out current columns, sorting and filtering and loads table customization
+    */
+   public void loadCustomization(final CustomizeData newCustData) {
+      loading = true;
+      if (xViewer.getTree().isDisposed()) return;
+      currentCustData = newCustData;
+      if (currentCustData.getName() == null || currentCustData.getName().equals("")) {
+         currentCustData.setName(CURRENT_LABEL);
       }
+      currentCustData.setNameSpace(xViewer.getViewerNamespace());
+      xViewer.getTextFilterComp().setCustData(newCustData);
+      if (currentCustData.getSortingData().isSorting())
+         xViewer.resetDefaultSorter();
+      else
+         xViewer.setSorter(null);
+      // Dispose all existing columns
+      for (TreeColumn treeCol : xViewer.getTree().getColumns())
+         treeCol.dispose();
+      // Create new columns
+      addColumns();
+      xViewer.updateStatusLabel();
+      loading = false;
+   }
 
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-       */
-      @Override
-      protected IStatus run(IProgressMonitor monitor) {
-         Display.getDefault().syncExec(new Runnable() {
-            public void run() {
-               loading = true;
-               if (fXViewer.getTree().isDisposed()) return;
-               currentCustData = newCustData;
-               if (currentCustData.getName() == null || currentCustData.getName().equals("")) {
-                  currentCustData.setName(CURRENT_LABEL);
+   public void addColumns() {
+      for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
+         xCol.setXViewer(xViewer);
+         TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
+         column.setMoveable(true);
+         column.setData(xCol);
+         if (xCol.getToolTip() == null || xCol.getToolTip().equals("")) {
+            column.setToolTipText(xCol.getName());
+         } else {
+            column.setToolTipText(xCol.getToolTip());
+         }
+         column.setText(xCol.getName());
+         if (xCol.isShow()) {
+            column.setWidth(xCol.getWidth());
+         } else {
+            column.setWidth(0);
+         }
+         column.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               // Add sorter if doesn't exist
+               if (xViewer.getSorter() == null) {
+                  resetDefaultSorter();
                }
-               currentCustData.setNameSpace(fXViewer.getViewerNamespace());
-               fXViewer.getTextFilterComp().setCustData(newCustData);
-               if (currentCustData.getSortingData().isSorting())
-                  fXViewer.resetDefaultSorter();
-               else
-                  fXViewer.setSorter(null);
-               // Dispose all existing columns
-               for (TreeColumn treeCol : fXViewer.getTree().getColumns())
-                  treeCol.dispose();
-               // Create new columns
-               addColumns();
-               fXViewer.updateStatusLabel();
-               loading = false;
-               fXViewer.refresh();
+               if (xViewer.isCtrlKeyDown()) {
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                  if (currSortCols == null) {
+                     currSortCols = new ArrayList<XViewerColumn>();
+                     currSortCols.add(xCol);
+                  } else {
+                     // If already selected this item, reverse the sort
+                     if (currSortCols.contains(xCol)) {
+                        for (XViewerColumn currXCol : currSortCols)
+                           if (currXCol.equals(xCol)) currXCol.reverseSort();
+                     } else
+                        currSortCols.add(xCol);
+                  }
+                  currentCustData.getSortingData().setSortXCols(currSortCols);
+               } else {
+
+                  List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
+                  cols.add(xCol);
+                  // If sorter already has this column sorted, reverse the sort
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                  if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
+                  // Set the newly sorted column
+                  currentCustData.getSortingData().setSortXCols(cols);
+               }
+               xViewer.refresh();
+               xViewer.updateStatusLabel();
             }
          });
-         if (monitor != null) monitor.done();
-         return Status.OK_STATUS;
       }
-
-      public void addColumns() {
-         for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
-            xCol.setXViewer(xViewer);
-            TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
-            column.setMoveable(true);
-            column.setData(xCol);
-            if (xCol.getToolTip() == null || xCol.getToolTip().equals("")) {
-               column.setToolTipText(xCol.getName());
-            } else {
-               column.setToolTipText(xCol.getToolTip());
-            }
-            column.setText(xCol.getName());
-            if (xCol.isShow()) {
-               column.setWidth(xCol.getWidth());
-            } else {
-               column.setWidth(0);
-            }
-            column.addSelectionListener(new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  super.widgetSelected(e);
-                  // Add sorter if doesn't exist
-                  if (xViewer.getSorter() == null) {
-                     resetDefaultSorter();
-                  }
-                  if (xViewer.isCtrlKeyDown()) {
-                     List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
-                     if (currSortCols == null) {
-                        currSortCols = new ArrayList<XViewerColumn>();
-                        currSortCols.add(xCol);
-                     } else {
-                        // If already selected this item, reverse the sort
-                        if (currSortCols.contains(xCol)) {
-                           for (XViewerColumn currXCol : currSortCols)
-                              if (currXCol.equals(xCol)) currXCol.reverseSort();
-                        } else
-                           currSortCols.add(xCol);
-                     }
-                     currentCustData.getSortingData().setSortXCols(currSortCols);
-                  } else {
-
-                     List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-                     cols.add(xCol);
-                     // If sorter already has this column sorted, reverse the sort
-                     List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
-                     if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
-                     // Set the newly sorted column
-                     currentCustData.getSortingData().setSortXCols(cols);
-                  }
-                  xViewer.refresh();
-                  xViewer.updateStatusLabel();
-               }
-            });
-         }
-      }
-
-   };
+   }
 
 }

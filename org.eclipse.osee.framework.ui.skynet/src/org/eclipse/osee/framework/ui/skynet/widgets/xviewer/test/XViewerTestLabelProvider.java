@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 
@@ -85,6 +86,14 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
       if (xCol == XViewerTestFactory.Name_Col && xViewerTest.isScheduled((IXViewerTestTask) element)) {
          return getSkynetImages("clock.gif");
       }
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
+    */
+   @Override
+   public Color getBackground(Object element, int columnIndex) {
       return null;
    }
 

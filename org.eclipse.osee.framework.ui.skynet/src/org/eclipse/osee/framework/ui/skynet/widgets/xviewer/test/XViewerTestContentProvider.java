@@ -10,56 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class XViewerTestContentProvider implements ITreeContentProvider {
 
    protected Collection<IXViewerTestTask> rootSet = new HashSet<IXViewerTestTask>();
-   private final XViewerTest xViewerTest;
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XViewerTestContentProvider(XViewerTest xViewerTest) {
       super();
-      this.xViewerTest = xViewerTest;
-   }
-
-   public void add(final IXViewerTestTask item) {
-      add(Arrays.asList(item));
-   }
-
-   public void add(final Collection<? extends IXViewerTestTask> items) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewerTest.getInput() == null) xViewerTest.setInput(rootSet);
-            rootSet.addAll(items);
-            xViewerTest.refresh();
-         };
-      });
-   }
-
-   public void set(final Collection<? extends IXViewerTestTask> arts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewerTest.getInput() == null) xViewerTest.setInput(rootSet);
-            clear();
-            add(arts);
-         };
-      });
-   }
-
-   public void clear() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewerTest.getInput() == null) xViewerTest.setInput(rootSet);
-            rootSet.clear();
-            xViewerTest.refresh();
-         };
-      });
    }
 
    @SuppressWarnings("unchecked")

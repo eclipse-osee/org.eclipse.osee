@@ -100,10 +100,6 @@ public class XViewer extends TreeViewer {
       toolbarManager.add(customizeAction);
    }
 
-   public boolean doCustomizeInCurrentThread() {
-      return false;
-   }
-
    protected void createSupportWidgets(Composite parent) {
 
       Composite comp = new Composite(parent, SWT.NONE);
