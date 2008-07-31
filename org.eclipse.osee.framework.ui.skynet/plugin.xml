@@ -647,10 +647,6 @@
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
 	</extension>
-	<extension id="TagCommonBranchArtifacts" name="Tag Common Branch Artifacts" point="org.eclipse.osee.framework.database.IDbInitializationTask">
-		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.TagCommonBranchArtifacts">
-         </DatabaseTask>
-	</extension>
 	<extension point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">
 		<ignoreSkynetAttribute attributeName="Word Template">
          </ignoreSkynetAttribute>
