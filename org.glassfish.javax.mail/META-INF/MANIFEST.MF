@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Java Mail Plug-in
+Bundle-SymbolicName: org.glassfish.javax.mail
+Bundle-Version: 1.4.1.qualifier
+Bundle-Vendor: GlassFish
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
