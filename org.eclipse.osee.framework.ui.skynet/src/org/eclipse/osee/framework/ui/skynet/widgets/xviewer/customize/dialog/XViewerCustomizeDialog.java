@@ -547,10 +547,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
       for (XViewerColumn xCol : getTableXViewerColumns(visibleColTable)) {
          xCol.setShow(true);
-         // Have to restore the default width, cause it was set to 0 to make column disappear
-         if (xCol.getWidth() == 0) {
-            xCol.setWidth(xViewer.getCustomizeMgr().getDefaultWidth(xCol.getId()));
-         }
          xCol.setXViewer(xViewer);
          xCols.add(xCol);
       }
@@ -614,6 +610,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void handleLoadConfigCustButton() {
       xViewer.getCustomizeMgr().loadCustomization(getConfigCustomizeCustData());
+      xViewer.refresh();
    }
 
    private void handleSetDefaultButton() {

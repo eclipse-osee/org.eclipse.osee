@@ -183,6 +183,13 @@ public class CustomizeManager {
          xCol.setShow(treeCol.getWidth() > 0);
          columns.add(xCol);
       }
+      // Add all columns that are not visible
+      for (XViewerColumn xCol : xViewer.getXViewerFactory().getDefaultTableCustomizeData().getColumnData().getColumns()) {
+         if (!columns.contains(xCol)) {
+            xCol.setShow(false);
+            columns.add(xCol);
+         }
+      }
       custData.columnData.setColumns(columns);
       custData.sortingData.setFromXml(currentCustData.sortingData.getXml());
       custData.filterData.setFromXml(currentCustData.filterData.getXml());
@@ -323,6 +330,8 @@ public class CustomizeManager {
 
    public void addColumns() {
       for (final XViewerColumn xCol : currentCustData.getColumnData().getColumns()) {
+         // Only add visible columns
+         if (!xCol.isShow()) continue;
          xCol.setXViewer(xViewer);
          TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
          column.setMoveable(true);
@@ -333,11 +342,7 @@ public class CustomizeManager {
             column.setToolTipText(xCol.getToolTip());
          }
          column.setText(xCol.getName());
-         if (xCol.isShow()) {
-            column.setWidth(xCol.getWidth());
-         } else {
-            column.setWidth(0);
-         }
+         column.setWidth(xCol.getWidth());
          column.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
