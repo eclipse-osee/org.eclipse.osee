@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 class ConnectionServiceImpl implements IConnectionService {
 	
@@ -101,7 +102,8 @@ class ConnectionServiceImpl implements IConnectionService {
          try {
             connector.stop();
          } catch (Exception ex) {
-            ex.printStackTrace();
+            Activator.log(Level.SEVERE,
+			"Exception notifying listener of service stop", ex);
          }
       }
       connectors.clear();
