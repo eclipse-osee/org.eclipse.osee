@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.swt.widgets.TreeItem;
 
 public class XViewerTextFilter extends ViewerFilter {
 
    private final XViewer xViewer;
-   private ITableLabelProvider labelProv;
+   private Set<Object> matchedObjects = new HashSet<Object>();
    private Pattern pattern;
    private Matcher matcher;
 
@@ -29,27 +31,48 @@ public class XViewerTextFilter extends ViewerFilter {
 
    public void setFilterText(String text) {
       pattern = Pattern.compile(text, Pattern.CASE_INSENSITIVE);
+      matchedObjects.clear();
+      for (TreeItem item : xViewer.getTree().getItems()) {
+         findRecursively(item);
+      }
    }
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (pattern == null) return true;
-      if (xViewer.getCustomizeMgr().isLoading()) return true;
-      if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
-      for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumns()) {
-         if (xCol.isShow()) {
-            try {
-               String cellStr = ((XViewerLabelProvider) labelProv).getColumnText(element, xCol, 0);
-               if (cellStr != null) {
-                  matcher = pattern.matcher(cellStr);
-                  if (matcher.find()) return true;
-               }
-            } catch (Exception ex) {
-               // do nothing
+      return matchedObjects.contains(element);
+   }
+
+   /**
+    * Find if item or item's children match
+    * 
+    * @param item
+    * @return
+    */
+   public boolean findRecursively(TreeItem item) {
+      /* determine if found and return true so parent knows to add themselves to matched items if found */
+      boolean found = false;
+      /* check this item */
+      for (int i = 0; i < xViewer.getTree().getColumnCount(); i++) {
+         String contents = item.getText(i);
+         matcher = pattern.matcher(contents);
+         if (matcher.find()) {
+            found = true;
+            break;
+         }
+      }
+
+      /* check child items */
+      if (item.getExpanded()) {
+         for (TreeItem child : item.getItems()) {
+            if (findRecursively(child)) {
+               found = true;
             }
          }
       }
-      return false;
+      /* Add this item if any children matched */
+      if (found) {
+         matchedObjects.add(item.getData());
+      }
+      return found;
    }
-
 }

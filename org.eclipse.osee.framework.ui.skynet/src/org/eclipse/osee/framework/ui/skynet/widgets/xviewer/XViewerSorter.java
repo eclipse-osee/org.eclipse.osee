@@ -72,6 +72,7 @@ public class XViewerSorter extends ViewerSorter {
       return 0;
    }
 
+   @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
       return compare(viewer, o1, o2, 0);
    }
