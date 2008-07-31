@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.search.engine.Activator;
 
 /**
@@ -40,7 +41,7 @@ public class WordsUtil {
 
    private static char[] PUNCTUATION =
          new char[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<',
-               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~'};
+               '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_'};
 
    private static final Properties dictionary;
    static {
