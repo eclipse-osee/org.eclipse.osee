@@ -222,6 +222,15 @@ public class CustomizeManager {
       return columns;
    }
 
+   public int getColumnNumFromXViewerColumn(XViewerColumn xCol) {
+      for (Integer index : xViewer.getTree().getColumnOrder()) {
+         TreeColumn treeCol = xViewer.getTree().getColumn(index);
+         XViewerColumn treeXCol = (XViewerColumn) treeCol.getData();
+         if (xCol.equals(treeXCol)) return index;
+      }
+      return 0;
+   }
+
    /**
     * @return the defaultCustData
     */

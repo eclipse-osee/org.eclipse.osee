@@ -43,10 +43,9 @@ public class XViewerSorter extends ViewerSorter {
       if (sortXCols == null || sortXCols.size() == 0) return 0;
       XViewerColumn sortXCol = sortXCols.get(sortXColIndex);
       try {
-         String o1Str =
-               ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o1, sortXCol, sortXColIndex);
-         String o2Str =
-               ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o2, sortXCol, sortXColIndex);
+         int columnNum = treeViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(sortXCol);
+         String o1Str = ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o1, columnNum);
+         String o2Str = ((XViewerLabelProvider) treeViewer.getLabelProvider()).getColumnText(o2, columnNum);
 
          // System.out.println("sortForward.get(columnNum) *" +
          // sortXCol.isSortForward() + "*");
