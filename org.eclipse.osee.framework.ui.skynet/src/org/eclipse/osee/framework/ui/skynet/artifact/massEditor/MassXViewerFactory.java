@@ -56,6 +56,10 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
     */
    public void setDefaultCustData(CustomizeData custData) {
       this.custData = custData;
+      clearColumnRegistration();
+      for (XViewerColumn xCol : custData.getColumnData().getColumns()) {
+         registerColumn(xCol);
+      }
    }
 
 }

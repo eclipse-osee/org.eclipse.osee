@@ -32,7 +32,8 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException, SQLException {
-      if (col instanceof XViewerValueColumn) {
+      if (col == null) return null;
+      if (columnIndex != 0 && col instanceof XViewerValueColumn) {
          return ((XViewerValueColumn) col).getColumnImage(element, (XViewerValueColumn) col, columnIndex);
       }
       Artifact artifact = (Artifact) element;
@@ -43,6 +44,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn col, int columnIndex) throws OseeCoreException, SQLException {
+      if (col == null) return "";
       if (col instanceof XViewerValueColumn) {
          return ((XViewerValueColumn) col).getColumnText(element, (XViewerValueColumn) col, columnIndex);
       }

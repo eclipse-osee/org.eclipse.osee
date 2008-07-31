@@ -271,16 +271,18 @@ public class MassXViewer extends XViewer implements IEventReceiver {
             ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getColumns();
       if (columns == null) {
          columns = getDefaultArtifactColumns(this, artifacts);
-         custData.getSortingData().setSortingNames(Arrays.asList("Name"));
+         custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
       }
       for (XViewerColumn col : columns) {
          col.setXViewer(this);
       }
 
       custData.getColumnData().setColumns(columns);
-      getCustomizeMgr().loadCustomization(custData);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
+      getCustomizeMgr().loadCustomization(custData);
    }
+
+   private static final XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");
 
    public static List<XViewerColumn> getDefaultArtifactColumns(XViewer xViewer, Collection<? extends Artifact> artifacts) {
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
@@ -296,7 +298,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       Set<String> attrNames = new HashSet<String>();
       // Add Name first
-      columns.add(new XViewerArtifactNameColumn("Name"));
+      columns.add(nameCol);
       attrNames.add("Name");
 
       // Add other attributes
@@ -304,7 +306,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
          if (!attrNames.contains(attributeType.getName())) {
             XViewerColumn newCol =
                   new XViewerColumn("attribute." + attributeType.getName(), attributeType.getName(), 75, SWT.CENTER,
-                        false, XViewerAttributeSortDataType.get(attributeType), false, null);
+                        true, XViewerAttributeSortDataType.get(attributeType), true, null);
             columns.add(newCol);
             attrNames.add(attributeType.getName());
          }

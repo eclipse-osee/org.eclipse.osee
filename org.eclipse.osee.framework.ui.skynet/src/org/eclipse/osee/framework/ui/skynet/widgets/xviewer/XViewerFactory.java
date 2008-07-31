@@ -34,6 +34,11 @@ public class XViewerFactory implements IXViewerFactory {
       }
    }
 
+   public void clearColumnRegistration() {
+      this.columns.clear();
+      idToColumn.clear();
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#createNewXSorter(org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer)
     */
