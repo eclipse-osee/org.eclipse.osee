@@ -44,18 +44,29 @@ public class SearchTaggerCommands {
          Thread th = new Thread(dropAllWorker);
          th.setName("Drop All Tags");
          th.start();
+      } else {
+         if (this.dropAllWorker.isRunning()) {
+            ci.println("Drop All Tags is running.");
+         }
+         if (this.tagAllWorker.isRunning()) {
+            ci.println("Tag All is running.");
+         }
       }
    }
 
    public void stopDropAll(CommandInterpreter ci) {
       if (this.dropAllWorker.isRunning()) {
          this.dropAllWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Drop All Tags is not running.");
       }
    }
 
    public void stopTagAll(CommandInterpreter ci) {
       if (this.tagAllWorker.isRunning()) {
          this.tagAllWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Tag All is not running.");
       }
    }
 
@@ -66,6 +77,13 @@ public class SearchTaggerCommands {
          Thread th = new Thread(tagAllWorker);
          th.setName("Tagger All Attributes");
          th.start();
+      } else {
+         if (this.dropAllWorker.isRunning()) {
+            ci.println("Drop All Tags is running.");
+         }
+         if (this.tagAllWorker.isRunning()) {
+            ci.println("Tag All is running.");
+         }
       }
    }
 
