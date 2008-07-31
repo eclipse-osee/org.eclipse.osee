@@ -25,6 +25,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
  * @author Donald G. Dunne
  */
 public class AddCommonBranch implements IDbInitializationTask {
+   private final boolean initializeArtifacts;
+
+   public AddCommonBranch() {
+      this(true);
+   }
+
+   public AddCommonBranch(boolean initializeArtifacts) {
+      this.initializeArtifacts = initializeArtifacts;
+   }
 
    /*
     * (non-Javadoc)
@@ -34,8 +43,8 @@ public class AddCommonBranch implements IDbInitializationTask {
    public void run(Connection connection) throws Exception {
 
       // Create branch, import skynet types and initialize
-      BranchPersistenceManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID,
-            Branch.COMMON_BRANCH_CONFIG_ID, getSkynetDbTypeExtensionIds(), true);
+      BranchPersistenceManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,
+            getSkynetDbTypeExtensionIds(), initializeArtifacts);
    }
 
    public List<String> getSkynetDbTypeExtensionIds() {

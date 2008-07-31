@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,27 +29,17 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public abstract class PreviewArtifactHandler extends AbstractHandler {
-   private static final RendererManager rendererManager = RendererManager.getInstance();
-   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 
-   /**
-    * 
-    */
-   public PreviewArtifactHandler() {
-      super();
-      artifacts = new LinkedList<Artifact>();
-   }
-
    /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-       */
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
+    */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!artifacts.isEmpty()) {
-         rendererManager.previewInJob(artifacts, getPreviewType());
+      if (artifacts != null && !artifacts.isEmpty()) {
+         RendererManager.getInstance().previewInJob(artifacts, getPreviewType());
       }
       return null;
    }
@@ -71,7 +60,7 @@ public abstract class PreviewArtifactHandler extends AbstractHandler {
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+         isEnabled = AccessControlManager.getInstance().checkObjectListPermission(artifacts, PermissionEnum.READ);
 
          //whole word artifacts can only be viewed as a single document
          for (Artifact artifact : artifacts) {

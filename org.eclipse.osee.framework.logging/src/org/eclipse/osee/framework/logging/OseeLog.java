@@ -34,16 +34,16 @@ public class OseeLog {
       });
    }
 
-   public static void log(Class<?> loggerName, Level level, String message) {
-      log.log(loggerName.getName(), loggerName.getName(), level, message);
+   public static void log(Class<?> activatorClass, Level level, String message) {
+      log.log(activatorClass.getName(), activatorClass.getName(), level, message);
    }
 
-   public static void log(Class<?> loggerName, Level level, Throwable th) {
-      log.log(loggerName.getName(), loggerName.getName(), level, th.getLocalizedMessage(), th);
+   public static void log(Class<?> activatorClass, Level level, Throwable th) {
+      log.log(activatorClass.getName(), activatorClass.getName(), level, th.getLocalizedMessage(), th);
    }
 
-   public static void log(Class<?> loggerName, Level level, String message, Throwable th) {
-      log.log(loggerName.getName(), loggerName.getName(), level, message, th);
+   public static void log(Class<?> activatorClass, Level level, String message, Throwable th) {
+      log.log(activatorClass.getName(), activatorClass.getName(), level, message, th);
    }
 
    public static void log(String loggerName, String bundleId, Level level, String message, Throwable th) {

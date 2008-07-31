@@ -758,14 +758,14 @@ public class BranchPersistenceManager {
     * @param branchName
     * @param staticBranchName will allow programatic access to branch from getKeyedBranch
     * @param skynetTypesImportExtensionsIds skynetDbTypes extensionIds to import onto new branch
-    * @param initialize adds common artifacts needed by most normal root branches
+    * @param initializeArtifacts adds common artifacts needed by most normal root branches
     * @return
     * @throws Exception
     * @see BranchPersistenceManager#intializeBranch
     * @see MasterSkynetTypesImport#importSkynetDbTypes
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initialize) throws Exception {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws Exception {
       // Create branch with name and static name; short name will be computed from full name
       Branch branch = BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName);
       // Add name to cached keyname if static branch name is desired
@@ -780,7 +780,7 @@ public class BranchPersistenceManager {
                skynetTypesImportExtensionsIds, branch);
       }
       // Initialize branch with common artifacts
-      if (initialize) {
+      if (initializeArtifacts) {
          RootBranchInitializer rootInitializer = new RootBranchInitializer();
          rootInitializer.initialize(branch);
       }

@@ -80,8 +80,9 @@ public class ChangeView extends ViewPart implements IActionable {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      ChangeView changeView =
-                           (ChangeView) page.showView(VIEW_ID,
-                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId),
+                           (ChangeView) page.showView(
+                                 VIEW_ID,
+                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
                      changeView.explore(branch, transactionId);
                   } catch (Exception ex) {
