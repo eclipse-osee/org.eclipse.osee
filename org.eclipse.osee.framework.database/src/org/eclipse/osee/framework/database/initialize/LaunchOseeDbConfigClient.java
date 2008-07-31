@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang.time.StopWatch;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
@@ -193,6 +194,8 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
          if (line.equalsIgnoreCase("Y")) {
             isConfigured = true;
             System.out.println("Configuring Database...");
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
             LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(dbInfo);
             configClient.start();
             try {
@@ -200,6 +203,8 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
             } catch (InterruptedException ex) {
                ex.printStackTrace();
             }
+            stopWatch.stop();
+            System.out.println(String.format("Database Configurationg completed in [%s] ms", stopWatch));
          }
       }
 
