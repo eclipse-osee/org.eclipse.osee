@@ -42,6 +42,9 @@
 <entry key="status">status</entry>
 <entry key="srs">srs</entry>
 <entry key="pids">pids</entry>
+<entry key="mtads">mtads</entry>
+<entry key="tads">tads</entry>
+<entry key="pnvs">pnvs</entry>
 <entry key="provides">provides</entry>
 <entry key="chris">chris</entry>
 <entry key="processes">process</entry>
