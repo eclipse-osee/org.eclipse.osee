@@ -18,20 +18,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class GroupSelection {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GroupSelection.class);
    private static final GroupSelection instance = new GroupSelection();
    private final Map<String, List<String>> initGroups = new LinkedHashMap<String, List<String>>();
    private String choice = null;
@@ -59,11 +57,11 @@ public class GroupSelection {
                   (IAddDbInitChoice) Platform.getBundle(element.getContributor().getName()).loadClass(choiceClass).newInstance();
             choice.addDbInitChoice(this);
          } catch (InstantiationException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
          } catch (IllegalAccessException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
          } catch (ClassNotFoundException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(DatabaseActivator.class, Level.SEVERE, ex);
          }
       }
    }
@@ -137,7 +135,7 @@ public class GroupSelection {
          }
       }
       choice = choices.get(selection);
-      logger.log(Level.INFO, String.format("DB Config Choice Selected: [%s]", choice));
+      OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]", choice));
       return choice;
    }
 }
