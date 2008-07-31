@@ -11,13 +11,38 @@
 package org.eclipse.osee.framework.search.engine.utility;
 
 import java.io.InputStream;
+import java.net.URL;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.search.engine.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TagProcessor {
+
+   private static final Set<String> wordsToSkip;
+   static {
+      wordsToSkip = new HashSet<String>();
+      Scanner scanner = null;
+      try {
+         URL url = Activator.getInstance().getContext().getBundle().getResource("/support/wordsToSkip.txt");
+         scanner = new Scanner(url.openStream(), "UTF-8");
+         while (scanner.hasNext()) {
+            wordsToSkip.add(scanner.next());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(TagProcessor.class, Level.SEVERE, "Unable to process word skip file.", ex);
+      } finally {
+         if (scanner != null) {
+            scanner.close();
+         }
+      }
+   }
 
    private TagProcessor() {
    }
@@ -61,14 +86,17 @@ public class TagProcessor {
       boolean originalStored = false;
       if (Strings.isValid(original) && (original.length() >= 2 || 0 == WordsUtil.countPuntuation(original))) {
          original = original.toLowerCase();
+
          String toCheck =
                WordsUtil.endsWithPunctuation(original) ? original.substring(0, original.length() - 1) : original;
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
-            String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-            if (toEncode.equals(toCheck)) {
-               originalStored = true;
+            if (wordsToSkip.contains(toEncode) != true) {
+               String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
+               if (toEncode.equals(toCheck)) {
+                  originalStored = true;
+               }
+               TagEncoder.encode(target, tagCollector);
             }
-            TagEncoder.encode(target, tagCollector);
          }
          if (!originalStored) {
             TagEncoder.encode(original, tagCollector);

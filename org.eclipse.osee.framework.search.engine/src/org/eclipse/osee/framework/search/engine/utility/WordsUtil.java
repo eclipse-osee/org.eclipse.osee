@@ -18,8 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
-
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 
 /**
@@ -52,13 +53,17 @@ public class WordsUtil {
                Activator.getInstance().getContext().getBundle().getResource("/support/pluralToSingularExceptions.xml");
          dictionary.loadFromXML(url.openStream());
       } catch (Exception ex) {
-         ex.printStackTrace();
+         OseeLog.log(TagProcessor.class, Level.SEVERE, "Unable to process plural to singular exceptions file.", ex);
       }
    }
 
    private static boolean hasConstantBeforeEnding(String word, String ending) {
-      String remainder = word.substring(word.length() - (ending.length() + 1));
-      return VOWELS.indexOf(remainder, 1) < 0;
+      if (!word.equals(ending)) {
+         String remainder = word.substring(word.length() - (ending.length() + 1));
+         return VOWELS.indexOf(remainder, 1) < 0;
+      } else {
+         return false;
+      }
    }
 
    private static boolean hasEitherSequenceBeforeEnding(String word, String ending, String... sequences) {

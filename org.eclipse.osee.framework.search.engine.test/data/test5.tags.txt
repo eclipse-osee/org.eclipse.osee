@@ -1,0 +1,9 @@
+battery 529513131
+shall 1260313
+be 235
+the 3866
+alternate -1420231874
+backup 24902827
+alternate/backup -1141048322
+power 1637751
+source 15571833

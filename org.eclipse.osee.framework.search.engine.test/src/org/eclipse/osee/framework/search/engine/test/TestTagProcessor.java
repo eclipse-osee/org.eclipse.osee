@@ -132,7 +132,7 @@ public class TestTagProcessor extends TestCase {
    public void testTagWordFile() throws IOException {
       // This is here to be able to look at tags generated from xml file source
       Bundle bundle = Activator.getInstance().getBundleContext().getBundle();
-      URL url = bundle.getEntry("data/test3.data.xml");
+      URL url = bundle.getEntry("data/test5.data.xml");
       InputStream dataStream = null;
       try {
          dataStream = new XmlTextInputStream(new BufferedInputStream(url.openStream()));

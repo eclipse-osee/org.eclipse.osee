@@ -1,0 +1,1 @@
+Battery(ies) shall be the alternate/backup power source.
