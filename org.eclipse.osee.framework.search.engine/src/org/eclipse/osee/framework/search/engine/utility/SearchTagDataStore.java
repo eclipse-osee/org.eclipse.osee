@@ -127,7 +127,6 @@ public class SearchTagDataStore {
       int updated = 0;
       if (searchTags != null && searchTags.length > 0) {
          Connection connection = null;
-         updated = -1;
          try {
             connection = OseeDbConnection.getConnection();
             for (SearchTag searchTag : searchTags) {
