@@ -41,6 +41,11 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
       return indexToXViewerColumnMap.get(columnIndex);
    }
 
+   // When columns get re-ordered, need to clear out this cache so indexing can be re-computed
+   public void clearXViewerColumnIndexCache() {
+      indexToXViewerColumnMap.clear();
+   }
+
    /**
     * @param viewer
     */

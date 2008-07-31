@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog.XViewerCustomizeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -325,6 +326,7 @@ public class CustomizeManager {
       // Create new columns
       addColumns();
       xViewer.updateStatusLabel();
+      ((XViewerLabelProvider) xViewer.getLabelProvider()).clearXViewerColumnIndexCache();
       loading = false;
    }
 
