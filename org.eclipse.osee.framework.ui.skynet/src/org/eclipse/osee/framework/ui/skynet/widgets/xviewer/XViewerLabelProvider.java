@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -26,6 +28,19 @@ import org.eclipse.swt.graphics.Image;
 public abstract class XViewerLabelProvider implements ITableLabelProvider, ITableColorProvider {
    private final XViewer viewer;
 
+   // Store index of columnIndex to XViewerColumns to speed up label providing
+   private Map<Integer, XViewerColumn> indexToXViewerColumnMap = new HashMap<Integer, XViewerColumn>();
+
+   private XViewerColumn getTreeColumnOffIndex(int columnIndex) {
+      if (!indexToXViewerColumnMap.containsKey(columnIndex)) {
+         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         if (xViewerColumn != null) {
+            indexToXViewerColumnMap.put(columnIndex, xViewerColumn);
+         }
+      }
+      return indexToXViewerColumnMap.get(columnIndex);
+   }
+
    /**
     * @param viewer
     */
@@ -36,7 +51,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
 
    public Image getColumnImage(Object element, int columnIndex) {
       try {
-         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn != null) {
@@ -54,7 +69,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
 
    public String getColumnText(Object element, int columnIndex) {
       try {
-         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return "";
          if (xViewerColumn instanceof XViewerValueColumn) {
@@ -69,7 +84,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    @Override
    public Color getBackground(Object element, int columnIndex) {
       try {
-         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {
@@ -86,7 +101,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    @Override
    public Color getForeground(Object element, int columnIndex) {
       try {
-         XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
+         XViewerColumn xViewerColumn = getTreeColumnOffIndex(columnIndex);
          // If not shown, don't process any further
          if (!xViewerColumn.isShow()) return null;
          if (xViewerColumn instanceof XViewerValueColumn) {
