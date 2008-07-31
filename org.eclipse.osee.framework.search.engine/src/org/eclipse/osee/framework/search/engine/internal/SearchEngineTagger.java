@@ -16,10 +16,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
@@ -44,7 +44,9 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.statistics = new TaggerStatistics();
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
       this.executor = Executors.newFixedThreadPool(3);
-      this.executor.submit(new StartUpRunnable(this));
+
+      Timer timer = new Timer("Start-Up Tagger");
+      timer.schedule(new StartUpRunnable(this), 2000);
    }
 
    /* (non-Javadoc)

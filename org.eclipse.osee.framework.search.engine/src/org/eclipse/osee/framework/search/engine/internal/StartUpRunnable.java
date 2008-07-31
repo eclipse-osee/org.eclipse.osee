@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 /**
  * @author Roberto E. Escobar
  */
-final class StartUpRunnable implements Runnable {
+final class StartUpRunnable extends TimerTask {
    private ISearchEngineTagger tagger;
 
    StartUpRunnable(ISearchEngineTagger tagger) {
@@ -38,6 +39,10 @@ final class StartUpRunnable implements Runnable {
       try {
          connection = OseeDbConnection.getConnection();
          List<Integer> queries = JoinUtility.getAllTagQueueQueryIds(connection);
+         if (queries.isEmpty() != true) {
+            OseeLog.log(SearchEngineTagger.class, Level.INFO, String.format(
+                  "Tagging [%d] left-over items from tag queue.", queries.size()));
+         }
          for (Integer queryId : queries) {
             tagger.tagByQueueQueryId(queryId);
          }
