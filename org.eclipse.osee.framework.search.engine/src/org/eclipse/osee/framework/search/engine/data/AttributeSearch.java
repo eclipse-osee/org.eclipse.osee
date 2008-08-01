@@ -13,10 +13,11 @@ package org.eclipse.osee.framework.search.engine.data;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.Set;
-
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.SearchTagJoinQuery;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
@@ -27,49 +28,51 @@ import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
  * @author Roberto E. Escobar
  */
 public final class AttributeSearch implements ITagCollector {
-	private SearchTagJoinQuery tags;
-	private String searchString;
-	private int branchId;
-	private Options options;
+   private SearchTagJoinQuery tags;
+   private String searchString;
+   private int branchId;
+   private Options options;
 
-	public AttributeSearch(String searchString, int branchId, Options options) {
-		this.tags = null;
-		this.branchId = branchId;
-		this.searchString = searchString;
-		this.options = options;
-	}
+   public AttributeSearch(String searchString, int branchId, Options options) {
+      this.tags = null;
+      this.branchId = branchId;
+      this.searchString = searchString;
+      this.options = options;
+   }
 
-	public Set<AttributeData> getMatchingAttributes() throws Exception {
-		Set<AttributeData> toReturn = null;
-		Connection connection = null;
-		try {
-			connection = OseeDbConnection.getConnection();
-			this.tags = JoinUtility.createSearchTagJoinQuery();
-			TagProcessor.collectFromString(searchString, this);
-			this.tags.store(connection);
-			toReturn = AttributeDataStore.getAttributesByTags(branchId,
-					options, this.tags.getQueryId());
-		} finally {
-			if (connection != null) {
-				tags.delete(connection);
-				tags = null;
-				connection.close();
-			}
-		}
-		if (toReturn == null) {
-			toReturn = Collections.emptySet();
-		}
-		return toReturn;
-	}
+   public Set<AttributeData> getMatchingAttributes() throws Exception {
+      Set<AttributeData> toReturn = null;
+      Connection connection = null;
+      long start = System.currentTimeMillis();
+      try {
+         connection = OseeDbConnection.getConnection();
+         this.tags = JoinUtility.createSearchTagJoinQuery();
+         TagProcessor.collectFromString(searchString, this);
+         this.tags.store(connection);
+         toReturn = AttributeDataStore.getAttributesByTags(branchId, options, this.tags.getQueryId());
+      } finally {
+         if (connection != null) {
+            tags.delete(connection);
+            tags = null;
+            connection.close();
+         }
+      }
+      if (toReturn == null) {
+         toReturn = Collections.emptySet();
+      }
+      OseeLog.log(AttributeSearch.class, Level.INFO, String.format("Attribute Search Query found [%d] in [%d] ms",
+            toReturn.size(), System.currentTimeMillis() - start));
+      return toReturn;
+   }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String,
-	 *      java.lang.Long)
-	 */
-	@Override
-	public void addTag(String word, Long codedTag) {
-		this.tags.add(codedTag);
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.search.engine.utility.ITagCollector#addTag(java.lang.String,
+    *      java.lang.Long)
+    */
+   @Override
+   public void addTag(String word, Long codedTag) {
+      this.tags.add(codedTag);
+   }
 }
