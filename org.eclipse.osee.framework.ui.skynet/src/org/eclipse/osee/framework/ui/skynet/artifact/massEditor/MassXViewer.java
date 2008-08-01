@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -40,12 +39,11 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeSortDataType;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -68,7 +66,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    private String title;
    private Collection<? extends Artifact> artifacts;
    private final IDirtiableEditor editor;
-   private List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "HRID", "Artifact Type"});
+   private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "HRID", "Artifact Type"});
 
    /**
     * @param parent
@@ -187,31 +185,38 @@ public class MassXViewer extends XViewer implements IEventReceiver {
             ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
+         @Override
          public void drop(DropTargetEvent event) {
             performDrop(event);
          }
 
+         @Override
          public void dragOver(DropTargetEvent event) {
             // if ((event.data instanceof ArtifactData) && ((ArtifactData)
             // event.data).getArtifacts().length > 0)
             event.detail = DND.DROP_COPY;
          }
 
+         @Override
          public void dropAccept(DropTargetEvent event) {
          }
       });
    }
 
    private void performDrop(DropTargetEvent e) {
-      if (e.data instanceof ArtifactData) {
-         Artifact[] artsToAdd = ((ArtifactData) e.data).getArtifacts();
-         Set<Artifact> arts = new HashSet<Artifact>();
-         arts.addAll(artifacts);
-         for (Artifact art : artsToAdd)
-            arts.add(art);
-         set(arts);
+      try {
+         if (e.data instanceof ArtifactData) {
+            Artifact[] artsToAdd = ((ArtifactData) e.data).getArtifacts();
+            Set<Artifact> arts = new HashSet<Artifact>();
+            arts.addAll(artifacts);
+            for (Artifact art : artsToAdd)
+               arts.add(art);
+            set(arts);
+         }
+         refresh();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      refresh();
    }
 
    public void handleDoubleClick() {
@@ -231,6 +236,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       SkynetEventManager.getInstance().unRegisterAll(this);
       SkynetEventManager.getInstance().unRegisterAll(this);
@@ -253,18 +259,18 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       return title;
    }
 
-   public void add(Collection<Artifact> artifacts) {
+   public void add(Collection<Artifact> artifacts) throws SQLException {
       resetColumns(artifacts);
       ((MassContentProvider) getContentProvider()).add(artifacts);
    }
 
-   public void set(Collection<? extends Artifact> artifacts) {
+   public void set(Collection<? extends Artifact> artifacts) throws SQLException {
       resetColumns(artifacts);
       this.artifacts = artifacts;
       ((MassContentProvider) getContentProvider()).set(artifacts);
    }
 
-   public void resetColumns(Collection<? extends Artifact> artifacts) {
+   public void resetColumns(Collection<? extends Artifact> artifacts) throws SQLException {
       CustomizeData custData = new CustomizeData();
 
       List<XViewerColumn> columns =
@@ -273,47 +279,18 @@ public class MassXViewer extends XViewer implements IEventReceiver {
          columns = getDefaultArtifactColumns(this, artifacts);
          custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
       }
-      for (XViewerColumn col : columns) {
-         col.setXViewer(this);
-      }
-
       custData.getColumnData().setColumns(columns);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
+      ((MassXViewerFactory) getXViewerFactory()).setColumns(columns);
       getCustomizeMgr().loadCustomization(custData);
    }
 
    private static final XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");
 
-   public static List<XViewerColumn> getDefaultArtifactColumns(XViewer xViewer, Collection<? extends Artifact> artifacts) {
-      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-
-      try {
-         for (Artifact art : artifacts) {
-            attributeTypes.addAll(art.getAttributeTypes());
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      Set<String> attrNames = new HashSet<String>();
-      // Add Name first
-      columns.add(nameCol);
-      attrNames.add("Name");
-
-      // Add other attributes
-      for (AttributeType attributeType : attributeTypes) {
-         if (!attrNames.contains(attributeType.getName())) {
-            XViewerColumn newCol =
-                  new XViewerColumn("attribute." + attributeType.getName(), attributeType.getName(), 75, SWT.CENTER,
-                        true, XViewerAttributeSortDataType.get(attributeType), true, null);
-            columns.add(newCol);
-            attrNames.add(attributeType.getName());
-         }
-      }
-
+   public static List<XViewerColumn> getDefaultArtifactColumns(XViewer xViewer, Collection<? extends Artifact> artifacts) throws SQLException {
+      List<XViewerColumn> columns = SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts);
       columns.add(new XViewerHridColumn("ID"));
-      columns.add(new XViewerGuidColumn("Guid"));
+      columns.add(new XViewerGuidColumn("GUID"));
 
       return columns;
    }

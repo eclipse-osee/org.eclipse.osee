@@ -27,8 +27,6 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -39,13 +37,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerAttributeSortDataType;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -66,7 +62,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             AWorkbench.popup("ERROR", "Must select user");
             return;
          }
-         User selectedUser = (User) ld.getSelection();
+         User selectedUser = ld.getSelection();
          ParticipationReportJob job =
                new ParticipationReportJob("Review Participation Report - " + selectedUser, selectedUser);
          job.setUser(true);
@@ -84,6 +80,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          this.user = user;
       }
 
+      @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
             MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
@@ -111,11 +108,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       columns.add(WorldXViewerFactory.Related_To_State_Col);
       columns.add(new XViewerArtifactNameColumn("Name"));
       columns.add(new XViewerGuidColumn("Guid"));
-      for (AttributeType attributeType : AttributeTypeManager.getTypes(AtsPlugin.getAtsBranch())) {
-         columns.add(new XViewerAttributeColumn("attr." + attributeType.getName(), attributeType.getName(),
-               attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false,
-               null));
-      }
+      columns.addAll(SkynetXViewerFactory.getAllAttributeColumns());
       return columns;
    }
 

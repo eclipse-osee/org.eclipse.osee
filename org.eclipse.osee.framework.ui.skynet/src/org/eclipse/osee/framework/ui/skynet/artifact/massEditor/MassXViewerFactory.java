@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -22,44 +22,38 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
-   private CustomizeData custData;
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
+   private CustomizeData custData;
 
    public MassXViewerFactory() {
       super(NAMESPACE);
    }
 
+   @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
 
-   public CustomizeData getDefaultTableCustomizeData() {
-      CustomizeData custData = new CustomizeData();
-      ArrayList<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      custData.getColumnData().setColumns(cols);
-      return custData;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getDefaultXViewerColumn()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getDefaultTableCustomizeData()
     */
-   public XViewerColumn getDefaultXViewerColumn(String id) {
-      if (custData != null) for (XViewerColumn xCol : custData.getColumnData().getColumns())
-         if (xCol.getName().equals(id)) return xCol;
-      return null;
+   @Override
+   public CustomizeData getDefaultTableCustomizeData() {
+      if (custData != null) return custData;
+      return super.getDefaultTableCustomizeData();
    }
 
    /**
     * @param custData the custData to set
     */
-   public void setDefaultCustData(CustomizeData custData) {
-      this.custData = custData;
+   public void setColumns(List<XViewerColumn> columns) {
       clearColumnRegistration();
-      for (XViewerColumn xCol : custData.getColumnData().getColumns()) {
+      for (XViewerColumn xCol : columns) {
          registerColumn(xCol);
       }
    }
 
+   public void setDefaultCustData(CustomizeData custData) {
+      this.custData = custData;
+   }
 }

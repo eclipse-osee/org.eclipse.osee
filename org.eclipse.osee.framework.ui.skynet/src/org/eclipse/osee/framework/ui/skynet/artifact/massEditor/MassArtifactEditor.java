@@ -141,6 +141,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.refresh();
          }
@@ -150,6 +151,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().handleTableCustomization();
          }
@@ -176,6 +178,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    }
 
+   @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
    }
@@ -214,6 +217,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return false;
    }
 
+   @Override
    public String toString() {
       return "MassArtifactEditor";
    }
@@ -229,7 +233,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       IEditorInput editorInput = getEditorInput();
       if (editorInput instanceof MassArtifactEditorInput) {
          MassArtifactEditorInput aei = (MassArtifactEditorInput) editorInput;
-         artifacts = ((MassArtifactEditorInput) aei).getArtifacts();
+         artifacts = (aei).getArtifacts();
       } else
          throw new IllegalArgumentException("Editor Input not TaskEditorInput");
 
@@ -263,7 +267,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
 
       setActivePage(artifactsPageIndex);
-      xViewer.set(((MassArtifactEditorInput) editorInput).getArtifacts());
+      try {
+         xViewer.set(((MassArtifactEditorInput) editorInput).getArtifacts());
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    public Branch getBranch() {
