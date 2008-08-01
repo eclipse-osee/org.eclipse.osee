@@ -41,7 +41,7 @@ public class Activator implements BundleActivator {
    }
    
    public static void log(Level level, String message, Throwable t) {
-		OseeLog.log("org.eclipse.osee.connection.service", level, message, t);
+		OseeLog.log(Activator.class, level, message, t);
 	}
 
 	public static void log(Level level, String message) {
