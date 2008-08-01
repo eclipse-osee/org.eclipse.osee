@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.TreeColumn;
  */
 public class CustomizeManager {
 
-   private IXViewerFactory xViewerFactory;
-   private XViewer xViewer;
+   private final IXViewerFactory xViewerFactory;
+   private final XViewer xViewer;
    private CustomizeData currentCustData;
    public static String CURRENT_LABEL = "-- Current Table View --";
    public static String TABLE_DEFAULT_LABEL = "-- Table Default --";
@@ -56,7 +56,7 @@ public class CustomizeManager {
       xViewerFactory.getXViewerCustomMenu().init(xViewer);
    }
 
-   private Map<String, XViewerColumn> oldNameToColumnId = new HashMap<String, XViewerColumn>();
+   private final Map<String, XViewerColumn> oldNameToColumnId = new HashMap<String, XViewerColumn>();
 
    /**
     * Since saved customize data is stored as xml, all the columns need to be resolved to the columns available from the
@@ -84,7 +84,7 @@ public class CustomizeManager {
          if (resolvedCol == null) {
             String name = storedCol.getName();
             if (name.equals("Impacted Items")) {
-               resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn("ats.column.actionableitems");
+               resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn("ats.column.actionableItems");
             }
          }
          // if not found, may have been stored without namespace; try to resolve for backward compatibility

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.swt.SWT;
 
@@ -43,8 +44,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                SortDataType.String, false, null);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col =
-         new XViewerAtsAttributeColumn(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE, 80, SWT.LEFT, true,
-               SortDataType.String, false, "Actionable Items that are impacted by this change.");
+         new XViewerAttributeColumn("ats.column.actionableItems", "Actionable Items",
+               ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), 80, SWT.LEFT, true, SortDataType.String,
+               false, "Actionable Items that are impacted by this change.");
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
@@ -238,6 +240,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       registerAllAttributeColumns();
    }
 
+   @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new WorldXViewerSorter(xViewer);
    }
