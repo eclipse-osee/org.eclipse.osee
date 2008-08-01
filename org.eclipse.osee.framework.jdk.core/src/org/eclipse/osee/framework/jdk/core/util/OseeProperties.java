@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class OseeProperties {
@@ -139,20 +139,15 @@ public class OseeProperties {
       return System.getProperty(OSEE_DB_CONFIG_INIT_CHOICE, "");
    }
 
-   public Map<String, String> getDbOseeSkynetBranchImport() {
-      Map<String, String> toReturn = new LinkedHashMap<String, String>();
+   public List<String> getDbOseeSkynetBranchImport() {
+      List<String> toReturn = new ArrayList<String>();
       String argValue = System.getProperty(OSEE_DB_IMPORT_SKYNET_BRANCH, "");
       if (Strings.isValid(argValue)) {
          String[] entries = argValue.split("\\s*,\\s*");
          for (int index = 0; index < entries.length; index++) {
-            String toName = entries[index];
-            if (index + 1 < entries.length) {
-               String filePath = entries[++index];
-               if (Strings.isValid(toName) && Strings.isValid(filePath)) {
-                  toReturn.put(toName, filePath);
-               }
-            } else {
-               break;
+            String toAdd = entries[index];
+            if (Strings.isValid(toAdd)) {
+               toReturn.add(toAdd);
             }
          }
       }
