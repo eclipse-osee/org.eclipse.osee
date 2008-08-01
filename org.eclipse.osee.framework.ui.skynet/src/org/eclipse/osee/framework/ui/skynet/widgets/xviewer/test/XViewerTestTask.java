@@ -52,6 +52,22 @@ public class XViewerTestTask implements IXViewerTestTask {
       return id;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object arg0) {
+      return ((XViewerTestTask) arg0).getId().equals(id);
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return id.hashCode();
+   }
+
    /**
     * @return the startTime
     */
