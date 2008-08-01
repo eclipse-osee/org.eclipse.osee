@@ -106,6 +106,17 @@ class ArtifactSnapshotFactory {
                }
             }
          }
+
+         pattern = Pattern.compile("href=\"(.*)?Define?");
+         matcher = pattern.matcher(original);
+         while (matcher.find()) {
+            try {
+               String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
+               changeSet.replace(matcher.start(1), matcher.end(1), prefix);
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);
+            }
+         }
          toReturn = changeSet.applyChangesToSelf().toString();
       }
       return toReturn;
