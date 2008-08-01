@@ -58,52 +58,30 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (!(element instanceof IWorldViewArtifact)) return "";
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          if (xCol.equals(WorldXViewerFactory.Type_Col)) return wva.getWorldViewType();
-         if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
-         if (xCol.equals(WorldXViewerFactory.Type_Col)) return wva.getWorldViewType();
+         if (xCol.equals(WorldXViewerFactory.State_Col)) return wva.getWorldViewState();
+         if (xCol.equals(WorldXViewerFactory.Assignees_Col)) return wva.getWorldViewActivePoc();
+         if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) return wva.getWorldViewChangeTypeStr();
+         if (xCol.equals(WorldXViewerFactory.Priority_Col)) return wva.getWorldViewPriority();
          if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) return wva.getWorldViewActionableItems();
          if (xCol.equals(WorldXViewerFactory.User_Community_Col)) return wva.getWorldViewUserCommunity();
-         if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Col)) return wva.getWorldViewNumberOfTasks();
-         if (xCol.equals(WorldXViewerFactory.Last_Modified_Col)) return wva.getWorldViewLastUpdated();
-         if (xCol.equals(WorldXViewerFactory.Last_Statused_Col)) return wva.getWorldViewLastStatused();
-         if (xCol.equals(WorldXViewerFactory.Description_Col)) return wva.getWorldViewDescription();
-         if (xCol.equals(WorldXViewerFactory.Validation_Required_Col)) return wva.getWorldViewValidationRequiredStr();
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) return wva.getWorldViewVersion();
+         if (xCol.equals(WorldXViewerFactory.Notes_Col)) return wva.getWorldViewNotes();
+
+         if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
+         if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) return wva.getWorldViewLegacyPCR();
+         if (xCol.equals(WorldXViewerFactory.Created_Date_Col)) return wva.getWorldViewCreatedDateStr();
          if (xCol.equals(WorldXViewerFactory.Completed_Date_Col)) return wva.getWorldViewCompletedDateStr();
          if (xCol.equals(WorldXViewerFactory.Cancelled_Date_Col)) return wva.getWorldViewCancelledDateStr();
          if (xCol.equals(WorldXViewerFactory.Team_Col)) return wva.getWorldViewTeam();
          if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) return wva.getWorldViewRelatedToState();
          if (xCol.equals(WorldXViewerFactory.Originator_Col)) return wva.getWorldViewOriginator();
          if (xCol.equals(WorldXViewerFactory.Branch_Status_Col)) return wva.getWorldViewBranchStatus();
-         if (xCol.equals(WorldXViewerFactory.Implementor_Col)) return wva.getWorldViewImplementer();
-         if (xCol.equals(WorldXViewerFactory.Review_Author_Col)) return wva.getWorldViewReviewAuthor();
-         if (xCol.equals(WorldXViewerFactory.Review_Moderator_Col)) return wva.getWorldViewReviewModerator();
-         if (xCol.equals(WorldXViewerFactory.Review_Reviewer_Col)) return wva.getWorldViewReviewReviewer();
-         if (xCol.equals(WorldXViewerFactory.Review_Decider_Col)) return wva.getWorldViewReviewDecider();
-         if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) return wva.getWorldViewChangeTypeStr();
-         if (xCol.equals(WorldXViewerFactory.State_Col)) return wva.getWorldViewState();
-         if (xCol.equals(WorldXViewerFactory.Assignees_Col)) return wva.getWorldViewActivePoc();
-         if (xCol.equals(WorldXViewerFactory.Created_Date_Col)) return wva.getWorldViewCreatedDateStr();
-         if (xCol.equals(WorldXViewerFactory.Priority_Col)) return wva.getWorldViewPriority();
-         if (xCol.equals(WorldXViewerFactory.Resolution_Col)) return wva.getWorldViewResolution();
          if (xCol.equals(WorldXViewerFactory.Decision_Col)) return wva.getWorldViewDecision();
-         if (xCol.equals(WorldXViewerFactory.SW_Enhancement_Col)) return wva.getWorldViewSWEnhancement();
-         if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
-               wva.getWorldViewWeeklyBenefit(), true);
          if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) return AtsLib.doubleToStrString(wva.getWorldViewEstimatedHours());
-         if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
-            Result result = wva.isWorldViewAnnualCostAvoidanceValid();
-            if (result.isFalse()) return result.getText();
-            return AtsLib.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
-         }
          if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             Result result = wva.isWorldViewRemainHoursValid();
             if (result.isFalse()) return result.getText();
             return AtsLib.doubleToStrString(wva.getWorldViewRemainHours());
-         }
-         if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
-            Result result = wva.isWorldViewManDaysNeededValid();
-            if (result.isFalse()) return result.getText();
-            return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
          }
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteState());
          if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Task_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteStateTask());
@@ -116,7 +94,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
 
          if (xCol.equals(WorldXViewerFactory.Total_Hours_Spent_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentTotal());
 
-         if (xCol.equals(WorldXViewerFactory.Notes_Col)) return wva.getWorldViewNotes();
          if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) return wva.getWorldViewPercentReworkStr();
          if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) return wva.getWorldViewEstimatedReleaseDateStr();
          if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) return wva.getWorldViewReleaseDateStr();
@@ -125,6 +102,29 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Category_Col)) return wva.getWorldViewCategory();
          if (xCol.equals(WorldXViewerFactory.Category2_Col)) return wva.getWorldViewCategory2();
          if (xCol.equals(WorldXViewerFactory.Category3_Col)) return wva.getWorldViewCategory3();
+         if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Col)) return wva.getWorldViewNumberOfTasks();
+         if (xCol.equals(WorldXViewerFactory.Last_Modified_Col)) return wva.getWorldViewLastUpdated();
+         if (xCol.equals(WorldXViewerFactory.Last_Statused_Col)) return wva.getWorldViewLastStatused();
+         if (xCol.equals(WorldXViewerFactory.Description_Col)) return wva.getWorldViewDescription();
+         if (xCol.equals(WorldXViewerFactory.Validation_Required_Col)) return wva.getWorldViewValidationRequiredStr();
+         if (xCol.equals(WorldXViewerFactory.Implementor_Col)) return wva.getWorldViewImplementer();
+         if (xCol.equals(WorldXViewerFactory.Review_Author_Col)) return wva.getWorldViewReviewAuthor();
+         if (xCol.equals(WorldXViewerFactory.Review_Moderator_Col)) return wva.getWorldViewReviewModerator();
+         if (xCol.equals(WorldXViewerFactory.Review_Reviewer_Col)) return wva.getWorldViewReviewReviewer();
+         if (xCol.equals(WorldXViewerFactory.Review_Decider_Col)) return wva.getWorldViewReviewDecider();
+         if (xCol.equals(WorldXViewerFactory.SW_Enhancement_Col)) return wva.getWorldViewSWEnhancement();
+         if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) return AtsLib.doubleToStrString(
+               wva.getWorldViewWeeklyBenefit(), true);
+         if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
+            Result result = wva.isWorldViewAnnualCostAvoidanceValid();
+            if (result.isFalse()) return result.getText();
+            return AtsLib.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
+         }
+         if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
+            Result result = wva.isWorldViewManDaysNeededValid();
+            if (result.isFalse()) return result.getText();
+            return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
+         }
 
          return "Unhandled Column";
       } catch (Exception ex) {
