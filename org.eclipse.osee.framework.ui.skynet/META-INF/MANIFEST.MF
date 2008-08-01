@@ -23,11 +23,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.expressions,
  org.eclipse.zest.core,
  org.eclipse.zest.layouts,
- org.eclipse.compare,
- javax.mail.glassfish;bundle-version="1.4.1"
+ org.eclipse.compare
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
-Import-Package: org.eclipse.nebula.widgets.calendarcombo,
+Import-Package: javax.mail,
+ javax.mail.internet,
+ org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
