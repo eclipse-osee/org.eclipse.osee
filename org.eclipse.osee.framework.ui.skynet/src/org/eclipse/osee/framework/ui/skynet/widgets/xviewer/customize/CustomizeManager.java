@@ -80,6 +80,13 @@ public class CustomizeManager {
          // Ignore column if not shown
          if (storedCol.getWidth() == 0) continue;
          XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
+         // Handle known stored values
+         if (resolvedCol == null) {
+            String name = storedCol.getName();
+            if (name.equals("Impacted Items")) {
+               resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn("ats.column.actionableitems");
+            }
+         }
          // if not found, may have been stored without namespace; try to resolve for backward compatibility
          if (resolvedCol == null) {
             String name = storedCol.getName().replaceAll(" ", "");

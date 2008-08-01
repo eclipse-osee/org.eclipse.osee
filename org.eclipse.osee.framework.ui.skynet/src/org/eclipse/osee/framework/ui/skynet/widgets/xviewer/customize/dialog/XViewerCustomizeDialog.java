@@ -380,17 +380,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
                return getComparator().compare(((CustomizeData) e1).getName(), ((CustomizeData) e2).getName());
          }
       });
-      custTable.addDoubleClickListener(new IDoubleClickListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-          */
-         public void doubleClick(DoubleClickEvent event) {
-            handleLoadSelCustButton();
-            close();
-         }
-      });
       custTable.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             handleCustTableSelectionChanged();
@@ -531,13 +520,6 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColTable.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
       visibleColTable.getTable().setFocus();
       updateButtonEnablements();
-   }
-
-   private void handleLoadSelCustButton() {
-      CustomizeData custData = getCustTableSelection();
-      if (custData != null) {
-         xViewer.getCustomizeMgr().loadCustomization(getCustTableSelection());
-      }
    }
 
    /**
