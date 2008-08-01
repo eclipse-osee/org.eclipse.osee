@@ -40,10 +40,11 @@ public class StaticIdQuery {
             OseeLog.log(SkynetActivator.class, Level.FINE,
                   "StaticId Load: [" + staticId + "][" + artifactTypeName + "]");
          }
-
-         // Retrieve database artifacts if cache has none
-         artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
-               staticId, branch));
+         if (artifacts.size() == 0) {
+            // Retrieve database artifacts if cache has none
+            artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
+                  staticId, branch));
+         }
 
          // Store results in cache
          for (Artifact artifact : artifacts) {
