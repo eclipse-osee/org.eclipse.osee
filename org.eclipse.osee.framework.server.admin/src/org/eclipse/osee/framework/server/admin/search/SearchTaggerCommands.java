@@ -21,6 +21,7 @@ public class SearchTaggerCommands {
    private static SearchTaggerCommands instance = null;
    private TaggerAllWorker tagAllWorker;
    private TaggerDropAllWorker dropAllWorker;
+   private TagItemWorker tagItemWorker;
 
    public static SearchTaggerCommands getInstance() {
       if (instance == null) {
@@ -35,10 +36,38 @@ public class SearchTaggerCommands {
 
       this.dropAllWorker = new TaggerDropAllWorker();
       this.dropAllWorker.setExecutionAllowed(true);
+
+      this.tagItemWorker = new TagItemWorker();
+      this.tagItemWorker.setExecutionAllowed(true);
+   }
+
+   public void startTagItem(CommandInterpreter ci) {
+      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
+         this.tagItemWorker.setCommandInterpreter(ci);
+         this.tagItemWorker.setExecutionAllowed(true);
+         Thread th = new Thread(tagItemWorker);
+         th.setName("Tag Individual Items");
+         th.start();
+      } else {
+         if (this.dropAllWorker.isRunning()) {
+            ci.println("Drop All Tags is running.");
+         }
+         if (this.tagAllWorker.isRunning()) {
+            ci.println("Tag All is running.");
+         }
+      }
+   }
+
+   public void stopTagItem(CommandInterpreter ci) {
+      if (this.tagItemWorker.isRunning()) {
+         this.tagItemWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Tag Item is not running.");
+      }
    }
 
    public void startDropAll(CommandInterpreter ci) {
-      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
+      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.dropAllWorker.setCommandInterpreter(ci);
          this.dropAllWorker.setExecutionAllowed(true);
          Thread th = new Thread(dropAllWorker);
@@ -50,6 +79,9 @@ public class SearchTaggerCommands {
          }
          if (this.tagAllWorker.isRunning()) {
             ci.println("Tag All is running.");
+         }
+         if (this.tagItemWorker.isRunning()) {
+            ci.println("Tag Item is running.");
          }
       }
    }
@@ -71,7 +103,7 @@ public class SearchTaggerCommands {
    }
 
    public void startTagAll(CommandInterpreter ci) {
-      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
+      if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.tagAllWorker.setCommandInterpreter(ci);
          this.tagAllWorker.setExecutionAllowed(true);
          Thread th = new Thread(tagAllWorker);
@@ -83,6 +115,9 @@ public class SearchTaggerCommands {
          }
          if (this.tagAllWorker.isRunning()) {
             ci.println("Tag All is running.");
+         }
+         if (this.tagItemWorker.isRunning()) {
+            ci.println("Tag Item is running.");
          }
       }
    }

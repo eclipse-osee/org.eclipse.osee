@@ -163,6 +163,17 @@ class TaggerRunnable implements Runnable {
       }
    }
 
+   private void notifyOnAttributeAddTagEvent(long gammaId, String word, long codedTag) {
+      for (ITagListener listener : listeners) {
+         try {
+            listener.onAttributeAddTagEvent(tagQueueQueryId, gammaId, word, codedTag);
+         } catch (Exception ex) {
+            OseeLog.log(TaggerRunnable.class, Level.SEVERE, String.format("Error notifying listener: [%s] ",
+                  listener.getClass().getName()), ex);
+         }
+      }
+   }
+
    public int getTagQueueQueryId() {
       return tagQueueQueryId;
    }
@@ -211,6 +222,7 @@ class TaggerRunnable implements Runnable {
       public void addTag(String word, Long codedTag) {
          if (currentTag != null) {
             currentTag.addTag(codedTag);
+            notifyOnAttributeAddTagEvent(currentTag.getGammaId(), word, codedTag);
          }
       }
    }

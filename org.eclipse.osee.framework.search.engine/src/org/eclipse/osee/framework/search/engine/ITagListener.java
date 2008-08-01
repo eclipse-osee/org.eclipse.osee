@@ -18,4 +18,6 @@ public interface ITagListener {
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime);
 
    public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime);
+
+   public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag);
 }

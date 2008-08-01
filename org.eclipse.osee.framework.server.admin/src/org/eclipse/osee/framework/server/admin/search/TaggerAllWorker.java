@@ -142,7 +142,9 @@ class TaggerAllWorker extends BaseCmdWorker {
    public void setExecutionAllowed(boolean value) {
       super.setExecutionAllowed(value);
       if (!value && processor != null) {
-         processor.notify();
+         synchronized (processor) {
+            processor.notify();
+         }
       }
    }
 
@@ -232,6 +234,13 @@ class TaggerAllWorker extends BaseCmdWorker {
                this.notify();
             }
          }
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
+       */
+      @Override
+      public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
       }
    }
 }

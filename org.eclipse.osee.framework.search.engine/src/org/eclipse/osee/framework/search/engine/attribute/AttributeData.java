@@ -78,4 +78,9 @@ public class AttributeData {
       }
       return toReturn;
    }
+
+   public String toString() {
+      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getBranchId(),
+            getGammaId(), getUri(), getTaggerId());
+   }
 }

@@ -164,4 +164,11 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
       this.longestQueryIdProcessingTime = Math.max(this.longestQueryIdProcessingTime, processingTime);
       this.longestQueryIdWaitTime = Math.max(this.longestQueryIdWaitTime, waitTime);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
+    */
+   @Override
+   public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
+   }
 }
