@@ -67,7 +67,7 @@ public class XViewerTest extends XViewer {
       xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));
 
       List<Object> tasks = new ArrayList<Object>();
-      for (int x = 0; x < 500; x++) {
+      for (int x = 0; x < 1; x++) {
          tasks.addAll(getTestTasks());
       }
       System.err.println("Setting Input...");
