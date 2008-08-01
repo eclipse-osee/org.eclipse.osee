@@ -40,6 +40,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory#getXViewerCustomizations()
     */
+   @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       try {
          if (ConnectionHandler.isConnected()) {
@@ -59,7 +60,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       try {
          for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
             XViewerAttributeColumn newCol =
-                  new XViewerAttributeColumn(attributeType.getName(), "Attribute \"" + attributeType.getName() + "\"",
+                  new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(),
                         attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType),
                         false, null);
             registerColumn(newCol);
