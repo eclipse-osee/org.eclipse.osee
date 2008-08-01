@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.HyperLinkLabel;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
@@ -59,8 +61,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
@@ -356,7 +360,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       createRelationSearchControls(optionsComposite);
       createHridSearchControls(optionsComposite);
 
-      searchTypeList.getCombo().select(5);
+      searchTypeList.getCombo().select(2);
       searchTypeList.getCombo().setVisibleItemCount(7);
 
       addButton = new Button(filterGroup, SWT.PUSH);
@@ -366,6 +370,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    private void addFilterListeners() {
       addButton.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchTypeList.getCombo().getText());
             searchFilter.setNot(notButton.getSelection());
@@ -375,6 +380,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       });
 
       searchTypeList.getCombo().addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             updateWidgets();
          }
@@ -389,8 +395,29 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private void addTableControls(Composite composite) {
-      Label tableLabel = new Label(composite, SWT.FILL);
-      tableLabel.setText("Filters");
+      Composite filterComposite = new Composite(composite, SWT.NONE);
+      filterComposite.setFont(composite.getFont());
+      filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      filterComposite.setLayout(new GridLayout(2, false));
+
+      Label tableLabel = new Label(filterComposite, SWT.FILL);
+      tableLabel.setText("Filters    ");
+
+      HyperLinkLabel clearAllLabel = new HyperLinkLabel(filterComposite, SWT.NONE);
+      clearAllLabel.setText("clear all");
+      clearAllLabel.addListener(SWT.MouseUp, new Listener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
+         @Override
+         public void handleEvent(Event event) {
+            for (FilterModel filterModel : new CopyOnWriteArrayList<FilterModel>(
+                  filterviewer.getFilterList().getFilters())) {
+               filterviewer.removeFilter(filterModel);
+            }
+            filterviewer.refresh();
+         }
+      });
 
       Table table = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.HIDE_SELECTION);
       filterviewer = new FilterTableViewer(table);
@@ -456,6 +483,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    /*
     * Implements method from IDialogPage
     */
+   @Override
    public void setVisible(boolean visible) {
       if (visible && indexText != null) {
          indexText.setFocus();
@@ -570,7 +598,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       @SuppressWarnings("unchecked")
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
-         return getComparator().compare((String) e1, (String) e2);
+         return getComparator().compare(e1, e2);
       }
    }
 }
