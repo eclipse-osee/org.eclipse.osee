@@ -358,7 +358,7 @@
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Word Formatted Content</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">xml</Data></Cell>
-    <Cell ss:StyleID="s28"/>
+    <Cell ss:StyleID="s40"><Data ss:Type="String">XmlAttributeTaggerProvider</Data></Cell>
     <Cell ss:StyleID="s37"/>
     <Cell ss:Index="8" ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
@@ -675,10 +675,11 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
+   <TopRowVisible>6</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>23</ActiveRow>
+     <ActiveRow>18</ActiveRow>
      <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
