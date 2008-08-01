@@ -11,10 +11,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -51,17 +49,9 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
    protected IStatus run(IProgressMonitor monitor) {
       OSEELog.logInfo(AtsPlugin.class, getName(), false);
       try {
-         for (Artifact artifact : ArtifactQuery.getArtifactsFromType(ActionableItemArtifact.ARTIFACT_NAME,
-               AtsPlugin.getAtsBranch())) {
-            AtsCache.cache(artifact);
-         }
          for (Artifact artifact : RelationManager.getRelatedArtifacts(
-               Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 6,
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD)) {
-            AtsCache.cache(artifact);
-         }
-         for (Artifact artifact : ArtifactQuery.getArtifactsFromType(VersionArtifact.ARTIFACT_NAME,
-               AtsPlugin.getAtsBranch())) {
+               Arrays.asList(AtsConfig.getInstance().getOrCreateAtsHeadingArtifact()), 8,
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version)) {
             AtsCache.cache(artifact);
          }
       } catch (Exception ex) {
