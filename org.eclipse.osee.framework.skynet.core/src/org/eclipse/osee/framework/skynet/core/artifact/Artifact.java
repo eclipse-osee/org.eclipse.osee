@@ -1063,6 +1063,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Removes artifact from a specific branch
+    * 
+    * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
+    * @throws SQLException
+    */
+   public void delete(boolean overrideDeleteCheck) throws OseeCoreException, SQLException {
+      ArtifactPersistenceManager.deleteArtifact(overrideDeleteCheck, this);
+   }
+
+   /**
     * Remove artifact from a specific branch in the database
     * 
     * @throws SQLException

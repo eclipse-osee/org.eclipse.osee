@@ -239,8 +239,8 @@ public class ArtifactPersistenceManager {
    }
 
    /**
-    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
-    * factories since all caching is performed by the factory.
+    * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by factories
+    * since all caching is performed by the factory.
     * 
     * @param guid The guid of the artifact.
     * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
@@ -480,17 +480,23 @@ public class ArtifactPersistenceManager {
       return artIdList.toString();
    }
 
+   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException, SQLException {
+      deleteArtifact(false, artifacts);
+   }
+
    /**
     * @param artifacts The artifacts to delete.
     * @throws SQLException
     */
-   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException, SQLException {
+   public static void deleteArtifact(boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException, SQLException {
       if (artifacts.length == 0) return;
 
-      // Confirm artifacts are fit to delete
-      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-         Result result = check.isDeleteable(Arrays.asList(artifacts));
-         if (result.isFalse()) throw new IllegalStateException(result.getText());
+      if (overrideDeleteCheck != true) {
+         // Confirm artifacts are fit to delete
+         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+            Result result = check.isDeleteable(Arrays.asList(artifacts));
+            if (result.isFalse()) throw new IllegalStateException(result.getText());
+         }
       }
 
       final Branch branch = artifacts[0].getBranch();
