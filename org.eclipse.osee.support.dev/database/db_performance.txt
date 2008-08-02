@@ -1,0 +1,48 @@
+turn off auto db stat collection
+
+Oracle document ids:
+	Note:260942.1
+	Note:557661.1
+	Note:215187.1
+	Note:445126.1	How to manually store an outline using V$SQL and DBMS_OUTLN.CREATE_OUTLINE
+	Note:555579.1	10.2.0.4 Patch Set - Availability and Known Issues
+	
+	
+SQL Ids:
+	67mynxt63pr82:  this is the SQL ID for the show all trax related actions
+	
+-- dbms.stat no_invalidate is set to auto: "false"
+
+telnet sun802.msc.az.boeing.com
+cd /las_ora_apps/sqlt/sqlt/run
+sqlplus osee/osee@lba7
+start sqltxtract.sql 6gdcn1fq2sxtq
+
+select * from v$sql, v$sql_shared_cursor where v$sql.sql_id = '67mynxt63pr82' and v$sql.sql_id =v$sql_shared_cursor.sql_id;
+select * from v$sql_shared_cursor where sql_id = '67mynxt63pr82';
+select * from v$sql where sql_id = '67mynxt63pr82';
+select to_char(last_active_time,'MM-dd-yy hh24:mi:ss') from v$sql where sql_id = '67mynxt63pr82';
+select * from V$sql_plan where sql_id = '5vmmky8ka6b36';
+
+Questions:
+	What causes the creation of child cursors that have all 'N' in the v$sql_shared_cursor?
+	
+remove histogram
+need to patch bug 6810189
+	
+Steps Taken:
+	newest patches applied (over 1000 bugs fixed)
+	dbms.stat no_invalidate changed from "auto" to "false"
+	large log file removed
+
+=======  stored outlines  =======
+alter session set create_stored_outlines = true;
+-- now execute exact sql (copy from enterprise manager) and the outline will automatically be created
+
+the following is supposed to work but didn't seem to:
+exec sys.dbms_outln.create_outline(sql_id, child_cursor_num);
+declare 
+begin
+dbms_outln.create_outline(614673510, 9);
+end;
+/
