@@ -330,9 +330,9 @@ public class BranchExporter {
       Collection<LinkData> links = new LinkedList<LinkData>();
       HashCollection<Integer, AttributeData> attributeMap = new HashCollection<Integer, AttributeData>();
 
-      writer.write(String.format("<Transaction author=\"%s\" time=\"%s\" commitArtId=\"%s\">\n",
-            transaction.getAuthorGuid(), transaction.getTime().toString(), transaction.getCommitArtId()));
-      
+      writer.write(String.format("<Transaction author=\"%s\" time=\"%s\" commitArtGuid=\"%s\">\n",
+            transaction.getAuthorGuid(), transaction.getTime().toString(), transaction.getCommitArtGuid()));
+
       String transactionComment = transaction.getComment();
       if (transactionComment != null && transactionComment.length() > 0) {
          writer.write("<Comment>");
@@ -558,12 +558,12 @@ public class BranchExporter {
       }
    }
 
-   private static class TransactionData {
+   private class TransactionData {
       private final int transactionId;
       private String authorGuid;
       private final Timestamp time;
       private final String comment;
-      private final Integer commitArtId;
+      private String commitArtGuid;
       private final RSetHelper artSet;
       private final RSetHelper attrSet;
       private final RSetHelper linkSet;
@@ -601,8 +601,14 @@ public class BranchExporter {
          String comment = linedUpSet.getString("osee_comment");
          this.comment = comment == null ? "" : comment;
 
-         String comitArtId = linedUpSet.getString("commit_art_id");
-         this.commitArtId = comitArtId == null ? null : new Integer(comitArtId);
+         try {
+            this.commitArtGuid = artGuidCache.getGuid(linedUpSet.getInt("commit_art_id"));
+         } catch (Exception ex) {
+         }
+
+         if (this.commitArtGuid == null) {
+            this.commitArtGuid = "";
+         }
 
          this.artSet = artSet;
          this.attrSet = attrSet;
@@ -625,8 +631,8 @@ public class BranchExporter {
          return transactionId;
       }
 
-      public Integer getCommitArtId() {
-         return commitArtId;
+      public String getCommitArtGuid() {
+         return commitArtGuid;
       }
 
       public RSetHelper getArtSet() {
@@ -866,7 +872,6 @@ public class BranchExporter {
 
       /**
        * @param transactionId
-       * @return
        * @throws SQLException
        */
       public boolean onTransaction(int transactionId) throws SQLException {

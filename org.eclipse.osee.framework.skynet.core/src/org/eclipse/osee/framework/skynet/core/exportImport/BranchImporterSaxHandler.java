@@ -206,7 +206,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processTransaction(String author, Timestamp time, String comment, Integer commitArtId) throws SQLException {
+   protected void processTransaction(String author, Timestamp time, String comment, String commitArtGuid) throws SQLException {
       // Skip transaction records if the current branch is not being included
       if (curBranch.peek() == null || monitor.isCanceled()) {
          return;
@@ -215,6 +215,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       monitor.subTask("Transaction " + ++transactionOnBranchCount);
       currentTransactionId = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
       Integer authorId = artifactGuidCache.getId(author);
+      int commitArtId = -1;
 
       ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
             SQL3DataType.TIMESTAMP, time, SQL3DataType.VARCHAR, comment, SQL3DataType.INTEGER,

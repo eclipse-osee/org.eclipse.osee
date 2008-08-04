@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.xml.sax.Attributes;
@@ -138,7 +137,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
    private String currentTransactionAuthorGuid = null;
    private Timestamp currentTransactionTime = null;
-   private Integer currentCommitArtId = null;
+   private String currentCommitArtGuid = null;
 
    /**
     * @param attributes
@@ -149,8 +148,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void handleTransaction(Attributes attributes) throws SQLException, UnsupportedEncodingException, IOException {
       currentTransactionAuthorGuid = attributes.getValue("author");
       currentTransactionTime = Timestamp.valueOf(attributes.getValue("time"));
-      String commitArtId = attributes.getValue("commitArtId");
-      currentCommitArtId = Strings.isValid(commitArtId) ? new Integer(commitArtId) : null;
+      currentCommitArtGuid = attributes.getValue("commitArtGuid");
    }
 
    private void finishTransaction() {
@@ -171,14 +169,14 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    }
 
    private void wrapUpTransaction(String comment) throws Exception {
-      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment, currentCommitArtId);
+      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment, currentCommitArtGuid);
 
       currentTransactionAuthorGuid = null;
       currentTransactionTime = null;
-      currentCommitArtId = null;
+      currentCommitArtGuid = null;
    }
 
-   protected abstract void processTransaction(String author, Timestamp time, String comment, Integer commitArtId) throws Exception;
+   protected abstract void processTransaction(String author, Timestamp time, String comment, String commitArtId) throws Exception;
 
    /**
     * @param attributes
