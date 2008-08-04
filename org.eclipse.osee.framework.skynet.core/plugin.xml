@@ -21,6 +21,7 @@
    <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
    <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
    <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
+   <extension-point id="OseeDbImportData" name="OseeDbImportData" schema="schema/OseeDbImportData.exsd"/>
    
       <extension
             id="SkynetDbInit"
