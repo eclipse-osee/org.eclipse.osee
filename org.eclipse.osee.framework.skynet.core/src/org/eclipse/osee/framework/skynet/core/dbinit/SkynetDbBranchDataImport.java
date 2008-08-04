@@ -140,7 +140,7 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
          String branchName = element.getAttribute(BRANCH_NAME);
          String branchData = element.getAttribute(BRANCH_DATA);
 
-         if (Strings.isValid(branchName) && Strings.isValid(branchData)) {
+         if (Strings.isValid(bundleName) && Strings.isValid(branchName) && Strings.isValid(branchData)) {
             if (!branchNames.containsKey(branchName.toLowerCase())) {
                branchNames.put(branchName.toLowerCase(), bundleName);
                toReturn.add(new ImportData(bundleName, branchName, branchData, currentCount++));
