@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 public class BranchCreation implements IBranchCreation {
 
    private static final String COPY_BRANCH_ADDRESSING =
-         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current, commit_art_id) SELECT ?, gamma_id, mod_type, tx_current, commit_art_id FROM osee_define_txs txs1, osee_define_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
+         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs txs1, osee_define_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
 
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO OSEE_DEFINE_BRANCH (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id) VALUES (?, ?, ?, ?, ?, ?)";
