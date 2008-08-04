@@ -24,17 +24,13 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
    private CustomizeData custData;
-   private String namespace = NAMESPACE;
-
-   /**
-    * @param namespace the namespace to set
-    */
-   public void setNamespace(String namespace) {
-      this.namespace = namespace;
-   }
 
    public MassXViewerFactory() {
-      super(NAMESPACE);
+      this(NAMESPACE);
+   }
+
+   public MassXViewerFactory(String namespace) {
+      super(namespace);
    }
 
    @Override
@@ -68,14 +64,6 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
 
    public void setDefaultCustData(CustomizeData custData) {
       this.custData = custData;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getNamespace()
-    */
-   @Override
-   public String getNamespace() {
-      return namespace;
    }
 
 }

@@ -72,8 +72,9 @@ public class MassXViewer extends XViewer implements IEventReceiver {
     * @param parent
     * @param style
     */
-   public MassXViewer(Composite parent, int style, IDirtiableEditor editor) {
-      super(parent, style, new MassXViewerFactory());
+   public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
+      super(parent, style, new MassXViewerFactory(
+            ((MassArtifactEditorInput) editor.getEditorInput()).getCustomizeNamespace()));
       this.editor = editor;
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {

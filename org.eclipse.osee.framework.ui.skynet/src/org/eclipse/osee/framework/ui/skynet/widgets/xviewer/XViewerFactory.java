@@ -19,9 +19,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCus
  */
 public class XViewerFactory implements IXViewerFactory {
 
-   private final String namespace;
-   private List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-   private Map<String, XViewerColumn> idToColumn = new HashMap<String, XViewerColumn>();
+   private String namespace;
+
+   /**
+    * @param namespace the namespace to set
+    */
+   public void setNamespace(String namespace) {
+      this.namespace = namespace;
+   }
+
+   private final List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+   private final Map<String, XViewerColumn> idToColumn = new HashMap<String, XViewerColumn>();
 
    public XViewerFactory(String namespace) {
       this.namespace = namespace;

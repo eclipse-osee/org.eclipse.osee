@@ -59,6 +59,14 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    private int artifactsPageIndex;
    private Collection<? extends Artifact> artifacts = new HashSet<Artifact>();
    private MassXViewer xViewer;
+
+   /**
+    * @return the xViewer
+    */
+   public MassXViewer getXViewer() {
+      return xViewer;
+   }
+
    private Label branchLabel;
 
    /*
