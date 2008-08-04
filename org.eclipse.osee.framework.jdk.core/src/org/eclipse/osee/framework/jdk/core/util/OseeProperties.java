@@ -139,19 +139,8 @@ public class OseeProperties {
       return System.getProperty(OSEE_DB_CONFIG_INIT_CHOICE, "");
    }
 
-   public List<String> getDbOseeSkynetBranchImport() {
-      List<String> toReturn = new ArrayList<String>();
-      String argValue = System.getProperty(OSEE_DB_IMPORT_SKYNET_BRANCH, "");
-      if (Strings.isValid(argValue)) {
-         String[] entries = argValue.split("\\s*,\\s*");
-         for (int index = 0; index < entries.length; index++) {
-            String toAdd = entries[index];
-            if (Strings.isValid(toAdd)) {
-               toReturn.add(toAdd);
-            }
-         }
-      }
-      return toReturn;
+   public boolean getDbOseeSkynetBranchImport() {
+      return getBooleanProperty(OSEE_DB_IMPORT_SKYNET_BRANCH);
    }
 
    public void setDBConfigInitChoice(String value) {
