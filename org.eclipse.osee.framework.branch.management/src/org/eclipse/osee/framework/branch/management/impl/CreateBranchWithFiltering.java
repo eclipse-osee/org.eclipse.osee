@@ -56,8 +56,8 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 	   private static final String SELECT_ARTIFACT_HISTORY =
 	         "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS art_gamma_id, " + TRANSACTIONS_ALIAS_1.column("mod_type") + " AS art_mod_type, " + TRANSACTIONS_ALIAS_1.column("tx_current") + " AS art_current, " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AS attr_gamma_id, " + TRANSACTIONS_ALIAS_2.column("tx_current") + " AS attr_current, " + TRANSACTIONS_ALIAS_2.column("mod_type") + " AS attr_mod_type FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_2 + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + " =?" + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " = " + ARTIFACT_TABLE.column("art_id");
 	   private static final String INSERT_TX_DETAILS_FOR_HISTORY =
-	         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (branch_id, transaction_id, tx_type, " + TXD_COMMENT + ", time, author)" + " SELECT ?, ?, ?, " + TRANSACTION_DETAIL_TABLE.columns(
-	               TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
+	         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (branch_id, transaction_id, tx_type, " + TXD_COMMENT + ", time, author, commit_art_id)" + " SELECT ?, ?, ?, " + TRANSACTION_DETAIL_TABLE.columns(
+	               TXD_COMMENT, "time", "author", "commit_art_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
 	   private static final String INSERT_LINK_GAMMAS =
 	         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, mod_type, tx_current) " + "SELECT ?, " + LINK_ALIAS_1.column("gamma_id") + ", " + TRANSACTIONS_ALIAS_1.column("mod_type") + ", ? FROM " + TRANSACTIONS_ALIAS_1 + "," + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_ALIAS_2 + "," + ARTIFACT_VERSION_ALIAS_2 + "," + LINK_ALIAS_1 + "," + TRANSACTIONS_ALIAS_3 + " WHERE " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + LINK_ALIAS_1.column("a_art_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " = " + LINK_ALIAS_1.column("b_art_id") + " AND " + LINK_ALIAS_1.column("modification_id") + " <> 3 AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_3.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_3.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_ALIAS_4 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_4.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_4.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 	   private static final String INSERT_ATTRIBUTES_GAMMAS =
@@ -94,7 +94,6 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 	        ConnectionHandlerStatement chStmt = null;
 	        try {
 	           for (String preserveArtTypeId : preserveArtTypeIds) {
-	        	   Set<Integer> artGammas = new HashSet<Integer>();
 	        	   
 	              chStmt =
 	                    ConnectionHandler.runPreparedQuery(connection,SELECT_ARTIFACT_HISTORY, SQL3DataType.INTEGER,
@@ -107,11 +106,9 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 	            	  int attrGamma = rSet.getInt("attr_gamma_id");
 	            	  int attrCurrent = rSet.getInt("attr_current");
 	            	  
-	            	 if(!artGammas.contains(artGamma)){ 
-		                 historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(
-		                		 artGamma, rSet.getInt("art_mod_type")));
-		                 artGammas.add(artGamma);
-	            	 }
+	                 historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(
+	                		 artGamma, rSet.getInt("art_mod_type")));
+		                 
 	                 historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(
 	                		 attrGamma, rSet.getInt("attr_mod_type")));
 	                 
@@ -132,11 +129,15 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 	                 getNewBranchId(), SQL3DataType.INTEGER, nextTransactionNumber,SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER,
 	                 parentTransactionNumber.intValue());
 
+	           Set<Integer> gammas = new HashSet<Integer>();
 	           for (Pair<Integer, Integer> gammaAndMod : historyMap.getValues(parentTransactionNumber)) {
 	        	   Integer modType = gammaAndMod.getValue();
 	        	   
-	               ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_FOR_HISTORY, SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
+	        	   if(!gammas.contains(gammaAndMod.getKey())){
+	        		   ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_FOR_HISTORY, SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
 		                    gammaAndMod.getKey(), SQL3DataType.INTEGER, modType, SQL3DataType.INTEGER, gammasToCurrent.get(gammaAndMod.getKey()));
+	        		   gammas.add(gammaAndMod.getKey());
+	        	   }
 	           }
 	        }
 	      }
