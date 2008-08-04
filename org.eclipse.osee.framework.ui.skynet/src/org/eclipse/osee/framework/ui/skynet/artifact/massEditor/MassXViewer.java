@@ -281,6 +281,11 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       }
       custData.getColumnData().setColumns(columns);
       ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
+      String editorInputNamespace =
+            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getCustomizeNamespace();
+      if (editorInputNamespace != null && !editorInputNamespace.equals("")) {
+         ((MassXViewerFactory) getXViewerFactory()).setNamespace(editorInputNamespace);
+      }
       ((MassXViewerFactory) getXViewerFactory()).setColumns(columns);
       getCustomizeMgr().loadCustomization(custData);
    }

@@ -15,8 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -103,6 +101,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
       final GridLayout gridLayout_2 = new GridLayout();
       gridLayout_2.numColumns = 2;
       comp.setLayout(gridLayout_2);
+
+      final Label namespaceLabel = new Label(comp, SWT.NONE);
+      GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+      gridData.horizontalSpan = 2;
+      namespaceLabel.setLayoutData(gridData);
+      namespaceLabel.setText("Customization Namespace: " + xViewer.getXViewerFactory().getNamespace());
 
       final Label selectCustomizationLabel = new Label(comp, SWT.NONE);
       selectCustomizationLabel.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
@@ -607,11 +611,11 @@ public class XViewerCustomizeDialog extends MessageDialog {
       }
       if (xViewer.getCustomizeMgr().isCustomizationUserDefault(custData)) {
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove Default",
-               "Remove \"" + custData + "\" as default for this table?")) {
+               "Remove \"" + custData.getName() + "\" as default for this table?")) {
             xViewer.getCustomizeMgr().setUserDefaultCustData(custData, false);
          }
       } else if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set Default",
-            "Set \"" + custData + "\" as default for this table?")) {
+            "Set \"" + custData.getName() + "\" as default for this table?")) {
          xViewer.getCustomizeMgr().setUserDefaultCustData(custData, true);
       }
       loadCustomizeTable();
@@ -638,7 +642,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
             return;
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Customization",
-               "Delete \"" + custSel + "\" customization?")) {
+               "Delete \"" + custSel.getName() + "\" customization?")) {
             xViewer.getCustomizeMgr().deleteCustomization(custSel);
             loadCustomizeTable();
             updateButtonEnablements();
@@ -746,6 +750,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setData(custData);
    }
 
+   @Override
    protected void buttonPressed(int buttonId) {
       // Ok
       if (buttonId == 0) {

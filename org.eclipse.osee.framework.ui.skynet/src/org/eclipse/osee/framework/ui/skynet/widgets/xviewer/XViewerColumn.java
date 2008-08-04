@@ -126,9 +126,10 @@ public class XViewerColumn {
    }
 
    public String getDisplayName() {
-      return name + " - " + id + " - width:" + width;
+      return name + " - " + id + " - width:" + width + " - show:" + show;
    }
 
+   @Override
    public String toString() {
       return "column:[" + name + "][" + id + "][" + width + "][" + show + "][" + align + "]";
    }

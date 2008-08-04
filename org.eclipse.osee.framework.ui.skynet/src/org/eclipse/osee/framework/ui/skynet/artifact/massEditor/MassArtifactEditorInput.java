@@ -24,10 +24,23 @@ import org.eclipse.ui.IPersistableElement;
 public class MassArtifactEditorInput implements IEditorInput {
 
    private final Collection<? extends Artifact> artifacts;
-
    private final String name;
-
    private final List<XViewerColumn> columns;
+   private String customizeNamespace = null;
+
+   /**
+    * @return the customizeNamespace
+    */
+   public String getCustomizeNamespace() {
+      return customizeNamespace;
+   }
+
+   /**
+    * @param customizeNamespace the customizeNamespace to set
+    */
+   public void setCustomizeNamespace(String customizeNamespace) {
+      this.customizeNamespace = customizeNamespace;
+   }
 
    /**
     * @param artifact

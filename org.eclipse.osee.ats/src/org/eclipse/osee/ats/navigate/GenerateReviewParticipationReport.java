@@ -49,6 +49,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
+   private final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
+
    public GenerateReviewParticipationReport(XNavigateItem parent) {
       super(parent, "Generate Review Participation Report");
    }
@@ -87,6 +89,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             Collection<Artifact> reviewArts = srch.performSearchGetResults();
             MassArtifactEditorInput input =
                   new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts, getColumns(user));
+            input.setCustomizeNamespace(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
             MassArtifactEditor.editArtifacts(input);
          } catch (Exception ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
@@ -94,7 +97,6 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          monitor.done();
          return Status.OK_STATUS;
       }
-
    }
 
    private static List<XViewerColumn> getColumns(User user) throws OseeCoreException, SQLException {

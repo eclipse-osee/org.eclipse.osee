@@ -118,7 +118,7 @@ public class CustomizeManager {
          if (resolvedCol != null && resolvedCol.getWidth() > 0) {
             resolvedCol.setWidth(storedCol.getWidth());
             resolvedCol.setName(storedCol.getName());
-            resolvedCol.setShow(storedCol.isShow() || storedCol.getWidth() > 0);
+            resolvedCol.setShow(storedCol.isShow());
             resolvedCol.setSortForward(storedCol.isSortForward());
             resolvedColumns.add(resolvedCol);
          }
