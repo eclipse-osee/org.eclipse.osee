@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
+import java.io.File;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -32,5 +35,14 @@ public class ApplicationServer {
                      resourceServer));
       }
       OseeApplicationServer.setApplicationOseeServer(resourceServer);
+
+      if (SkynetDbInit.isDbInit()) {
+         String server = OseeApplicationServer.getOseeApplicationServer();
+         if (server.contains("localhost") || server.contains("127.0.0.1")) {
+            String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
+            Lib.deleteContents(new File(binaryDataPath + File.separator + "attr"));
+            Lib.deleteContents(new File(binaryDataPath + File.separator + "snapshot"));
+         }
+      }
    }
 }
