@@ -18,7 +18,6 @@ import java.io.IOException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.security.DESEncrypter;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -113,9 +112,6 @@ public class EncrypterView extends ViewPart implements IActionable {
             decrypt();
          }
       });
-
-//      OseeAts.addBugToViewToolbar(this, this, EncrypterPlugin.getInstance(), VIEW_ID, "Admin");
-
    }
 
    protected void editFile() {
