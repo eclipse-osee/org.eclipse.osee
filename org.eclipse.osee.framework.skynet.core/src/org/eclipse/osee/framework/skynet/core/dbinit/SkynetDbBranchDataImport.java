@@ -89,6 +89,13 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
    @Override
    public void run(Connection connection) throws Exception {
       if (OseeProperties.getInstance().getDbOseeSkynetBranchImport()) {
+         // Clean up and delete all branches except Common
+         for (Branch branch : BranchPersistenceManager.getBranches()) {
+            if (!branch.getBranchName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
+               BranchPersistenceManager.deleteBranch(branch);
+            }
+         }
+
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
             logger.log(Level.INFO, String.format("Import Branch Data: [%s]", importData));
