@@ -36,10 +36,17 @@ public class XViewerFactory implements IXViewerFactory {
    }
 
    public void registerColumn(XViewerColumn... columns) {
+      if (columns.length == 0) throw new IllegalArgumentException("columns can't be null");
       for (XViewerColumn xCol : columns) {
-         this.columns.add(xCol);
-         idToColumn.put(xCol.getId(), xCol);
+         if (!columnRegistered(xCol)) {
+            this.columns.add(xCol);
+            idToColumn.put(xCol.getId(), xCol);
+         }
       }
+   }
+
+   public boolean columnRegistered(XViewerColumn column) {
+      return this.columns.contains(column);
    }
 
    public void clearColumnRegistration() {

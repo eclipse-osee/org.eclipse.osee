@@ -230,7 +230,7 @@ public class CustomizeManager {
     */
    public CustomizeData getTableDefaultCustData() {
       CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData();
-      if (custData.getName() == null || this.currentCustData.getName().equals("")) {
+      if (custData.getName() == null || (this.currentCustData != null && this.currentCustData.getName().equals(""))) {
          custData.setName(TABLE_DEFAULT_LABEL);
       }
       custData.setNameSpace(xViewer.getViewerNamespace());

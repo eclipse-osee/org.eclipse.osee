@@ -73,9 +73,10 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
    }
 
-   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) {
+   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts, boolean show) {
       try {
          for (XViewerColumn xCol : SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts)) {
+            xCol.setShow(show);
             registerColumn(xCol);
          }
       } catch (Exception ex) {
@@ -117,8 +118,6 @@ public class SkynetXViewerFactory extends XViewerFactory {
       // Add Name first
       columns.add(new XViewerArtifactNameColumn("Name"));
       attrNames.add("Name");
-      // Add all other attributes that are valid for the given artifacts
-      columns.addAll(SkynetXViewerFactory.getAllAttributeColumns());
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
             columns.add(getAttributeColumn(attributeType));

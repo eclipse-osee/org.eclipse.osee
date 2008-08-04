@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 
 /**
  * @author Donald G. Dunne
@@ -20,10 +25,27 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
+   private static XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
       super(NAMESPACE);
-      registerAllAttributeColumnsForArtifacts(artifacts);
+      registerColumn(nameCol);
+      registerAllAttributeColumnsForArtifacts(artifacts, true);
+      registerColumn(new XViewerHridColumn("ID"));
+      registerColumn(new XViewerGuidColumn("GUID"));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getDefaultTableCustomizeData()
+    */
+   @Override
+   public CustomizeData getDefaultTableCustomizeData() {
+      CustomizeData custData = new CustomizeData();
+      custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
+      custData.getColumnData().setColumns(getColumns());
+      custData.setNameSpace(getNamespace());
+      custData.setName("Artifacts");
+      return custData;
    }
 
 }

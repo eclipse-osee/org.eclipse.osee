@@ -109,7 +109,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          registerColumn(WorldXViewerFactory.Related_To_State_Col);
          registerColumn(new XViewerArtifactNameColumn("Name"));
          registerColumn(new XViewerGuidColumn("Guid"));
-         //         registerAllAttributeColumns();
+         registerAllAttributeColumns();
       }
 
    }
