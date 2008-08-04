@@ -92,7 +92,7 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
     */
    public void init(IWorkbench workbench) {
       setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
-      setDescription("Select an HTTP server or specify a server address and port in the entry boxes below.");
+      setDescription("See below for OSEE server configuration.");
    }
 
 }
