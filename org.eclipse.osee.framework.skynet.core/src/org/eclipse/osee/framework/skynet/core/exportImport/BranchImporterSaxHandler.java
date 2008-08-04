@@ -215,7 +215,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       monitor.subTask("Transaction " + ++transactionOnBranchCount);
       currentTransactionId = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
       Integer authorId = artifactGuidCache.getId(author);
-      int commitArtId = -1;
+      Integer commitArtId = artifactGuidCache.getId(commitArtGuid);
 
       ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
             SQL3DataType.TIMESTAMP, time, SQL3DataType.VARCHAR, comment, SQL3DataType.INTEGER,
