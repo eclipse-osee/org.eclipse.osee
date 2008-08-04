@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.util.List;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
+import java.util.Collection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -23,47 +20,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
-   private CustomizeData custData;
 
-   public MassXViewerFactory() {
-      this(NAMESPACE);
-   }
-
-   public MassXViewerFactory(String namespace) {
-      super(namespace);
-   }
-
-   @Override
-   public XViewerSorter createNewXSorter(XViewer xViewer) {
-      return new XViewerSorter(xViewer);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerFactory#getDefaultTableCustomizeData()
-    */
-   @Override
-   public CustomizeData getDefaultTableCustomizeData() {
-      if (custData != null) {
-         // Return a copy so don't corrupt original columns
-         CustomizeData custData = new CustomizeData();
-         custData.setNameSpace(custData.getNameSpace());
-         custData.getColumnData().setColumns(getColumns());
-      }
-      return super.getDefaultTableCustomizeData();
-   }
-
-   /**
-    * @param custData the custData to set
-    */
-   public void setColumns(List<XViewerColumn> columns) {
-      clearColumnRegistration();
-      for (XViewerColumn xCol : columns) {
-         registerColumn(xCol);
-      }
-   }
-
-   public void setDefaultCustData(CustomizeData custData) {
-      this.custData = custData;
+   public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
+      super(NAMESPACE);
+      registerAllAttributeColumnsForArtifacts(artifacts);
    }
 
 }

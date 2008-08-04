@@ -73,6 +73,16 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
    }
 
+   public void registerAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) {
+      try {
+         for (XViewerColumn xCol : SkynetXViewerFactory.getAllAttributeColumnsForArtifacts(artifacts)) {
+            registerColumn(xCol);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+   }
+
    public static List<XViewerColumn> getAllAttributeColumns() throws SQLException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       for (AttributeType attributeType : AttributeTypeManager.getTypes()) {

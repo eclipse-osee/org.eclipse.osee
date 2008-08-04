@@ -28,22 +28,19 @@ public class ColumnData {
 
    public List<XViewerColumn> setFromXml(String xml) {
       columns.clear();
-      List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
       Matcher columnMatch =
             Pattern.compile("<" + XViewerColumn.XTREECOLUMN_TAG + ">(.*?)</" + XViewerColumn.XTREECOLUMN_TAG + ">").matcher(
                   xml);
       while (columnMatch.find()) {
          String colXml = columnMatch.group(1);
          XViewerColumn xCol = new XViewerColumn(null, colXml);
-         xCols.add(xCol);
-      }
-      for (XViewerColumn xCol : xCols) {
          columns.add(xCol);
          idToColumn.put(xCol.getId(), xCol);
       }
       return columns;
    }
 
+   @Override
    public String toString() {
       StringBuffer sb = new StringBuffer("columnData:[");
       for (XViewerColumn xCol : columns) {

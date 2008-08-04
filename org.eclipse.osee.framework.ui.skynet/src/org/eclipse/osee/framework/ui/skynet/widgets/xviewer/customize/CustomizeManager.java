@@ -77,8 +77,6 @@ public class CustomizeManager {
        */
       List<XViewerColumn> resolvedColumns = new ArrayList<XViewerColumn>();
       for (XViewerColumn storedCol : loadedCustData.getColumnData().getColumns()) {
-         // Ignore column if not shown
-         if (storedCol.getWidth() == 0) continue;
          XViewerColumn resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn(storedCol.getId());
          // Handle known stored values
          if (resolvedCol == null) {

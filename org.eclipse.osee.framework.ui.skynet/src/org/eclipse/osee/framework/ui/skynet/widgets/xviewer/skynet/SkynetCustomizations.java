@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCus
 public class SkynetCustomizations implements IXViewerCustomizations {
 
    private Artifact globalCustomizationsArtifact;
-   private List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
+   private final List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(XViewerCustomMenu.class);
    private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
    private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
@@ -143,7 +143,9 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public CustomizeData getUserDefaultCustData() {
       for (CustomizeData custData : getSavedCustDatas()) {
-         if (userArtifactDefaults.isDefaultCustomization(custData)) return custData;
+         if (userArtifactDefaults.isDefaultCustomization(custData)) {
+            return custData;
+         }
       }
       return null;
    }

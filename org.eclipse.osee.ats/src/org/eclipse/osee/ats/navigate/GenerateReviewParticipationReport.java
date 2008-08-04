@@ -11,9 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -36,7 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
@@ -88,8 +85,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
             Collection<Artifact> reviewArts = srch.performSearchGetResults();
             MassArtifactEditorInput input =
-                  new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts, getColumns(user));
-            input.setCustomizeNamespace(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
+                  new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts,
+                        new ReviewParticipationXViewerFactory(user));
             MassArtifactEditor.editArtifacts(input);
          } catch (Exception ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
@@ -99,19 +96,21 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       }
    }
 
-   private static List<XViewerColumn> getColumns(User user) throws OseeCoreException, SQLException {
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      columns.add(new XViewerArtifactTypeColumn("Type"));
-      columns.add(new XViewerHridColumn("ID"));
-      columns.add(WorldXViewerFactory.Legacy_PCR_Col);
-      columns.add(new XViewerSmaStateColumn());
-      columns.add(new XViewerSmaCompletedDateColumn("Completed"));
-      columns.add(new XViewerReviewRoleColumn(user));
-      columns.add(WorldXViewerFactory.Related_To_State_Col);
-      columns.add(new XViewerArtifactNameColumn("Name"));
-      columns.add(new XViewerGuidColumn("Guid"));
-      columns.addAll(SkynetXViewerFactory.getAllAttributeColumns());
-      return columns;
-   }
+   public class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
+      public ReviewParticipationXViewerFactory(User user) {
+         super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
+         registerColumn(new XViewerArtifactTypeColumn("Type"));
+         registerColumn(new XViewerHridColumn("ID"));
+         registerColumn(WorldXViewerFactory.Legacy_PCR_Col);
+         registerColumn(new XViewerSmaStateColumn());
+         registerColumn(new XViewerSmaCompletedDateColumn("Completed"));
+         registerColumn(new XViewerReviewRoleColumn(user));
+         registerColumn(WorldXViewerFactory.Related_To_State_Col);
+         registerColumn(new XViewerArtifactNameColumn("Name"));
+         registerColumn(new XViewerGuidColumn("Guid"));
+         //         registerAllAttributeColumns();
+      }
+
+   }
 }

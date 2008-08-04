@@ -11,10 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -25,30 +24,22 @@ public class MassArtifactEditorInput implements IEditorInput {
 
    private final Collection<? extends Artifact> artifacts;
    private final String name;
-   private final List<XViewerColumn> columns;
-   private String customizeNamespace = null;
+   private final SkynetXViewerFactory skynetXViewerFactory;
 
    /**
-    * @return the customizeNamespace
+    * @return the skynetXViewerFactory
     */
-   public String getCustomizeNamespace() {
-      return customizeNamespace;
-   }
-
-   /**
-    * @param customizeNamespace the customizeNamespace to set
-    */
-   public void setCustomizeNamespace(String customizeNamespace) {
-      this.customizeNamespace = customizeNamespace;
+   public SkynetXViewerFactory getXViewerFactory() {
+      return skynetXViewerFactory;
    }
 
    /**
     * @param artifact
     */
-   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, List<XViewerColumn> columns) {
+   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts, SkynetXViewerFactory skynetXViewerFactory) {
       this.name = name;
       this.artifacts = artifacts;
-      this.columns = columns;
+      this.skynetXViewerFactory = skynetXViewerFactory;
    }
 
    /* (non-Javadoc)
@@ -107,13 +98,6 @@ public class MassArtifactEditorInput implements IEditorInput {
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       return null;
-   }
-
-   /**
-    * @return the columns
-    */
-   public List<XViewerColumn> getColumns() {
-      return columns;
    }
 
 }

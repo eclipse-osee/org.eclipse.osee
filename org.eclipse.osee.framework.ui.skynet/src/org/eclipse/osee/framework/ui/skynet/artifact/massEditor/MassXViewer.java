@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
@@ -73,8 +72,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
     * @param style
     */
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
-      super(parent, style, new MassXViewerFactory(
-            ((MassArtifactEditorInput) editor.getEditorInput()).getCustomizeNamespace()));
+      super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
       this.editor = editor;
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
@@ -272,23 +270,25 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    }
 
    public void resetColumns(Collection<? extends Artifact> artifacts) throws SQLException {
-      CustomizeData custData = new CustomizeData();
-
-      List<XViewerColumn> columns =
-            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getColumns();
-      if (columns == null) {
-         columns = getDefaultArtifactColumns(this, artifacts);
-         custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
-      }
-      custData.getColumnData().setColumns(columns);
-      ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
-      String editorInputNamespace =
-            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getCustomizeNamespace();
-      if (editorInputNamespace != null && !editorInputNamespace.equals("")) {
-         ((MassXViewerFactory) getXViewerFactory()).setNamespace(editorInputNamespace);
-      }
-      ((MassXViewerFactory) getXViewerFactory()).setColumns(columns);
-      getCustomizeMgr().loadCustomization(custData);
+      System.err.println("MassXViewer: remove this");
+      //      CustomizeData custData = new CustomizeData();
+      //
+      //      List<XViewerColumn> columns =
+      //            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getColumns();
+      //      if (columns == null) {
+      //         columns = getDefaultArtifactColumns(this, artifacts);
+      //         custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
+      //      }
+      //      custData.getColumnData().setColumns(columns);
+      //      ((MassXViewerFactory) getXViewerFactory()).setDefaultCustData(custData);
+      //      String editorInputNamespace =
+      //            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getCustomizeNamespace();
+      //      if (editorInputNamespace != null && !editorInputNamespace.equals("")) {
+      //         ((MassXViewerFactory) getXViewerFactory()).setNamespace(editorInputNamespace);
+      //      }
+      //      ((MassXViewerFactory) getXViewerFactory()).setColumns(columns);
+      //      getCustomizeMgr().loadCustomization(
+      //            ((MassArtifactEditorInput) ((MassArtifactEditor) editor).getEditorInput()).getXViewerFactory().getDefaultTableCustomizeData());
    }
 
    private static final XViewerArtifactNameColumn nameCol = new XViewerArtifactNameColumn("Name");

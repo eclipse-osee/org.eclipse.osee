@@ -48,13 +48,12 @@ public class XViewer extends TreeViewer {
    public static final String MENU_GROUP_PRE = "XVIEWER MENU GROUP PRE";
    public static final String MENU_GROUP_POST = "XVIEWER MENU GROUP POST";
    private Label statusLabel;
-   private String namespace;
-   private MenuManager menuManager;
+   private final MenuManager menuManager;
    private boolean ctrlKeyDown = false;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private boolean columnMultiEditEnabled = false;
-   private CustomizeManager customizeMgr;
+   private final CustomizeManager customizeMgr;
    private TreeColumn rightClickSelectedColumn = null;
    private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
@@ -90,6 +89,7 @@ public class XViewer extends TreeViewer {
    public void addCustomizeToViewToolbar(final ViewPart viewPart) {
       Action customizeAction = new Action("Customize Table") {
 
+         @Override
          public void run() {
             customizeMgr.handleTableCustomization();
          }
@@ -364,7 +364,7 @@ public class XViewer extends TreeViewer {
    }
 
    public String getViewerNamespace() {
-      return namespace;
+      return getXViewerFactory().getNamespace();
    }
 
    public IXViewerFactory getXViewerFactory() {
