@@ -114,7 +114,7 @@ public class EncrypterView extends ViewPart implements IActionable {
          }
       });
 
-      OseeAts.addBugToViewToolbar(this, this, EncrypterPlugin.getInstance(), VIEW_ID, "Admin");
+//      OseeAts.addBugToViewToolbar(this, this, EncrypterPlugin.getInstance(), VIEW_ID, "Admin");
 
    }
 
