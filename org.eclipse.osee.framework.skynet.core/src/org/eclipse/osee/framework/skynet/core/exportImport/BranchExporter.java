@@ -174,6 +174,9 @@ public class BranchExporter {
       File zipTarget = new File(file.getParent(), baseName + ".zip");
       Lib.compressDirectory(rootDirectory, zipTarget.getAbsolutePath(), true);
       Lib.deleteDir(rootDirectory);
+      logger.log(
+            Level.INFO,
+            "Branch export of " + branch.getBranchName() + " and children finished in " + Lib.getElapseString(startMillis));
    }
 
    private void processBranch(File rootDirectory, Writer writer, BranchData branch, boolean mainLevel, boolean useTheseTransactions) throws Exception {
@@ -287,8 +290,6 @@ public class BranchExporter {
          DbUtil.close(attrChStmt);
          DbUtil.close(linkChStmt);
          DbUtil.close(statStmt);
-         logger.log(Level.INFO,
-               "Branch export of " + branch.getName() + " and children finished in " + Lib.getElapseString(startMillis));
       }
    }
 
