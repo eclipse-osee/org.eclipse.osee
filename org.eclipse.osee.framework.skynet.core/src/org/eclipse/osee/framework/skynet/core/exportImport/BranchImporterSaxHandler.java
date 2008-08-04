@@ -77,7 +77,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final String INSERT_TX_ADDRESS =
          "INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
    private static final String INSERT_TX_DETAIL =
-         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id) VALUES (?,?,?,?,?)";
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id, commit_art_id) VALUES (?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH_ASSOCIATION =
          "UPDATE " + BRANCH_TABLE + " SET associated_art_id=? WHERE branch_id=?";
@@ -206,7 +206,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processTransaction(String author, Timestamp time, String comment) throws SQLException {
+   protected void processTransaction(String author, Timestamp time, String comment, Integer commitArtId) throws SQLException {
       // Skip transaction records if the current branch is not being included
       if (curBranch.peek() == null || monitor.isCanceled()) {
          return;
@@ -218,7 +218,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
             SQL3DataType.TIMESTAMP, time, SQL3DataType.VARCHAR, comment, SQL3DataType.INTEGER,
-            authorId == null ? -1 : authorId, SQL3DataType.INTEGER, curBranch.peek().getBranchId());
+            authorId == null ? -1 : authorId, SQL3DataType.INTEGER, curBranch.peek().getBranchId(),
+            SQL3DataType.INTEGER, commitArtId);
    }
 
    @Override

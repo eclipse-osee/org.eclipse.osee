@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.xml.sax.Attributes;
@@ -137,6 +138,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
    private String currentTransactionAuthorGuid = null;
    private Timestamp currentTransactionTime = null;
+   private Integer currentCommitArtId = null;
 
    /**
     * @param attributes
@@ -147,6 +149,8 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void handleTransaction(Attributes attributes) throws SQLException, UnsupportedEncodingException, IOException {
       currentTransactionAuthorGuid = attributes.getValue("author");
       currentTransactionTime = Timestamp.valueOf(attributes.getValue("time"));
+      String commitArtId = attributes.getValue("commitArtId");
+      currentCommitArtId = Strings.isValid(commitArtId) ? new Integer(commitArtId) : null;
    }
 
    private void finishTransaction() {
@@ -167,13 +171,14 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    }
 
    private void wrapUpTransaction(String comment) throws Exception {
-      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment);
+      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment, currentCommitArtId);
 
       currentTransactionAuthorGuid = null;
       currentTransactionTime = null;
+      currentCommitArtId = null;
    }
 
-   protected abstract void processTransaction(String author, Timestamp time, String comment) throws Exception;
+   protected abstract void processTransaction(String author, Timestamp time, String comment, Integer commitArtId) throws Exception;
 
    /**
     * @param attributes

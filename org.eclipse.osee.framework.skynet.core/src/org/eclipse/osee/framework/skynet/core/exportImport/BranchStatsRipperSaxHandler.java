@@ -58,7 +58,7 @@ public class BranchStatsRipperSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processTransaction(String author, Timestamp time, String comment) throws Exception {
+   protected void processTransaction(String author, Timestamp time, String comment, Integer commitArtId) throws Exception {
    }
 
    public Set<String> getArtifactTypes() {
