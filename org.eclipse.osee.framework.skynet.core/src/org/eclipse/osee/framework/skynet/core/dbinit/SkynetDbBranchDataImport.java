@@ -166,6 +166,7 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
 
       public ImportData(String bundleName, String branchName, String branchData, int currentCount) {
          super();
+         this.bundleName = bundleName;
          this.branchName = branchName;
          this.branchData = branchData;
          this.priority = branchName.toLowerCase().equals("common") ? 0 : currentCount;
