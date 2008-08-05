@@ -24,7 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.zest.core,
  org.eclipse.zest.layouts,
  org.eclipse.compare,
- javax.mail.glassfish;bundle-version="1.4.1"
+ org.glassfish.javax.mail;bundle-version="1.4.1"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: org.eclipse.nebula.widgets.calendarcombo,
