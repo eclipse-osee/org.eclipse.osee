@@ -25,7 +25,7 @@ public interface ISearchEngineTagger {
    public void tagByQueueQueryId(int queryId);
 
    /**
-    * Create tags for queue query id. Notifies listener once tagging is complete.
+    * Create tags for queue query id. Notifies listener of tagging events.
     * 
     * @param listener object listening for tag events
     * @param queryId queryId to tag
@@ -51,6 +51,27 @@ public interface ISearchEngineTagger {
     * @param inputStream xml inputStream
     */
    public void tagFromXmlStream(InputStream inputStream) throws Exception;
+
+   /**
+    * Create tags for attributes specified in xml stream. Notifies listener of tagging events. <b>
+    * 
+    * <pre>
+    * The XML data is formatted as follows:
+    *    &lt;AttributeTag&gt;
+    *       &lt;entry gammaId=&quot;90&quot;/&gt;
+    *       &lt;entry gammaId=&quot;91&quot;/&gt;
+    *                .
+    *                .
+    *                .
+    *    &lt;AttributeTag&gt;
+    * </pre>
+    * 
+    * </b>
+    * 
+    * @param listener object listening for tag events
+    * @param inputStream xml inputStream
+    */
+   public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception;
 
    /**
     * Stop tagging items by queue query id

@@ -81,10 +81,10 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(org.eclipse.osee.framework.search.engine.ITagListener, java.io.InputStream)
     */
    @Override
-   public void tagFromXmlStream(InputStream inputStream) throws Exception {
+   public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception {
       Connection connection = null;
       try {
          connection = OseeDbConnection.getConnection();
@@ -93,12 +93,20 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
          xmlReader.setContentHandler(new AttributeXmlParser(connection, joinQuery));
          xmlReader.parse(new InputSource(inputStream));
          joinQuery.store(connection);
-         tagByQueueQueryId(joinQuery.getQueryId());
+         tagByQueueQueryId(listener, joinQuery.getQueryId());
       } finally {
          if (connection != null) {
             connection.close();
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(java.io.InputStream)
+    */
+   @Override
+   public void tagFromXmlStream(InputStream inputStream) throws Exception {
+      tagFromXmlStream(null, inputStream);
    }
 
    /* (non-Javadoc)

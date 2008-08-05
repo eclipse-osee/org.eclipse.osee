@@ -62,7 +62,12 @@ public class SearchEngineServlet extends HttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          int queryId = Integer.parseInt(request.getParameter("queryId"));
-         Activator.getInstance().getSearchTagger().tagByQueueQueryId(queryId);
+         boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
+         TagListener listener = new TagListener(queryId);
+         Activator.getInstance().getSearchTagger().tagByQueueQueryId(listener, queryId);
+         if (waitForTags) {
+            listener.wait();
+         }
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -81,9 +86,13 @@ public class SearchEngineServlet extends HttpServlet {
    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
       try {
+         boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          inputStream = request.getInputStream();
+         TagListener listener = new TagListener(-1);
          Activator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
-
+         if (waitForTags) {
+            listener.wait();
+         }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          response.setStatus(HttpServletResponse.SC_CREATED);
