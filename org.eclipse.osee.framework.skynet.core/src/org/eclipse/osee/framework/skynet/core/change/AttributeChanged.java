@@ -158,7 +158,7 @@ public class AttributeChanged extends Change {
             return getArtifactChange();
          }
          if (adapter.isInstance(getArtifact())) {
-            return getArtifact();
+            return getArtifactChange().getArtifact();
          }
       } catch (IllegalArgumentException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);

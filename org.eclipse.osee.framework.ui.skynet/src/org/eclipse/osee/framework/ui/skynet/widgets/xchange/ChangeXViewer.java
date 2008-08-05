@@ -12,12 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -56,8 +59,11 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
+      
+      
       Change change = getSelectedChanges().iterator().next();
-      ArtifactEditor.editArtifact(change.getArtifact());
+      Artifact artifact = (Artifact)((IAdaptable) change).getAdapter(Artifact.class);
+      ArtifactEditor.editArtifact(artifact);
    }
 
    public ArrayList<Change> getSelectedChanges() {
