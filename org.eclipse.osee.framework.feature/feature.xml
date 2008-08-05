@@ -60,9 +60,6 @@
       <import plugin="org.eclipse.osee.framework.search.engine.servlet" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.app"/>
       <import plugin="org.eclipse.osee.framework.database" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="derby.driver"/>
-      <import plugin="oracle.driver"/>
-      <import plugin="org.postgresql.driver"/>
       <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.polarion.eclipse.team.svn.connector"/>
@@ -253,13 +250,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.derby"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.oracle"
          download-size="0"
          install-size="0"
@@ -278,5 +268,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.derby"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
