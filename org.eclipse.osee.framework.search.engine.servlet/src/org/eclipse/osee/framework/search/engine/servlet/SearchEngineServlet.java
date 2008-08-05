@@ -63,7 +63,7 @@ public class SearchEngineServlet extends HttpServlet {
       try {
          int queryId = Integer.parseInt(request.getParameter("queryId"));
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
-         TagListener listener = new TagListener(queryId);
+         TagListener listener = new TagListener();
          Activator.getInstance().getSearchTagger().tagByQueueQueryId(listener, queryId);
          if (waitForTags) {
             listener.wait();
@@ -88,8 +88,8 @@ public class SearchEngineServlet extends HttpServlet {
       try {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          inputStream = request.getInputStream();
-         TagListener listener = new TagListener(-1);
-         Activator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
+         TagListener listener = new TagListener();
+         Activator.getInstance().getSearchTagger().tagFromXmlStream(listener, inputStream);
          if (waitForTags) {
             listener.wait();
          }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.search.engine.ITagListener;
+import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.server.admin.Activator;
 
 /**
@@ -148,7 +148,7 @@ class TaggerAllWorker extends BaseCmdWorker {
       }
    }
 
-   private final class TagProcessListener implements ITagListener {
+   private final class TagProcessListener extends TagListenerAdapter {
 
       private final Map<Integer, TagQueueJoinQuery> queryIdMap;
       private int attributesProcessed;
@@ -234,13 +234,6 @@ class TaggerAllWorker extends BaseCmdWorker {
                this.notify();
             }
          }
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
-       */
-      @Override
-      public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
       }
    }
 }

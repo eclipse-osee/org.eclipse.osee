@@ -16,7 +16,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
-import org.eclipse.osee.framework.search.engine.ITagListener;
+import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.server.admin.Activator;
 
 /**
@@ -65,7 +65,7 @@ public class TagItemWorker extends BaseCmdWorker {
             }
             joinQuery.store(connection);
 
-            tagListener = new TagListener(joinQuery);
+            tagListener = new TagListener();
             Activator.getInstance().getSearchTagger().tagByQueueQueryId(tagListener, joinQuery.getQueryId());
             synchronized (tagListener) {
                tagListener.wait();
@@ -83,18 +83,23 @@ public class TagItemWorker extends BaseCmdWorker {
       }
    }
 
-   private final class TagListener implements ITagListener {
-      private TagQueueJoinQuery joinQuery;
+   private final class TagListener extends TagListenerAdapter {
+      private int joinQuery;
       private boolean isProcessing;
 
-      public TagListener(TagQueueJoinQuery joinQuery) {
+      public TagListener() {
          this.isProcessing = true;
-         this.joinQuery = joinQuery;
+         this.joinQuery = -1;
       }
 
-      /**
-       * @return
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagQueryIdSubmit(int)
        */
+      @Override
+      public void onTagQueryIdSubmit(int queryId) {
+         joinQuery = queryId;
+      }
+
       public boolean isProcessing() {
          return isProcessing;
       }
@@ -104,7 +109,7 @@ public class TagItemWorker extends BaseCmdWorker {
        */
       @Override
       public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
-         if (queryId == joinQuery.getQueryId()) {
+         if (queryId == joinQuery) {
             println(String.format("GammaId: [%d] Tags: [%d] ProcessedIn: [%d] ms", gammaId, totalTags, processingTime));
          }
       }
@@ -114,7 +119,7 @@ public class TagItemWorker extends BaseCmdWorker {
        */
       @Override
       synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
-         if (queryId == joinQuery.getQueryId()) {
+         if (queryId == joinQuery) {
             this.isProcessing = false;
             this.notify();
          }
@@ -125,7 +130,7 @@ public class TagItemWorker extends BaseCmdWorker {
        */
       @Override
       public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
-         if (queryId == joinQuery.getQueryId() && isVerbose()) {
+         if (queryId == joinQuery && isVerbose()) {
             println(String.format("QueryId: [%d] GammaId: [%d] Word: [%s] Tag: [%d]", queryId, gammaId, word, codedTag));
          }
       }

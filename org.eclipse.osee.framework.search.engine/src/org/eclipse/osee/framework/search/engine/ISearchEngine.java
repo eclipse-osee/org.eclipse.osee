@@ -24,7 +24,7 @@ public interface ISearchEngine {
     * @param searchString
     * @param branchId
     * @param options
-    * @return
+    * @return result string having the following convention - artifact join query id, expected number of artifacts
     * @throws Exception
     */
    public String search(String searchString, int branchId, Options options) throws Exception;
@@ -32,7 +32,7 @@ public interface ISearchEngine {
    /**
     * Get statistics
     * 
-    * @return tagger statistics
+    * @return search statistics
     */
    SearchStatistics getStatistics();
 

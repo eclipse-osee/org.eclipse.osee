@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.search.engine;
  */
 public interface ITagListener {
 
+   public void onTagQueryIdSubmit(int queryId);
+
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime);
 
    public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime);

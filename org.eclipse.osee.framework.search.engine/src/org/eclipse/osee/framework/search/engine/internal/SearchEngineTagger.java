@@ -74,6 +74,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       runnable.addListener(statistics);
       if (listener != null) {
          runnable.addListener(listener);
+         listener.onTagQueryIdSubmit(queryId);
       }
       FutureTask<Object> futureTask = new FutureTaggingTask(runnable);
       this.futureTasks.put(queryId, futureTask);

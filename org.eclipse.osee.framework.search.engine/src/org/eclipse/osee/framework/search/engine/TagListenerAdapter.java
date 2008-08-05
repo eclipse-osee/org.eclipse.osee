@@ -8,37 +8,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.servlet;
-
-import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
+package org.eclipse.osee.framework.search.engine;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TagListener extends TagListenerAdapter {
+public class TagListenerAdapter implements ITagListener {
 
-   private int queryId;
-
-   public TagListener() {
-      this.queryId = -1;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
+    */
+   @Override
+   public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagQueryIdSubmit(int)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeTagComplete(int, long, int, long)
+    */
+   @Override
+   public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdSubmit(int)
     */
    @Override
    public void onTagQueryIdSubmit(int queryId) {
-      this.queryId = queryId;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagQueryIdTagComplete(int, long, long)
     */
    @Override
-   synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
-      if (this.queryId == queryId) {
-         this.notify();
-      }
+   public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
    }
 
 }

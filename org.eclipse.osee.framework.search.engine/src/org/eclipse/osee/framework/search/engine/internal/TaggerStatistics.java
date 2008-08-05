@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
-import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
+import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListener {
+public class TaggerStatistics extends TagListenerAdapter implements Cloneable, ITaggerStatistics {
    public static final TaggerStatistics EMPTY_STATS = new TaggerStatistics();
    private static final TaskStatistics DEFAULT_TASK_STATS = new TaskStatistics(-1, -1, -1);
 
@@ -163,12 +163,5 @@ public class TaggerStatistics implements Cloneable, ITaggerStatistics, ITagListe
 
       this.longestQueryIdProcessingTime = Math.max(this.longestQueryIdProcessingTime, processingTime);
       this.longestQueryIdWaitTime = Math.max(this.longestQueryIdWaitTime, waitTime);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.search.engine.ITagListener#onAttributeAddTagEvent(int, long, java.lang.String, long)
-    */
-   @Override
-   public void onAttributeAddTagEvent(int queryId, long gammaId, String word, long codedTag) {
    }
 }
