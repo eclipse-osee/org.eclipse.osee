@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
@@ -41,15 +42,45 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
    private static final String POSTFIX = "\"/>\n";
    private ExecutorService executor;
    private StringBuffer taggingInfo;
+   private int count;
 
-   private HttpAttributeTagger() {
+   protected HttpAttributeTagger() {
       this.taggingInfo = new StringBuffer();
       this.executor = Executors.newSingleThreadExecutor();
+      this.count = 0;
       ConnectionHandler.addDbTransactionListener(this);
    }
 
    public static HttpAttributeTagger getInstance() {
       return instance;
+   }
+
+   protected void addAttributeGammaForTagging(int attributeGammaId) {
+      this.taggingInfo.append(PREFIX);
+      this.taggingInfo.append(attributeGammaId);
+      this.taggingInfo.append(POSTFIX);
+      this.count++;
+   }
+
+   protected void sendToTagger(boolean isCommitted) {
+      if (this.taggingInfo.length() > 0) {
+         if (isCommitted) {
+            Future<?> future = this.executor.submit(new TagService(taggingInfo.toString()));
+            if (SkynetDbInit.isDbInit()) {
+               try {
+                  future.get();
+               } catch (Exception ex) {
+                  OseeLog.log(TagService.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
+               }
+            }
+         }
+         this.taggingInfo.delete(0, taggingInfo.length());
+         this.count = 0;
+      }
+   }
+
+   public int getGammaQueueSize() {
+      return count;
    }
 
    /* (non-Javadoc)
@@ -60,9 +91,7 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
       List<Attribute<?>> attributes = artifact.getAttributes();
       for (Attribute<?> attribute : attributes) {
          if (attribute.isDirty() && attribute.getAttributeType().isTaggable()) {
-            this.taggingInfo.append(PREFIX);
-            this.taggingInfo.append(attribute.getGammaId());
-            this.taggingInfo.append(POSTFIX);
+            addAttributeGammaForTagging(attribute.getGammaId());
          }
       }
    }
@@ -74,12 +103,7 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
    public void onEvent(IDbTransactionEvent event) {
       if (event instanceof DbTransactionEventCompleted) {
          DbTransactionEventCompleted eventCompleted = (DbTransactionEventCompleted) event;
-         if (this.taggingInfo.length() > 0) {
-            if (eventCompleted.isCommitted()) {
-               this.executor.submit(new TagService(taggingInfo.toString()));
-            }
-            this.taggingInfo.delete(0, taggingInfo.length());
-         }
+         sendToTagger(eventCompleted.isCommitted());
       }
    }
 

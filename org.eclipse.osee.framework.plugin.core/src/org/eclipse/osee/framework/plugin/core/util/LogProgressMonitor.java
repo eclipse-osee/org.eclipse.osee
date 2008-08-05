@@ -84,7 +84,7 @@ public class LogProgressMonitor implements IProgressMonitor {
     */
    @Override
    public void subTask(String name) {
-      logger.log(Level.INFO, name);
+      logger.log(Level.FINER, name);
    }
 
    /* (non-Javadoc)

@@ -56,18 +56,26 @@ public class SearchEngineServlet extends HttpServlet {
    }
 
    /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
+   * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+   */
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       try {
          int queryId = Integer.parseInt(request.getParameter("queryId"));
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
-         TagListener listener = new TagListener();
-         Activator.getInstance().getSearchTagger().tagByQueueQueryId(listener, queryId);
          if (waitForTags) {
-            listener.wait();
+            TagListener listener = new TagListener();
+            Activator.getInstance().getSearchTagger().tagByQueueQueryId(listener, queryId);
+            if (listener.wasProcessed() != true) {
+               synchronized (listener) {
+                  listener.wait();
+               }
+            }
+         } else {
+            Activator.getInstance().getSearchTagger().tagByQueueQueryId(queryId);
          }
+         response.setContentType("text/plain");
+         response.setCharacterEncoding("UTF-8");
          response.setStatus(HttpServletResponse.SC_OK);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -88,15 +96,20 @@ public class SearchEngineServlet extends HttpServlet {
       try {
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          inputStream = request.getInputStream();
-         TagListener listener = new TagListener();
-         Activator.getInstance().getSearchTagger().tagFromXmlStream(listener, inputStream);
          if (waitForTags) {
-            listener.wait();
+            TagListener listener = new TagListener();
+            Activator.getInstance().getSearchTagger().tagFromXmlStream(listener, inputStream);
+            if (listener.wasProcessed() != true) {
+               synchronized (listener) {
+                  listener.wait();
+               }
+            }
+         } else {
+            Activator.getInstance().getSearchTagger().tagFromXmlStream(inputStream);
          }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          response.setStatus(HttpServletResponse.SC_CREATED);
-
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",

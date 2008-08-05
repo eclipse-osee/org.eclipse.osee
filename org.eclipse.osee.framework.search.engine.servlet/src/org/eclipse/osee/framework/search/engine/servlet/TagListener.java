@@ -17,17 +17,23 @@ import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
  */
 public class TagListener extends TagListenerAdapter {
 
-   private int queryId;
+   private volatile int queryId;
+   private volatile boolean wasProcessed;
 
    public TagListener() {
       this.queryId = -1;
+      this.wasProcessed = false;
+   }
+
+   public boolean wasProcessed() {
+      return wasProcessed;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.search.engine.TagListenerAdapter#onTagQueryIdSubmit(int)
     */
    @Override
-   public void onTagQueryIdSubmit(int queryId) {
+   synchronized public void onTagQueryIdSubmit(int queryId) {
       this.queryId = queryId;
    }
 
@@ -37,8 +43,8 @@ public class TagListener extends TagListenerAdapter {
    @Override
    synchronized public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
       if (this.queryId == queryId) {
+         this.wasProcessed = true;
          this.notify();
       }
    }
-
 }

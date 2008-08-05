@@ -50,7 +50,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -62,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class BranchImporterSaxHandler extends BranchSaxHandler {
+   private static final int TAG_GAMMA_QUEUE = 1000;
    private static final String INSERT_ARTIFACT_VERSION =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final String INSERT_ATTRIBUTE =
@@ -90,6 +93,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private final GuidCache attributeGuidCache;
    private final GuidCache linkGuidCache;
    private final ZipFile binaryDataSource;
+   private final BranchImportTagger branchImportTagger;
 
    private Integer currentTransactionId;
    private Integer currentArtifactId;
@@ -121,6 +125,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       this.transactionKeys = new Stack<Object>();
       this.binaryDataSource = binaryDataSource;
+      this.branchImportTagger = new BranchImportTagger();
 
       if (monitor == null) {
          monitor = new NullProgressMonitor();
@@ -228,6 +233,9 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       currentTransactionId = null;
       this.artifactOnTransactionCount = 0;
       this.linkOnTransactionCount = 0;
+      if (branchImportTagger.getGammaQueueSize() > 0) {
+         branchImportTagger.sendToTagger();
+      }
    }
 
    @Override
@@ -295,8 +303,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, SQL3DataType.INTEGER, attrId, SQL3DataType.VARCHAR,
                attributeGuid);
       }
-
-      int attrTypeId = AttributeTypeManager.getType(attributeTypeName).getAttrTypeId();
+      AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+      int attrTypeId = attributeType.getAttrTypeId();
       int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
@@ -325,6 +333,13 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
             modificationType.getValue());
       insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
+
+      if (attributeType.isTaggable()) {
+         branchImportTagger.addAttributeGammaForTagging(gammaId);
+         if (branchImportTagger.getGammaQueueSize() >= TAG_GAMMA_QUEUE) {
+            branchImportTagger.sendToTagger();
+         }
+      }
    }
 
    @Override
@@ -382,5 +397,25 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
    private ZipFile getBinaryDataSource() {
       return binaryDataSource;
+   }
+
+   private final class BranchImportTagger extends HttpAttributeTagger {
+
+      public BranchImportTagger() {
+         super();
+         ConnectionHandler.removeDbTransactionListener(this);
+      }
+
+      public void sendToTagger() {
+         super.sendToTagger(true);
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger#addAttributeGammaForTagging(int)
+       */
+      @Override
+      public void addAttributeGammaForTagging(int attributeGammaId) {
+         super.addAttributeGammaForTagging(attributeGammaId);
+      }
    }
 }
