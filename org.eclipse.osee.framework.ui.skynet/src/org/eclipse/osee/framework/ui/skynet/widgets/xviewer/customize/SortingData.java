@@ -24,7 +24,7 @@ public class SortingData {
 
    private static String XTREESORTER_TAG = "xSorter";
    private static String COL_NAME_TAG = "id";
-   private List<String> sortingIds = new ArrayList<String>();
+   private final List<String> sortingIds = new ArrayList<String>();
    private final CustomizeData custData;
 
    public SortingData(CustomizeData custData) {
@@ -39,6 +39,7 @@ public class SortingData {
       return sortingIds.size() > 0;
    }
 
+   @Override
    public String toString() {
       List<XViewerColumn> cols = getSortXCols();
       if (cols.size() == 0) return "";
@@ -99,8 +100,11 @@ public class SortingData {
    /**
     * @param sortingNames the sortingNames to set
     */
-   public void setSortingNames(List<String> sortingNames) {
-      this.sortingIds = sortingNames;
+   public void setSortingNames(String... xViewerColumnId) {
+      this.sortingIds.clear();
+      for (String id : xViewerColumnId) {
+         this.sortingIds.add(id);
+      }
    }
 
 }
