@@ -44,6 +44,11 @@ public class DESEncrypter {
    private static byte[] salt =
          {(byte) 0x8E, (byte) 0x45, (byte) 0x77, (byte) 0x94, (byte) 0x21, (byte) 0x32, (byte) 0x90, (byte) 0x22};
 
+   /**
+    * This constructor will auto generate a secret key. Therefore, the getKey() method should be used to save off the key to decrypt.
+    * @throws InvalidKeySpecException
+    * @throws NoSuchAlgorithmException
+    */
    public DESEncrypter() throws InvalidKeySpecException, NoSuchAlgorithmException {
       this(GUID.generateGuidStr());
    }

@@ -490,7 +490,7 @@ public class RevisionManager implements IEventReceiver {
             ArtifactChanged artifactChanged =
                   new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"), resultSet.getInt("gamma_id"),
                         artId, toTransactionId, fromTransactionId,
-                        ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING);
+                        ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, !hasBranch);
 
             //We do not want to display artifacts that were new and then deleted
             //The only was this could happen is if the artifact was in here twice
@@ -518,8 +518,9 @@ public class RevisionManager implements IEventReceiver {
    private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
+    	 boolean hasBranch = sourceBranch != null; 
          //Changes per a branch
-         if (sourceBranch != null) {
+         if (hasBranch) {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, SQL3DataType.INTEGER,
                         sourceBranch.getBranchId());
@@ -543,7 +544,7 @@ public class RevisionManager implements IEventReceiver {
                changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
                      ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
                      resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
-                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
+                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")),!hasBranch));
             }
          }
       } finally {
@@ -619,7 +620,7 @@ public class RevisionManager implements IEventReceiver {
                if (artModType == ModificationType.CHANGE && !modifiedArtifacts.contains(artId)) {
                   ArtifactChanged artifactChanged =
                         new ArtifactChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
-                              fromTransactionId, ModificationType.CHANGE, ChangeType.OUTGOING);
+                              fromTransactionId, ModificationType.CHANGE, ChangeType.OUTGOING, !hasBranch);
 
                   changes.add(artifactChanged);
                   modifiedArtifacts.add(artId);
@@ -627,7 +628,7 @@ public class RevisionManager implements IEventReceiver {
                attributeChanged =
                      new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
                            fromTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
-                           ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType);
+                           ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType, !hasBranch);
 
                changes.add(attributeChanged);
                mightNeedWasValue.put(attrId, attributeChanged);

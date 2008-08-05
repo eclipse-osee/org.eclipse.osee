@@ -35,6 +35,7 @@ public abstract class Change implements IAdaptable {
    private ChangeType changeType;
    private Branch branch;
    protected int artTypeId;
+   private boolean isHistorical;
 
    /**
     * @param sourceGamma
@@ -45,7 +46,7 @@ public abstract class Change implements IAdaptable {
     * @param modType
     * @param changeType
     */
-   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -55,9 +56,14 @@ public abstract class Change implements IAdaptable {
       this.modType = modType;
       this.changeType = changeType;
       this.artTypeId = artTypeId;
+      this.isHistorical = isHistorical;
    }
 
-   /**
+   public boolean isHistorical() {
+	return isHistorical;
+}
+
+/**
     * @param modType the modType to set
     */
    public void setModType(ModificationType modType) {

@@ -15,11 +15,13 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -43,8 +45,8 @@ public class ArtifactChanged extends Change {
     * @param modType
     * @param changeType
     */
-   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
+   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
+      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
    }
 
    /**
@@ -98,11 +100,11 @@ public class ArtifactChanged extends Change {
       return "";
    }
 
-   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, OseeCoreException {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getModificationType(), 
-                      getArtifact(), null, null, getFromTransactionId(),
+                      isHistorical()? ArtifactPersistenceManager.getInstance().getArtifactFromId(getArtId(), getToTransactionId()): getArtifact(), null, null, getFromTransactionId(),
                      getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
@@ -132,7 +134,9 @@ public class ArtifactChanged extends Change {
          logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (MultipleArtifactsExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      } catch (OseeCoreException ex) {
+          logger.log(Level.SEVERE, ex.toString(), ex);
+	}
       return null;
    }
 

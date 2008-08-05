@@ -15,12 +15,14 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -50,8 +52,8 @@ public class AttributeChanged extends Change {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType) {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
+   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) {
+      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -133,11 +135,11 @@ public class AttributeChanged extends Change {
       this.wasValue = wasValue;
    }
 
-   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, OseeCoreException {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getArtModType(), 
-                     getArtifact(), null, null, getFromTransactionId(),
+            		   isHistorical()? ArtifactPersistenceManager.getInstance().getArtifactFromId(getArtId(), getToTransactionId()): getArtifact(), null, null, getFromTransactionId(),
                      getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
@@ -166,7 +168,9 @@ public class AttributeChanged extends Change {
          logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (MultipleArtifactsExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      } catch (OseeCoreException ex) {
+          logger.log(Level.SEVERE, ex.toString(), ex);
+	}
       return null;
    }
 
