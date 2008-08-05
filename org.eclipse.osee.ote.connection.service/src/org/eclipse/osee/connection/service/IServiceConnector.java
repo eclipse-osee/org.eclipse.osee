@@ -47,7 +47,7 @@ public interface IServiceConnector {
 	 * @return
 	 * @throws Exception
 	 */
-   Object findExport(Object callback) throws Exception;
+   Object findExport(Object callback);
    
    void unexport(Object callback) throws Exception;
 

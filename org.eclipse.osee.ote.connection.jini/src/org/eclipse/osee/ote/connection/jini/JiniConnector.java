@@ -71,7 +71,7 @@ public abstract class JiniConnector implements IServiceConnector {
    }
 
    @Override
-	public Object findExport(Object callback) throws Exception {
+	public Object findExport(Object callback) {
 		return exports.get(callback);
 	}
 
