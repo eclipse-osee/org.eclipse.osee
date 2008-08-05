@@ -92,9 +92,9 @@ public class OseeApplicationServerActivator implements BundleActivator {
             Bundle bundle = bundles.get(bundleName);
             if (bundle != null && isVersionAllowed(bundle, requiredVersion)) {
                try {
-                  if (isStart) {
+                  if (isStart && (bundle.getState() != Bundle.ACTIVE || bundle.getState() != Bundle.START_TRANSIENT || bundle.getState() != Bundle.STARTING)) {
                      bundle.start();
-                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
+                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName) && (bundle.getState() != Bundle.STOP_TRANSIENT || bundle.getState() != Bundle.STOPPING)) {
                      bundle.stop();
                   }
                } catch (Exception ex) {
