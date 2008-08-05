@@ -47,7 +47,7 @@ final class StartUpRunnable extends TimerTask {
             tagger.tagByQueueQueryId(queryId);
          }
       } catch (Exception ex) {
-         OseeLog.log(SearchEngineTagger.class, Level.SEVERE, "Error during start-up.", ex);
+         OseeLog.log(SearchEngineTagger.class, Level.INFO, "Tagging on Server Startup was not run.");
       } finally {
          if (connection != null) {
             try {
