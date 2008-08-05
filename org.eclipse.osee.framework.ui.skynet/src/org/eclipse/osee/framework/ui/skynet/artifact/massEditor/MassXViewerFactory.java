@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
@@ -41,7 +40,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
    @Override
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData custData = new CustomizeData();
-      custData.getSortingData().setSortingNames(Arrays.asList(nameCol.getId()));
+      custData.getSortingData().setSortingNames(nameCol.getId());
       custData.getColumnData().setColumns(getColumns());
       custData.setNameSpace(getNamespace());
       custData.setName("Artifacts");
