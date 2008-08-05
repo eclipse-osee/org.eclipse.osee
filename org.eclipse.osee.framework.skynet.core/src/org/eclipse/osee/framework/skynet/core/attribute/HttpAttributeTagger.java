@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 /**
@@ -95,7 +96,9 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
          ByteArrayInputStream inputStream = null;
          try {
             Map<String, String> parameters = new HashMap<String, String>();
-
+            if (SkynetDbInit.isDbInit()) {
+               parameters.put("wait", "true");
+            }
             StringBuffer payload = new StringBuffer();
             payload.append(XML_START);
             payload.append(toSend);
