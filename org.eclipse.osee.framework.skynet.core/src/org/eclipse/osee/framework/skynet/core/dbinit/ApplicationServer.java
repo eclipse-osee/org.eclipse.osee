@@ -48,7 +48,8 @@ public class ApplicationServer {
          try {
             URL url = new URL(server);
             Socket socket = new Socket(url.getHost(), url.getPort());
-            if (socket.getInetAddress().isSiteLocalAddress()) {
+            if (socket.getInetAddress().isLoopbackAddress()) {
+               logger.log(Level.INFO, "Deleting binary data from application server...");
                String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
                Lib.deleteContents(new File(binaryDataPath + File.separator + "attr"));
                Lib.deleteContents(new File(binaryDataPath + File.separator + "snapshot"));

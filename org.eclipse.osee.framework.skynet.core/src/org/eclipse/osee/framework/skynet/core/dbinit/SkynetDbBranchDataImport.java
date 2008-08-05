@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -108,9 +107,8 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
    private void importBranchData(File importFile, String branchTarget) throws Exception {
       ZipFile zipFile = null;
       try {
-         String baseName = Lib.removeExtension(importFile.getName());
          zipFile = new ZipFile(importFile);
-         ZipEntry entry = zipFile.getEntry(baseName + ".xml");
+         ZipEntry entry = zipFile.getEntry("branch.data.xml");
          XMLReader reader = XMLReaderFactory.createXMLReader();
          InputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
          try {

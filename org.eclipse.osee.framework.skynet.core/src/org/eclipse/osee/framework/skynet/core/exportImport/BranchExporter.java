@@ -159,7 +159,7 @@ public class BranchExporter {
       File rootDirectory = new File(file.getParentFile(), baseName);
       rootDirectory.mkdirs();
 
-      File indexFile = new File(rootDirectory, baseName + ".xml");
+      File indexFile = new File(rootDirectory, "branch.data.xml");
       Writer writer =
             new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "UTF-8"), (int) Math.pow(2, 24));
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");

@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exportImport.BranchImporterSaxHandler;
@@ -57,9 +56,8 @@ public class ImportBranchJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       ZipFile zipFile = null;
       try {
-         String baseName = Lib.removeExtension(importFile.getName());
          zipFile = new ZipFile(importFile);
-         ZipEntry entry = zipFile.getEntry(baseName + ".xml");
+         ZipEntry entry = zipFile.getEntry("branch.data.xml");
          InputStream imputStream = zipFile.getInputStream(entry);
          XMLReader reader = XMLReaderFactory.createXMLReader();
          reader.setContentHandler(new BranchImporterSaxHandler(zipFile, branch, includeMainLevelBranch,
