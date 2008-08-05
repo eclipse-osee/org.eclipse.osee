@@ -33,7 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IMemento;
@@ -134,12 +133,14 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
       updateWidgetEnablements();
 
-      Group group = new Group(parent, SWT.NONE);
-      group.setLayout(new GridLayout());
-      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("EXPERIMENTAL - Only Visible to Developers");
+      Composite panel = new Composite(parent, SWT.NONE);
+      GridLayout gL = new GridLayout();
+      gL.marginHeight = 0;
+      gL.marginWidth = 0;
+      panel.setLayout(gL);
+      panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      searchComposite = new SearchComposite(group, SWT.NONE, SEARCH_OPTIONS);
+      searchComposite = new SearchComposite(panel, SWT.NONE, SEARCH_OPTIONS);
       searchComposite.addListener(this);
       //      searchComposite.setHelpContexts();
       loadState();
