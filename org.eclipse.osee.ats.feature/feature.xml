@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
+      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/3.4/lba/"/>
    </url>
 
    <requires>
@@ -39,11 +39,10 @@
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.zest.layouts"/>
-      <import plugin="javax.mail"/>
       <import plugin="org.eclipse.osee.framework.db.connection"/>
       <import plugin="org.eclipse.osee.framework.logging"/>
       <import plugin="org.eclipse.pde.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.jdk"/>
+      <import plugin="javax.mail.glassfish"/>
    </requires>
 
    <plugin
