@@ -33,6 +33,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -453,7 +454,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             long start = System.currentTimeMillis();
             monitor.subTask(String.format("Tagging [%d] Items...", getGammaQueueSize() * TAG_GAMMA_QUEUE_SIZE));
             final Object lock = new Object();
-            final List<Future<?>> futures = new ArrayList<Future<?>>();
+            final List<Future<?>> futures = Collections.synchronizedList(new ArrayList<Future<?>>());
             ExecutorService executors = Executors.newFixedThreadPool(3);
             for (final Integer toTag : tagJoins) {
                futures.add(executors.submit(new FutureTask<Object>(new Runnable() {
@@ -495,11 +496,13 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                }));
             }
             executors.shutdown();
-            synchronized (lock) {
-               try {
-                  lock.wait();
-               } catch (InterruptedException ex) {
-                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            if (futures.isEmpty() != true) {
+               synchronized (lock) {
+                  try {
+                     lock.wait();
+                  } catch (InterruptedException ex) {
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  }
                }
             }
             tagJoins.clear();
