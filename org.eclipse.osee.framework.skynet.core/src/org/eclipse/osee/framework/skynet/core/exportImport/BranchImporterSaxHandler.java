@@ -32,28 +32,15 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -80,7 +67,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class BranchImporterSaxHandler extends BranchSaxHandler {
-   private static final int TAG_GAMMA_QUEUE_SIZE = 1000;
+   //   private static final int TAG_GAMMA_QUEUE_SIZE = 1000;
    private static final String INSERT_ARTIFACT_VERSION =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final String INSERT_ATTRIBUTE =
@@ -109,7 +96,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private final GuidCache attributeGuidCache;
    private final GuidCache linkGuidCache;
    private final ZipFile binaryDataSource;
-   private final BranchImportTagger branchImportTagger;
 
    private Integer currentTransactionId;
    private Integer currentArtifactId;
@@ -122,7 +108,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private Stack<Object> transactionKeys;
 
    public BranchImporterSaxHandler(ZipFile binaryDataSource, Branch supportingBranch, boolean includeMainLevelBranch, boolean includeDescendantBranches, IProgressMonitor monitor) throws SQLException, IOException {
-
       this.currentTransactionId = null;
       this.currentArtifactId = null;
       this.curBranch = new Stack<Branch>();
@@ -141,7 +126,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       this.transactionKeys = new Stack<Object>();
       this.binaryDataSource = binaryDataSource;
-      this.branchImportTagger = new BranchImportTagger();
 
       if (monitor == null) {
          monitor = new NullProgressMonitor();
@@ -222,10 +206,33 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (branch != null) {
          ConnectionHandler.setTransactionLevelAsSuccessful(transactionKeys.peek());
          ConnectionHandler.endTransactionLevel(transactionKeys.pop());
+         postBranchImportProcessing(branch);
       }
-
-      branchImportTagger.sendToTagger();
       transactionOnBranchCount = 0;
+   }
+
+   private void postBranchImportProcessing(Branch branch) {
+      StringBuffer response = new StringBuffer();
+      long start = System.currentTimeMillis();
+      try {
+         OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging [%s] branch", branch.getBranchName()));
+         Map<String, String> parameters = new HashMap<String, String>();
+         parameters.put("branchId", Integer.toString(branch.getBranchId()));
+         parameters.put("wait", "true");
+         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+         response.append(HttpProcessor.post(new URL(url)));
+         OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());
+      } catch (Exception ex) {
+         if (response.length() > 0) {
+            response.append("\n");
+         }
+         response.append(ex.getLocalizedMessage());
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, response.toString(), ex);
+      } finally {
+         response.delete(0, response.length());
+      }
+      OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging Completed in [%d ms]",
+            System.currentTimeMillis() - start));
    }
 
    @Override
@@ -348,10 +355,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
             modificationType.getValue());
       insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
-
-      if (attributeType.isTaggable()) {
-         branchImportTagger.addAttributeGammaForTagging(gammaId);
-      }
    }
 
    @Override
@@ -409,107 +412,5 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
    private ZipFile getBinaryDataSource() {
       return binaryDataSource;
-   }
-
-   private final class BranchImportTagger {
-      private TagQueueJoinQuery currentTagJoin;
-      private List<Integer> tagJoins;
-
-      public BranchImportTagger() {
-         super();
-         this.tagJoins = new ArrayList<Integer>();
-         this.currentTagJoin = null;
-      }
-
-      private int getGammaQueueSize() {
-         return tagJoins.size();
-      }
-
-      public void addAttributeGammaForTagging(int attributeGammaId) throws Exception {
-         if (currentTagJoin == null) {
-            currentTagJoin = JoinUtility.createTagQueueJoinQuery();
-         }
-         currentTagJoin.add((long) attributeGammaId);
-         if (currentTagJoin.size() >= TAG_GAMMA_QUEUE_SIZE) {
-            currentTagJoin.store();
-            tagJoins.add(currentTagJoin.getQueryId());
-            currentTagJoin = null;
-         }
-      }
-
-      public void sendToTagger() {
-         if (monitor.isCanceled()) {
-            if (getGammaQueueSize() > 0) {
-               for (final Integer toTag : tagJoins) {
-                  try {
-                     JoinUtility.deleteQuery(JoinItem.TAG_GAMMA_QUEUE, toTag);
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
-            return;
-         }
-         if (getGammaQueueSize() > 0) {
-            long start = System.currentTimeMillis();
-            String message = String.format("Tagging [%d] Items...", getGammaQueueSize() * TAG_GAMMA_QUEUE_SIZE);
-            monitor.subTask(message);
-            OseeLog.log(SkynetActivator.class, Level.INFO, message + " This can take a while.");
-            final Object lock = new Object();
-            final List<Future<?>> futures = Collections.synchronizedList(new ArrayList<Future<?>>());
-            ExecutorService executors = Executors.newFixedThreadPool(3);
-            for (final Integer toTag : tagJoins) {
-               futures.add(executors.submit(new FutureTask<Object>(new Runnable() {
-                  public void run() {
-                     StringBuffer response = new StringBuffer();
-                     try {
-                        Map<String, String> parameters = new HashMap<String, String>();
-                        parameters.put("queryId", toTag.toString());
-                        if (SkynetDbInit.isDbInit()) {
-                           parameters.put("wait", "true");
-                        }
-                        String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-                        response.append(HttpProcessor.post(new URL(url)));
-                     } catch (Exception ex) {
-                        if (response.length() > 0) {
-                           response.append("\n");
-                        }
-                        response.append(ex.getLocalizedMessage());
-                        OseeLog.log(SkynetActivator.class, Level.SEVERE, response.toString(), ex);
-                     } finally {
-                        response.delete(0, response.length());
-                     }
-                  }
-               }, null) {
-
-                  /* (non-Javadoc)
-                   * @see java.util.concurrent.FutureTask#done()
-                   */
-                  @Override
-                  protected void done() {
-                     futures.remove(this);
-                     if (futures.isEmpty()) {
-                        synchronized (lock) {
-                           lock.notify();
-                        }
-                     }
-                  }
-
-               }));
-            }
-            executors.shutdown();
-            if (futures.isEmpty() != true) {
-               synchronized (lock) {
-                  try {
-                     lock.wait();
-                  } catch (InterruptedException ex) {
-                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
-            tagJoins.clear();
-            monitor.subTask(String.format("Tagging Completed in [%d ms]", System.currentTimeMillis() - start));
-         }
-      }
    }
 }
