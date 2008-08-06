@@ -40,7 +40,7 @@ public class SearchEngineServlet extends HttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.setContentType("text/plain");
          if (result != null && result.isEmpty() != true) {
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
             response.getWriter().write(result);
          } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
