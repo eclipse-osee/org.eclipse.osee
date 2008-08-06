@@ -8,19 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.ui.skynet.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.StringViewerSorter;
-import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
@@ -28,10 +27,9 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
 
-   private XRadioButton addSelectedRadioButton =
-         new XRadioButton("Add selected item(s) to existing if not already chosen.");
-   private XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
-   private XRadioButton deleteSelectedRadioButton = new XRadioButton("Remove selected item(s) if already chosen.");
+   private Button addSelectedRadioButton;
+   private Button replaceAllRadioButton;
+   private Button deleteSelectedRadioButton;
    public static enum Selection {
       AddSelection, ReplaceAll, DeleteSelected
    };
@@ -57,8 +55,10 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
       Composite comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
 
-      addSelectedRadioButton.createWidgets(comp, 2);
-      addSelectedRadioButton.setSelected(true);
+      (new Label(comp, SWT.None)).setText("Add selected item(s) to existing if not already chosen.");
+
+      addSelectedRadioButton = new Button(comp, SWT.CHECK);
+      addSelectedRadioButton.setSelection(true);
       addSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
          /*
           * (non-Javadoc)
@@ -68,11 +68,13 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (addSelectedRadioButton.isSelected()) selected = Selection.AddSelection;
+            if (addSelectedRadioButton.getSelection()) selected = Selection.AddSelection;
          }
       });
 
-      replaceAllRadioButton.createWidgets(comp, 2);
+      (new Label(comp, SWT.None)).setText("Replace all existing with selected item(s).");
+
+      replaceAllRadioButton = new Button(comp, SWT.CHECK);
       replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
          /*
           * (non-Javadoc)
@@ -82,11 +84,13 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (replaceAllRadioButton.isSelected()) selected = Selection.ReplaceAll;
+            if (replaceAllRadioButton.getSelection()) selected = Selection.ReplaceAll;
          }
       });
 
-      deleteSelectedRadioButton.createWidgets(comp, 2);
+      (new Label(comp, SWT.None)).setText("Remove selected item(s) if already chosen.");
+
+      deleteSelectedRadioButton = new Button(comp, SWT.CHECK);
       deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
          /*
           * (non-Javadoc)
@@ -96,7 +100,7 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
-            if (deleteSelectedRadioButton.isSelected()) selected = Selection.DeleteSelected;
+            if (deleteSelectedRadioButton.getSelection()) selected = Selection.DeleteSelected;
          }
       });
       return c;

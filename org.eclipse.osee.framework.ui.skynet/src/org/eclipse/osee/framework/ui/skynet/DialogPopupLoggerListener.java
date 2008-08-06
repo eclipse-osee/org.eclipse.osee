@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;

@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.ui.skynet.StringViewerSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;

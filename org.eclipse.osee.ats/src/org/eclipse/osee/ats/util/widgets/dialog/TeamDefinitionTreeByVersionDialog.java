@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;

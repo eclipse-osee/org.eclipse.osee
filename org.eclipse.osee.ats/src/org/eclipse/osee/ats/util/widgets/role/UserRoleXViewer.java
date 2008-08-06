@@ -19,7 +19,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.EnumStringSingleSelectionDialog;
+import org.eclipse.osee.framework.ui.plugin.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
