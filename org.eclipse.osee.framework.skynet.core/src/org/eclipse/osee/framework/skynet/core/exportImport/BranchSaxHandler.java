@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.xml.sax.Attributes;
@@ -138,6 +139,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private String currentTransactionAuthorGuid = null;
    private Timestamp currentTransactionTime = null;
    private String currentCommitArtGuid = null;
+   private Integer currentTxType = null;
 
    /**
     * @param attributes
@@ -149,6 +151,8 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentTransactionAuthorGuid = attributes.getValue("author");
       currentTransactionTime = Timestamp.valueOf(attributes.getValue("time"));
       currentCommitArtGuid = attributes.getValue("commitArtGuid");
+      String txTypeString = attributes.getValue("txType");
+      currentTxType = Strings.isValid(txTypeString) ? new Integer(txTypeString) : null;
    }
 
    private void finishTransaction() {
@@ -169,14 +173,16 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    }
 
    private void wrapUpTransaction(String comment) throws Exception {
-      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment, currentCommitArtGuid);
+      processTransaction(currentTransactionAuthorGuid, currentTransactionTime, comment, currentCommitArtGuid,
+            currentTxType);
 
       currentTransactionAuthorGuid = null;
       currentTransactionTime = null;
       currentCommitArtGuid = null;
+      currentTxType = null;
    }
 
-   protected abstract void processTransaction(String author, Timestamp time, String comment, String commitArtId) throws Exception;
+   protected abstract void processTransaction(String author, Timestamp time, String comment, String commitArtId, Integer txType) throws Exception;
 
    /**
     * @param attributes

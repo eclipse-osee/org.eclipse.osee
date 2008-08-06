@@ -55,14 +55,14 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
       return instance;
    }
 
-   protected void addAttributeGammaForTagging(int attributeGammaId) {
+   private void addAttributeGammaForTagging(int attributeGammaId) {
       this.taggingInfo.append(PREFIX);
       this.taggingInfo.append(attributeGammaId);
       this.taggingInfo.append(POSTFIX);
       this.count++;
    }
 
-   protected void sendToTagger(boolean isCommitted) {
+   private void sendToTagger(boolean isCommitted) {
       if (this.taggingInfo.length() > 0) {
          if (isCommitted) {
             Future<?> future = this.executor.submit(new TagService(taggingInfo.toString()));

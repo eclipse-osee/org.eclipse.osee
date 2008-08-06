@@ -53,8 +53,8 @@ public class BranchPrinterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processTransaction(String author, Timestamp time, String comment, String commitArtGuid) throws Exception {
+   protected void processTransaction(String author, Timestamp time, String comment, String commitArtGuid, Integer txType) throws Exception {
       System.out.print("\t");
-      System.out.println("Transaction (" + time + ") " + author + " " + comment + " " + commitArtGuid);
+      System.out.println(String.format("Transaction (%s), %s, %s, %s", author, comment, commitArtGuid, txType));
    }
 }
