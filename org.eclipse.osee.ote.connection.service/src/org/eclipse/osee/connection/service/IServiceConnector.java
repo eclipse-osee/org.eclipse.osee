@@ -8,6 +8,7 @@ package org.eclipse.osee.connection.service;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URI;
+import java.rmi.server.ExportException;
 
 /**
  * Provides a communication pipe to a service.
@@ -38,7 +39,7 @@ public interface IServiceConnector {
     * @return
     * @throws Exception
     */
-   Object export(Object callback) throws Exception;
+   Object export(Object callback) throws ExportException;
 
    /**
 	 * finds the matching exported representation of supplied object

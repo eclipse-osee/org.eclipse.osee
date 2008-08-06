@@ -8,6 +8,7 @@ package org.eclipse.osee.connection.service;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URI;
+import java.rmi.server.ExportException;
 import java.util.HashSet;
 
 /**
@@ -77,7 +78,7 @@ public class LocalConnector implements IServiceConnector {
     * @see org.eclipse.osee.connection.service.IServiceConnector#export(java.lang.Object)
     */
    @Override
-   public Object export(Object callback) throws Exception {
+   public Object export(Object callback) throws ExportException {
       return callback;
    }
 
