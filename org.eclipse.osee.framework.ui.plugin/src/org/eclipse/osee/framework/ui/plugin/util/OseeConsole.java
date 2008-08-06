@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -195,6 +196,10 @@ public class OseeConsole {
       inputHandler.addListener(listener);
    }
 
+   public void removeInputListener(IConsoleInputListener listener) {
+	inputHandler.removeListener(listener);
+    }
+   
    private class HandleInput implements Runnable {
 
       private final CopyOnWriteArrayList<IConsoleInputListener> listeners;
@@ -206,6 +211,11 @@ public class OseeConsole {
       public void addListener(IConsoleInputListener listener) {
          listeners.add(listener);
       }
+      
+      public void removeListener(IConsoleInputListener listener) {
+	  listeners.remove(listener);
+	}
+
 
       public void run() {
          BufferedReader input = new BufferedReader(new InputStreamReader(console.getInputStream()));
