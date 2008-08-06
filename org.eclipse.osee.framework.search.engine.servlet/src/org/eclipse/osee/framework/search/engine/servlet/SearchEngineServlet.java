@@ -76,7 +76,7 @@ public class SearchEngineServlet extends HttpServlet {
          }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
-         response.setStatus(HttpServletResponse.SC_OK);
+         response.setStatus(HttpServletResponse.SC_ACCEPTED);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",
