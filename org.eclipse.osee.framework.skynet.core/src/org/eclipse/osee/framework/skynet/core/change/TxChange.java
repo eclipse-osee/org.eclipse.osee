@@ -32,5 +32,8 @@ public enum TxChange {
          if (change.getValue() == value) return change;
       return null;
    }
-
+   
+   public static TxChange getCurrent(ModificationType type){
+	   return type == ModificationType.DELETED ? TxChange.DELETED : TxChange.CURRENT;
+   }
 }
