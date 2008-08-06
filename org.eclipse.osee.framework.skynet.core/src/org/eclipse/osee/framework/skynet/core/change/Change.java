@@ -92,7 +92,7 @@ public abstract class Change implements IAdaptable {
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     */
-   public Artifact getArtifact() throws ArtifactDoesNotExist {
+   public Artifact getArtifactCurrent() throws ArtifactDoesNotExist {
       if (artifact == null) {
          artifact = ArtifactCache.getActive(artId, branch);
       }
@@ -105,7 +105,7 @@ public abstract class Change implements IAdaptable {
    }
 
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
-      return getArtifact().getInternalDescriptiveName();
+      return getArtifactCurrent().getInternalDescriptiveName();
    }
 
    /**

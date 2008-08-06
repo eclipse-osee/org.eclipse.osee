@@ -139,7 +139,7 @@ public class AttributeChanged extends Change {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getArtModType(), 
-            		   isHistorical()? ArtifactPersistenceManager.getInstance().getArtifactFromId(getArtId(), getToTransactionId()): getArtifact(), null, null, getFromTransactionId(),
+            		   isHistorical()? ArtifactPersistenceManager.getInstance().getArtifactFromId(getArtId(), getToTransactionId()): getArtifactCurrent(), null, null, getFromTransactionId(),
                      getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
@@ -157,7 +157,7 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifactChange())) {
             return getArtifactChange();
          }
-         if (adapter.isInstance(getArtifact())) {
+         if (adapter.isInstance(getArtifactCurrent())) {
             return getArtifactChange().getArtifact();
          }
       } catch (IllegalArgumentException ex) {
