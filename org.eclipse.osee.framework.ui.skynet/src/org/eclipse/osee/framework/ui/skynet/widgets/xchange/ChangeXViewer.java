@@ -60,7 +60,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
       
-      
       Change change = getSelectedChanges().iterator().next();
       Artifact artifact = (Artifact)((IAdaptable) change).getAdapter(Artifact.class);
       
