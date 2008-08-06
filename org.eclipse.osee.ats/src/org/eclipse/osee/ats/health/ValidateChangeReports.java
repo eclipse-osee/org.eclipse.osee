@@ -146,14 +146,14 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      for (Change change : changes) {
                         if (change.getItemKind().equals("Artifact")) {
                            if (change.getModificationType() == ModificationType.CHANGE) {
-                              modArt.put(change.getArtifact().getArtId(), change.getArtifact());
+                              modArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
                            }
                            if (change.getModificationType() == ModificationType.DELETED) {
-                              delArt.put(change.getArtifact().getArtId(), change.getArtifact());
+                              delArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
                            }
                            if (change.getModificationType() == ModificationType.NEW) {
-                              newArt.put(change.getArtifact().getArtId(), change.getArtifact());
-                           }
+                              newArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
+                          }
                         }
                      }
                      Map<Integer, Artifact> oldModArt = new HashMap<Integer, Artifact>();
