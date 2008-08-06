@@ -18,6 +18,21 @@ import java.io.InputStream;
 public interface ISearchEngineTagger {
 
    /**
+    * Create tags for a particular branch.
+    * 
+    * @param branchId of branch to tag
+    */
+   public void tagByBranchId(int branchId);
+
+   /**
+    * Create tags for a particular branch. Notifies listener of tagging events.
+    * 
+    * @param listener object listening for tag events
+    * @param branchId of branch to tag
+    */
+   public void tagByBranchId(ITagListener listener, int queryId);
+
+   /**
     * Create tags for queue query id.
     * 
     * @param queryId queryId to tag

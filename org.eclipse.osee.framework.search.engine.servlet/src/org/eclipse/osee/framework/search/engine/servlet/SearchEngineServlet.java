@@ -40,7 +40,7 @@ public class SearchEngineServlet extends HttpServlet {
          response.setCharacterEncoding("UTF-8");
          response.setContentType("text/plain");
          if (result != null && result.isEmpty() != true) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(result);
          } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -60,23 +60,28 @@ public class SearchEngineServlet extends HttpServlet {
    */
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      long start = System.currentTimeMillis();
       try {
-         int queryId = Integer.parseInt(request.getParameter("queryId"));
+         StringBuffer message = new StringBuffer();
+         int branchId = Integer.parseInt(request.getParameter("branchId"));
          boolean waitForTags = Boolean.parseBoolean(request.getParameter("wait"));
          if (waitForTags) {
             TagListener listener = new TagListener();
-            Activator.getInstance().getSearchTagger().tagByQueueQueryId(listener, queryId);
+            Activator.getInstance().getSearchTagger().tagByBranchId(listener, branchId);
             if (listener.wasProcessed() != true) {
                synchronized (listener) {
                   listener.wait();
                }
             }
+            message.append(String.format("Processed %d queries containing %d attributes in %d ms.",
+                  listener.getQueryCount(), listener.getAttributeCount(), System.currentTimeMillis() - start));
          } else {
-            Activator.getInstance().getSearchTagger().tagByQueueQueryId(queryId);
+            Activator.getInstance().getSearchTagger().tagByBranchId(branchId);
          }
          response.setContentType("text/plain");
          response.setCharacterEncoding("UTF-8");
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         response.getWriter().write(message.toString());
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Error submitting for tagging - [%s]",

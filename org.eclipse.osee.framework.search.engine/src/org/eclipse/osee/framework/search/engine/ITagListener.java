@@ -15,6 +15,10 @@ package org.eclipse.osee.framework.search.engine;
  */
 public interface ITagListener {
 
+   public void onTagError(int queryId, Throwable throwable);
+
+   public void onTagExpectedQueryIdSubmits(int totalQueries);
+
    public void onTagQueryIdSubmit(int queryId);
 
    public void onAttributeTagComplete(int queryId, long gammaId, int totalTags, long processingTime);

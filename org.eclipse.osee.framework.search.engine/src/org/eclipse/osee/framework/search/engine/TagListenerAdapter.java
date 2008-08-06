@@ -43,4 +43,17 @@ public class TagListenerAdapter implements ITagListener {
    public void onTagQueryIdTagComplete(int queryId, long waitTime, long processingTime) {
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagExpectedQueryIdSubmits(int)
+    */
+   @Override
+   public void onTagExpectedQueryIdSubmits(int totalQueries) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ITagListener#onTagError(int, java.lang.Throwable)
+    */
+   @Override
+   public void onTagError(int queryId, Throwable throwable) {
+   }
 }

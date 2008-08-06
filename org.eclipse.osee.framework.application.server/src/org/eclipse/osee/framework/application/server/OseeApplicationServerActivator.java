@@ -81,6 +81,14 @@ public class OseeApplicationServerActivator implements BundleActivator {
    public void stop(BundleContext context) throws Exception {
    }
 
+   private void processBundle(Bundle bundle, String bundleName, boolean isStart) throws BundleException {
+      if (isStart && (bundle.getState() != Bundle.ACTIVE || bundle.getState() != Bundle.START_TRANSIENT || bundle.getState() != Bundle.STARTING)) {
+         bundle.start();
+      } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName) && (bundle.getState() != Bundle.STOP_TRANSIENT || bundle.getState() != Bundle.STOPPING)) {
+         bundle.stop();
+      }
+   }
+
    private void processBundles(String requiredBundles, Map<String, Bundle> bundles, Operation operation) throws BundleException, InterruptedException {
       Pattern pattern = Pattern.compile("(.*)?;bundle-version=\"(.*)?\"");
       boolean isStart = operation.equals(Operation.START);
@@ -92,19 +100,11 @@ public class OseeApplicationServerActivator implements BundleActivator {
             Bundle bundle = bundles.get(bundleName);
             if (bundle != null && isVersionAllowed(bundle, requiredVersion)) {
                try {
-                  if (isStart && (bundle.getState() != Bundle.ACTIVE || bundle.getState() != Bundle.START_TRANSIENT || bundle.getState() != Bundle.STARTING)) {
-                     bundle.start();
-                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName) && (bundle.getState() != Bundle.STOP_TRANSIENT || bundle.getState() != Bundle.STOPPING)) {
-                     bundle.stop();
-                  }
+                  processBundle(bundle, bundleName, isStart);
                } catch (Exception ex) {
                   OseeLog.log(OseeApplicationServerActivator.class, Level.SEVERE, ex);
                   Thread.sleep(1000);
-                  if (isStart) {
-                     bundle.start();
-                  } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName)) {
-                     bundle.stop();
-                  }
+                  processBundle(bundle, bundleName, isStart);
                }
             }
          }

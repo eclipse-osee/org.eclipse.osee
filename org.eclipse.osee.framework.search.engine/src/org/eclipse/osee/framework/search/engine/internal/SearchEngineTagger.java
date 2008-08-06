@@ -82,19 +82,43 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(org.eclipse.osee.framework.search.engine.ITagListener, int)
+    */
+   @Override
+   public void tagByBranchId(ITagListener listener, int branchId) {
+      this.executor.submit(new BranchTaggerRunnable(this, listener, branchId));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagByBranchId(int)
+    */
+   @Override
+   public void tagByBranchId(int branchId) {
+      tagByBranchId(null, branchId);
+   }
+
+   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.search.engine.ISearchEngineTagger#tagFromXmlStream(org.eclipse.osee.framework.search.engine.ITagListener, java.io.InputStream)
     */
    @Override
    public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception {
+      TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
       Connection connection = null;
       try {
          connection = OseeDbConnection.getConnection();
-         TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          xmlReader.setContentHandler(new AttributeXmlParser(connection, joinQuery));
          xmlReader.parse(new InputSource(inputStream));
          joinQuery.store(connection);
+         if (listener != null) {
+            listener.onTagExpectedQueryIdSubmits(1);
+         }
          tagByQueueQueryId(listener, joinQuery.getQueryId());
+      } catch (Exception ex) {
+         if (listener != null) {
+            listener.onTagError(joinQuery.getQueryId(), ex);
+         }
+         throw new Exception("Error during tagFromXmlStream. ", ex);
       } finally {
          if (connection != null) {
             connection.close();
@@ -190,5 +214,4 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
          futureTasks.remove(runnable.getTagQueueQueryId());
       }
    }
-
 }
