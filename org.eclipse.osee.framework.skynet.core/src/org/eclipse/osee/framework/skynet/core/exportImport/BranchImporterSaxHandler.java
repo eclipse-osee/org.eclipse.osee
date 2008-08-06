@@ -452,7 +452,9 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
          if (getGammaQueueSize() > 0) {
             long start = System.currentTimeMillis();
-            monitor.subTask(String.format("Tagging [%d] Items...", getGammaQueueSize() * TAG_GAMMA_QUEUE_SIZE));
+            String message = String.format("Tagging [%d] Items...", getGammaQueueSize() * TAG_GAMMA_QUEUE_SIZE);
+            monitor.subTask(message);
+            OseeLog.log(SkynetActivator.class, Level.INFO, message + " This can take a while.");
             final Object lock = new Object();
             final List<Future<?>> futures = Collections.synchronizedList(new ArrayList<Future<?>>());
             ExecutorService executors = Executors.newFixedThreadPool(3);
