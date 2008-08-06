@@ -164,7 +164,7 @@ public class SkynetTransaction {
 
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
                transactionData.getTransactionId().getTransactionNumber(), SQL3DataType.INTEGER, transactionData.getGammaId(),
-               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,  modType.getTxChange().getValue());
+               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,  TxChange.getCurrent(modType).getValue());
 
          //Add specific object values to the their tables
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
