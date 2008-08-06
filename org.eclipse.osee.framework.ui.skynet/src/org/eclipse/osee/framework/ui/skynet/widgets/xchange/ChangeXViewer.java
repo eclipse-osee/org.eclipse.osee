@@ -63,7 +63,10 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       
       Change change = getSelectedChanges().iterator().next();
       Artifact artifact = (Artifact)((IAdaptable) change).getAdapter(Artifact.class);
-      ArtifactEditor.editArtifact(artifact);
+      
+      if(artifact != null){
+    	  ArtifactEditor.editArtifact(artifact);
+      }
    }
 
    public ArrayList<Change> getSelectedChanges() {
