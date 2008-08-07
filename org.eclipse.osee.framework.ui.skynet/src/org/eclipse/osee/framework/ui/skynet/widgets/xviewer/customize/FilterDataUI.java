@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -112,7 +113,7 @@ public class FilterDataUI {
          xViewerFilter.setFilterText(custData.getFilterData().getFilterText());
          xViewer.addFilter(xViewerFilter);
          if (filterLabel != null) {
-            if (SkynetGuiPlugin.getInstance() != null) {
+            if (PlatformUI.isWorkbenchRunning()) {
                filterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
             } else {
                filterLabel.setText("clear");
