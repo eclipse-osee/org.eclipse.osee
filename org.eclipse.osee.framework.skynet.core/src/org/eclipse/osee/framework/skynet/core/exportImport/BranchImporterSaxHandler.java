@@ -261,7 +261,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processArtifact(String guid, String artifactTypeName, String hrid, boolean deleted) throws SQLException {
+   protected void processArtifact(String guid, String artifactTypeName, String hrid, boolean deleted, int txCurrent) throws SQLException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -297,7 +297,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
          ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
                SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
-         insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
+         insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
       } catch (IllegalArgumentException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
@@ -309,7 +309,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeTypeName, String stringValue, String uriValue, boolean deleted) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeTypeName, String stringValue, String uriValue, boolean deleted, int txCurrent) throws Exception {
       // Skip this attribute if the artifact is not being included
       if (currentArtifactId == null || monitor.isCanceled()) {
          return;
@@ -354,11 +354,11 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
             SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
             modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
+      insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted) throws SQLException {
+   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws SQLException {
       // Skip this link if the transaction is not being included
       if (currentTransactionId == null || monitor.isCanceled()) {
          return;
@@ -398,7 +398,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
             SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
             SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
+      insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
    }
 
    private void insertTxAddress(int gammaId, int modType, int txCurrent) throws SQLException {

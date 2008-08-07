@@ -38,7 +38,7 @@ public class BranchStatsRipperSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processArtifact(String guid, String type, String hrid, boolean deleted) throws Exception {
+   protected void processArtifact(String guid, String type, String hrid, boolean deleted, int txCurrent) throws Exception {
       artifactTypes.add(type);
       if (expectedGuids != null) {
          expectedGuids.remove(guid);
@@ -46,7 +46,7 @@ public class BranchStatsRipperSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted, int txCurrent) throws Exception {
    }
 
    @Override
@@ -54,7 +54,7 @@ public class BranchStatsRipperSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted) throws Exception {
+   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws Exception {
    }
 
    @Override

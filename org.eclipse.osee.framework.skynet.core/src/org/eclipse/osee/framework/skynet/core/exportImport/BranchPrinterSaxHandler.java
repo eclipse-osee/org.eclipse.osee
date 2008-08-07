@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 public class BranchPrinterSaxHandler extends BranchSaxHandler {
 
    @Override
-   protected void processArtifact(String guid, String type, String hrid, boolean deleted) throws Exception {
+   protected void processArtifact(String guid, String type, String hrid, boolean deleted, int txCurrent) throws Exception {
       System.out.print("\t\t");
       if (deleted)
          System.out.print("-");
@@ -28,7 +28,7 @@ public class BranchPrinterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted, int txCurrent) throws Exception {
       System.out.print("\t\t\t");
       if (deleted)
          System.out.print("-");
@@ -43,7 +43,7 @@ public class BranchPrinterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted) throws Exception {
+   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws Exception {
       System.out.print("\t\t");
       if (deleted)
          System.out.print("-");
