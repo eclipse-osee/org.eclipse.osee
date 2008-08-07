@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRI
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -189,8 +190,23 @@ public final class ArtifactLoader {
     * @throws SQLException
     */
    public static void clearQuery(int queryId) throws OseeDataStoreException {
+      clearQuery(queryId, null);
+   }
+
+   /**
+    * should only be used in tandem with with selectArtifacts()
+    * 
+    * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
+    *           selectArtifacts
+    * @throws SQLException
+    */
+   public static void clearQuery(int queryId, Connection connection) throws OseeDataStoreException {
       try {
-         ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_JOIN_ARTIFACT, SQL3DataType.INTEGER, queryId);
+         if (connection != null) {
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, SQL3DataType.INTEGER, queryId);
+         } else {
+            ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_JOIN_ARTIFACT, SQL3DataType.INTEGER, queryId);
+         }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -357,7 +373,7 @@ public final class ArtifactLoader {
                continue;
             }
             AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-                 rSet.getInt("attr_id"), rSet.getInt("gamma_id"),  rSet.getString("value"), rSet.getString("uri"));
+                  rSet.getInt("attr_id"), rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);

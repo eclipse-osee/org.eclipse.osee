@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -56,11 +56,11 @@ public class DeleteTransactionJob extends Job {
          " outerTb where outerTb.gamma_id = (SELECT txj1.gamma_id from osee.osee_join_transaction txj1 WHERE outerTb.gamma_id = txj1.gamma_id AND txj1.query_id = ?)";
 
    private static final String SELECT_ATTRIBUTES_TO_UPDATE =
-         "SELECT maxt, txs2.gamma_id FROM osee_define_attribute att2,  osee_define_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id >= ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id AND txs2.transaction_id = maxt and txs2.transaction_id >= ?";
+         "SELECT maxt, txs2.gamma_id FROM osee_define_attribute att2,  osee_define_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id >= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id AND txs2.transaction_id = maxt and txs2.transaction_id >= ?";
    private static final String SELECT_ARTIFACTS_TO_UPDATE =
-         "SELECT maxt, txs1.gamma_id FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
+         "SELECT maxt, txs1.gamma_id FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ? AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
    private static final String SELECT_RELATIONS_TO_UPDATE =
-         "SELECT maxt, txs1.gamma_id FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
+         "SELECT maxt, txs1.gamma_id FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id >= ?  AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id >= ?";
 
    private static final String UPDATE_TX_CURRENT =
          "UPDATE osee.osee_define_txs txs1 SET tx_current = 1 where txs1.mod_type <> 3 and txs1.gamma_id IN (SELECT txj1.gamma_id from osee.osee_join_transaction txj1 WHERE txj1.gamma_id = txs1.gamma_id AND txj1.transaction_id = txs1.transaction_id AND txj1.query_id = ?)";
@@ -71,19 +71,43 @@ public class DeleteTransactionJob extends Job {
    private final static String DELETE_ARTIFACT_VERSIONS = "DELETE FROM osee_define_artifact_version " + DELETE_POSTFIX;
    private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_define_attribute " + DELETE_POSTFIX;
    private final static String DELETE_RELATIONS = "DELETE FROM osee_define_rel_link " + DELETE_POSTFIX;
+
+   private final static String TRANSACATION_GAMMA_IN_USE =
+         "Select txs1.transaction_id from osee_define_txs txs1, osee_define_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
+   private final static String GET_ARTIFACTS = "Select * from osee_join_artifact where query_id = ?";
+
+   private final static String LOAD_ARTIFACTS =
+         "INSERT INTO osee_join_artifact (query_id, art_id, branch_id) (Select ?, art_id, branch_id from osee_define_txs txs, osee_define_attribute att, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, art_id, branch_id from osee_define_txs txs, osee_define_artifact_version art, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, a_art_id as art_id, branch_id from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, b_art_id as art_id, branch_id from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id)";
+   private static final String UPDATE_TXS =
+         "UPDATE osee_define_txs  set tx_current = (CASE WHEN mod_type = 3 THEN 2 ELSE 1 END) WHERE (transaction_id, gamma_id) IN ((SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_attribute att2, (SELECT MAX(txs.transaction_id) AS maxt, att.attr_id AS atid FROM osee_define_txs txs, osee_define_attribute att, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and att.art_id = jar.art_id AND jar.query_id = ? GROUP BY att.attr_id, det.branch_id) new_stuff WHERE txs2.gamma_id = att2.gamma_id AND att2.attr_id = atid AND maxt = txs2.transaction_id) UNION (SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_artifact_version ver2, (SELECT MAX(txs.transaction_id) AS maxt, ver.art_id AS atid FROM osee_define_txs txs, osee_define_artifact_version ver, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = ver.gamma_id and ver.art_id = jar.art_id AND jar.query_id = ? GROUP BY ver.art_id, det.branch_id) new_stuff WHERE txs2.gamma_id = ver2.gamma_id AND ver2.art_id = atid AND maxt = txs2.transaction_id)UNION(SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_rel_link rel2, (SELECT MAX(txs.transaction_id) AS maxt, rel.rel_link_id AS linkid FROM osee_define_txs txs, osee_define_rel_link rel, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and (rel.a_art_id = jar.art_id or rel.b_art_id = jar.art_id) AND jar.query_id = ? GROUP BY rel.rel_link_id, det.branch_id) new_stuff WHERE txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = linkid AND maxt = txs2.transaction_id))";
+
    private final int[] txIdsToDelete;
+   private boolean force;
+   private int artifactJoinId;
+
+   /**
+    * @param name
+    * @param transactionIdNumber
+    */
+   public DeleteTransactionJob(boolean force, int... txIdsToDelete) {
+      super(String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)));
+      this.txIdsToDelete = txIdsToDelete;
+      this.force = force;
+   }
 
    /**
     * @param name
     * @param transactionIdNumber
     */
    public DeleteTransactionJob(int... txIdsToDelete) {
-      super(String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)));
-      this.txIdsToDelete = txIdsToDelete;
+      this(true, txIdsToDelete);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+   /*
+    * (non-Javadoc)
+    * 
+    * @seeorg.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.
+    * IProgressMonitor)
     */
    @Override
    protected IStatus run(final IProgressMonitor monitor) {
@@ -110,8 +134,11 @@ public class DeleteTransactionJob extends Job {
          this.monitor = monitor;
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
+      /*
+       * (non-Javadoc)
+       * 
+       * @seeorg.eclipse.osee.framework.db.connection.core.transaction.
+       * AbstractDbTxTemplate#handleTxWork()
        */
       @Override
       protected void handleTxWork(Connection connection) throws Exception {
@@ -123,30 +150,62 @@ public class DeleteTransactionJob extends Job {
             HashCollection<Branch, TxDeleteInfo> fromToTxData =
                   getTransactionPairs(monitor, txIdsToDelete, txsToDeleteQuery);
             txsToDeleteQuery.store(connection);
+            checkForModifiedBaselines(connection, force, txsToDeleteQuery.getQueryId());
+            getAffectedArtifacts(connection, monitor, txsToDeleteQuery.getQueryId());
 
             setChildBranchBaselineTxs(connection, monitor, fromToTxData);
             deleteItemEntriesForTransactions(connection, monitor, txsToDeleteQuery.getQueryId());
             deleteTransactionsFromTxDetails(connection, monitor, txsToDeleteQuery.getQueryId());
 
-            updateTxCurrent(connection, monitor, fromToTxData);
-         } finally {
+            updateTxCurrent(connection, monitor);
+         } catch (SQLException ex) {
+            //Don't try to clean up the DB if an SQL exception occurs because this is a transaction based operation
+            throw ex;
+         } catch (Exception ex) {
             if (connection != null && connection.isClosed() != true) {
                txsToDeleteQuery.delete(connection);
+               ArtifactLoader.clearQuery(artifactJoinId, connection);
             }
+            throw ex;
          }
+         if (connection != null && connection.isClosed() != true) {
+            txsToDeleteQuery.delete(connection);
+            ArtifactLoader.clearQuery(artifactJoinId, connection);
+         }
+
+      }
+
+      /**
+       * @return
+       * @throws SQLException
+       */
+      private void getAffectedArtifacts(Connection connection, IProgressMonitor monitor, int transactionQueryId) throws SQLException {
+         artifactJoinId = ArtifactLoader.getNewQueryId();
+         ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, SQL3DataType.INTEGER, artifactJoinId,
+               SQL3DataType.INTEGER, transactionQueryId, SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER,
+               transactionQueryId, SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, transactionQueryId,
+               SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, transactionQueryId);
+
       }
 
       private int getTotalWork() {
          return txIdsToDelete.length + 5;
       }
 
-      private HashCollection<Branch, TxDeleteInfo> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery) throws BranchDoesNotExist, TransactionDoesNotExist, SQLException {
+      private HashCollection<Branch, TxDeleteInfo> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery) throws SQLException, OseeCoreException {
          HashCollection<Branch, TxDeleteInfo> fromToTxData = new HashCollection<Branch, TxDeleteInfo>();
          for (int index = 0; index < txsToDelete.length; index++) {
             monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));
             int fromTx = txsToDelete[index];
             TransactionId fromTransaction = TransactionIdManager.getTransactionId(fromTx);
-            TransactionId previousTransaction = TransactionIdManager.getPriorTransaction(fromTransaction);
+            TransactionId previousTransaction;
+            try {
+               previousTransaction = TransactionIdManager.getPriorTransaction(fromTransaction);
+            } catch (TransactionDoesNotExist ex) {
+               throw new OseeCoreException(
+                     "You are trying to delete Transaction: " + fromTx + " which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.");
+
+            }
 
             fromToTxData.put(fromTransaction.getBranch(), new TxDeleteInfo(fromTransaction, previousTransaction));
 
@@ -209,46 +268,11 @@ public class DeleteTransactionJob extends Job {
          return toReturn != Integer.MAX_VALUE ? toReturn : -1;
       }
 
-      private void updateTxCurrent(Connection conn, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> txToDelete) throws SQLException {
+      private void updateTxCurrent(Connection conn, IProgressMonitor monitor) throws SQLException {
          monitor.subTask("Updating Previous Tx to Current");
-         List<TransactionJoinQuery> joins = new ArrayList<TransactionJoinQuery>();
-         try {
-            monitor.subTask("Recalculating Tx Current");
-            for (Branch branch : txToDelete.keySet()) {
-               int branchId = branch.getBranchId();
-               int startTx = getMinTransaction(txToDelete.getValues(branch));
-
-               Object[] searchData =
-                     new Object[] {SQL3DataType.INTEGER, startTx, SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER,
-                           startTx};
-
-               TransactionJoinQuery joinQuery = JoinUtility.createTransactionJoinQuery();
-               joins.add(joinQuery);
-               populateJoinQueryFromSql(conn, joinQuery, SELECT_ATTRIBUTES_TO_UPDATE, "maxt", searchData);
-               populateJoinQueryFromSql(conn, joinQuery, SELECT_ARTIFACTS_TO_UPDATE, "maxt", searchData);
-               populateJoinQueryFromSql(conn, joinQuery, SELECT_RELATIONS_TO_UPDATE, "maxt", searchData);
-               joinQuery.store();
-            }
-            monitor.worked(1);
-
-            monitor.subTask("Updating Tx Current");
-            List<Object[]> data = new ArrayList<Object[]>();
-            for (TransactionJoinQuery join : joins) {
-               data.add(new Object[] {SQL3DataType.INTEGER, join.getQueryId()});
-            }
-            ConnectionHandler.runPreparedUpdate(conn, UPDATE_TX_CURRENT, data);
-            ConnectionHandler.runPreparedUpdate(conn, UPDATE_TX_CURRENT_DELETED_ITEMS, data);
-            monitor.worked(1);
-         } finally {
-            if (conn != null && conn.isClosed() != true) {
-               for (TransactionJoinQuery join : joins) {
-                  try {
-                     join.delete(conn);
-                  } catch (Exception ex) {
-                  }
-               }
-            }
-         }
+         ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, SQL3DataType.INTEGER, artifactJoinId,
+               SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, artifactJoinId);
+         monitor.worked(1);
       }
 
       private void setChildBranchBaselineTxs(Connection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions) throws SQLException {
@@ -268,6 +292,15 @@ public class DeleteTransactionJob extends Job {
             ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
          }
          monitor.worked(1);
+      }
+   }
+
+   private void checkForModifiedBaselines(Connection conn, boolean force, int queryId) throws Exception {
+      ConnectionHandlerStatement chStmt = null;
+      chStmt = ConnectionHandler.runPreparedQuery(conn, TRANSACATION_GAMMA_IN_USE, SQL3DataType.INTEGER, queryId);
+      if (chStmt.next() && !force) {
+         throw new OseeCoreException(
+               "The Transaction " + chStmt.getRset().getInt("transaction_id") + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
       }
    }
 

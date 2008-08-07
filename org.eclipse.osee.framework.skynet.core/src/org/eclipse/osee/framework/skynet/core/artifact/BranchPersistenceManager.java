@@ -312,6 +312,7 @@ public class BranchPersistenceManager {
    public static Branch getBranch(Integer branchId) throws SQLException, BranchDoesNotExist {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
+      if (branchId == null) throw new BranchDoesNotExist("Branch Id is null");
       if (branchId < 1) throw new BranchDoesNotExist("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
