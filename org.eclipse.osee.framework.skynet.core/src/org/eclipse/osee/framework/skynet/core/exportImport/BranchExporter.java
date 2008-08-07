@@ -84,19 +84,19 @@ public class BranchExporter {
                "transaction_id", "max_transaction") + "," + "COUNT(*) AS transaction_count FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id=? AND time>? AND time<=?";
    private static final String SELECT_ARTIFACTS =
          "SELECT " + ARTIFACT_TABLE.columns("art_id", "guid", "human_readable_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + "," + ARTIFACT_VERSION_TABLE.column("modification_id") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ARTIFACT_VERSION_TABLE,
                "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.join(ARTIFACT_TABLE, "art_id") + " AND " + ARTIFACT_TABLE.join(
                ARTIFACT_TYPE_TABLE, "art_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_ATTRIBUTES =
          "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id", "modification_id", "value", "uri") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE,
                "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_LINKS =
          "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id", "a_order", "b_order", "rationale",
                "modification_id") + "," + RELATION_LINK_TYPE_TABLE.columns("type_name") + "," + ARTIFACT_ALIAS_1.column("guid as a_guid") + "," + ARTIFACT_ALIAS_2.column("guid as b_guid") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(RELATION_LINK_VERSION_TABLE,
                "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(RELATION_LINK_TYPE_TABLE, "rel_link_type_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=" + ARTIFACT_ALIAS_1.column("art_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=" + ARTIFACT_ALIAS_2.column("art_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
 
@@ -395,14 +395,14 @@ public class BranchExporter {
 
    private void processArtifact(File rootDirectory, Writer writer, ArtifactData artifact, HashCollection<Integer, AttributeData> attributeMap, String task) throws Exception {
 
-      writer.write(String.format("<Artifact guid=\"%s\" type=\"%s\" hrid=\"%s\"%s>\n", artifact.getGuid(),
-            getTypeName(artifact), artifact.getHrid(), artifact.isDeleted() ? DELETED : ""));
+      writer.write(String.format("<Artifact guid=\"%s\" type=\"%s\" hrid=\"%s\"%s txCurrent=\"%s\">\n", artifact.getGuid(),
+            getTypeName(artifact), artifact.getHrid(), artifact.isDeleted() ? DELETED : "", artifact.getTxCurrent()));
 
       Collection<AttributeData> attributes = attributeMap.getValues(artifact.getArtId());
       if (attributes != null) {
          for (AttributeData attribute : attributes) {
-            writer.write(String.format("<Attribute type=\"%s\" guid=\"%s\"%s>\n", attribute.getType(),
-                  attrGuidCache.getGuid(attribute.getId()), attribute.isDeleted() ? DELETED : ""));
+            writer.write(String.format("<Attribute type=\"%s\" guid=\"%s\"%s txCurrent=\"%s\">\n", attribute.getType(),
+                  attrGuidCache.getGuid(attribute.getId()), attribute.isDeleted() ? DELETED : "", attribute.txCurrent));
             if (attribute.getStringValue().length() > 0) {
                writer.write("<StringValue>");
                Xml.writeAsCdata(writer, attribute.getStringValue());
@@ -456,9 +456,9 @@ public class BranchExporter {
    private void processLink(LinkData link, Writer writer) throws IOException, SQLException {
 
       writer.write(String.format(
-            "<Link type=\"%s\" guid=\"%s\" aguid=\"%s\" bguid=\"%s\" aorder=\"%d\" border=\"%d\"%s>", link.getType(),
+            "<Link type=\"%s\" guid=\"%s\" aguid=\"%s\" bguid=\"%s\" aorder=\"%d\" border=\"%d\"%s txCurrent=\"%s\">", link.getType(),
             relLinkGuidCache.getGuid(link.getId()), link.getAGuid(), link.getBBuid(), link.getAOrder(),
-            link.getBOrder(), link.isDeleted() ? DELETED : ""));
+            link.getBOrder(), link.isDeleted() ? DELETED : "", link.getTxCurrent()));
 
       String rationale = link.getRationale();
       if (rationale != null && rationale.length() > 0) {
@@ -663,6 +663,7 @@ public class BranchExporter {
       private final String type;
       private final String hrid;
       private final boolean deleted;
+      private final int txCurrent;
 
       /**
        * @param artId
@@ -671,14 +672,19 @@ public class BranchExporter {
        * @param hrid
        * @param deleted
        */
-      public ArtifactData(final int artId, final String guid, final String type, final String hrid, final boolean deleted) {
+      public ArtifactData(final int artId, final String guid, final String type, final String hrid, final boolean deleted, final int txCurrent) {
          this.artId = artId;
          this.guid = guid;
          this.type = type;
          this.hrid = hrid;
          this.deleted = deleted;
+         this.txCurrent = txCurrent;
       }
 
+      public int getTxCurrent() {
+  		return txCurrent;
+      }
+  		
       public int getArtId() {
          return artId;
       }
@@ -704,7 +710,7 @@ public class BranchExporter {
 
       public ArtifactData process(ResultSet set) throws SQLException {
          return new ArtifactData(set.getInt("art_id"), set.getString("guid"), set.getString("name"),
-               set.getString("human_readable_id"), set.getInt("modification_id") == ModificationType.DELETED.getValue());
+               set.getString("human_readable_id"), set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
       }
 
       public boolean validate(ArtifactData item) {
@@ -719,19 +725,21 @@ public class BranchExporter {
       private final String stringValue;
       private final String uri;
       private final boolean deleted;
+      private final int txCurrent;
 
-      /**
+	/**
        * @param type
        * @param id
        * @param value
        * @param deleted
        * @throws UnsupportedEncodingException
        */
-      public AttributeData(final int artId, final String type, final int id, String stringValue, String uri, final boolean deleted) throws UnsupportedEncodingException {
+      public AttributeData(final int artId, final String type, final int id, String stringValue, String uri, final boolean deleted, final int txCurrent) throws UnsupportedEncodingException {
          this.artId = artId;
          this.type = type;
          this.id = id;
          this.deleted = deleted;
+         this.txCurrent = txCurrent;
 
          if (stringValue == null) {
             stringValue = "";
@@ -743,6 +751,10 @@ public class BranchExporter {
       public int getArtId() {
          return artId;
       }
+      
+      public int getTxCurrent() {
+  		return txCurrent;
+  	}
 
       public boolean isDeleted() {
          return deleted;
@@ -775,7 +787,7 @@ public class BranchExporter {
          try {
             return new AttributeData(set.getInt("art_id"), set.getString("name"), set.getInt("attr_id"),
                   set.getString("value"), set.getString("uri"),
-                  set.getInt("modification_id") == ModificationType.DELETED.getValue());
+                  set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
          } catch (UnsupportedEncodingException ex) {
             // Don't expect to ever not have UTF-8 support
             throw new IllegalStateException(ex);
@@ -796,8 +808,9 @@ public class BranchExporter {
       private final int bOrder;
       private final String rationale;
       private final boolean deleted;
+      private final int txCurrent;
 
-      /**
+	/**
        * @param type
        * @param id
        * @param guid
@@ -806,7 +819,7 @@ public class BranchExporter {
        * @param order2
        * @param rationale
        */
-      public LinkData(final String type, final int id, final String aGuid, final String bGuid, final int aOrder, final int bOrder, final String rationale, final boolean deleted) {
+      public LinkData(final String type, final int id, final String aGuid, final String bGuid, final int aOrder, final int bOrder, final String rationale, final boolean deleted, final int txCurrent) {
          this.type = type;
          this.id = id;
          this.aGuid = aGuid;
@@ -815,11 +828,16 @@ public class BranchExporter {
          this.bOrder = bOrder;
          this.rationale = rationale == null ? "" : rationale;
          this.deleted = deleted;
+         this.txCurrent = txCurrent;
       }
 
       public String getAGuid() {
          return aGuid;
       }
+      
+      public int getTxCurrent() {
+  		return txCurrent;
+  	  }
 
       public int getAOrder() {
          return aOrder;
@@ -855,7 +873,7 @@ public class BranchExporter {
       public LinkData process(ResultSet set) throws SQLException {
          return new LinkData(set.getString("type_name"), set.getInt("rel_link_id"), set.getString("a_guid"),
                set.getString("b_guid"), set.getInt("a_order"), set.getInt("b_order"), set.getString("rationale"),
-               set.getInt("modification_id") == ModificationType.DELETED.getValue());
+               set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
       }
 
       public boolean validate(LinkData item) {

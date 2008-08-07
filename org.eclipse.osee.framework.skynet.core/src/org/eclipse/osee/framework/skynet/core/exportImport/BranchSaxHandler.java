@@ -198,12 +198,13 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       final String type = attributes.getValue("type");
       currentArtifactHrid = attributes.getValue("hrid");
       String deletedStr = attributes.getValue("deleted");
+      Integer artTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
       final boolean deleted = deletedStr == null ? false : Boolean.valueOf(deletedStr);
 
-      processArtifact(guid, type, currentArtifactHrid, deleted);
+      processArtifact(guid, type, currentArtifactHrid, deleted, artTxCurrent);
    }
 
-   protected abstract void processArtifact(String guid, String type, String hrid, boolean deleted) throws Exception;
+   protected abstract void processArtifact(String guid, String type, String hrid, boolean deleted, int txCurrent) throws Exception;
 
    private void finishArtifact() {
       processArtifactDone();
@@ -219,6 +220,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private String currentAttributeContentValue;
    private String currentArtifactHrid;
    private Boolean currentAttributeDeleted;
+   private Integer attrTxCurrent;
 
    /**
     * @param attributes
@@ -232,6 +234,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentAttributeDeleted = deletedStr == null ? Boolean.FALSE : Boolean.valueOf(deletedStr);
       currentAttributeStringValue = "";
       currentAttributeContentValue = "";
+      attrTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
    }
 
    private void handleStringValue(Attributes attribtues) {
@@ -253,7 +256,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void finishAttribute() throws Exception {// Skip this attribute if the artifact is not being included
       try {
          processAttribute(currentArtifactHrid, currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
-               currentAttributeContentValue, currentAttributeDeleted);
+               currentAttributeContentValue, currentAttributeDeleted, attrTxCurrent);
       }// catch Illegal argument exception so import does not fail if attribute type does not exist
       catch (IllegalArgumentException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -266,7 +269,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentAttributeStringValue = "";
    }
 
-   protected abstract void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted) throws Exception;
+   protected abstract void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted, int attrTxCurrent) throws Exception;
 
    private String currentLinkType = null;
    private String currentLinkGuid = null;
@@ -276,6 +279,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private Integer currentLinkBOrder = null;
    private Boolean currentLinkDeleted = null;
    private String currentLinkRationale = null;
+   private Integer linkTxCurrent = null;
 
    /**
     * @param attributes
@@ -298,14 +302,16 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentLinkBOrder = Integer.parseInt(attributes.getValue("border"));
       String deletedStr = attributes.getValue("deleted");
       currentLinkDeleted = deletedStr == null ? false : Boolean.valueOf(deletedStr);
+      linkTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
+      
 
    }
 
-   protected abstract void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted) throws Exception;
+   protected abstract void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws Exception;
 
    private void finishLink() throws Exception {
       processLink(currentLinkGuid, currentLinkType, currentLinkAGuid, currentLinkBGuid, currentLinkAOrder,
-            currentLinkBOrder, currentLinkRationale, currentLinkDeleted);
+            currentLinkBOrder, currentLinkRationale, currentLinkDeleted, linkTxCurrent);
 
       currentLinkType = null;
       currentLinkGuid = null;
