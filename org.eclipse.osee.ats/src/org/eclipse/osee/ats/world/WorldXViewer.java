@@ -415,7 +415,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    public StateMachineArtifact getSelectedSMA() {
       Object obj = null;
       if (getSelectedArtifactItems().size() == 0) return null;
-      obj = ((TreeItem) getTree().getSelection()[0]).getData();
+      obj = (getTree().getSelection()[0]).getData();
       return (obj != null && (obj instanceof StateMachineArtifact)) ? (StateMachineArtifact) obj : null;
    }
 
@@ -514,6 +514,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       super.dispose();
       // Dispose of the table objects is done through separate dispose listener off tree
@@ -773,44 +774,44 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          boolean modified = false;
-         if (xCol == WorldXViewerFactory.Version_Target_Col)
+         if (xCol.equals(WorldXViewerFactory.Version_Target_Col))
             modified =
                   smaMgr.promptChangeVersion(
                         AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
-         else if (xCol == WorldXViewerFactory.Notes_Col)
+         else if (xCol.equals(WorldXViewerFactory.Notes_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Percent_Rework_Col)
+         else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col))
             modified = smaMgr.promptChangePercentAttribute(ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Estimated_Hours_Col)
+         else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col))
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Weekly_Benefit_Hrs_Col)
+         else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col))
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Estimated_Release_Date_Col)
+         else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col))
             modified = smaMgr.promptChangeEstimatedReleaseDate();
-         else if (xCol == WorldXViewerFactory.Deadline_Col)
+         else if (xCol.equals(WorldXViewerFactory.Deadline_Col))
             modified = smaMgr.promptChangeDate(ATSAttributes.DEADLINE_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Remaining_Hours_Col) {
+         else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             AWorkbench.popup("Calculated Field",
                   "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
             return false;
-         } else if (xCol == WorldXViewerFactory.Man_Days_Needed_Col) {
+         } else if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
             AWorkbench.popup(
                   "Calculated Field",
                   "Man Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + smaMgr.getSma().getManDayHrsPreference() + ")");
             return false;
-         } else if (xCol == WorldXViewerFactory.Release_Date_Col)
+         } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col))
             modified = smaMgr.promptChangeReleaseDate();
-         else if (xCol == WorldXViewerFactory.Work_Package_Col)
+         else if (xCol.equals(WorldXViewerFactory.Work_Package_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.WORK_PACKAGE_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Category_Col)
+         else if (xCol.equals(WorldXViewerFactory.Category_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Category2_Col)
+         else if (xCol.equals(WorldXViewerFactory.Category2_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY2_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Category3_Col)
+         else if (xCol.equals(WorldXViewerFactory.Category3_Col))
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY3_ATTRIBUTE, persist);
-         else if (xCol == WorldXViewerFactory.Change_Type_Col)
+         else if (xCol.equals(WorldXViewerFactory.Change_Type_Col))
             modified = smaMgr.promptChangeType(persist);
-         else if (xCol == WorldXViewerFactory.Priority_Col) modified = smaMgr.promptChangePriority(persist);
+         else if (xCol.equals(WorldXViewerFactory.Priority_Col)) modified = smaMgr.promptChangePriority(persist);
          if (modified) {
             update(useArt, null);
             return true;

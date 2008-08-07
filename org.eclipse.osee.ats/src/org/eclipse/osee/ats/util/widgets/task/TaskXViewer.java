@@ -314,26 +314,26 @@ public class TaskXViewer extends WorldXViewer {
       SMAManager taskSmaMgr = new SMAManager((TaskArtifact) treeItem.getData());
       boolean modified = false;
       try {
-         if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Estimated_Hours_Col) {
+         if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified = taskSmaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Title_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.TITLE_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Related_To_State_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Assignees_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = taskSmaMgr.promptChangeAssignees();
-         } else if (isUsingTaskResolutionOptions() && (xCol == WorldXViewerFactory.Hours_Spent_State_Col || xCol == WorldXViewerFactory.Hours_Spent_Total_Col || xCol == WorldXViewerFactory.Percent_Complete_State_Col || xCol == WorldXViewerFactory.Percent_Complete_Total_Col)) {
+         } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {
             modified = handleChangeResolution();
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol == WorldXViewerFactory.Resolution_Col) {
+         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Resolution_Col)) {
             modified = handleChangeResolution();
-         } else if (xCol == WorldXViewerFactory.Hours_Spent_State_Col || xCol == WorldXViewerFactory.Hours_Spent_Total_Col || xCol == WorldXViewerFactory.Percent_Complete_State_Col || xCol == WorldXViewerFactory.Percent_Complete_Total_Col) {
+         } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
             modified = taskSmaMgr.promptChangeStatus(false);
          } else
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);
 
          if (modified) {
             editor.onDirtied();
-            update(((TaskArtifact) treeItem.getData()), null);
+            update((treeItem.getData()), null);
             return true;
          }
       } catch (Exception ex) {
