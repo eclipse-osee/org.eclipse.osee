@@ -45,8 +45,8 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
       this.executor = Executors.newFixedThreadPool(3);
 
-      Timer timer = new Timer("Start-Up Tagger");
-      timer.schedule(new StartUpRunnable(this), 2000);
+//      Timer timer = new Timer("Start-Up Tagger");
+//      timer.schedule(new StartUpRunnable(this), 2000);
    }
 
    /* (non-Javadoc)
