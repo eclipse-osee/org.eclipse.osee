@@ -80,9 +80,8 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
    @Override
    public boolean setValue(String value) {
       boolean response = false;
-
       try {
-         if (this.rawStringValue == value || (this.rawStringValue != null && this.rawStringValue.equals(value))) {
+         if (getValueAsString() == value || (getValueAsString() != null && getValueAsString().equals(value))) {
             response = false;
          } else {
             storeValue(value);
