@@ -12,15 +12,11 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FILE;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.jini.JiniPlugin;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -81,7 +77,13 @@ public class OSEEConfig {
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
 
-         serviceGroups = JiniPlugin.getInstance().getJiniVersion();
+         try {
+            Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.jini");
+            serviceGroups = new String[1];
+            serviceGroups[0] = (String) bundle.getHeaders().get("Bundle-Version");
+         } catch (Exception ex) {
+            logger.log(Level.INFO, "Error getting bundle org.eclipse.osee.framework.jini");
+         }
          String[] filterGroups = OseeProperties.getInstance().getOseeJiniServiceGroups();
          if (filterGroups != null && filterGroups.length > 0) {
             serviceGroups = filterGroups;

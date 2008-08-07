@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import net.jini.JiniPlugin;
 import net.jini.core.lookup.ServiceRegistrar;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -23,8 +22,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jini.JiniPlugin;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.service.control.managers.ReggieCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -99,7 +100,7 @@ public class JiniGroupSelector implements IRegistrarListener {
 
                jiniGroup[0] = temp;
                if (true != Strings.isValid(jiniGroup[0])) {
-                  jiniGroup = JiniPlugin.getInstance().getJiniVersion();
+                  jiniGroup = ConfigUtil.getConfigFactory().getOseeConfig().getJiniServiceGroups();
 
                   int result = list.indexOf(jiniGroup[0]);
                   if (result < 0) {
