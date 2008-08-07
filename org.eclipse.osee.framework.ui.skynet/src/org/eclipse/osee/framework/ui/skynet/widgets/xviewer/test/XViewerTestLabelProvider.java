@@ -80,10 +80,10 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
     */
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
-      if (xCol == XViewerTestFactory.Run_Col) {
+      if (xCol.equals(XViewerTestFactory.Run_Col)) {
          return xViewerTest.isRun((IXViewerTestTask) element) ? getSkynetImages("chkbox_enabled.gif") : getSkynetImages("chkbox_disabled.gif");
       }
-      if (xCol == XViewerTestFactory.Name_Col && xViewerTest.isScheduled((IXViewerTestTask) element)) {
+      if (xCol.equals(XViewerTestFactory.Name_Col) && xViewerTest.isScheduled((IXViewerTestTask) element)) {
          return getSkynetImages("clock.gif");
       }
       return null;
