@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.io.ByteArrayOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -74,17 +77,25 @@ public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
 
    private ObjectPair<Integer, Integer> executeSearch() throws Exception {
       ObjectPair<Integer, Integer> toReturn = null;
-      String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      AcquireResult httpRequestResult = HttpProcessor.acquire(new URL(url), outputStream);
-      if (httpRequestResult.wasSuccessful()) {
-         String queryIdString = outputStream.toString("UTF-8");
-         if (Strings.isValid(queryIdString)) {
-            String[] entries = queryIdString.split(",\\s*");
-            if (entries.length >= 2) {
-               toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
+      Result result = SkynetGuiPlugin.areOSEEServicesAvailable();
+      if (result.isTrue()) {
+         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult httpRequestResult = HttpProcessor.acquire(new URL(url), outputStream);
+         if (httpRequestResult.wasSuccessful()) {
+            String queryIdString = outputStream.toString("UTF-8");
+            if (Strings.isValid(queryIdString)) {
+               String[] entries = queryIdString.split(",\\s*");
+               if (entries.length >= 2) {
+                  toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
+               }
             }
+         } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
+            throw new Exception(String.format("Search error due to bad request: url[%s] status code: [%s]", url,
+                  httpRequestResult.getCode()));
          }
+      } else {
+         throw new Exception(String.format("Unable to perform search: %s", result.getText()));
       }
       return toReturn;
    }

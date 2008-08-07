@@ -43,7 +43,7 @@ public class SearchEngineServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write(result);
          } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
          }
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

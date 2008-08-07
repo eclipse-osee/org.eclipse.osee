@@ -73,6 +73,11 @@ public class AttributeDataStore {
       } else {
          toReturn.append(" AND txs1.tx_current = 1 AND txs2.tx_current = 1");
       }
+      
+      if (options.getBoolean("match name only")) {
+         toReturn.append(" AND attrtype.attr_type_id = (select attrType2.attr_type_id from osee_define_attribute_type attrType2 where attrType2.name = 'Name')");
+      }
+      
       return toReturn.toString();
    }
 
