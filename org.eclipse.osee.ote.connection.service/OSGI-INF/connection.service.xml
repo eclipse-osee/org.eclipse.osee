@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="connection.service">
+	<implementation class="org.eclipse.osee.connection.service.ConnectionServiceImpl"/>
+	<service>
+		<provide interface="org.eclipse.osee.connection.service.IConnectionService"/>
+	</service>
+	<reference name="connection.service.connector"
+		interface="org.eclipse.osee.connection.service.IServiceConnector"
+		bind="addConnector"
+		unbind="removeConnector"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>
