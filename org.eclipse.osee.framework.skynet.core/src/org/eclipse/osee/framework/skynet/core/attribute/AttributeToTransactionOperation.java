@@ -139,7 +139,7 @@ public class AttributeToTransactionOperation {
          try {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, SQL3DataType.INTEGER,
-                        artifact.getArtId(), SQL3DataType.INTEGER, attributeType.getAttrTypeId(), SQL3DataType.INTEGER,
+                        attributeType.getAttrTypeId(), SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
                         artifact.getBranch().getBranchId());
 
             if (connectionHandlerStatement.next()) {

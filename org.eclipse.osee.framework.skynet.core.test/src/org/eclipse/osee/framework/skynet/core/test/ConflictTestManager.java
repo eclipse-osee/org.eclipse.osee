@@ -98,8 +98,7 @@ public class ConflictTestManager {
          branch = BranchPersistenceManager.getBranch("SAW_Bld_1");
       }
       parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-      destBranch =
-            BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
+      destBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
 
@@ -116,8 +115,7 @@ public class ConflictTestManager {
       // Create the source branch
 
       parentTransactionId = transactionIdManager.getEditableTransactionId(destBranch);
-      sourceBranch =
-            BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
+      sourceBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, SOURCE_BRANCH, null);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);
@@ -337,7 +335,7 @@ public class ConflictTestManager {
       conflictDefs[2].setValues("Software Requirement", false, false);
       conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
             StringAttribute.class));
-      conflictDefs[2].values.add(new AttributeValue("Partition", "REND_H", "USM", "Source", StringAttribute.class));
+      conflictDefs[2].values.add(new AttributeValue("CSCI", "Sights", "Navigation", "Source", StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Navigation",
             StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Name", "Test Artifact Number 2 - Source",
