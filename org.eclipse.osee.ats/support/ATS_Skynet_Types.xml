@@ -101,10 +101,10 @@
   </Names>
   <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="229" x:FullColumns="1"
    x:FullRows="1">
-   <Column ss:AutoFitWidth="0" ss:Width="330"/>
-   <Column ss:AutoFitWidth="0" ss:Width="382.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="105"/>
    <Column ss:AutoFitWidth="0" ss:Width="186.75"/>
-   <Column ss:AutoFitWidth="0" ss:Width="126"/>
+   <Column ss:AutoFitWidth="0" ss:Width="25.5"/>
    <Column ss:Width="147.75"/>
    <Column ss:Index="9" ss:Width="63.75"/>
    <Column ss:AutoFitWidth="0" ss:Width="57"/>
@@ -448,6 +448,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Resolution</Data></Cell>
     <Cell><Data ss:Type="String">txt</Data></Cell>
+    <Cell><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -517,6 +518,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.SMA Note</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -525,6 +527,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.Work Package</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -533,6 +536,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.Category</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -541,6 +545,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.Category2</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -549,6 +554,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s22"><Data ss:Type="String">ats.Category3</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -557,6 +563,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Legacy PCR Id</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -573,6 +580,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Decision</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -590,6 +598,7 @@
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Location</Data></Cell>
     <Cell><Data ss:Type="String">txt</Data></Cell>
+    <Cell><Data ss:Type="String">DefaultAttributeTaggerProvider</Data></Cell>
     <Cell ss:Index="8"><Data ss:Type="Number">0</Data></Cell>
     <Cell><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:Index="11"><Data ss:Type="String">Yes</Data></Cell>
@@ -1564,13 +1573,18 @@
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Print>
+    <ValidPrinterInfo/>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>3</TopRowVisible>
+   <TopRowVisible>24</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>17</ActiveRow>
+     <ActiveRow>53</ActiveRow>
      <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
