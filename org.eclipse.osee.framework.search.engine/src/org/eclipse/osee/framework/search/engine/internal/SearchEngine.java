@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.search.engine.Activator;
@@ -39,12 +40,18 @@ public class SearchEngine implements ISearchEngine {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       IAttributeTaggerProviderManager manager = Activator.getInstance().getTaggerManager();
       AttributeSearch attributeSearch = new AttributeSearch(searchString, branchId, options);
-      for (AttributeData attributeData : attributeSearch.getMatchingAttributes()) {
+      Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
+      long timeAfterPass1 = System.currentTimeMillis() - startTime;
+      long secondPass = System.currentTimeMillis();
+      for (AttributeData attributeData : tagMatches) {
          if (manager.find(attributeData, searchString)) {
             joinQuery.add(attributeData.getArtId(), attributeData.getBranchId());
          }
       }
+      secondPass = System.currentTimeMillis() - secondPass;
       joinQuery.store();
+      System.out.println(String.format("Search for [%s] Pass 1: [%d items in %d ms] 2nd Pass: [%d items in %d ms]",
+            searchString, tagMatches.size(), timeAfterPass1, joinQuery.size(), secondPass));
       statistics.addEntry(searchString, branchId, options, joinQuery.size(), System.currentTimeMillis() - startTime);
       return String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size());
    }

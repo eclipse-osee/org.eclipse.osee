@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.search.engine.ISearchEngine;
 /**
  * @author Roberto E. Escobar
  */
-public class SearchEngineServlet extends HttpServlet {
+public class SearchEngineServlet extends CustomHttpServlet {
 
    private static final long serialVersionUID = 3722992788943330970L;
 
