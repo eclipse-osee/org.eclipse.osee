@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -40,7 +41,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -65,7 +68,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class BranchImporterSaxHandler extends BranchSaxHandler {
-   //   private static final int TAG_GAMMA_QUEUE_SIZE = 1000;
    private static final String INSERT_ARTIFACT_VERSION =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final String INSERT_ATTRIBUTE =
@@ -212,14 +214,35 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private void postBranchImportProcessing(Branch branch) {
       StringBuffer response = new StringBuffer();
       long start = System.currentTimeMillis();
+      Connection connection = null;
       try {
-         OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging [%s] branch", branch.getBranchName()));
-         Map<String, String> parameters = new HashMap<String, String>();
-         parameters.put("branchId", Integer.toString(branch.getBranchId()));
-         parameters.put("wait", "true");
-         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-         response.append(HttpProcessor.post(new URL(url)));
-         OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());
+         boolean tagAfterBranchImport = false;
+         connection = ConnectionHandler.getConnection();
+         switch (SqlFactory.getDatabaseType(connection)) {
+            case oracle:
+               tagAfterBranchImport = true;
+               break;
+            default:
+               OseeLog.log(
+                     SkynetActivator.class,
+                     Level.WARNING,
+                     String.format(
+                           "Tagging during branch import is not supported. " + "Quick searches may be out of date for branch [%s]. Run >tag_all %d in console at a later time.",
+                           branch.getBranchName(), branch.getBranchId()));
+               break;
+         }
+
+         if (tagAfterBranchImport) {
+            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging [%s] branch", branch.getBranchName()));
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("branchId", Integer.toString(branch.getBranchId()));
+            parameters.put("wait", "true");
+            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+            response.append(HttpProcessor.post(new URL(url)));
+            OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());
+            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging Completed in [%d ms]",
+                  System.currentTimeMillis() - start));
+         }
       } catch (Exception ex) {
          if (response.length() > 0) {
             response.append("\n");
@@ -228,9 +251,14 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, response.toString(), ex);
       } finally {
          response.delete(0, response.length());
+         if (connection != null) {
+            try {
+               connection.close();
+            } catch (SQLException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, response.toString(), ex);
+            }
+         }
       }
-      OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging Completed in [%d ms]",
-            System.currentTimeMillis() - start));
    }
 
    @Override
