@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -32,8 +33,15 @@ public class CustomHttpServlet extends HttpServlet {
          super.service(request, response);
       } finally {
          long elapsed = System.currentTimeMillis() - start;
-         System.out.println(String.format("[%s] [%s] serviced in [%s] ms", request.getMethod(),
-               request.getQueryString(), elapsed));
+         String message = null;
+         String requestMethod = request.getMethod();
+         String queryString = request.getQueryString();
+         if (requestMethod.equals("GET")) {
+            message = String.format("Search - %s", queryString);
+         } else {
+            message = String.format("Tag - %s", Strings.isValid(queryString) ? queryString : "attribute xml stream");
+         }
+         System.out.println(String.format("[%s] [%s] serviced in [%s] ms", requestMethod, message, elapsed));
       }
    }
 
