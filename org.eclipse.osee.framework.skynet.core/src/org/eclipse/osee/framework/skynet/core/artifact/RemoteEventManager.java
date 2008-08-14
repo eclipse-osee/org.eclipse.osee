@@ -20,8 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -324,50 +326,55 @@ public class RemoteEventManager implements IServiceLookupListener {
     * @param event
     */
    private static void updateArtifacts(ISkynetArtifactEvent event, Collection<Event> localEvents) {
-      if (event == null) return;
+	      if (event == null) return;
 
-      try {
-         int artId = event.getArtId();
-         int branchId = event.getBranchId();
-         List<String> dirtyAttributeName = new LinkedList<String>();
-         Artifact artifact = ArtifactCache.getActive(artId, branchId);
+	      try {
+	         int artId = event.getArtId();
+	         int branchId = event.getBranchId();
+	         List<String> dirtyAttributeName = new LinkedList<String>();
+	         Artifact artifact = ArtifactCache.getActive(artId, branchId);
 
-         if (artifact != null && !artifact.isHistorical()) {
-            ModType modType = null;
+	         if (artifact != null && !artifact.isHistorical()) {
+	            ModType modType = null;
 
-            if (event instanceof NetworkArtifactModifiedEvent) {
-               for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
-            	  boolean attributeNeedsCreation = true;
-                  for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
-                     if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-                        if (attribute.isDirty()) {
-                           dirtyAttributeName.add(attribute.getNameValueDescription());
-                        }
-                        attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                        attribute.setGammaId(skynetAttributeChange.getGammaId());
-                        attributeNeedsCreation = false;
-                        break;
-                     }
-                  }
-                  if(attributeNeedsCreation){
-                  	AttributeToTransactionOperation.initializeAttribute(artifact, 
-                  			AttributeTypeManager.getType(skynetAttributeChange.getName()).getAttrTypeId(), 
-                  			skynetAttributeChange.getAttributeId(),
-                  			skynetAttributeChange.getGammaId(),
-                  			skynetAttributeChange.getData());
-                  }
-               }
-               modType = ModType.Changed;
-            } else if (event instanceof NetworkArtifactDeletedEvent) {
-               artifact.setDeleted();
-               modType = ModType.Deleted;
-            }
-            localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, RemoteEventManager.instance));
-            artifact.setNotDirty();
-         }
-      } catch (Exception e) {
-         logger.log(Level.SEVERE, e.toString(), e);
-      }
+	            if (event instanceof NetworkArtifactModifiedEvent) {
+	               for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
+	            	  boolean attributeNeedsCreation = true;
+	                  for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
+	                     if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+	                        if (attribute.isDirty()) {
+	                           dirtyAttributeName.add(attribute.getNameValueDescription());
+	                           OseeLog.log(SkynetActivator.class, Level.INFO, String.format("%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(), attribute.getAttrId(), attribute.toString()));                           
+	                        }
+	                        attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+	                        attribute.setGammaId(skynetAttributeChange.getGammaId());
+	                        attributeNeedsCreation = false;
+	                        attribute.setNotDirty();
+	                        break;
+	                     }
+	                  }
+	                  if(attributeNeedsCreation){
+	                  	Attribute<?> attribute = AttributeToTransactionOperation.initializeAttribute(artifact, 
+	                  			AttributeTypeManager.getType(skynetAttributeChange.getName()).getAttrTypeId(), 
+	                  			skynetAttributeChange.getAttributeId(),
+	                  			skynetAttributeChange.getGammaId(),
+	                  			skynetAttributeChange.getData());
+	                  	if(attribute != null){
+	                  		attribute.setNotDirty();
+	                  	}
+	                  }
+	               }
+	               modType = ModType.Changed;
+	            } else if (event instanceof NetworkArtifactDeletedEvent) {
+	               artifact.setDeleted();
+	               artifact.setNotDirty();
+	               modType = ModType.Deleted;
+	            }
+	            localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, RemoteEventManager.instance));            
+	         }
+	      } catch (Exception e) {
+	         logger.log(Level.SEVERE, e.toString(), e);
+	      }
    }
 
    /**
