@@ -36,13 +36,22 @@ Steps Taken:
 	large log file removed
 
 =======  stored outlines  =======
+Doc ID: 	Note:6336044.8 which is preventing creating a stored outline
+
 alter session set create_stored_outlines = true;
 -- now execute exact sql (copy from enterprise manager) and the outline will automatically be created
 
-the following is supposed to work but didn't seem to:
-exec sys.dbms_outln.create_outline(sql_id, child_cursor_num);
+-- the following is supposed to work but didn't seem to:
+login as osee_admin
+select hash_value, child_number from v$sql where sql_id = 'g0mn93rmkx95j';
+alter session set create_stored_outlines = true;
+
+-- create the outline
 declare 
 begin
-dbms_outln.create_outline(614673510, 9);
+dbms_outln.create_outline(3878593713, 16);
 end;
 /
+
+-- now test for success
+select * from user_outlines;
