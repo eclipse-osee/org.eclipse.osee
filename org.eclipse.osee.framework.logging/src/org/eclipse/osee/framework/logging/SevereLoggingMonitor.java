@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.logging;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,5 +42,15 @@ public class SevereLoggingMonitor implements ILoggerListener {
 		return status;
 	}
 	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(status.size());
+		sb.append(" Severe logs captured.\n");
+		for(IHealthStatus health:status){
+			sb.append(health.getException().getMessage());
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
 	
 }
