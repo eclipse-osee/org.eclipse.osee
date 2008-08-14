@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -230,7 +231,7 @@ public class CustomizeManager {
     */
    public CustomizeData getTableDefaultCustData() {
       CustomizeData custData = xViewer.getXViewerFactory().getDefaultTableCustomizeData();
-      if (custData.getName() == null || (this.currentCustData != null && this.currentCustData.getName().equals(""))) {
+      if (custData.getName() == null || custData.getName().equals("")) {
          custData.setName(TABLE_DEFAULT_LABEL);
       }
       custData.setNameSpace(xViewer.getViewerNamespace());
