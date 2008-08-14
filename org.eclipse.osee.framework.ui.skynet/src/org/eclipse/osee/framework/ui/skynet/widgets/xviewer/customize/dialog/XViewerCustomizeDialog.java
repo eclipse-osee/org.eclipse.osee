@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -48,16 +49,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 public class XViewerCustomizeDialog extends MessageDialog {
    private String title = "Customize Table";
    private static String buttons[] = new String[] {"Ok", "Apply", "Cancel"};
    private final XViewer xViewer;
-   private TableViewer custTable;
-   private TableViewer hiddenColTable;
-   private TableViewer visibleColTable;
+   private OSEEFilteredTree custTable;
+   private OSEEFilteredTree hiddenColTable;
+   private OSEEFilteredTree visibleColTable;
    private Text sorterText;
    private Text filterText;
    // Select Customization Buttons
@@ -134,14 +136,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
       hiddenColumnsLabel.setText("Hidden Columns");
 
       // Hidden Column Table
-      hiddenColTable = new TableViewer(hiddenTableComp, SWT.BORDER | SWT.MULTI);
-      final Table table_1 = hiddenColTable.getTable();
+      hiddenColTable = new OSEEFilteredTree(hiddenTableComp, SWT.BORDER | SWT.MULTI, new PatternFilter());
+      final Tree table_1 = hiddenColTable.getViewer().getTree();
       final GridData gd_table_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2);
       gd_table_1.widthHint = 300;
       table_1.setLayoutData(gd_table_1);
-      hiddenColTable.setLabelProvider(new XViewerColumnLabelProvider());
-      hiddenColTable.setContentProvider(new ArrayTreeContentProvider());
-      hiddenColTable.setSorter(new ViewerSorter() {
+      hiddenColTable.getViewer().setLabelProvider(new XViewerColumnLabelProvider());
+      hiddenColTable.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      hiddenColTable.getViewer().setSorter(new ViewerSorter() {
          /*
           * (non-Javadoc)
           * 
@@ -154,7 +156,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
             return getComparator().compare(((XViewerColumn) e1).toString(), ((XViewerColumn) e2).toString());
          }
       });
-      hiddenColTable.addSelectionChangedListener(new ISelectionChangedListener() {
+      hiddenColTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             updateButtonEnablements();
          }
@@ -249,14 +251,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColumnsLabel.setText("Visible Columns");
 
       // Visible Column Table
-      visibleColTable = new TableViewer(visibleTableComp, SWT.BORDER | SWT.MULTI);
-      final Table table = visibleColTable.getTable();
+      visibleColTable = new OSEEFilteredTree(visibleTableComp, SWT.BORDER | SWT.MULTI, new PatternFilter());
+      final Tree table = visibleColTable.getViewer().getTree();
       final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd_table.widthHint = 300;
       table.setLayoutData(gd_table);
-      visibleColTable.setLabelProvider(new XViewerColumnLabelProvider());
-      visibleColTable.setContentProvider(new ArrayTreeContentProvider());
-      visibleColTable.addSelectionChangedListener(new ISelectionChangedListener() {
+      visibleColTable.getViewer().setLabelProvider(new XViewerColumnLabelProvider());
+      visibleColTable.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      visibleColTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             updateButtonEnablements();
          }
@@ -364,15 +366,15 @@ public class XViewerCustomizeDialog extends MessageDialog {
       custComp.setLayout(gridLayout_1);
 
       // Customization Table
-      custTable = new TableViewer(custComp, SWT.BORDER);
-      final Table table_2 = custTable.getTable();
+      custTable = new OSEEFilteredTree(custComp, SWT.BORDER, new PatternFilter());
+      final Tree table_2 = custTable.getViewer().getTree();
       final GridData gd_table_2 = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd_table_2.heightHint = 270;
       gd_table_2.widthHint = 200;
       table_2.setLayoutData(gd_table_2);
-      custTable.setLabelProvider(new CustomizeDataLabelProvider(xViewer));
-      custTable.setContentProvider(new ArrayTreeContentProvider());
-      custTable.setSorter(new ViewerSorter() {
+      custTable.getViewer().setLabelProvider(new CustomizeDataLabelProvider(xViewer));
+      custTable.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      custTable.getViewer().setSorter(new ViewerSorter() {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
@@ -384,7 +386,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
                return getComparator().compare(((CustomizeData) e1).getName(), ((CustomizeData) e2).getName());
          }
       });
-      custTable.addSelectionChangedListener(new ISelectionChangedListener() {
+      custTable.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             handleCustTableSelectionChanged();
             updateButtonEnablements();
@@ -433,14 +435,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
       // Remove from hidden
       List<XViewerColumn> hiddenSelCols = getHiddenTableSelection();
       if (hiddenSelCols == null) return;
-      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getInput();
+      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
       hiddenCols.removeAll(hiddenSelCols);
-      hiddenColTable.setInput(hiddenCols);
+      hiddenColTable.getViewer().setInput(hiddenCols);
 
       // Add to visible
-      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
       visibleCols.addAll(hiddenSelCols);
-      visibleColTable.setInput(visibleCols);
+      visibleColTable.getViewer().setInput(visibleCols);
    }
 
    @SuppressWarnings("unchecked")
@@ -448,43 +450,43 @@ public class XViewerCustomizeDialog extends MessageDialog {
       // Remove from visible
       List<XViewerColumn> visibleSelCols = getVisibleTableSelection();
       if (visibleSelCols == null) return;
-      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
       visibleCols.removeAll(visibleSelCols);
-      visibleColTable.setInput(visibleCols);
+      visibleColTable.getViewer().setInput(visibleCols);
 
       // Add to hidden
-      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getInput();
+      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
       hiddenCols.addAll(visibleSelCols);
-      hiddenColTable.setInput(hiddenCols);
+      hiddenColTable.getViewer().setInput(hiddenCols);
    }
 
    @SuppressWarnings("unchecked")
    private void handleAddAllItemButton() {
 
-      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getInput();
+      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
 
-      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
 
       visibleCols.addAll(hiddenCols);
-      visibleColTable.setInput(visibleCols);
+      visibleColTable.getViewer().setInput(visibleCols);
 
       hiddenCols.clear();
-      hiddenColTable.setInput(hiddenCols);
+      hiddenColTable.getViewer().setInput(hiddenCols);
 
    }
 
    @SuppressWarnings("unchecked")
    private void handleRemoveAllItemButton() {
 
-      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> visibleCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
 
-      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getInput();
+      List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
       hiddenCols.addAll(visibleCols);
-      hiddenColTable.setInput(hiddenCols);
+      hiddenColTable.getViewer().setInput(hiddenCols);
 
       // Add to visible
       visibleCols.clear();
-      visibleColTable.setInput(visibleCols);
+      visibleColTable.getViewer().setInput(visibleCols);
 
    }
 
@@ -492,18 +494,18 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void handleMoveUpButton() {
       List<XViewerColumn> selCols = getVisibleTableSelection();
       if (selCols == null) return;
-      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
       int index = orderCols.indexOf(selCols.iterator().next());
       if (index > 0) {
          orderCols.removeAll(selCols);
          orderCols.addAll(index - 1, selCols);
-         visibleColTable.setInput(orderCols);
+         visibleColTable.getViewer().setInput(orderCols);
       } else
          return;
       ArrayList<XViewerColumn> selected = new ArrayList<XViewerColumn>();
       selected.addAll(selCols);
-      visibleColTable.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
-      visibleColTable.getTable().setFocus();
+      visibleColTable.getViewer().setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+      visibleColTable.getViewer().getTree().setFocus();
       updateButtonEnablements();
    }
 
@@ -511,18 +513,18 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private void handleMoveDownButton() {
       List<XViewerColumn> selCols = getVisibleTableSelection();
       if (selCols == null) return;
-      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getInput();
+      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
       int index = orderCols.indexOf(selCols.iterator().next());
       if (index < (orderCols.size() - selCols.size())) {
          orderCols.removeAll(selCols);
          orderCols.addAll(index + 1, selCols);
-         visibleColTable.setInput(orderCols);
+         visibleColTable.getViewer().setInput(orderCols);
       } else
          return;
       ArrayList<XViewerColumn> selected = new ArrayList<XViewerColumn>();
       selected.addAll(selCols);
-      visibleColTable.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
-      visibleColTable.getTable().setFocus();
+      visibleColTable.getViewer().setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+      visibleColTable.getViewer().getTree().setFocus();
       updateButtonEnablements();
    }
 
@@ -531,12 +533,12 @@ public class XViewerCustomizeDialog extends MessageDialog {
     */
    private List<XViewerColumn> getConfigCustXViewerColumns() {
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
-      for (XViewerColumn xCol : getTableXViewerColumns(visibleColTable)) {
+      for (XViewerColumn xCol : getTableXViewerColumns(visibleColTable.getViewer())) {
          xCol.setShow(true);
          xCol.setXViewer(xViewer);
          xCols.add(xCol);
       }
-      for (XViewerColumn xCol : getTableXViewerColumns(hiddenColTable)) {
+      for (XViewerColumn xCol : getTableXViewerColumns(hiddenColTable.getViewer())) {
          xCol.setShow(false);
          xCol.setXViewer(xViewer);
          xCols.add(xCol);
@@ -578,7 +580,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       } else if (result == 1) {
          xViewer.getCustomizeMgr().customizeColumnName(xCol, "");
       }
-      visibleColTable.update(xCol, null);
+      visibleColTable.getViewer().update(xCol, null);
    }
 
    /**
@@ -654,18 +656,18 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void updateButtonEnablements() {
       CustomizeData custData = getCustTableSelection();
-      setDefaultButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getTable().isFocusControl() && custData != null && !custData.getName().equals(
+      setDefaultButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getViewer().getTree().isFocusControl() && custData != null && !custData.getName().equals(
             CustomizeManager.TABLE_DEFAULT_LABEL) && !custData.getName().equals(CustomizeManager.CURRENT_LABEL));
-      if (custTable.getTable().isFocusControl() && custData != null) {
+      if (custTable.getViewer().getTree().isFocusControl() && custData != null) {
          setDefaultButton.setText(xViewer.getCustomizeMgr().isCustomizationUserDefault(custData) ? REMOVE_DEFAULT : SET_AS_DEFAULT);
          setDefaultButton.getParent().layout();
       }
-      deleteButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getTable().isFocusControl() && custData != null);
-      addItemButton.setEnabled(hiddenColTable.getTable().isFocusControl() && getHiddenTableSelection() != null);
-      removeItemButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
-      renameButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null && getVisibleTableSelection().size() == 1);
-      moveDownButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
-      moveUpButton.setEnabled(visibleColTable.getTable().isFocusControl() && getVisibleTableSelection() != null);
+      deleteButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable() && custTable.getViewer().getTree().isFocusControl() && custData != null);
+      addItemButton.setEnabled(hiddenColTable.getViewer().getTree().isFocusControl() && getHiddenTableSelection() != null);
+      removeItemButton.setEnabled(visibleColTable.getViewer().getTree().isFocusControl() && getVisibleTableSelection() != null);
+      renameButton.setEnabled(visibleColTable.getViewer().getTree().isFocusControl() && getVisibleTableSelection() != null && getVisibleTableSelection().size() == 1);
+      moveDownButton.setEnabled(visibleColTable.getViewer().getTree().isFocusControl() && getVisibleTableSelection() != null);
+      moveUpButton.setEnabled(visibleColTable.getViewer().getTree().isFocusControl() && getVisibleTableSelection() != null);
       saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations() != null && xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable());
    }
 
@@ -683,18 +685,18 @@ public class XViewerCustomizeDialog extends MessageDialog {
       currentCustData.setName(CustomizeManager.CURRENT_LABEL);
       custDatas.add(currentCustData);
 
-      custTable.setInput(custDatas);
+      custTable.getViewer().setInput(custDatas);
 
       ArrayList<Object> sel = new ArrayList<Object>();
       sel.add(currentCustData);
-      custTable.setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
-      custTable.getTable().setFocus();
+      custTable.getViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
+      custTable.getViewer().getTree().setFocus();
 
       updateButtonEnablements();
    }
 
    private CustomizeData getCustTableSelection() {
-      IStructuredSelection selection = (IStructuredSelection) custTable.getSelection();
+      IStructuredSelection selection = (IStructuredSelection) custTable.getViewer().getSelection();
       if (selection.size() == 0) return null;
       Iterator<?> i = selection.iterator();
       CustomizeData storedCustData = (CustomizeData) i.next();
@@ -702,14 +704,14 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    private List<XViewerColumn> getVisibleTableSelection() {
-      return getTableSelection(visibleColTable);
+      return getTableSelection(visibleColTable.getViewer());
    }
 
    private List<XViewerColumn> getHiddenTableSelection() {
-      return getTableSelection(hiddenColTable);
+      return getTableSelection(hiddenColTable.getViewer());
    }
 
-   private List<XViewerColumn> getTableSelection(TableViewer xColTableViewer) {
+   private List<XViewerColumn> getTableSelection(TreeViewer xColTableViewer) {
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
       IStructuredSelection selection = (IStructuredSelection) xColTableViewer.getSelection();
       if (selection.size() == 0) return null;
@@ -720,7 +722,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    @SuppressWarnings("unchecked")
-   private List<XViewerColumn> getTableXViewerColumns(TableViewer xColTableViewer) {
+   private List<XViewerColumn> getTableXViewerColumns(TreeViewer xColTableViewer) {
       return (List<XViewerColumn>) xColTableViewer.getInput();
    }
 
@@ -740,8 +742,8 @@ public class XViewerCustomizeDialog extends MessageDialog {
             hideXCols.add(xCol);
       }
 
-      hiddenColTable.setInput(hideXCols);
-      visibleColTable.setInput(showXCols);
+      hiddenColTable.getViewer().setInput(hideXCols);
+      visibleColTable.getViewer().setInput(showXCols);
 
       sorterText.setText(custData.getSortingData().getXml());
       sorterText.setData(custData);
