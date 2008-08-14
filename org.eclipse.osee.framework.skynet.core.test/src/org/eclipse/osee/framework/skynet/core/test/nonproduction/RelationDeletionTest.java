@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.skynet.core.test.production.Activator;
+import org.eclipse.osee.framework.skynet.core.test.Activator;
 
 /**
  * @author Andrew M Finkbeiner
