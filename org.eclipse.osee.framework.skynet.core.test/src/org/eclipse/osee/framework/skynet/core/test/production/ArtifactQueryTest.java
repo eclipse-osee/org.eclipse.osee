@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.skynet.core.test;
+package org.eclipse.osee.framework.skynet.core.test.production;
 
 import java.sql.SQLException;
 import java.util.List;
