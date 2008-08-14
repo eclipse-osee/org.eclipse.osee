@@ -19,6 +19,7 @@ import java.util.logging.Level;
 public class OseeLog {
 
    private static StatusManager sm;
+
    private static OseeLogger log;
 
    static void makevalid() {
