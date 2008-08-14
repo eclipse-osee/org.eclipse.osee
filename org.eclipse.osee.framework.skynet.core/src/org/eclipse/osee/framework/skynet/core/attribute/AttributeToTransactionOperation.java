@@ -14,8 +14,10 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
+
 import java.sql.SQLException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -221,7 +223,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   public static void initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gamma_id, Object... data) {
+   public static Attribute<?> initializeAttribute(Artifact artifact, int atttributeTypeId, int attributeId, int gamma_id, Object... data) throws OseeDataStoreException {
       try {
          AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
          attributeType = AttributeTypeManager.getTypeWithWordContentCheck(artifact, attributeType.getName());
@@ -229,8 +231,9 @@ public class AttributeToTransactionOperation {
          Attribute<?> attribute = artifact.createAttribute(attributeType, false);
          attribute.getAttributeDataProvider().loadData(data);
          attribute.setIds(attributeId, gamma_id);
+         return attribute;
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         throw new OseeDataStoreException(ex);
       }
    }
 }
