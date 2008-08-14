@@ -50,7 +50,7 @@ public class MergeXViewerSorter extends XViewerSorter {
          String value2 = labelProvider.getColumnText(o2, sortXCol, sortXColIndex);
 
          if (o1 instanceof Conflict && o2 instanceof Conflict) {
-            if (sortXCol == MergeXViewerFactory.Conflict_Resolved) {
+            if (sortXCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
                int compareInt =
                      new Integer(ConflictState.getValue(value1)).compareTo(new Integer(ConflictState.getValue(value2)));
                return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);

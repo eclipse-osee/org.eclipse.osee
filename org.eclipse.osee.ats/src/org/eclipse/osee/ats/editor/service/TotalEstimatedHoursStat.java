@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -73,7 +74,7 @@ public class TotalEstimatedHoursStat extends WorkPageService {
    @Override
    public void refresh() {
       try {
-         if (label != null && !label.isDisposed()) label.setText("Total Estimated Hours: " + smaMgr.getSma().getEstimatedHoursTotal());
+         if (label != null && !label.isDisposed()) label.setText("Total Estimated Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getEstimatedHoursTotal()));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

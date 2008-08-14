@@ -49,7 +49,7 @@ public class TaskLabelProvider extends WorldLabelProvider {
          else
             return "<deleted>";
       }
-      if (col == WorldXViewerFactory.Assignees_Col) {
+      if (col.equals(WorldXViewerFactory.Assignees_Col)) {
          return (new SMAManager(taskArt)).getAssigneesWasIsStr();
       }
       return super.getColumnText(element, col, columnIndex);
