@@ -16,17 +16,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -38,7 +35,7 @@ import org.eclipse.swt.program.Program;
 public class EmailTeamsItem extends XNavigateItemAction {
 
    private final TeamDefinitionArtifact teamDef;
-   private Collection<MemberType> memberTypes;
+   private final Collection<MemberType> memberTypes;
    public static enum MemberType {
       Leads, Members, Both
    };
@@ -89,12 +86,6 @@ public class EmailTeamsItem extends XNavigateItemAction {
          return Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, true);
       }
       TeamDefinitionTreeWithChildrenDialog ld = new TeamDefinitionTreeWithChildrenDialog(Active.Active);
-      try {
-         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
-      } catch (MultipleAttributesExist ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-         return null;
-      }
       int result = ld.open();
       if (result == 0) {
          Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
