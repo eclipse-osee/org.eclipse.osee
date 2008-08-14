@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -432,9 +434,10 @@ public class ArtifactPersistenceManager {
     * @param artifact The artifact to acquire the attributes for.
     * @param branch The tag to get the data for.
     * @throws SQLException
+ * 	@throws OseeDataStoreException 
     * @throws OseeCoreException
     */
-   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws SQLException {
+   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          // Acquire previously stored attributes
@@ -449,15 +452,13 @@ public class ArtifactPersistenceManager {
             AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
                   rSet.getInt("attr_id"), rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
 
-      try {
-         AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
-      } catch (OseeDataStoreException ex) {
-         throw new SQLException(ex);
-      }
+      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
    }
 
    /**
