@@ -136,7 +136,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       hiddenColumnsLabel.setText("Hidden Columns");
 
       // Hidden Column Table
-      hiddenColTable = new OSEEFilteredTree(hiddenTableComp, SWT.BORDER | SWT.MULTI, new PatternFilter());
+      hiddenColTable = new OSEEFilteredTree(hiddenTableComp);
       final Tree table_1 = hiddenColTable.getViewer().getTree();
       final GridData gd_table_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2);
       gd_table_1.widthHint = 300;
@@ -251,7 +251,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColumnsLabel.setText("Visible Columns");
 
       // Visible Column Table
-      visibleColTable = new OSEEFilteredTree(visibleTableComp, SWT.BORDER | SWT.MULTI, new PatternFilter());
+      visibleColTable = new OSEEFilteredTree(visibleTableComp);
       final Tree table = visibleColTable.getViewer().getTree();
       final GridData gd_table = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd_table.widthHint = 300;

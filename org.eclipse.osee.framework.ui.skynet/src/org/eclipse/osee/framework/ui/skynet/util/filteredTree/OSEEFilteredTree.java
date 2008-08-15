@@ -25,6 +25,10 @@ import org.eclipse.ui.dialogs.PatternFilter;
  */
 public class OSEEFilteredTree extends FilteredTree {
 
+   public OSEEFilteredTree(Composite parent) {
+      this(parent, SWT.BORDER | SWT.MULTI, new PatternFilter());
+   }
+
    /**
     * @param parent
     * @param treeStyle

@@ -17,7 +17,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -47,8 +49,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class EmailWizardPage extends WizardPage {
    private Text text;
-   private ArrayList<Object> initialAddress;
-   private TreeViewer namesList;
+   private final ArrayList<Object> initialAddress;
+   private OSEEFilteredTree namesList;
    private ListViewer toList;
    private ListViewer ccList;
    private ListViewer bccList;
@@ -59,7 +61,7 @@ public class EmailWizardPage extends WizardPage {
    /**
     * @param pageName
     * @param groups
-    * @param initialAddress User, AtsEmailGroup or String
+    * @param initialAddress User, EmailGroup or String
     */
    protected EmailWizardPage(String pageName, ArrayList<EmailGroup> groups, ArrayList<Object> initialAddress) {
       super(pageName);
@@ -99,25 +101,36 @@ public class EmailWizardPage extends WizardPage {
          names.add(ex.getLocalizedMessage());
       }
 
-      namesList = new TreeViewer(namesComp);
-      namesList.setContentProvider(new ArrayTreeContentProvider());
-      namesList.setLabelProvider(new NamesLabelProvider());
+      namesList = new OSEEFilteredTree(namesComp);
+      namesList.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      namesList.getViewer().setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 75;
-      namesList.getTree().setLayoutData(gd);
-      namesList.getTree().setLinesVisible(false);
-      namesList.setInput(names);
-      namesList.getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+      namesList.getViewer().getTree().setLayoutData(gd);
+      namesList.getViewer().getTree().setLinesVisible(false);
+      namesList.getViewer().setInput(names);
+      namesList.getViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
          public void handleEvent(Event event) {
             if (event.button == 1) {
-               IStructuredSelection sel = (IStructuredSelection) namesList.getSelection();
+               IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
                Object obj = sel.getFirstElement();
                if ((obj instanceof String) && ((String) obj).equals(separator)) return;
                toList.add(sel.getFirstElement());
             }
          }
       });
-
+      namesList.getViewer().setSorter(new ViewerSorter() {
+         @SuppressWarnings("unchecked")
+         @Override
+         public int compare(Viewer viewer, Object e1, Object e2) {
+            if (e1 instanceof EmailGroup && !(e2 instanceof EmailGroup)) {
+               return -1;
+            } else if (e2 instanceof EmailGroup && !(e1 instanceof EmailGroup)) {
+               return 1;
+            }
+            return getComparator().compare(e1.toString(), e2.toString());
+         }
+      });
       Composite toComp = new Composite(composite, SWT.NONE);
       gl = new GridLayout();
       gl.numColumns = 2;
@@ -140,7 +153,7 @@ public class EmailWizardPage extends WizardPage {
          }
 
          public void widgetDefaultSelected(SelectionEvent e) {
-            IStructuredSelection sel = (IStructuredSelection) namesList.getSelection();
+            IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList())
                toList.add(obj);
          }
@@ -164,7 +177,7 @@ public class EmailWizardPage extends WizardPage {
          }
 
          public void widgetDefaultSelected(SelectionEvent e) {
-            IStructuredSelection sel = (IStructuredSelection) namesList.getSelection();
+            IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList())
                ccList.add(obj);
          }
@@ -187,7 +200,7 @@ public class EmailWizardPage extends WizardPage {
          }
 
          public void widgetDefaultSelected(SelectionEvent e) {
-            IStructuredSelection sel = (IStructuredSelection) namesList.getSelection();
+            IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList())
                bccList.add(obj);
          }
@@ -229,6 +242,7 @@ public class EmailWizardPage extends WizardPage {
       final ListViewer fListView = listView;
       item.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) fListView.getSelection();
             for (Object obj : sel.toList())
