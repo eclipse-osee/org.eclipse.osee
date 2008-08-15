@@ -24,15 +24,14 @@ public class ArtifactQueryTest extends TestCase {
    }
 
    public void testGetArtifactsFromBranch() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
-      Branch branch = BranchPersistenceManager.getCommonBranch();
-      //List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType("Software Requirement", branch);
-      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, true);
+      Branch common = BranchPersistenceManager.getCommonBranch();
+      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(common, true);
 
       assertTrue(artifacts.size() > 0);
       for (Artifact artifact : artifacts) {
          System.out.println(artifact.getDescriptiveName());
          assertTrue(artifact.getDescriptiveName().length() > 0);
-         artifact.isOrphan(); // this is good exercise like doing push-ups
+         artifact.isOrphan(); // this is good exercise - like doing push-ups
       }
    }
 }
