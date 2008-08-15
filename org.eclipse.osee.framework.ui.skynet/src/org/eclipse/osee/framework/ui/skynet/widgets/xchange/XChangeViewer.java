@@ -159,6 +159,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(branch, transactionId);
          }
@@ -168,6 +169,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xChangeViewer.getCustomizeMgr().handleTableCustomization();
          }
@@ -209,6 +211,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       xChangeViewer.getTree().setFocus();
    }
 
+   @Override
    public void refresh() {
       xChangeViewer.refresh();
       setLabelError();
@@ -379,7 +382,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
       if (branch != null) sb.append("\nBranch: " + branch);
-      sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
+      if (transactionId != null) sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
       return sb.toString();
    }
 
