@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -346,10 +345,10 @@ public class CustomizeManager {
          TreeColumn column = new TreeColumn(xViewer.getTree(), xCol.getAlign());
          column.setMoveable(true);
          column.setData(xCol);
-         if (xCol.getToolTip() == null || xCol.getToolTip().equals("")) {
-            column.setToolTipText(xCol.getName());
+         if (xCol.getToolTip() == null || xCol.getToolTip().equals("") || xCol.getToolTip().equals(xCol.getName())) {
+            column.setToolTipText(xCol.getName() + "\n" + xCol.getId());
          } else {
-            column.setToolTipText(xCol.getToolTip());
+            column.setToolTipText(xCol.getToolTip() + xCol.getName() + "\n" + xCol.getId());
          }
          column.setText(xCol.getName());
          column.setWidth(xCol.getWidth());

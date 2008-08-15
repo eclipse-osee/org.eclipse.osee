@@ -45,8 +45,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col =
          new XViewerAttributeColumn("ats.column.actionableItems", "Actionable Items",
-               ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), 80, SWT.LEFT, true, SortDataType.String,
-               false, "Actionable Items that are impacted by this change.");
+               ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), 80, SWT.LEFT, true, SortDataType.String, false,
+               "Actionable Items that are impacted by this change.");
    public static final XViewerColumn User_Community_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.USER_COMMUNITY_ATTRIBUTE, 60, SWT.LEFT, true, SortDataType.String,
                false, null);
