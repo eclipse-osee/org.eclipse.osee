@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -61,10 +60,8 @@ public class XViewerTreeReport {
       List<XViewerColumn> columns = xViewer.getCustomizeMgr().getCurrentTableColumnsInOrder();
       List<String> headerStrs = new ArrayList<String>(50);
       List<XViewerColumn> showCols = new ArrayList<XViewerColumn>(50);
-      xColToColumnIndex = new HashMap<XViewerColumn, Integer>(columns.size());
-      int colNum = 0;
+      xColToColumnIndex = xViewer.getCustomizeMgr().getCurrentTableColumnsIndex();
       for (XViewerColumn xCol : columns) {
-         xColToColumnIndex.put(xCol, colNum++);
          if (xCol.isShow()) {
             showCols.add(xCol);
             headerStrs.add(xCol.getName());
@@ -96,7 +93,7 @@ public class XViewerTreeReport {
             }
             firstCell = false;
          }
-         str += labelProv.getColumnText(item.getData(), xCol, xColToColumnIndex.get(xCol));
+         str += labelProv.getColumnText(item.getData(), xColToColumnIndex.get(xCol));
          cellData.add(str);
       }
       rowData.add(cellData.toArray(new String[cellData.size()]));

@@ -216,6 +216,24 @@ public class CustomizeManager {
       return columns;
    }
 
+   /**
+    * Return index of XColumn to original column index on creation of table. Since table allows drag re-ordering of
+    * columns, this index will provide the map back to the original column index. Used for label providers
+    * getColumnText(object, index)
+    * 
+    * @return index
+    */
+   public Map<XViewerColumn, Integer> getCurrentTableColumnsIndex() {
+      int[] index = xViewer.getTree().getColumnOrder();
+      Map<XViewerColumn, Integer> xColToColumnIndex = new HashMap<XViewerColumn, Integer>(index.length);
+      for (int x = 0; x < index.length; x++) {
+         TreeColumn treeCol = xViewer.getTree().getColumn(index[x]);
+         XViewerColumn xCol = (XViewerColumn) treeCol.getData();
+         xColToColumnIndex.put(xCol, index[x]);
+      }
+      return xColToColumnIndex;
+   }
+
    public int getColumnNumFromXViewerColumn(XViewerColumn xCol) {
       for (Integer index : xViewer.getTree().getColumnOrder()) {
          TreeColumn treeCol = xViewer.getTree().getColumn(index);
