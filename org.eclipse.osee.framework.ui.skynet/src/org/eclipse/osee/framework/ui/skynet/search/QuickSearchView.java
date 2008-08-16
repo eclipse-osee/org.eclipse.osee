@@ -52,7 +52,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
    private static final String OPTIONS_KEY_ID = "searchOption";
 
-   private static final String[] SEARCH_OPTIONS = new String[] {"Include Deleted", "Contained in Name Only"};
+   private static final String[] SEARCH_OPTIONS = new String[] {"Include Deleted", "Name Only"};
 
    private Label branchLabel;
 
