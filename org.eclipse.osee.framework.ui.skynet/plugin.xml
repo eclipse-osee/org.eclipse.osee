@@ -16,6 +16,7 @@
  <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
  <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
+ <extension-point id="DBHealthTask" name="DBHealthTask" schema="schema/DBHealthTask.exsd"/>
 
 <extension
       point="org.eclipse.ui.popupMenus">
@@ -917,11 +918,19 @@
     </Operation>
  </extension>
  <extension
-       id="Clean up commit transactions"
-       name="Clean up commit transactions"
+       id="Database Health"
+       name="Database Health"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.CleanUpCommitTransactions">
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DatabaseHealth">
     </Operation>
+ </extension>
+ <extension
+       id="CommitTransactions"
+       name="CommitTransactions"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">
+    </Task>
  </extension>
 </plugin>

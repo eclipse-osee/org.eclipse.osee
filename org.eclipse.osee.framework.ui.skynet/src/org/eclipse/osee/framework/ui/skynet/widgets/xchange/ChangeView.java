@@ -1,4 +1,5 @@
 /*******************************************************************************
+/*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -186,7 +187,6 @@ public class ChangeView extends ViewPart implements IActionable {
       super.init(site, memento);
       try {
          Integer branchId = null;
-         Integer transactionId = null;
 
          if (memento != null) {
             memento = memento.getChild(INPUT);
@@ -196,7 +196,7 @@ public class ChangeView extends ViewPart implements IActionable {
                   openViewUpon(BranchPersistenceManager.getBranch(branchId), null);
                } else {
                   int transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
-                  if (transactionId != null) {
+                  if (transactionNumber > -1) {
                      openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber));
                   }
                }
