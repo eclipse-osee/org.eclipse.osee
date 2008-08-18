@@ -1,5 +1,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -192,19 +193,19 @@ public abstract class XViewerStyledTextLabelProvider extends
 	}
 
 	public abstract Image getColumnImage(Object element, XViewerColumn xCol,
-			int column) throws OseeCoreException;
+			int column) throws OseeCoreException, SQLException;
 
 	public abstract StyledString getStyledText(Object element,
-			XViewerColumn xCol, int column) throws OseeCoreException;
+			XViewerColumn xCol, int column) throws OseeCoreException, SQLException;
 
 	public abstract Color getBackground(Object element,
 			XViewerColumn viewerColumn, int columnIndex)
-			throws OseeCoreException;
+			throws OseeCoreException, SQLException;
 
 	public abstract Color getForeground(Object element,
 			XViewerColumn viewerColumn, int columnIndex)
-			throws OseeCoreException;
+			throws OseeCoreException, SQLException;
 
 	public abstract Font getFont(Object element, XViewerColumn viewerColumn,
-			int columnIndex) throws OseeCoreException;
+			int columnIndex) throws OseeCoreException, SQLException;
 }
