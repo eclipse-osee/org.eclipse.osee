@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerTest extends XViewer {
+public class XViewerStyledStringLableProviderTest extends XViewer {
    private Set<IXViewerTestTask> runList = new HashSet<IXViewerTestTask>();
 
    /**
@@ -32,7 +32,7 @@ public class XViewerTest extends XViewer {
     * @param namespace
     * @param viewerFactory
     */
-   public XViewerTest(Composite parent, int style) {
+   public XViewerStyledStringLableProviderTest(Composite parent, int style) {
       super(parent, style, new XViewerTestFactory());
    }
 
@@ -57,15 +57,15 @@ public class XViewerTest extends XViewer {
    public static void main(String[] args) {
       Display Display_1 = Display.getDefault();
       Shell Shell_1 = new Shell(Display_1, SWT.SHELL_TRIM);
-      Shell_1.setText("XViewer Test");
+      Shell_1.setText("XViewer Styled Text Test");
       Shell_1.setBounds(0, 0, 1000, 500);
       Shell_1.setLayout(new GridLayout());
       Shell_1.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      XViewerTest xViewerTest = new XViewerTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+      XViewerStyledStringLableProviderTest xViewerTest = new XViewerStyledStringLableProviderTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
       xViewerTest.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       xViewerTest.setContentProvider(new XViewerTestContentProvider());
-      xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));
+      xViewerTest.setLabelProvider(new XViewerTestStyledStringLabelProvider(xViewerTest));
 
       List<Object> tasks = new ArrayList<Object>();
       for (int x = 0; x < 1; x++) {
