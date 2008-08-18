@@ -180,4 +180,19 @@ public abstract class Renderer implements IRenderer {
    public String getArtifactUrl(Artifact artifact) throws Exception {
       return ArtifactRequest.getInstance().getUrl(artifact);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setRendererOptions(java.lang.String[])
+    */
+   @Override
+   public void setRendererOptions(String[] options) {
+      throw new UnsupportedOperationException();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setDefaultOptions()
+    */
+   @Override
+   public void setDefaultOptions() {
+   }
 }

@@ -20,21 +20,11 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
  * @author b1528444
  */
 public class TemplateManager {
-
-   List<ITemplateProvider> templateProviders;
-
    private static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.TemplateProvider";
    private static final String EXTENSION_ELEMENT = "TemplateProvider";
    private static final String EXTENSION_CLASSNAME = "classname";
-
-   private static TemplateManager instance;
-
-   public static TemplateManager getInstance() {
-      if (instance == null) {
-         instance = new TemplateManager();
-      }
-      return instance;
-   }
+   private final List<ITemplateProvider> templateProviders;
+   private static final TemplateManager instance = new TemplateManager();
 
    private TemplateManager() {
       ExtensionDefinedObjects<ITemplateProvider> extensionDefinedObjects =
@@ -42,17 +32,17 @@ public class TemplateManager {
       templateProviders = extensionDefinedObjects.getObjects();
    }
 
-   public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
-      ITemplateProvider templateProviderToReturn = null;
+   public static String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
+      ITemplateProvider bestTemplateProvider = null;
       int highestRating = 0;
-      for (ITemplateProvider templateProvider : templateProviders) {
+      for (ITemplateProvider templateProvider : instance.templateProviders) {
          int rating = templateProvider.getApplicabilityRating(renderer, artifact, presentationType, option);
          if (rating > highestRating) {
-            templateProviderToReturn = templateProvider;
+            bestTemplateProvider = templateProvider;
             highestRating = rating;
          }
       }
-      String template = templateProviderToReturn.getTemplate(renderer, artifact, presentationType, option);
+      String template = bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
       return template;
    }
 }

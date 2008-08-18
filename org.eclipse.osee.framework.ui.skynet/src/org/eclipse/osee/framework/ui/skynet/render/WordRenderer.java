@@ -86,10 +86,9 @@ public class WordRenderer extends FileRenderer {
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
-   private final WordTemplateProcessor templateProcessor;
+   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor();
 
    public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError, CoreException {
-      this.templateProcessor = new WordTemplateProcessor();
    }
 
    /**
@@ -473,6 +472,26 @@ public class WordRenderer extends FileRenderer {
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
-      return TemplateManager.getInstance().getTemplate(this, artifact, presentationType.name(), option);
+      return TemplateManager.getTemplate(this, artifact, presentationType.name(), option);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#setRendererOptions(java.lang.String[])
+    */
+   @Override
+   public void setRendererOptions(String[] options) {
+      for (String option : options) {
+         if (option.startsWith("updateParagraphNumber=")) {
+            templateProcessor.setSaveParagraphNumOnArtifact(option.endsWith("true"));
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#setDefaultOptions()
+    */
+   @Override
+   public void setDefaultOptions() {
+      templateProcessor.setSaveParagraphNumOnArtifact(false);
    }
 }

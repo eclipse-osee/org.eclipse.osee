@@ -64,4 +64,7 @@ public interface IRenderer {
 
    public abstract String getId();
 
+   public abstract void setRendererOptions(String[] options);
+
+   public abstract void setDefaultOptions();
 }

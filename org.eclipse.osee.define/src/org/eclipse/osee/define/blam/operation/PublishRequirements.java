@@ -29,6 +29,7 @@ public class PublishRequirements extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       RendererManager rendererManager = RendererManager.getInstance();
+      boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
 
       for (Artifact artifact : variableMap.getArtifacts("artifact")) {
          if (monitor.isCanceled()) {
@@ -38,11 +39,15 @@ public class PublishRequirements extends AbstractBlam {
             List<Artifact> arts = artifact.getChildren();
             if (arts.size() > 0) {
                IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, arts.get(0));
+               renderer.setRendererOptions(new String[] {"updateParagraphNumber=" + updateParagraphNumber});
                renderer.preview(arts, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
+               renderer.setDefaultOptions();
             }
          } else {
             IRenderer renderer = rendererManager.getBestRenderer(PresentationType.PREVIEW, artifact);
+            renderer.setRendererOptions(new String[] {"updateParagraphNumber=" + updateParagraphNumber});
             renderer.preview(artifact, "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES", monitor);
+            renderer.setDefaultOptions();
          }
       }
    }
@@ -58,6 +63,6 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
    }
 }

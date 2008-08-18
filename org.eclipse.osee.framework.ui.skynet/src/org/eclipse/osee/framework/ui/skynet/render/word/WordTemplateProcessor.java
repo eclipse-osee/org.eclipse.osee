@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFolder;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.collection.tree.Tree;
 import org.eclipse.osee.framework.jdk.core.collection.tree.TreeNode;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -48,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 
@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
  * @author Ryan D. Brooks
  */
 public class WordTemplateProcessor {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordTemplateProcessor.class);
    private static final String ARTIFACT = "Artifact";
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
    private static final String KEY = "Key";
@@ -108,11 +107,11 @@ public class WordTemplateProcessor {
    private String outlineNumber;
    private CoreRelationEnumeration outlineRelation;
    private String headingAttributeName;
-   private List<AttributeElement> attributeElements;
-   private boolean saveParagraphNumOnArtifact;
-   private Set<String> ignoreAttributeExtensions;
+   private List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
+   private boolean saveParagraphNumOnArtifact = false;
+   private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
-   private boolean isEditMode;
+   private boolean isEditMode = false;
    private boolean isSingleEdit;
 
    public WordTemplateProcessor() throws CoreException {
@@ -120,14 +119,8 @@ public class WordTemplateProcessor {
    }
 
    public WordTemplateProcessor(String masterTemplate, String slaveTemplate) throws CoreException {
-      super();
       this.masterTemplate = masterTemplate;
       this.slaveTemplate = slaveTemplate;
-      this.attributeElements = new LinkedList<AttributeElement>();
-      this.saveParagraphNumOnArtifact = false;
-      this.isEditMode = false;
-      this.ignoreAttributeExtensions = new HashSet<String>();
-
       loadIgnoreAttributeExtensions();
    }
 
@@ -626,7 +619,8 @@ public class WordTemplateProcessor {
       while (matcher.find()) {
          String key = WordUtil.textOnly(matcher.group(2));
          if (!keySet.add(key)) {
-            logger.log(Level.WARNING, "The Set_Name " + key + " appears in template more than once");
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                  "The Set_Name " + key + " appears in template more than once");
          }
       }
 
@@ -679,7 +673,7 @@ public class WordTemplateProcessor {
             } else if (elementType.equals("Format")) {
                format = value;
             } else {
-               logger.log(Level.WARNING, "Unexpected element read in Attribute:" + elementType);
+               OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unexpected element read in Attribute:" + elementType);
             }
          }
       }
