@@ -189,6 +189,10 @@ public class OseeConsole {
 	    ex.printStackTrace();
 	}
     }
+    
+    public void prompt(String str) throws IOException {
+	sendToStreams(CONSOLE_PROMPT, str);
+    }
 
     private void sendToStreams(int type, String str) throws IOException {
 	if (type == CONSOLE_ERROR && streamErr != null) {
