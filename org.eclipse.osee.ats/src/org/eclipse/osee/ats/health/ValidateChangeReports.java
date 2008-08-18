@@ -14,7 +14,10 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,9 +25,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -34,9 +42,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeSummary;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchContentProvider;
@@ -52,6 +58,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateChangeReports extends XNavigateItemAutoRunAction {
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
+   private Set<Integer> newArtIds = new HashSet<Integer>();
 
    /**
     * @param parent
@@ -138,7 +145,9 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                            RevisionManager.getInstance().getChangesPerBranch(
                                  teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                      foundChangeReport = true;
+                     loadNewArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                   }
+                  
                   if (changes != null) {
                      Map<Integer, Artifact> modArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> delArt = new HashMap<Integer, Artifact>();
@@ -159,6 +168,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      Map<Integer, Artifact> oldModArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> oldDelArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> oldNewArt = new HashMap<Integer, Artifact>();
+                     
                      for (ArtifactChange artifactChange : teamArt.getSmaMgr().getBranchMgr().getArtifactChanges()) {
                         if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
                            // If there was at least one attribute changed, count it; don't count relation only changes
@@ -180,26 +190,10 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                            }
                         }
 
-                        boolean newAndDeleted = false;
                         if (artifactChange.getModType() == ModificationType.DELETED) {
-                           if (artifactChange.getArtifact().getArtId() == 244865) {
-                              int i = 1;
-                           }
-                           for (TransactionData transactionData : RevisionManager.getInstance().getTransactionsPerArtifact(
-                                 artifactChange.getArtifact(), false)) {
-
-                              for (RevisionChange revisionChange : RevisionManager.getInstance().getTransactionChanges(
-                                    transactionData)) {
-                                 if (teamArt.getSmaMgr().getBranchMgr().isWorkingBranch() && revisionChange instanceof ArtifactChange && revisionChange.getModType() == ModificationType.NEW) {
-                                    newAndDeleted = true;
-                                    break;
-                                 }
-                              }
-                              if (newAndDeleted) {
-                                 break;
-                              }
-                           }
-                           if (!newAndDeleted) {
+                        	boolean newAndDeleted = newArtIds.contains(artifactChange.getArtifact().getArtId());
+                           
+                        	if (!newAndDeleted) {
                               oldDelArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
                            }
                         }
@@ -294,4 +288,26 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       sbFull.append(AHTML.endMultiColumnTable());
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
    }
+   
+   /**
+    * Loads art ids from branches to detect if an artifact has been created and then deleted.
+    * @param branch
+    * @param transactionNumber
+    * @throws SQLException
+    */
+   private void loadNewArtIdsPerBranch(Branch branch) throws SQLException {
+		ConnectionHandlerStatement handlerStatement = null;
+		try {
+			handlerStatement = ConnectionHandler
+					.runPreparedQuery(
+							"Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
+							SQL3DataType.INTEGER, branch.getBranchId());
+			
+			while(handlerStatement.getRset().next()){
+				newArtIds.add(handlerStatement.getRset().getInt(1));
+			}
+		} finally {
+			DbUtil.close(handlerStatement);
+		}
+	}
 }

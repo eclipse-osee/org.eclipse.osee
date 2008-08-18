@@ -910,14 +910,6 @@
     </Operation>
  </extension>
  <extension
-       id="Clean Up Duplicate Attributes"
-       name="Clean Up Duplicate Attributes"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.CleanUpDuplicateAttributes">
-    </Operation>
- </extension>
- <extension
        id="Database Health"
        name="Database Health"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -931,6 +923,38 @@
        point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
     <Task
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitTransactions">
+    </Task>
+ </extension>
+ <extension
+       id="ArtifactTxCurrent"
+       name="ArtifactTxCurrent"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.ArtifactTxCurrent">
+    </Task>
+ </extension>
+ <extension
+       id="AttributeTxCurrent"
+       name="AttributeTxCurrent"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.AttributeTxCurrent">
+    </Task>
+ </extension>
+ <extension
+       id="RelLinkTxCurrent"
+       name="RelLinkTxCurrent"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RelLinkTxCurrent">
+    </Task>
+ </extension>
+ <extension
+       id="DuplicateAttributeCheck"
+       name="DuplicateAttributeCheck"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateAttributes">
     </Task>
  </extension>
 </plugin>

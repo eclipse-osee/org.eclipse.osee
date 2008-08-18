@@ -1,7 +1,6 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.sql.ResultSet;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -10,9 +9,10 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
- * Updates commit transactions so new and then modified objects will be committed with a mod type of new. This BLAM operation also removes attribute from deleted artifacts from committed transactions.
+ * Updates commit transactions so new and then modified objects will be committed with a mod type of new. This BLAM
+ * operation also removes attribute from deleted artifacts from committed transactions.
+ * 
  * @author Jeff C. Phillips
- *
  */
 public class CommitTransactions extends DatabaseHealthTask {
    private static final String GET_COMMIT_TRANSACTIONS =
@@ -22,39 +22,39 @@ public class CommitTransactions extends DatabaseHealthTask {
    private static final String DELETE_ORPHAN_ATTRIBUTES =
          "delete FROM osee_Define_attribute where gamma_id in (select t3.gamma_id from osee_define_txs t2, osee_define_attribute t3 where t2.transaction_id = ? AND t2.gamma_id = t3.gamma_id AND t3.art_id NOT in(SELECT art_id from osee_Define_txs t4, osee_Define_artifact_version t5 WHERE t4.transaction_id = t2.transaction_id AND t4.gamma_id = t5.gamma_id))";
 
-	@Override
-	public String getFixTaskName() {
-		return "Removes orphan attributes and sets new artifacts to mod type of 1 on commit transactions ";
-	}
+   @Override
+   public String getFixTaskName() {
+      return "Removes orphan attributes and sets new artifacts to mod type of 1 on commit transactions ";
+   }
 
-	@Override
-	public String getVerifyTaskName() {
-		return null;
-	}
+   @Override
+   public String getVerifyTaskName() {
+      return null;
+   }
 
-	@Override
-	public void run(BlamVariableMap variableMap, IProgressMonitor monitor,
-			Operation operation, StringBuilder builder) throws Exception{
-		
-		if(operation.equals(Operation.Fix)){
-		      ConnectionHandlerStatement chStmt = null;
-		      try {
-		         chStmt = ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
-		         ResultSet resultSet = chStmt.getRset();
+   @Override
+   public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
 
-		         while (resultSet.next()) {
-		            int transactionNumber = resultSet.getInt(1);
-		            int updateCount =
-		                  ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, SQL3DataType.INTEGER,
-		                        transactionNumber, SQL3DataType.INTEGER, transactionNumber);
-		            int deleteAttrCount =
-		                  ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, SQL3DataType.INTEGER, transactionNumber);
+      if (operation.equals(Operation.Fix)) {
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
+            ResultSet resultSet = chStmt.getRset();
 
-		            builder.append("For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
-		         }
-		      } finally {
-		         DbUtil.close(chStmt);
-		      }
-		}
-	}
+            while (resultSet.next()) {
+               int transactionNumber = resultSet.getInt(1);
+               int updateCount =
+                     ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, SQL3DataType.INTEGER,
+                           transactionNumber, SQL3DataType.INTEGER, transactionNumber);
+               int deleteAttrCount =
+                     ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, SQL3DataType.INTEGER,
+                           transactionNumber);
+
+               builder.append("For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
+            }
+         } finally {
+            DbUtil.close(chStmt);
+         }
+      }
+   }
 }
