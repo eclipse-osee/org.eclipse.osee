@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -26,7 +27,9 @@ import org.eclipse.swt.graphics.Image;
  * @author Donald G. Dunne
  */
 public abstract class XViewerLabelProvider implements ITableLabelProvider, ITableColorProvider {
-   private final XViewer viewer;
+
+
+private final XViewer viewer;
 
    // Store index of columnIndex to XViewerColumns to speed up label providing
    private Map<Integer, XViewerColumn> indexToXViewerColumnMap = new HashMap<Integer, XViewerColumn>();

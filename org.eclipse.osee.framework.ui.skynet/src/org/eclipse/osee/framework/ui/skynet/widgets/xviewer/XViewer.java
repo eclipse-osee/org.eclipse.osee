@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.util.Collection;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -80,7 +81,7 @@ public class XViewer extends TreeViewer {
 
    @Override
    public void setLabelProvider(IBaseLabelProvider labelProvider) {
-      if (!(labelProvider instanceof XViewerLabelProvider)) {
+      if (!(labelProvider instanceof XViewerLabelProvider) && !(labelProvider instanceof XViewerStyledTextLabelProvider)) {
          throw new IllegalArgumentException("Label Provider must extend XViewerLabelProvider");
       }
       super.setLabelProvider(labelProvider);
