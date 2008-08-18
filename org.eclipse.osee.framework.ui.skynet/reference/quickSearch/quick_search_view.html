@@ -1,25 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
-<!--
- Copyright (c) 2004, 2007 Boeing.
- All rights reserved. This program and the accompanying materials
- are made available under the terms of the Eclipse Public License v1.0
- which accompanies this distribution, and is available at
- http://www.eclipse.org/legal/epl-v10.html
- Contributors:
-     Boeing - initial API and implementation
--->
-	<head>
-		<title>Quick View</title>
-        <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
-	</head>
+<head>
 
-	<body>
-		<h1>Quick Search View</h1>
-		<br/>
-		<img src="quick_search_view.gif"/>
-		<h2>Purpose</h2>
-		<p>The Quick Search view provides quick access to searching by name and by index on the default branch.</p>
-		<h2>Shortcuts</h2>
-		<p>Pressing enter in the text entry box is equivalent to pressing the <i>Search</i> button.</p>
+<meta name="copyright" content="Copyright (c) 2004, 2007 Boeing. All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: Boeing - initial API and implementation" >
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<title>Quick Search View</title>
+<script language="JavaScript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"> </script>
+
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/org.eclipse.help.webapp/advanced/breadcrumbs.css" charset="ISO-8859-1" type="text/css"></link>
+<script type="text/javascript" src="../content/PLUGINS_ROOT/org.eclipse.help/livehelp.js"> </script>
+
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/PRODUCT_PLUGIN/narrow_book.css" type="text/css"></link>
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/PRODUCT_PLUGIN/win32_narrow_book.css" type="text/css"></link>
+<script type="text/javascript">
+<!--
+if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) parent.ContentToolbarFrame.setButtonState("toggle_highlight","hidden");
+-->
+</script>
+
+</head>
+
+<body>
+	<div class="help_breadcrumbs">
+		<a href="javascript:liveAction('org.eclipse.help.ui', 'org.eclipse.help.ui.internal.ShowInTocAction', '0')">Workbench User Guide</a> > 
+		<a href="javascript:liveAction('org.eclipse.help.ui', 'org.eclipse.help.ui.internal.ShowInTocAction', '0_2')">Tasks</a> > 
+		<a href="../../../ntopic/org.eclipse.platform.doc.user/tasks/tasks-1c.htm">Navigating and finding resources</a>
+	</div>
+
+	<h1>Quick Search View</h1>
+
+	<p>The Quick Search view allows users to perform contextual searches for information 
+	that is contained <i>inside</i> artifacts in a selected branch. 
+	</p>
+
+	<img src="quickSearchView.png" alt="quick search view"/>
+	
+	<p>To find all artifacts that contain a particular set of keywords:</p>
+	<ol>
+  		<li>Select <a class="command-link" href='javascript:executeCommand("org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.osee.framework.ui.skynet.QuickSearchView)")'>
+		<img src="artifact_search.gif"  alt="search icon" border="0" />
+		<b>Window &gt; Show View &gt; Other... &gt; OSEE &gt; Quick Search</b></a>, to open the view.
+  		</li>
+  		<li>Type your search string in the <b>Enter Search String</b> combo box, or use the 
+      pull-down list to select a previously entered search expression. <br/> Special characters such as (<b><code>' '</code>, 
+      <code>!</code>, <code>"</code>, <code>#</code>, <code>$</code>, 
+      <code>%</code>, <code>(</code>, <code>)</code>, <code>*</code>, <code>+</code>, 
+      <code>,</code>, <code>-</code>, <code>.</code>, <code>/</code>, <code>:</code>, 
+      <code>;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>?</code>, <code>@</code>, 
+      <code>[</code>, <code>\</code>, <code>]</code>, <code>^</code>, <code>{</code>, 
+      <code>|</code>, <code>}</code>, <code>~</code>, <code>_</code></b>) are assumed to be word separators 
+      (for example: <code>hello.world</code> will be translated to <code>hello</code> and <code>world</code>).
+      </li>
+  		<li>Finish entering your search options, (for example, to scope
+      	the search to include deleted artifacts, check the include deleted option), 
+      	and click <b>Search</b> or press <b>Enter</b> from the combo box to execute the search.
+      </li>
+  		<li>The Search view displays the results of your search. Right-click on any item in
+      	 the Search view to open a pop-up menu that allows you perform various operations 
+      	 on the artifacts such as copy search results to the clipboard or reveal a 
+      	 selected artifact in Artifact Explorer. To open one of the listed artifacts, 
+      	 double-click it or select <b>Open</b> from its pop-up menu.
+     	</li>
+	</ol>
+		
+	<p><img border="0" src="ngrelc.png" alt="Related concepts" /><br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="attribute_tagging.html">Attribute Tagging</a>
+	</p>
+
+	<p><img border="0" src="ngrelr.png" alt="Related reference" /><br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="in_name_option.html">Quick Search In Name Option</a><br/>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="include_deleted_option.html">Quick Search Include Deleted Option</a>
+	</p>
+			
 </body>
 </html>

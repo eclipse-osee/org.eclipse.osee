@@ -71,6 +71,7 @@ public class GroupSelection {
       initTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbInit");
       dbInitTasks.addAll(0, initTasks);
       dbInitTasks.add("org.eclipse.osee.framework.skynet.core.SkynetDbBranchDataImport");
+      dbInitTasks.add("org.eclipse.osee.framework.database.PostDbInitializationProcess");
    }
 
    public void addChoice(String listName, List<String> dbInitTasks, boolean bareBones) {
@@ -79,9 +80,9 @@ public class GroupSelection {
    }
 
    /**
-    * Call to get DB Init Tasks from choice made by User
+    * Call to get DB initialization Tasks from choice made by User
     * 
-    * @return
+    * @return initialization task list
     */
    public List<String> getDbInitTasks() {
       if (choice == null) {
@@ -96,10 +97,10 @@ public class GroupSelection {
    }
 
    /**
-    * Call get get DB Init Tasks from specified taskId
+    * Call get get DB initialization Tasks from specified taskId
     * 
     * @param dbInitTaskId
-    * @return
+    * @return initialization task list
     */
    public List<String> getDbInitTasks(String dbInitTaskId) {
       populateDbInitChoices();

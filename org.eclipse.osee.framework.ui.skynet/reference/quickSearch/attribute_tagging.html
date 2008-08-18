@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html>
+<head>
+
+<meta name="copyright" content="Copyright (c) 2004, 2007 Boeing. All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: Boeing - initial API and implementation" >
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="STYLESHEET" href="../book.css" charset="ISO-8859-1" type="text/css">
+<title>Attribute Tagging for Quick Search</title>
+<script language="JavaScript" src="PLUGINS_ROOT/org.eclipse.help/livehelp.js"> </script>
+
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/org.eclipse.help.webapp/advanced/breadcrumbs.css" charset="ISO-8859-1" type="text/css"></link>
+<script type="text/javascript" src="../content/PLUGINS_ROOT/org.eclipse.help/livehelp.js"> </script>
+
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/PRODUCT_PLUGIN/narrow_book.css" type="text/css"></link>
+<link rel="stylesheet" href="../content/PLUGINS_ROOT/PRODUCT_PLUGIN/win32_narrow_book.css" type="text/css"></link>
+<script type="text/javascript">
+<!--
+if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) parent.ContentToolbarFrame.setButtonState("toggle_highlight","hidden");
+-->
+</script>
+
+</head>
+
+<body>
+	<div class="help_breadcrumbs">
+		<a href="javascript:liveAction('org.eclipse.help.ui', 'org.eclipse.help.ui.internal.ShowInTocAction', '0')">Workbench User Guide</a> > 
+		<a href="javascript:liveAction('org.eclipse.help.ui', 'org.eclipse.help.ui.internal.ShowInTocAction', '0_2')">Tasks</a> > 
+		<a href="../../../ntopic/org.eclipse.platform.doc.user/tasks/tasks-1c.htm">Navigating and finding resources</a>
+	</div>
+
+	<h1>Attribute Tagging for Quick Search</h1>
+
+	<p>When an artifact is saved, each attribute contained in the artifact is analyzed to produce a list of 
+	tags that are then associated with the artifact. Quick search is a form of <i>keyword</i> based searching 
+	which uses tags to perform contextual artifact searches.</p>
+	
+	<p>For an attribute to be tagged by the system, it must meet the following criteria:</p>
+	<ol>
+		<li>The attribute's type must specify an <b>Attribute Tagger</b> to be used by the tagging system.</li>
+		<li>The attribute must contain valid data.</li>
+		<li>The attribute revision must be saved in the database before sending to tagging system.</li>
+	</ol>
+	
+	<p>To produce tags, modified attributes are sent to the OSEE application server where the tagging system
+	processes each attribute using an <b>Attribute Tagger</b> specified by the attribute's type. The <b>Attribute Tagger</b>
+	knows how to interpret the attribute's data and how to extract words from the content. At this point, a word is defined
+	as a sequential set of alphanumeric characters delimited by one or more spaces. As words are parsed, they are sent
+	to the tagging system's word encoder where the following processing takes place:
+	</p>
+	<ol>
+		<li>The characters in the original word are converted to lower case.</li>
+		<li>The lower cased version of the word is encoded and stored in the tagging system.</li>
+		<li>The lower cased version of the word is split using punctuation characters such as (<b><code>' '</code>, 
+      <code>!</code>, <code>"</code>, <code>#</code>, <code>$</code>, 
+      <code>%</code>, <code>(</code>, <code>)</code>, <code>*</code>, <code>+</code>, 
+      <code>,</code>, <code>-</code>, <code>.</code>, <code>/</code>, <code>:</code>, 
+      <code>;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>?</code>, <code>@</code>, 
+      <code>[</code>, <code>\</code>, <code>]</code>, <code>^</code>, <code>{</code>, 
+      <code>|</code>, <code>}</code>, <code>~</code>, <code>_</code></b>) as delimiters.</li>
+		<li>Possesive words <i>(ending in 's)</i> are converted into regular form.</li>
+		<li>Each word is convert from plural to singular form.</li>
+		<li>Each word is encode and stored in the tag system.</li>		
+	</ol>
+	
+	<p> When encoding words, the tag encoder uses an algorithm which transforms --  each character is converted into a blah...</p>
+	
+	<h3>Tagging Examples</h3>
+	<table border="1">
+		<tr>
+		<th>Original</th>
+		<th>Keywords<th>
+		<th>Encoding</th>
+		</tr>
+		<tr>
+			<td>hello.world</td>
+			<td>hello.world</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>hello</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>world</td>
+			<td></td>
+		</tr>
+	</table>	
+<!--		The Skynet System relies on Taggers to produce tags for the attributes of a particular artifact. The TaggerManager 
+		supplies the best tagger for an artifact. The tagger then processes all attributes to produce a set of tags. All tags
+		are tokenized (separator discarded) on ASCII characters 0-32, 34 ("), and 127 (delete).<br/>
+		<br/>
+		<b>Example:</b> If a tag was <i>"Hello"</i> it would become <i>Hello</i>, and if it was <i>"Hello"World</i> it would become 2 tags, <i>Hello</i> and <i>World</i>.<br/>
+		<br/>
+		Next, all the tags are split (separators kept) on ASCII characters 33 – 47, 58 – 64, 91 – 96, and 123 – 126( all standard ASCII
+		characters that are not in A-Z, a-z, or 0-9).<br/>
+		<br/>
+		<b>Example:</b> If a tag was <i>12+34+56=102</i> it would become 6 tags, <i>12</i>, <i>+</i>, <i>34</i>, <i>56</i>, <i>=</i>, and <i>102</i>.<br/>
+		<br/>
+		If no specialized tagger is available then the BaseTagger is used. The BaseTagger treats all attributes as plain-text, 
+		except for Word Formatted Content which is converted to a plain-text format. Tags are then generated by splitting the text
+		on white-space.
+	</p>-->
+		
+	<p><img border="0" src="ngrelr.png" alt="Related reference" /><br>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="quick_search_view.html">Quick Search View</a>
+	</p>
+		
+</body>
+</html>

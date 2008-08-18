@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -55,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
@@ -86,7 +86,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id, commit_art_id, tx_type) VALUES (?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH_ASSOCIATION =
-         "UPDATE " + BRANCH_TABLE + " SET associated_art_id=? WHERE branch_id=?";
+         "UPDATE " + BRANCH_TABLE + " SET associated_art_id=?, branch_type=? WHERE branch_id=?";
 
    private final IProgressMonitor monitor;
    private final Branch supportingBranch;
@@ -136,7 +136,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processBranch(String name, Timestamp time, String associatedArtGuid) throws Exception {
+   protected void processBranch(String name, Timestamp time, String associatedArtGuid, String branchType) throws Exception {
       if (monitor.isCanceled()) {
          return;
       }
@@ -178,16 +178,21 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             ConnectionHandler.startTransactionLevel(transactionKeys.peek());
             newBranch = BranchPersistenceManager.createWorkingBranch(parentTransactionId, null, name, null);
 
-            // Fix the associatedArtId if it is available
-            if (associatedArtGuid != null) {
-               Integer associatedArtId = null;
-               associatedArtId = artifactGuidCache.getId(associatedArtGuid);
-
-               if (associatedArtId != null) {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ASSOCIATION, SQL3DataType.INTEGER, associatedArtId,
-                        SQL3DataType.INTEGER, newBranch.getBranchId());
-               }
+            BranchType branchTypeEnum = null;
+            if (Strings.isValid(branchType)) {
+               branchTypeEnum = BranchType.valueOf(branchType);
             }
+
+            Integer associatedArtId = null;
+            if (associatedArtGuid != null) {
+               associatedArtId = artifactGuidCache.getId(associatedArtGuid);
+            }
+            if (associatedArtId == null) {
+               associatedArtId = new Integer(-1);
+            }
+            ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ASSOCIATION, SQL3DataType.INTEGER, associatedArtId,
+                  SQL3DataType.INTEGER, branchTypeEnum != null ? branchTypeEnum.ordinal() : null, SQL3DataType.INTEGER,
+                  newBranch.getBranchId());
 
             curBranch.push(newBranch);
          } else {
@@ -287,7 +292,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processArtifact(String guid, String artifactTypeName, String hrid, boolean deleted, int txCurrent) throws SQLException {
+   protected void processArtifact(String guid, String artifactTypeName, String hrid, String modType, int txCurrent) throws SQLException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -299,13 +304,16 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       try {
          monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
-         boolean modified = true;
          currentArtifactId = artifactGuidCache.getId(guid);
+
+         ModificationType modificationType = null;
+         if (Strings.isValid(modType)) {
+            modificationType = ModificationType.valueOf(modType);
+         }
 
          // New artifact
          if (currentArtifactId == null) {
-            modified = false;
-            if (deleted) {
+            if (modificationType != null && modificationType.equals(ModificationType.DELETED)) {
                OseeLog.log(SkynetActivator.class, Level.WARNING,
                      "Initial creation of artifact " + hrid + " was a delete version");
             }
@@ -319,11 +327,10 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
 
          int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
-         ModificationType modificationType = getModType(modified, deleted);
-
+         int modificationInt = modificationType != null ? modificationType.getValue() : -1;
          ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
-               SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
-         insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
+               SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationInt);
+         insertTxAddress(gammaId, modificationInt, txCurrent);
       } catch (IllegalArgumentException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
@@ -335,17 +342,14 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeTypeName, String stringValue, String uriValue, boolean deleted, int txCurrent) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeTypeName, String stringValue, String uriValue, String modType, int txCurrent) throws Exception {
       // Skip this attribute if the artifact is not being included
       if (currentArtifactId == null || monitor.isCanceled()) {
          return;
       }
 
-      boolean modified = true;
       Integer attrId = attributeGuidCache.getId(attributeGuid);
       if (attrId == null) {
-         modified = false;
-
          attrId = Query.getNextSeqVal(ATTR_ID_SEQ);
          attributeGuidCache.map(attrId, attributeGuid);
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, SQL3DataType.INTEGER, attrId, SQL3DataType.VARCHAR,
@@ -354,7 +358,11 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
       int attrTypeId = attributeType.getAttrTypeId();
       int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
-      ModificationType modificationType = getModType(modified, deleted);
+
+      ModificationType modificationType = null;
+      if (Strings.isValid(modType)) {
+         modificationType = ModificationType.valueOf(modType);
+      }
 
       String uriToStore = null;
       if (Strings.isValid(uriValue)) {
@@ -376,27 +384,23 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       } else {
          uriToStore = "";
       }
+      int modificationInt = modificationType != null ? modificationType.getValue() : -1;
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, SQL3DataType.INTEGER, currentArtifactId,
             SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
-            SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
-            modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
+            SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER, modificationInt);
+      insertTxAddress(gammaId, modificationInt, txCurrent);
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws SQLException {
+   protected void processLink(String guid, String type, String aguid, String bguid, String aOrder, String bOrder, String rationale, String modType, int txCurrent) throws SQLException {
       // Skip this link if the transaction is not being included
       if (currentTransactionId == null || monitor.isCanceled()) {
          return;
       }
 
-      boolean modified = true;
-
       monitor.subTask("Transaction " + transactionOnBranchCount + " Link " + ++linkOnTransactionCount);
       Integer relLinkId = linkGuidCache.getId(guid);
       if (relLinkId == null) {
-         modified = false;
-
          relLinkId = Query.getNextSeqVal(REL_LINK_ID_SEQ);
          linkGuidCache.map(relLinkId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_GUID, SQL3DataType.INTEGER, relLinkId,
@@ -405,35 +409,58 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       int relLinkTypeId = RelationTypeManager.getType(type).getRelationTypeId();
 
-      Integer aArtId = artifactGuidCache.getId(aguid);
-      if (aArtId == null) {
-         OseeLog.log(SkynetActivator.class, Level.WARNING,
-               "Link " + guid + " side A guid " + aguid + " could not be resolved to an artId. Link not imported");
+      Integer aArtId = getSideArtId(guid, aguid, true);
+      Integer bArtId = getSideArtId(guid, bguid, false);
+      if (aArtId == null || bArtId == null) {
+         OseeLog.log(SkynetActivator.class, Level.WARNING, "Link not imported");
          return;
       }
-      Integer bArtId = artifactGuidCache.getId(bguid);
-      if (bArtId == null) {
-         OseeLog.log(SkynetActivator.class, Level.WARNING,
-               "Link " + guid + " side B guid " + bguid + " could not be resolved to an artId. Link not imported");
-         return;
+
+      Integer aOrderId = getOrderArtId(guid, aOrder, true);
+      Integer bOrderId = getOrderArtId(guid, bOrder, false);
+
+      ModificationType modificationType = null;
+      if (Strings.isValid(modType)) {
+         modificationType = ModificationType.valueOf(modType);
       }
       int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
-      ModificationType modificationType = getModType(modified, deleted);
-
+      int modificationInt = modificationType != null ? modificationType.getValue() : -1;
       ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK, SQL3DataType.INTEGER, relLinkId, SQL3DataType.INTEGER,
-            relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
-            SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
-            SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), txCurrent);
+            relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrderId,
+            SQL3DataType.INTEGER, bOrderId, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
+            SQL3DataType.INTEGER, modificationInt);
+      insertTxAddress(gammaId, modificationInt, txCurrent);
+   }
+
+   private Integer getSideArtId(String linkGuid, String nodeGuid, boolean isSideA) {
+      Integer toReturn = artifactGuidCache.getId(nodeGuid);
+      if (toReturn == null) {
+         OseeLog.log(SkynetActivator.class, Level.WARNING, String.format(
+               "Link [%s] order [%s guid]=[%s] could not be resolved to an artId.", linkGuid, isSideA ? "A" : "B",
+               nodeGuid));
+      }
+      return toReturn;
+   }
+
+   private Integer getOrderArtId(String linkGuid, String orderGuid, boolean isSideA) {
+      Integer toReturn = null;
+      if (Strings.isValid(orderGuid)) {
+         toReturn = artifactGuidCache.getId(orderGuid);
+         if (toReturn == null) {
+            OseeLog.log(SkynetActivator.class, Level.WARNING, String.format(
+                  "Link [%s] order [%s guid order]=[%s] could not be resolved to an artId.", linkGuid,
+                  isSideA ? "A" : "B", orderGuid));
+            toReturn = new Integer(-2);
+         }
+      } else {
+         toReturn = new Integer(-2);
+      }
+      return toReturn;
    }
 
    private void insertTxAddress(int gammaId, int modType, int txCurrent) throws SQLException {
       ConnectionHandler.runPreparedUpdate(INSERT_TX_ADDRESS, SQL3DataType.INTEGER, currentTransactionId,
             SQL3DataType.INTEGER, gammaId, SQL3DataType.INTEGER, modType, SQL3DataType.INTEGER, txCurrent);
-   }
-
-   private ModificationType getModType(boolean modified, boolean deleted) {
-      return deleted ? ModificationType.DELETED : (modified ? ModificationType.CHANGE : ModificationType.NEW);
    }
 
    private ZipFile getBinaryDataSource() {

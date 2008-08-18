@@ -102,6 +102,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
    private Timestamp currentBranchTime = null;
    private String currentBranchAssociatedArtGuid = null;
+   private String currentBranchType = null;
 
    /**
     * @param attributes
@@ -112,6 +113,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void handleBranch(Attributes attributes) throws SQLException, UnsupportedEncodingException, IOException {
       currentBranchTime = Timestamp.valueOf(attributes.getValue("time"));
       currentBranchAssociatedArtGuid = attributes.getValue("associated_guid");
+      currentBranchType = attributes.getValue("branchType");
    }
 
    private void finishBranch() {
@@ -119,6 +121,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
       currentBranchTime = null;
       currentBranchAssociatedArtGuid = null;
+      currentBranchType = null;
    }
 
    protected void processBranchDone() {
@@ -131,10 +134,10 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void finishName() throws Exception {
       final String name = getContents();
 
-      processBranch(name, currentBranchTime, currentBranchAssociatedArtGuid);
+      processBranch(name, currentBranchTime, currentBranchAssociatedArtGuid, currentBranchType);
    }
 
-   protected abstract void processBranch(String name, Timestamp time, String associatedArtGuid) throws Exception;
+   protected abstract void processBranch(String name, Timestamp time, String associatedArtGuid, String currentBranchType) throws Exception;
 
    private String currentTransactionAuthorGuid = null;
    private Timestamp currentTransactionTime = null;
@@ -197,14 +200,13 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       final String guid = attributes.getValue("guid");
       final String type = attributes.getValue("type");
       currentArtifactHrid = attributes.getValue("hrid");
-      String deletedStr = attributes.getValue("deleted");
+      final String currentModType = attributes.getValue("modType");
       Integer artTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
-      final boolean deleted = deletedStr == null ? false : Boolean.valueOf(deletedStr);
 
-      processArtifact(guid, type, currentArtifactHrid, deleted, artTxCurrent);
+      processArtifact(guid, type, currentArtifactHrid, currentModType, artTxCurrent);
    }
 
-   protected abstract void processArtifact(String guid, String type, String hrid, boolean deleted, int txCurrent) throws Exception;
+   protected abstract void processArtifact(String guid, String type, String hrid, String modType, int txCurrent) throws Exception;
 
    private void finishArtifact() {
       processArtifactDone();
@@ -219,7 +221,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private String currentAttributeStringValue;
    private String currentAttributeContentValue;
    private String currentArtifactHrid;
-   private Boolean currentAttributeDeleted;
+   private String currentAttributeModType;
    private Integer attrTxCurrent;
 
    /**
@@ -230,8 +232,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void handleAttribute(Attributes attributes) throws UnsupportedEncodingException, IOException {
       currentAttributeType = attributes.getValue("type");
       currentAttributeGuid = attributes.getValue("guid");
-      String deletedStr = attributes.getValue("deleted");
-      currentAttributeDeleted = deletedStr == null ? Boolean.FALSE : Boolean.valueOf(deletedStr);
+      currentAttributeModType = attributes.getValue("modType");
       currentAttributeStringValue = "";
       currentAttributeContentValue = "";
       attrTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
@@ -256,7 +257,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private void finishAttribute() throws Exception {// Skip this attribute if the artifact is not being included
       try {
          processAttribute(currentArtifactHrid, currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
-               currentAttributeContentValue, currentAttributeDeleted, attrTxCurrent);
+               currentAttributeContentValue, currentAttributeModType, attrTxCurrent);
       }// catch Illegal argument exception so import does not fail if attribute type does not exist
       catch (IllegalArgumentException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -264,20 +265,20 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
       currentAttributeType = null;
       currentAttributeGuid = null;
-      currentAttributeDeleted = null;
+      currentAttributeModType = null;
       currentAttributeContentValue = "";
       currentAttributeStringValue = "";
    }
 
-   protected abstract void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted, int attrTxCurrent) throws Exception;
+   protected abstract void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, String modType, int attrTxCurrent) throws Exception;
 
    private String currentLinkType = null;
    private String currentLinkGuid = null;
    private String currentLinkAGuid = null;
    private String currentLinkBGuid = null;
-   private Integer currentLinkAOrder = null;
-   private Integer currentLinkBOrder = null;
-   private Boolean currentLinkDeleted = null;
+   private String currentLinkAOrder = null;
+   private String currentLinkBOrder = null;
+   private String currentLinkModType = null;
    private String currentLinkRationale = null;
    private Integer linkTxCurrent = null;
 
@@ -298,20 +299,18 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentLinkGuid = attributes.getValue("guid");
       currentLinkAGuid = attributes.getValue("aguid");
       currentLinkBGuid = attributes.getValue("bguid");
-      currentLinkAOrder = Integer.parseInt(attributes.getValue("aorder"));
-      currentLinkBOrder = Integer.parseInt(attributes.getValue("border"));
-      String deletedStr = attributes.getValue("deleted");
-      currentLinkDeleted = deletedStr == null ? false : Boolean.valueOf(deletedStr);
+      currentLinkAOrder = attributes.getValue("aorder");
+      currentLinkBOrder = attributes.getValue("border");
+      currentLinkModType = attributes.getValue("modType");
       linkTxCurrent = Integer.parseInt(attributes.getValue("txCurrent"));
-      
 
    }
 
-   protected abstract void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws Exception;
+   protected abstract void processLink(String guid, String type, String aguid, String bguid, String aOrder, String bOrder, String rationale, String modType, int txCurrent) throws Exception;
 
    private void finishLink() throws Exception {
       processLink(currentLinkGuid, currentLinkType, currentLinkAGuid, currentLinkBGuid, currentLinkAOrder,
-            currentLinkBOrder, currentLinkRationale, currentLinkDeleted, linkTxCurrent);
+            currentLinkBOrder, currentLinkRationale, currentLinkModType, linkTxCurrent);
 
       currentLinkType = null;
       currentLinkGuid = null;
@@ -320,7 +319,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentLinkAOrder = null;
       currentLinkBOrder = null;
       currentLinkRationale = null;
-      currentLinkDeleted = null;
+      currentLinkModType = null;
    }
 
    private void handleRationale(Attributes attributes) {

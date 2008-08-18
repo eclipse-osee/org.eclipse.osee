@@ -36,6 +36,14 @@
       <run class="org.eclipse.osee.framework.database.PlatformRunnableAvailableInitTasks"/>
    </application>
 </extension>
+<extension
+      id="PostDbInitializationProcess"
+      name="PostDbInitializationProcess"
+      point="org.eclipse.osee.framework.database.IDbInitializationTask">
+   <DatabaseTask
+         classname="org.eclipse.osee.framework.database.initialize.tasks.PostDatabaseInitialization">
+   </DatabaseTask>
+</extension>
 
     
 </plugin>

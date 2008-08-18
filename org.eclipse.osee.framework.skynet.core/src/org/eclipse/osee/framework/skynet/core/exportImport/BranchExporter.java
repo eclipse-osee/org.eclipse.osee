@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
@@ -67,7 +68,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class BranchExporter {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchExporter.class);
-   private static final String DELETED = " deleted=\"true\"";
 
    private static final LocalAliasTable ARTIFACT_ALIAS_1 = ARTIFACT_TABLE.aliasAs("art1");
    private static final LocalAliasTable ARTIFACT_ALIAS_2 = ARTIFACT_TABLE.aliasAs("art2");
@@ -75,7 +75,7 @@ public class BranchExporter {
    private static final LocalAliasTable TX_DETAIL_ALIAS_2 = TRANSACTION_DETAIL_TABLE.aliasAs("txd2");
 
    private static final String SELECT_CHILD_BRANCHES =
-         "SELECT " + BRANCH_TABLE.columns("branch_id", "branch_name", "associated_art_id") + "," + TX_DETAIL_ALIAS_1.columns(
+         "SELECT " + BRANCH_TABLE.columns("branch_id", "branch_name", "associated_art_id", "branch_type") + "," + TX_DETAIL_ALIAS_1.columns(
                "osee_comment", "time") + " FROM " + BRANCH_TABLE + "," + TX_DETAIL_ALIAS_1 + " WHERE " + BRANCH_TABLE.column("archived") + "=0 AND " + BRANCH_TABLE.column("parent_branch_id") + "=? AND " + BRANCH_TABLE.join(
                TX_DETAIL_ALIAS_1, "branch_id") + " AND " + TX_DETAIL_ALIAS_1.column("transaction_id") + "=(SELECT MIN(" + TX_DETAIL_ALIAS_2.column("transaction_id") + ") FROM " + TX_DETAIL_ALIAS_2 + " WHERE " + TX_DETAIL_ALIAS_2.join(
                BRANCH_TABLE, "branch_id") + ")";
@@ -84,19 +84,22 @@ public class BranchExporter {
                "transaction_id", "max_transaction") + "," + "COUNT(*) AS transaction_count FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id=? AND time>? AND time<=?";
    private static final String SELECT_ARTIFACTS =
          "SELECT " + ARTIFACT_TABLE.columns("art_id", "guid", "human_readable_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + "," + ARTIFACT_VERSION_TABLE.column("modification_id") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + "," + TRANSACTIONS_TABLE.columns(
+               "tx_current", "mod_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ARTIFACT_VERSION_TABLE,
                "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.join(ARTIFACT_TABLE, "art_id") + " AND " + ARTIFACT_TABLE.join(
                ARTIFACT_TYPE_TABLE, "art_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_ATTRIBUTES =
          "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id", "modification_id", "value", "uri") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + "," + TRANSACTIONS_TABLE.columns(
+               "tx_current", "mod_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE,
                "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_LINKS =
          "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id", "a_order", "b_order", "rationale",
                "modification_id") + "," + RELATION_LINK_TYPE_TABLE.columns("type_name") + "," + ARTIFACT_ALIAS_1.column("guid as a_guid") + "," + ARTIFACT_ALIAS_2.column("guid as b_guid") + "," + TRANSACTION_DETAIL_TABLE.columns(
-               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") +","+ TRANSACTIONS_TABLE.columns("tx_current", "mod_type")+ " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               "transaction_id", "osee_comment", "time", "author", "commit_art_id", "tx_type") + "," + TRANSACTIONS_TABLE.columns(
+               "tx_current", "mod_type") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(RELATION_LINK_VERSION_TABLE,
                "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(RELATION_LINK_TYPE_TABLE, "rel_link_type_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=" + ARTIFACT_ALIAS_1.column("art_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=" + ARTIFACT_ALIAS_2.column("art_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
 
@@ -189,8 +192,11 @@ public class BranchExporter {
       ConnectionHandlerStatement linkChStmt = null;
       ConnectionHandlerStatement statStmt = null;
 
-      writer.write(String.format("<Branch time=\"%s\"%s>\n", branch.getTime().toString(),
-            branch.getAssociatedArtGuid() == null ? "" : " associated_guid=\"" + branch.associatedArtGuid + "\""));
+      writer.write(String.format(
+            "<Branch time=\"%s\"%s%s>\n",
+            branch.getTime().toString(),
+            branch.getAssociatedArtGuid() != null ? String.format(" associated_guid=\"%s\" ", branch.associatedArtGuid) : "",
+            branch.getBranchType() != null ? String.format(" branchType=\"%s\" ", branch.getBranchType().name()) : ""));
       writer.write("<Name>");
       Xml.writeAsCdata(writer, branch.getName());
       writer.write("</Name>\n");
@@ -395,14 +401,16 @@ public class BranchExporter {
 
    private void processArtifact(File rootDirectory, Writer writer, ArtifactData artifact, HashCollection<Integer, AttributeData> attributeMap, String task) throws Exception {
 
-      writer.write(String.format("<Artifact guid=\"%s\" type=\"%s\" hrid=\"%s\"%s txCurrent=\"%s\">\n", artifact.getGuid(),
-            getTypeName(artifact), artifact.getHrid(), artifact.isDeleted() ? DELETED : "", artifact.getTxCurrent()));
+      writer.write(String.format("<Artifact guid=\"%s\" type=\"%s\" hrid=\"%s\" modType=\"%s\" txCurrent=\"%s\">\n",
+            artifact.getGuid(), getTypeName(artifact), artifact.getHrid(), artifact.getModificationType().name(),
+            artifact.getTxCurrent()));
 
       Collection<AttributeData> attributes = attributeMap.getValues(artifact.getArtId());
       if (attributes != null) {
          for (AttributeData attribute : attributes) {
-            writer.write(String.format("<Attribute type=\"%s\" guid=\"%s\"%s txCurrent=\"%s\">\n", attribute.getType(),
-                  attrGuidCache.getGuid(attribute.getId()), attribute.isDeleted() ? DELETED : "", attribute.txCurrent));
+            writer.write(String.format("<Attribute type=\"%s\" guid=\"%s\" modType=\"%s\" txCurrent=\"%s\">\n",
+                  attribute.getType(), attrGuidCache.getGuid(attribute.getId()),
+                  attribute.getModificationType().name(), attribute.txCurrent));
             if (attribute.getStringValue().length() > 0) {
                writer.write("<StringValue>");
                Xml.writeAsCdata(writer, attribute.getStringValue());
@@ -453,12 +461,23 @@ public class BranchExporter {
       return typeName;
    }
 
+   private String getOrderGuid(int orderArtId, boolean isSideA) throws SQLException, IOException {
+      String message = null;
+      if (isSideA) {
+         message = "aorder=\"%s\" ";
+      } else {
+         message = "border=\"%s\" ";
+      }
+      return orderArtId > -1 ? String.format(message, artGuidCache.getGuid(orderArtId)) : "";
+   }
+
    private void processLink(LinkData link, Writer writer) throws IOException, SQLException {
 
       writer.write(String.format(
-            "<Link type=\"%s\" guid=\"%s\" aguid=\"%s\" bguid=\"%s\" aorder=\"%d\" border=\"%d\"%s txCurrent=\"%s\">", link.getType(),
-            relLinkGuidCache.getGuid(link.getId()), link.getAGuid(), link.getBBuid(), link.getAOrder(),
-            link.getBOrder(), link.isDeleted() ? DELETED : "", link.getTxCurrent()));
+            "<Link type=\"%s\" guid=\"%s\" aguid=\"%s\" bguid=\"%s\" %s %s modType=\"%s\" txCurrent=\"%s\" >",
+            link.getType(), relLinkGuidCache.getGuid(link.getId()), link.getAGuid(), link.getBGuid(), getOrderGuid(
+                  link.getAOrder(), true), getOrderGuid(link.getBOrder(), false), link.getModificationType().name(),
+            link.getTxCurrent()));
 
       String rationale = link.getRationale();
       if (rationale != null && rationale.length() > 0) {
@@ -476,6 +495,7 @@ public class BranchExporter {
       private final int baseParentTransactionId;
       private final Timestamp time;
       private final String associatedArtGuid;
+      private final BranchType branchType;
 
       public BranchData(Branch branch) throws SQLException, IOException {
          this.branchId = branch.getBranchId();
@@ -484,6 +504,7 @@ public class BranchExporter {
                TransactionIdManager.getParentBaseTransactionNumber(branch.getCreationComment());
          this.time = new Timestamp(branch.getCreationDate().getTime());
          this.associatedArtGuid = artGuidCache.getGuid(branch.getAssociatedArtifactId());
+         this.branchType = branch.getBranchType();
       }
 
       /**
@@ -495,7 +516,7 @@ public class BranchExporter {
        * @throws IOException
        * @throws SQLException
        */
-      public BranchData(int branchId, String name, int baseParentTransactionId, Timestamp time, int associatedArtId) throws SQLException, IOException {
+      public BranchData(int branchId, String name, int baseParentTransactionId, Timestamp time, int associatedArtId, int branchTypeId) throws SQLException, IOException {
          super();
          this.branchId = branchId;
          this.name = name;
@@ -506,41 +527,31 @@ public class BranchExporter {
          } else {
             associatedArtGuid = null;
          }
+         this.branchType = BranchType.getBranchType(branchTypeId);
       }
 
-      /**
-       * @return the baseParentTransactionId
-       */
       public int getBaseParentTransactionId() {
          return baseParentTransactionId;
       }
 
-      /**
-       * @return the branchId
-       */
       public int getBranchId() {
          return branchId;
       }
 
-      /**
-       * @return the name
-       */
       public String getName() {
          return name;
       }
 
-      /**
-       * @return the time
-       */
       public Timestamp getTime() {
          return time;
       }
 
-      /**
-       * @return the associatedArtGuid
-       */
       public String getAssociatedArtGuid() {
          return associatedArtGuid;
+      }
+
+      public BranchType getBranchType() {
+         return branchType;
       }
    }
 
@@ -550,7 +561,7 @@ public class BranchExporter {
          try {
             return new BranchData(set.getInt("branch_id"), set.getString("branch_name"),
                   TransactionIdManager.getParentBaseTransactionNumber(set.getString("osee_comment")),
-                  set.getTimestamp("time"), set.getInt("associated_art_id"));
+                  set.getTimestamp("time"), set.getInt("associated_art_id"), set.getInt("branch_type"));
          } catch (IOException ex) {
             throw new IllegalStateException(ex);
          }
@@ -662,7 +673,7 @@ public class BranchExporter {
       private final String guid;
       private final String type;
       private final String hrid;
-      private final boolean deleted;
+      private final ModificationType modificationType;
       private final int txCurrent;
 
       /**
@@ -672,25 +683,25 @@ public class BranchExporter {
        * @param hrid
        * @param deleted
        */
-      public ArtifactData(final int artId, final String guid, final String type, final String hrid, final boolean deleted, final int txCurrent) {
+      public ArtifactData(final int artId, final String guid, final String type, final String hrid, final ModificationType modificationType, final int txCurrent) {
          this.artId = artId;
          this.guid = guid;
          this.type = type;
          this.hrid = hrid;
-         this.deleted = deleted;
+         this.modificationType = modificationType;
          this.txCurrent = txCurrent;
       }
 
       public int getTxCurrent() {
-  		return txCurrent;
+         return txCurrent;
       }
-  		
+
       public int getArtId() {
          return artId;
       }
 
-      public boolean isDeleted() {
-         return deleted;
+      public ModificationType getModificationType() {
+         return modificationType;
       }
 
       public String getGuid() {
@@ -710,7 +721,8 @@ public class BranchExporter {
 
       public ArtifactData process(ResultSet set) throws SQLException {
          return new ArtifactData(set.getInt("art_id"), set.getString("guid"), set.getString("name"),
-               set.getString("human_readable_id"), set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
+               set.getString("human_readable_id"), ModificationType.getMod(set.getInt("modification_id")),
+               set.getInt("tx_current"));
       }
 
       public boolean validate(ArtifactData item) {
@@ -724,21 +736,21 @@ public class BranchExporter {
       private final int id;
       private final String stringValue;
       private final String uri;
-      private final boolean deleted;
+      private final ModificationType modificationType;
       private final int txCurrent;
 
-	/**
+      /**
        * @param type
        * @param id
        * @param value
        * @param deleted
        * @throws UnsupportedEncodingException
        */
-      public AttributeData(final int artId, final String type, final int id, String stringValue, String uri, final boolean deleted, final int txCurrent) throws UnsupportedEncodingException {
+      public AttributeData(final int artId, final String type, final int id, String stringValue, String uri, final ModificationType modificationType, final int txCurrent) throws UnsupportedEncodingException {
          this.artId = artId;
          this.type = type;
          this.id = id;
-         this.deleted = deleted;
+         this.modificationType = modificationType;
          this.txCurrent = txCurrent;
 
          if (stringValue == null) {
@@ -751,13 +763,13 @@ public class BranchExporter {
       public int getArtId() {
          return artId;
       }
-      
-      public int getTxCurrent() {
-  		return txCurrent;
-  	}
 
-      public boolean isDeleted() {
-         return deleted;
+      public int getTxCurrent() {
+         return txCurrent;
+      }
+
+      public ModificationType getModificationType() {
+         return modificationType;
       }
 
       public int getId() {
@@ -786,8 +798,8 @@ public class BranchExporter {
       public AttributeData process(ResultSet set) throws SQLException {
          try {
             return new AttributeData(set.getInt("art_id"), set.getString("name"), set.getInt("attr_id"),
-                  set.getString("value"), set.getString("uri"),
-                  set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
+                  set.getString("value"), set.getString("uri"), ModificationType.getMod(set.getInt("modification_id")),
+                  set.getInt("tx_current"));
          } catch (UnsupportedEncodingException ex) {
             // Don't expect to ever not have UTF-8 support
             throw new IllegalStateException(ex);
@@ -803,14 +815,14 @@ public class BranchExporter {
       private final String type;
       private final int id;
       private final String aGuid;
-      private final String bBuid;
+      private final String bGuid;
       private final int aOrder;
       private final int bOrder;
       private final String rationale;
-      private final boolean deleted;
+      private final ModificationType modificationType;
       private final int txCurrent;
 
-	/**
+      /**
        * @param type
        * @param id
        * @param guid
@@ -819,32 +831,32 @@ public class BranchExporter {
        * @param order2
        * @param rationale
        */
-      public LinkData(final String type, final int id, final String aGuid, final String bGuid, final int aOrder, final int bOrder, final String rationale, final boolean deleted, final int txCurrent) {
+      public LinkData(final String type, final int id, final String aGuid, final String bGuid, final int aOrder, final int bOrder, final String rationale, final ModificationType modificationType, final int txCurrent) {
          this.type = type;
          this.id = id;
          this.aGuid = aGuid;
-         this.bBuid = bGuid;
+         this.bGuid = bGuid;
          this.aOrder = aOrder;
          this.bOrder = bOrder;
          this.rationale = rationale == null ? "" : rationale;
-         this.deleted = deleted;
+         this.modificationType = modificationType;
          this.txCurrent = txCurrent;
       }
 
       public String getAGuid() {
          return aGuid;
       }
-      
+
       public int getTxCurrent() {
-  		return txCurrent;
-  	  }
+         return txCurrent;
+      }
 
       public int getAOrder() {
          return aOrder;
       }
 
-      public String getBBuid() {
-         return bBuid;
+      public String getBGuid() {
+         return bGuid;
       }
 
       public int getBOrder() {
@@ -863,8 +875,8 @@ public class BranchExporter {
          return type;
       }
 
-      public boolean isDeleted() {
-         return deleted;
+      public ModificationType getModificationType() {
+         return modificationType;
       }
    }
 
@@ -873,7 +885,7 @@ public class BranchExporter {
       public LinkData process(ResultSet set) throws SQLException {
          return new LinkData(set.getString("type_name"), set.getInt("rel_link_id"), set.getString("a_guid"),
                set.getString("b_guid"), set.getInt("a_order"), set.getInt("b_order"), set.getString("rationale"),
-               set.getInt("modification_id") == ModificationType.DELETED.getValue(), set.getInt("tx_current"));
+               ModificationType.getMod(set.getInt("modification_id")), set.getInt("tx_current"));
       }
 
       public boolean validate(LinkData item) {

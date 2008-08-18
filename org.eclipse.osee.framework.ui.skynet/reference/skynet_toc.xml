@@ -16,11 +16,17 @@
 			<topic label="Refresh"
 				href="reference/refresh_change_report.html" />
 		</topic>
-	</topic>
-	<topic label="Searching">
-		<topic label="Index Based Searching"
-			href="reference/index_base_search.html" />
-	</topic>
+  <topic label="Quick Search" href="reference/quickSearch/quick_search_view.html" >
+  		<topic label="In Name Search Option"
+				href="reference/quickSearch/in_name_option.html" />
+		<topic label="Include Deleted Search Option"
+				href="reference/quickSearch/include_deleted_option.html" />
+		<topic label="Attribute Tagging for Quick Search"
+				href="reference/quickSearch/attribute_tagging.html" />		
+  </topic>
+  <topic href="reference/mass_artifact_editor.html" label="Mass Editor">
+  </topic>
+  </topic>
 	<topic label="Table Customization">
 		<topic label="Table Customization"
 			href="reference/table_customization.html" />

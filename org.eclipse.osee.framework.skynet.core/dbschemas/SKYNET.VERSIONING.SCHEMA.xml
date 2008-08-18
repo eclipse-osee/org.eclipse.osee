@@ -636,5 +636,22 @@
 		</Index>
 	</Table>
 	
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                      IMPORT TABLES                         -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_IMPORT_TEMP" schema="OSEE">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ITEM_ID"	defaultValue="not null" type="INTEGER" />	
+		<Column id="OLD_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="NEW_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="INSERT_TIME" type="TIMESTAMP" />
+		<Index id="OSEE_ARTIFACT_IMPORT_II_IN_O_IDX">
+			<AppliesTo id="QUERY_ID"/>
+			<AppliesTo id="ITEM_ID"/>
+			<AppliesTo id="OLD_ID"/>
+		</Index>
+	</Table>
 	
 </TableConfig>

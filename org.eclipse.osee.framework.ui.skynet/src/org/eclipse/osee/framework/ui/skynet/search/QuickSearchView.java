@@ -52,10 +52,46 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
    private static final String OPTIONS_KEY_ID = "searchOption";
 
-   private static final String[] SEARCH_OPTIONS = new String[] {"Include Deleted", "Name Only"};
+   private static final String MAIN_HELP_CONTEXT = "quick_search_text";
+
+   private enum SearchOption {
+      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results."),
+      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field.");
+
+      private static String[] labels = null;
+      private String helpContext;
+      private String toolTip;
+
+      SearchOption(String helpContext, String toolTip) {
+         this.helpContext = "";
+         this.toolTip = toolTip;
+      }
+
+      public String asLabel() {
+         return name().replaceAll("_", " ");
+      }
+
+      public String getHelpContext() {
+         return helpContext;
+      }
+
+      public String getToolTip() {
+         return toolTip;
+      }
+
+      public static String[] asLabels() {
+         if (labels == null) {
+            SearchOption[] options = SearchOption.values();
+            labels = new String[options.length];
+            for (int index = 0; index < options.length; index++) {
+               labels[index] = options[index].asLabel();
+            }
+         }
+         return labels;
+      }
+   }
 
    private Label branchLabel;
-
    private SearchComposite searchComposite;
    private IMemento memento;
 
@@ -73,7 +109,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          memento.putString(LAST_QUERY_KEY_ID, searchComposite.getQuery());
          Map<String, Boolean> options = searchComposite.getOptions();
          for (String option : options.keySet()) {
-            memento.putString(OPTIONS_KEY_ID + option.replaceAll(" ", ""), options.get(option).toString());
+            memento.putString(OPTIONS_KEY_ID + option.replaceAll(" ", "_"), options.get(option).toString());
          }
          StringBuilder builder = new StringBuilder();
          String[] queries = searchComposite.getQueryHistory();
@@ -96,8 +132,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
 
          Map<String, Boolean> options = new HashMap<String, Boolean>();
-         for (String option : SEARCH_OPTIONS) {
-            options.put(option, new Boolean(memento.getString(OPTIONS_KEY_ID + option.replaceAll(" ", ""))));
+         for (SearchOption option : SearchOption.values()) {
+            options.put(option.asLabel(), new Boolean(memento.getString(OPTIONS_KEY_ID + option.name())));
          }
 
          List<String> queries = new ArrayList<String>();
@@ -140,10 +176,16 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       panel.setLayout(gL);
       panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      searchComposite = new SearchComposite(panel, SWT.NONE, SEARCH_OPTIONS);
+      searchComposite = new SearchComposite(panel, SWT.NONE, SearchOption.asLabels());
       searchComposite.addListener(this);
-      //      searchComposite.setHelpContexts();
+
       loadState();
+
+      searchComposite.setHelpContext(MAIN_HELP_CONTEXT);
+      for (SearchOption option : SearchOption.values()) {
+         searchComposite.setHelpContextForOption(option.asLabel(), option.getHelpContext());
+         searchComposite.setToolTipForOption(option.asLabel(), option.getToolTip());
+      }
    }
 
    private void createActions() {

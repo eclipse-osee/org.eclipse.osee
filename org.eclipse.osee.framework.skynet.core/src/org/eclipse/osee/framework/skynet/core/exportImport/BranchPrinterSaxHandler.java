@@ -18,38 +18,30 @@ import java.sql.Timestamp;
 public class BranchPrinterSaxHandler extends BranchSaxHandler {
 
    @Override
-   protected void processArtifact(String guid, String type, String hrid, boolean deleted, int txCurrent) throws Exception {
+   protected void processArtifact(String guid, String type, String hrid, String modType, int txCurrent) throws Exception {
       System.out.print("\t\t");
-      if (deleted)
-         System.out.print("-");
-      else
-         System.out.print("+");
-      System.out.println("Artifact " + type + " " + hrid + " " + guid);
+      System.out.println(String.format("Artifact %s %s %s modType=[%s] txCurrent=[%s]", type, hrid, guid, modType,
+            txCurrent));
    }
 
    @Override
-   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted, int txCurrent) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, String modType, int txCurrent) throws Exception {
       System.out.print("\t\t\t");
-      if (deleted)
-         System.out.print("-");
-      else
-         System.out.print("+");
-      System.out.println("Attribute " + attributeType + " " + attributeGuid + " " + stringValue);
+      System.out.println(String.format("Attribute %s %s %s uri=[%s] modType=[%s] txCurrent=[%s]", attributeType,
+            attributeGuid, stringValue, uriValue, modType, txCurrent));
    }
 
    @Override
-   protected void processBranch(String name, Timestamp time, String associatedArtGuid) throws Exception {
-      System.out.println("Branch (" + time + ") " + name);
+   protected void processBranch(String name, Timestamp time, String associatedArtGuid, String branchType) throws Exception {
+      System.out.println(String.format("Branch (%s) %s - artGuid=[%s] branchType=[%s]", time, name, associatedArtGuid,
+            branchType));
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, int aOrder, int bOrder, String rationale, boolean deleted, int txCurrent) throws Exception {
+   protected void processLink(String guid, String type, String aguid, String bguid, String aOrder, String bOrder, String rationale, String modType, int txCurrent) throws Exception {
       System.out.print("\t\t");
-      if (deleted)
-         System.out.print("-");
-      else
-         System.out.print("+");
-      System.out.println("Link " + type + " " + guid + " " + aguid + "(" + aOrder + ")<-->" + bguid + "(" + bOrder + ") " + rationale);
+      System.out.println(String.format("Link %s %s %s(%s)<-->%s(%s) %s modType=[%s] txCurrent=[%s]", type, guid, aguid,
+            aOrder, bguid, bOrder, rationale, modType, txCurrent));
    }
 
    @Override

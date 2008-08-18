@@ -99,7 +99,12 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
          for (ImportData importData : importDatas) {
             logger.log(Level.INFO, String.format("Import Branch Data: [%s]", importData));
             File importFile = getImportFile(importData);
-            importBranchData(importFile, importData.getBranchName());
+            try {
+               importBranchData(importFile, importData.getBranchName());
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, String.format("Exception while importing branch: [%s]", importData), ex);
+               throw new Exception(ex);
+            }
          }
       }
    }

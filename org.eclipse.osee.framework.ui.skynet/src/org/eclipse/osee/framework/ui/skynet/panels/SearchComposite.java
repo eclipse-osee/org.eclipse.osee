@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -33,6 +34,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
@@ -42,6 +44,11 @@ import org.eclipse.swt.widgets.Widget;
  * @author Roberto E. Escobar
  */
 public class SearchComposite extends Composite implements Listener {
+
+   private static final String CLEAR_HISTORY_TOOLTIP = "Clears search history";
+   private static final String SEARCH_BUTTON_TOOLTIP = "Executes search";
+   private static final String SEARCH_COMBO_TOOLTIP =
+         "Enter word(s) to search for or select historical value from pull-down on the right.";
 
    private Set<Listener> listeners;
    private Combo searchArea;
@@ -83,7 +90,7 @@ public class SearchComposite extends Composite implements Listener {
 
    private void createSearchInputArea(Composite parent) {
       Group group = new Group(parent, SWT.NONE);
-      group.setLayout(new GridLayout());
+      group.setLayout(new GridLayout(2, false));
       group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       group.setText("Enter Search String");
 
@@ -120,7 +127,7 @@ public class SearchComposite extends Composite implements Listener {
       });
 
       this.searchArea.addFocusListener(new FocusAdapter() {
-         public void focusLost(FocusEvent e) {
+         public void focusLost(FocusEvent event) {
             // Clear the flag to prevent constant update
             if (entryChanged) {
                entryChanged = false;
@@ -128,12 +135,32 @@ public class SearchComposite extends Composite implements Listener {
             }
          }
       });
+      this.searchArea.setToolTipText(SEARCH_COMBO_TOOLTIP);
       createButtonBar(group);
    }
 
    private void createButtonBar(Composite parent) {
+      this.clear = new Button(parent, SWT.NONE);
+      this.clear.setText("Clear History");
+      this.clear.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            if (searchArea.getItemCount() > 0) {
+               searchArea.removeAll();
+               for (String option : optionsMap.keySet()) {
+                  Button button = getOrCreateOptionsButton(option);
+                  button.setSelection(false);
+                  optionsMap.put(option, false);
+               }
+            }
+         }
+      });
+      this.clear.addListener(SWT.Selection, this);
+      this.clear.setEnabled(false);
+      this.clear.setFont(getFont());
+      this.clear.setToolTipText(CLEAR_HISTORY_TOOLTIP);
+
       Composite composite = new Composite(parent, SWT.NONE);
-      GridLayout gL = new GridLayout(2, false);
+      GridLayout gL = new GridLayout();
       gL.marginWidth = 0;
       gL.marginHeight = 0;
       composite.setLayout(gL);
@@ -142,21 +169,19 @@ public class SearchComposite extends Composite implements Listener {
       this.executeSearch = new Button(composite, SWT.NONE);
       this.executeSearch.setText("Search");
       this.executeSearch.addListener(SWT.Selection, this);
-      this.executeSearch.setEnabled(false);
-      this.executeSearch.setFont(getFont());
+      this.executeSearch.addSelectionListener(new SelectionAdapter() {
 
-      this.clear = new Button(composite, SWT.NONE);
-      this.clear.setText("Clear History");
-      this.clear.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
-            if (searchArea.getItemCount() > 0) {
-               searchArea.removeAll();
-            }
+            Event sendEvent = new Event();
+            sendEvent.widget = executeSearch;
+            sendEvent.type = SWT.Selection;
+            notifyListener(sendEvent);
          }
       });
-      this.clear.addListener(SWT.Selection, this);
-      this.clear.setEnabled(false);
-      this.clear.setFont(getFont());
+      this.executeSearch.setEnabled(false);
+      this.executeSearch.setFont(getFont());
+      this.executeSearch.setToolTipText(SEARCH_BUTTON_TOOLTIP);
    }
 
    private void createOptionsArea(Composite parent) {
@@ -332,5 +357,33 @@ public class SearchComposite extends Composite implements Listener {
          }
       }
       return toReturn;
+   }
+
+   public void setToolTipForSearchCombo(String toolTip) {
+      if (isWidgetAccessible(this.searchArea)) {
+         this.searchArea.setToolTipText(toolTip);
+      }
+   }
+
+   public void setHelpContext(String helpContext) {
+      if (isWidgetAccessible(this.searchArea) && isWidgetAccessible(this.executeSearch) && isWidgetAccessible(this.clear)) {
+         SkynetGuiPlugin.getInstance().setHelp(searchArea, helpContext);
+         SkynetGuiPlugin.getInstance().setHelp(executeSearch, helpContext);
+         SkynetGuiPlugin.getInstance().setHelp(clear, helpContext);
+      }
+   }
+
+   public void setHelpContextForOption(String optionId, String helpContext) {
+      Control control = getOrCreateOptionsButton(optionId);
+      if (isWidgetAccessible(control)) {
+         SkynetGuiPlugin.getInstance().setHelp(control, helpContext);
+      }
+   }
+
+   public void setToolTipForOption(String optionId, String toolTip) {
+      Control control = getOrCreateOptionsButton(optionId);
+      if (isWidgetAccessible(control)) {
+         control.setToolTipText(toolTip);
+      }
    }
 }
