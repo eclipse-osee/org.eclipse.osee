@@ -35,7 +35,7 @@ public class AttributeDataStore {
    private static final String RESTRICT_BRANCH = " AND txd1.branch_id = ?";
 
    private static final String SELECT_ATTRIBUTE_BY_TAG =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee.osee_join_search_tags jq1, osee_search_tags ost1, osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_search_tags ost1 WHERE jq1.query_id = ? AND jq1.coded_tag_id = ost1.coded_tag_id AND ost1.gamma_id = attr1.gamma_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND attr1.attr_type_id = attrtype.attr_type_id";
+         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee.osee_join_search_tags jq1, osee_search_tags ost1, osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype WHERE jq1.query_id = ? AND jq1.coded_tag_id = ost1.coded_tag_id AND ost1.gamma_id = attr1.gamma_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id";
 
    private static final String GET_TAGGABLE_SQL_BODY =
          " FROM osee_define_attribute attr1, osee_define_attribute_type type1,  osee_define_txs txs1, osee_define_tx_details txd1, osee_define_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
@@ -74,7 +74,7 @@ public class AttributeDataStore {
          toReturn.append(" AND txs1.tx_current = 1");
       }
 
-      if (options.getBoolean("contained in name only")) {
+      if (options.getBoolean("name only")) {
          toReturn.append(" AND attrtype.name = 'Name'");
       }
 
