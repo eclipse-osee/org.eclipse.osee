@@ -23,9 +23,9 @@ import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
 
-import org.eclipse.osee.connection.service.EnhancedProperties;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.service.core.GroupEntry;
@@ -143,7 +143,7 @@ public abstract class JiniConnector implements IServiceConnector {
 		properties.setProperty("type", ssi.type);
 		properties.setProperty("station", ssi.station);
 		properties.setProperty("mode", ssi.mode);
-		properties.setProperty("date", ssi.dateStarted.toString());
+		properties.setProperty("date", ssi.dateStarted);
 		properties.setProperty("version", ssi.version);
 	    } else if (entry instanceof Name) {
 		properties.setProperty("name", ((Name) entry).name);

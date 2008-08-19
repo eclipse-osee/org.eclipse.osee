@@ -17,7 +17,8 @@ import net.jini.id.UuidFactory;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
-import org.eclipse.osee.connection.service.EnhancedProperties;
+
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 

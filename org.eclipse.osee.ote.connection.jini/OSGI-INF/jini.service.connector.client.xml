@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<component name="jini.service.connector.client">
-	<implementation class="org.eclipse.osee.connection.service.JiniClientSideConnector"/>
-	<service>
-		<provide interface="org.eclipse.osee.connection.service.IServiceConnector"/>
-	</service>	
-</component>
