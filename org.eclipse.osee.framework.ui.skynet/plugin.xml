@@ -957,4 +957,12 @@
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateAttributes">
     </Task>
  </extension>
+ <extension
+       id="ExportArtifacts"
+       name="ExportArtifacts"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExportArtifacts">
+    </Operation>
+ </extension>
 </plugin>
