@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.osee.connection.service.ext">
+      <ConnectorContribution
+            className="org.eclipse.osee.ote.connection.jini.ConnectorContribution">
+      </ConnectorContribution>
+   </extension>
+
+</plugin>

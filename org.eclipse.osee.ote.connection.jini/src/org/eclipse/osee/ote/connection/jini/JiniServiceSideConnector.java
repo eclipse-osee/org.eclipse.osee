@@ -8,6 +8,7 @@ import java.rmi.Remote;
 import java.rmi.server.ExportException;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.logging.Level;
 
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
@@ -74,7 +75,8 @@ public class JiniServiceSideConnector extends JiniConnector {
          try {
             removeRegistration(registration);
          } catch (Exception e) {
-            e.printStackTrace();
+            Activator.log(Level.SEVERE, "exception removing registration",
+			e);
          }
       }
    }
@@ -107,6 +109,7 @@ public class JiniServiceSideConnector extends JiniConnector {
          try {
             registration.setAttributes(entry);
          } catch (Exception ex) {
+             Activator.log(Level.SEVERE, "exception setting attributes", ex);
             registrations.remove(registration);
          }
       }

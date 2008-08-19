@@ -234,7 +234,8 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
     */
    public synchronized void serviceChanged(ServiceDiscoveryEvent event) {
       ServiceItem item = event.getPostEventServiceItem();
-      JiniClientSideConnector connector = clientSideConnectors.remove(item.serviceID);
+      JiniClientSideConnector connector = clientSideConnectors
+		.get(item.serviceID);
       if (connector != null) {
          connector.entriesChanged(item.attributeSets);
       }

@@ -1,9 +1,12 @@
 package org.eclipse.osee.ote.connection.jini;
 
+import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.jini.JiniClassServer;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -14,87 +17,106 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator extends Plugin {
 
-   // The plug-in ID
-   public static final String PLUGIN_ID = "org.eclipse.osee.ote.connection.jini";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.eclipse.osee.ote.connection.jini";
 
-   // The shared instance
-   private static Activator plugin;
+    // The shared instance
+    private static Activator plugin;
 
-   private ServiceTracker connectionServiceTracker;
-   private ServiceTracker packageAdminTracker;
-   private JiniConnectorRegistrar registrar;
+    private ServiceTracker connectionServiceTracker;
+    private ServiceTracker packageAdminTracker;
+    private JiniConnectorRegistrar registrar;
 
-   private ExportClassLoader exportClassLoader;
+    private ExportClassLoader exportClassLoader;
 
-   /**
-    * The constructor
-    */
-   public Activator() {
-   }
+    /**
+     * The constructor
+     */
+    public Activator() {
+    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-    */
-   public void start(BundleContext context) throws Exception {
-      System.setSecurityManager(new RelaxedSecurity());
-      super.start(context);
-      plugin = this;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext context) throws Exception {
+	System.setSecurityManager(new RelaxedSecurity());
+	super.start(context);
+	plugin = this;
 
-      try {
-         JiniClassServer.getInstance();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
 
-      connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
-      connectionServiceTracker.open();
 
-      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-      packageAdminTracker.open();
+    }
 
-      PackageAdmin pa = (PackageAdmin) packageAdminTracker.getService();
+    void startJini() throws Exception {
+	try {
+	    JiniClassServer.getInstance();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	BundleContext context = getBundle().getBundleContext();
+	connectionServiceTracker = new ServiceTracker(context,
+		IConnectionService.class.getName(), null);
+	connectionServiceTracker.open();
 
-      exportClassLoader = new ExportClassLoader(pa);
-      IConnectionService service = (IConnectionService) connectionServiceTracker.getService();
+	packageAdminTracker = new ServiceTracker(context, PackageAdmin.class
+		.getName(), null);
+	packageAdminTracker.open();
 
-      registrar = new JiniConnectorRegistrar(exportClassLoader, service);
+	PackageAdmin pa = (PackageAdmin) packageAdminTracker.getService();
 
-      // register the service
-      context.registerService(IJiniConnectorRegistrar.class.getName(), registrar, null);
+	exportClassLoader = new ExportClassLoader(pa);
+	IConnectionService service = (IConnectionService) connectionServiceTracker
+		.getService();
 
-   }
+	registrar = new JiniConnectorRegistrar(exportClassLoader, service);
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-    */
-   public void stop(BundleContext context) throws Exception {
-      registrar.shutdown();
-      super.stop(context);
-      connectionServiceTracker.close();
-      packageAdminTracker.close();
-      exportClassLoader = null;
-      registrar = null;
-      plugin = null;
-      try {
-         JiniClassServer.stopServer();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
+	// register the service
+	context.registerService(IJiniConnectorRegistrar.class.getName(),
+		registrar, null);
+    }
 
-   /**
-    * Returns the shared instance
-    * 
-    * @return the shared instance
-    */
-   public static Activator getDefault() {
-      return plugin;
-   }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext context) throws Exception {
+	registrar.shutdown();
+	super.stop(context);
+	connectionServiceTracker.close();
+	packageAdminTracker.close();
+	exportClassLoader = null;
+	registrar = null;
+	plugin = null;
+	try {
+	    JiniClassServer.stopServer();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
 
-   ClassLoader getExportClassLoader() {
-      return exportClassLoader;
-   }
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+	return plugin;
+    }
 
+    ClassLoader getExportClassLoader() {
+	return exportClassLoader;
+    }
+
+    public static void log(Level level, String message, Throwable t) {
+	OseeLog.log(Activator.class, level, message, t);
+    }
+
+    public static void log(Level level, String message) {
+	log(level, message, null);
+    }
 }

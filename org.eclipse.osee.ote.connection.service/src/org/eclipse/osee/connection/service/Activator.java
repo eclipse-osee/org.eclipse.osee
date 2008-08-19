@@ -1,8 +1,10 @@
 package org.eclipse.osee.connection.service;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -28,6 +30,26 @@ public class Activator implements BundleActivator {
 		IConnectionService.class.getName(), null);
 	connectionServiceTracker.open();
 
+	ExtensionDefinedObjects<IConnectorContributor> definedObjects = new ExtensionDefinedObjects<IConnectorContributor>(
+		"org.eclipse.osee.connection.service.ext",
+		"ConnectorContribution", "className");
+	try {
+	    List<IConnectorContributor> contributors = definedObjects
+		    .getObjects();
+	    for (IConnectorContributor contributor : contributors) {
+		try {
+		    contributor.init();
+		} catch (Exception e) {
+		    log(Level.SEVERE,
+			    "exception initializing connector contributor", e);
+		}
+	    }
+	} catch (Exception ex) {
+	    log(
+		    Level.SEVERE,
+		    "failed to process OTE runtime library provider extensions",
+		    ex);
+	}
    }
 
    /*

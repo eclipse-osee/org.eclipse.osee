@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Service Plug-in
-Bundle-SymbolicName: org.eclipse.osee.ote.connection.service
+Bundle-SymbolicName: org.eclipse.osee.ote.connection.service;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.connection.service.Activator
 Bundle-Vendor: Boeing
@@ -12,4 +12,5 @@ Import-Package: org.eclipse.osee.framework.logging,
 Export-Package: org.eclipse.osee.connection.service
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.equinox.ds;bundle-version="1.0.0",
- org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0"
+ org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0",
+ org.eclipse.osee.framework.plugin.core;bundle-version="0.4.0"
