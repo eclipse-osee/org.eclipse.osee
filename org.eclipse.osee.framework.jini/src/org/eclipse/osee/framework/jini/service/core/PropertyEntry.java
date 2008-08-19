@@ -3,7 +3,10 @@ package org.eclipse.osee.framework.jini.service.core;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.jini.entry.AbstractEntry;
+
+import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /*
  * Created on May 14, 2008
@@ -20,7 +23,7 @@ public class PropertyEntry extends AbstractEntry {
     * 
     */
    private static final long serialVersionUID = 8506398896518763116L;
-   private HashMap<String, Serializable> map;
+   public HashMap<String, Serializable> map;
 
    public PropertyEntry() {
       map = new HashMap<String, Serializable>(64);
@@ -60,4 +63,5 @@ public class PropertyEntry extends AbstractEntry {
          return false;
       }
    }
+   
 }
