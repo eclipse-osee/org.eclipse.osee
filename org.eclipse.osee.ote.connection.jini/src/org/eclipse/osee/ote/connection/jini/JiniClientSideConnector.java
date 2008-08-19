@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.connection.jini;
 
 import java.io.File;
 import java.net.URI;
+
 import net.jini.core.lookup.ServiceItem;
 
 /**

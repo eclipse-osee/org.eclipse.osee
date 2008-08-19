@@ -7,6 +7,7 @@ package org.eclipse.osee.ote.connection.jini;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+
 import net.jini.core.discovery.LookupLocator;
 
 /**
