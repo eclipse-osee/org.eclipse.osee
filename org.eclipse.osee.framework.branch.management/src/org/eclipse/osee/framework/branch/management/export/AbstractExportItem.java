@@ -106,7 +106,11 @@ public abstract class AbstractExportItem implements Runnable {
          writer = createXmlWriter(getWriteLocation(), getName() + XML_EXTENSION, getBufferSize());
          writer.write("<data >\n");
          if (isCancel() != true) {
-            doWork(writer);
+            try {
+               doWork(writer);
+            } catch (Exception ex) {
+               notifyOnExportException(ex);
+            }
          }
          writer.write("</data>\n");
       } catch (Exception ex) {

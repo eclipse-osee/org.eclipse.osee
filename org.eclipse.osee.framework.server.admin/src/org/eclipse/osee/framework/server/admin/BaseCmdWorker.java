@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.server.admin.search;
+package org.eclipse.osee.framework.server.admin;
 
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 

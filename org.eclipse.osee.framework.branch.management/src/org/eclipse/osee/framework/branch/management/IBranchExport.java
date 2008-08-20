@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
+import java.util.List;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -18,4 +19,6 @@ import org.eclipse.osee.framework.resource.management.Options;
 public interface IBranchExport {
 
    public void export(String exportName, Options options, int... branchIds) throws Exception;
+
+   public void export(String exportName, Options options, List<Integer> branchIds) throws Exception;
 }

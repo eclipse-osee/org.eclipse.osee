@@ -1,0 +1,56 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.server.admin.branch;
+
+import org.eclipse.osgi.framework.console.CommandInterpreter;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class BranchCommands {
+
+   private static BranchCommands instance = null;
+   private BranchExportWorker branchExportWorker;
+
+   public static BranchCommands getInstance() {
+      if (instance == null) {
+         instance = new BranchCommands();
+      }
+      return instance;
+   }
+
+   private BranchCommands() {
+      this.branchExportWorker = new BranchExportWorker();
+      this.branchExportWorker.setExecutionAllowed(true);
+   }
+
+   public void startBranchExport(CommandInterpreter ci) {
+      if (!this.branchExportWorker.isRunning()) {
+         this.branchExportWorker.setCommandInterpreter(ci);
+         this.branchExportWorker.setExecutionAllowed(true);
+         Thread th = new Thread(branchExportWorker);
+         th.setName("Branch Export");
+         th.start();
+      } else {
+         if (this.branchExportWorker.isRunning()) {
+            ci.println("Branch Export is already running.");
+         }
+      }
+   }
+
+   public void stopBranchExport(CommandInterpreter ci) {
+      if (this.branchExportWorker.isRunning()) {
+         this.branchExportWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Branch Export is not running.");
+      }
+   }
+}

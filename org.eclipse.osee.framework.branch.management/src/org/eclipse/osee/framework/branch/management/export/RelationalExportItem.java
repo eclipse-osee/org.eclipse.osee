@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.export;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -88,14 +90,19 @@ public class RelationalExportItem extends AbstractExportItem {
    }
 
    protected void doWork(Writer writer) throws Exception {
+      Connection connection = null;
       ConnectionHandlerStatement stmt = null;
       try {
-         stmt = ConnectionHandler.runPreparedQuery(getQuery(), SQL3DataType.INTEGER, getJoinQueryId());
+         connection = OseeDbConnection.getConnection();
+         stmt = ConnectionHandler.runPreparedQuery(connection, getQuery(), SQL3DataType.INTEGER, getJoinQueryId());
          while (stmt.next()) {
             processData(writer, stmt.getRset());
          }
       } finally {
          DbUtil.close(stmt);
+         if (connection != null) {
+            connection.close();
+         }
       }
    }
 

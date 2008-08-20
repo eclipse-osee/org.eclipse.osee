@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.server.admin.search;
 import java.sql.Connection;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
 
 /**
  * @author Roberto E. Escobar

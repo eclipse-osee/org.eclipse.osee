@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="branch.management.cmds">
+	<implementation class="org.eclipse.osee.framework.server.admin.BranchManagementCommandProvider"/>
+	<service>
+		<provide interface="org.eclipse.osgi.framework.console.CommandProvider"/>
+	</service>
+</component>

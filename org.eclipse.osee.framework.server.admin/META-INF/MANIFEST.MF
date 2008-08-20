@@ -6,7 +6,8 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.server.admin.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.db.connection,
+Import-Package: org.eclipse.osee.framework.branch.management,
+ org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.core,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
@@ -24,5 +25,6 @@ Import-Package: org.eclipse.osee.framework.db.connection,
  org.osgi.util.tracker;version="1.3.3"
 Service-Component: OSGI-INF/adminConsole.xml,
  OSGI-INF/compressed.content.fix.xml,
- OSGI-INF/search.tagger.cmds.xml
+ OSGI-INF/search.tagger.cmds.xml,
+ OSGI-INF/branch.cmds.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
