@@ -85,9 +85,6 @@ public final class ConnectionHandler {
       }
    }
 
-   /**
-    * 
-    */
    private static void notifyConnectionListeners() {
       for (IDbConnectionListener listener : listeners) {
          listener.onConnectionStatusUpdate(isOpen());

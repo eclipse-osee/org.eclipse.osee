@@ -82,10 +82,12 @@ public class OseeApplicationServerActivator implements BundleActivator {
    }
 
    private void processBundle(Bundle bundle, String bundleName, boolean isStart) throws BundleException {
-      if (isStart && (bundle.getState() != Bundle.ACTIVE || bundle.getState() != Bundle.START_TRANSIENT || bundle.getState() != Bundle.STARTING)) {
-         bundle.start();
-      } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName) && (bundle.getState() != Bundle.STOP_TRANSIENT || bundle.getState() != Bundle.STOPPING)) {
-         bundle.stop();
+      if (!bundleName.equals("org.eclipse.osee.framework.database")) {
+         if (isStart && (bundle.getState() != Bundle.ACTIVE || bundle.getState() != Bundle.START_TRANSIENT || bundle.getState() != Bundle.STARTING)) {
+            bundle.start();
+         } else if (STOPPABLE_BUNDLE_LIST.contains(bundleName) && (bundle.getState() != Bundle.STOP_TRANSIENT || bundle.getState() != Bundle.STOPPING)) {
+            bundle.stop();
+         }
       }
    }
 
