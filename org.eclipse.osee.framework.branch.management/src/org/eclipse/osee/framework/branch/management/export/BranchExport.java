@@ -10,30 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.export;
 
-import java.io.File;
 import java.io.Writer;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IBranchExport;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchExport implements IBranchExport {
-   private static final String ZIP_EXTENSION = ".zip";
 
    private static final String BRANCH_TABLE_QUERY =
          "SELECT br1.* FROM osee_define_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jnart1.branch_id AND jnart1.query_id=?";
@@ -66,32 +59,39 @@ public class BranchExport implements IBranchExport {
          "SELECT type1.name, type1.rel_link_type_id FROM osee_define_rel_link_type type1, osee_join_export_import jex1 WHERE type1.rel_link_type_id = jex1.id1 AND jex1.query_id = ?";
 
    private ExecutorService executorService;
-   private Map<Integer, FutureTask<Object>> futureTasks;
+   private HashCollection<Integer, FutureTask<Object>> futureTasks;
 
    public BranchExport() {
       this.executorService = Executors.newSingleThreadExecutor();
-      this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<Object>>());
+      this.futureTasks = new HashCollection<Integer, FutureTask<Object>>(true, HashSet.class);
    }
 
    public void export(String exportName, Options options, int... branchIds) throws Exception {
-      ExportController controller = new ExportController(exportName, options, branchIds);
+      ExportController controller = new ExportController(this, exportName, options, branchIds);
       submitTask(controller.getExportQueryId(), controller);
       synchronized (controller) {
          controller.wait();
       }
    }
 
-   private void submitTask(int exportQueryId, Runnable runnable) {
-      FutureTask<Object> futureTask = new FutureTask<Object>(runnable, null);
+   protected final void submitTask(int exportQueryId, Runnable runnable) {
+      FutureTask<Object> futureTask = new FutureExportTask(exportQueryId, runnable);
       this.futureTasks.put(exportQueryId, futureTask);
       this.executorService.submit(futureTask);
    }
 
-   private FutureTask<Object> getFuture(int queryId) {
-      return futureTasks.get(queryId);
+   protected final Collection<FutureTask<Object>> getFuture(int queryId) {
+      return futureTasks.getValues(queryId);
    }
 
-   private List<AbstractExportItem> getTaskList() {
+   protected final void cancelExport(int queryId) {
+      Collection<FutureTask<Object>> tasks = getFuture(queryId);
+      for (FutureTask<Object> task : tasks) {
+         task.cancel(true);
+      }
+   }
+
+   protected List<AbstractExportItem> getTaskList() {
       List<AbstractExportItem> exportItems = new ArrayList<AbstractExportItem>();
       exportItems.add(new ManifestExportItem("index.xml", 0, exportItems));
 
@@ -108,117 +108,31 @@ public class BranchExport implements IBranchExport {
       return exportItems;
    }
 
-   private final class ExportController implements IExportListener, Runnable {
-      private String exportName;
-      private Options options;
-      private int[] branchIds;
-      private ExportImportJoinQuery joinQuery;
+   private final class FutureExportTask extends FutureTask<Object> {
+      //      private Runnable runnable;
+      private int exportQueryId;
 
-      public ExportController(String exportName, Options options, int... branchIds) throws Exception {
-         if (branchIds == null || branchIds.length <= 0) {
-            throw new Exception("No branch selected for export.");
-         }
-         this.exportName = exportName;
-         this.options = options;
-         this.branchIds = branchIds;
-         this.joinQuery = JoinUtility.createExportImportJoinQuery();
-      }
-
-      public int getExportQueryId() {
-         return joinQuery != null ? joinQuery.getQueryId() : -1;
-      }
-
-      private void cleanUp(List<AbstractExportItem> taskList) {
-         for (AbstractExportItem exportItem : taskList) {
-            exportItem.cleanUp();
-         }
-         try {
-            if (joinQuery != null) {
-               joinQuery.delete();
-               joinQuery = null;
-            }
-         } catch (SQLException ex) {
-            onException("Export Clean-Up", ex);
-         }
-      }
-
-      private File createTempFolder() {
-         String userHome = System.getProperty("user.home");
-         File rootDirectory = new File(userHome + File.separator + "export." + new Date().getTime() + File.separator);
-         rootDirectory.mkdirs();
-         return rootDirectory;
-      }
-
-      private void setUp(List<AbstractExportItem> taskList, File tempFolder) throws SQLException {
-         joinQuery = JoinUtility.createExportImportJoinQuery();
-         for (int branchId : branchIds) {
-            joinQuery.add(branchId, -1);
-         }
-         joinQuery.store();
-         for (AbstractExportItem exportItem : taskList) {
-            exportItem.setOptions(options);
-            exportItem.setWriteLocation(tempFolder);
-            if (exportItem instanceof RelationalExportItem) {
-               RelationalExportItem relationalExportItem = ((RelationalExportItem) exportItem);
-               relationalExportItem.setJoinQueryId(joinQuery.getQueryId());
-            }
-            exportItem.addExportListener(this);
-         }
+      public FutureExportTask(int exportQueryId, Runnable runnable) {
+         super(runnable, null);
+         this.exportQueryId = exportQueryId;
+         //         this.runnable = runnable;
       }
 
       /* (non-Javadoc)
-       * @see java.lang.Runnable#run()
+       * @see java.util.concurrent.FutureTask#cancel(boolean)
        */
       @Override
-      public void run() {
-         long startTime = System.currentTimeMillis();
-         List<AbstractExportItem> taskList = getTaskList();
-         try {
-            File tempFolder = createTempFolder();
-            setUp(taskList, tempFolder);
-
-            for (AbstractExportItem exportItem : taskList) {
-               submitTask(joinQuery.getQueryId(), exportItem);
-            }
-
-            String zipTargetName = exportName + ZIP_EXTENSION;
-            System.out.println(String.format("Compressing Branch Export Data - [%s]", zipTargetName));
-            File zipTarget = new File(tempFolder.getParent(), zipTargetName);
-            Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
-            Lib.deleteDir(tempFolder);
-         } catch (Exception ex) {
-
-         } finally {
-            cleanUp(taskList);
-         }
-
-         System.out.println(String.format("Exported [%s] branches in [%s]", branchIds != null ? branchIds.length : 0,
-               Lib.getElapseString(startTime)));
+      public boolean cancel(boolean mayInterruptIfRunning) {
+         //         this.runnable.setCancel(true);
+         return super.cancel(mayInterruptIfRunning);
       }
 
       /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onException(java.lang.String, java.lang.Throwable)
+       * @see java.util.concurrent.FutureTask#done()
        */
       @Override
-      synchronized public void onException(String name, Throwable ex) {
-         System.err.println(String.format("Export Error in: [%s]\n", name));
-         ex.printStackTrace(System.err);
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onExportItemCompleted(java.lang.String, long)
-       */
-      @Override
-      synchronized public void onExportItemCompleted(String name, long timeToProcess) {
-         System.out.println(String.format("Exported: [%s] in [%s] ms", name, timeToProcess));
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.branch.management.export.IExportListener#onExportItemStarted(java.lang.String)
-       */
-      @Override
-      public void onExportItemStarted(String name) {
-         System.out.println(String.format("Exporting: [%s] ", name));
+      protected void done() {
+         futureTasks.removeValue(exportQueryId, this);
       }
    }
 

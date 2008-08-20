@@ -33,10 +33,13 @@ public abstract class AbstractExportItem implements Runnable {
    private Options options;
    private Set<IExportListener> exportListeners;
 
+   private boolean cancel;
+
    public AbstractExportItem(String name, int priority) {
       this.name = name;
       this.priority = priority;
       this.options = null;
+      this.cancel = false;
       this.exportListeners = Collections.synchronizedSet(new HashSet<IExportListener>());
    }
 
@@ -102,7 +105,9 @@ public abstract class AbstractExportItem implements Runnable {
       try {
          writer = createXmlWriter(getWriteLocation(), getName() + XML_EXTENSION, getBufferSize());
          writer.write("<data >\n");
-         doWork(writer);
+         if (isCancel() != true) {
+            doWork(writer);
+         }
          writer.write("</data>\n");
       } catch (Exception ex) {
          notifyOnExportException(ex);
@@ -137,4 +142,12 @@ public abstract class AbstractExportItem implements Runnable {
    }
 
    protected abstract void doWork(Writer writer) throws Exception;
+
+   public void setCancel(boolean cancel) {
+      this.cancel = cancel;
+   }
+
+   public boolean isCancel() {
+      return this.cancel;
+   }
 }

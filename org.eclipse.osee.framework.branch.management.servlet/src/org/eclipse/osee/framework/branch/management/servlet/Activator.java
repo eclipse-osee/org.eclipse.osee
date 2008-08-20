@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.servlet;
 
+import javax.servlet.Servlet;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
+import org.eclipse.osee.framework.branch.management.IBranchExport;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -22,8 +24,11 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class Activator implements BundleActivator {
 
-   private HttpServiceTracker httpTracker;
+   private HttpServiceTracker httpBranchManagementTracker;
+   private HttpServiceTracker httpBranchExportTracker;
    private ServiceTracker branchCreationTracker;
+   private ServiceTracker branchExportTracker;
+
    private static Activator instance;
 
    /*
@@ -33,11 +38,17 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      httpTracker = new HttpServiceTracker(context);
-      httpTracker.open();
+      httpBranchManagementTracker = new HttpServiceTracker(context, "/branch", BranchManagerServlet.class);
+      httpBranchManagementTracker.open();
+
+      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.export", BranchExportServlet.class);
+      httpBranchExportTracker.open();
 
       branchCreationTracker = new ServiceTracker(context, IBranchCreation.class.getName(), null);
       branchCreationTracker.open();
+
+      branchExportTracker = new ServiceTracker(context, IBranchExport.class.getName(), null);
+      branchExportTracker.open();
    }
 
    /*
@@ -45,8 +56,10 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      httpTracker.close();
+      httpBranchManagementTracker.close();
+      httpBranchExportTracker.close();
       branchCreationTracker.close();
+      branchExportTracker.close();
       instance = null;
    }
 
@@ -58,16 +71,26 @@ public class Activator implements BundleActivator {
       return (IBranchCreation) branchCreationTracker.getService();
    }
 
+   public IBranchExport getBranchExport() {
+      return (IBranchExport) branchExportTracker.getService();
+   }
+
    private class HttpServiceTracker extends ServiceTracker {
-      public HttpServiceTracker(BundleContext context) {
+      private String contextName;
+      private Class<? extends Servlet> servletClass;
+
+      public HttpServiceTracker(BundleContext context, String contextName, Class<? extends Servlet> servletClass) {
          super(context, HttpService.class.getName(), null);
+         this.contextName = contextName;
+         this.servletClass = servletClass;
       }
 
       public Object addingService(ServiceReference reference) {
          HttpService httpService = (HttpService) context.getService(reference);
          try {
-            httpService.registerServlet("/branch", new BranchManagerServlet(), null, null);
-            System.out.println("Registered servlet '/branch'");
+            Servlet servlet = (Servlet) this.servletClass.getConstructor(new Class[0]).newInstance(new Object[0]);
+            httpService.registerServlet(contextName, servlet, null, null);
+            System.out.println(String.format("Registered servlet '%s'", contextName));
          } catch (Exception ex) {
          }
          return httpService;
@@ -75,8 +98,8 @@ public class Activator implements BundleActivator {
 
       public void removedService(ServiceReference reference, Object service) {
          HttpService httpService = (HttpService) service;
-         httpService.unregister("/branch");
-         System.out.println("De-registering servlet '/branch'");
+         httpService.unregister(contextName);
+         System.out.println(String.format("De-registering servlet '%s'", contextName));
          super.removedService(reference, service);
       }
    }
