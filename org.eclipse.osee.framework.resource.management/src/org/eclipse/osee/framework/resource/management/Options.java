@@ -48,4 +48,8 @@ public class Options {
    public String toString() {
       return properties.toString();
    }
+
+   public void clear() {
+      this.properties.clear();
+   }
 }

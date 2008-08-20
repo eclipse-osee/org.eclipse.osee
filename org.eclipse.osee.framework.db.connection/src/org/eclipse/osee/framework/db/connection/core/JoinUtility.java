@@ -38,11 +38,15 @@ public class JoinUtility {
    private static final String INSERT_INTO_TAG_GAMMA_QUEUE =
          "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";
 
+   private static final String INSERT_INTO_JOIN_EXPORT_IMPORT =
+         "INSERT INTO osee_join_export_import (query_id, insert_time, id1, id2) VALUES (?, ?, ?, ?)";
+
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
    private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
    private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
+   private static final String DELETE_FROM_JOIN_EXPORT_IMPORT = "DELETE FROM osee_join_export_import WHERE query_id =?";
 
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
 
@@ -51,7 +55,8 @@ public class JoinUtility {
       ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
       ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
       SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
-      TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE);
+      TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
+      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT);
 
       private final String deleteSql;
       private final String insertSql;
@@ -95,6 +100,10 @@ public class JoinUtility {
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() {
       return new TagQueueJoinQuery();
+   }
+
+   public static ExportImportJoinQuery createExportImportJoinQuery() {
+      return new ExportImportJoinQuery();
    }
 
    public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws SQLException {
@@ -435,6 +444,56 @@ public class JoinUtility {
 
       public void add(long gammaId) {
          entries.add(new GammaEntry(gammaId));
+      }
+   }
+
+   public static final class ExportImportJoinQuery extends JoinQueryEntry {
+
+      private final class ExportImportEntry implements IJoinRow {
+         private long id1;
+         private long id2;
+
+         private ExportImportEntry(long id1, long id2) {
+            this.id1 = id1;
+            this.id2 = id2;
+         }
+
+         public Object[] toArray() {
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
+                  SQL3DataType.BIGINT, id1, SQL3DataType.BIGINT, id2};
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#equals(java.lang.Object)
+          */
+         @Override
+         public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (!(obj instanceof ExportImportEntry)) return false;
+            ExportImportEntry other = (ExportImportEntry) obj;
+            return this.id1 == other.id1 && this.id2 == other.id2;
+         }
+
+         /* (non-Javadoc)
+          * @see java.lang.Object#hashCode()
+          */
+         @Override
+         public int hashCode() {
+            return (int) (37 * id1 * id2);
+         }
+
+         public String toString() {
+            return String.format("id1=%d id2=%d", id1, id2);
+         }
+      }
+
+      private ExportImportJoinQuery() {
+         super(JoinItem.EXPORT_IMPORT);
+      }
+
+      public void add(long id1, long id2) {
+         entries.add(new ExportImportEntry(id1, id2));
       }
    }
 }

@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.branch.management;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface IBranchCreation {
-   public int createRootBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception;
+public enum ExportOptions {
 
-   public int createChildBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, boolean branchWithFiltering, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws Exception;
-
+   include_baseline_txs;
 }

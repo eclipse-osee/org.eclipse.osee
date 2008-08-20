@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
+import org.eclipse.osee.framework.resource.management.Options;
+
 /**
- * @author Andrew M Finkbeiner
+ * @author Roberto E. Escobar
  */
-public interface IBranchCreation {
-   public int createRootBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception;
+public interface IBranchExport {
 
-   public int createChildBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, boolean branchWithFiltering, String[] compressArtTypeIds, String[] preserveArtTypeIds) throws Exception;
-
+   public void export(String exportName, Options options, int... branchIds) throws Exception;
 }

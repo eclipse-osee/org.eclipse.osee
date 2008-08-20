@@ -641,16 +641,13 @@
 	<!--                      IMPORT TABLES                         -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_IMPORT_TEMP" schema="OSEE">
+	<Table name="OSEE_JOIN_EXPORT_IMPORT" schema="OSEE">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ITEM_ID"	defaultValue="not null" type="INTEGER" />	
-		<Column id="OLD_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="NEW_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ID1" defaultValue="not null" type="BIGINT" />
+		<Column id="ID2" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" type="TIMESTAMP" />
-		<Index id="OSEE_ARTIFACT_IMPORT_II_IN_O_IDX">
+		<Index id="OSEE_JOIN_EXPORT_IMPORT_Q_IDX">
 			<AppliesTo id="QUERY_ID"/>
-			<AppliesTo id="ITEM_ID"/>
-			<AppliesTo id="OLD_ID"/>
 		</Index>
 	</Table>
 	

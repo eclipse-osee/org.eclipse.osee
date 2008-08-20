@@ -404,16 +404,14 @@ public final class ConnectionHandler {
    }
 
    private static void populateValuesForPreparedStatement(PreparedStatement preparedStatement, Object... data) throws SQLException {
+      int preparedIndex = 0;
+      for (Object dataValue : data) {
 
-      for (int i = 0, preparedIndex = 1; i < data.length; i += 2, preparedIndex++) {
-
-         if (!(data[i] instanceof SQL3DataType)) {
-            throw new IllegalArgumentException("Invalid argument type");
+         if (dataValue instanceof SQL3DataType) {
+            continue;
+         } else {
+            preparedIndex++;
          }
-
-         SQL3DataType sqlDataType = (SQL3DataType) data[i];
-         Object dataValue = data[i + 1];
-
          if (dataValue instanceof String) {
             int length = ((String) dataValue).length();
             if (length > 4000) {
@@ -423,14 +421,14 @@ public final class ConnectionHandler {
          }
 
          if (dataValue == null) {
-            if (sqlDataType == SQL3DataType.BLOB) {
-               // for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
-               // "content" is of type bytea but expression is of type oid"
-               preparedStatement.setBytes(preparedIndex, null);
+            int typeNumber = preparedStatement.getParameterMetaData().getParameterType(preparedIndex);
+            if (typeNumber != java.sql.Types.BLOB) {
+               preparedStatement.setNull(preparedIndex, typeNumber);
             } else {
-               preparedStatement.setNull(preparedIndex, sqlDataType.getSQLTypeNumber());
+               // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
+               //  "content" is of type bytea but expression is of type oid"
+               preparedStatement.setBytes(preparedIndex, null);
             }
-
          } else if (dataValue instanceof ByteArrayInputStream) {
             preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
                   ((ByteArrayInputStream) dataValue).available());
@@ -492,7 +490,7 @@ public final class ConnectionHandler {
                   details.append(":");
 
                   String value = dataValue.toString();
-                  if (value.length() > 50) {
+                  if (value.length() > 35) {
                      details.append(value.substring(0, 35));
                   } else {
                      details.append(value);
