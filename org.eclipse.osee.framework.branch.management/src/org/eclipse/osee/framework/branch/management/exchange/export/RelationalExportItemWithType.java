@@ -78,6 +78,8 @@ public class RelationalExportItemWithType extends RelationalExportItem {
 
       this.removeExportColumnListener(typeCollector);
       this.typeCollector.store();
+      this.typeExportItem.setConnection(getConnection());
+      this.typeExportItem.setOptions(getOptions());
       this.typeExportItem.setJoinQueryId(typeCollector.getQueryId());
       this.typeExportItem.run();
    }

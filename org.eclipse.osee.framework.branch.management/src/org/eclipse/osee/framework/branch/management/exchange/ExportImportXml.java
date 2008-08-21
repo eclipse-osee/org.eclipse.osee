@@ -33,7 +33,8 @@ public class ExportImportXml {
    public static final String PRIORITY = "priority";
    public static final String OPTIONS = "options";
    public static final String SOURCE = "source";
-   public static final String DB_SCHEMA = "SCHEMA";
+   public static final String DB_SCHEMA = "db.metadata";
+   public static final String PART_OF_BRANCH = "part_of_branch_id";
 
    private ExportImportXml() {
    }
