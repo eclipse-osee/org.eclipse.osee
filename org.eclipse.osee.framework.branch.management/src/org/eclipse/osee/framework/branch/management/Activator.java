@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
-import org.eclipse.osee.framework.branch.management.export.BranchExport;
+import org.eclipse.osee.framework.branch.management.exchange.BranchExport;
+import org.eclipse.osee.framework.branch.management.exchange.BranchImport;
 import org.eclipse.osee.framework.branch.management.impl.BranchCreation;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -24,6 +25,7 @@ public class Activator implements BundleActivator {
    private static Activator instance;
    private ServiceRegistration serviceRegistration;
    private ServiceRegistration exportServiceRegistration;
+   private ServiceRegistration importServiceRegistration;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
 
@@ -36,6 +38,7 @@ public class Activator implements BundleActivator {
       serviceRegistration = context.registerService(IBranchCreation.class.getName(), new BranchCreation(), null);
 
       exportServiceRegistration = context.registerService(IBranchExport.class.getName(), new BranchExport(), null);
+      importServiceRegistration = context.registerService(IBranchImport.class.getName(), new BranchImport(), null);
 
       resourceLocatorManagerTracker = new ServiceTracker(context, IResourceLocatorManager.class.getName(), null);
       resourceLocatorManagerTracker.open();
@@ -51,6 +54,9 @@ public class Activator implements BundleActivator {
    public void stop(BundleContext context) throws Exception {
       exportServiceRegistration.unregister();
       exportServiceRegistration = null;
+
+      importServiceRegistration.unregister();
+      importServiceRegistration = null;
 
       serviceRegistration.unregister();
       serviceRegistration = null;
