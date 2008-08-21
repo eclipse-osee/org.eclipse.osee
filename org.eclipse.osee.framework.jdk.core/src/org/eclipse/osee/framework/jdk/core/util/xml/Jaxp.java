@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,6 +43,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -141,7 +144,12 @@ public class Jaxp {
             if (!first && trimWhitespace) resultString += " ";
             resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
             first = false;
+         } else if (n.getNodeType() == Node.CDATA_SECTION_NODE){
+        	 if (!first && trimWhitespace) resultString += " ";
+             resultString += trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue();
+             first = false;
          }
+         
       }
       return resultString;
    }

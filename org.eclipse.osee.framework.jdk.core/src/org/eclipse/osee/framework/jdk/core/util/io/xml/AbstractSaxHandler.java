@@ -11,15 +11,17 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.IOException;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractSaxHandler extends DefaultHandler {
-   // Buffer for collecting data from the "characters" SAX event.
+public abstract class AbstractSaxHandler extends DefaultHandler implements LexicalHandler{
+// Buffer for collecting data from the "characters" SAX event.
    private StringBuilder contents;
    private final int maxContentLength;
 
@@ -72,4 +74,49 @@ public abstract class AbstractSaxHandler extends DefaultHandler {
    public void addContentsTo(Appendable appendable) throws IOException {
       appendable.append(contents);
    }
+   
+   /* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
+	 */
+	public void comment(char[] ch, int start, int length) throws SAXException {
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#endCDATA()
+	 */
+	public void endCDATA() throws SAXException {
+		contents.append("]]>");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#endDTD()
+	 */
+	public void endDTD() throws SAXException {
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
+	 */
+	public void endEntity(String name) throws SAXException {
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#startCDATA()
+	 */
+	public void startCDATA() throws SAXException {
+		contents.append("<![CDATA[");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public void startDTD(String name, String publicId, String systemId)
+			throws SAXException {
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
+	 */
+	public void startEntity(String name) throws SAXException {
+	}
 }
