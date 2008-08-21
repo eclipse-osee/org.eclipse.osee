@@ -2,9 +2,12 @@ package org.eclipse.osee.ote.connection.jini.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 
 import net.jini.core.lease.Lease;
 import net.jini.core.lookup.ServiceRegistration;
+
+import org.eclipse.osee.ote.connection.jini.Activator;
 
 public class LeaseRenewTask extends TimerTask {
    /**
@@ -28,7 +31,7 @@ public class LeaseRenewTask extends TimerTask {
          // Renew for the maximum amount of time allowed
          registration.getLease().renew(Lease.FOREVER);
       } catch (Exception ex) {
-         ex.printStackTrace();
+         Activator.log(Level.SEVERE, "error renewing lease", ex);
       }
    }
 

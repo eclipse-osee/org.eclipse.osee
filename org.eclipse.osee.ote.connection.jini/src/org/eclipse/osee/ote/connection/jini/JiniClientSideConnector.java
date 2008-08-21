@@ -11,7 +11,6 @@ import net.jini.core.lookup.ServiceItem;
 public class JiniClientSideConnector extends JiniConnector {
    public static final String TYPE = "jini.client-end";
    private final ServiceItem serviceItem;
-   private volatile boolean serviceStopped = false;
 
    JiniClientSideConnector(ServiceItem serviceItem) {
       super();
@@ -24,25 +23,7 @@ public class JiniClientSideConnector extends JiniConnector {
     */
    @Override
    public Object getService() {
-      if (!isServiceStopped()) {
          return serviceItem.service;
-      } else {
-         throw new IllegalStateException("the service has been stopped");
-      }
-   }
-
-   /**
-    * @return the serviceStopped
-    */
-   boolean isServiceStopped() {
-      return serviceStopped;
-   }
-
-   /**
-    * @param serviceStopped the serviceStopped to set
-    */
-   void setServiceStopped(boolean serviceStopped) {
-      this.serviceStopped = serviceStopped;
    }
 
    /* (non-Javadoc)
