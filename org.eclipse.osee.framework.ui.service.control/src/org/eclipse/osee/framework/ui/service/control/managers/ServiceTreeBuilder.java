@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import net.jini.core.lookup.ServiceID;
+import net.jini.core.lookup.ServiceItem;
+
 import org.eclipse.osee.framework.jdk.core.type.InputManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
@@ -25,8 +29,6 @@ import org.eclipse.osee.framework.ui.service.control.data.CategoryParent;
 import org.eclipse.osee.framework.ui.service.control.data.GroupParent;
 import org.eclipse.osee.framework.ui.service.control.data.ServiceNode;
 import org.eclipse.osee.framework.ui.service.control.data.ServiceNodeFactory;
-import net.jini.core.lookup.ServiceID;
-import net.jini.core.lookup.ServiceItem;
 
 /**
  * @author Roberto E. Escobar
@@ -106,19 +108,19 @@ public class ServiceTreeBuilder {
                   if (!existingGroupNames.contains(groupParent.getName())) {
                      existingGroupNames.add(groupParent.getName());
                   }
-                  CategoryParent categoryParent = findCategory(groupParent, serviceNode);
-                  if (categoryParent == null) {
-                     categoryParent = new CategoryParent(serviceNode.getName());
-                     groupParent.addChild(categoryParent);
-                     categoryParent.addChild(serviceNode);
-                  } else {
+//                  CategoryParent categoryParent = findCategory(groupParent, serviceNode);
+//                  if (categoryParent == null) {
+//                     categoryParent = new CategoryParent(serviceNode.getName());
+//                     groupParent.addChild(categoryParent);
+//                     categoryParent.addChild(serviceNode);
+//                  } else {
                      Pair<CategoryParent, ServiceNode> node = findService(groupParent, serviceNode);
                      if (node != null) {
                         node.getValue().setServiceItem(serviceItem);
                      } else {
-                        categoryParent.addChild(serviceNode);
+                        groupParent.addChild(serviceNode);
                      }
-                  }
+//                  }
                }
                inputManager.inputChanged();
             }
@@ -126,9 +128,9 @@ public class ServiceTreeBuilder {
             for (String group : serviceNode.getGroups()) {
                if (!existingGroupNames.contains(group)) {
                   GroupParent groupParent = new GroupParent(group);
-                  CategoryParent categoryParent = new CategoryParent(serviceNode.getName());
-                  groupParent.addChild(categoryParent);
-                  categoryParent.addChild(serviceNode);
+//                  CategoryParent categoryParent = new CategoryParent(serviceNode.getName());
+                  groupParent.addChild(serviceNode);
+//                  categoryParent.addChild(serviceNode);
                   inputManager.addNode(groupParent);
                }
             }

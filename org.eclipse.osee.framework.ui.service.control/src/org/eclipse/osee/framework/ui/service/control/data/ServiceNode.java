@@ -12,11 +12,14 @@ package org.eclipse.osee.framework.ui.service.control.data;
 
 import java.util.Set;
 import java.util.TreeSet;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
+
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
 import org.eclipse.osee.framework.jini.service.core.GroupEntry;
+import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 import org.eclipse.osee.framework.ui.service.control.renderer.ServiceItemHandler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -96,6 +99,8 @@ public class ServiceNode extends TreeObject implements IJiniService {
                   toReturn.add(temp);
                }
             }
+         } else if (entry instanceof PropertyEntry) {
+        	 toReturn.add( (String) ((PropertyEntry)entry).getProperty("group", "OSEE Services"));
          }
       }
       if (toReturn.size() == 0) {

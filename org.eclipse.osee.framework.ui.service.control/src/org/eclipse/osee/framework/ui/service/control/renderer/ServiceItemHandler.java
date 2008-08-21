@@ -11,16 +11,20 @@
 package org.eclipse.osee.framework.ui.service.control.renderer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceItem;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
+
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jini.service.core.FormmatedEntry;
 import org.eclipse.osee.framework.jini.service.core.GroupEntry;
 import org.eclipse.osee.framework.jini.service.core.OwnerEntry;
+import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -134,6 +138,13 @@ public class ServiceItemHandler implements IRenderer {
                serviceRecords.add(new ItemRecord("Model", info.model));
                serviceRecords.add(new ItemRecord("Version", info.version));
                serviceRecords.add(new ItemRecord("SerialNumber", info.serialNumber));
+            } else if (entries[i] instanceof PropertyEntry){
+            	PropertyEntry info = (PropertyEntry) entries[i];
+            	String[] keys = info.map.keySet().toArray(new String[info.map.keySet().size()]);
+            	Arrays.sort(keys);
+            	for(String key:keys){
+            		serviceRecords.add(new ItemRecord(key, info.map.get(key).toString()));
+            	}
             }
          }
 
