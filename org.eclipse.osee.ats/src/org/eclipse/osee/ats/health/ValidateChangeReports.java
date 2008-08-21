@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -58,8 +57,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateChangeReports extends XNavigateItemAutoRunAction {
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
-   private Set<Integer> newArtIds = new HashSet<Integer>();
-   private Set<Integer> delArtIds = new HashSet<Integer>();
+   private final Set<Integer> newArtIds = new HashSet<Integer>();
+   private final Set<Integer> delArtIds = new HashSet<Integer>();
 
    /**
     * @param parent
@@ -118,7 +117,8 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       //      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-      for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+      //      for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          StringBuffer sbByType = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          sbByType.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
@@ -131,7 +131,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
             for (Artifact artifact : artifacts) {
                String result = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
                OSEELog.logInfo(AtsPlugin.class, result, false);
-               //               if (!artifact.getHumanReadableId().equals("1PL1U")) continue;
+               //  if (!artifact.getHumanReadableId().equals("RXN8K")) continue;
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                try {
                   Collection<Change> changes = null;
@@ -149,7 +149,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      loadNewArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                      loadDelArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                   }
-                  
+
                   if (changes != null) {
                      Map<Integer, Artifact> modArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> delArt = new HashMap<Integer, Artifact>();
@@ -164,17 +164,17 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                            }
                            if (change.getModificationType() == ModificationType.NEW) {
                               newArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
-                          }
+                           }
                         }
                      }
                      Map<Integer, Artifact> oldModArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> oldDelArt = new HashMap<Integer, Artifact>();
                      Map<Integer, Artifact> oldNewArt = new HashMap<Integer, Artifact>();
-                     
-                     for (ArtifactChange artifactChange : teamArt.getSmaMgr().getBranchMgr().getArtifactChanges()) {
-                    	boolean deleted =  delArtIds.contains(artifactChange.getArtifact().getArtId());
 
-                    	if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
+                     for (ArtifactChange artifactChange : teamArt.getSmaMgr().getBranchMgr().getArtifactChanges()) {
+                        boolean deleted = delArtIds.contains(artifactChange.getArtifact().getArtId());
+
+                        if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
                            // If there was at least one attribute changed, count it; don't count relation only changes
                            for (Object obj : BranchContentProvider.summarize(RevisionManager.getInstance().getTransactionChanges(
                                  artifactChange, artifactNameDescriptorCache))) {
@@ -195,16 +195,16 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                         }
 
                         if (artifactChange.getModType() == ModificationType.DELETED) {
-                        	boolean newAndDeleted = newArtIds.contains(artifactChange.getArtifact().getArtId());
-                           
-                        	if (!newAndDeleted) {
+                           boolean newAndDeleted = newArtIds.contains(artifactChange.getArtifact().getArtId());
+
+                           if (!newAndDeleted) {
                               oldDelArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
                            }
                         }
                         if (artifactChange.getModType() == ModificationType.NEW) {
-                        	if(!deleted){
-                        		oldNewArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
-                        	}
+                           if (!deleted) {
+                              oldNewArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
+                           }
                         }
                      }
                      boolean modMismatch = false;
@@ -213,11 +213,11 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      StringBuffer notes = new StringBuffer();
 
                      //remove duplicated artifact changes
-                     for(Integer deleteArtId : oldDelArt.keySet()){
-                    	 oldModArt.remove(deleteArtId);
-                    	 oldNewArt.remove(deleteArtId);
+                     for (Integer deleteArtId : oldDelArt.keySet()) {
+                        oldModArt.remove(deleteArtId);
+                        oldNewArt.remove(deleteArtId);
                      }
-                     
+
                      for (Integer modArtifact : modArt.keySet()) {
                         if (!oldModArt.containsKey(modArtifact)) {
                            notes.append(" old mod missing: " + modArt.get(modArtifact).getDescriptiveName() + "<br>");
@@ -269,6 +269,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                                        oldDelArt.size()), notes.toString()});
                      sbFull.append(str);
                      sbByType.append(str);
+                     System.out.println(str);
 
                   }
                } catch (Exception ex) {
@@ -300,49 +301,51 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       sbFull.append(AHTML.endMultiColumnTable());
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
    }
-   
+
    /**
     * Loads art ids from branches to detect if an artifact has been created and then deleted.
+    * 
     * @param branch
     * @param transactionNumber
     * @throws SQLException
     */
    private void loadNewArtIdsPerBranch(Branch branch) throws SQLException {
-		ConnectionHandlerStatement handlerStatement = null;
-		newArtIds.clear();
-		try {
-			handlerStatement = ConnectionHandler
-					.runPreparedQuery(
-							"Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
-							SQL3DataType.INTEGER, branch.getBranchId());
-			
-			while(handlerStatement.getRset().next()){
-				newArtIds.add(handlerStatement.getRset().getInt(1));
-			}
-		} finally {
-			DbUtil.close(handlerStatement);
-		}
-	}
+      ConnectionHandlerStatement handlerStatement = null;
+      newArtIds.clear();
+      try {
+         handlerStatement =
+               ConnectionHandler.runPreparedQuery(
+                     "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
+                     SQL3DataType.INTEGER, branch.getBranchId());
+
+         while (handlerStatement.getRset().next()) {
+            newArtIds.add(handlerStatement.getRset().getInt(1));
+         }
+      } finally {
+         DbUtil.close(handlerStatement);
+      }
+   }
+
    /**
     * @param branch
     * @param transactionNumber
     * @throws SQLException
     */
    private void loadDelArtIdsPerBranch(Branch branch) throws SQLException {
-		ConnectionHandlerStatement handlerStatement = null;
-		delArtIds.clear();
-		try {
-			handlerStatement = ConnectionHandler
-					.runPreparedQuery(
-							"Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
-							SQL3DataType.INTEGER, branch.getBranchId());
-			
-			while(handlerStatement.getRset().next()){
-				delArtIds.add(handlerStatement.getRset().getInt(1));
-			}
-		} finally {
-			DbUtil.close(handlerStatement);
-		}
-	}   
-   
+      ConnectionHandlerStatement handlerStatement = null;
+      delArtIds.clear();
+      try {
+         handlerStatement =
+               ConnectionHandler.runPreparedQuery(
+                     "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
+                     SQL3DataType.INTEGER, branch.getBranchId());
+
+         while (handlerStatement.getRset().next()) {
+            delArtIds.add(handlerStatement.getRset().getInt(1));
+         }
+      } finally {
+         DbUtil.close(handlerStatement);
+      }
+   }
+
 }
