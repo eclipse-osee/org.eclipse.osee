@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Display;
 public class ValidateChangeReports extends XNavigateItemAutoRunAction {
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
    private Set<Integer> newArtIds = new HashSet<Integer>();
+   private Set<Integer> delArtIds = new HashSet<Integer>();
 
    /**
     * @param parent
@@ -146,6 +147,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                                  teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                      foundChangeReport = true;
                      loadNewArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
+                     loadDelArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                   }
                   
                   if (changes != null) {
@@ -170,21 +172,23 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      Map<Integer, Artifact> oldNewArt = new HashMap<Integer, Artifact>();
                      
                      for (ArtifactChange artifactChange : teamArt.getSmaMgr().getBranchMgr().getArtifactChanges()) {
-                        if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
+                    	boolean deleted =  delArtIds.contains(artifactChange.getArtifact().getArtId());
+
+                    	if (artifactChange.getModType() == ModificationType.CHANGE && (artifactChange.getChangeType() == ChangeType.OUTGOING || artifactChange.getChangeType() == ChangeType.CONFLICTING)) {
                            // If there was at least one attribute changed, count it; don't count relation only changes
                            for (Object obj : BranchContentProvider.summarize(RevisionManager.getInstance().getTransactionChanges(
                                  artifactChange, artifactNameDescriptorCache))) {
 
                               if (obj instanceof AttributeSummary) {
                                  for (AttributeChange attributeChange : ((AttributeSummary) obj).getChanges()) {
-                                    if (attributeChange.getChangeType() == ChangeType.OUTGOING) {
+                                    if (attributeChange.getChangeType() == ChangeType.OUTGOING && !deleted) {
                                        oldModArt.put(artifactChange.getArtifact().getArtId(),
                                              artifactChange.getArtifact());
                                     }
                                  }
                               }
 
-                              if (obj instanceof AttributeChange && ((AttributeChange) obj).getChangeType() == ChangeType.OUTGOING) {
+                              if (obj instanceof AttributeChange && ((AttributeChange) obj).getChangeType() == ChangeType.OUTGOING && !deleted) {
                                  oldModArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
                               }
                            }
@@ -198,7 +202,9 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                            }
                         }
                         if (artifactChange.getModType() == ModificationType.NEW) {
-                           oldNewArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
+                        	if(!deleted){
+                        		oldNewArt.put(artifactChange.getArtifact().getArtId(), artifactChange.getArtifact());
+                        	}
                         }
                      }
                      boolean modMismatch = false;
@@ -206,6 +212,12 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      boolean delMismatch = false;
                      StringBuffer notes = new StringBuffer();
 
+                     //remove duplicated artifact changes
+                     for(Integer deleteArtId : oldDelArt.keySet()){
+                    	 oldModArt.remove(deleteArtId);
+                    	 oldNewArt.remove(deleteArtId);
+                     }
+                     
                      for (Integer modArtifact : modArt.keySet()) {
                         if (!oldModArt.containsKey(modArtifact)) {
                            notes.append(" old mod missing: " + modArt.get(modArtifact).getDescriptiveName() + "<br>");
@@ -297,6 +309,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
     */
    private void loadNewArtIdsPerBranch(Branch branch) throws SQLException {
 		ConnectionHandlerStatement handlerStatement = null;
+		newArtIds.clear();
 		try {
 			handlerStatement = ConnectionHandler
 					.runPreparedQuery(
@@ -310,4 +323,26 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
 			DbUtil.close(handlerStatement);
 		}
 	}
+   /**
+    * @param branch
+    * @param transactionNumber
+    * @throws SQLException
+    */
+   private void loadDelArtIdsPerBranch(Branch branch) throws SQLException {
+		ConnectionHandlerStatement handlerStatement = null;
+		delArtIds.clear();
+		try {
+			handlerStatement = ConnectionHandler
+					.runPreparedQuery(
+							"Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
+							SQL3DataType.INTEGER, branch.getBranchId());
+			
+			while(handlerStatement.getRset().next()){
+				delArtIds.add(handlerStatement.getRset().getInt(1));
+			}
+		} finally {
+			DbUtil.close(handlerStatement);
+		}
+	}   
+   
 }

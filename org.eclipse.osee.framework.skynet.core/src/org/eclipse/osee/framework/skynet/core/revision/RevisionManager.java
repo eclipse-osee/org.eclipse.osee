@@ -1083,13 +1083,13 @@ public class RevisionManager implements IEventReceiver {
       if (includeRelationOnlyChanges) {
          criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       }
-      return ArtifactPersistenceManager.getArtifacts(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction.getBranch());
    }
 
    public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      return ArtifactPersistenceManager.getArtifacts(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction.getBranch());
    }
 
    /**
