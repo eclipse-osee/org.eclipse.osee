@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +32,10 @@ public class Requirements {
    public static String SUBSYSTEM = "Subsystem";
    public static String PARTITION = "Partition";
    public static String CSCI = "CSCI";
+
+   public static boolean isSoftwareRequirement(Artifact artifact) {
+      return Requirements.Software_RequirementTypes.contains(artifact.getArtifactTypeName());
+   }
 
    public static List<String> Software_RequirementTypes =
          Arrays.asList(SOFTWARE_REQUIREMENT, INDIRECT_SOFTWARE_REQUIREMENT);

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -31,7 +30,7 @@ import org.w3c.dom.NodeList;
  */
 public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
-   private List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
+   private final List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
    public static String WORK_TYPE = "AtsTaskResolutionOptions";
 
@@ -50,19 +49,23 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    }
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws SQLException, OseeCoreException {
+      TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(workPageDefinition);
+      if (taskResolutionOptionRule != null) return taskResolutionOptionRule.getOptions();
+      return new ArrayList<TaskResOptionDefinition>();
+   }
+
+   public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws SQLException, OseeCoreException {
       List<WorkItemDefinition> wids =
             workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
-      if (wids.size() == 0) return Collections.emptyList();
-      if (wids.size() > 1) throw new IllegalArgumentException(
-            "Expected on 1 " + TaskResolutionOptionRule.WORK_TYPE + ", found " + wids.size());
+      if (wids.size() == 0) return null;
       WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule =
                new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
          taskResolutionOptionRule.fromXml((String) workItemDefinition.getData());
-         return taskResolutionOptionRule.getOptions();
+         return taskResolutionOptionRule;
       }
-      return new ArrayList<TaskResOptionDefinition>();
+      return null;
    }
 
    public void setFromDoc(Document doc) {
@@ -99,4 +102,19 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       return options;
    }
 
+   /**
+    * Return the order index number of the given option name. Used for comparisons of resolutions like < and > by
+    * getting both indexes and doing a mathmatical comparison.
+    * 
+    * @param name
+    * @return index number (starting at 1) or null if not found
+    */
+   public Integer getResolutionOptionOrderIndex(String name) {
+      int x = 1;
+      for (TaskResOptionDefinition option : options) {
+         if (option.getName().equals(name)) return x;
+         x++;
+      }
+      return null;
+   }
 }
