@@ -57,8 +57,11 @@ public final class ArtifactLoader {
    private static final String SELECT_ATTRIBUTES =
          "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
 
-   private static final String SELECT_ARTIFACTS =
+   private static final String SELECT_CURRENT_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
+
+   private static final String SELECT_HISTORICAL_ARTIFACTS =
+         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= ? AND txd1.transaction_id = txs1.transaction_id AND txd1.branch_id = ? order by art1.art_id, txs1.transaction_id desc";
 
    private static final String INSERT_JOIN_ARTIFACT =
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
@@ -82,7 +85,7 @@ public final class ArtifactLoader {
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate);
-      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload);
+      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, false);
       return artifacts;
    }
 
@@ -107,26 +110,42 @@ public final class ArtifactLoader {
     * @param queryId
     * @param loadLevel
     * @param confirmer
-    * @param insertParameters
+    * @param fetchSize
     * @param reload
+    * @param transactionId null when loading current artifacts; otherwise historical artifacts will be loaded based on
+    *           this transaction
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> loadArtifactsFromQuery(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload) throws SQLException {
+   public static List<Artifact> loadArtifactsFromQuery(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical) throws SQLException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
          ConnectionHandlerStatement chStmt = null;
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(fetchSize, SELECT_ARTIFACTS, SQL3DataType.INTEGER, queryId);
+            if (historical) {
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_CURRENT_ARTIFACTS, SQL3DataType.INTEGER,
+                           queryId);
+            } else {
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.INTEGER,
+                           queryId);
+            }
+
+            int previousArtId = -1;
             while (chStmt.next()) {
-               artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload));
+               int artId = chStmt.getRset().getInt("art_id");
+               if (historical && previousArtId != artId) {
+                  artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
+               }
+               previousArtId = artId;
             }
          } finally {
             DbUtil.close(chStmt);
          }
 
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
-            loadArtifactsData(queryId, artifacts, loadLevel, reload);
+            loadArtifactsData(queryId, artifacts, loadLevel, reload, historical);
          }
       } catch (OseeCoreException ex) {
          throw new SQLException(ex);
@@ -148,16 +167,18 @@ public final class ArtifactLoader {
     * @param confirmer
     * @param insertParameters
     * @param reload
+    * @param historical TODO
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload, boolean historical) throws SQLException {
       List<Artifact> artifacts = Collections.emptyList();
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
          try {
             selectArtifacts(insertParameters);
-            artifacts = loadArtifactsFromQuery(queryId, loadLevel, confirmer, insertParameters.size(), reload);
+            artifacts =
+                  loadArtifactsFromQuery(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical);
          } finally {
             OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
@@ -235,12 +256,14 @@ public final class ArtifactLoader {
                   insertParameters.size()), new Exception());
    }
 
-   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws OseeCoreException, SQLException {
+   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload, boolean historical) throws OseeCoreException, SQLException {
       int artifactId = rSet.getInt("art_id");
       Branch branch = BranchPersistenceManager.getBranch(rSet.getInt("branch_id"));
 
-      Artifact artifact = ArtifactCache.getActive(artifactId, branch);
       TransactionId transactionId = TransactionIdManager.getTransactionId(rSet);
+      Artifact artifact =
+            historical ? ArtifactCache.getHistorical(artifactId, transactionId.getTransactionNumber()) : ArtifactCache.getActive(
+                  artifactId, branch);
 
       if (artifact == null) {
          ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
@@ -249,10 +272,10 @@ public final class ArtifactLoader {
          artifact =
                factory.loadExisitingArtifact(artifactId, rSet.getString("guid"), rSet.getString("human_readable_id"),
                      artifactType, rSet.getInt("gamma_id"), transactionId,
-                     ModificationType.getMod(rSet.getInt("mod_type")), false);
+                     ModificationType.getMod(rSet.getInt("mod_type")), historical);
       } else if (reload) {
          artifact.internalSetPersistenceData(rSet.getInt("gamma_id"), transactionId,
-               ModificationType.getMod(rSet.getInt("mod_type")), false);
+               ModificationType.getMod(rSet.getInt("mod_type")), historical);
       }
       return artifact;
    }
@@ -268,7 +291,7 @@ public final class ArtifactLoader {
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         loadArtifactsData(queryId, artifacts, loadLevel, false);
+         loadArtifactsData(queryId, artifacts, loadLevel, false, false);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
@@ -277,7 +300,7 @@ public final class ArtifactLoader {
 
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws OseeCoreException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload, boolean historical) throws OseeCoreException {
       if (reload) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
@@ -287,12 +310,12 @@ public final class ArtifactLoader {
       if (loadLevel == SHALLOW) {
          return;
       } else if (loadLevel == ATTRIBUTE) {
-         loadAttributeData(queryId, artifacts);
+         loadAttributeData(queryId, artifacts, historical);
       } else if (loadLevel == RELATION) {
-         loadRelationData(queryId, artifacts);
+         loadRelationData(queryId, artifacts, historical);
       } else if (loadLevel == FULL) {
-         loadAttributeData(queryId, artifacts);
-         loadRelationData(queryId, artifacts);
+         loadAttributeData(queryId, artifacts, historical);
+         loadRelationData(queryId, artifacts, historical);
       }
 
       for (Artifact artifact : artifacts) {
@@ -300,7 +323,10 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws OseeCoreException {
+   private static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeCoreException {
+      if (historical) {
+         return; // TODO: someday we might have a use for historical relations, but not now
+      }
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
@@ -344,7 +370,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts) throws OseeDataStoreException {
+   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =

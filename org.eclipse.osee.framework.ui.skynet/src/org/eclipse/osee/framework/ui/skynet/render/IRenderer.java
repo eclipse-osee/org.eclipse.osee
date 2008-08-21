@@ -64,6 +64,12 @@ public interface IRenderer {
 
    public abstract String getId();
 
+   /**
+    * These options are in effect until setRendererOptions() is called again, so clean up after yourself by calling
+    * setDefaultOptions().
+    * 
+    * @param options
+    */
    public abstract void setRendererOptions(String[] options);
 
    public abstract void setDefaultOptions();

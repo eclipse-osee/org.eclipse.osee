@@ -417,15 +417,15 @@ public class RevisionManager implements IEventReceiver {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
-      boolean hasBranch = sourceBranch != null;
+      boolean historical = sourceBranch == null;
 
       loadNewOrDeletedArtifactChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
       loadAttributeChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
       loadRelationChanges(sourceBranch, transactionId, artIds, changes, newAndDeletedArtifactIds);
 
-      Branch branch = hasBranch ? sourceBranch : transactionId.getBranch();
+      Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
-      if (!hasBranch) {
+      if (historical) {
          for (Change change : changes) {
             change.setBranch(branch);
          }
@@ -437,10 +437,10 @@ public class RevisionManager implements IEventReceiver {
 
          List<Object[]> datas = new LinkedList<Object[]>();
          for (int artId : artIds) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branch.getBranchId()});
+            datas.add(new Object[] {queryId, insertTime, artId,
+                  historical ? transactionId.getTransactionNumber() : branch.getBranchId()});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, false);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, false, historical);
       }
 
       return changes;
@@ -518,7 +518,7 @@ public class RevisionManager implements IEventReceiver {
    private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
-    	 boolean hasBranch = sourceBranch != null; 
+         boolean hasBranch = sourceBranch != null;
          //Changes per a branch
          if (hasBranch) {
             connectionHandlerStatement =
@@ -544,7 +544,7 @@ public class RevisionManager implements IEventReceiver {
                changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
                      ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
                      resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
-                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")),!hasBranch));
+                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")), !hasBranch));
             }
          }
       } finally {
@@ -762,7 +762,7 @@ public class RevisionManager implements IEventReceiver {
             datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
                   SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, mergeBranch.getBranchId()});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true, false);
       }
    }
 
@@ -1195,17 +1195,10 @@ public class RevisionManager implements IEventReceiver {
    }
 
    /**
-    * Produces <code>ArtifactChange</code>'s from a ResultSet. <br/><br/> For deleted artifacts, the following
-    * columns must be available from the set:
-    * <li>branch_id</li>
-    * <li>modification_id</li>
-    * <li>name</li>
-    * <li>type_name</li>
-    * <br/><br/> For new and modified artifacts, the following columns must be available from the set:
-    * <li>art_id</li>
-    * <li>branch_id</li>
-    * <li>modification_id</li>
-    * <li>transaction_id</li>
+    * Produces <code>ArtifactChange</code>'s from a ResultSet. <br/><br/> For deleted artifacts, the following columns
+    * must be available from the set: <li>branch_id</li> <li>modification_id</li> <li>name</li> <li>type_name</li>
+    * <br/><br/> For new and modified artifacts, the following columns must be available from the set: <li>art_id</li>
+    * <li>branch_id</li> <li>modification_id</li> <li>transaction_id</li>
     * 
     * @author Robert A. Fisher
     */
@@ -1251,16 +1244,10 @@ public class RevisionManager implements IEventReceiver {
    }
 
    /**
-    * Produces <code>AttributeChange</code>'s from a ResultSet. <br/><br/> For deleted attributes, the following
-    * columns must be available from the set:
-    * <li>gamma_id</li>
-    * <li>modification_id</li>
-    * <li>name</li>
-    * <br/><br/> For new and modified attributes, the following columns must be available from the set:
-    * <li>gamma_id</li>
-    * <li>modification_id</li>
-    * <li>name</li>
-    * <li>value</li>
+    * Produces <code>AttributeChange</code>'s from a ResultSet. <br/><br/> For deleted attributes, the following columns
+    * must be available from the set: <li>gamma_id</li> <li>modification_id</li> <li>name</li> <br/><br/> For new and
+    * modified attributes, the following columns must be available from the set: <li>gamma_id</li> <li>modification_id</li>
+    * <li>name</li> <li>value</li>
     * 
     * @author Robert A. Fisher
     */
@@ -1295,19 +1282,10 @@ public class RevisionManager implements IEventReceiver {
    }
 
    /**
-    * Produces <code>RelationLinkChange</code>'s from a ResultSet. <br/><br/> For deleted links, the following
-    * columns must be available from the set:
-    * <li>gamma_id</li>
-    * <li>modification_id</li>
-    * <li>type_name</li>
-    * <li>art_id</li>
-    * <br/><br/> For new and modified attributes, the following columns must be available from the set:
-    * <li>gamma_id</li>
-    * <li>modification_id</li>
-    * <li>type_name</li>
-    * <li>art_id</li>
-    * <li>rationale</li>
-    * <li>order_val</li>
+    * Produces <code>RelationLinkChange</code>'s from a ResultSet. <br/><br/> For deleted links, the following columns
+    * must be available from the set: <li>gamma_id</li> <li>modification_id</li> <li>type_name</li> <li>art_id</li>
+    * <br/><br/> For new and modified attributes, the following columns must be available from the set: <li>gamma_id</li>
+    * <li>modification_id</li> <li>type_name</li> <li>art_id</li> <li>rationale</li> <li>order_val</li>
     * 
     * @author Robert A. Fisher
     */
