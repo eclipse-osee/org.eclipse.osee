@@ -28,6 +28,14 @@ public class BranchManagementCommandProvider implements CommandProvider {
       BranchCommands.getInstance().stopBranchExport(ci);
    }
 
+   public void _import_branch(CommandInterpreter ci) {
+      BranchCommands.getInstance().startBranchImport(ci);
+   }
+
+   public void _import_branch_stop(CommandInterpreter ci) {
+      BranchCommands.getInstance().stopBranchImport(ci);
+   }
+
    public void _configini(CommandInterpreter ci) {
       StringBuilder sb = new StringBuilder();
       sb.append("eclipse.ignoreApp=true\n");

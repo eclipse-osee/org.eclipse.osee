@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.db.connection.info;
 
 import java.math.BigInteger;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -35,7 +36,7 @@ public enum SQL3DataType {
    LONGVARCHAR(java.sql.Types.LONGVARCHAR, String.class),
    DATE(java.sql.Types.DATE, Date.class),
    TIME(java.sql.Types.TIME, Time.class),
-   TIMESTAMP(java.sql.Types.TIMESTAMP, Object.class),
+   TIMESTAMP(java.sql.Types.TIMESTAMP, Timestamp.class),
    BINARY(java.sql.Types.BINARY, Object.class),
    VARBINARY(java.sql.Types.VARBINARY, Object.class),
    LONGVARBINARY(java.sql.Types.LONGVARBINARY, Object.class),

@@ -19,6 +19,7 @@ public class BranchCommands {
 
    private static BranchCommands instance = null;
    private BranchExportWorker branchExportWorker;
+   private BranchImportWorker branchImportWorker;
 
    public static BranchCommands getInstance() {
       if (instance == null) {
@@ -30,10 +31,13 @@ public class BranchCommands {
    private BranchCommands() {
       this.branchExportWorker = new BranchExportWorker();
       this.branchExportWorker.setExecutionAllowed(true);
+
+      this.branchImportWorker = new BranchImportWorker();
+      this.branchImportWorker.setExecutionAllowed(true);
    }
 
    public void startBranchExport(CommandInterpreter ci) {
-      if (!this.branchExportWorker.isRunning()) {
+      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning()) {
          this.branchExportWorker.setCommandInterpreter(ci);
          this.branchExportWorker.setExecutionAllowed(true);
          Thread th = new Thread(branchExportWorker);
@@ -43,6 +47,9 @@ public class BranchCommands {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
          }
+         if (this.branchImportWorker.isRunning()) {
+            ci.println("Branch Import is already running.");
+         }
       }
    }
 
@@ -51,6 +58,31 @@ public class BranchCommands {
          this.branchExportWorker.setExecutionAllowed(false);
       } else {
          ci.println("Branch Export is not running.");
+      }
+   }
+
+   public void startBranchImport(CommandInterpreter ci) {
+      if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning()) {
+         this.branchImportWorker.setCommandInterpreter(ci);
+         this.branchImportWorker.setExecutionAllowed(true);
+         Thread th = new Thread(branchImportWorker);
+         th.setName("Branch Import");
+         th.start();
+      } else {
+         if (this.branchExportWorker.isRunning()) {
+            ci.println("Branch Export is already running.");
+         }
+         if (this.branchImportWorker.isRunning()) {
+            ci.println("Branch Import is already running.");
+         }
+      }
+   }
+
+   public void stopBranchImport(CommandInterpreter ci) {
+      if (this.branchImportWorker.isRunning()) {
+         this.branchImportWorker.setExecutionAllowed(false);
+      } else {
+         ci.println("Branch Import is not running.");
       }
    }
 }

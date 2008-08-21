@@ -41,10 +41,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -223,7 +223,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       try {
          boolean tagAfterBranchImport = false;
          connection = ConnectionHandler.getConnection();
-         switch (SqlFactory.getDatabaseType(connection)) {
+         switch (SupportedDatabase.getDatabaseType(connection)) {
             case oracle:
                tagAfterBranchImport = true;
                break;

@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Queue;
 import org.eclipse.osee.framework.database.core.DatabaseNotSupportedException;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 /**
@@ -34,7 +33,7 @@ public class DbTaskRunner {
    }
 
    public void processTasks(Connection connection, Queue<IDbInitializationTask> tasks) throws SQLException, DatabaseNotSupportedException, Exception {
-      SupportedDatabase databaseType = SqlFactory.getDatabaseType(connection);
+      SupportedDatabase databaseType = SupportedDatabase.getDatabaseType(connection);
       if (databaseType != null) {
          int safetyNet = 0;
          while (!tasks.isEmpty()) {

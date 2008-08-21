@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
-
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,12 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
@@ -61,7 +58,7 @@ public class SkynetDbInit extends DbInitializationTask {
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(connection, userSpecifiedConfig.keySet());
       schemaExtractor.extractSchemaData();
       Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
-      SupportedDatabase databaseType = SqlFactory.getDatabaseType(connection);
+      SupportedDatabase databaseType = SupportedDatabase.getDatabaseType(connection);
       Set<String> schemas = userSpecifiedConfig.keySet();
       DbInit.dropViews(connection);
       DbInit.dropIndeces(schemas, userSpecifiedConfig, connection, databaseType, currentDatabaseConfig);

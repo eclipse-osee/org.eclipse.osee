@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.admin;
 
 import org.eclipse.osee.framework.branch.management.IBranchExport;
+import org.eclipse.osee.framework.branch.management.IBranchImport;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -27,6 +28,7 @@ public class Activator implements BundleActivator {
    private ServiceTracker searchTaggerTracker;
    private ServiceTracker searchEngineTracker;
    private ServiceTracker branchExportTracker;
+   private ServiceTracker branchImportTracker;
 
    /*
     * (non-Javadoc)
@@ -49,6 +51,9 @@ public class Activator implements BundleActivator {
 
       branchExportTracker = new ServiceTracker(context, IBranchExport.class.getName(), null);
       branchExportTracker.open();
+
+      branchImportTracker = new ServiceTracker(context, IBranchImport.class.getName(), null);
+      branchImportTracker.open();
    }
 
    /*
@@ -71,6 +76,9 @@ public class Activator implements BundleActivator {
 
       branchExportTracker.close();
       branchExportTracker = null;
+
+      branchImportTracker.close();
+      branchImportTracker = null;
    }
 
    public IResourceManager getResourceManager() {
@@ -91,6 +99,10 @@ public class Activator implements BundleActivator {
 
    public IBranchExport getBranchExport() {
       return (IBranchExport) branchExportTracker.getService();
+   }
+
+   public IBranchImport getBranchImport() {
+      return (IBranchImport) branchImportTracker.getService();
    }
 
    public static Activator getInstance() {

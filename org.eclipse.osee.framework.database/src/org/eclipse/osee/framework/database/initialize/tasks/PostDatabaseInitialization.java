@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.sql.Connection;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +26,7 @@ public class PostDatabaseInitialization extends DbInitializationTask {
    @Override
    public void run(Connection connection) throws Exception {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
-      SupportedDatabase supportedDb = SqlFactory.getDatabaseType(connection);
+      SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType(connection);
       switch (supportedDb) {
          case postgresql:
             OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuumiing PostgreSQL");

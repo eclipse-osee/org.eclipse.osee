@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -81,7 +80,7 @@ public class DatabaseDataExtractor {
       this.workerThreads = new ArrayList<Thread>();
       this.extractTables = new TreeSet<String>();
       try {
-         this.dbType = SqlFactory.getDatabaseType(connection);
+         this.dbType = SupportedDatabase.getDatabaseType(connection);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, "Invalid database type. ", ex);
       }

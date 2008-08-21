@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
@@ -74,7 +73,7 @@ public class DatabaseSchemaExtractor {
       this.dbData = connection.getMetaData();
       this.dbName = dbData.getDatabaseProductName();
       this.dbVersion = dbData.getDatabaseProductVersion();
-      this.dbType = SqlFactory.getDatabaseType(connection);
+      this.dbType = SupportedDatabase.getDatabaseType(connection);
       this.filter = new ArrayList<String>();
       filter.add(DEFAULT_FILTER);
       this.tablesToExtract = new TreeSet<String>();
