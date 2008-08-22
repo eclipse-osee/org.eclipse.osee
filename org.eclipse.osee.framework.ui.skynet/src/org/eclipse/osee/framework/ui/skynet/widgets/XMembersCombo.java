@@ -315,6 +315,10 @@ public class XMembersCombo extends XWidget {
             refresh();
          }
       }
+      // If delete key pressed, reset
+      if (keyEvent.character == SWT.DEL) {
+         searchControl.reset();
+      }
    }
 
    @Override
