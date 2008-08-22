@@ -92,7 +92,11 @@ public class RelationChanged extends Change {
     */
    public Artifact getBArtifact() throws ArtifactDoesNotExist {
       if (bArtifact == null) {
-         bArtifact = ArtifactCache.getActive(bArtId, getBranch());
+    	  if(isHistorical()){
+	         bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getTransactionNumber());
+    	  }else{
+	         bArtifact = ArtifactCache.getActive(bArtId, getBranch()); 
+    	  }
       }
 
       if (bArtifact == null) {
