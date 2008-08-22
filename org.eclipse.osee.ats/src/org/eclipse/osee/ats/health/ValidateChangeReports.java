@@ -99,6 +99,10 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
             final XResultData rd = new XResultData(AtsPlugin.getLogger());
             runIt(monitor, rd);
             rd.report(getName());
+         } catch (IllegalArgumentException e){
+        	 if(e.getLocalizedMessage().contains("The base and to transactions must not be the same transaction for branch")){
+        		 
+        	 }
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -157,13 +161,13 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                      for (Change change : changes) {
                         if (change.getItemKind().equals("Artifact")) {
                            if (change.getModificationType() == ModificationType.CHANGE) {
-                              modArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
+                              modArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                            if (change.getModificationType() == ModificationType.DELETED) {
-                              delArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
+                              delArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                            if (change.getModificationType() == ModificationType.NEW) {
-                              newArt.put(change.getArtifactCurrent().getArtId(), change.getArtifactCurrent());
+                              newArt.put(change.getArtifact().getArtId(), change.getArtifact());
                            }
                         }
                      }

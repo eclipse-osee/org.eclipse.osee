@@ -44,7 +44,7 @@ public class TagChangedArtifacts extends AbstractBlam {
             }
 
             monitor.subTask("Tagging change on branch " + branch.getBranchShortestName() + " for artifact " + ++count + " of " + total);
-            Artifact artifact = change.getArtifactCurrent();
+            Artifact artifact = change.getArtifact();
             if (!artifact.isDeleted()) {
                TagManager.autoTag(true, artifact);
             }

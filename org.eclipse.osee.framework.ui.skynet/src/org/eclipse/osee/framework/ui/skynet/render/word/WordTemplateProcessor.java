@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -486,8 +488,9 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeElement.getAttributeName().equals("*")) {
-            for (AttributeType attributeType : artifact.getAttributeTypes()) {
-               processAttribute(artifact, wordMl, attributeElement, attributeType.getName(), true);
+        	 
+            for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
+               processAttribute(artifact, wordMl, attributeElement, attributeTypeName, true);
             }
          } else {
             if (artifact.isAttributeTypeValid(attributeName)) {
@@ -725,4 +728,22 @@ public class WordTemplateProcessor {
    public void setSaveParagraphNumOnArtifact(boolean saveParagraphNumOnArtifact) {
       this.saveParagraphNumOnArtifact = saveParagraphNumOnArtifact;
    }
+   
+   private Collection<String> orderAttributeNames(Collection<AttributeType> attributeTypes) {
+	  ArrayList<String> orderedNames = new ArrayList<String>(attributeTypes.size());
+	  String contentName = null;
+
+	  for (AttributeType attributeType : attributeTypes) {
+		if(attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(WordAttribute.CONTENT_NAME) || attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)){
+			contentName = attributeType.getName();
+	    }else{
+		orderedNames.add(attributeType.getName());
+	    }
+	  }
+	  Arrays.sort(orderedNames.toArray(new String[0]));
+	  if(contentName != null){
+		  orderedNames.add(contentName);
+	  }
+	  return orderedNames;
+	}
 }
