@@ -408,6 +408,7 @@ public final class ArtifactLoader {
 	               }
 	               previousArtifactId = artifactId;
 	               previousBranchId = branchId;
+	               previousAttrId = attrId;
 	
 	               artifact = ArtifactCache.getActive(artifactId, branchId);
 	               if (artifact != null && artifact.isAttributesLoaded()) {
