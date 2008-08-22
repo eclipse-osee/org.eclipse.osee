@@ -86,6 +86,7 @@ final class ImportController extends DbTransaction {
          RelationalTypeCheckSaxHandler typeCheckHandler =
                RelationalTypeCheckSaxHandler.newLimitedCacheRelationalTypeCheckSaxHandler(1000);
          typeCheckHandler.configure(options);
+         typeCheckHandler.setZipFile(zipFile);
 
          RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.newLimitedCacheRelationalSaxHandler(1000);
          relationalSaxHandler.setSelectedBranchIds(branchesToImport);

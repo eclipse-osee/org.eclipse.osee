@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,9 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -77,12 +71,14 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             while (e.hasMoreElements()) {
                entry = (ZipEntry) e.nextElement();
                String entryName = entry.toString();
-               if (entryName.startsWith("resources\\")) {
-                  int index = entryName.lastIndexOf('\\');
-                  entryName = entryName.substring(index + 1, entryName.length());
+               if (entryName.startsWith(ExportImportXml.RESOURCE_FOLDER_NAME)) {
+                  entryName =
+                        entryName.substring(ExportImportXml.RESOURCE_FOLDER_NAME.length() + 1, entryName.length());
                   binaryDataEntries.put(entryName, entry);
                }
             }
+         } else {
+            throw new IllegalStateException("ZipFile was Null.");
          }
       }
       return binaryDataEntries;
@@ -94,14 +90,18 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
       ZipEntry entry = getBinaryDataEntries().get(uriValue);
-      //      String resourceName = Lib.removeExtension(uriValue);
-      //      String extension = Lib.getExtension(uriValue);
-      IResourceLocator locatorHint =
-            Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, uriValue);
-      IResourceLocator locator =
-            Activator.getInstance().getResourceManager().save(locatorHint, new ZipBinaryResource(entry, locatorHint),
-                  new Options());
-      return locator.getLocation().toASCIIString();
+
+      if (entry != null) {
+         IResourceLocator locatorHint =
+               Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, uriValue);
+
+         IResourceLocator locator =
+               Activator.getInstance().getResourceManager().save(locatorHint,
+                     new ZipBinaryResource(getZipFile(), entry, locatorHint), new Options());
+         return locator.getLocation().toASCIIString();
+      }
+      throw new IllegalStateException(String.format(
+            "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
    }
 
    @Override
@@ -138,10 +138,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             }
             Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), fieldMap);
             if (objectData != null) {
-               if (getMetaData().toString().equals("osee_define_attribute")) {
-                  System.out.println(String.format("Table: [%s] Data: %s", getMetaData(),
-                        Arrays.deepToString(objectData)));
-               }
                addData(objectData);
                if (isStorageNeeded()) {
                   store();
@@ -151,54 +147,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       } catch (Exception ex) {
          // TODO Clean up binary content transfer;
          throw new Exception(String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
-      }
-   }
-
-   private final class ZipBinaryResource implements IResource {
-
-      private IResourceLocator locator;
-      private ZipEntry entry;
-
-      public ZipBinaryResource(ZipEntry entry, IResourceLocator locator) {
-         this.entry = entry;
-         this.locator = locator;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResource#getContent()
-       */
-      @Override
-      public InputStream getContent() throws IOException {
-         return getZipFile().getInputStream(entry);
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResource#getLocation()
-       */
-      @Override
-      public URI getLocation() {
-         return locator.getLocation();
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResource#getName()
-       */
-      @Override
-      public String getName() {
-         String path = locator.getLocation().toASCIIString();
-         int index = path.lastIndexOf("/");
-         if (index != -1 && index + 1 < path.length()) {
-            path = path.substring(index + 1, path.length());
-         }
-         return path;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.resource.management.IResource#isCompressed()
-       */
-      @Override
-      public boolean isCompressed() {
-         return Lib.getExtension(entry.toString()).equals("zip");
       }
    }
 }

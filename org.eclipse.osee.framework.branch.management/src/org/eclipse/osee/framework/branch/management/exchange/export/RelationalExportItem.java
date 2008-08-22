@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.resource.management.Options;
  * @author Roberto E. Escobar
  */
 public class RelationalExportItem extends AbstractDbExportItem {
-   private static final String BINARY_DATA_FOLDER = "resources";
-
    private String query;
    private StringBuffer binaryContentBuffer;
    private StringBuffer stringContentBuffer;
@@ -68,7 +66,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws Exception {
-      tempFolder = new File(tempFolder + File.separator + BINARY_DATA_FOLDER);
+      tempFolder = new File(tempFolder + File.separator + ExportImportXml.RESOURCE_FOLDER_NAME);
       if (tempFolder.exists() != true) {
          tempFolder.mkdirs();
       }

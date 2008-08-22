@@ -20,6 +20,7 @@ public class ExportImportXml {
    public static final String XML_EXTENSION = ".xml";
    public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"" + XML_ENCODING + "\" ?>\n";
 
+   public static final String RESOURCE_FOLDER_NAME = "resources";
    public static final String METADATA = "metadata";
    public static final String DATA = "data";
    public static final String ENTRY = "entry";
