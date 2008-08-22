@@ -52,7 +52,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
 
    public String getQuery() {
       StringBuffer toReturn = new StringBuffer(query);
-      if (getOptions().getBoolean(ExportOptions.INCLUDE_BASELINE_TXS.name()) != true && query.contains("txd1")) {
+      if (getOptions().getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name()) && query.contains("txd1")) {
          toReturn.append(" AND txd1.TX_TYPE = 0");
       }
       return query;

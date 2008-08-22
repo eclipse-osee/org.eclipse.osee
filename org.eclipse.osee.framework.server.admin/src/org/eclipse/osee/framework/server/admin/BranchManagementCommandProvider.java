@@ -61,7 +61,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Server Admin Commands---\n");
-      sb.append("        export_branch <exportFileName> [-include_baseline_txs] [<branchId>]+ - export a specific set of branches \n");
+      sb.append("        export_branch <exportFileName> [-exclude_baseline_txs] [<branchId>]+ - export a specific set of branches \n");
       sb.append("        export_branch_stop - stop branch export\n");
       return sb.toString();
    }

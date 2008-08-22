@@ -34,13 +34,13 @@ public class BranchExportWorker extends BaseCmdWorker {
       String arg = null;
       int count = 0;
       String exportFileName = null;
-      boolean includeBaselineTxs = false;
+      boolean excludeBaselineTxs = false;
       List<Integer> branchIds = new ArrayList<Integer>();
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
-            if (arg.equals("-includeBaselineTxs")) {
-               includeBaselineTxs = true;
+            if (arg.equals("-excludeBaselineTxs")) {
+               excludeBaselineTxs = true;
             } else {
                if (count == 0 && !arg.startsWith("-")) {
                   exportFileName = arg;
@@ -60,7 +60,7 @@ public class BranchExportWorker extends BaseCmdWorker {
       }
 
       Options options = new Options();
-      options.put(ExportOptions.INCLUDE_BASELINE_TXS.name(), includeBaselineTxs);
+      options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), excludeBaselineTxs);
       Activator.getInstance().getBranchExport().export(exportFileName, options, branchIds);
    }
 }
