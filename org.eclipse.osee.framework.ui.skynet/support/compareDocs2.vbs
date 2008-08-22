@@ -9,11 +9,13 @@ Dim ver1
 Dim ver2
 Dim diffPath
 Dim wdCompareTargetSelected
+Dim wdFormattingFromCurrent
 Dim wdFormatXML
 Dim visible
 
 Public Sub main()
 	wdCompareTargetSelected = 1   ' can you believe I have to define a system enum
+	wdFormattingFromCurrent = 3
 	wdFormatXML = 11		'dude more than once
 	
 	Set namedArguments = WScript.Arguments.Named
@@ -64,7 +66,7 @@ Public Sub main()
 	
 	set baseDoc = oWord.Documents.Open (ver1)
     
-	baseDoc.Compare ver2, authorName, wdCompareTargetSelected, detectFormatChanges, False, False
+	baseDoc.Merge ver2, wdCompareTargetSelected, detectFormatChanges, wdFormattingFromCurrent, False
    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False
     
    baseDoc.close()

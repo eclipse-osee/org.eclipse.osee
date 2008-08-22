@@ -525,7 +525,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
          if (resolved == (conflicts.length - informational)) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + "\nInformational Conflicts : " + informational);
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resovled : " + resolved + (informational == 0 ? " " : ("\nInformational Conflicts : " + informational)));
          }
 
       }

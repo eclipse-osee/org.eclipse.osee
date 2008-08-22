@@ -866,6 +866,15 @@
              match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet EDIT">
        </MatchCriteria>
     </Template>
+    <Template
+          File="support/templates/PREVIEW Software Requirement.xml">
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word MERGE">
+       </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word MERGE_EDIT">
+       </MatchCriteria>
+    </Template>
  </extension>
  <extension
        id="TagChangedArtifacts"

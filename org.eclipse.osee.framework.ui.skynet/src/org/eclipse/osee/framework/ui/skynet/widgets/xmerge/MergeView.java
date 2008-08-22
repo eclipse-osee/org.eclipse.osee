@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -402,7 +403,7 @@ public class MergeView extends ViewPart implements IActionable {
       CommandContributionItem mergeArtifactCommand;
       mergeArtifactCommand =
             Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
-                  "Merge Source & Destination Artifacts", null, null, null, "E", null,
+                  "Merge Source/Destination Artifacts (Developmental)", null, null, null, "E", null,
                   "Merge_Source_Destination_Artifact");
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
@@ -652,34 +653,61 @@ public class MergeView extends ViewPart implements IActionable {
             if (attributeConflict != null) {
                switch (diffToShow) {
                   case 1:
-                     MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
-                           attributeConflict.getSourceArtifact(), false);
+                     MergeUtility.showCompareFile(
+                           MergeUtility.getStartArtifact(attributeConflict),
+                           attributeConflict.getSourceArtifact(),
+                           "Source_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml");
                      break;
                   case 2:
-                     MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
-                           attributeConflict.getDestArtifact(), false);
+                     MergeUtility.showCompareFile(
+                           MergeUtility.getStartArtifact(attributeConflict),
+                           attributeConflict.getDestArtifact(),
+                           "Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml");
                      break;
                   case 3:
-                     MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                           attributeConflict.getDestArtifact(), false);
+                     MergeUtility.showCompareFile(
+                           attributeConflict.getSourceArtifact(),
+                           attributeConflict.getDestArtifact(),
+                           "Source_Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml");
                      break;
                   case 4:
-                     MergeUtility.showCompareFile(attributeConflict.getArtifact(),
-                           attributeConflict.getSourceArtifact(), false);
+                     if (attributeConflict.wordMarkupPresent()) {
+                        throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+                     }
+                     MergeUtility.showCompareFile(
+                           attributeConflict.getSourceArtifact(),
+                           attributeConflict.getArtifact(),
+                           "Source_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml");
                      break;
                   case 5:
-                     MergeUtility.showCompareFile(attributeConflict.getArtifact(), attributeConflict.getDestArtifact(),
-                           false);
+                     if (attributeConflict.wordMarkupPresent()) {
+                        throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+                     }
+                     MergeUtility.showCompareFile(
+                           attributeConflict.getDestArtifact(),
+                           attributeConflict.getArtifact(),
+                           "Destination_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                                 ":", ";") + ".xml");
                      break;
                }
             } else if (artifactConflict != null) {
                if (diffToShow == 1) {
-                  MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                        MergeUtility.getStartArtifact(attributeConflict), false);
+                  MergeUtility.showCompareFile(
+                        artifactConflict.getSourceArtifact(),
+                        MergeUtility.getStartArtifact(artifactConflict),
+                        "Source_Diff_For_" + artifactConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                              ":", ";") + ".xml");
                }
                if (diffToShow == 2) {
-                  MergeUtility.showCompareFile(attributeConflict.getDestArtifact(),
-                        MergeUtility.getStartArtifact(attributeConflict), false);
+                  MergeUtility.showCompareFile(
+                        artifactConflict.getDestArtifact(),
+                        MergeUtility.getStartArtifact(artifactConflict),
+                        "Destination_Diff_For_" + artifactConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                              ":", ";") + ".xml");
                }
             }
          } catch (Exception ex) {

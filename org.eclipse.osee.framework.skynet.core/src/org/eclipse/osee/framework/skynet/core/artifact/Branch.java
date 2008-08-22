@@ -230,15 +230,17 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public Collection<Branch> getChildBranches(boolean recurse) throws SQLException {
       Set<Branch> children = new HashSet<Branch>();
-      getChildBranches(this, children);
+      getChildBranches(this, children, recurse);
       return children;
    }
 
-   private void getChildBranches(Branch parentBranch, Collection<Branch> children) throws SQLException {
+   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws SQLException {
       for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
-            getChildBranches(branch, children);
+            if (recurse) {
+               getChildBranches(branch, children, recurse);
+            }
          }
       }
    }

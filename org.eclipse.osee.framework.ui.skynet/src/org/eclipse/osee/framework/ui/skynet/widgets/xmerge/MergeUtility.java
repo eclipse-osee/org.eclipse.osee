@@ -12,7 +12,15 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -24,6 +32,8 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.plugin.util.AIFile;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -49,7 +59,22 @@ public class MergeUtility {
    public static final String INFORMATIONAL_CONFLICT =
          "This Artifact has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the artifact on the destination branch.";
    public static final String OPEN_MERGE_DIALOG =
-         "This will open a window that will allow side by side merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin a side by side merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.";
+         "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
+
+   private static final Pattern authorPattern =
+         Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern rsidRootPattern =
+         Pattern.compile("\\</wsp:rsids\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findbaselineRsids =
+         Pattern.compile("\\<w:r\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsids =
+         Pattern.compile("wsp:rsidR=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRPR =
+         Pattern.compile("wsp:rsidRPr=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidP =
+         Pattern.compile("wsp:rsidP=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRDefault =
+         Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
@@ -88,10 +113,37 @@ public class MergeUtility {
     * This is not in the AttributeConflict because it relies on the renderer
     * that is in not in the skynet core package.
     */
-   public static void showCompareFile(Artifact art1, Artifact art2, boolean editable) throws Exception {
-      if (art1 == null || art2 == null) return;
+   public static String showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
+      if (art1 == null || art2 == null) return " ";
       IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
-      showDiff(art1, renderer.compare(art1, art2, "", null, null, false, editable));
+      String filename = renderer.compare(art1, art2, "", null, fileName, PresentationType.DIFF);
+      return filename;
+   }
+
+   /*
+    * This is not in the AttributeConflict because it relies on the renderer
+    * that is in not in the skynet core package.
+    */
+   public static String CreateMergeDiffFile(Artifact art1, Artifact art2, String fileName) throws Exception {
+      if (art1 == null || art2 == null) return " ";
+      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
+      String filename = renderer.compare(art1, art2, "", null, fileName, PresentationType.MERGE);
+      return filename;
+   }
+
+   /*
+    * This is not in the AttributeConflict because it relies on the renderer
+    * that is in not in the skynet core package.
+    */
+   public static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName, boolean show, boolean editable) throws Exception {
+      if (art1 == null) return;
+      IRenderer renderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, art1);
+      String compareFile =
+            renderer.compare(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
+                  fileName.substring(fileName.lastIndexOf('\\') + 1), PresentationType.MERGE_EDIT);
+      if (show) {
+         showDiff(art1, compareFile);
+      }
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
@@ -144,7 +196,7 @@ public class MergeUtility {
       return false;
    }
 
-   public static void launchMerge(AttributeConflict attributeConflict, Shell shell) {
+   public static void launchMerge(final AttributeConflict attributeConflict, Shell shell) {
 
       try {
          if (attributeConflict.getAttribute() instanceof WordAttribute) {
@@ -164,19 +216,145 @@ public class MergeUtility {
                         OPEN_MERGE_DIALOG, 4, buttons, 2);
             int response = dialog.open();
             if (response == 1) {
-               attributeConflict.setToSource();
-               MergeUtility.showCompareFile(attributeConflict.getArtifact(), attributeConflict.getDestArtifact(), true);
-               attributeConflict.markStatusToReflectEdit();
+
+               Job job = new Job("Show Merge Tool") {
+
+                  @Override
+                  protected IStatus run(final IProgressMonitor monitor) {
+                     try {
+                        String sourceChangeFile =
+                              MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+                                    attributeConflict.getSourceArtifact(), null);
+                        String destChangeFile =
+                              MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+                                    attributeConflict.getDestArtifact(), null);
+                        changeAuthorinWord("Source", sourceChangeFile, 2, 12345678, 55555555);
+                        changeAuthorinWord("Destination", destChangeFile, 2, 56781234, 55555555);
+                        MergeUtility.mergeEditableDiffFiles(
+                              attributeConflict.getArtifact(),
+                              sourceChangeFile,
+                              destChangeFile,
+                              "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
+                                    ":", ";") + ".xml", true, true);
+                        attributeConflict.markStatusToReflectEdit();
+
+                     } catch (Exception ex) {
+                        OSEELog.logException(MergeView.class, ex, true);
+                     }
+                     monitor.done();
+                     return Status.OK_STATUS;
+                  }
+               };
+
+               Jobs.startJob(job);
+
+               //               String sourceChangeFile =
+               //                     MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+               //                           attributeConflict.getSourceArtifact(), null);
+               //               String destChangeFile =
+               //                     MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
+               //                           attributeConflict.getDestArtifact(), null);
+               //               changeAuthorinWord("Source", sourceChangeFile, 2, 12345678, 55555555);
+               //               changeAuthorinWord("Destination", destChangeFile, 2, 56781234, 55555555);
+               //               MergeUtility.mergeEditableDiffFiles(
+               //                     attributeConflict.getArtifact(),
+               //                     sourceChangeFile,
+               //                     destChangeFile,
+               //                     "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
+               //                           ":", ";") + ".xml", true, true);
+               //               attributeConflict.markStatusToReflectEdit();
             } else if (response == 2) {
                RendererManager.getInstance().editInJob(attributeConflict.getArtifact(), "EDIT_ARTIFACT");
                attributeConflict.markStatusToReflectEdit();
             }
-
          }
-
       } catch (Exception ex) {
          OSEELog.logException(MergeView.class, ex, true);
       }
+   }
 
+   protected static void changeAuthorinWord(String newAuthor, String fileName, int revisionNumber, int rsidNumber, int baselineRsid) throws Exception {
+      String fileValue = AFile.readFile(fileName);
+
+      Matcher m = authorPattern.matcher(fileValue);
+      while (m.find()) {
+         String name = m.group();
+         fileValue = fileValue.replace(name, "aml:author=\"" + newAuthor + "\"");
+      }
+
+      m = findSetRsids.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "wsp:rsidR=\"" + baselineRsid + "\"");
+      }
+      m = findSetRsidRPR.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "wsp:rsidRPr=\"" + baselineRsid + "\"");
+      }
+      m = findSetRsidP.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "wsp:rsidP=\"" + baselineRsid + "\"");
+      }
+      m = findSetRsidRDefault.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "wsp:rsidRDefault=\"" + baselineRsid + "\"");
+      }
+
+      StringBuilder builder = new StringBuilder();
+      String[] pieces = fileValue.split("</?aml:annotation");
+      int position = 0;
+      for (String string : pieces) {
+         if (position != 0) {
+            if (position % 2 == 1) {
+               if (string.contains("w:type=\"Word.Insertion")) {
+                  m = findSetRsids.matcher(string);
+                  while (m.find()) {
+                     String rev = m.group();
+                     string = string.replace(rev, "wsp:rsidR=\"" + rsidNumber + "\"");
+                  }
+                  m = findSetRsidP.matcher(string);
+                  while (m.find()) {
+                     String rev = m.group();
+                     string = string.replace(rev, "wsp:rsidP=\"" + rsidNumber + "\"");
+                  }
+                  m = findSetRsidRPR.matcher(string);
+                  while (m.find()) {
+                     String rev = m.group();
+                     string = string.replace(rev, "wsp:rsidRPr=\"" + rsidNumber + "\"");
+                  }
+               }
+               builder.append("<aml:annotation");
+            } else {
+               if (!(string.contains("Word.Deletion\"/") || string.contains("Word.Insertion\"/"))) {
+                  builder.append("</aml:annotation");
+               } else {
+                  builder.append("<aml:annotation");
+               }
+            }
+
+         }
+         builder.append(string);
+         if (!(string.contains("Word.Deletion\"/") || string.contains("Word.Insertion\"/"))) {
+            position++;
+         }
+      }
+
+      fileValue = builder.toString();
+
+      m = rsidRootPattern.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "<wsp:rsid wsp:val=\"" + rsidNumber + "\"/></wsp:rsids>");
+      }
+      m = rsidRootPattern.matcher(fileValue);
+      while (m.find()) {
+         String rev = m.group();
+         fileValue = fileValue.replace(rev, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
+      }
+
+      AFile.writeFile(fileName, fileValue);
    }
 }

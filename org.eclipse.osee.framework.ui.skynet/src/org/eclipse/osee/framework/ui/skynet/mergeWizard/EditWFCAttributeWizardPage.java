@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
+import java.util.Date;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -43,10 +45,12 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private Button sourceDiffButton;
    private Button destDiffButton;
    private Button sourceDestDiffButton;
+   private Button sourceMergeDiffButton;
+   private Button destMergeDiffButton;
    private Label imageLabel;
    private static final String EDIT_TEXT = "Open Document Editor";
    private static final String EDIT_TOOLTIP = "Make additional changes using the Document/Merge Editor";
-   private static final String MERGE_TEXT = "Merge Source and Destination";
+   private static final String MERGE_TEXT = "Merge Source/Destination (Developmental)";
    private static final String MERGE_TOOLTIP = "Use the new inline merging";
    private static final String CLEAR_TEXT = "Clear the Document";
    private static final String CLEAR_TOOLTIP = "Reinitializes the merge for this Document";
@@ -62,6 +66,12 @@ public class EditWFCAttributeWizardPage extends WizardPage {
          "Show the differences between the current Destination" + " artifact and the artifact at the time the Source Branch was created";
    private static final String SDDIFF_TEXT = "Show Source/Destination Diff";
    private static final String SDDIFF_TOOLTIP =
+         "Show the differences between the current Source" + " artifact and the current Merge artifact";
+   private static final String SMDIFF_TEXT = "Show Source/Merge Diff";
+   private static final String SMDIFF_TOOLTIP =
+         "Show the differences between the current Destination" + " artifact and the current Merge artifact";
+   private static final String DMDIFF_TEXT = "Show Destination/Merge Diff";
+   private static final String DMDIFF_TOOLTIP =
          "Show the differences between the current Destination" + " artifact and the current Source artifact";
    private static final int NUM_COLUMNS = 1;
 
@@ -80,12 +90,39 @@ public class EditWFCAttributeWizardPage extends WizardPage {
             } else if (event.widget == destButton) {
                MergeUtility.setToDest(conflict, getShell(), true);
             } else if (event.widget == sourceDiffButton) {
-               MergeUtility.showCompareFile(conflict.getSourceArtifact(), MergeUtility.getStartArtifact(conflict),
-                     false);
+               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(conflict), conflict.getSourceArtifact(),
+                     "Source_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           ":", ";") + ".xml");
             } else if (event.widget == destDiffButton) {
-               MergeUtility.showCompareFile(conflict.getDestArtifact(), MergeUtility.getStartArtifact(conflict), false);
+               MergeUtility.showCompareFile(
+                     MergeUtility.getStartArtifact(conflict),
+                     conflict.getDestArtifact(),
+                     "Destination_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           ":", ";") + ".xml");
             } else if (event.widget == sourceDestDiffButton) {
-               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getDestArtifact(), false);
+               MergeUtility.showCompareFile(
+                     conflict.getSourceArtifact(),
+                     conflict.getDestArtifact(),
+                     "Source_Destination_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           ":", ";") + ".xml");
+            } else if (event.widget == sourceMergeDiffButton) {
+               if (conflict.wordMarkupPresent()) {
+                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+               }
+               MergeUtility.showCompareFile(
+                     conflict.getSourceArtifact(),
+                     conflict.getArtifact(),
+                     "Source_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           ":", ";") + ".xml");
+            } else if (event.widget == destMergeDiffButton) {
+               if (conflict.wordMarkupPresent()) {
+                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+               }
+               MergeUtility.showCompareFile(
+                     conflict.getDestArtifact(),
+                     conflict.getArtifact(),
+                     "Destination_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           ":", ";") + ".xml");
             } else if (event.widget == mergeButton) {
                MergeUtility.launchMerge(conflict, getShell());
             }
@@ -162,6 +199,8 @@ public class EditWFCAttributeWizardPage extends WizardPage {
       sourceDiffButton = createButton(SDIFF_TEXT, SDIFF_TOOLTIP, buttonComp);
       destDiffButton = createButton(DDIFF_TEXT, DDIFF_TOOLTIP, buttonComp);
       sourceDestDiffButton = createButton(SDDIFF_TEXT, SDDIFF_TOOLTIP, buttonComp);
+      sourceMergeDiffButton = createButton(SMDIFF_TEXT, SMDIFF_TOOLTIP, buttonComp);
+      destMergeDiffButton = createButton(DMDIFF_TEXT, DMDIFF_TOOLTIP, buttonComp);
       if (MergeUtility.getStartArtifact(conflict) == null) {
          sourceDiffButton.setEnabled(false);
          destDiffButton.setEnabled(false);

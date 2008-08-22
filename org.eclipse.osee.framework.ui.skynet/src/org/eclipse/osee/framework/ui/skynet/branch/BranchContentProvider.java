@@ -370,6 +370,12 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
          if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
       }
+      try {
+         if (element instanceof Branch && ((Branch) element).getChildBranches().isEmpty()) {
+            return false;
+         }
+      } catch (SQLException ex) {
+      }
 
       return ((element instanceof Branch && AccessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
    }

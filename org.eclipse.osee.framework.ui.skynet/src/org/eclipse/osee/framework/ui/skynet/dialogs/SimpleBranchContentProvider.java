@@ -13,6 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.dialogs;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -30,12 +35,36 @@ public final class SimpleBranchContentProvider implements ITreeContentProvider {
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
+         Iterator<Object> iter = ((Collection<Object>) parentElement).iterator();
+         while (iter.hasNext()) {
+            Object object = iter.next();
+
+            if (object instanceof Branch && ((Branch) object).isMergeBranch()) {
+               iter.remove();
+            }
+         }
          return ((Collection) parentElement).toArray();
       }
       if (parentElement instanceof Branch) {
          try {
             Collection<Branch> branches = ((Branch) parentElement).getChildBranches();
-            return branches.toArray(new Branch[branches.size()]);
+            List<Branch> sortedBranches = new LinkedList<Branch>(branches);
+            Collections.sort(sortedBranches, new Comparator<Branch>() {
+               public int compare(Branch branch1, Branch branch2) {
+                  String name1 = branch1.getBranchName();
+                  String name2 = branch2.getBranchName();
+                  try {
+                     name1 = name1.replace(branch1.getAssociatedArtifact().getHumanReadableId() + " - ", "");
+                  } catch (Exception ex) {
+                  }
+                  try {
+                     name2 = name2.replace(branch2.getAssociatedArtifact().getHumanReadableId() + " - ", "");
+                  } catch (Exception ex) {
+                  }
+                  return name1.compareTo(name2);
+               }
+            });
+            return sortedBranches.toArray(new Branch[sortedBranches.size()]);
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Unable to get child branches", ex);
          }

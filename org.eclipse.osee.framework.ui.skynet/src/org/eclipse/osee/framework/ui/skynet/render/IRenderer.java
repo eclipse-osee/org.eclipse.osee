@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.List;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -48,7 +49,9 @@ public interface IRenderer {
 
    public boolean supportsPrint();
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception;
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception;
+
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception;
 
    public List<String> getCompareOptions() throws Exception;
 

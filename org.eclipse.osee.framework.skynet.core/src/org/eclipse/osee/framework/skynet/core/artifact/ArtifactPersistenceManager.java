@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -139,7 +137,7 @@ public class ArtifactPersistenceManager {
          "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
    //This SQL only exists to support the old change reports
    private static final String ARTIFACT_SELECT_NOT_CURRENT =
-       "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
+         "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -429,7 +427,7 @@ public class ArtifactPersistenceManager {
    public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
       return instance.getArtifacts(searchCriteria, all, branch, null);
    }
-   
+
    /**
     * This is method only exists to support the old change reports
     */
@@ -437,7 +435,7 @@ public class ArtifactPersistenceManager {
    public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
       return instance.getArtifactsNotCurrent(searchCriteria, all, branch, null);
    }
-   
+
    /**
     * This is method only exists to support the old change reports
     */
@@ -446,8 +444,8 @@ public class ArtifactPersistenceManager {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(SQL3DataType.INTEGER);
       queryParameters.add(branch.getBranchId());
-      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer);
+      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
+            branch), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer);
    }
 
    /**
@@ -457,7 +455,7 @@ public class ArtifactPersistenceManager {
     * @param artifact The artifact to acquire the attributes for.
     * @param branch The tag to get the data for.
     * @throws SQLException
- * 	@throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     * @throws OseeCoreException
     */
    public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeDataStoreException {
@@ -602,39 +600,40 @@ public class ArtifactPersistenceManager {
             SQL3DataType.INTEGER, artId);
    }
 
-   /**
-    * this method does not update the in memory model or send events. It also does not purge any child artifacts. The
-    * more full featured version of this method takes an artifact as an argument rather than and artifact id.
-    * 
-    * @param artifactId
-    * @throws SQLException
-    */
-   //   public static void purgeArtifact(int artifactId) throws SQLException {
-   //      ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT_GAMMAS, SQL3DataType.INTEGER, artifactId,
-   //            SQL3DataType.INTEGER, artifactId, SQL3DataType.INTEGER, artifactId);
-   //      ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT, SQL3DataType.INTEGER, artifactId);
-   //      // System.out.println("Purge empty transactions");
-   //      // ConnectionHandler.runPreparedUpdate(PURGE_EMPTY_TRANSACTIONS);
-   //   }
-   /**
-    * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
-    * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
-    * will also be removed from the database).
-    * 
-    * @param artifact
-    * @throws SQLException
-    */
-   //   public static void purgeArtifact(final Artifact artifact) throws SQLException {
-   //      purgeArtifact(artifact.getArtId());
-   //
-   //      System.out.println("number of children:" + artifact.getChildren().size());
-   //      for (Artifact child : artifact.getChildren()) {
-   //         purgeArtifact(child);
-   //      }
-   //
-   //      RelationManager.purgeRelationsFor(artifact);
-   //      SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Purged, instance));
-   //   }
+   public void revertAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException, SQLException {
+      revertAttribute(artifact.getBranch().getBranchId(), artifact.getArtId(), attribute.getAttrId());
+   }
+
+   public void revertAttribute(int branchId, int artId, int attributeId) throws OseeCoreException, SQLException {
+      try {
+         new RevertAttrDbTx(branchId, artId, attributeId).execute();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
+
+   private final class RevertAttrDbTx extends AbstractDbTxTemplate {
+      int branchId;
+      int artId;
+      int attributeId;
+
+      public RevertAttrDbTx(int branchId, int artId, int attributeId) {
+         this.branchId = branchId;
+         this.artId = artId;
+         this.attributeId = attributeId;
+      }
+
+      @Override
+      protected void handleTxWork() throws OseeCoreException, SQLException {
+
+      }
+
+      @Override
+      protected void handleTxFinally() throws Exception {
+         super.handleTxFinally();
+      }
+   }
+
    public void revertArtifact(Artifact artifact) throws OseeCoreException, SQLException {
       if (artifact == null) return;
       revertArtifact(artifact.getBranch().getBranchId(), artifact.getArtId());

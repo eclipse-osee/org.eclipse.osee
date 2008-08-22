@@ -11,5 +11,5 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 public enum PresentationType {
-   EDIT, DIFF, PREVIEW, PREVIEW_IN_COMPOSITE
+   EDIT, DIFF, PREVIEW, PREVIEW_IN_COMPOSITE, MERGE, MERGE_EDIT
 }

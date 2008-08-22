@@ -41,6 +41,10 @@ public class AttributeConflict extends Conflict {
    public static final String EMPTY_XML = "<w:p><w:r><w:t></w:t></w:r></w:p>";
    public final static String NO_VALUE = "";
    public final static String STREAM_DATA = "Stream data";
+   public final static String RESOLVE_MERGE_MARKUP =
+         "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
+   public final static String DIFF_MERGE_MARKUP =
+         "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    private String sourceDestDiffFile = null;
    private final int attrId;
    private final int attrTypeId;
@@ -349,10 +353,16 @@ public class AttributeConflict extends Conflict {
 
    public void setStatus(Status status) throws OseeCoreException, SQLException {
       if (status.equals(Status.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
-         throw new MergeChangesInArtifactException(
-               "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.");
+         throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
+   }
+
+   public boolean wordMarkupPresent() throws OseeCoreException, SQLException {
+      if (isWordAttribute() && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
+         return true;
+      }
+      return false;
    }
 
 }

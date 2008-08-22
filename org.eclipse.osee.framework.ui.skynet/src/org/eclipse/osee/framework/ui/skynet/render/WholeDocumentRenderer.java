@@ -132,7 +132,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -141,8 +141,8 @@ public class WholeDocumentRenderer extends FileRenderer {
       IFile newerFile;
 
       if (baseVersion != null) {
-         if (editable) {
-            baseFile = renderForDiffEdit(monitor, baseVersion, option);
+         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+            baseFile = renderForMerge(monitor, baseVersion, option, presentationType);
          } else {
             baseFile = renderForDiff(monitor, baseVersion, option);
          }
@@ -151,8 +151,8 @@ public class WholeDocumentRenderer extends FileRenderer {
       }
 
       if (newerVersion != null) {
-         if (editable) {
-            newerFile = renderForDiffEdit(monitor, newerVersion, option);
+         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+            newerFile = renderForMerge(monitor, newerVersion, option, presentationType);
          } else {
             newerFile = renderForDiff(monitor, newerVersion, option);
          }
@@ -160,13 +160,18 @@ public class WholeDocumentRenderer extends FileRenderer {
          newerFile = renderForDiff(monitor, branch, null);
       }
 
+      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType);
+   }
+
+   @Override
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {
          if (baseVersion != null) {
             String baseFileStr = baseFile.getLocation().toOSString();
             diffPath =
-                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
          } else {
             String baseFileStr = newerFile.getLocation().toOSString();
             diffPath =
@@ -177,18 +182,19 @@ public class WholeDocumentRenderer extends FileRenderer {
          diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
       }
 
-      if (editable && baseVersion != null) {
-         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs2.vbs"));
+      if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
+         compare(baseFile, newerFile, diffPath, false, plugin.getPluginFile("support/compareDocs2.vbs"));
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
       } else {
-         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs.vbs"));
+         compare(baseFile, newerFile, diffPath, presentationType != PresentationType.MERGE,
+               plugin.getPluginFile("support/compareDocs.vbs"));
       }
 
       return diffPath;
    }
 
-   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
+   public void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
 
       // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
       String cmd[] =

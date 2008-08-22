@@ -197,7 +197,8 @@ public class WordRenderer extends FileRenderer {
       getAssociatedProgram(artifact).execute(diffFile);
    }
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible, boolean editable) throws Exception {
+   @Override
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -206,8 +207,8 @@ public class WordRenderer extends FileRenderer {
       IFile newerFile;
 
       if (baseVersion != null) {
-         if (editable) {
-            baseFile = renderForDiffEdit(monitor, baseVersion, option);
+         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+            baseFile = renderForMerge(monitor, baseVersion, option, presentationType);
          } else {
             baseFile = renderForDiff(monitor, baseVersion, option);
          }
@@ -216,8 +217,8 @@ public class WordRenderer extends FileRenderer {
       }
 
       if (newerVersion != null) {
-         if (editable) {
-            newerFile = renderForDiffEdit(monitor, newerVersion, option);
+         if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
+            newerFile = renderForMerge(monitor, newerVersion, option, presentationType);
          } else {
             newerFile = renderForDiff(monitor, newerVersion, option);
          }
@@ -225,6 +226,11 @@ public class WordRenderer extends FileRenderer {
          newerFile = renderForDiff(monitor, branch, null);
       }
 
+      return compare(baseVersion, newerVersion, baseFile, newerFile, fileName, presentationType);
+   }
+
+   @Override
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {
@@ -238,16 +244,17 @@ public class WordRenderer extends FileRenderer {
                   baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
          }
       } else {
-         String baseFileStr = baseFile.getLocation().toOSString();
-         diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
+         diffPath =
+               getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
-      if (editable && baseVersion != null) {
-         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs2.vbs"));
+      if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+         compare(baseFile, newerFile, diffPath, false, plugin.getPluginFile("support/compareDocs2.vbs"));
       } else {
-         compare(baseFile, newerFile, diffPath, visible, plugin.getPluginFile("support/compareDocs.vbs"));
+         compare(baseFile, newerFile, diffPath, presentationType != PresentationType.MERGE,
+               plugin.getPluginFile("support/compareDocs.vbs"));
       }
 
       return diffPath;
@@ -261,7 +268,7 @@ public class WordRenderer extends FileRenderer {
                   "cmd",
                   "/s /c",
                   "\"" + vbDiffScript.getPath() + "\"",
-                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString() + "\" /visible:\"" + visible};
+                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:True /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString() + "\" /visible:\"" + visible};
 
       Process proc = Runtime.getRuntime().exec(cmd);
 

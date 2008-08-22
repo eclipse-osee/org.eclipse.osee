@@ -92,7 +92,9 @@ public class BranchRequest implements IHttpServerRequest {
          // SkynetAuthentication.getInstance().getUserByArtId(branch.getAuthorId()).getName());
          // branchEl.setAttribute("creationDate", "");
 
-         Collection<Branch> branches = branch.getChildBranches();
+         //TODO need to find out if this should be calling getChildBranches recursively
+         //That is how it was running before so I will continue to run it that way.
+         Collection<Branch> branches = branch.getChildBranches(true);
          if (branches.size() != 0) {
             for (Branch childBranch : branches) {
                branchEl.appendChild(createBranchElement(doc, childBranch));

@@ -164,7 +164,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          this.monitor = monitor;
          try {
             IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
-            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, true, false);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, PresentationType.DIFF);
          } catch (Exception e) {
             JournalList.add(e.getMessage());
          }
@@ -204,7 +204,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          this.monitor = monitor;
          try {
             IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
-            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, true, false);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, PresentationType.DIFF);
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);
             JournalList.add(ex.getMessage());
