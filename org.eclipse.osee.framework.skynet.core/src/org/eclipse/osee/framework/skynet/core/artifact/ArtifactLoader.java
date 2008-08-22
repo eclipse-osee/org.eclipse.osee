@@ -54,14 +54,17 @@ public final class ArtifactLoader {
    private static final String SELECT_RELATIONS =
          "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order, b_order, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
-   private static final String SELECT_ATTRIBUTES =
+   private static final String SELECT_CURRENT_ATTRIBUTES =
          "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
+
+   private static final String SELECT_HISTORICAL_ATTRIBUTES =
+       "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_tx_details txd2 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= al1.branch_id AND txd2.transaction_id = al1.branch_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = txd2.branch_id order by txd2.branch_id, al1.art_id, txd1.transaction_id, att1.attr_id desc";
 
    private static final String SELECT_CURRENT_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    private static final String SELECT_HISTORICAL_ARTIFACTS =
-         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= ? AND txd1.transaction_id = txs1.transaction_id AND txd1.branch_id = ? order by art1.art_id, txs1.transaction_id desc";
+         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_tx_details txd2 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= al1.branch_id AND txd2.transaction_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txd1.branch_id = txd2.branch_id order by art1.art_id, txs1.transaction_id desc";
 
    private static final String INSERT_JOIN_ARTIFACT =
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id) VALUES (?, ?, ?, ?)";
@@ -124,19 +127,23 @@ public final class ArtifactLoader {
          try {
             if (historical) {
                chStmt =
-                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_CURRENT_ARTIFACTS, SQL3DataType.INTEGER,
+                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.INTEGER,
                            queryId);
             } else {
                chStmt =
-                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.INTEGER,
+                     ConnectionHandler.runPreparedQuery(fetchSize, SELECT_CURRENT_ARTIFACTS, SQL3DataType.INTEGER,
                            queryId);
             }
 
             int previousArtId = -1;
             while (chStmt.next()) {
                int artId = chStmt.getRset().getInt("art_id");
-               if (historical && previousArtId != artId) {
-                  artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
+               if (historical) {
+            	   if(previousArtId != artId){
+            		   artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
+            	   }
+               }else{
+                   artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical)); 
                }
                previousArtId = artId;
             }
@@ -373,33 +380,47 @@ public final class ArtifactLoader {
    private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_ATTRIBUTES, SQL3DataType.INTEGER,
-                     queryId);
+    	  if(historical){
+    	       chStmt =
+                   ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES, SQL3DataType.INTEGER,
+                         queryId);
+    	  }else{
+    	       chStmt =
+                   ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_CURRENT_ATTRIBUTES, SQL3DataType.INTEGER,
+                         queryId);
+    	  }
+  
          ResultSet rSet = chStmt.getRset();
          Artifact artifact = null;
          int previousArtifactId = -1;
          int previousBranchId = -1;
+         int previousAttrId = -1;
+         
          while (rSet.next()) {
             int artifactId = rSet.getInt("art_id");
             int branchId = rSet.getInt("branch_id");
-            if (artifactId != previousArtifactId || branchId != previousBranchId) {
-               if (artifact != null) { // exclude the first pass because there is no previous artifact
-                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
-               }
-               previousArtifactId = artifactId;
-               previousBranchId = branchId;
-
-               artifact = ArtifactCache.getActive(artifactId, branchId);
-               if (artifact != null && artifact.isAttributesLoaded()) {
-                  artifact = null;
-               }
-            }
-            if (artifact == null) {
-               continue;
-            }
-            AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-                  rSet.getInt("attr_id"), rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
+            int attrId = rSet.getInt("attr_id");
+            
+            if(attrId != previousAttrId){
+	            if (artifactId != previousArtifactId || branchId != previousBranchId) {
+	               if (artifact != null) { // exclude the first pass because there is no previous artifact
+	                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
+	               }
+	               previousArtifactId = artifactId;
+	               previousBranchId = branchId;
+	
+	               artifact = ArtifactCache.getActive(artifactId, branchId);
+	               if (artifact != null && artifact.isAttributesLoaded()) {
+	                  artifact = null;
+	               }
+	            }
+	            if (artifact == null) {
+	               continue;
+	            }
+	            AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
+	            		attrId, rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
+	            }
+	            attrId = previousAttrId;
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);

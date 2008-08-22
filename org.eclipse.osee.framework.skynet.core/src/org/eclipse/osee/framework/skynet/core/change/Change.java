@@ -94,7 +94,11 @@ public abstract class Change implements IAdaptable {
     */
    public Artifact getArtifactCurrent() throws ArtifactDoesNotExist {
       if (artifact == null) {
-         artifact = ArtifactCache.getActive(artId, branch);
+    	  if(isHistorical()){
+    		  artifact = ArtifactCache.getHistorical(artId, getToTransactionId().getTransactionNumber());
+    	  }else{
+    		  artifact = ArtifactCache.getActive(artId, branch);
+    	  }
       }
 
       if (artifact == null) {
