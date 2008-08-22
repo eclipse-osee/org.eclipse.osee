@@ -41,6 +41,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private StringBuffer oseeCommentBuffer;
    private StringBuffer branchNameBuffer;
    private StringBuffer branchShortNameBuffer;
+   private StringBuffer rationaleBuffer;
    private Set<IExportColumnListener> exportColumnListeners;
 
    public RelationalExportItem(int priority, String name, String source, String query) {
@@ -51,6 +52,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       this.oseeCommentBuffer = new StringBuffer();
       this.branchNameBuffer = new StringBuffer();
       this.branchShortNameBuffer = new StringBuffer();
+      this.rationaleBuffer = new StringBuffer();
       this.exportColumnListeners = java.util.Collections.synchronizedSet(new HashSet<IExportColumnListener>());
    }
 
@@ -115,6 +117,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
             } else if (name.equals(ExportImportXml.BRANCH_SHORT_NAME)) {
                handleStringContent(branchShortNameBuffer, getWriteLocation(), name, resultSet,
                      ExportImportXml.BRANCH_SHORT_NAME);
+            } else if (name.equals(ExportImportXml.RATIONALE)) {
+               handleStringContent(rationaleBuffer, getWriteLocation(), name, resultSet, ExportImportXml.RATIONALE);
             } else {
                switch (meta.getColumnType(columnIndex)) {
                   case Types.TIMESTAMP:
@@ -134,7 +138,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
             }
          }
       } finally {
-         if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0 || oseeCommentBuffer.length() > 0 || branchNameBuffer.length() > 0 || branchShortNameBuffer.length() > 0) {
+         if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0 || oseeCommentBuffer.length() > 0 || branchNameBuffer.length() > 0 || branchShortNameBuffer.length() > 0 || rationaleBuffer.length() > 0) {
             ExportImportXml.endOpenedPartialXmlNode(appendable);
             if (binaryContentBuffer.length() > 0) {
                appendable.append(binaryContentBuffer.toString());
@@ -155,6 +159,10 @@ public class RelationalExportItem extends AbstractDbExportItem {
             if (branchShortNameBuffer.length() > 0) {
                appendable.append(branchShortNameBuffer.toString());
                branchShortNameBuffer.delete(0, branchShortNameBuffer.length());
+            }
+            if (rationaleBuffer.length() > 0) {
+               appendable.append(rationaleBuffer.toString());
+               rationaleBuffer.delete(0, rationaleBuffer.length());
             }
             ExportImportXml.closeXmlNode(appendable, ExportImportXml.ENTRY);
          } else {

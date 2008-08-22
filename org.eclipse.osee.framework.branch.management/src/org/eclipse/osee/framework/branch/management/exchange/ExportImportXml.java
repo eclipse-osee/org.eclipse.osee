@@ -39,6 +39,7 @@ public class ExportImportXml {
    public static final String SOURCE = "source";
    public static final String DB_SCHEMA = "db.metadata";
    public static final String PART_OF_BRANCH = "part_of_branch_id";
+   public static final String RATIONALE = "rationale";
 
    private ExportImportXml() {
    }
