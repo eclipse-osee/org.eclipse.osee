@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class OseeProperties {
@@ -105,10 +103,6 @@ public class OseeProperties {
 
    public boolean isEmailMe() {
       return System.getProperty("EmailMe") != null;
-   }
-
-   public boolean isDisableOseeUpdateCheck() {
-      return System.getProperty("DisableOseeUpdateCheck") != null;
    }
 
    public boolean isPromptEnabled() {
