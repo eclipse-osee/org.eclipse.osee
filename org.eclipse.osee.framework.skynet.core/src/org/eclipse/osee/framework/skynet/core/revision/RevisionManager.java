@@ -519,6 +519,8 @@ public class RevisionManager implements IEventReceiver {
     */
    private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
+      TransactionId fromTransactionId;
+      TransactionId toTransactionId;
       try {
          boolean hasBranch = sourceBranch != null;
          //Changes per a branch
@@ -526,11 +528,20 @@ public class RevisionManager implements IEventReceiver {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, SQL3DataType.INTEGER,
                         sourceBranch.getBranchId());
+            
+            Pair<TransactionId, TransactionId> branchStartEndTransaction =
+                TransactionIdManager.getStartEndPoint(sourceBranch);
+
+          fromTransactionId = branchStartEndTransaction.getKey();
+          toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, SQL3DataType.INTEGER,
                         transactionId.getTransactionNumber());
+            
+            toTransactionId = transactionId;
+            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -543,7 +554,7 @@ public class RevisionManager implements IEventReceiver {
                artIds.add(aArtId);
                artIds.add(bArtId);
 
-               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
+               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, toTransactionId, fromTransactionId,
                      ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
                      resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
                      RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")), !hasBranch));
