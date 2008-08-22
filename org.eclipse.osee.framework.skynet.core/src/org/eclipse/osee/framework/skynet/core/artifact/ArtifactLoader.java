@@ -410,7 +410,11 @@ public final class ArtifactLoader {
 	               previousBranchId = branchId;
 	               previousAttrId = attrId;
 	
-	               artifact = ArtifactCache.getActive(artifactId, branchId);
+	               if(historical){
+		               artifact = ArtifactCache.getHistorical(artifactId, branchId);
+	               }else{
+		               artifact = ArtifactCache.getActive(artifactId, branchId);
+	               }
 	               if (artifact != null && artifact.isAttributesLoaded()) {
 	                  artifact = null;
 	               }
