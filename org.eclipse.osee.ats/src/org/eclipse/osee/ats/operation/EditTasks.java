@@ -119,7 +119,7 @@ public class EditTasks extends AbstractBlam {
                            SkynetAuthentication.getUser())) {
                         continue;
                      }
-                     // If don't want completed and cancelled and is such, skip this task
+                     // If don't want completed and canceled and is such, skip this task
                      if (!includeCompletedCancelled && taskArt.getSmaMgr().isCancelledOrCompleted()) {
                         continue;
                      }
