@@ -147,14 +147,13 @@ class CommitJob extends Job {
          monitor.beginTask("Acquire from branch transactions", 100);
 
          User userToBlame = SkynetAuthentication.getUser();
+         //TODO Load new and deleted artifact so that they can be compressed out of the commit transaction
+         //select av1.art_id from osee_define_txs tx1, osee_define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_artifact_version av1, osee_Define_artifact_version av2 where td1.branch_id = 874 AND td1.tx_type = 0 AND td1.transaction_id = tx1.transaction_id AND tx1.mod_type = 1 AND tx1.gamma_id = av1.gamma_id AND td2.branch_id = 874 AND td2.tx_type = 0 AND td2.transaction_id = tx2.transaction_id AND tx2.mod_type = 3 AND tx2.tx_current = 2 AND tx2.gamma_id = av2.gamma_id AND av1.art_id = av2.art_id;
 
          ResultSet resultSet =
                ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, SQL3DataType.INTEGER, fromBranch.getBranchId(),
                      SQL3DataType.INTEGER, fromBranch.getBranchId()).getRset();
 
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
          while (resultSet.next()) {
             ArtifactPersistenceManager.getInstance().revertArtifact(resultSet.getInt("branch_id"),
                   resultSet.getInt("art_id"));
@@ -169,61 +168,40 @@ class CommitJob extends Job {
             //Commit transaction instead of a branch
          }
 
-         monitor.worked(10);
+         monitor.worked(25);
          monitor.setTaskName("Commit transactions");
 
          int insertCount =
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ATTRIBUTES, SQL3DataType.INTEGER,
                      toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
 
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTES, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ARTIFACTS, SQL3DataType.INTEGER,
                      toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACTS, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_RELATIONS, SQL3DataType.INTEGER,
                      toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
-         monitor.worked(10);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
          //and modified on the same branch.
 
          ConnectionHandler.runPreparedUpdate(UPDATE_MODIFICATION_ID, SQL3DataType.INTEGER, newTransactionNumber,
                SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
-         }
+
          //add in all merge branch changes over any other source branch changes.
          if (conflictManager.originalConflictsExist()) {
             for (Conflict conflict : conflictManager.getOriginalConflicts()) {
@@ -232,12 +210,9 @@ class CommitJob extends Job {
                         conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                         conflict.getSourceGamma());
                   conflict.setStatus(Conflict.Status.COMMITTED);
-                  if (monitor.isCanceled()) {
-                     throw new OseeCoreException("Commit Operation Canceled by User");
-                  }
                }
+               //TODO add source, destination values for merge branch history
             }
-            monitor.worked(10);
             //insert transaction id into the branch table
             ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTION_ID, SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, fromBranch.getBranchId(), SQL3DataType.INTEGER,
@@ -245,7 +220,6 @@ class CommitJob extends Job {
 
          }
 
-         monitor.worked(10);
          if (insertCount > 0) {
             Object[] dataList =
                   new Object[] {SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
@@ -260,10 +234,6 @@ class CommitJob extends Job {
 
          } else {
             throw new IllegalStateException(" A branch can not be commited without any changes made.");
-         }
-
-         if (monitor.isCanceled()) {
-            throw new OseeCoreException("Commit Operation Canceled by User");
          }
          success = true;
          monitor.done();
