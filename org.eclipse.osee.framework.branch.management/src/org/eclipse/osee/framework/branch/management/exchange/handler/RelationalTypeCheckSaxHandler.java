@@ -11,6 +11,11 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +36,33 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
 
    @Override
    protected void processData(Map<String, String> fieldMap) throws Exception {
-      System.out.println(String.format("Table: [%s] Data: %s ", getMetaData(), fieldMap));
+      //      System.out.println(String.format("Table: [%s] Data: %s ", getMetaData(), fieldMap));
+      String typeField = "art_type_id";
+      String nameField = "name";
+      String name = fieldMap.get(nameField);
+      String typeId = fieldMap.get(typeField);
+      if (Strings.isValid(name)) {
+         if (!Strings.isValid(typeId)) {
+            typeField = "attr_type_id";
+         }
+      } else {
+         typeField = "rel_link_type_id";
+         nameField = "type_name";
+      }
+      name = fieldMap.get(nameField);
+      typeId = fieldMap.get(typeField);
+      Long original = Strings.isValid(typeId) ? new Long(typeId) : -1;
+
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt =
+               ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s =?",
+                     typeField, getMetaData().getTableName(), nameField), SQL3DataType.VARCHAR, name);
+         if (chStmt.next()) {
+            getTranslator().addMappingTo(typeField, original, chStmt.getRset().getLong(1));
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
+import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchImport;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -26,5 +27,17 @@ public class BranchImport implements IBranchImport {
    public void importBranch(File fileToImport, Options options, int... branchesToImport) throws Exception {
       ImportController importController = new ImportController(fileToImport, options, branchesToImport);
       importController.execute();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.IBranchImport#importBranch()
+    */
+   @Override
+   public void importBranch(File fileToImport, Options options, List<Integer> branchesToImport) throws Exception {
+      int[] branchIdsArray = new int[branchesToImport.size()];
+      for (int index = 0; index < branchesToImport.size(); index++) {
+         branchIdsArray[index] = branchesToImport.get(index);
+      }
+      importBranch(fileToImport, options, branchIdsArray);
    }
 }

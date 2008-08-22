@@ -14,10 +14,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
@@ -26,7 +26,9 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalS
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.Translator;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -56,6 +58,10 @@ final class ImportController extends DbTransaction {
       Translator translator = new Translator();
       translator.configure(options);
 
+      if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
+         throw new IllegalStateException("DO NOT IMPORT ON PRODUCTION");
+      }
+
       ZipFile zipFile = null;
       try {
          zipFile = new ZipFile(importFile);
@@ -66,21 +72,25 @@ final class ImportController extends DbTransaction {
          processImportFile(zipFile, manifestHandler.getMetadataFile(), metadataHandler);
 
          BranchDataSaxHandler branchDataHandler = BranchDataSaxHandler.newCacheAllDataBranchDataSaxHandler();
-         processImportFile(zipFile, manifestHandler.getBranchFile(), branchDataHandler);
-
-         if (branchesToImport != null && branchesToImport.length > 0) {
-            if (!branchDataHandler.areAvailable(branchesToImport)) {
-               throw new IllegalArgumentException(String.format(
-                     "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
-                     branchesToImport, branchDataHandler.getBranchData()));
-            }
+         branchDataHandler.setConnection(connection);
+         MetaData metadata = metadataHandler.getMetadata(manifestHandler.getBranchFile().getSource());
+         if (metadata == null) {
+            throw new IllegalStateException("Invalid metadata for branch table");
          }
+         branchDataHandler.setTranslator(translator);
+         branchDataHandler.setMetaData(metadata);
+         processImportFile(zipFile, manifestHandler.getBranchFile().getFileName(), branchDataHandler);
+         branchDataHandler.setSelectedBranchIds(branchesToImport);
+         branchDataHandler.store();
 
          RelationalTypeCheckSaxHandler typeCheckHandler =
-               RelationalTypeCheckSaxHandler.newCacheAllDataRelationalTypeCheckSaxHandler();
+               RelationalTypeCheckSaxHandler.newLimitedCacheRelationalTypeCheckSaxHandler(1000);
+         typeCheckHandler.configure(options);
 
-         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.newCacheAllDataRelationalSaxHandler();
-         relationalSaxHandler.setBranchesToImport(branchesToImport);
+         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.newLimitedCacheRelationalSaxHandler(1000);
+         relationalSaxHandler.setSelectedBranchIds(branchesToImport);
+         relationalSaxHandler.configure(options);
+         relationalSaxHandler.setZipFile(zipFile);
 
          processImportFiles(connection, zipFile, metadataHandler, translator, manifestHandler.getTypeFiles(),
                typeCheckHandler);
@@ -95,16 +105,30 @@ final class ImportController extends DbTransaction {
       }
    }
 
-   private void processImportFiles(Connection connection, ZipFile zipFile, MetaDataSaxHandler metaData, Translator translator, Collection<ImportFile> importFiles, BaseDbSaxHandler handler) throws Exception {
-      handler.setTranslator(translator);
-      handler.setConnection(connection);
+   private void processImportFiles(Connection connection, ZipFile zipFile, MetaDataSaxHandler metaData, Translator translator, Collection<ImportFile> importFiles, RelationalSaxHandler handler) throws Exception {
       for (ImportFile item : importFiles) {
          MetaData metadata = metaData.getMetadata(item.getSource());
+         if (metadata == null) {
+            throw new IllegalStateException(String.format("Invalid metadata for [%s]", item.getSource()));
+         }
          handler.setMetaData(metadata);
+         handler.setTranslator(translator);
+         handler.setConnection(connection);
+
+         // REMOVE THIS LATER
+         if (item.getPriority() > 0) {
+            System.out.println(String.format("Importing: [%s] Meta: %s", item.getSource(), metadata.getColumnNames()));
+            clearTableData(connection, item.getSource());
+         }
          processImportFile(zipFile, item.getFileName(), handler);
          handler.store();
          handler.reset();
       }
+   }
+
+   private void clearTableData(Connection connection, String source) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s", source));
+
    }
 
    private void processImportFile(ZipFile zipFile, String fileToProcess, ContentHandler handler) throws Exception {
@@ -121,5 +145,4 @@ final class ImportController extends DbTransaction {
          }
       }
    }
-
 }

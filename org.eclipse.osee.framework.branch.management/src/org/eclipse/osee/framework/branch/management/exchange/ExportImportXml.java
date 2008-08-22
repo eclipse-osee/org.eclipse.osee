@@ -25,6 +25,9 @@ public class ExportImportXml {
    public static final String ENTRY = "entry";
    public static final String BINARY_CONTENT = "binaryContent";
    public static final String STRING_CONTENT = "stringContent";
+   public static final String OSEE_COMMENT = "osee_comment";
+   public static final String BRANCH_NAME = "branch_name";
+   public static final String BRANCH_SHORT_NAME = "short_name";
    public static final String TABLE = "table";
    public static final String TABLE_NAME = "name";
    public static final String COLUMN = "column";
@@ -45,6 +48,10 @@ public class ExportImportXml {
 
    public static void openXmlNode(Appendable appendable, String nodeName) throws IOException {
       appendable.append(String.format("<%s>\n", nodeName));
+   }
+
+   public static void openXmlNodeNoNewline(Appendable appendable, String nodeName) throws IOException {
+      appendable.append(String.format("<%s>", nodeName));
    }
 
    public static void openPartialXmlNode(Appendable appendable, String nodeName) throws IOException {

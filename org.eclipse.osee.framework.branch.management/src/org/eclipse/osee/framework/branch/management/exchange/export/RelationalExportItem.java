@@ -40,6 +40,9 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private String query;
    private StringBuffer binaryContentBuffer;
    private StringBuffer stringContentBuffer;
+   private StringBuffer oseeCommentBuffer;
+   private StringBuffer branchNameBuffer;
+   private StringBuffer branchShortNameBuffer;
    private Set<IExportColumnListener> exportColumnListeners;
 
    public RelationalExportItem(int priority, String name, String source, String query) {
@@ -47,13 +50,19 @@ public class RelationalExportItem extends AbstractDbExportItem {
       this.query = query;
       this.binaryContentBuffer = new StringBuffer();
       this.stringContentBuffer = new StringBuffer();
+      this.oseeCommentBuffer = new StringBuffer();
+      this.branchNameBuffer = new StringBuffer();
+      this.branchShortNameBuffer = new StringBuffer();
       this.exportColumnListeners = java.util.Collections.synchronizedSet(new HashSet<IExportColumnListener>());
    }
 
    public String getQuery() {
-      StringBuffer toReturn = new StringBuffer(query);
-      if (getOptions().getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name()) && query.contains("txd1")) {
-         toReturn.append(" AND txd1.TX_TYPE = 0");
+      if (query.contains("%s")) {
+         String options = "";
+         if (getOptions().getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name()) && query.contains("txd1")) {
+            options = " AND txd1.TX_TYPE = 0";
+         }
+         return String.format(query, options);
       }
       return query;
    }
@@ -99,7 +108,15 @@ public class RelationalExportItem extends AbstractDbExportItem {
             if (name.equals("uri")) {
                handleBinaryContent(binaryContentBuffer, getWriteLocation(), name, resultSet);
             } else if (name.equals("value")) {
-               handleStringContent(stringContentBuffer, getWriteLocation(), name, resultSet);
+               handleStringContent(stringContentBuffer, getWriteLocation(), name, resultSet,
+                     ExportImportXml.STRING_CONTENT);
+            } else if (name.equals(ExportImportXml.OSEE_COMMENT)) {
+               handleStringContent(oseeCommentBuffer, getWriteLocation(), name, resultSet, ExportImportXml.OSEE_COMMENT);
+            } else if (name.equals(ExportImportXml.BRANCH_NAME)) {
+               handleStringContent(branchNameBuffer, getWriteLocation(), name, resultSet, ExportImportXml.BRANCH_NAME);
+            } else if (name.equals(ExportImportXml.BRANCH_SHORT_NAME)) {
+               handleStringContent(branchShortNameBuffer, getWriteLocation(), name, resultSet,
+                     ExportImportXml.BRANCH_SHORT_NAME);
             } else {
                switch (meta.getColumnType(columnIndex)) {
                   case Types.TIMESTAMP:
@@ -119,7 +136,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
             }
          }
       } finally {
-         if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0) {
+         if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0 || oseeCommentBuffer.length() > 0 || branchNameBuffer.length() > 0 || branchShortNameBuffer.length() > 0) {
             ExportImportXml.endOpenedPartialXmlNode(appendable);
             if (binaryContentBuffer.length() > 0) {
                appendable.append(binaryContentBuffer.toString());
@@ -129,6 +146,18 @@ public class RelationalExportItem extends AbstractDbExportItem {
                appendable.append(stringContentBuffer.toString());
                stringContentBuffer.delete(0, stringContentBuffer.length());
             }
+            if (oseeCommentBuffer.length() > 0) {
+               appendable.append(oseeCommentBuffer.toString());
+               oseeCommentBuffer.delete(0, oseeCommentBuffer.length());
+            }
+            if (branchNameBuffer.length() > 0) {
+               appendable.append(branchNameBuffer.toString());
+               branchNameBuffer.delete(0, branchNameBuffer.length());
+            }
+            if (branchShortNameBuffer.length() > 0) {
+               appendable.append(branchShortNameBuffer.toString());
+               branchShortNameBuffer.delete(0, branchShortNameBuffer.length());
+            }
             ExportImportXml.closeXmlNode(appendable, ExportImportXml.ENTRY);
          } else {
             ExportImportXml.closePartialXmlNode(appendable);
@@ -137,7 +166,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    }
 
    private void handleBinaryContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet) throws Exception {
-      String uriData = resultSet.getString("uri");
+      String uriData = resultSet.getString(name);
       if (Strings.isValid(uriData)) {
          String relativePath = exportBinaryDataTo(tempFolder, uriData);
          ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.BINARY_CONTENT);
@@ -146,12 +175,12 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleStringContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet) throws Exception {
-      String stringValue = resultSet.getString("value");
+   private void handleStringContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet, String tag) throws Exception {
+      String stringValue = resultSet.getString(name);
       if (Strings.isValid(stringValue)) {
-         ExportImportXml.openXmlNode(appendable, ExportImportXml.STRING_CONTENT);
+         ExportImportXml.openXmlNodeNoNewline(appendable, tag);
          Xml.writeAsCdata(appendable, stringValue);
-         ExportImportXml.closeXmlNode(appendable, ExportImportXml.STRING_CONTENT);
+         ExportImportXml.closeXmlNode(appendable, tag);
       }
    }
 

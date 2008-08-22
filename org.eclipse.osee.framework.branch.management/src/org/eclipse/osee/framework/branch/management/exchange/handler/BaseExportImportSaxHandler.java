@@ -39,8 +39,6 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       try {
          if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
             handleEntry(attributes);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
-            handleStringContent(attributes);
          } else if (localName.equalsIgnoreCase(ExportImportXml.BINARY_CONTENT)) {
             handleBinaryContent(attributes);
          }
@@ -55,12 +53,16 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    @Override
    public void endElementFound(String uri, String localName, String name) throws SAXException {
       try {
-         if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
+         if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
+            finishStringContent(ExportImportXml.STRING_CONTENT);
+         } else if (localName.equalsIgnoreCase(ExportImportXml.OSEE_COMMENT)) {
+            finishStringContent(ExportImportXml.OSEE_COMMENT);
+         } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_NAME)) {
+            finishStringContent(ExportImportXml.BRANCH_NAME);
+         } else if (localName.equalsIgnoreCase(ExportImportXml.BRANCH_SHORT_NAME)) {
+            finishStringContent(ExportImportXml.BRANCH_SHORT_NAME);
+         } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
             finishEntry();
-         } else if (localName.equalsIgnoreCase(ExportImportXml.STRING_CONTENT)) {
-            finishStringContent();
-         } else if (localName.equalsIgnoreCase(ExportImportXml.BINARY_CONTENT)) {
-            finishBinaryContent();
          }
       } catch (Exception ex) {
          throw new IllegalStateException(ex);
@@ -83,10 +85,6 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.put(BINARY_CONTENT_LOCATION, attributes.getValue("location"));
    }
 
-   private void handleStringContent(Attributes attributes) {
-      // Do Nothing
-   }
-
    private void finishEntry() {
       if (this.dataMap.isEmpty() != true) {
          try {
@@ -98,12 +96,8 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.clear();
    }
 
-   private void finishBinaryContent() {
-      // Do Nothing
-   }
-
-   private void finishStringContent() {
-      this.dataMap.put(STRING_CONTENT, getContents());
+   private void finishStringContent(String name) {
+      this.dataMap.put(name, getContents());
    }
 
    protected abstract void processData(Map<String, String> dataMap) throws Exception;

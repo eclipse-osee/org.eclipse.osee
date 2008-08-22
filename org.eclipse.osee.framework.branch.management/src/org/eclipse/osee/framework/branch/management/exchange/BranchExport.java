@@ -34,22 +34,22 @@ public class BranchExport implements IBranchExport {
          "SELECT br1.* FROM osee_define_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=?";
 
    private static final String ATTRIBUTE_TABLE_QUERY =
-         "SELECT attr1.*, txd1.branch_id as part_of_branch_id FROM osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT attr1.ART_ID, attr1.ATTR_ID, attr1.MODIFICATION_ID, attr1.VALUE, attr1.GAMMA_ID, attr1.ATTR_TYPE_ID, attr1.URI, txd1.branch_id as part_of_branch_id FROM osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY attr1.ART_ID, attr1.ATTR_ID, attr1.MODIFICATION_ID, attr1.VALUE, attr1.GAMMA_ID, attr1.ATTR_TYPE_ID, attr1.URI, txd1.branch_id";
 
    private static final String RELATION_LINK_TABLE_QUERY =
-         "SELECT rel1.*, txd1.branch_id as part_of_branch_id FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT rel1.GAMMA_ID, rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.MODIFICATION_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID, rel1.A_ORDER, rel1.B_ORDER, txd1.branch_id as part_of_branch_id FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY rel1.GAMMA_ID, rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.MODIFICATION_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID, rel1.A_ORDER, rel1.B_ORDER, txd1.branch_id";
 
    private static final String TX_DETAILS_TABLE_QUERY =
-         "SELECT txd1.*, txd1.branch_id as part_of_branch_id FROM osee_define_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT txd1.TIME, txd1.TRANSACTION_ID, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE, txd1.branch_id as part_of_branch_id FROM osee_define_tx_details txd1, osee_join_export_import jex1 WHERE txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY txd1.TIME, txd1.TRANSACTION_ID, txd1.AUTHOR, txd1.OSEE_COMMENT, txd1.BRANCH_ID, txd1.COMMIT_ART_ID, txd1.TX_TYPE, txd1.branch_id";
 
    private static final String TXS_TABLE_QUERY =
-         "SELECT txs1.*, txd1.branch_id as part_of_branch_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT txs1.TRANSACTION_ID, txs1.GAMMA_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txd1.branch_id as part_of_branch_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY txs1.TRANSACTION_ID, txs1.GAMMA_ID, txs1.TX_CURRENT, txs1.MOD_TYPE, txd1.branch_id";
 
    private static final String ARTIFACT_TABLE_QUERY =
-         "SELECT art1.*, txd1.branch_id as part_of_branch_id FROM osee_define_artifact art1, osee_define_artifact_version artv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE art1.art_id = artv1.art_id AND artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT art1.GUID, art1.ART_ID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID, txd1.branch_id as part_of_branch_id FROM osee_define_artifact art1, osee_define_artifact_version artv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE art1.art_id = artv1.art_id AND artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY art1.GUID, art1.ART_ID, art1.HUMAN_READABLE_ID, art1.ART_TYPE_ID, txd1.branch_id";
 
    private static final String ARTIFACT_VERSION_QUERY =
-         "SELECT artv1.*, txd1.branch_id as part_of_branch_id FROM osee_define_artifact_version artv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "SELECT artv1.ART_ID, artv1.MODIFICATION_ID, artv1.GAMMA_ID, txd1.branch_id as part_of_branch_id FROM osee_define_artifact_version artv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_join_export_import jex1 WHERE artv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s GROUP BY artv1.ART_ID, artv1.MODIFICATION_ID, artv1.GAMMA_ID, txd1.branch_id";
 
    private static final String ARTIFACT_TYPE_QUERY =
          "SELECT type1.name, type1.art_type_id FROM osee_define_artifact_type type1, osee_join_export_import jex1 WHERE type1.art_type_id = jex1.id1 AND jex1.query_id = ?";
@@ -92,10 +92,11 @@ public class BranchExport implements IBranchExport {
 
       items.add(new RelationalExportItemWithType(4, "osee.artifact.data", SkynetDatabase.ARTIFACT_TABLE.toString(),
             ARTIFACT_TYPE_ID, ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
-      items.add(new RelationalExportItemWithType(6, "osee.attribute.data", SkynetDatabase.ATTRIBUTE_TABLE.toString(),
-            ATTRIBUTE_TYPE_ID, ATTRIBUTE_TABLE_QUERY, ATTRIBUTE_TYPE_QUERY));
+      items.add(new RelationalExportItemWithType(6, "osee.attribute.data",
+            SkynetDatabase.ATTRIBUTE_VERSION_TABLE.toString(), ATTRIBUTE_TYPE_ID, ATTRIBUTE_TABLE_QUERY,
+            ATTRIBUTE_TYPE_QUERY));
       items.add(new RelationalExportItemWithType(7, "osee.relation.link.data",
-            SkynetDatabase.RELATION_LINK_TABLE.toString(), RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY,
+            SkynetDatabase.RELATION_LINK_VERSION_TABLE.toString(), RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY,
             RELATION_TYPE_QUERY));
       return items;
    }

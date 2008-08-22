@@ -18,6 +18,21 @@ public class DataToSql {
    private DataToSql() {
    }
 
+   public static Object[] toDataArray(MetaData metadata, Map<String, Object> dataMap) {
+      int notNullCount = 0;
+      Object[] data = new Object[metadata.getColumnSize()];
+      int index = 0;
+      for (String columnName : metadata.getColumnNames()) {
+         Object dataValue = dataMap.get(columnName);
+         data[index] = dataValue;
+         if (dataValue != null) {
+            notNullCount++;
+         }
+         index++;
+      }
+      return notNullCount > 0 ? data : null;
+   }
+
    public static Object[] toDataArray(Connection connection, MetaData metadata, Translator translator, Map<String, String> fieldMap) throws Exception {
       int notNullCount = 0;
       Object[] data = new Object[metadata.getColumnSize()];

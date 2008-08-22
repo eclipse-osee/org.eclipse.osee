@@ -26,7 +26,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    private List<ImportFile> filesToImport;
    private List<ImportFile> typesToCheck;
    private String metadataFile;
-   private String branchFile;
+   private ImportFile branchFile;
 
    public ManifestSaxHandler() {
       super();
@@ -48,8 +48,8 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          } else {
             if (priority > 0) {
                ImportFile importFile = new ImportFile(fileName, source, priority);
-               if (source.equals(SkynetDatabase.BRANCH_TABLE.toString())) {
-                  branchFile = fileName;
+               if (source.equals(SkynetDatabase.BRANCH_TABLE.toString().toLowerCase())) {
+                  branchFile = importFile;
                } else {
                   filesToImport.add(importFile);
                }
@@ -61,7 +61,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
-   public String getBranchFile() {
+   public ImportFile getBranchFile() {
       return branchFile;
    }
 

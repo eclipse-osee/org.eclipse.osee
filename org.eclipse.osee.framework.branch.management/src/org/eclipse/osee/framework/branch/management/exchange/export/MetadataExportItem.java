@@ -42,6 +42,10 @@ public class MetadataExportItem extends AbstractDbExportItem {
          for (AbstractExportItem item : exportItems) {
             if (!item.equals(this)) {
                processMetaData(appendable, metaData, item.getSource());
+               if (item instanceof RelationalExportItemWithType) {
+                  AbstractExportItem typeItem = ((RelationalExportItemWithType) item).getTypeItem();
+                  processMetaData(appendable, metaData, typeItem.getSource());
+               }
             }
          }
       } finally {

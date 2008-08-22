@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -81,21 +79,28 @@ public class Translator {
       if (original != null && !useOriginalIds) {
          IdTranslator translator = translatorMap.get(name.toLowerCase());
          if (translator != null) {
-            toReturn = translator.getId(connection, (Integer) original);
+            toReturn = translator.getId(connection, original);
          }
       }
       return toReturn;
    }
 
+   public void addMappingTo(String name, Long original, Long newValue) {
+      IdTranslator translator = translatorMap.get(name.toLowerCase());
+      if (translator != null) {
+         translator.idMap.put(original, newValue);
+      }
+   }
+
    private final class IdTranslator {
       private String sequenceName;
       private Set<String> aliases;
-      private ExportImportJoinQuery joinQuery;
+      private Map<Long, Long> idMap;
 
       private IdTranslator(String sequenceName, String... aliases) {
          this.sequenceName = sequenceName;
          this.aliases = new HashSet<String>();
-         this.joinQuery = JoinUtility.createExportImportJoinQuery();
+         this.idMap = new HashMap<Long, Long>();
          if (aliases != null && aliases.length > 0) {
             for (String alias : aliases) {
                this.aliases.add(alias.toLowerCase());
@@ -103,12 +108,33 @@ public class Translator {
          }
       }
 
-      public Integer getId(Connection connection, int original) throws Exception {
-         ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery();
-         joinQuery.getQueryId();
-         long newData = Query.getNextSeqVal(getSequence());
-         joinQuery.add(original, newData);
-         return original;
+      public Object getId(Connection connection, Object original) throws Exception {
+         Long orignalLong = null;
+         if (original instanceof Double) {
+            orignalLong = ((Double) original).longValue();
+         } else if (original instanceof Integer) {
+            orignalLong = ((Integer) original).longValue();
+         } else if (original instanceof Long) {
+            orignalLong = ((Long) original).longValue();
+         } else {
+            System.out.println("Error here: " + original.getClass().getName());
+         }
+         Long newVersion = this.idMap.get(orignalLong);
+         if (newVersion == null) {
+            newVersion = (long) Query.getNextSeqVal(getSequence());
+            idMap.put(orignalLong, newVersion);
+         }
+         Object toReturn = newVersion;
+         if (original instanceof Double) {
+            toReturn = Double.valueOf((double) newVersion);
+         } else if (original instanceof Integer) {
+            toReturn = newVersion.intValue();
+         } else if (original instanceof Long) {
+            toReturn = newVersion;
+         } else {
+            System.out.println("Error here: " + original.getClass().getName());
+         }
+         return toReturn;
       }
 
       public String getSequence() {

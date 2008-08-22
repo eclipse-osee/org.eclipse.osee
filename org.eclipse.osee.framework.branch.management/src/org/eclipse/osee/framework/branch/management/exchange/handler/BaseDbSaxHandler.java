@@ -11,10 +11,11 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -27,6 +28,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private MetaData metadata;
    private boolean isCacheAll;
    private Translator translator;
+   private boolean exclueBaselineTxs;
 
    protected BaseDbSaxHandler(boolean isCacheAll, int cacheLimit) {
       super();
@@ -34,12 +36,23 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
          throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
                cacheLimit));
       }
+      this.exclueBaselineTxs = false;
       this.translator = null;
       this.metadata = null;
       this.connection = null;
       this.isCacheAll = isCacheAll;
       this.cacheLimit = cacheLimit;
       this.data = new ArrayList<Object[]>();
+   }
+
+   public void configure(Options options) {
+      if (options != null) {
+         exclueBaselineTxs = options.getBoolean(ImportOptions.EXCLUDE_BASELINE_TXS.name());
+      }
+   }
+
+   protected boolean shouldExcludeBaselineTxs() {
+      return exclueBaselineTxs;
    }
 
    public void setMetaData(MetaData metadata) {
@@ -74,9 +87,9 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   public void store() throws SQLException {
+   protected void store(Connection connection) throws Exception {
       if (this.data.isEmpty() != true) {
-         ConnectionHandler.runPreparedUpdate(getConnection(), getMetaData().getQuery(), this.data);
+         ConnectionHandler.runPreparedUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();
       }
    }

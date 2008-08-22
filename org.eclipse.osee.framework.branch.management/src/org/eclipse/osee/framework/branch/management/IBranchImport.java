@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management;
 
 import java.io.File;
+import java.util.List;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -20,4 +21,5 @@ public interface IBranchImport {
 
    public void importBranch(File fileToImport, Options options, int... branchesToImport) throws Exception;
 
+   public void importBranch(File fileToImport, Options options, List<Integer> branchesToImport) throws Exception;
 }

@@ -34,16 +34,21 @@ public class BranchImportWorker extends BaseCmdWorker {
    @Override
    protected void doWork(long startTime) throws Exception {
       String arg = null;
+      int count = 0;
       boolean excludeBaselineTxs = false;
+      List<Integer> branchIds = new ArrayList<Integer>();
       List<File> importFiles = new ArrayList<File>();
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
             if (arg.equals("-excludeBaselineTxs")) {
                excludeBaselineTxs = true;
-            } else if (!arg.startsWith("-")) {
+            } else if (count == 0 && !arg.startsWith("-")) {
                importFiles.add(new File(arg));
+            } else {
+               branchIds.add(new Integer(arg));
             }
+            count++;
          }
       } while (isValidArg(arg));
 
@@ -62,7 +67,7 @@ public class BranchImportWorker extends BaseCmdWorker {
       Options options = new Options();
       options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), excludeBaselineTxs);
       for (File fileToImport : importFiles) {
-         Activator.getInstance().getBranchImport().importBranch(fileToImport, options);
+         Activator.getInstance().getBranchImport().importBranch(fileToImport, options, branchIds);
       }
    }
 }
