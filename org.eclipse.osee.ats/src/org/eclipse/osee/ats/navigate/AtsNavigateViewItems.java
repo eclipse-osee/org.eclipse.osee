@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
+import org.eclipse.osee.ats.operation.EditTasksNavigateItem;
 import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -96,6 +97,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       return new MyWorldSearchItem("My World", SkynetAuthentication.getUser());
    }
 
+   @Override
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
@@ -163,6 +165,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(teamItem);
 
       XNavigateItem taskItem = new XNavigateItem(null, "Tasks");
+      new EditTasksNavigateItem(taskItem);
       new SearchNavigateItem(taskItem, new EditTasksByTeamVersionSearchItem(null, true));
       new EditTasksBySelectedWorkflows(taskItem);
       new EditTasksByGroup(taskItem);
