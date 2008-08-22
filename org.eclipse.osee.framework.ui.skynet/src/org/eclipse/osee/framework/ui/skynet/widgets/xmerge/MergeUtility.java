@@ -75,6 +75,8 @@ public class MergeUtility {
          Pattern.compile("wsp:rsidP=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern findSetRsidRDefault =
          Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern amlTerminatingDefault =
+         Pattern.compile("aml:id[^\\>]*?/", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
@@ -248,21 +250,6 @@ public class MergeUtility {
 
                Jobs.startJob(job);
 
-               //               String sourceChangeFile =
-               //                     MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-               //                           attributeConflict.getSourceArtifact(), null);
-               //               String destChangeFile =
-               //                     MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
-               //                           attributeConflict.getDestArtifact(), null);
-               //               changeAuthorinWord("Source", sourceChangeFile, 2, 12345678, 55555555);
-               //               changeAuthorinWord("Destination", destChangeFile, 2, 56781234, 55555555);
-               //               MergeUtility.mergeEditableDiffFiles(
-               //                     attributeConflict.getArtifact(),
-               //                     sourceChangeFile,
-               //                     destChangeFile,
-               //                     "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + (new Date()).toString().replaceAll(
-               //                           ":", ";") + ".xml", true, true);
-               //               attributeConflict.markStatusToReflectEdit();
             } else if (response == 2) {
                RendererManager.getInstance().editInJob(attributeConflict.getArtifact(), "EDIT_ARTIFACT");
                attributeConflict.markStatusToReflectEdit();
@@ -328,7 +315,7 @@ public class MergeUtility {
                }
                builder.append("<aml:annotation");
             } else {
-               if (!(string.contains("Word.Deletion\"/") || string.contains("Word.Insertion\"/"))) {
+               if (!amlTerminatingDefault.matcher(string).find()) {
                   builder.append("</aml:annotation");
                } else {
                   builder.append("<aml:annotation");
@@ -337,7 +324,7 @@ public class MergeUtility {
 
          }
          builder.append(string);
-         if (!(string.contains("Word.Deletion\"/") || string.contains("Word.Insertion\"/"))) {
+         if (!amlTerminatingDefault.matcher(string).find()) {
             position++;
          }
       }
