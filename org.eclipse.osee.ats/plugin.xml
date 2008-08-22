@@ -287,7 +287,7 @@
          id="EditTasks"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.blam.EditTasks">
+            className="org.eclipse.osee.ats.operation.EditTasks">
       </Operation>
    </extension>
 </plugin>

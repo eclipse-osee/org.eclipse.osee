@@ -8,23 +8,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.blam;
+package org.eclipse.osee.ats.operation;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.TaskEditor;
+import org.eclipse.osee.ats.editor.TaskEditorInput;
+import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -75,8 +89,8 @@ public class EditTasks extends AbstractBlam {
                   sb.append("Assignee: " + user + "\n");
                   selected = true;
                }
-               boolean showCompletedCancelled = variableMap.getBoolean("Include Completed/Cancelled");
-               if (showCompletedCancelled) {
+               boolean includeCompletedCancelled = variableMap.getBoolean("Include Completed/Cancelled");
+               if (includeCompletedCancelled) {
                   sb.append("Include Completed and Cancelled\n");
                }
                sb.append("\nAre you sure?");
@@ -85,8 +99,43 @@ public class EditTasks extends AbstractBlam {
                   return;
                }
                if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Edit Tasks", sb.toString())) {
-                  AWorkbench.popup("ERROR", "Not Implemented Yet");
 
+                  Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+                  List<Artifact> validWorkflows = new ArrayList<Artifact>();
+                  List<Artifact> workflows = new ArrayList<Artifact>();
+
+                  if (verArt != null) {
+                     workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+                  } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
+                     for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
+                        workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+                     }
+                  }
+
+                  for (Artifact art : RelationManager.getRelatedArtifacts(validWorkflows, 1, AtsRelation.SmaToTask_Task)) {
+                     TaskArtifact taskArt = (TaskArtifact) art;
+                     // If user is selected and not user is assigned, skip this task
+                     if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(
+                           SkynetAuthentication.getUser())) {
+                        continue;
+                     }
+                     // If don't want completed and cancelled and is such, skip this task
+                     if (!includeCompletedCancelled && taskArt.getSmaMgr().isCancelledOrCompleted()) {
+                        continue;
+                     }
+                     tasks.add(taskArt);
+                  }
+                  if (tasks.size() == 0) {
+                     AWorkbench.popup("ERROR", "No Tasks Match Search Criteria");
+                     return;
+                  }
+                  TeamWorkFlowArtifact team = tasks.iterator().next().getParentTeamWorkflow();
+                  SMAManager teamSmaMgr = new SMAManager(team);
+                  List<TaskResOptionDefinition> resOptions =
+                        TaskResolutionOptionRule.getTaskResolutionOptions(teamSmaMgr.getWorkPageDefinitionByName(DefaultTeamState.Implement.name()));
+                  TaskEditorInput input =
+                        new TaskEditorInput("Tasks for " + sb.toString().replaceAll("\n", " - "), tasks, resOptions);
+                  TaskEditor.editArtifacts(input);
                }
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
