@@ -22,8 +22,10 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -93,6 +95,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private SearchFilter HRID_VALUE_FILTER;
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private SearchFilter INDEX_SEARCH_FILTER;
+   private static int lastSearchTypeListSelected = 2; // Attribute
+   private static int lastAttributeTypeListSelected = 0; // Name
 
    private final Matcher storageStringMatcher = storageStringPattern.matcher("");
    private final Matcher notSearchPrimitiveMatcher = notSearchPrimitivePattern.matcher("");
@@ -195,7 +199,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Error encountered while getting list of artifact types", ex, true);
       }
-      artifactTypeList.getList().select(0);
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
    }
 
@@ -289,7 +292,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       Label typeLabel = new Label(attributeControls, SWT.HORIZONTAL);
       typeLabel.setText("Attribute Type:");
 
-      ComboViewer attributeTypeList = new ComboViewer(attributeControls, SWT.DROP_DOWN | SWT.READ_ONLY);
+      final ComboViewer attributeTypeList = new ComboViewer(attributeControls, SWT.DROP_DOWN | SWT.READ_ONLY);
       attributeTypeList.setContentProvider(new SearchContentProvider());
       attributeTypeList.setLabelProvider(new SearchLabelProvider());
       attributeTypeList.setSorter(new SearchSorter());
@@ -310,7 +313,16 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
                true);
       }
       attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
-      attributeTypeList.getCombo().select(0);
+      attributeTypeList.getCombo().select(lastAttributeTypeListSelected);
+      attributeTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+          */
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            lastAttributeTypeListSelected = attributeTypeList.getCombo().getSelectionIndex();
+         }
+      });
 
       attributeValue.addModifyListener(new ModifyListener() {
          public void modifyText(ModifyEvent e) {
@@ -360,9 +372,17 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       createRelationSearchControls(optionsComposite);
       createHridSearchControls(optionsComposite);
 
-      searchTypeList.getCombo().select(2);
       searchTypeList.getCombo().setVisibleItemCount(7);
-
+      searchTypeList.getCombo().select(lastSearchTypeListSelected);
+      searchTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+          */
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            lastSearchTypeListSelected = searchTypeList.getCombo().getSelectionIndex();
+         }
+      });
       addButton = new Button(filterGroup, SWT.PUSH);
       addButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
       addButton.setText("Add Filter");
