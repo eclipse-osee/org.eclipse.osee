@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -71,42 +69,8 @@ public class MetaData {
       return query;
    }
 
-   public Object[] toColumnsToObjectArray(Map<String, String> fieldMap) {
-      int notNullCount = 0;
-      Object[] data = new Object[getColumnSize()];
-      int index = 0;
-      for (String columnName : getColumnNames()) {
-         String dataValue = fieldMap.get(columnName);
-         if (Strings.isValid(dataValue)) {
-            data[index] = stringToObject(columnName, dataValue);
-            notNullCount++;
-         }
-         index++;
-      }
-      return notNullCount > 0 ? data : null;
-   }
-
-   private Object stringToObject(String columnName, String value) {
-      Object convertedObject = null;
-      Class<?> clazz = this.dataConversionMap.get(columnName);
-      if (clazz != null) {
-         try {
-            Method mainMethod = clazz.getMethod("valueOf", new Class[] {String.class});
-            convertedObject = mainMethod.invoke(null, value);
-         } catch (Exception ex) {
-            try {
-               Method mainMethod = clazz.getMethod("valueOf", new Class[] {Object.class});
-               convertedObject = mainMethod.invoke(null, value);
-            } catch (Exception ex1) {
-               throw new IllegalStateException(String.format(
-                     "Unable to convert from string to object for - attribute [%s] to class [%s]", columnName,
-                     clazz.getName()));
-            }
-         }
-      } else {
-         convertedObject = value;
-      }
-      return convertedObject;
+   public Class<?> toClass(String fieldName) {
+      return this.dataConversionMap.get(fieldName);
    }
 
    /* (non-Javadoc)

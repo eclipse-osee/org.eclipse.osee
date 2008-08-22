@@ -60,7 +60,7 @@ public class BranchImportWorker extends BaseCmdWorker {
       }
 
       Options options = new Options();
-      options.put(ExportOptions.include_baseline_txs.name(), includeBaselineTxs);
+      options.put(ExportOptions.INCLUDE_BASELINE_TXS.name(), includeBaselineTxs);
       for (File fileToImport : importFiles) {
          Activator.getInstance().getBranchImport().importBranch(fileToImport, options);
       }

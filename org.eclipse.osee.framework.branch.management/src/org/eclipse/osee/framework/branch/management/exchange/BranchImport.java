@@ -23,8 +23,8 @@ public class BranchImport implements IBranchImport {
     * @see org.eclipse.osee.framework.branch.management.IBranchImport#importBranch()
     */
    @Override
-   public void importBranch(File fileToImport, Options options) throws Exception {
-      ImportController importController = new ImportController(fileToImport, options);
+   public void importBranch(File fileToImport, Options options, int... branchesToImport) throws Exception {
+      ImportController importController = new ImportController(fileToImport, options, branchesToImport);
       importController.execute();
    }
 }

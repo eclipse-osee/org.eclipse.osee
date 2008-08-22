@@ -26,7 +26,7 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    protected final static String BINARY_CONTENT_LOCATION = "binaryContentLocation";
    private Map<String, String> dataMap;
 
-   public BaseExportImportSaxHandler() {
+   protected BaseExportImportSaxHandler() {
       super();
       this.dataMap = new HashMap<String, String>();
    }
@@ -89,7 +89,11 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
 
    private void finishEntry() {
       if (this.dataMap.isEmpty() != true) {
-         processData(this.dataMap);
+         try {
+            processData(this.dataMap);
+         } catch (Exception ex) {
+            throw new IllegalStateException("Processing data - ", ex);
+         }
       }
       this.dataMap.clear();
    }
@@ -102,5 +106,5 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.put(STRING_CONTENT, getContents());
    }
 
-   protected abstract void processData(Map<String, String> dataMap);
+   protected abstract void processData(Map<String, String> dataMap) throws Exception;
 }

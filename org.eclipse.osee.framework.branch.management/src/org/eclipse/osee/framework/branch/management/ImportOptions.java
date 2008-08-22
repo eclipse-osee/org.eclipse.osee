@@ -10,14 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
-import java.io.File;
-import org.eclipse.osee.framework.resource.management.Options;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface IBranchImport {
-
-   public void importBranch(File fileToImport, Options options, int... branchesToImport) throws Exception;
-
+public enum ImportOptions {
+   USE_IDS_FROM_IMPORT_FILE;
 }

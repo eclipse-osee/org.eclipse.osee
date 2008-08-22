@@ -30,7 +30,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
    }
 
    @Override
-   protected void processData(Map<String, String> fieldMap) {
+   protected void processData(Map<String, String> fieldMap) throws Exception {
       System.out.println(String.format("Table: [%s] Data: %s ", getMetaData(), fieldMap));
    }
 }

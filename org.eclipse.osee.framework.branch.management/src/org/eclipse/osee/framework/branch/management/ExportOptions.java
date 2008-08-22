@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.branch.management;
  */
 public enum ExportOptions {
 
-   include_baseline_txs;
+   INCLUDE_BASELINE_TXS;
 }

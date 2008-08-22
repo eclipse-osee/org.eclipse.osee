@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -25,12 +26,14 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    private List<ImportFile> filesToImport;
    private List<ImportFile> typesToCheck;
    private String metadataFile;
+   private String branchFile;
 
    public ManifestSaxHandler() {
       super();
       this.filesToImport = new ArrayList<ImportFile>();
       this.typesToCheck = new ArrayList<ImportFile>();
       this.metadataFile = null;
+      this.branchFile = null;
    }
 
    @Override
@@ -38,17 +41,28 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       String fileName = fieldMap.get(ExportImportXml.ID);
       Integer priority = new Integer(fieldMap.get(ExportImportXml.PRIORITY));
       String source = fieldMap.get(ExportImportXml.SOURCE);
+
       if (Strings.isValid(fileName) && Strings.isValid(source) && priority != null) {
          if (source.equals(ExportImportXml.DB_SCHEMA)) {
             this.metadataFile = fileName;
          } else {
             if (priority > 0) {
-               filesToImport.add(new ImportFile(fileName, source, priority));
+               ImportFile importFile = new ImportFile(fileName, source, priority);
+               if (source.equals(SkynetDatabase.BRANCH_TABLE.toString())) {
+                  branchFile = fileName;
+               } else {
+                  filesToImport.add(importFile);
+               }
             } else {
                typesToCheck.add(new ImportFile(fileName, source, priority));
             }
+
          }
       }
+   }
+
+   public String getBranchFile() {
+      return branchFile;
    }
 
    public String getMetadataFile() {
