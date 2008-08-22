@@ -37,7 +37,7 @@ public class XCombo extends XWidget {
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
    // 
-   private Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
+   private final Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
    protected Map<String, String> dataStringToXmlString;
    private String displayArray[];
 
@@ -76,6 +76,7 @@ public class XCombo extends XWidget {
     * Create Data Widgets. Widgets Created: Data: "--select--" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2 the string "--select--" will be added to the sent in dataStrings array
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
 
       GridData gd;
@@ -101,7 +102,11 @@ public class XCombo extends XWidget {
 
       dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
       dataCombo.setItems(displayArray);
-      if (displayArray.length < 15) dataCombo.setVisibleItemCount(displayArray.length);
+      if (displayArray.length < 15) {
+         dataCombo.setVisibleItemCount(displayArray.length);
+      } else {
+         dataCombo.setVisibleItemCount(25);
+      }
       gd = new GridData();
       if (fillHorizontally) gd.grabExcessHorizontalSpace = true;
       if (fillVertically) gd.grabExcessVerticalSpace = true;
@@ -163,6 +168,7 @@ public class XCombo extends XWidget {
       }
    }
 
+   @Override
    public void setFocus() {
       if (dataCombo != null) dataCombo.setFocus();
    }
@@ -194,7 +200,7 @@ public class XCombo extends XWidget {
                for (Iterator iter = dataStringToXmlString.entrySet().iterator(); iter.hasNext();) {
                   Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
                   if (str.equals(entry.getValue())) {
-                     transStr = (String) entry.getKey();
+                     transStr = entry.getKey();
                      break;
                   }
                }
@@ -210,6 +216,7 @@ public class XCombo extends XWidget {
       refresh();
    }
 
+   @Override
    public void refresh() {
       updateComboWidget();
    }
@@ -237,7 +244,7 @@ public class XCombo extends XWidget {
       if (dataStringToXmlString == null) {
          s = data;
       } else {
-         s = (String) dataStringToXmlString.get(data);
+         s = dataStringToXmlString.get(data);
          if (s == null) {
             s = data;
          }
@@ -245,14 +252,17 @@ public class XCombo extends XWidget {
       return s;
    }
 
+   @Override
    public String getReportData() {
       return data;
    }
 
+   @Override
    public String getXmlData() {
       return getReportData();
    }
 
+   @Override
    public void setXmlData(String str) {
    }
 
@@ -295,6 +305,7 @@ public class XCombo extends XWidget {
       if (dataCombo.indexOf(data) >= 0) dataCombo.remove(data);
    }
 
+   @Override
    public Result isValid() {
       if (requiredEntry && data.equals("")) {
          return new Result(getLabel() + " must be selected.");
@@ -302,10 +313,12 @@ public class XCombo extends XWidget {
       return Result.TrueResult;
    }
 
+   @Override
    public String toXml() {
       return toXml(xmlRoot);
    }
 
+   @Override
    public String toXml(String xmlRoot) {
       String s;
       String dataStr = getXml();
@@ -317,6 +330,7 @@ public class XCombo extends XWidget {
       return s;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, label + ": ") + data;
    }
@@ -325,6 +339,7 @@ public class XCombo extends XWidget {
       to.set(from.get());
    }
 
+   @Override
    public void dispose() {
       if (labelWidget != null) labelWidget.dispose();
       if (dataCombo != null) dataCombo.dispose();

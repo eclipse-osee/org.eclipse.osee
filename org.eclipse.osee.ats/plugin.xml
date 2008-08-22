@@ -283,4 +283,11 @@
             className="org.eclipse.osee.ats.operation.ReAssignATSObjectsToUser">
       </Operation>
    </extension>
+   <extension
+         id="EditTasks"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.blam.EditTasks">
+      </Operation>
+   </extension>
 </plugin>

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +50,7 @@ import org.eclipse.swt.widgets.Display;
 public class SkynetAuthentication {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private int noOneArtifactId;
-   private boolean createUserWhenNotInDatabase = true;
+   private final boolean createUserWhenNotInDatabase = true;
 
    public static enum UserStatusEnum {
       Active, InActive, Both
@@ -63,9 +64,8 @@ public class SkynetAuthentication {
    private User currentUser;
    private boolean duringUserCreation;
    private boolean basicUsersCreated = true;
-   
-   
-private static final SkynetAuthentication instance = new SkynetAuthentication();
+
+   private static final SkynetAuthentication instance = new SkynetAuthentication();
 
    private SkynetAuthentication() {
       firstTimeThrough = true;
@@ -255,6 +255,14 @@ private static final SkynetAuthentication instance = new SkynetAuthentication();
       return (ArrayList<User>) instance.activeUserCache.clone();
    }
 
+   public static List<User> getUsersSortedByName() throws OseeCoreException, SQLException {
+      List<User> users = new ArrayList<User>();
+      for (String user : getUserNames()) {
+         users.add(getUserByName(user, false));
+      }
+      return users;
+   }
+
    public static User getUserByUserId(String userId) throws OseeCoreException, SQLException {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
@@ -336,13 +344,13 @@ private static final SkynetAuthentication instance = new SkynetAuthentication();
       }
       return instance.noOneArtifactId;
    }
-   
+
    public static boolean isBasicUsersCreated() {
-		return instance.basicUsersCreated;
+      return instance.basicUsersCreated;
    }
 
-	public static void setBasicUsersCreated(boolean basicUsersCreated) {
-		instance.basicUsersCreated = basicUsersCreated;
-	}
-   
+   public static void setBasicUsersCreated(boolean basicUsersCreated) {
+      instance.basicUsersCreated = basicUsersCreated;
+   }
+
 }

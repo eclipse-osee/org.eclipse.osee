@@ -76,6 +76,7 @@ public class XMembersCombo extends XWidget {
       return user.equals(selectedUser);
    }
 
+   @Override
    public boolean equals(Object obj) {
       if (obj instanceof XMembersCombo)
          return ((XMembersCombo) obj).selectedUser.equals(selectedUser);
@@ -88,6 +89,7 @@ public class XMembersCombo extends XWidget {
       updateComboWidget();
    }
 
+   @Override
    public String toString() {
       return label + ": *" + get() + "*";
    }
@@ -96,6 +98,7 @@ public class XMembersCombo extends XWidget {
     * Create Data Widgets. Widgets Created: Data: DEFAULT_SELECTION horizonatalSpan takes up 2 columns; horizontalSpan
     * must be >=2 the string DEFAULT_SELECTION will be added to the sent in dataStrings array
     */
+   @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
       composite = parent;
 
@@ -114,7 +117,7 @@ public class XMembersCombo extends XWidget {
       dataCombo.add(DEFAULT_SELECTION);
       dataCombo.setData(DEFAULT_SELECTION, null);
       try {
-         for (User user : SkynetAuthentication.getUsers()) {
+         for (User user : SkynetAuthentication.getUsersSortedByName()) {
             dataCombo.add(user.getName());
             dataCombo.setData(user.getName(), user);
          }
@@ -150,6 +153,7 @@ public class XMembersCombo extends XWidget {
       dataCombo.addModifyListener(dataComboListener);
 
       dataCombo.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetDefaultSelected(SelectionEvent e) {
             resetCommand = true;
          }
@@ -157,6 +161,7 @@ public class XMembersCombo extends XWidget {
 
       dataCombo.addKeyListener(new KeyAdapter() {
          // hook key pressed - see PR 14201
+         @Override
          public void keyPressed(KeyEvent e) {
             keyReleaseOccured(e);
          }
@@ -183,15 +188,18 @@ public class XMembersCombo extends XWidget {
       return selectedUser != null && selectedUser.equals(user);
    }
 
+   @Override
    public void setEditable(boolean editable) {
       super.setEditable(editable);
       if (dataCombo != null && !dataCombo.isDisposed()) dataCombo.setEnabled(editable);
    }
 
+   @Override
    public void setFocus() {
       if (dataCombo != null) dataCombo.setFocus();
    }
 
+   @Override
    public void setFromXml(String xml) {
       Matcher matcher;
       if (xmlSubRoot.equals("")) {
@@ -216,6 +224,7 @@ public class XMembersCombo extends XWidget {
       refresh();
    }
 
+   @Override
    public void refresh() {
       updateComboWidget();
    }
@@ -235,14 +244,17 @@ public class XMembersCombo extends XWidget {
       return selectedUser == null ? "" : selectedUser.getName();
    }
 
+   @Override
    public String getReportData() {
       return get();
    }
 
+   @Override
    public String getXmlData() {
       return get();
    }
 
+   @Override
    public void setXmlData(String str) {
    }
 
@@ -266,15 +278,18 @@ public class XMembersCombo extends XWidget {
       updateComboWidget();
    }
 
+   @Override
    public Result isValid() {
       if (requiredEntry && !isAssigned()) return new Result("Must select " + getLabel());
       return Result.TrueResult;
    }
 
+   @Override
    public String toXml() throws Exception {
       return toXml(xmlRoot);
    }
 
+   @Override
    public String toXml(String xmlRoot) throws Exception {
       String s;
       String dataStr = selectedUser.getUserId();
@@ -286,6 +301,7 @@ public class XMembersCombo extends XWidget {
       return s;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, label + ": ") + get();
    }
