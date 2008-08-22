@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -139,7 +139,7 @@ public class AttributeChanged extends Change {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getArtModType(), 
-            		   isHistorical()? ArtifactPersistenceManager.getInstance().getArtifactFromId(getArtId(), getToTransactionId()): getArtifactCurrent(), null, null, getFromTransactionId(),
+            		    getArtifact(), null, null, getFromTransactionId(),
                      getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
@@ -157,7 +157,7 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifactChange())) {
             return getArtifactChange();
          }
-         if (adapter.isInstance(getArtifactCurrent())) {
+         if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
       } catch (IllegalArgumentException ex) {

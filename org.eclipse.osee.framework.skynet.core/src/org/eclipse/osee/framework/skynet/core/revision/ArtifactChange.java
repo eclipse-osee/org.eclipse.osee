@@ -31,7 +31,7 @@ public class ArtifactChange extends RevisionChange {
    private TransactionId baselineTransactionId;
    private TransactionId fromTransactionId;
    private TransactionId toTransactionId;
-   transient private final Artifact artifact;
+   transient private Artifact artifact;
    transient private Artifact conflictingModArtifact;
 
    @Override
@@ -70,13 +70,8 @@ public class ArtifactChange extends RevisionChange {
    /**
     * @return Returns the image for the artifact type overlayed with the modtype image.
     */
-   @Override
    public Image getImage() {
-      try {
-         return artifact.getArtifactType().getImage(getChangeType(), getModType());
-      } catch (Exception ex) {
-         return null;
-      }
+      return artifact.getArtifactType().getImage(getChangeType(), getModType());
    }
 
    /**
@@ -104,11 +99,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the name.
     */
    public String getName() {
-      try {
-         return artifact.getInternalDescriptiveName();
-      } catch (Exception ex) {
-         return ex.getLocalizedMessage();
-      }
+      return artifact != null? artifact.getInternalDescriptiveName(): "Null";
    }
 
    /**

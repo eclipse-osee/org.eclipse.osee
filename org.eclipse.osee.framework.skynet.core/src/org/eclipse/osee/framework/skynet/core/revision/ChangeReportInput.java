@@ -100,7 +100,7 @@ public class ChangeReportInput implements Serializable {
       this(name, null, baseTransaction, toTransaction, branchInput);
 
       if (baseTransaction.equals(toTransaction)) {
-         throw new IllegalArgumentException("The base and to transactions must not be the same transaction");
+         throw new IllegalArgumentException("The base and to transactions must not be the same transaction for branch " + name);
       }
 
       if (baseTransaction.getBranch().getParentBranch() == null && detectConflicts) throw new IllegalArgumentException(
