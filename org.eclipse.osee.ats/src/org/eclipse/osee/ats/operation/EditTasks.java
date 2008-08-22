@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -32,8 +31,6 @@ import org.eclipse.osee.ats.editor.TaskEditorInput;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
@@ -46,12 +43,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -73,10 +70,10 @@ public class EditTasks extends AbstractBlam {
          public void run() {
             try {
                boolean selected = false;
-               StringBuffer sb = new StringBuffer("Edit Tasks for: \n\n");
+               StringBuffer sb = new StringBuffer();
                TeamDefinitionArtifact teamDef = getSelectedTeamDefinition();
                if (teamDef != null) {
-                  sb.append("Team Definition: " + teamDef + "\n");
+                  sb.append("Team: " + teamDef + "\n");
                   selected = true;
                }
                VersionArtifact verArt = getSelectedVersionArtifact();
@@ -89,54 +86,71 @@ public class EditTasks extends AbstractBlam {
                   sb.append("Assignee: " + user + "\n");
                   selected = true;
                }
-               boolean includeCompletedCancelled = variableMap.getBoolean("Include Completed/Cancelled");
-               if (includeCompletedCancelled) {
-                  sb.append("Include Completed and Cancelled\n");
+               boolean includeCompleted = variableMap.getBoolean("Include Completed");
+               if (includeCompleted) {
+                  sb.append("Include Completed\n");
                }
-               sb.append("\nAre you sure?");
                if (!selected) {
                   AWorkbench.popup("ERROR", "You must select at least one option");
                   return;
                }
-               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Edit Tasks", sb.toString())) {
 
-                  Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-                  List<Artifact> validWorkflows = new ArrayList<Artifact>();
-                  List<Artifact> workflows = new ArrayList<Artifact>();
+               Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+               List<Artifact> workflows = new ArrayList<Artifact>();
 
-                  if (verArt != null) {
-                     workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-                  } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
-                     for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
-                        workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
-                     }
+               System.err.println("initial workflow load " + XDate.getDateNow(XDate.HHMMSS));
+               if (verArt != null) {
+                  workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
+               } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
+                  for (VersionArtifact versionArt : teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts()) {
+                     workflows.addAll(versionArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
                   }
+               }
 
-                  for (Artifact art : RelationManager.getRelatedArtifacts(validWorkflows, 1, AtsRelation.SmaToTask_Task)) {
-                     TaskArtifact taskArt = (TaskArtifact) art;
-                     // If user is selected and not user is assigned, skip this task
-                     if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(
-                           SkynetAuthentication.getUser())) {
-                        continue;
-                     }
-                     // If don't want completed and canceled and is such, skip this task
-                     if (!includeCompletedCancelled && taskArt.getSmaMgr().isCancelledOrCompleted()) {
-                        continue;
-                     }
+               System.err.println("filter out team defs " + XDate.getDateNow(XDate.HHMMSS));
+               List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
+               for (Artifact workflow : workflows) {
+                  if (teamDef.equals((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
+                     teamDefWorkflows.add(workflow);
+                  }
+               }
+
+               System.err.println("bulk load tasks " + XDate.getDateNow(XDate.HHMMSS));
+               // Bulk load tasks related to workflows
+               Collection<Artifact> artifacts =
+                     RelationManager.getRelatedArtifacts(teamDefWorkflows, 1, AtsRelation.SmaToTask_Task);
+
+               // Apply the remaining criteria
+               System.err.println("apply remaining criteria " + XDate.getDateNow(XDate.HHMMSS));
+               for (Artifact art : artifacts) {
+                  TaskArtifact taskArt = (TaskArtifact) art;
+                  // If include completed and canceled and task is such, check implementer list
+                  if (includeCompleted && taskArt.getSmaMgr().isCompleted() && taskArt.getImplementers().contains(user)) {
                      tasks.add(taskArt);
                   }
-                  if (tasks.size() == 0) {
-                     AWorkbench.popup("ERROR", "No Tasks Match Search Criteria");
-                     return;
+                  // If user is selected and not user is assigned, skip this task
+                  if (user != null && !taskArt.getSmaMgr().getStateMgr().getAssignees().contains(user)) {
+                     continue;
                   }
-                  TeamWorkFlowArtifact team = tasks.iterator().next().getParentTeamWorkflow();
-                  SMAManager teamSmaMgr = new SMAManager(team);
-                  List<TaskResOptionDefinition> resOptions =
-                        TaskResolutionOptionRule.getTaskResolutionOptions(teamSmaMgr.getWorkPageDefinitionByName(DefaultTeamState.Implement.name()));
-                  TaskEditorInput input =
-                        new TaskEditorInput("Tasks for " + sb.toString().replaceAll("\n", " - "), tasks, resOptions);
-                  TaskEditor.editArtifacts(input);
+
+                  tasks.add(taskArt);
                }
+
+               // notify user if no tasks were found instead of kicking off empty task editor
+               if (tasks.size() == 0) {
+                  AWorkbench.popup("ERROR", "No Tasks Match Search Criteria");
+                  return;
+               }
+
+               System.err.println("kickoff editor " + XDate.getDateNow(XDate.HHMMSS));
+               // kickoff task editor
+               TeamWorkFlowArtifact team = tasks.iterator().next().getParentTeamWorkflow();
+               SMAManager teamSmaMgr = new SMAManager(team);
+               List<TaskResOptionDefinition> resOptions =
+                     TaskResolutionOptionRule.getTaskResolutionOptions(teamSmaMgr.getWorkPageDefinitionByName(DefaultTeamState.Implement.name()));
+               TaskEditorInput input =
+                     new TaskEditorInput("Tasks for " + sb.toString().replaceAll("\n", " - "), tasks, resOptions);
+               TaskEditor.editArtifacts(input);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -170,13 +184,13 @@ public class EditTasks extends AbstractBlam {
       String widgetXml =
             "<xWidgets>" +
             //
-            "<XWidget xwidgetType=\"XCombo(" + getTeams() + ")\" displayName=\"Team\" horizontalLabel=\"true\"/>" +
+            "<XWidget xwidgetType=\"XCombo()\" displayName=\"Team\" horizontalLabel=\"true\"/>" +
             //
             "<XWidget xwidgetType=\"XCombo()\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
             //
             "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
             //
-            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+            "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
       widgetXml += "</xWidgets>";
       return widgetXml;
    }
@@ -192,6 +206,8 @@ public class EditTasks extends AbstractBlam {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (widget.getLabel().equals("Team")) {
          teamCombo = (XCombo) widget;
+         teamCombo.setDataStrings(getTeams());
+         teamCombo.getComboBox().setVisibleItemCount(25);
          teamCombo.addModifyListener(new ModifyListener() {
             /* (non-Javadoc)
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
@@ -226,6 +242,7 @@ public class EditTasks extends AbstractBlam {
       }
       if (widget.getLabel().equals("Version")) {
          versionCombo = (XCombo) widget;
+         versionCombo.getComboBox().setVisibleItemCount(25);
          widget.getLabelWidget().setToolTipText("Select Team to populate Version list");
       }
    }
@@ -239,15 +256,15 @@ public class EditTasks extends AbstractBlam {
       return null;
    }
 
-   private String getTeams() {
+   private String[] getTeams() {
       try {
          Collection<String> names = Artifacts.artNames(TeamDefinitionArtifact.getTeamDefinitions(Active.Both));
          String[] namesSorted = names.toArray(new String[names.size()]);
          Arrays.sort(namesSorted);
-         return Collections.toString(",", (Object[]) namesSorted);
+         return namesSorted;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
-         return "unabled to acquire teams" + ex.getLocalizedMessage();
+         return Arrays.asList("unabled to acquire teams" + ex.getLocalizedMessage()).toArray(new String[1]);
       }
    }
 }
