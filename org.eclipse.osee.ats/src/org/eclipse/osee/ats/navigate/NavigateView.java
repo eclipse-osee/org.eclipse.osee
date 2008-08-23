@@ -17,7 +17,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -26,16 +25,19 @@ import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -51,7 +53,6 @@ public class NavigateView extends ViewPart implements IActionable {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
-   private ActionDebug debug = new ActionDebug(false, "NavigateView");
    private AtsNavigateComposite xNavComp;
 
    /**
@@ -60,15 +61,15 @@ public class NavigateView extends ViewPart implements IActionable {
    public NavigateView() {
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
-      debug.report("createPartControl");
-
       BulkLoadAtsCache.run(false);
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
@@ -83,10 +84,9 @@ public class NavigateView extends ViewPart implements IActionable {
    }
 
    protected void createActions() {
-      debug.report("createActions");
-
       Action collapseAction = new Action("Collapse All") {
 
+         @Override
          public void run() {
             xNavComp.getFilteredTree().getViewer().collapseAll();
          }
@@ -96,6 +96,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             xNavComp.refresh();
          }
@@ -105,6 +106,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       Action openByIdAction = new Action("Open by Id") {
 
+         @Override
          public void run() {
             MultipleHridSearchItem srch = new MultipleHridSearchItem();
             try {
@@ -126,10 +128,51 @@ public class NavigateView extends ViewPart implements IActionable {
       openByIdAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("openId.gif"));
       openByIdAction.setToolTipText("Open by Id");
 
+      Action openChangeReportById = new Action("Open Change Report by Id") {
+
+         @Override
+         public void run() {
+            MultipleHridSearchItem srch = new MultipleHridSearchItem();
+            try {
+               Collection<Artifact> artifacts = srch.performSearchGetResults(true);
+               final Set<Artifact> addedArts = new HashSet<Artifact>();
+               for (Artifact artifact : artifacts) {
+                  if (artifact instanceof StateMachineArtifact && (((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().isCommittedBranch() || ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().isWorkingBranch())) {
+                     addedArts.add(artifact);
+                  }
+               }
+               if (addedArts.size() == 0) {
+                  AWorkbench.popup("ERROR", "No committed or working branches for entered id.");
+                  return;
+               }
+               Artifact selectedArt = null;
+               if (addedArts.size() == 1) {
+                  selectedArt = addedArts.iterator().next();
+               } else {
+                  ArtifactListDialog artifactListDialog =
+                        new ArtifactListDialog(Display.getCurrent().getActiveShell(), addedArts);
+                  artifactListDialog.setTitle("Open Change Report");
+                  artifactListDialog.setMessage("Select workflow to open change report.");
+                  if (artifactListDialog.open() == 0) {
+                     selectedArt = artifactListDialog.getSelection();
+                  } else {
+                     return;
+                  }
+               }
+               ((StateMachineArtifact) selectedArt).getSmaMgr().getBranchMgr().showChangeReport();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
+      openChangeReportById.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("change_report_view.gif"));
+      openChangeReportById.setToolTipText("Open by Id");
+
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAction);
       toolbarManager.add(refreshAction);
       toolbarManager.add(openByIdAction);
+      toolbarManager.add(openChangeReportById);
       toolbarManager.add(new NewAction());
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
