@@ -21,12 +21,14 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -137,8 +139,12 @@ public class NavigateView extends ViewPart implements IActionable {
                Collection<Artifact> artifacts = srch.performSearchGetResults(true);
                final Set<Artifact> addedArts = new HashSet<Artifact>();
                for (Artifact artifact : artifacts) {
-                  if (artifact instanceof StateMachineArtifact && (((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().isCommittedBranch() || ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().isWorkingBranch())) {
-                     addedArts.add(artifact);
+                  if (artifact instanceof ActionArtifact) {
+                     for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
+                        if (team.getSmaMgr().getBranchMgr().isCommittedBranch() || team.getSmaMgr().getBranchMgr().isWorkingBranch()) {
+                           addedArts.add(team);
+                        }
+                     }
                   }
                }
                if (addedArts.size() == 0) {
@@ -165,14 +171,14 @@ public class NavigateView extends ViewPart implements IActionable {
             }
          }
       };
-      openChangeReportById.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("change_report_view.gif"));
-      openChangeReportById.setToolTipText("Open by Id");
+      openChangeReportById.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      openChangeReportById.setToolTipText("Open Change Report by Id");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAction);
       toolbarManager.add(refreshAction);
-      toolbarManager.add(openByIdAction);
       toolbarManager.add(openChangeReportById);
+      toolbarManager.add(openByIdAction);
       toolbarManager.add(new NewAction());
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
