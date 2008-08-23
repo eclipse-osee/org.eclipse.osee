@@ -122,7 +122,6 @@ public class FilterDataUI {
          }
       }
       if (filterText != null) filterText.setText(custData.getFilterData().getFilterText());
-      xViewer.refresh();
    }
 
    private boolean isXViewerTextFiltered() {
