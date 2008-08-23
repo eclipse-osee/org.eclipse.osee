@@ -58,7 +58,7 @@ public final class ArtifactLoader {
          "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
 
    private static final String SELECT_HISTORICAL_ATTRIBUTES =
-       "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_tx_details txd2 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= al1.branch_id AND txd2.transaction_id = al1.branch_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = txd2.branch_id order by txd2.branch_id, al1.art_id, txd1.transaction_id, att1.attr_id desc";
+         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_tx_details txd2 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txd1.transaction_id <= al1.branch_id AND txd2.transaction_id = al1.branch_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = txd2.branch_id order by txd2.branch_id, al1.art_id, txd1.transaction_id, att1.attr_id desc";
 
    private static final String SELECT_CURRENT_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
@@ -108,15 +108,12 @@ public final class ArtifactLoader {
    }
 
    /**
-    * loads or reloads artifacts based on pre-populated query id
-    * 
     * @param queryId
     * @param loadLevel
-    * @param confirmer
+    * @param confirmer used to prompt user whether to proceed if certain conditions are met
     * @param fetchSize
     * @param reload
-    * @param transactionId null when loading current artifacts; otherwise historical artifacts will be loaded based on
-    *           this transaction
+    * @param historical
     * @return
     * @throws SQLException
     */
@@ -139,11 +136,11 @@ public final class ArtifactLoader {
             while (chStmt.next()) {
                int artId = chStmt.getRset().getInt("art_id");
                if (historical) {
-            	   if(previousArtId != artId){
-            		   artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
-            	   }
-               }else{
-                   artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical)); 
+                  if (previousArtId != artId) {
+                     artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
+                  }
+               } else {
+                  artifacts.add(retrieveShallowArtifact(chStmt.getRset(), reload, historical));
                }
                previousArtId = artId;
             }
@@ -380,52 +377,52 @@ public final class ArtifactLoader {
    private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-    	  if(historical){
-    	       chStmt =
-                   ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES, SQL3DataType.INTEGER,
-                         queryId);
-    	  }else{
-    	       chStmt =
-                   ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_CURRENT_ATTRIBUTES, SQL3DataType.INTEGER,
-                         queryId);
-    	  }
-  
+         if (historical) {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES,
+                        SQL3DataType.INTEGER, queryId);
+         } else {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_CURRENT_ATTRIBUTES,
+                        SQL3DataType.INTEGER, queryId);
+         }
+
          ResultSet rSet = chStmt.getRset();
          Artifact artifact = null;
          int previousArtifactId = -1;
          int previousBranchId = -1;
          int previousAttrId = -1;
-         
+
          while (rSet.next()) {
             int artifactId = rSet.getInt("art_id");
             int branchId = rSet.getInt("branch_id");
             int attrId = rSet.getInt("attr_id");
-            
-            if(attrId != previousAttrId){
-	            if (artifactId != previousArtifactId || branchId != previousBranchId) {
-	               if (artifact != null) { // exclude the first pass because there is no previous artifact
-	                  AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
-	               }
-	               previousArtifactId = artifactId;
-	               previousBranchId = branchId;
-	               previousAttrId = attrId;
-	
-	               if(historical){
-		               artifact = ArtifactCache.getHistorical(artifactId, branchId);
-	               }else{
-		               artifact = ArtifactCache.getActive(artifactId, branchId);
-	               }
-	               if (artifact != null && artifact.isAttributesLoaded()) {
-	                  artifact = null;
-	               }
-	            }
-	            if (artifact == null) {
-	               continue;
-	            }
-	            AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-	            		attrId, rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
-	            }
-	            attrId = previousAttrId;
+
+            if (attrId != previousAttrId) {
+               if (artifactId != previousArtifactId || branchId != previousBranchId) {
+                  if (artifact != null) { // exclude the first pass because there is no previous artifact
+                     AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
+                  }
+                  previousArtifactId = artifactId;
+                  previousBranchId = branchId;
+                  previousAttrId = attrId;
+
+                  if (historical) {
+                     artifact = ArtifactCache.getHistorical(artifactId, branchId);
+                  } else {
+                     artifact = ArtifactCache.getActive(artifactId, branchId);
+                  }
+                  if (artifact != null && artifact.isAttributesLoaded()) {
+                     artifact = null;
+                  }
+               }
+               if (artifact == null) {
+                  continue;
+               }
+               AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"), attrId,
+                     rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
+            }
+            attrId = previousAttrId;
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
