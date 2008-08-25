@@ -16,19 +16,19 @@ import java.util.Date;
 
 public class OutlookCalendarEvent {
 
-   private String location;
-   private String event;
-   private Date date;
-   private DateFormat myDateFormat;
-   private String startTime;
-   private String endTime;
+   private final String location;
+   private final String event;
+   private final Date date;
+   private final DateFormat myDateFormat;
+   private final String startTime;
+   private final String endTime;
 
    /**
     * @param location - String the event location
     * @param event - String the scheduled event
     * @param date
-    * @param startTime
-    * @param endTime
+    * @param startTime - 0800 - 8am
+    * @param endTime - 1300 - 1pm
     */
    public OutlookCalendarEvent(String location, String event, Date date, String startTime, String endTime) {
       super();
@@ -41,7 +41,31 @@ public class OutlookCalendarEvent {
    }
 
    public String getEvent() {
-      return "\nBEGIN:VCALENDAR\n" + "PRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\n" + "VERSION:1.0\n" + "BEGIN:VEVENT\n" + "DTSTART:" + myDateFormat.format(date) + "T" + startTime + "00\n" + "DTEND:" + myDateFormat.format(date) + "T" + endTime + "00\n" + "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" + "TRANSP:1\n" + "DESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\n" + "SUMMARY;ENCODING=QUOTED-PRINTABLE:Event:" + event + "\n" + "PRIORITY:3\n" + "END:VEVENT\n" + "END:VCALENDAR\n";
+      return "\nBEGIN:VCALENDAR\n" +
+      //
+      "PRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\n" +
+      //
+      "VERSION:1.0\n" +
+      //
+      "BEGIN:VEVENT\n" +
+      //
+      "DTSTART:" + myDateFormat.format(date) + "T" + startTime + "00\n" +
+      //
+      "DTEND:" + myDateFormat.format(date) + "T" + endTime + "00\n" +
+      //
+      "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" +
+      //
+      "TRANSP:1\n" +
+      //
+      "DESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\n" +
+      //
+      "SUMMARY;ENCODING=QUOTED-PRINTABLE:Event:" + event + "\n" +
+      //
+      "PRIORITY:3\n" +
+      //
+      "END:VEVENT\n" +
+      //
+      "END:VCALENDAR\n";
    }
 
 }

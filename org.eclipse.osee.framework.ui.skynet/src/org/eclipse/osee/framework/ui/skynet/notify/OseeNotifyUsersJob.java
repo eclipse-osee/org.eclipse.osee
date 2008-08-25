@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.notify;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -29,8 +29,9 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
@@ -38,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  * @author Donald G. Dunne
  */
 public class OseeNotifyUsersJob extends Job {
-   private boolean testing = false;
+   private final boolean testing = false;
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
 
    public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException, SQLException {
@@ -46,6 +47,7 @@ public class OseeNotifyUsersJob extends Job {
       this.notificationEvents = notificationEvents;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
          Set<User> users = new HashSet<User>();
@@ -98,10 +100,9 @@ public class OseeNotifyUsersJob extends Job {
          return;
       } else {
          OseeEmail emailMessage =
-               new OseeEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
-                     getNotificationEmailSubject(notificationEvents));
-         emailMessage.setRecipients(Message.RecipientType.TO, new String[] {user.getEmail()});
-         emailMessage.addHTMLBody(html);
+               new OseeEmail(Arrays.asList(user.getEmail()), SkynetAuthentication.getUser().getEmail(),
+                     SkynetAuthentication.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html,
+                     BodyType.Html);
          emailMessage.send();
       }
    }

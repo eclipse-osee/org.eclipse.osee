@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 
 /**
  * @author Donald G. Dunne
@@ -45,17 +47,18 @@ public class EmailWizard extends Wizard {
       this.initialAddress = initialAddress;
    }
 
+   @Override
    public void addPages() {
       wizardPage = new EmailWizardPage("Page1", emailableGroups, initialAddress);
       addPage(wizardPage);
    }
 
+   @Override
    public boolean performFinish() {
       try {
          OseeEmail emailMessage =
-               new OseeEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
-                     subject);
-         emailMessage.setRecipients(Message.RecipientType.TO, wizardPage.getToAddresses());
+               new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), SkynetAuthentication.getUser().getEmail(),
+                     SkynetAuthentication.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 
 /**
  * @author Donald G. Dunne
@@ -49,11 +50,8 @@ public class EmailableJob extends Job {
                emails.add(user.getEmail());
             emails.addAll(emailAddresses);
             OseeEmail emailMessage =
-                  new OseeEmail(emails.toArray(new String[emails.size()]),
-                        SkynetAuthentication.getUser().getEmail(),
-                        SkynetAuthentication.getUser().getEmail(), subject);
-            emailMessage.setSubject(subject);
-            emailMessage.addHTMLBody(htmlBody);
+                  new OseeEmail(emails, SkynetAuthentication.getUser().getEmail(),
+                        SkynetAuthentication.getUser().getEmail(), subject, htmlBody, BodyType.Html);
             emailMessage.send();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, "Your Email Message could not be sent.", ex, true);

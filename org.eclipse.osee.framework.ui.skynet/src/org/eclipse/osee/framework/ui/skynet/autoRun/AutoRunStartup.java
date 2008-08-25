@@ -29,8 +29,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask.RunDb;
-import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
@@ -113,8 +114,8 @@ public class AutoRunStartup implements IStartup {
          if (autoRunTask == null) {
             // Send email of completion
             OseeEmail email =
-                  new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
-                        emails.iterator().next(), "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ");
+                  new OseeEmail(emails, emails.iterator().next(), emails.iterator().next(),
+                        "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ", BodyType.Text);
             email.send();
          } else {
             Result result = validateAutoRunExecution(autoRunTask);
@@ -133,10 +134,8 @@ public class AutoRunStartup implements IStartup {
                         Manipulations.ERROR_WARNING_HEADER);
             String htmlBody = page.getManipulatedHtml();
             OseeEmail emailMessage =
-                  new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
-                        emails.iterator().next(), subject);
-            emailMessage.setSubject(subject);
-            emailMessage.addHTMLBody(htmlBody);
+                  new OseeEmail(emails, emails.iterator().next(), emails.iterator().next(), subject, htmlBody,
+                        BodyType.Html);
             emailMessage.sendLocalThread();
          }
       } catch (Exception ex) {
@@ -148,11 +147,9 @@ public class AutoRunStartup implements IStartup {
          String htmlBody =
                "<b><font color='red'>Exception Occurred</font></b>: \"" + ex.getLocalizedMessage() + "\" (see end for full trace)<br>Output:\n\n" + page.getManipulatedHtml() + "\n\nException:\n\n" + Lib.exceptionToString(ex);
          OseeEmail emailMessage =
-               new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
-                     emails.iterator().next(), subject);
+               new OseeEmail(emails, emails.iterator().next(), emails.iterator().next(), subject, htmlBody,
+                     BodyType.Html);
          try {
-            emailMessage.setSubject(subject);
-            emailMessage.addHTMLBody(htmlBody);
             emailMessage.sendLocalThread();
          } catch (Exception ex2) {
             OSEELog.logException(SkynetGuiPlugin.class, ex2, false);

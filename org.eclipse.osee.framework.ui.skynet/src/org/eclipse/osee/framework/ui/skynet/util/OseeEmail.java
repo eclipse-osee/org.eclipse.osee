@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
@@ -51,6 +53,9 @@ public class OseeEmail extends MimeMessage {
    private String body = null;
    private String bodyType = null;
    private final Multipart mainMessage;
+   public static enum BodyType {
+      Html, Text
+   };
 
    /**
     * Default constructor
@@ -63,33 +68,26 @@ public class OseeEmail extends MimeMessage {
    /**
     * Constructs an AEmail with the given arguments
     * 
-    * @param recipients - a list of valid addresses to send the message TO
-    * @param from - the sender of the message
-    * @param replyTo - a valid address of who the message should reply to
-    * @param subject - the subject of the message
-    */
-   public OseeEmail(String[] recipients, String from, String replyTo, String subject) {
-      this(recipients, from, replyTo, subject, null);
-   }
-
-   /**
-    * Constructs an AEmail with the given arguments
-    * 
-    * @param recipients - a list of valid addresses to send the message TO
-    * @param from - the sender of the message
-    * @param replyTo - a valid address of who the message should reply to
+    * @param toAddresses - a list of valid addresses to send the message TO
+    * @param fromAddress - the sender of the message
+    * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
     */
-   public OseeEmail(String[] recipients, String from, String replyTo, String subject, String textBody) {
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
       this();
       try {
-         setRecipients(recipients);
-         setFrom(from);
+         setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
+         setFrom(fromAddress);
          setSubject(subject);
-         setReplyTo(replyTo);
+         setReplyTo(replyToAddress);
 
-         if (textBody != null) setBody(textBody);
+         if (bodyType == BodyType.Text) {
+            setBody(body);
+         } else if (bodyType == BodyType.Html) {
+            setHTMLBody(body);
+         } else
+            throw new IllegalArgumentException("Unhandled body type " + bodyType);
 
       } catch (MessagingException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
@@ -101,10 +99,11 @@ public class OseeEmail extends MimeMessage {
     * 
     * @param fromToReplyEmail - recipient email, from email and replyTo email address
     * @param subject - the subject of the message
-    * @param textBody - the plain text of the body
+    * @param body - the text/html of the body
+    * @param bodyType - Html or Text
     */
-   public OseeEmail(String fromToReplyEmail, String subject, String textBody) {
-      this(new String[] {fromToReplyEmail}, fromToReplyEmail, fromToReplyEmail, subject, textBody);
+   public OseeEmail(String fromToReplyEmail, String subject, String body, BodyType bodyType) {
+      this(Arrays.asList(fromToReplyEmail), fromToReplyEmail, fromToReplyEmail, subject, body, bodyType);
    }
 
    /**
@@ -377,15 +376,6 @@ public class OseeEmail extends MimeMessage {
 
    public void addAttachment(String contents, String attachmentName) throws MessagingException {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
-   }
-
-   public static OseeEmail createEmail(String emailAddress, String title, String message) throws MessagingException {
-      OseeEmail emailMessage = new OseeEmail(null, emailAddress, emailAddress, title);
-      emailMessage.setRecipients(Message.RecipientType.TO, emailAddress);
-      emailMessage.setRecipients(Message.RecipientType.CC, emailAddress);
-      emailMessage.setRecipients(Message.RecipientType.BCC, emailAddress);
-      emailMessage.addHTMLBody(message);
-      return emailMessage;
    }
 
 }

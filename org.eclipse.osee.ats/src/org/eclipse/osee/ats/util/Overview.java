@@ -168,8 +168,9 @@ public class Overview {
    public void addFooter(StateMachineArtifact sma, PreviewStyle... styles) {
       this.html.append(AHTML.newline());
 
-      if (PreviewStyle.contains(styles, PreviewStyle.HYPEROPEN)) this.html.append("<A HREF=\"" + AtsHttpServerRequest.getInstance().getUrl(
-            sma) + "\">" + "Start OSEE and select here to open this " + sma.getArtifactTypeName() + " in ATS.</A>");
+      if (PreviewStyle.contains(styles, PreviewStyle.HYPEROPEN)) {
+         this.html.append("Start OSEE, select the ATS perspective and search by the Id shown.");
+      }
    }
 
    public void addRelationsBlock(ATSArtifact artifact) {
@@ -183,7 +184,7 @@ public class Overview {
 
    public void addNotes(StateMachineArtifact artifact, String state) {
       if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(state);
+         String notesHtml = (artifact).getSmaMgr().getNotes().getTable(state);
          if (notesHtml.equals("")) return;
          this.html.append(notesHtml);
       }
