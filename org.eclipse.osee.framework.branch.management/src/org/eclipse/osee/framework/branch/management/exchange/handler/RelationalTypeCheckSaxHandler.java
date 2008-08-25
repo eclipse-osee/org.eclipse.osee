@@ -30,8 +30,11 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
       return new RelationalTypeCheckSaxHandler(false, cacheLimit);
    }
 
+   private StringBuffer errorCheck;
+
    private RelationalTypeCheckSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
+      this.errorCheck = new StringBuffer();
    }
 
    @Override
@@ -60,9 +63,18 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
                      typeField, getMetaData().getTableName(), nameField), SQL3DataType.VARCHAR, name);
          if (chStmt.next()) {
             getTranslator().addMappingTo(typeField, original, chStmt.getRset().getLong(1));
+         } else {
+            this.errorCheck.append(String.format("Type not found in target db. type:[%s] - [%s (%s)]\n", name,
+                  typeField, typeId));
          }
       } finally {
          DbUtil.close(chStmt);
+      }
+   }
+
+   protected void finishData() {
+      if (this.errorCheck.length() > 0) {
+         throw new IllegalStateException(this.errorCheck.toString());
       }
    }
 }

@@ -56,18 +56,21 @@ public class MetadataExportItem extends AbstractDbExportItem {
    private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String targetTable) throws Exception {
       ResultSet resultSet = null;
       try {
-         resultSet = metaData.getTables(null, null, targetTable, new String[] {"TABLE"});
-         if (resultSet != null && resultSet.next()) {
-            String tableName = resultSet.getString("TABLE_NAME").toLowerCase();
-            String schemaName = resultSet.getString("TABLE_SCHEM");
+         resultSet = metaData.getTables(null, null, null, new String[] {"TABLE"});
+         if (resultSet != null) {
+            while (resultSet.next()) {
+               String tableName = resultSet.getString("TABLE_NAME");
+               String schemaName = resultSet.getString("TABLE_SCHEM");
+               if (targetTable.equalsIgnoreCase(tableName)) {
+                  ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.TABLE);
+                  ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TABLE_NAME, tableName.toLowerCase());
+                  ExportImportXml.endOpenedPartialXmlNode(appendable);
 
-            ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.TABLE);
-            ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TABLE_NAME, tableName);
-            ExportImportXml.endOpenedPartialXmlNode(appendable);
+                  processColumnMetaData(appendable, metaData, schemaName, tableName);
 
-            processColumnMetaData(appendable, metaData, schemaName, tableName);
-
-            ExportImportXml.closeXmlNode(appendable, ExportImportXml.TABLE);
+                  ExportImportXml.closeXmlNode(appendable, ExportImportXml.TABLE);
+               }
+            }
          }
       } finally {
          if (resultSet != null) {
