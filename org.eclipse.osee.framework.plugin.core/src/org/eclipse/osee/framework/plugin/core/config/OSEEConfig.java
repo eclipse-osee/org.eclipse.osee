@@ -98,10 +98,9 @@ public class OSEEConfig {
             logger.log(Level.INFO, "osee.jini.lookup.groups: " + toStore);
             System.setProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS, toStore);
          }
-      } catch (IOException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "There was an error parsing the config file.", ex);
+         logger.log(Level.SEVERE, ex.getLocalizedMessage());
+         throw new IllegalStateException(ex.getLocalizedMessage());
       }
    }
 
