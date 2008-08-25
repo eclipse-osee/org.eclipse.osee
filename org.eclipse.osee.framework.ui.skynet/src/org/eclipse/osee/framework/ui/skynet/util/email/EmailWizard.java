@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.ui.skynet.util.AEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 
 /**
  * @author Donald G. Dunne
@@ -52,8 +52,8 @@ public class EmailWizard extends Wizard {
 
    public boolean performFinish() {
       try {
-         AEmail emailMessage =
-               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
+         OseeEmail emailMessage =
+               new OseeEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
                      subject);
          emailMessage.setRecipients(Message.RecipientType.TO, wizardPage.getToAddresses());
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());

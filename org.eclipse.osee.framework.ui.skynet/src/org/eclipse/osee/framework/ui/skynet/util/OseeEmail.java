@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
 import java.util.Properties;
+import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.activation.MailcapCommandMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -31,11 +33,14 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Michael A. Winston
+ * @author Donald G. Dunne
  */
-public class AEmail extends MimeMessage {
+public class OseeEmail extends MimeMessage {
    protected static final String emailType = "mail.smtp.host";
    protected static final String HTMLHead = "<html><body>\n";
    protected static final String HTMLEnd = "</body></html>\n";
@@ -45,12 +50,12 @@ public class AEmail extends MimeMessage {
 
    private String body = null;
    private String bodyType = null;
-   private Multipart mainMessage;
+   private final Multipart mainMessage;
 
    /**
     * Default constructor
     */
-   public AEmail() {
+   public OseeEmail() {
       super(getSession());
       mainMessage = new MimeMultipart();
    }
@@ -63,7 +68,7 @@ public class AEmail extends MimeMessage {
     * @param replyTo - a valid address of who the message should reply to
     * @param subject - the subject of the message
     */
-   public AEmail(String[] recipients, String from, String replyTo, String subject) {
+   public OseeEmail(String[] recipients, String from, String replyTo, String subject) {
       this(recipients, from, replyTo, subject, null);
    }
 
@@ -76,7 +81,7 @@ public class AEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
     */
-   public AEmail(String[] recipients, String from, String replyTo, String subject, String textBody) {
+   public OseeEmail(String[] recipients, String from, String replyTo, String subject, String textBody) {
       this();
       try {
          setRecipients(recipients);
@@ -86,8 +91,8 @@ public class AEmail extends MimeMessage {
 
          if (textBody != null) setBody(textBody);
 
-      } catch (MessagingException e) {
-         e.printStackTrace();
+      } catch (MessagingException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 
@@ -98,7 +103,7 @@ public class AEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
     */
-   public AEmail(String fromToReplyEmail, String subject, String textBody) {
+   public OseeEmail(String fromToReplyEmail, String subject, String textBody) {
       this(new String[] {fromToReplyEmail}, fromToReplyEmail, fromToReplyEmail, subject, textBody);
    }
 
@@ -270,9 +275,9 @@ public class AEmail extends MimeMessage {
 
    private class SendThread extends Thread {
 
-      private final AEmail email;
+      private final OseeEmail email;
 
-      public SendThread(AEmail email) {
+      public SendThread(OseeEmail email) {
          this.email = email;
       }
 
@@ -285,19 +290,34 @@ public class AEmail extends MimeMessage {
 
    public void sendLocalThread() {
       MimeBodyPart messageBodyPart = new MimeBodyPart();
-
-      if (bodyType == null) {
-         bodyType = plainText;
-         body = "";
-      } else if (bodyType.equals(HTMLText)) body += HTMLEnd;
-
+      ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {
+
+         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+         mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+         mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+         mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+         mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+         mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+         CommandMap.setDefaultCommandMap(mc);
+
+         // Set class loader so can find the mail handlers
+         Thread.currentThread().setContextClassLoader(
+               new ExportClassLoader(SkynetGuiPlugin.getInstance().getPackageAdmin()));
+         if (bodyType == null) {
+            bodyType = plainText;
+            body = "";
+         } else if (bodyType.equals(HTMLText)) {
+            body += HTMLEnd;
+         }
          messageBodyPart.setContent(body, bodyType);
          mainMessage.addBodyPart(messageBodyPart, 0);
          setContent(mainMessage);
          Transport.send(this);
       } catch (Exception ex) {
-         ex.printStackTrace();
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      } finally {
+         Thread.currentThread().setContextClassLoader(original);
       }
    }
 
@@ -358,4 +378,14 @@ public class AEmail extends MimeMessage {
    public void addAttachment(String contents, String attachmentName) throws MessagingException {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
    }
+
+   public static OseeEmail createEmail(String emailAddress, String title, String message) throws MessagingException {
+      OseeEmail emailMessage = new OseeEmail(null, emailAddress, emailAddress, title);
+      emailMessage.setRecipients(Message.RecipientType.TO, emailAddress);
+      emailMessage.setRecipients(Message.RecipientType.CC, emailAddress);
+      emailMessage.setRecipients(Message.RecipientType.BCC, emailAddress);
+      emailMessage.addHTMLBody(message);
+      return emailMessage;
+   }
+
 }

@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -32,12 +35,32 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver
          "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
    public static OseeSecurityManager securityManager;
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetGuiPlugin.class);
+   private ServiceTracker packageAdminTracker;
 
    public SkynetGuiPlugin() {
       super();
       pluginInstance = this;
       securityManager = OseeSecurityManager.getInstance();
       SkynetEventManager.getInstance().register(BroadcastEvent.class, this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.plugin.OseeFormActivator#stop(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      super.stop(context);
+      packageAdminTracker.close();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.plugin.OseeUiActivator#start(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void start(BundleContext context) throws Exception {
+      super.start(context);
+      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+      packageAdminTracker.open();
    }
 
    /**
@@ -65,5 +88,12 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver
    @Override
    protected String getPluginName() {
       return PLUGIN_ID;
+   }
+
+   /**
+    * @return
+    */
+   public PackageAdmin getPackageAdmin() {
+      return (PackageAdmin) this.packageAdminTracker.getService();
    }
 }

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.AEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -97,8 +97,8 @@ public class OseeNotifyUsersJob extends Job {
          // do nothing
          return;
       } else {
-         AEmail emailMessage =
-               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
+         OseeEmail emailMessage =
+               new OseeEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
                      getNotificationEmailSubject(notificationEvents));
          emailMessage.setRecipients(Message.RecipientType.TO, new String[] {user.getEmail()});
          emailMessage.addHTMLBody(html);

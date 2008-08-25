@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask.RunDb;
-import org.eclipse.osee.framework.ui.skynet.util.AEmail;
+import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
@@ -112,8 +112,8 @@ public class AutoRunStartup implements IStartup {
 
          if (autoRunTask == null) {
             // Send email of completion
-            AEmail email =
-                  new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+            OseeEmail email =
+                  new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
                         emails.iterator().next(), "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ");
             email.send();
          } else {
@@ -132,8 +132,8 @@ public class AutoRunStartup implements IStartup {
                   resultData.getReport("AutoRunTaskId=\"" + autoRunTaskId + "\"", Manipulations.ALL,
                         Manipulations.ERROR_WARNING_HEADER);
             String htmlBody = page.getManipulatedHtml();
-            AEmail emailMessage =
-                  new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+            OseeEmail emailMessage =
+                  new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
                         emails.iterator().next(), subject);
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
@@ -147,8 +147,8 @@ public class AutoRunStartup implements IStartup {
                      Manipulations.ERROR_WARNING_HEADER);
          String htmlBody =
                "<b><font color='red'>Exception Occurred</font></b>: \"" + ex.getLocalizedMessage() + "\" (see end for full trace)<br>Output:\n\n" + page.getManipulatedHtml() + "\n\nException:\n\n" + Lib.exceptionToString(ex);
-         AEmail emailMessage =
-               new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+         OseeEmail emailMessage =
+               new OseeEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
                      emails.iterator().next(), subject);
          try {
             emailMessage.setSubject(subject);
