@@ -15,6 +15,8 @@ import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFI
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -26,7 +28,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,15 +55,7 @@ public class OSEEConfig {
    private OSEEConfig() {
       super();
       try {
-         File file = getConfigFileFromProperty();
-         if (file == null) {
-            file = getFileFromExtensionPoint();
-         }
-         if (file == null) {
-            OseeLog.log(OSEEConfig.class, Level.SEVERE, "Unable to find a valid config file.");
-            return;
-         }
-
+         File file = getConfigFile();
          logger.log(Level.INFO, "Using config file: " + file.getAbsolutePath());
          Document document = null;
 
@@ -112,11 +105,31 @@ public class OSEEConfig {
       }
    }
 
+   private File getConfigFile() throws Exception {
+      File toReturn = null;
+      String configPath = System.getProperty(OSEE_CONFIG_FILE);
+      if (Strings.isValid(configPath)) {
+         File fromProp = new File(configPath);
+         if (fromProp.exists() && fromProp.isFile() && fromProp.canRead()) {
+            toReturn = fromProp;
+         }
+      } else {
+         toReturn = getFileFromExtensionPoint();
+      }
+      if (toReturn == null) {
+         throw new Exception(
+               String.format("Unable to find a valid config file.%s", Strings.isValid(configPath) ? String.format(
+                     " As speficied by -D%s=[%s]", OSEE_CONFIG_FILE, configPath) : ""));
+      }
+      return toReturn;
+   }
+
    /**
     * @return
     * @throws IOException
     */
-   private File getFileFromExtensionPoint() throws IOException {
+   private File getFileFromExtensionPoint() throws Exception {
+      List<File> toReturn = new ArrayList<File>();
       IExtensionPoint expt =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.plugin.core.OseeConfigFile");
       if (expt != null) {
@@ -131,26 +144,21 @@ public class OSEEConfig {
                   URL url = FileLocator.find(bundle, new Path(file), null);
                   url = FileLocator.toFileURL(url);
                   String path = url.getFile();
-                  return new File(path);
+                  toReturn.add(new File(path));
                }
             }
          }
       }
-      return null;
-   }
 
-   /**
-    * @return
-    */
-   private File getConfigFileFromProperty() {
-      String configPath = System.getProperty(OSEE_CONFIG_FILE);
-      if (configPath != null) {
-         File fromProp = new File(configPath);
-         if (fromProp.exists() && fromProp.isFile()) {
-            return fromProp;
-         }
+      if (toReturn.isEmpty()) {
+         throw new Exception(
+               String.format(
+                     "Unable to locate osee config file. Please check plugin configuration or specify a config file to use via [-D%s]",
+                     OSEE_CONFIG_FILE));
+      } else if (toReturn.size() > 1) {
+         throw new Exception(String.format("More than one osee config file specified via extensions. %s", toReturn));
       }
-      return null;
+      return toReturn.get(0);
    }
 
    private void parseServiceLookup(Element rootElement) {
