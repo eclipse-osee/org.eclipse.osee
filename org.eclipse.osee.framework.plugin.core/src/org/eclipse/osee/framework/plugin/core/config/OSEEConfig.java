@@ -154,8 +154,8 @@ public class OSEEConfig {
                String.format(
                      "Unable to locate osee config file. Please check plugin configuration or specify a config file to use via [-D%s]",
                      OSEE_CONFIG_FILE));
-      } else if (toReturn.size() > 1) {
-         throw new Exception(String.format("More than one osee config file specified via extensions. %s", toReturn));
+         //      } else if (toReturn.size() > 1) {
+         //         throw new Exception(String.format("More than one osee config file specified via extensions. %s", toReturn));
       }
       return toReturn.get(0);
    }
