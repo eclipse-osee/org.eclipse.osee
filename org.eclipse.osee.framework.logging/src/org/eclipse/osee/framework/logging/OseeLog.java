@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.logging;
 
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,19 +24,7 @@ public class OseeLog {
    static void makevalid() {
       sm = new StatusManager();
       log = new OseeLogger();
-      log.registerLoggerListener(new ILoggerListener() {
-
-         @Override
-         public ILoggerFilter getFilter() {
-            return null;
-         }
-
-         @Override
-         public void log(String loggerName, String bundleId, Level level, String message, Throwable th) {
-            Logger.getLogger(loggerName).log(level, message, th);
-         }
-
-      });
+      log.registerLoggerListener(new ConsoleLogger());
    }
 
    private static OseeLogger getLog() {

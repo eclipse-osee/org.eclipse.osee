@@ -25,7 +25,7 @@ public class ConsoleLogger implements ILoggerListener {
    public static Level filterLevel;
 
    static {
-      String level = System.getProperty("osee.console", "SEVERE");
+      String level = System.getProperty("osee.console", "INFO");
 
       filterLevel = Level.parse(level);
 
