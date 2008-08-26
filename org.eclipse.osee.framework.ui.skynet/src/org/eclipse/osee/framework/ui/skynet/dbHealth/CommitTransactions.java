@@ -23,7 +23,7 @@ public class CommitTransactions extends DatabaseHealthTask {
 
    @Override
    public String getFixTaskName() {
-      return "Removes orphan attributes and sets new artifacts to mod type of 1 on commit transactions ";
+      return "Fix commit transactionds by deleting orphan attributes and setting new artifacts that have been modified to a mod type of 1";
    }
 
    @Override

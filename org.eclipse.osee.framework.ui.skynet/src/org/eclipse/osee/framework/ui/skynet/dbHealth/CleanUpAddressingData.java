@@ -24,7 +24,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 
 	@Override
 	public String getVerifyTaskName() {
-		return "Verify Not Addressed data";
+		return "Check for not addressed txs data";
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 		boolean verifyTransactionsFailed = false;
 		
 		if(showDetails){
-			builder.append("Not Addressed Gamma IDs /n");
+			builder.append("Not Addressed Gamma IDs \n");
 		}
 		
 		try{
@@ -53,19 +53,19 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 				
 				if(showDetails){
 					int gammaId = chStmt.getRset().getInt(1);
-					builder.append("Gamma ID: " +gammaId + "/n");
+					builder.append("Gamma ID: " +gammaId + "\n");
 				}
 			}
 			
 			if(!showDetails){
-				builder.append(verifyGammasFailed? "Failed" : "Passed" + ": Not Addressed Gamma IDs /n");
+				builder.append(verifyGammasFailed? "Failed: Not Addressed Gamma IDs \n" : "Passed: Not Addressed Gamma IDs \n");
 			}
 		}finally{
 			DbUtil.close(chStmt);
 		}
 		
 		if(showDetails){
-			builder.append("Not Addressed Transaction IDs /n");
+			builder.append("Not Addressed Transaction IDs \n");
 		}
 		try{
 			chStmt = ConnectionHandler.runPreparedQuery(NOT_ADDRESSESED_TRANSACTIONS);
@@ -74,11 +74,11 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 				
 				if(showDetails){
 					int gammaId = chStmt.getRset().getInt(1);
-					builder.append("Transaction ID: " +gammaId + "/n");
+					builder.append("Transaction ID: " +gammaId + "\n");
 				}
 			}
 			if(!showDetails){
-				builder.append(verifyTransactionsFailed? "Failed" : "Passed" + ": Not Addressed Transaction IDs /n");
+				builder.append(verifyTransactionsFailed? "Failed: Not Addressed Transaction IDs \n" : "Passed: Not Addressed Transaction IDs \n");
 			}
 		}finally{
 			DbUtil.close(chStmt);
