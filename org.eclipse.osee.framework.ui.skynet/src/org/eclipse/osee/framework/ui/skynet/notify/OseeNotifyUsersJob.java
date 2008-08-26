@@ -33,18 +33,21 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeNotifyUsersJob extends Job {
-   private final boolean testing = false;
+   private final boolean testing = false; // Email goes to current user
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
 
    public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException, SQLException {
       super("Notifying Users");
       this.notificationEvents = notificationEvents;
+      if (testing) {
+         OSEELog.logSevere(SkynetGuiPlugin.class, "OseeNotifyUsersJob: testing is enabled....turn off for production.",
+               false);
+      }
    }
 
    @Override
@@ -55,17 +58,20 @@ public class OseeNotifyUsersJob extends Job {
             users.addAll(notificationEvent.getUsers());
          }
          XResultData resultData = new XResultData(SkynetGuiPlugin.getLogger());
-         if (testing) resultData.log("Testing Results Report for Osee Notification; Email Disabled<br>");
+         if (testing) {
+            resultData.log("Testing Results Report for Osee Notification; Email to current user.<br>");
+            users.clear();
+            users.addAll(Arrays.asList(SkynetAuthentication.getUser()));
+         }
          for (User user : users) {
             List<OseeNotificationEvent> notifyEvents = new ArrayList<OseeNotificationEvent>();
             for (OseeNotificationEvent notificationEvent : notificationEvents) {
-               if (notificationEvent.getUsers().contains(user)) {
+               if (testing || notificationEvent.getUsers().contains(user)) {
                   notifyEvents.add(notificationEvent);
                }
             }
             notifyUser(user, notifyEvents, resultData);
          }
-         if (testing) resultData.report("Notify Users", Manipulations.NO_POPUP);
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {
@@ -77,7 +83,7 @@ public class OseeNotifyUsersJob extends Job {
    private String notificationEventsToHtml(List<OseeNotificationEvent> notificationEvents) {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "ID"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id"}));
       for (OseeNotificationEvent notificationEvent : notificationEvents) {
          sb.append(AHTML.addRowMultiColumnTable(new String[] {notificationEvent.getType(),
                notificationEvent.getDescription(), notificationEvent.getId()}));
@@ -92,10 +98,7 @@ public class OseeNotifyUsersJob extends Job {
          return;
       }
       String html = notificationEventsToHtml(notificationEvents);
-      if (testing) {
-         resultData.log("To: " + user.getName() + " at " + user.getEmail());
-         resultData.addRaw(html + AHTML.newline(2));
-      } else if (user.getEmail() == null || user.getEmail().equals("")) {
+      if (user.getEmail() == null || user.getEmail().equals("")) {
          // do nothing
          return;
       } else {

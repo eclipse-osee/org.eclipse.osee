@@ -101,10 +101,6 @@ public class OseeProperties {
       return System.getProperty(OSEE_AUTHENTICATION_PROVIDER_ID);
    }
 
-   public boolean isEmailMe() {
-      return System.getProperty("EmailMe") != null;
-   }
-
    public boolean isPromptEnabled() {
       return !getBooleanProperty(OSEE_NO_PROMPT);
    }

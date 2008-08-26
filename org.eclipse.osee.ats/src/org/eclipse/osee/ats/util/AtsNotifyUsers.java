@@ -24,14 +24,18 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNotifyUsers {
+
+   private static boolean testing = false; // Email goes to current user
    public static enum NotifyType {
       Subscribed, Cancelled, Completed, Assigned, Originator
    };
@@ -41,7 +45,12 @@ public class AtsNotifyUsers {
    }
 
    public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws IllegalArgumentException, SQLException {
-      if (!AtsPlugin.isEmailEnabled() || !AtsPlugin.isProductionDb() || sma.getDescriptiveName().startsWith("tt ")) {
+      if (testing) {
+         OSEELog.logSevere(SkynetGuiPlugin.class, "AtsNotifyUsers: testing is enabled....turn off for production.",
+               false);
+      }
+      if (!testing && (!AtsPlugin.isEmailEnabled() || !AtsPlugin.isProductionDb() || sma.getDescriptiveName().startsWith(
+            "tt "))) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
@@ -51,17 +60,17 @@ public class AtsNotifyUsers {
          User originator = smaMgr.getOriginator();
          if (!SkynetAuthentication.getUser().equals(originator)) OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                Arrays.asList(originator),
-               sma.getHumanReadableId(),
+               getIdString(sma),
                NotifyType.Originator.name(),
                "You have been set as the originator of \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : smaMgr.getStateMgr().getAssignees();
          assignees.remove(SkynetAuthentication.getUser());
-         if (assignees.size() > 0) {
+         if (testing || assignees.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   assignees,
-                  sma.getHumanReadableId(),
+                  getIdString(sma),
                   NotifyType.Assigned.name(),
                   "You have been set as an assignee for \"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\""));
          }
@@ -71,7 +80,7 @@ public class AtsNotifyUsers {
          if (subscribed.size() > 0) {
             OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                   subscribed,
-                  sma.getHumanReadableId(),
+                  getIdString(sma),
                   NotifyType.Subscribed.name(),
                   sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\" and you subscribed for notification."));
          }
@@ -83,7 +92,7 @@ public class AtsNotifyUsers {
                if (smaMgr.isCompleted()) {
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                         Arrays.asList(originator),
-                        sma.getHumanReadableId(),
+                        getIdString(sma),
                         NotifyType.Completed.name(),
                         "\"" + sma.getArtifactTypeName() + "\" titled \"" + sma.getDescriptiveName() + "\" is Completed"));
                }
@@ -91,7 +100,7 @@ public class AtsNotifyUsers {
                   LogItem cancelledItem = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
                         Arrays.asList(originator),
-                        sma.getHumanReadableId(),
+                        getIdString(sma),
                         NotifyType.Cancelled.name(),
                         String.format(
                               sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
@@ -100,5 +109,17 @@ public class AtsNotifyUsers {
             }
          }
       }
+   }
+
+   private static String getIdString(StateMachineArtifact sma) {
+      try {
+         String legacyPcrId = sma.getWorldViewLegacyPCR();
+         if (!legacyPcrId.equals("")) {
+            return "HRID: " + sma.getHumanReadableId() + " / LegacyId: " + legacyPcrId;
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+      return "HRID: " + sma.getHumanReadableId();
    }
 }
