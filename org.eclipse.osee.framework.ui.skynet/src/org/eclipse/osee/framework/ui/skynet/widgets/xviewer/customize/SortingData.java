@@ -12,9 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 
 /**
@@ -24,6 +27,7 @@ public class SortingData {
 
    private static String XTREESORTER_TAG = "xSorter";
    private static String COL_NAME_TAG = "id";
+   private static String OLD_COL_NAME_TAG = "name";
    private final List<String> sortingIds = new ArrayList<String>();
    private final CustomizeData custData;
 
@@ -41,22 +45,29 @@ public class SortingData {
 
    @Override
    public String toString() {
-      List<XViewerColumn> cols = getSortXCols();
-      if (cols.size() == 0) return "";
-      StringBuffer sb = new StringBuffer("Sort: ");
-      for (XViewerColumn col : getSortXCols()) {
-         if (col != null) {
-            sb.append(col.getName());
-            sb.append(col.isSortForward() ? " (FWD) , " : " (REV) , ");
-         }
-      }
-      return sb.toString().replaceFirst(" , $", "");
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", sortingIds);
    }
 
-   public List<XViewerColumn> getSortXCols() {
+   public List<XViewerColumn> getSortXCols(Map<String, XViewerColumn> oldNameToColumnId) {
       List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (String id : getSortingNames())
-         cols.add(custData.getColumnData().getXColumn(id));
+      for (String id : getSortingNames()) {
+         XViewerColumn xCol = custData.getColumnData().getXColumn(id);
+         // For backward compatibility, try to resolve column name
+         if (xCol == null) {
+            XViewerColumn resolvedCol = oldNameToColumnId.get(id);
+            if (resolvedCol != null) {
+               xCol = custData.getColumnData().getXColumn(resolvedCol.getId());
+            }
+         }
+         if (xCol != null) {
+            cols.add(xCol);
+         } else {
+            OSEELog.logWarning(
+                  SkynetGuiPlugin.class,
+                  "XViewer Conversion for saved Customization \"" + custData.getName() + "\" dropped unresolved SORTING column Name/Id: \"" + id + "\".  Delete customization and re-save to resolve.",
+                  false);
+         }
+      }
       return cols;
    }
 
@@ -83,6 +94,10 @@ public class SortingData {
       Matcher m = Pattern.compile("<" + COL_NAME_TAG + ">(.*?)</" + COL_NAME_TAG + ">").matcher(xmlSortStr);
       while (m.find()) {
          sortingIds.add(m.group(1));
+      }
+      Matcher mOld = Pattern.compile("<" + OLD_COL_NAME_TAG + ">(.*?)</" + OLD_COL_NAME_TAG + ">").matcher(xmlSortStr);
+      while (mOld.find()) {
+         sortingIds.add(mOld.group(1));
       }
    }
 

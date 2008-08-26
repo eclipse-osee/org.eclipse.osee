@@ -63,7 +63,7 @@ public class CustomizeManager {
     * factory
     * 
     * @param loadedCustData
-    * @return
+    * @return CustomizeData
     */
    public CustomizeData resolveLoadedCustomizeData(CustomizeData loadedCustData) {
       // Otherwise, have to resolve what was saved with what is valid for this table and available from the factory
@@ -97,6 +97,7 @@ public class CustomizeManager {
                   if (colId.endsWith(oldName)) {
                      resolvedCol = xCol;
                      oldNameToColumnId.put(name, resolvedCol);
+                     oldNameToColumnId.put(storedCol.getName(), resolvedCol);
                      break;
                   }
                }
@@ -107,6 +108,7 @@ public class CustomizeManager {
                   if (xCol.getId().endsWith(name)) {
                      resolvedCol = xCol;
                      oldNameToColumnId.put(name, resolvedCol);
+                     oldNameToColumnId.put(storedCol.getName(), resolvedCol);
                      break;
                   }
                }
@@ -257,7 +259,16 @@ public class CustomizeManager {
 
    public String getSortingStr() {
       if (currentCustData.getSortingData().isSorting()) {
-         return currentCustData.getSortingData().toString();
+         List<XViewerColumn> cols = getSortXCols();
+         if (cols.size() == 0) return "";
+         StringBuffer sb = new StringBuffer("Sort: ");
+         for (XViewerColumn col : getSortXCols()) {
+            if (col != null) {
+               sb.append(col.getName());
+               sb.append(col.isSortForward() ? " (FWD) , " : " (REV) , ");
+            }
+         }
+         return sb.toString().replaceFirst(" , $", "");
       }
       return "";
    }
@@ -276,7 +287,7 @@ public class CustomizeManager {
 
    public List<XViewerColumn> getSortXCols() {
       // return sort columns depending on default/customize
-      return currentCustData.getSortingData().getSortXCols();
+      return currentCustData.getSortingData().getSortXCols(oldNameToColumnId);
    }
 
    public boolean isLoading() {
@@ -379,7 +390,7 @@ public class CustomizeManager {
                   resetDefaultSorter();
                }
                if (xViewer.isCtrlKeyDown()) {
-                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols(oldNameToColumnId);
                   if (currSortCols == null) {
                      currSortCols = new ArrayList<XViewerColumn>();
                      currSortCols.add(xCol);
@@ -397,7 +408,7 @@ public class CustomizeManager {
                   List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
                   cols.add(xCol);
                   // If sorter already has this column sorted, reverse the sort
-                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols();
+                  List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols(oldNameToColumnId);
                   if (currSortCols != null && currSortCols.size() == 1 && currSortCols.iterator().next().equals(xCol)) xCol.reverseSort();
                   // Set the newly sorted column
                   currentCustData.getSortingData().setSortXCols(cols);
