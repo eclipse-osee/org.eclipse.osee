@@ -45,10 +45,19 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    @Override
    public void onInitializationComplete() {
       super.onInitializationComplete();
+      initializeSMA();
+   };
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
+    */
+   @Override
+   protected void initializeSMA() {
+      super.initializeSMA();
       defectManager = new DefectManager(this);
       userRoleManager = new UserRoleManager(this);
       actionableItemsDam = new XActionableItemsDam(this);
-   };
+   }
 
    /*
     * (non-Javadoc)
@@ -92,6 +101,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return actionableItemsDam;
    }
 
+   @Override
    public ActionArtifact getParentActionArtifact() throws SQLException {
       if (getParentSMA() != null) {
          return ((TeamWorkFlowArtifact) getParentSMA()).getParentActionArtifact();

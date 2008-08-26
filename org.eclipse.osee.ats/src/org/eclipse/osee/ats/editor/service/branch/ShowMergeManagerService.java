@@ -84,6 +84,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
    @Override
    public Action createToolbarService() {
       toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performService();
          }
@@ -104,7 +105,7 @@ public class ShowMergeManagerService extends WorkPageService implements IEventRe
     */
    @Override
    public String getName() {
-      return "Show Merge Manger";
+      return "Show Merge Manager";
    }
 
    /* (non-Javadoc)

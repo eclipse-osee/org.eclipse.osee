@@ -63,8 +63,8 @@ import org.eclipse.swt.graphics.Image;
 public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, IEventReceiver, ISubscribableArtifact, IFavoriteableArtifact {
 
    protected SMAManager smaMgr;
-   private Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
-   private Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
+   private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
+   private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
    public static double MAN_DAY_HOURS = 8;
@@ -94,6 +94,25 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    @Override
    public void onInitializationComplete() {
       super.onInitializationComplete();
+      initializeSMA();
+      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#reloadAttributesAndRelations()
+    */
+   @Override
+   public void reloadAttributesAndRelations() throws SQLException {
+      super.reloadAttributesAndRelations();
+      initializeSMA();
+   }
+
+   protected void initializeSMA() {
+      smaMgr = new SMAManager(this);
+      initalizePreSaveCache();
+   }
+
+   public void initalizePreSaveCache() {
       smaMgr = new SMAManager(this);
       try {
          preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
@@ -104,7 +123,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
    }
 
    /**
@@ -1144,6 +1162,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
          return percent / numObjects;
       }
 
+      @Override
       public String toString() {
          return "Percent: " + getResultingPercent() + "  NumObjs: " + numObjects + "  Total Percent: " + percent;
       }
