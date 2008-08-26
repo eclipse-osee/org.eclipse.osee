@@ -41,7 +41,7 @@ public class CustomHttpServlet extends HttpServlet {
          } else {
             message = String.format("Tag - %s", Strings.isValid(queryString) ? queryString : "attribute xml stream");
          }
-         System.out.println(String.format("[%s] [%s] serviced in [%s] ms", requestMethod, message, elapsed));
+         // System.out.println(String.format("[%s] [%s] serviced in [%s] ms", requestMethod, message, elapsed));
       }
    }
 

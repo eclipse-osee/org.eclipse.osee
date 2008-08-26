@@ -131,10 +131,8 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            if (!SkynetDbInit.isDbInit()) {
-               OseeLog.log(TagService.class, Level.INFO, String.format("Transmitted to Tagger in [%d ms]",
-                     System.currentTimeMillis() - start));
-            }
+            OseeLog.log(TagService.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
+                  System.currentTimeMillis() - start));
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");
