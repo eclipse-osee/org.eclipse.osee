@@ -40,8 +40,8 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
    private static final String XML_FINISH = "</AttributeTag>";
    private static final String PREFIX = "<entry gammaId=\"";
    private static final String POSTFIX = "\"/>\n";
-   private ExecutorService executor;
-   private StringBuffer taggingInfo;
+   private final ExecutorService executor;
+   private final StringBuffer taggingInfo;
    private int count;
 
    protected HttpAttributeTagger() {
@@ -131,8 +131,10 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
-            OseeLog.log(TagService.class, Level.INFO, String.format("Transmitted to Tagger in [%d ms]",
-                  System.currentTimeMillis() - start));
+            if (!SkynetDbInit.isDbInit()) {
+               OseeLog.log(TagService.class, Level.INFO, String.format("Transmitted to Tagger in [%d ms]",
+                     System.currentTimeMillis() - start));
+            }
          } catch (Exception ex) {
             if (response.length() > 0) {
                response.append("\n");
