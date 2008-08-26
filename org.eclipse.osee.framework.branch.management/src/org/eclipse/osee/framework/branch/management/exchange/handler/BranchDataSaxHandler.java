@@ -191,7 +191,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
                   branchesToImport, getAllBranchDataFromImportFile()));
          }
       }
-      getTranslator().addMappingTo("branch_id", -1L, -1L);
       for (BranchData branchData : getSelectedBranchDataToImport(branchIds)) {//getImportBranches(branchesToImport)) {
          Long original = new Long(branchData.getBranchId());
          getTranslator().addMappingTo("branch_id", original, original);

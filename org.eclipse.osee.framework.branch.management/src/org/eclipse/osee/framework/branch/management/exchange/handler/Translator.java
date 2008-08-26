@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 public class Translator {
    private static final String[] ARTIFACT_ID_ALIASES =
          new String[] {"art_id", "associated_art_id", "a_order", "b_order", "a_order_value", "b_order_value",
-               "a_art_id", "b_art_id"};
+               "a_art_id", "b_art_id", "commit_art_id"};
 
    private static final String[] BRANCH_ID_ALIASES =
          new String[] {"branch_id", "parent_branch_id", "a_branch_id", "b_branch_id"};
@@ -54,6 +54,7 @@ public class Translator {
    private List<IdTranslator> getTranslators() {
       List<IdTranslator> translators = new ArrayList<IdTranslator>();
       translators.add(new IdTranslator(SkynetDatabase.GAMMA_ID_SEQ, "gamma_id"));
+      translators.add(new IdTranslator(SkynetDatabase.TRANSACTION_ID_SEQ, "transaction_id"));
       translators.add(new IdTranslator(SkynetDatabase.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
       translators.add(new IdTranslator(SkynetDatabase.ART_TYPE_ID_SEQ, "art_type_id"));
       translators.add(new IdTranslator(SkynetDatabase.ATTR_ID_SEQ, "attr_id"));
@@ -109,20 +110,25 @@ public class Translator {
       }
 
       public Object getId(Connection connection, Object original) throws Exception {
-         Long orignalLong = null;
+         Long originalLong = null;
          if (original instanceof Double) {
-            orignalLong = ((Double) original).longValue();
+            originalLong = ((Double) original).longValue();
          } else if (original instanceof Integer) {
-            orignalLong = ((Integer) original).longValue();
+            originalLong = ((Integer) original).longValue();
          } else if (original instanceof Long) {
-            orignalLong = ((Long) original).longValue();
+            originalLong = ((Long) original).longValue();
          } else {
             System.out.println("Error here: " + original.getClass().getName());
          }
-         Long newVersion = this.idMap.get(orignalLong);
-         if (newVersion == null) {
-            newVersion = (long) Query.getNextSeqVal(getSequence());
-            idMap.put(orignalLong, newVersion);
+         Long newVersion = null;
+         if (originalLong == -1L) {
+            newVersion = originalLong;
+         } else {
+            newVersion = this.idMap.get(originalLong);
+            if (newVersion == null) {
+               newVersion = (long) Query.getNextSeqVal(getSequence());
+               idMap.put(originalLong, newVersion);
+            }
          }
          Object toReturn = newVersion;
          if (original instanceof Double) {
