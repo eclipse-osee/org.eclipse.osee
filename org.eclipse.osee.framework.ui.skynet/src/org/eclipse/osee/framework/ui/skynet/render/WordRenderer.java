@@ -429,7 +429,7 @@ public class WordRenderer extends FileRenderer {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       final BlamVariableMap variableMap = new BlamVariableMap();
       String template;
-      boolean isSingleEdit = artifacts.size() == 1;
+      boolean multipleArtifacts = artifacts.size() > 1;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
@@ -448,20 +448,20 @@ public class WordRenderer extends FileRenderer {
             }
          }
 
-         if (isSingleEdit) {
-            if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
-               template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
-               template =
-                     template.replaceAll(STYLES_END, STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(
-                           WordAttribute.OLE_DATA_NAME, "") + OLE_END);
-            }
-         } else {
+         if (multipleArtifacts) {
             for (Artifact artifact : artifacts) {
                if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.EDIT) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }
             displayNotMultiEditArtifacts(notMultiEditableArtifacts);
+         } else {
+            if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
+               template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
+               template =
+                     template.replaceAll(STYLES_END, STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(
+                           WordAttribute.OLE_DATA_NAME, "") + OLE_END);
+            }
          }
 
          artifacts.removeAll(notMultiEditableArtifacts);
@@ -470,12 +470,12 @@ public class WordRenderer extends FileRenderer {
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);
 
       boolean renderInEditMode = false;
-      if (PresentationType.EDIT == presentationType && !isSingleEdit) {
+      if (PresentationType.EDIT == presentationType && multipleArtifacts) {
          renderInEditMode = true;
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode, isSingleEdit);
+      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode, multipleArtifacts);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {

@@ -114,7 +114,7 @@ public class WordTemplateProcessor {
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
    private boolean isEditMode = false;
-   private boolean isSingleEdit;
+   private boolean multipleArtifacts;
 
    public WordTemplateProcessor() throws CoreException {
       this(null, null);
@@ -185,9 +185,9 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode, boolean isSingleEdit) throws Exception {
+   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode, boolean multipleArtifacts) throws Exception {
       this.isEditMode = isEditMode;
-      this.isSingleEdit = isSingleEdit;
+      this.multipleArtifacts = multipleArtifacts;
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
@@ -457,7 +457,7 @@ public class WordTemplateProcessor {
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       boolean performedOutLining = false;
 
-      if (outlining && !isSingleEdit) {
+      if (outlining && multipleArtifacts) {
          performedOutLining = true;
          String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -488,7 +488,7 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeElement.getAttributeName().equals("*")) {
-        	 
+
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
                processAttribute(artifact, wordMl, attributeElement, attributeTypeName, true);
             }
@@ -728,22 +728,23 @@ public class WordTemplateProcessor {
    public void setSaveParagraphNumOnArtifact(boolean saveParagraphNumOnArtifact) {
       this.saveParagraphNumOnArtifact = saveParagraphNumOnArtifact;
    }
-   
-   private Collection<String> orderAttributeNames(Collection<AttributeType> attributeTypes) {
-	  ArrayList<String> orderedNames = new ArrayList<String>(attributeTypes.size());
-	  String contentName = null;
 
-	  for (AttributeType attributeType : attributeTypes) {
-		if(attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(WordAttribute.CONTENT_NAME) || attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)){
-			contentName = attributeType.getName();
-	    }else{
-		orderedNames.add(attributeType.getName());
-	    }
-	  }
-	  Arrays.sort(orderedNames.toArray(new String[0]));
-	  if(contentName != null){
-		  orderedNames.add(contentName);
-	  }
-	  return orderedNames;
-	}
+   private Collection<String> orderAttributeNames(Collection<AttributeType> attributeTypes) {
+      ArrayList<String> orderedNames = new ArrayList<String>(attributeTypes.size());
+      String contentName = null;
+
+      for (AttributeType attributeType : attributeTypes) {
+         if (attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(
+               WordAttribute.CONTENT_NAME) || attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+            contentName = attributeType.getName();
+         } else {
+            orderedNames.add(attributeType.getName());
+         }
+      }
+      Arrays.sort(orderedNames.toArray(new String[0]));
+      if (contentName != null) {
+         orderedNames.add(contentName);
+      }
+      return orderedNames;
+   }
 }
