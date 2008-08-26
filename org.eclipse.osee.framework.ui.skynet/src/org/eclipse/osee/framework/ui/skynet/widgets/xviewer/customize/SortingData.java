@@ -62,10 +62,13 @@ public class SortingData {
          if (xCol != null) {
             cols.add(xCol);
          } else {
-            OSEELog.logWarning(
-                  SkynetGuiPlugin.class,
-                  "XViewer Conversion for saved Customization \"" + custData.getName() + "\" dropped unresolved SORTING column Name/Id: \"" + id + "\".  Delete customization and re-save to resolve.",
-                  false);
+            // Ignore known removed columns
+            if (!CustomizeManager.REMOVED_COLUMNS_TO_IGNORE.contains(id)) {
+               OSEELog.logWarning(
+                     SkynetGuiPlugin.class,
+                     "XViewer Conversion for saved Customization \"" + custData.getName() + "\" dropped unresolved SORTING column Name/Id: \"" + id + "\".  Delete customization and re-save to resolve.",
+                     false);
+            }
          }
       }
       return cols;

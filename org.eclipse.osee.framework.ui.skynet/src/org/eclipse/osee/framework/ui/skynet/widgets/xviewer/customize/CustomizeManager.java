@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class CustomizeManager {
    public static String TABLE_DEFAULT_LABEL = "-- Table Default --";
    // Added to keep filter, sorter from working till finished loading
    public boolean loading = true;
+   public static List<String> REMOVED_COLUMNS_TO_IGNORE = Arrays.asList("Metrics from Tasks");
 
    public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) {
       this.xViewer = xViewer;
@@ -123,10 +125,13 @@ public class CustomizeManager {
             resolvedColumns.add(resolvedCol);
          }
          if (resolvedCol == null) {
-            OSEELog.logWarning(
-                  SkynetGuiPlugin.class,
-                  "XViewer Conversion for saved Customization \"" + loadedCustData.getName() + "\" dropped unresolved column Name: \"" + storedCol.getName() + "\"  Id: \"" + storedCol.getId() + "\".  Delete customization and re-save to resolve.",
-                  false);
+            // Ignore known removed columns
+            if (!REMOVED_COLUMNS_TO_IGNORE.contains(storedCol.getName())) {
+               OSEELog.logWarning(
+                     SkynetGuiPlugin.class,
+                     "XViewer Conversion for saved Customization \"" + loadedCustData.getName() + "\" dropped unresolved column Name: \"" + storedCol.getName() + "\"  Id: \"" + storedCol.getId() + "\".  Delete customization and re-save to resolve.",
+                     false);
+            }
          }
       }
       /*
