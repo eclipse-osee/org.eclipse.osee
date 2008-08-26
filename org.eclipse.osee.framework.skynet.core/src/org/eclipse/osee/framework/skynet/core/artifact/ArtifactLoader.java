@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRI
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -58,13 +60,13 @@ public final class ArtifactLoader {
          "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
 
    private static final String SELECT_HISTORICAL_ATTRIBUTES =
-         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type, al1.transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
+         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type, txd1.transaction_id, al1.transaction_id stripe_transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
 
    private static final String SELECT_CURRENT_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    private static final String SELECT_HISTORICAL_ARTIFACTS =
-         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, art1.art_id, txs1.transaction_id desc";
+         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id, al1.transaction_id stripe_transaction_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, art1.art_id, txs1.transaction_id desc";
 
    private static final String INSERT_JOIN_ARTIFACT =
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
@@ -275,11 +277,18 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload, boolean historical) throws OseeCoreException, SQLException {
       int artifactId = rSet.getInt("art_id");
       Branch branch = BranchPersistenceManager.getBranch(rSet.getInt("branch_id"));
-
       TransactionId transactionId = TransactionIdManager.getTransactionId(rSet);
-      Artifact artifact =
-            historical ? ArtifactCache.getHistorical(artifactId, transactionId.getTransactionNumber()) : ArtifactCache.getActive(
-                  artifactId, branch);
+      Artifact artifact;
+      
+      if(historical){
+    	  int stripeTransactionNumber = rSet.getInt("stripe_transaction_id");
+    	  if(stripeTransactionNumber != transactionId.getTransactionNumber()){
+    		  transactionId = TransactionIdManager.getTransactionId(stripeTransactionNumber);
+    	  }
+    	  artifact = ArtifactCache.getHistorical(artifactId, transactionId.getTransactionNumber());
+      }else{
+    	  artifact = ArtifactCache.getActive(artifactId, branch);
+      }
 
       if (artifact == null) {
          ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
@@ -289,6 +298,8 @@ public final class ArtifactLoader {
                factory.loadExisitingArtifact(artifactId, rSet.getString("guid"), rSet.getString("human_readable_id"),
                      artifactType, rSet.getInt("gamma_id"), transactionId,
                      ModificationType.getMod(rSet.getInt("mod_type")), historical);
+         
+         
       } else if (reload) {
          artifact.internalSetPersistenceData(rSet.getInt("gamma_id"), transactionId,
                ModificationType.getMod(rSet.getInt("mod_type")), historical);
@@ -413,7 +424,7 @@ public final class ArtifactLoader {
                }
 
                if (historical) {
-                  artifact = ArtifactCache.getHistorical(artifactId, rSet.getInt("transaction_id"));
+                  artifact = ArtifactCache.getHistorical(artifactId, rSet.getInt("stripe_transaction_id"));
                } else {
                   artifact = ArtifactCache.getActive(artifactId, branchId);
                }
