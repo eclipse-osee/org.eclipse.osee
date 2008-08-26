@@ -482,7 +482,7 @@ public class AtsBranchManager {
                         Display.getCurrent().getActiveShell(),
                         "Commit Failed",
                         null,
-                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
+                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
                         MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
          } else {
             dialog =
@@ -490,7 +490,7 @@ public class AtsBranchManager {
                         Display.getCurrent().getActiveShell(),
                         "Commit Failed",
                         null,
-                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
+                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
                         MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
 
          }

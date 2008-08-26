@@ -427,7 +427,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    class BranchArtifact implements IBranchArtifact {
 
-      private Branch branch;
+      private final Branch branch;
 
       public BranchArtifact(Branch branch) {
          this.branch = branch;
@@ -889,15 +889,18 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             myTextBeingRenamed = new Text(branchTable.getTree(), SWT.BORDER);
             myTextBeingRenamed.setText(selectedBranch.getBranchName());
             myTextBeingRenamed.addFocusListener(new FocusAdapter() {
+               @Override
                public void focusLost(FocusEvent e) {
                   updateText(myTextBeingRenamed.getText(), selectedBranch);
                   myTextBeingRenamed.dispose();
                }
 
+               @Override
                public void focusGained(FocusEvent e) {
                }
             });
             myTextBeingRenamed.addKeyListener(new KeyAdapter() {
+               @Override
                public void keyReleased(KeyEvent e) {
                   if ((e.character == SWT.CR)) {
                      updateText(myTextBeingRenamed.getText(), selectedBranch);
@@ -1307,8 +1310,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private class CommitHandler extends AbstractSelectionEnabledHandler {
-      private boolean useParentBranch;
-      private boolean archiveSourceBranch;
+      private final boolean useParentBranch;
+      private final boolean archiveSourceBranch;
 
       public CommitHandler(MenuManager menuManager, boolean useParentBranch, boolean archiveSourceBranch) {
          super(menuManager);
@@ -1339,7 +1342,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                            Display.getCurrent().getActiveShell(),
                            "Commit Failed",
                            null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts\n  Force the commit",
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
                            MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
             } else {
                dialog =
@@ -1347,7 +1350,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                            Display.getCurrent().getActiveShell(),
                            "Commit Failed",
                            null,
-                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manger to resolve conflicts",
+                           "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
                            MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
 
             }
