@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Ryan D. Brooks
@@ -165,7 +165,7 @@ public class ArtifactQueryBuilder {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
       } else {
-         sql.append("SELECT art1.art_id, txd1.branch_id FROM ");
+         sql.append("SELECT art1.art_id, txd1.transaction_id, txd1.branch_id FROM ");
       }
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
@@ -180,7 +180,7 @@ public class ArtifactQueryBuilder {
 
       if (artifactId != 0) {
          sql.append("art1.art_id=? AND ");
-         addParameter(SQL3DataType.INTEGER, artifactId);
+         addParameter(artifactId);
       }
 
       if (artifactIds != null) {
@@ -190,7 +190,7 @@ public class ArtifactQueryBuilder {
          sql.append("art1.art_type_id");
          if (artifactTypes.size() == 1) {
             sql.append("=? AND ");
-            addParameter(SQL3DataType.INTEGER, artifactTypes.iterator().next().getArtTypeId());
+            addParameter(artifactTypes.iterator().next().getArtTypeId());
          } else {
             sql.append(" IN (");
             for (ArtifactType artifactType : artifactTypes) {
@@ -208,7 +208,7 @@ public class ArtifactQueryBuilder {
          } else {
             sql.append("art1.human_readable_id=? AND ");
          }
-         addParameter(SQL3DataType.VARCHAR, guidOrHrid);
+         addParameter(guidOrHrid);
       }
 
       if (guids != null && guids.size() > 0) {
@@ -251,7 +251,7 @@ public class ArtifactQueryBuilder {
 
       sql.append(" AND txs1.transaction_id=txd1.transaction_id");
       sql.append(" AND txd1.branch_id=?");
-      addParameter(SQL3DataType.INTEGER, branch.getBranchId());
+      addParameter(branch.getBranchId());
 
       return sql.toString();
    }
@@ -260,8 +260,7 @@ public class ArtifactQueryBuilder {
       sql.append(sqlSnippet);
    }
 
-   public void addParameter(SQL3DataType sqlType, Object data) {
-      queryParameters.add(sqlType);
+   public void addParameter(Object data) {
       queryParameters.add(data);
    }
 
@@ -284,7 +283,7 @@ public class ArtifactQueryBuilder {
       sql.append(".transaction_id AND ");
       sql.append(txdAlias);
       sql.append(".branch_id=? AND ");
-      addParameter(SQL3DataType.INTEGER, branch.getBranchId());
+      addParameter(branch.getBranchId());
    }
 
    private String appendAliasedTable(String table, boolean comma) {
@@ -333,7 +332,7 @@ public class ArtifactQueryBuilder {
    private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
       List<Artifact> artifacts =
             ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
-                  loadLevel, reload, confirmer);
+                  loadLevel, reload, confirmer, null);
       clearCriteria();
       return artifacts;
    }
@@ -346,9 +345,9 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters) throws SQLException {
+   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionId transactionId) throws SQLException {
       ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
-            artifactCountEstimate);
+            artifactCountEstimate, transactionId);
       clearCriteria();
    }
 

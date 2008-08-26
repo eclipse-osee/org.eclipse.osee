@@ -232,8 +232,7 @@ public class ArtifactPersistenceManager {
    }
 
    private void addArtifactData(Artifact artifact, SkynetTransaction transaction) throws SQLException {
-      transaction.addToBatch(INSERT_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-            artifact.getArtTypeId(), SQL3DataType.VARCHAR, artifact.getGuid(), SQL3DataType.VARCHAR,
+      transaction.addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
             artifact.getHumanReadableId());
    }
 
@@ -246,14 +245,14 @@ public class ArtifactPersistenceManager {
     * @throws SQLException
     */
    public Artifact getArtifact(String guid, TransactionId transactionId) throws SQLException, OseeCoreException {
-      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid, -1, true);
+      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, guid, -1, true);
    }
 
    public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException, OseeCoreException {
-      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, null, artId, false);
+      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, null, artId, false);
    }
 
-   private Artifact getArtifactInternal(TransactionId transactionLimit, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
+   private Artifact getArtifactInternal(TransactionId transactionLimit, String query, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
       // First try to acquire the artifact from cache
       Artifact artifact;
       Object data;
@@ -273,8 +272,7 @@ public class ArtifactPersistenceManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(1, query, sqlDataType, data, SQL3DataType.INTEGER,
-                        transactionLimit.getTransactionNumber(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(1, query, data, transactionLimit.getTransactionNumber(),
                         transactionLimit.getBranch().getBranchId());
 
             ResultSet rSet = chStmt.getRset();
@@ -408,19 +406,17 @@ public class ArtifactPersistenceManager {
    @Deprecated
    public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(SQL3DataType.INTEGER);
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, null);
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, null, null);
    }
 
    @Deprecated
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(SQL3DataType.INTEGER);
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer);
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null);
    }
 
    @Deprecated
@@ -432,20 +428,12 @@ public class ArtifactPersistenceManager {
     * This is method only exists to support the old change reports
     */
    @Deprecated
-   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
-      return instance.getArtifactsNotCurrent(searchCriteria, all, branch, null);
-   }
-
-   /**
-    * This is method only exists to support the old change reports
-    */
-   @Deprecated
-   public Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
+   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(SQL3DataType.INTEGER);
-      queryParameters.add(branch.getBranchId());
+      queryParameters.add(transactionId.getBranch().getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
-            branch), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer);
+            transactionId.getBranch()), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer,
+            transactionId);
    }
 
    /**
@@ -463,9 +451,8 @@ public class ArtifactPersistenceManager {
       try {
          // Acquire previously stored attributes
          chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT, SQL3DataType.INTEGER,
-                     artifact.getArtId(), SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
-                     SQL3DataType.INTEGER, artifact.getTransactionNumber(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT, artifact.getArtId(),
+                     ModificationType.DELETED.getValue(), artifact.getTransactionNumber(),
                      artifact.getBranch().getBranchId());
 
          ResultSet rSet = chStmt.getRset();
@@ -592,12 +579,9 @@ public class ArtifactPersistenceManager {
       revertArtifact(branchId, artId);
 
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ATTRIBUTE_TRANS, SQL3DataType.INTEGER, branchId,
-            SQL3DataType.INTEGER, artId);
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_RELATION_TRANS, SQL3DataType.INTEGER, branchId,
-            SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, artId);
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ARTIFACT_TRANS, SQL3DataType.INTEGER, branchId,
-            SQL3DataType.INTEGER, artId);
+      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
    public void revertAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException, SQLException {
@@ -665,9 +649,8 @@ public class ArtifactPersistenceManager {
          ResultSet resultSet = null;
          try {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
-                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER, artId,
-                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER, artId);
+                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId, branchId, artId, artId,
+                        branchId, artId);
             resultSet = connectionHandlerStatement.getRset();
             while (resultSet.next()) {
                if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
@@ -686,16 +669,15 @@ public class ArtifactPersistenceManager {
             try {
                gammaIdsModifications.store();
                int gammaIdModsQID = gammaIdsModifications.getQueryId();
-               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
-               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
-               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, gammaIdModsQID);
 
-               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT, SQL3DataType.INTEGER, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT, gammaIdModsQID);
 
                if (!gammaIdsBaseline.isEmpty()) {
                   gammaIdsBaseline.store();
-                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, SQL3DataType.INTEGER,
-                        gammaIdsBaseline.getQueryId());
+                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, gammaIdsBaseline.getQueryId());
                }
             } finally {
                gammaIdsModifications.delete();
@@ -703,7 +685,7 @@ public class ArtifactPersistenceManager {
             }
          }
 
-         ConnectionHandler.runPreparedUpdate(REMOVE_EMPTY_TRANSACTION_DETAILS, SQL3DataType.INTEGER, branchId);
+         ConnectionHandler.runPreparedUpdate(REMOVE_EMPTY_TRANSACTION_DETAILS, branchId);
 
       }
 
@@ -758,8 +740,7 @@ public class ArtifactPersistenceManager {
     * @throws SQLException
     */
    public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
-            SQL3DataType.INTEGER, artifact.getArtId());
+      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, artifactType.getArtTypeId(), artifact.getArtId());
    }
 
    /**
@@ -768,8 +749,8 @@ public class ArtifactPersistenceManager {
     * @param attribute
     */
    public static void purgeAttribute(Attribute<?> attribute, int attributeId) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, SQL3DataType.INTEGER, attributeId);
-      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, SQL3DataType.INTEGER, attributeId);
+      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, attributeId);
+      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, attributeId);
    }
 
    private static final String INSERT_SELECT_RELATIONS =
@@ -811,15 +792,15 @@ public class ArtifactPersistenceManager {
       try {
          for (Artifact art : artifactsToPurge) {
             for (Branch branch : art.getBranch().getChildBranches(true)) {
-               batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                     SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, branch.getBranchId()});
+               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), branch.getBranchId(),
+                     SQL3DataType.INTEGER});
             }
          }
          if (batchParameters.size() > 0) {
             ArtifactLoader.selectArtifacts(batchParameters);
             ConnectionHandlerStatement stmt = null;
             try {
-               stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, SQL3DataType.INTEGER, queryId);
+               stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
                while (stmt.getRset().next()) {
@@ -847,39 +828,28 @@ public class ArtifactPersistenceManager {
 
          // insert into the artifact_join_table
          for (Artifact art : artifactsToPurge) {
-            batchParameters.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, art.getArtId(), SQL3DataType.INTEGER, art.getBranch().getBranchId()});
+            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
+                  SQL3DataType.INTEGER});
          }
          ArtifactLoader.selectArtifacts(batchParameters);
 
          //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
          int transactionJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, SQL3DataType.INTEGER, transactionJoinId,
-               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, SQL3DataType.INTEGER, transactionJoinId,
-               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, SQL3DataType.INTEGER, transactionJoinId,
-               SQL3DataType.TIMESTAMP, insertTime, SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, transactionJoinId, insertTime, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, transactionJoinId, insertTime, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, transactionJoinId, insertTime, queryId);
 
          //delete from the txs table
          int txsDeletes =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
-                     transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, transactionJoinId);
 
          int txdDeletes =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION, SQL3DataType.INTEGER,
-                     transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION, transactionJoinId);
 
-         int relationVersions =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS, SQL3DataType.INTEGER,
-                     transactionJoinId);
-         int attributeVersions =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_VERSIONS, SQL3DataType.INTEGER,
-                     transactionJoinId);
-         int artifactVersions =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, SQL3DataType.INTEGER,
-                     transactionJoinId);
-         int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, SQL3DataType.INTEGER, queryId);
+         int relationVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS, transactionJoinId);
+         int attributeVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_VERSIONS, transactionJoinId);
+         int artifactVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
+         int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, queryId);
 
          try {
             Map<String, String> parameters = new HashMap<String, String>();
@@ -899,8 +869,7 @@ public class ArtifactPersistenceManager {
                      txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
                      (relationVersions + attributeVersions + artifactVersions)));
 
-         ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_transaction where query_id = ?",
-               SQL3DataType.INTEGER, transactionJoinId);
+         ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_transaction where query_id = ?", transactionJoinId);
 
          for (Artifact art : artifactsToPurge) {
             art.setDeleted();

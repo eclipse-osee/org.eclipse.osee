@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.AttributeJoinQuery;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -139,7 +138,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");
-         builder.addParameter(SQL3DataType.INTEGER, attributeType.getAttrTypeId());
+         builder.addParameter(attributeType.getAttrTypeId());
       }
       if (value != null) {
          builder.append(attrAlias);
@@ -157,7 +156,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             }
          }
          builder.append("? AND ");
-         builder.addParameter(SQL3DataType.VARCHAR, value);
+         builder.addParameter(value);
       }
 
       if (values != null && values.size() > 0) {
@@ -168,7 +167,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
             builder.append("NOT ");
          }
          builder.append("IN ( SELECT value FROM osee_join_attribute WHERE attr_query_id = ? ) AND ");
-         builder.addParameter(SQL3DataType.INTEGER, joinQuery.getQueryId());
+         builder.addParameter(joinQuery.getQueryId());
       }
 
       builder.append(attrAlias);

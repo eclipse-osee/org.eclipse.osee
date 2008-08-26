@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,7 +25,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
@@ -123,7 +121,7 @@ public class SkynetTransaction {
          if (deleteTransactionDetail) {
             localEvents = null;
             remoteEvents = null;
-            ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, SQL3DataType.INTEGER, transactionId.getTransactionNumber());
+            ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, transactionId.getTransactionNumber());
          } else {
             for (ITransactionData transactionData : transactionItems.keySet()) {
                if (transactionData instanceof ArtifactTransactionData) {
@@ -162,9 +160,9 @@ public class SkynetTransaction {
          //Add current transaction information
          ModificationType modType = transactionData.getModificationType();
 
-         ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
-               transactionData.getTransactionId().getTransactionNumber(), SQL3DataType.INTEGER, transactionData.getGammaId(),
-               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,  TxChange.getCurrent(modType).getValue());
+         ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE,
+               transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
+               modType.getValue(), TxChange.getCurrent(modType).getValue());
 
          //Add specific object values to the their tables
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),

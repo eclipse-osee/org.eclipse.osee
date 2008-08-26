@@ -14,16 +14,13 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-
 import java.sql.SQLException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -113,14 +110,12 @@ public class AttributeToTransactionOperation {
       } else {
          dataProvider.persist();
          DAOToSQL daoToSql = new DAOToSQL(dataProvider.getData());
-         transaction.addToBatch(UPDATE_TRANSACTION_TABLE, SQL3DataType.VARCHAR, transaction.getComment(),
-               SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
-               attribute.getGammaId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+         transaction.addToBatch(UPDATE_TRANSACTION_TABLE, transaction.getComment(),
+               GlobalTime.GreenwichMeanTimestamp(), attribute.getGammaId(), artifact.getBranch().getBranchId());
 
-         transaction.addToBatch(UPDATE_ATTRIBUTE, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-               attribute.getAttrId(), SQL3DataType.INTEGER, attribute.getAttributeType().getAttrTypeId(),
-               SQL3DataType.INTEGER, attribute.getGammaId(), SQL3DataType.VARCHAR, daoToSql.getValue(),
-               SQL3DataType.VARCHAR, daoToSql.getUri());
+         transaction.addToBatch(UPDATE_ATTRIBUTE, artifact.getArtId(), attribute.getAttrId(),
+               attribute.getAttributeType().getAttrTypeId(), attribute.getGammaId(), daoToSql.getValue(),
+               daoToSql.getUri());
       }
    }
 
@@ -140,9 +135,8 @@ public class AttributeToTransactionOperation {
       if (attributeType.getMaxOccurrences() == 1) {
          try {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, SQL3DataType.INTEGER,
-                        attributeType.getAttrTypeId(), SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-                        artifact.getBranch().getBranchId());
+                  ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(),
+                        artifact.getArtId(), artifact.getBranch().getBranchId());
 
             if (connectionHandlerStatement.next()) {
                attrId = connectionHandlerStatement.getRset().getInt("attr_id");
@@ -184,8 +178,9 @@ public class AttributeToTransactionOperation {
                Attribute<?> attribute = artifact.createAttribute(attributeType, true);
                if (!isNewArtifact) {
                   attribute.setNotDirty();
-                  OseeLog.log(SkynetActivator.class, Level.FINER, String.format("%s [%d]- %s was created",
-                        artifact.toString(), artifact.getArtId(), attributeType.toString()));
+                  OseeLog.log(SkynetActivator.class, Level.FINER, String.format(
+                        "artId [%d] - an attribute of type %s was created", artifact.getArtId(),
+                        attributeType.toString()));
                }
             }
          }

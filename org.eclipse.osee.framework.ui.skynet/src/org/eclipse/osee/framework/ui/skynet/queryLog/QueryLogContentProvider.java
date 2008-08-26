@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.queryLog;
 
-import java.util.LinkedList;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.db.connection.core.query.QueryLog;
@@ -27,14 +26,10 @@ public class QueryLogContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof QueryRecord) {
          QueryRecord record = (QueryRecord) parentElement;
 
-         LinkedList<Object> children = new LinkedList<Object>();
          if (record.getSqlException() != null) {
-            children.add(record.getSqlException());
+            return new Object[] {record.getSqlException()};
          }
-         for (String image : record.getBindVariableImages()) {
-            children.add(image);
-         }
-         return children.toArray();
+         return record.getBindVariables();
       } else if (parentElement instanceof Exception) {
          return ((Exception) parentElement).getStackTrace();
       }
@@ -51,7 +46,7 @@ public class QueryLogContentProvider implements ITreeContentProvider {
          return ((QueryLog) element).getRecords().size() > 0;
       } else if (element instanceof QueryRecord) {
          QueryRecord record = (QueryRecord) element;
-         return !record.getBindVariableImages().isEmpty() || record.getSqlException() != null;
+         return record.getBindVariables().length > 0 || record.getSqlException() != null;
       } else if (element instanceof Exception) {
          return ((Exception) element).getStackTrace().length > 0;
       }

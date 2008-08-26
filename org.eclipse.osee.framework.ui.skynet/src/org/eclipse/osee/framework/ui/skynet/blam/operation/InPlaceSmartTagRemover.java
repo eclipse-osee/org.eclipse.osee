@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -54,8 +53,7 @@ public class InPlaceSmartTagRemover extends AbstractBlam {
             String cleanValue = WordUtil.removeWordMarkupSmartTags(currentValue);
             if (!currentValue.equals(cleanValue)) {
                InputStream in = new ByteArrayInputStream(cleanValue.getBytes());
-               ConnectionHandler.runPreparedUpdate(UPDATE_ATTRIBUTE, SQL3DataType.BLOB, in, SQL3DataType.INTEGER,
-                     attribute.getGammaId());
+               ConnectionHandler.runPreparedUpdate(UPDATE_ATTRIBUTE, in, attribute.getGammaId());
             }
          }
          monitor.worked(1);

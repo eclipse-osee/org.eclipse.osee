@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 public class OseeSequenceManager {
    private static final String SEQUENCE_NAME = "SEQUENCE_NAME";
@@ -64,15 +63,13 @@ public class OseeSequenceManager {
 
    private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws SQLException {
       ConnectionHandlerStatement chStmt =
-            ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE, SQL3DataType.BIGINT, value,
-                  SQL3DataType.VARCHAR, sequenceName, SQL3DataType.BIGINT, lastValue);
+            ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE, value, sequenceName, lastValue);
       return modifySequenceValue(chStmt);
    }
 
    private boolean insertSequenceValue(String sequenceName, long value) throws SQLException {
       ConnectionHandlerStatement chStmt =
-            ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE, SQL3DataType.BIGINT, value,
-                  SQL3DataType.VARCHAR, sequenceName);
+            ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE, value, sequenceName);
       return modifySequenceValue(chStmt);
    }
 
@@ -90,7 +87,7 @@ public class OseeSequenceManager {
       long toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(true, QUERY_SEQUENCE, SQL3DataType.VARCHAR, sequenceName);
+         chStmt = ConnectionHandler.runPreparedQuery(true, QUERY_SEQUENCE, sequenceName);
          if (chStmt.next()) {
             toReturn = chStmt.getRset().getLong(LAST_SEQUENCE);
          } else {

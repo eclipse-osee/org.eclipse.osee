@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -55,7 +54,6 @@ public class ArtifactHridSearch implements ISearchPrimitive {
     */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql = ARTIFACT_TABLE.column("human_readable_id") + operator + "?";
-      dataList.add(SQL3DataType.VARCHAR);
       dataList.add(humanReadableId);
 
       return sql;

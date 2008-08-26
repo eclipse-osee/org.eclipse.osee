@@ -52,7 +52,6 @@ public final class ConnectionHandler {
    private static final Queue<Connection> pooledConnections = new LinkedList<Connection>();
 
    private ConnectionHandler() {
-      super();
       throw new UnsupportedOperationException("why would you construct a class that only has static methods");
    }
 
@@ -318,7 +317,7 @@ public final class ConnectionHandler {
    }
 
    public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws SQLException {
-      QueryRecord record = new QueryRecord("<batchable: batched> " + query, SQL3DataType.INTEGER, datas.size());
+      QueryRecord record = new QueryRecord("<batchable: batched> " + query, datas.size());
       int returnCount = 0;
       PreparedStatement preparedStatement = null;
       try {
@@ -403,12 +402,7 @@ public final class ConnectionHandler {
    private static void populateValuesForPreparedStatement(PreparedStatement preparedStatement, Object... data) throws SQLException {
       int preparedIndex = 0;
       for (Object dataValue : data) {
-
-         if (dataValue instanceof SQL3DataType) {
-            continue;
-         } else {
-            preparedIndex++;
-         }
+         preparedIndex++;
          if (dataValue instanceof String) {
             int length = ((String) dataValue).length();
             if (length > 4000) {
@@ -418,13 +412,16 @@ public final class ConnectionHandler {
          }
 
          if (dataValue == null) {
-            int typeNumber = preparedStatement.getParameterMetaData().getParameterType(preparedIndex);
-            if (typeNumber != java.sql.Types.BLOB) {
-               preparedStatement.setNull(preparedIndex, typeNumber);
-            } else {
+            throw new IllegalArgumentException(
+                  "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
+         } else if (dataValue instanceof SQL3DataType) {
+            int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
+            if (dataTypeNumber == java.sql.Types.BLOB) {
                // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
                //  "content" is of type bytea but expression is of type oid"
                preparedStatement.setBytes(preparedIndex, null);
+            } else {
+               preparedStatement.setNull(preparedIndex, dataTypeNumber);
             }
          } else if (dataValue instanceof ByteArrayInputStream) {
             preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
@@ -436,7 +433,7 @@ public final class ConnectionHandler {
    }
 
    public static int runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws SQLException {
-      QueryRecord record = new QueryRecord("<batched> " + query, SQL3DataType.INTEGER, datas.size());
+      QueryRecord record = new QueryRecord("<batched> " + query, datas.size());
       int returnCount = 0;
       if (datas.size() < 1) {
          throw new IllegalArgumentException(

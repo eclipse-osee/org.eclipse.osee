@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -81,41 +80,23 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
    }
 
    public String getTableSql(List<Object> dataList, Branch branch) {
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentHeadTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentHeadTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(parentHeadTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childHeadTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childHeadTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBranchId);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childBaseTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(childHeadTransactionNumber);
 
       return CONFLICT_TABLE;

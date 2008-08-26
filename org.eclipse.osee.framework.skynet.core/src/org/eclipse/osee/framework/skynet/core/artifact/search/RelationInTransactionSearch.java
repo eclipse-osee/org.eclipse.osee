@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.SQLException;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
@@ -69,20 +68,14 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
       String tables =
             "(SELECT " + RELATION_LINK_VERSION_TABLE.columns("a_art_id") + " AS art_id " + " FROM " + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL SELECT " + RELATION_LINK_VERSION_TABLE.columns("b_art_id") + " AS art_id " + " FROM " + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ") t1";
       if (!fromTransactionNumber.equals(toTransactionNumber)) {
-         dataList.add(SQL3DataType.INTEGER);
          dataList.add(fromTransactionNumber);
       }
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(toTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(branchId);
       if (!fromTransactionNumber.equals(toTransactionNumber)) {
-         dataList.add(SQL3DataType.INTEGER);
          dataList.add(fromTransactionNumber);
       }
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(toTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(branchId);
 
       return tables;

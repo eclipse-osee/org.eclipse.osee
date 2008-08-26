@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -151,8 +150,8 @@ class CommitJob extends Job {
          //select av1.art_id from osee_define_txs tx1, osee_define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_artifact_version av1, osee_Define_artifact_version av2 where td1.branch_id = 874 AND td1.tx_type = 0 AND td1.transaction_id = tx1.transaction_id AND tx1.mod_type = 1 AND tx1.gamma_id = av1.gamma_id AND td2.branch_id = 874 AND td2.tx_type = 0 AND td2.transaction_id = tx2.transaction_id AND tx2.mod_type = 3 AND tx2.tx_current = 2 AND tx2.gamma_id = av2.gamma_id AND av1.art_id = av2.art_id;
 
          ResultSet resultSet =
-               ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, SQL3DataType.INTEGER, fromBranch.getBranchId(),
-                     SQL3DataType.INTEGER, fromBranch.getBranchId()).getRset();
+               ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(),
+                     fromBranch.getBranchId()).getRset();
 
          while (resultSet.next()) {
             ArtifactPersistenceManager.getInstance().revertArtifact(resultSet.getInt("branch_id"),
@@ -172,60 +171,53 @@ class CommitJob extends Job {
          monitor.setTaskName("Commit transactions");
 
          int insertCount =
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ATTRIBUTES, SQL3DataType.INTEGER,
-                     toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ATTRIBUTES, toBranch.getBranchId(),
+                     fromBranchId);
 
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTES, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
 
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ARTIFACTS, SQL3DataType.INTEGER,
-                     toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
+                     fromBranchId);
 
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACTS, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
 
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_RELATIONS, SQL3DataType.INTEGER,
-                     toBranch.getBranchId(), SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
+                     fromBranchId);
 
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
 
          //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
          //and modified on the same branch.
 
-         ConnectionHandler.runPreparedUpdate(UPDATE_MODIFICATION_ID, SQL3DataType.INTEGER, newTransactionNumber,
-               SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-               fromBranchId, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
+         ConnectionHandler.runPreparedUpdate(UPDATE_MODIFICATION_ID, newTransactionNumber, fromBranchId,
+               newTransactionNumber, fromBranchId, newTransactionNumber, fromBranchId);
 
          //add in all merge branch changes over any other source branch changes.
          if (conflictManager.originalConflictsExist()) {
             for (Conflict conflict : conflictManager.getOriginalConflicts()) {
                if (!conflict.statusInformational()) {
-                  ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
-                        conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-                        conflict.getSourceGamma());
+                  ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, conflict.getMergeGammaId(),
+                        newTransactionNumber, conflict.getSourceGamma());
                   conflict.setStatus(Conflict.Status.COMMITTED);
                }
                //TODO add source, destination values for merge branch history
             }
             //insert transaction id into the branch table
-            ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTION_ID, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, fromBranch.getBranchId(), SQL3DataType.INTEGER,
-                  toBranch.getBranchId());
+            ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
+                  fromBranch.getBranchId(), toBranch.getBranchId());
 
          }
 
          if (insertCount > 0) {
             Object[] dataList =
-                  new Object[] {SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
-                        newTransactionNumber, SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
+                  new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
                         newTransactionNumber};
-            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true);
+            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null);
             tagArtifacts(toBranch, fromBranchId, monitor);
 
             if (archiveBranch) {
@@ -268,11 +260,9 @@ class CommitJob extends Job {
          progressMonitor.setTaskName("Tagging artifacts");
 
          //Delete toBranch artifact tags
-         ConnectionHandler.runPreparedUpdate(DELETE_TO_BRANCH_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
-               SQL3DataType.INTEGER, fromBranchId);
+         ConnectionHandler.runPreparedUpdate(DELETE_TO_BRANCH_TAG_DATA, toBranch.getBranchId(), fromBranchId);
          //move artifact tags from fromBranch to toBranch
-         ConnectionHandler.runPreparedUpdate(MOVE_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
-               SQL3DataType.INTEGER, fromBranchId);
+         ConnectionHandler.runPreparedUpdate(MOVE_TAG_DATA, toBranch.getBranchId(), fromBranchId);
       }
    }
 }

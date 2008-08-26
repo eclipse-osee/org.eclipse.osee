@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * Controls tags and their tagId's.
@@ -45,9 +44,7 @@ class TagFactory {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(1, SELECT_TAG, SQL3DataType.VARCHAR, tag, SQL3DataType.INTEGER,
-                     tagDescriptor.getTagTypeId());
+         chStmt = ConnectionHandler.runPreparedQuery(1, SELECT_TAG, tag, tagDescriptor.getTagTypeId());
 
          ResultSet rset = chStmt.getRset();
 
@@ -55,9 +52,8 @@ class TagFactory {
             return rset.getInt("tag_id");
          } else {
             int tagId = Query.getNextSeqVal(TAG_ID_SEQ);
-            ConnectionHandler.runPreparedUpdate(true, INSERT_TAG, SQL3DataType.VARCHAR, tag.toLowerCase(),
-                  SQL3DataType.VARCHAR, tag, SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER,
-                  tagDescriptor.getTagTypeId(), SQL3DataType.INTEGER, tagId);
+            ConnectionHandler.runPreparedUpdate(true, INSERT_TAG, tag.toLowerCase(), tag, 0,
+                  tagDescriptor.getTagTypeId(), tagId);
 
             return tagId;
          }

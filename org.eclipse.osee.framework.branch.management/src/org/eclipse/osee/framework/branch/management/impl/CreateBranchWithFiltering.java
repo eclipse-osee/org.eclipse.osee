@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -96,8 +95,8 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
          for (String preserveArtTypeId : preserveArtTypeIds) {
 
             chStmt =
-                  ConnectionHandler.runPreparedQuery(connection, SELECT_ARTIFACT_HISTORY, SQL3DataType.INTEGER,
-                        preserveArtTypeId, SQL3DataType.INTEGER, getParentBranchId());
+                  ConnectionHandler.runPreparedQuery(connection, SELECT_ARTIFACT_HISTORY, preserveArtTypeId,
+                        getParentBranchId());
 
             ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
@@ -125,18 +124,16 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       for (Integer parentTransactionNumber : transactions) {
          int nextTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS_FOR_HISTORY, SQL3DataType.INTEGER,
-               getNewBranchId(), SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER, 0,
-               SQL3DataType.INTEGER, parentTransactionNumber.intValue());
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS_FOR_HISTORY, getNewBranchId(),
+               nextTransactionNumber, 0, parentTransactionNumber.intValue());
 
          Set<Integer> gammas = new HashSet<Integer>();
          for (Pair<Integer, Integer> gammaAndMod : historyMap.getValues(parentTransactionNumber)) {
             Integer modType = gammaAndMod.getValue();
 
             if (!gammas.contains(gammaAndMod.getKey())) {
-               ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_FOR_HISTORY, SQL3DataType.INTEGER,
-                     nextTransactionNumber, SQL3DataType.INTEGER, gammaAndMod.getKey(), SQL3DataType.INTEGER, modType,
-                     SQL3DataType.INTEGER, gammasToCurrent.get(gammaAndMod.getKey()));
+               ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_FOR_HISTORY, nextTransactionNumber,
+                     gammaAndMod.getKey(), modType, gammasToCurrent.get(gammaAndMod.getKey()));
                gammas.add(gammaAndMod.getKey());
             }
          }
@@ -145,17 +142,14 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
    private void createBaselineTransaction(int newTransactionNumber, String[] compressArtTypes, Connection connection) throws SQLException {
       for (String artifactTypeId : compressArtTypes) {
-         ConnectionHandler.runPreparedUpdate(connection, SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, SQL3DataType.INTEGER,
-               newTransactionNumber, SQL3DataType.INTEGER, 1, SQL3DataType.INTEGER, artifactTypeId,
-               SQL3DataType.INTEGER, getParentBranchId());
+         ConnectionHandler.runPreparedUpdate(connection, SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, newTransactionNumber,
+               1, artifactTypeId, getParentBranchId());
       }
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, 1, SQL3DataType.INTEGER, newTransactionNumber,
-            SQL3DataType.INTEGER, getParentBranchId());
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber, 1,
+            newTransactionNumber, getParentBranchId());
 
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_LINK_GAMMAS, SQL3DataType.INTEGER, newTransactionNumber,
-            SQL3DataType.INTEGER, 1, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, getParentBranchId());
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_LINK_GAMMAS, newTransactionNumber, 1,
+            newTransactionNumber, newTransactionNumber, getParentBranchId());
    }
 
    /**
@@ -206,7 +200,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
    private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, Connection connection) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, SQL3DataType.INTEGER, getParentBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, getParentBranchId());
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
             int linkGammaId = rSet.getInt("link_gamma_id");

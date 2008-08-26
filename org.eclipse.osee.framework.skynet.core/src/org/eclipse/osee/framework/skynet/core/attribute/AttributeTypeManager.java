@@ -39,7 +39,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby1, osee_define_attr_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)";
+         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -210,11 +210,12 @@ public class AttributeTypeManager {
       int attrTypeId = Query.getNextSeqVal(ATTR_TYPE_ID_SEQ);
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
-      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
-            SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.INTEGER, attrProviderTypeId, SQL3DataType.VARCHAR,
-            fileTypeExtension, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, name, SQL3DataType.VARCHAR,
-            defaultValue, SQL3DataType.VARCHAR, validityXml, SQL3DataType.INTEGER, minOccurrences,
-            SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText, SQL3DataType.VARCHAR, taggerId);
+      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
+            fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
+            namespace == null ? SQL3DataType.VARCHAR : namespace, name,
+            defaultValue == null ? SQL3DataType.VARCHAR : defaultValue,
+            validityXml == null ? SQL3DataType.VARCHAR : validityXml, minOccurrences, maxOccurrences,
+            tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
       AttributeType descriptor =
             new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension, namespace,
                   name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText, taggerId);
@@ -226,17 +227,14 @@ public class AttributeTypeManager {
       int attrBaseTypeId = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.VARCHAR,
-                     attrProviderExtension);
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, attrProviderExtension);
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_provider_type_id");
          } else {
             attrBaseTypeId = Query.getNextSeqVal(ATTR_PROVIDER_TYPE_ID_SEQ);
 
-            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attrProviderExtension);
+            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId, attrProviderExtension);
          }
       } finally {
          DbUtil.close(chStmt);
@@ -248,16 +246,14 @@ public class AttributeTypeManager {
       int attrBaseTypeId = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, SQL3DataType.VARCHAR, attrBaseExtension);
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, attrBaseExtension);
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_base_type_id");
          } else {
             attrBaseTypeId = Query.getNextSeqVal(ATTR_BASE_TYPE_ID_SEQ);
 
-            ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attrBaseExtension);
+            ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, attrBaseTypeId, attrBaseExtension);
          }
       } finally {
          DbUtil.close(chStmt);

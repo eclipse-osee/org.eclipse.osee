@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -80,8 +79,7 @@ public class UsageLog {
 
       List<Object[]> data = new ArrayList<Object[]>(log.size());
       for (UsageEntry entry : log) {
-         data.add(new Object[] {SQL3DataType.INTEGER, userId, SQL3DataType.TIMESTAMP, entry.getEventTime(),
-               SQL3DataType.INTEGER, entry.getEventOrdinal(), SQL3DataType.VARCHAR, entry.getDetails()});
+         data.add(new Object[] {userId, entry.getEventTime(), entry.getEventOrdinal(), entry.getDetails()});
       }
 
       log.clear();

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -36,8 +35,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * Controls all aspects of saving and recovering relations. The data-store happens to be a database, but that should be
  * abstracted by this class in such a way that the application code only has to worry about the fact that SQLExceptions
- * may be thrown. <br/><br/> Each relation object in the system represents a relation within the Define system. For
- * this reason, successive calls to the database for the same relation will return a reference to the same exact object.
+ * may be thrown. <br/><br/> Each relation object in the system represents a relation within the Define system. For this
+ * reason, successive calls to the database for the same relation will return a reference to the same exact object.
  * 
  * @see org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager
  * @see org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager
@@ -150,8 +149,7 @@ public class RelationPersistenceManager {
       List<Object[]> data = new LinkedList<Object[]>();
 
       for (RelationLink link : links) {
-         data.add(new Object[] {SQL3DataType.INTEGER, link.getAOrder(), SQL3DataType.INTEGER, link.getBOrder(),
-               SQL3DataType.INTEGER, link.getGammaId()});
+         data.add(new Object[] {link.getAOrder(), link.getBOrder(), link.getGammaId()});
       }
       ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
    }

@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -57,28 +56,17 @@ public class RelationTransactionData implements ITransactionData {
     * @throws ArtifactDoesNotExist
     */
    private void populateDataList() {
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getRelationId());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getRelationType().getRelationTypeId());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getAArtifactId());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getBArtifactId());
-      dataItems.add(SQL3DataType.VARCHAR);
       dataItems.add(link.getRationale());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getAOrder());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getBOrder());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(gammaId);
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(link.getRelationId());
    }
 

@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -135,9 +134,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          int modCount = 0;
          long gammaId = 0;
          try {
-            stmt =
-                  ConnectionHandler.runPreparedQuery(this.checkGammaCase, SQL3DataType.INTEGER, info.art_b,
-                        SQL3DataType.INTEGER, info.art_a, SQL3DataType.INTEGER, info.rel_link_type);
+            stmt = ConnectionHandler.runPreparedQuery(this.checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
             while (stmt.getRset().next()) {
                if (stmt.getRset().getInt("mod_type") == 2) {
                   modCount++;
@@ -177,11 +174,11 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          //            gammas.add(info.relLinksToGammas.get(i).getKey());
          //            fos.write(String.format("%d, %d\n", info.relLinksToGammas.get(i).getKey(),
          //                  info.relLinksToGammas.get(i).getValue()).getBytes());
-         //            batchedTxsUpdates.add(new Object[] {SQL3DataType.INTEGER, TxChange.DELETED.getValue(),
-         //                  SQL3DataType.INTEGER, ModificationType.DELETED.getValue(), SQL3DataType.BIGINT,
-         //                  info.relLinksToGammas.get(i).getKey(), SQL3DataType.INTEGER, info.relLinksToGammas.get(i).getValue()});
-         //            batchedVersionUpdates.add(new Object[] {SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
-         //                  SQL3DataType.BIGINT, info.relLinksToGammas.get(i).getKey()});
+         //            batchedTxsUpdates.add(new Object[] { TxChange.DELETED.getValue(),
+         //                   ModificationType.DELETED.getValue(), 
+         //                  info.relLinksToGammas.get(i).getKey(),  info.relLinksToGammas.get(i).getValue()});
+         //            batchedVersionUpdates.add(new Object[] { ModificationType.DELETED.getValue(),
+         //                   info.relLinksToGammas.get(i).getKey()});
          //         }
       }
       //      fos.close();

@@ -14,7 +14,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -39,7 +38,6 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
 
    @Override
    protected void processData(Map<String, String> fieldMap) throws Exception {
-      //      System.out.println(String.format("Table: [%s] Data: %s ", getMetaData(), fieldMap));
       String typeField = "art_type_id";
       String nameField = "name";
       String name = fieldMap.get(nameField);
@@ -60,7 +58,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s =?",
-                     typeField, getMetaData().getTableName(), nameField), SQL3DataType.VARCHAR, name);
+                     typeField, getMetaData().getTableName(), nameField), name);
          if (chStmt.next()) {
             getTranslator().addMappingTo(typeField, original, chStmt.getRset().getLong(1));
          } else {

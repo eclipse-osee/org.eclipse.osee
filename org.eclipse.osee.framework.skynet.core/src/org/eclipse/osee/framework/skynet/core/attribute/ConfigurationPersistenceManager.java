@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -51,8 +50,8 @@ public class ConfigurationPersistenceManager {
     */
    public static void persistAttributeValidity(ArtifactType artifactType, AttributeType attributeType) throws Exception {
       if (!instance.cacheAttributeTypeValidity.isValid(artifactType, attributeType)) {
-         ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
-               SQL3DataType.INTEGER, attributeType.getAttrTypeId());
+         ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, artifactType.getArtTypeId(),
+               attributeType.getAttrTypeId());
 
          instance.cacheAttributeTypeValidity.add(artifactType, attributeType);
       }

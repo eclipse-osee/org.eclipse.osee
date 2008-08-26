@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -205,9 +204,7 @@ public class BranchExporter {
       try {
          monitor.setTaskName("Acquiring transactions for branch " + branch.getName());
 
-         statStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_STATS, SQL3DataType.INTEGER,
-                     branch.getBranchId(), SQL3DataType.TIMESTAMP, from, SQL3DataType.TIMESTAMP, to);
+         statStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_STATS, branch.getBranchId(), from, to);
 
          ResultSet statSet = statStmt.getRset();
          statSet.next(); // All aggregate returns, guaranteed 1 row
@@ -220,24 +217,23 @@ public class BranchExporter {
 
          monitor.subTask("Acquiring artifact data");
          artChStmt =
-               ConnectionHandler.runPreparedQuery(4000, SELECT_ARTIFACTS, SQL3DataType.INTEGER, branch.getBranchId(),
-                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+               ConnectionHandler.runPreparedQuery(4000, SELECT_ARTIFACTS, branch.getBranchId(), startTransaction,
+                     endTransaction);
          monitor.subTask("Acquiring attribute data");
          attrChStmt =
-               ConnectionHandler.runPreparedQuery(4000, SELECT_ATTRIBUTES, SQL3DataType.INTEGER, branch.getBranchId(),
-                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+               ConnectionHandler.runPreparedQuery(4000, SELECT_ATTRIBUTES, branch.getBranchId(), startTransaction,
+                     endTransaction);
          monitor.subTask("Acquiring relation link data");
          linkChStmt =
-               ConnectionHandler.runPreparedQuery(4000, SELECT_LINKS, SQL3DataType.INTEGER, branch.getBranchId(),
-                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+               ConnectionHandler.runPreparedQuery(4000, SELECT_LINKS, branch.getBranchId(), startTransaction,
+                     endTransaction);
 
          RSetHelper artSet = new RSetHelper(artChStmt.getRset());
          RSetHelper attrSet = new RSetHelper(attrChStmt.getRset());
          RSetHelper linkSet = new RSetHelper(linkChStmt.getRset());
 
          monitor.setTaskName("Acquiring child branches of branch " + branch.getName());
-         Query.acquireCollection(childBranches, BRANCH_PROCESSOR, SELECT_CHILD_BRANCHES, SQL3DataType.INTEGER,
-               branch.getBranchId());
+         Query.acquireCollection(childBranches, BRANCH_PROCESSOR, SELECT_CHILD_BRANCHES, branch.getBranchId());
 
          for (BranchData childBranch : childBranches) {
             childBranchMap.put(childBranch.baseParentTransactionId, childBranch);

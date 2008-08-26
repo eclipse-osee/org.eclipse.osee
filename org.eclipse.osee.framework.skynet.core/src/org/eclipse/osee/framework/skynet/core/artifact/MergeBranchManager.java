@@ -24,7 +24,6 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
@@ -81,9 +80,7 @@ public class MergeBranchManager {
       ConnectionHandlerStatement chStmt = null;
       ResultSet rSet = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ART_VER_TABLE, SQL3DataType.INTEGER,
-                     branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ART_VER_TABLE, branch.getBranchId());
          rSet = chStmt.getRset();
          while (chStmt.next()) {
             artSet.add(new Integer(rSet.getInt("art_id")));
@@ -95,9 +92,7 @@ public class MergeBranchManager {
       }
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, SQL3DataType.INTEGER,
-                     branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, branch.getBranchId());
          rSet = chStmt.getRset();
          while (chStmt.next()) {
             artSet.add(new Integer(rSet.getInt("art_id")));
@@ -109,9 +104,7 @@ public class MergeBranchManager {
       }
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, SQL3DataType.INTEGER,
-                     branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, branch.getBranchId());
          rSet = chStmt.getRset();
          while (chStmt.next()) {
             artSet.add(new Integer(rSet.getInt("a_art_id")));

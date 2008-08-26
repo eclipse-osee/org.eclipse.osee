@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict.Status;
 
 /**
@@ -40,8 +39,7 @@ public class ConflictStatusManager {
       //Gammas should be up to date so you can use them to get entry
       //just update the status field.
       try {
-         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, SQL3DataType.INTEGER, status.getValue(),
-               SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma);
+         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma);
 
       } finally {
          DbUtil.close(HandlerStatement);
@@ -56,8 +54,7 @@ public class ConflictStatusManager {
       ConnectionHandlerStatement checkHandlerStatement = null;
       try {
          checkHandlerStatement =
-               ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, SQL3DataType.INTEGER, branchID,
-                     SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER, conflictType);
+               ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
 
          ResultSet statusSet = checkHandlerStatement.getRset();
          if (statusSet.next()) {
@@ -67,12 +64,10 @@ public class ConflictStatusManager {
                if (intStatus == Status.RESOLVED.getValue()) {
                   intStatus = Status.OUT_OF_DATE.getValue();
                }
-               ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
-                     SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER, intStatus, SQL3DataType.INTEGER, branchID,
-                     SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER, conflictType);
+               ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,
+                     objectID, conflictType);
                if (attrId != 0) {
-                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
-                        SQL3DataType.INTEGER, transactionId, SQL3DataType.INTEGER, attrId);
+                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, attrId);
                }
             }
             return Status.getStatus(intStatus);
@@ -82,9 +77,8 @@ public class ConflictStatusManager {
       } finally {
          DbUtil.close(checkHandlerStatement);
       }
-      ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER,
-            branchID, SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER,
-            passedStatus.getValue(), SQL3DataType.INTEGER, conflictType);
+      ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, objectID, branchID, sourceGamma, destGamma,
+            passedStatus.getValue(), conflictType);
 
       return passedStatus;
    }

@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -99,10 +98,11 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
             final XResultData rd = new XResultData(AtsPlugin.getLogger());
             runIt(monitor, rd);
             rd.report(getName());
-         } catch (IllegalArgumentException e){
-        	 if(e.getLocalizedMessage().contains("The base and to transactions must not be the same transaction for branch")){
-        		 
-        	 }
+         } catch (IllegalArgumentException e) {
+            if (e.getLocalizedMessage().contains(
+                  "The base and to transactions must not be the same transaction for branch")) {
+
+            }
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -320,7 +320,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
          handlerStatement =
                ConnectionHandler.runPreparedQuery(
                      "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
-                     SQL3DataType.INTEGER, branch.getBranchId());
+                     branch.getBranchId());
 
          while (handlerStatement.getRset().next()) {
             newArtIds.add(handlerStatement.getRset().getInt(1));
@@ -342,7 +342,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
          handlerStatement =
                ConnectionHandler.runPreparedQuery(
                      "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
-                     SQL3DataType.INTEGER, branch.getBranchId());
+                     branch.getBranchId());
 
          while (handlerStatement.getRset().next()) {
             delArtIds.add(handlerStatement.getRset().getInt(1));

@@ -11,10 +11,7 @@
 package org.eclipse.osee.framework.db.connection.core.query;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * Interesting information from a query. These are automatically added to the QueryLog if it is not full.
@@ -25,7 +22,7 @@ public class QueryRecord {
    private static final QueryLog log = QueryLog.getInstance();
    private final Date date;
    private final String sql;
-   private List<String> bindVariableImages;
+   private Object[] bindVariables;
    private SQLException sqlException;
    private Long runDurationMs;
    private long startTime;
@@ -41,35 +38,28 @@ public class QueryRecord {
     * @param sql The sql text
     * @param bindVariables The bind variables, if any
     */
-   public QueryRecord(String sql, Object... bindVariables) {
+   public QueryRecord(String sql, Object... bindVariablesLocal) {
       if (sql == null) throw new IllegalArgumentException("sql can not be null");
-      if (bindVariables != null && bindVariables.length % 2 != 0) throw new IllegalArgumentException(
-            "bindvariables must be null, or have an even number of elements");
-
       this.date = new Date();
       this.sql = Query.replaceBindValues(sql);
+      this.bindVariables = new Object[bindVariablesLocal.length];
+      System.arraycopy(bindVariablesLocal, 0, bindVariables, 0, bindVariables.length);
 
-      if (bindVariables == null) {
-         this.bindVariableImages = new ArrayList<String>(0);
-      } else {
-         this.bindVariableImages = new ArrayList<String>(bindVariables.length);
-
-         for (int i = 0; i < bindVariables.length; i += 2) {
-            if (!(bindVariables[i] instanceof SQL3DataType)) {
-               throw new IllegalArgumentException(
-                     "bindVariables should have a " + SQL3DataType.class.getCanonicalName() + " reference at every even index");
-            }
-
-            SQL3DataType sqlType = (SQL3DataType) bindVariables[i];
-            // Already checked that the list is even length, so it is safe to blindly call .next() here
-            if (sqlType == SQL3DataType.BINARY || sqlType == SQL3DataType.BLOB || sqlType == SQL3DataType.CLOB || sqlType == SQL3DataType.DATALINK || sqlType == SQL3DataType.JAVA_OBJECT || sqlType == SQL3DataType.LONGVARBINARY || sqlType == SQL3DataType.REF || sqlType == SQL3DataType.STRUCT || sqlType == SQL3DataType.VARBINARY) {
-               bindVariableImages.add(sqlType + ": <binary data>");
+      for (int i = 0; i < bindVariables.length; i++) {
+         Object obj = bindVariables[i];
+         if (obj != null) {
+            if (obj instanceof String) {
+               String str = ((String) obj);
+               if (str.length() > 80) {
+                  bindVariables[i] = str.substring(0, 80);
+               }
+            } else if (!(obj instanceof Date || obj instanceof Integer || obj instanceof Long || obj instanceof Double)) {
+               bindVariables[i] = "binary type";
             } else {
-               bindVariableImages.add(sqlType + ": " + bindVariables[i + 1]);
+               bindVariables[i] = obj.toString();
             }
          }
       }
-
       log.add(this);
    }
 
@@ -111,8 +101,8 @@ public class QueryRecord {
    /**
     * @return the bindVariables
     */
-   public List<String> getBindVariableImages() {
-      return bindVariableImages;
+   public Object[] getBindVariables() {
+      return bindVariables;
    }
 
    /**

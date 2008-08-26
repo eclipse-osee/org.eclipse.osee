@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -30,8 +29,7 @@ public class DeleteErroneousTagsFromWorkingBranches extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.hasParentBranch()) {
-            ConnectionHandler.runPreparedUpdate(DELETE_ERRONEOUS_TAGS, SQL3DataType.INTEGER, branch.getBranchId(),
-                  SQL3DataType.INTEGER, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_ERRONEOUS_TAGS, branch.getBranchId(), branch.getBranchId());
          }
       }
    }

@@ -175,10 +175,12 @@ public class ChangeView extends ViewPart implements IActionable {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
 
-      if (branch == null) {
-         memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
-      } else {
+      if (branch != null) {
          memento.putInteger(BRANCH_ID, branch.getBranchId());
+
+      }
+      if (transactionId != null) {
+         memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
       }
    }
 
@@ -195,8 +197,8 @@ public class ChangeView extends ViewPart implements IActionable {
                if (branchId != null) {
                   openViewUpon(BranchPersistenceManager.getBranch(branchId), null);
                } else {
-                  int transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
-                  if (transactionNumber > -1) {
+                  Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
+                  if (transactionNumber != null && transactionNumber > -1) {
                      openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber));
                   }
                }

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -99,9 +98,8 @@ public class BranchCreation implements IBranchCreation {
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,
                      creationComment, associatedArtifactId);
          int newTransactionNumber = Query.getNextSeqVal(SkynetDatabase.TRANSACTION_ID_SEQ);
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, SQL3DataType.INTEGER, branchId,
-               SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, creationComment,
-               SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, 1);
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchId, newTransactionNumber,
+               creationComment, timestamp, authorId, 1);
 
          specializedBranchOperations(branchId, newTransactionNumber, connection);
 
@@ -113,9 +111,8 @@ public class BranchCreation implements IBranchCreation {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
          int branchId = Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ);
-         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, SQL3DataType.INTEGER, branchId,
-               SQL3DataType.VARCHAR, branchShortName, SQL3DataType.VARCHAR, branchName, SQL3DataType.INTEGER,
-               parentBranchId, SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER, associatedArtifactId);
+         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
+               parentBranchId, 0, associatedArtifactId);
 
          return branchId;
       }
@@ -129,7 +126,7 @@ public class BranchCreation implements IBranchCreation {
             try {
                stmt =
                      org.eclipse.osee.framework.db.connection.ConnectionHandler.runPreparedQuery(connection,
-                           SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
+                           SELECT_BRANCH_BY_NAME, branchName);
                if (stmt.getRset().next()) {
                   alreadyHasName = true;
                }
@@ -176,7 +173,7 @@ public class BranchCreation implements IBranchCreation {
       @Override
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
          if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES,
-               SQL3DataType.VARCHAR, staticBranchName, SQL3DataType.INTEGER, branchId);
+               staticBranchName, branchId);
 
       }
    }
@@ -193,8 +190,8 @@ public class BranchCreation implements IBranchCreation {
       @Override
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
          int updates =
-               ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+               ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
+                     parentBranchId);
          System.out.println(String.format("Create child branch - updated [%d] records", updates));
       }
    }

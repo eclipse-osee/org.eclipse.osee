@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -122,9 +121,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             joinQuery.add(key, -1);
          }
          joinQuery.store(connection);
-         chStmt =
-               ConnectionHandler.runPreparedQuery(connection, BRANCH_QUERY, SQL3DataType.INTEGER,
-                     joinQuery.getQueryId());
+         chStmt = ConnectionHandler.runPreparedQuery(connection, BRANCH_QUERY, joinQuery.getQueryId());
          while (chStmt.next()) {
             BranchData dbData = new BranchData();
             int nullCount = 0;

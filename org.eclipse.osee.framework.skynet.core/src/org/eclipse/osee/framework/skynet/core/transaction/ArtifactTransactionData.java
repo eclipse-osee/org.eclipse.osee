@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -68,16 +67,11 @@ public class ArtifactTransactionData implements ITransactionData {
     * 
     */
    private void populateDataList() {
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(artifact.getArtId());
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(gammaId);
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(artifact.getArtId());
    }
 

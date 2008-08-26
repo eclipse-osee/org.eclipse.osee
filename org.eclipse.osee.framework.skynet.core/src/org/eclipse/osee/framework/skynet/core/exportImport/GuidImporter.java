@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * @author Robert A. Fisher
@@ -43,8 +42,7 @@ public class GuidImporter {
       while ((line = reader.readLine()) != null) {
          values = line.split("\t");
          System.out.println("id " + values[0] + " guid " + values[1]);
-         ConnectionHandler.runPreparedUpdate(INSERT_SQL, SQL3DataType.INTEGER, Integer.parseInt(values[0]),
-               SQL3DataType.VARCHAR, values[1]);
+         ConnectionHandler.runPreparedUpdate(INSERT_SQL, Integer.parseInt(values[0]), values[1]);
       }
    }
 

@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -37,14 +36,12 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       monitor.subTask("Aquiring Team Workflows");
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, SQL3DataType.VARCHAR,
-                     "Commit Branch%");
+         chStmt = ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, "Commit Branch%");
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
             if (monitor.isCanceled()) return;
@@ -65,8 +62,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
          try {
             int artId = ArtifactQuery.getArtifactFromId(hrid, atsBranch).getArtId();
             ConnectionHandler.runPreparedUpdate(
-                  "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", SQL3DataType.INTEGER,
-                  artId, SQL3DataType.INTEGER, transactionId);
+                  "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", artId, transactionId);
          } catch (OseeCoreException ex) {
             appendResultLine(ex.getLocalizedMessage());
          }

@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -150,8 +149,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public void setBranchShortName(String branchShortName, boolean persist) throws SQLException {
       if (persist) {
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, SQL3DataType.VARCHAR, StringFormat.truncate(
-               branchShortName, 25), SQL3DataType.INTEGER, branchId);
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, StringFormat.truncate(branchShortName, 25),
+               branchId);
       }
       this.branchShortName = branchShortName;
       kickRenameEvents();
@@ -172,7 +171,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    public void rename(String branchName) throws SQLException {
       setBranchName(branchName);
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET branch_name = ? WHERE branch_id = ?",
-            SQL3DataType.VARCHAR, branchName, SQL3DataType.INTEGER, branchId);
+            branchName, branchId);
       kickRenameEvents();
    }
 
@@ -182,7 +181,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
             "Setting associated artifact for branch only valid for common branch artifact.");
 
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET associated_art_id = ? WHERE branch_id = ?",
-            SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, branchId);
+            artifact.getArtId(), branchId);
 
       associatedArtifact = artifact;
       associatedArtifactId = artifact.getArtId();

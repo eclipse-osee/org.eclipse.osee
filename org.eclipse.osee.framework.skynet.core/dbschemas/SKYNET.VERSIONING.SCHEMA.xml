@@ -32,6 +32,7 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_ARTIFACT_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
 		<Index id="OSEE_JOIN_ARTIFACT_Q_IDX">

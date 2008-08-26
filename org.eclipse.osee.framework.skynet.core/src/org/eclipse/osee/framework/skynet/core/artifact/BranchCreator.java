@@ -142,9 +142,8 @@ public class BranchCreator {
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
                   "time", "author", "tx_type");
-      ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(), SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(), SQL3DataType.TIMESTAMP,
-            childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId(), SQL3DataType.INTEGER,
+      ConnectionHandler.runPreparedUpdate(query, childBranch.getBranchId(), newTransactionNumber,
+            childBranch.getCreationComment(), childBranch.getCreationDate(), childBranch.getAuthorId(),
             TransactionDetailsType.Baselined.getId());
 
       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
@@ -186,9 +185,8 @@ public class BranchCreator {
          for (ArtifactType artifactType : preserveArtTypes) {
 
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, SQL3DataType.INTEGER,
-                        artifactType.getArtTypeId(), SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
-                        SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
+                  ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, artifactType.getArtTypeId(),
+                        parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
 
             ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
@@ -208,15 +206,13 @@ public class BranchCreator {
       for (Integer parentTransactionNumber : transactions) {
          int nextTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
-         ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAILS_FOR_HISTORY, SQL3DataType.INTEGER,
-               newBranch.getBranchId(), SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
-               parentTransactionNumber.intValue());
+         ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAILS_FOR_HISTORY, newBranch.getBranchId(),
+               nextTransactionNumber, parentTransactionNumber.intValue());
 
          Collection<Pair<Integer, ModificationType>> gammasAndMods = historyMap.getValues(parentTransactionNumber);
          for (Pair<Integer, ModificationType> gammaAndMod : gammasAndMods) {
             ModificationType modType = gammaAndMod.getValue();
-            txAddressData.add(new Object[] {SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER,
-                  gammaAndMod.getKey(), SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,
+            txAddressData.add(new Object[] {nextTransactionNumber, gammaAndMod.getKey(), modType.getValue(),
                   TxChange.CURRENT.getValue()});
          }
          ConnectionHandler.runPreparedUpdateBatch(INSERT_TX_FOR_HISTORY, txAddressData);
@@ -273,8 +269,7 @@ public class BranchCreator {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                     parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(sql, parentTransactionId.getTransactionNumber(),
                      parentTransactionId.getBranch().getBranchId());
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
@@ -290,26 +285,21 @@ public class BranchCreator {
       for (ArtifactType artifactType : compressArtTypes) {
          int count =
                ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
-                     SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.getValue(),
-                     SQL3DataType.INTEGER, artifactType.getArtTypeId(), SQL3DataType.INTEGER,
-                     parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     parentTransactionId.getBranch().getBranchId());
+                     newTransactionNumber, TxChange.CURRENT.getValue(), artifactType.getArtTypeId(),
+                     parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
          if (count > 0) logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
       }
 
       int count =
-            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.getValue(), SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
-                  SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber,
+                  TxChange.CURRENT.getValue(), newTransactionNumber, parentTransactionId.getTransactionNumber(),
+                  parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted " + count + " attributes");
 
       count =
-            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.getValue(), SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-                  parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  parentTransactionId.getBranch().getBranchId());
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, newTransactionNumber,
+                  TxChange.CURRENT.getValue(), newTransactionNumber, newTransactionNumber,
+                  parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted " + count + " relations");
    }
 
@@ -372,7 +362,7 @@ public class BranchCreator {
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, branchName);
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
@@ -394,10 +384,8 @@ public class BranchCreator {
          associatedArtifactId = associatedArtifact.getArtId();
       }
 
-      ConnectionHandler.runPreparedUpdate(BRANCH_TABLE_INSERT, SQL3DataType.INTEGER, branchId, SQL3DataType.VARCHAR,
-            branchShortName, SQL3DataType.VARCHAR, branchName, SQL3DataType.INTEGER, parentBranchNumber,
-            SQL3DataType.INTEGER, 0, SQL3DataType.INTEGER, associatedArtifactId, SQL3DataType.INTEGER,
-            branchType.getValue());
+      ConnectionHandler.runPreparedUpdate(BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
+            parentBranchNumber, 0, associatedArtifactId, branchType.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch;
@@ -510,8 +498,7 @@ public class BranchCreator {
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
          for (int artId : artIds) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
+            datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
          }
          try {
             ArtifactLoader.selectArtifacts(datas);
@@ -532,9 +519,8 @@ public class BranchCreator {
 
          if (createBranch) {
             try {
-               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT, SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, destBranch.getBranchId(), SQL3DataType.INTEGER,
-                     mergeBranch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
+                     destBranch.getBranchId(), mergeBranch.getBranchId());
             } finally {
                DbUtil.close(chStmt);
             }
@@ -546,9 +532,8 @@ public class BranchCreator {
       }
 
       private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws SQLException {
-         ConnectionHandler.runPreparedUpdate(sql, SQL3DataType.INTEGER, baselineTransactionNumber,
-               SQL3DataType.INTEGER, TxChange.CURRENT.getValue(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-               SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
+               sourceBranch.getBranchId(), queryId);
       }
    }
 }

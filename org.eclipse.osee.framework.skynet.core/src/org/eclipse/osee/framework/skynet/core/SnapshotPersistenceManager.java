@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -70,12 +69,10 @@ public class SnapshotPersistenceManager {
 
          // This call is delayed until after serialization so the last snapshot is not lost if this
          // snapshot fails
-         ConnectionHandler.runPreparedUpdate(DROP_SNAPSHOT, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, key);
+         ConnectionHandler.runPreparedUpdate(DROP_SNAPSHOT, namespace, key);
 
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-         ConnectionHandler.runPreparedUpdate(INSERT_SNAPSHOT, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR,
-               key, SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.BLOB,
-               inputStream);
+         ConnectionHandler.runPreparedUpdate(INSERT_SNAPSHOT, namespace, key, timestamp, timestamp, inputStream);
 
       } catch (IOException e) {
          logger.log(Level.SEVERE, e.toString(), e);
@@ -88,15 +85,13 @@ public class SnapshotPersistenceManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(1, SELECT_SNAPSHOT, SQL3DataType.VARCHAR, namespace,
-                     SQL3DataType.VARCHAR, key);
+         chStmt = ConnectionHandler.runPreparedQuery(1, SELECT_SNAPSHOT, namespace, key);
 
          ResultSet rset = chStmt.getRset();
 
          if (rset.next()) {
-            ConnectionHandler.runPreparedUpdate(UPDATE_LAST_ACCESSED, SQL3DataType.TIMESTAMP,
-                  GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, key);
+            ConnectionHandler.runPreparedUpdate(UPDATE_LAST_ACCESSED, GlobalTime.GreenwichMeanTimestamp(), namespace,
+                  key);
 
             ObjectInputStream inputStream = new ObjectInputStream(rset.getBinaryStream("object"));
 
@@ -117,7 +112,7 @@ public class SnapshotPersistenceManager {
 
    public Collection<String> getKeys(String namespace) throws SQLException {
       Collection<String> keys = new LinkedList<String>();
-      Query.acquireCollection(keys, new StringRsetProcessor("key_id"), SELECT_KEYS, SQL3DataType.VARCHAR, namespace);
+      Query.acquireCollection(keys, new StringRsetProcessor("key_id"), SELECT_KEYS, namespace);
 
       return keys;
    }
@@ -129,8 +124,7 @@ public class SnapshotPersistenceManager {
       try {
          for (String key : getKeys(namespace)) {
             try {
-               ConnectionHandler.runPreparedUpdate(DROP_SNAPSHOT, SQL3DataType.VARCHAR, namespace,
-                     SQL3DataType.VARCHAR, key);
+               ConnectionHandler.runPreparedUpdate(DROP_SNAPSHOT, namespace, key);
             } catch (SQLException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
             }

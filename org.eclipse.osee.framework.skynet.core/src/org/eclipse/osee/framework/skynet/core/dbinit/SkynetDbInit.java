@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.OseeDbVersion;
 import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -107,8 +106,7 @@ public class SkynetDbInit extends DbInitializationTask {
     */
    private void addDefaultPermissions() throws SQLException {
       for (PermissionEnum permission : PermissionEnum.values()) {
-         ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, SQL3DataType.INTEGER, permission.getPermId(),
-               SQL3DataType.VARCHAR, permission.getName());
+         ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
       }
    }
 

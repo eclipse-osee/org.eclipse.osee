@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -45,7 +44,6 @@ public class TagSearch implements ISearchPrimitive {
       StringBuffer sql = new StringBuffer(SQL);
 
       sql.append(TAG_ALIAS.column(getTagColumn()) + getTagOperator() + "?");
-      dataList.add(SQL3DataType.VARCHAR);
       dataList.add(getTagParameter());
 
       sql.append(" AND " + TAG_ART_MAP_ALIAS.column("branch_id") + " IN (");
@@ -53,7 +51,6 @@ public class TagSearch implements ISearchPrimitive {
       do {
          if (branchCursor != branch) sql.append(",");
          sql.append("?");
-         dataList.add(SQL3DataType.INTEGER);
          dataList.add(branchCursor.getBranchId());
 
          branchCursor = branchCursor.getParentBranch();

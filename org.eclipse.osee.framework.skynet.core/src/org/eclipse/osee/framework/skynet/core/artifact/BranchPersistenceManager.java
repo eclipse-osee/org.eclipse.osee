@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
@@ -337,9 +336,7 @@ public class BranchPersistenceManager {
       } else {
          ConnectionHandlerStatement chStmt = null;
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_BRANCH_FOR_TRANSACTION, SQL3DataType.INTEGER,
-                        transactionNumber);
+            chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_FOR_TRANSACTION, transactionNumber);
 
             if (chStmt.next()) {
                branch = getBranch(chStmt.getRset().getInt("branch_id"));
@@ -481,10 +478,9 @@ public class BranchPersistenceManager {
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = "Commit Branch " + childBranch.getBranchName();
       int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER,
-            TransactionDetailsType.NonBaselined.getId(), SQL3DataType.INTEGER, parentBranch.getBranchId(),
-            SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP,
-            timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, childBranch.getAssociatedArtifactId());
+      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
+            parentBranch.getBranchId(), newTransactionNumber, comment, timestamp, authorId,
+            childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
       if (childBranch.getAssociatedArtifactId() > 0) {
          RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
@@ -500,12 +496,9 @@ public class BranchPersistenceManager {
    int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
       int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
 
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER,
-            TransactionDetailsType.NonBaselined.getId(), SQL3DataType.INTEGER, toBranch.getBranchId(),
-            SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR,
-            "Commit Branch " + fromTransactionID.getTransactionNumber(), SQL3DataType.TIMESTAMP,
-            GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
-            (userToBlame == null) ? -1 : userToBlame.getArtId(), SQL3DataType.INTEGER, -1);
+      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
+            toBranch.getBranchId(), newTransactionNumber, "Commit Branch " + fromTransactionID.getTransactionNumber(),
+            GlobalTime.GreenwichMeanTimestamp(), (userToBlame == null) ? -1 : userToBlame.getArtId(), -1);
 
       return newTransactionNumber;
    }
@@ -558,8 +551,8 @@ public class BranchPersistenceManager {
 
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(CHANGED_RELATIONS, SQL3DataType.INTEGER, childBranch.getBranchId(),
-                     SQL3DataType.INTEGER, parentBranch.getBranchId());
+               ConnectionHandler.runPreparedQuery(CHANGED_RELATIONS, childBranch.getBranchId(),
+                     parentBranch.getBranchId());
 
          int relId;
          int relTypeId;
@@ -603,8 +596,8 @@ public class BranchPersistenceManager {
       try {
 
          chStmt =
-               ConnectionHandler.runPreparedQuery(CHANGED_ARTIFACTS, SQL3DataType.INTEGER, childBranch.getBranchId(),
-                     SQL3DataType.INTEGER, parentBranch.getBranchId());
+               ConnectionHandler.runPreparedQuery(CHANGED_ARTIFACTS, childBranch.getBranchId(),
+                     parentBranch.getBranchId());
 
          if (!chStmt.next()) throw new NoChangesToCommitException("No Changes To Commit");
 
@@ -652,7 +645,7 @@ public class BranchPersistenceManager {
     * Archives a branch in the database by changing its archived value from 0 to 1.
     */
    public static void archive(Branch branch) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, SQL3DataType.INTEGER, branch.getBranchId());
+      ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
 
       branch.setArchived();
       instance.branchCache.remove(branch.getBranchId());
@@ -693,8 +686,8 @@ public class BranchPersistenceManager {
     * @throws SQLException
     */
    public static void moveTransaction(TransactionId transactionId, Branch toBranch) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_BRANCH, SQL3DataType.INTEGER, toBranch.getBranchId(),
-            SQL3DataType.INTEGER, transactionId.getTransactionNumber());
+      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_BRANCH, toBranch.getBranchId(),
+            transactionId.getTransactionNumber());
    }
 
    /*
@@ -707,8 +700,7 @@ public class BranchPersistenceManager {
    }
 
    public void updateAssociatedArtifact(Branch branch, Artifact artifact) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ASSOCIATED_ART_BRANCH, SQL3DataType.INTEGER, artifact.getArtId(),
-            SQL3DataType.INTEGER, branch.getBranchId());
+      ConnectionHandler.runPreparedUpdate(UPDATE_ASSOCIATED_ART_BRANCH, artifact.getArtId(), branch.getBranchId());
    }
 
    /**

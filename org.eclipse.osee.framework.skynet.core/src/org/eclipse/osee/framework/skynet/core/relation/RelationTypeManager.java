@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -181,8 +180,8 @@ public class RelationTypeManager {
    }
 
    /**
-    * Persist a new relation link type. If the <code>relationTypeName</code> is already in the database, then nothing
-    * is done.
+    * Persist a new relation link type. If the <code>relationTypeName</code> is already in the database, then nothing is
+    * done.
     * 
     * @param relationTypeName The type name of the relation link to define.
     * @param sideAName The name for the 'a' side of the relation.
@@ -212,10 +211,8 @@ public class RelationTypeManager {
       try {
          int relationTypeId = Query.getNextSeqVal(REL_LINK_TYPE_ID_SEQ);
 
-         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
-               SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR,
-               sideAName, SQL3DataType.VARCHAR, sideBName, SQL3DataType.VARCHAR, abPhrasing, SQL3DataType.VARCHAR,
-               baPhrasing, SQL3DataType.VARCHAR, shortName);
+         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
+               sideAName, sideBName, abPhrasing, baPhrasing, shortName);
 
          RelationType relationType =
                new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing,
@@ -243,9 +240,8 @@ public class RelationTypeManager {
       int relLinkTypeId = relationType.getRelationTypeId();
 
       if (instance.validityMap.get(relLinkTypeId, artTypeId) == null) {
-         ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, SQL3DataType.INTEGER, artTypeId,
-               SQL3DataType.INTEGER, relLinkTypeId, SQL3DataType.INTEGER, sideAMax, SQL3DataType.INTEGER, sideBMax,
-               SQL3DataType.INTEGER, branch.getBranchId());
+         ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, artTypeId, relLinkTypeId, sideAMax, sideBMax,
+               branch.getBranchId());
          instance.validityMap.put(relLinkTypeId, artTypeId, new ObjectPair<Integer, Integer>(sideAMax, sideBMax));
       }
    }

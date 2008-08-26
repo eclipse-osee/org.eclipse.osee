@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.MutableDouble;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
@@ -114,7 +113,7 @@ public class SearchTagDataStore {
    private static int deleteTags(Connection connection, IAttributeLocator... locators) throws SQLException {
       List<Object[]> datas = new ArrayList<Object[]>();
       for (IAttributeLocator locator : locators) {
-         datas.add(new Object[] {SQL3DataType.BIGINT, locator.getGammaId()});
+         datas.add(new Object[] {locator.getGammaId()});
       }
       return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
    }
@@ -132,8 +131,7 @@ public class SearchTagDataStore {
             for (SearchTag searchTag : searchTags) {
                List<Object[]> data = new ArrayList<Object[]>();
                for (Long codedTag : searchTag.getTags()) {
-                  data.add(new Object[] {SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag,
-                        SQL3DataType.BIGINT, searchTag.getGammaId(), SQL3DataType.BIGINT, codedTag});
+                  data.add(new Object[] {searchTag.getGammaId(), codedTag, searchTag.getGammaId(), codedTag});
                }
                updated += ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
             }
@@ -158,7 +156,7 @@ public class SearchTagDataStore {
             public void processRow(ResultSet resultSet) throws Exception {
                toReturn.add(new AttributeVersion(resultSet.getLong("gamma_id")));
             }
-         }, SQL3DataType.BIGINT, codedTag);
+         }, codedTag);
       }
       return toReturn;
    }
@@ -168,9 +166,7 @@ public class SearchTagDataStore {
       int updated = -1;
       try {
          connection = OseeDbConnection.getConnection();
-         updated =
-               ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, SQL3DataType.INTEGER,
-                     joinQueryId);
+         updated = ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, joinQueryId);
       } finally {
          if (connection != null) {
             connection.close();

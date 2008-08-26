@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -146,8 +145,7 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
                      resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("tran_id_1") : resultSet.getInt("tran_id_2");
                int gamma_id =
                      resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("gamma_id_1") : resultSet.getInt("gamma_id_2");
-               ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, SQL3DataType.INTEGER,
-                     gamma_id, SQL3DataType.INTEGER, transaction_id);
+               ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, gamma_id, transaction_id);
                if (showDetails) {
                   builder.append("Set Transaction ");
                   builder.append(transaction_id);
@@ -173,13 +171,12 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
                   builder.append("Cleaning up the following TX_Current Relation Link Errors with no tx_current set:\n");
                }
                count++;
-               ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, SQL3DataType.INTEGER,
-                     resultSet.getInt("rel_link_id"), SQL3DataType.INTEGER, resultSet.getInt("branch_id"),
-                     SQL3DataType.INTEGER, resultSet.getInt("rel_link_id"));
+               ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, resultSet.getInt("rel_link_id"),
+                     resultSet.getInt("branch_id"), resultSet.getInt("rel_link_id"));
                if (showDetails) {
                   connection2 =
-                        ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, SQL3DataType.INTEGER,
-                              resultSet.getInt("branch_id"), SQL3DataType.INTEGER, resultSet.getInt("rel_link_id"));
+                        ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, resultSet.getInt("branch_id"),
+                              resultSet.getInt("rel_link_id"));
                   ResultSet resultSet2 = connection2.getRset();
                   int trans_id = 0, gamma_id = 0;
                   if (resultSet2.next()) {
@@ -204,8 +201,8 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
    protected void showTxCurrentText(ResultSet resultSet, int x, StringBuilder builder) throws SQLException {
       builder.append(String.format(
             "%-4d Rel_Link_id = %-8d GAMMA_1 = %-8d  GAMMA_2 = %-8d Tx_Current_1 = %-2d Tx_Current_2 = %-2d Transaction_ID_1 = %-8d Transaction_ID_2 = %-8d\n Branch_Id = %-5d\n",
-            x, resultSet.getInt("rel_link_id"), resultSet.getInt("gamma_id_1"),
-            resultSet.getInt("gamma_id_2"), resultSet.getInt("tx_current_1"), resultSet.getInt("tx_current_2"),
-            resultSet.getInt("tran_id_1"), resultSet.getInt("tran_id_2"), resultSet.getInt("branch_id")));
+            x, resultSet.getInt("rel_link_id"), resultSet.getInt("gamma_id_1"), resultSet.getInt("gamma_id_2"),
+            resultSet.getInt("tx_current_1"), resultSet.getInt("tx_current_2"), resultSet.getInt("tran_id_1"),
+            resultSet.getInt("tran_id_2"), resultSet.getInt("branch_id")));
    }
 }

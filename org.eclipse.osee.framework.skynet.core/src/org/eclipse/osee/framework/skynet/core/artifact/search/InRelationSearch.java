@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedO
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -131,7 +130,6 @@ public class InRelationSearch implements ISearchPrimitive {
             first = false;
 
          sql.append(LINK_TYPE_ALIAS_1.column("type_name") + "=?");
-         dataList.add(SQL3DataType.VARCHAR);
          dataList.add(typeName);
       }
       if (typeNames.length > 1) sql.append(")");
@@ -143,9 +141,7 @@ public class InRelationSearch implements ISearchPrimitive {
 
       sql.append(" AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " AND " + TRANSACTIONS_TABLE.column("mod_type") + "<>?");
 
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(ModificationType.DELETED.getValue());
 
       return sql.toString();

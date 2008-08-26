@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -34,8 +33,7 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       TransactionId fromTransactionId = TransactionIdManager.getTransactionId(txNumber);
       TransactionId baseLineTransaction = TransactionIdManager.getStartEndPoint(branch).getValue();
 
-      ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, SQL3DataType.INTEGER, baseLineTransaction,
-            SQL3DataType.INTEGER, fromTransactionId);
+      ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, baseLineTransaction, fromTransactionId);
 
    }
 

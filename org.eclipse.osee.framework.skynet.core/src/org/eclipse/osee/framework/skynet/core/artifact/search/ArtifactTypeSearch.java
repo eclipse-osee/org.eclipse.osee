@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -50,7 +49,6 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
             ARTIFACT_TYPE_TABLE.column("name") + operation + " ? AND " + ARTIFACT_TYPE_TABLE.column("art_type_id") + EQUAL + ARTIFACT_TABLE.column("art_type_id");
-      dataList.add(SQL3DataType.VARCHAR);
       dataList.add(typeName);
 
       return sql;

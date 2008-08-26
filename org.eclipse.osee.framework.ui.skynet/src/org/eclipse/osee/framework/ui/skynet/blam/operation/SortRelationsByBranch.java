@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -127,7 +126,7 @@ public class SortRelationsByBranch extends AbstractBlam {
                   batchArgs.add(relationOrderTracker.getUpdateData());
                }
             }
-         }, 5000, query, SQL3DataType.INTEGER, branchToSort.getBranchId());
+         }, 5000, query, branchToSort.getBranchId());
          if (monitor.isCanceled() != true) {
             writeToDb(monitor, connection, update, batchArgs);
          }
@@ -181,7 +180,7 @@ public class SortRelationsByBranch extends AbstractBlam {
       }
 
       Object[] getUpdateData() {
-         return new Object[] {SQL3DataType.INTEGER, new_order, SQL3DataType.BIGINT, gammaId};
+         return new Object[] {new_order, gammaId};
       }
    }
 

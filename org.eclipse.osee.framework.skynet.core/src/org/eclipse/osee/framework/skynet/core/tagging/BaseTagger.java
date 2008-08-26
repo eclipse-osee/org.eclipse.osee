@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -93,7 +92,7 @@ public class BaseTagger extends Tagger {
 
          if (c == '\t' || c == '\n' || c == '\r' || tagBitsPos == 60) {
             if (tagBitsPos > 10) {
-               insertParameters.add(new Object[] {SQL3DataType.BIGINT, tagBits});
+               insertParameters.add(new Object[] {tagBits});
             }
             tagBits = 0;
             tagBitsPos = 0;

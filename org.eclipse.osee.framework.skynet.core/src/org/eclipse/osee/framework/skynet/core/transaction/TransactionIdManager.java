@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -83,7 +82,7 @@ public class TransactionIdManager {
       int transactionNumber = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(largestTransIdSql, SQL3DataType.INTEGER, branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(largestTransIdSql, branch.getBranchId());
          if (chStmt.next()) {
             transactionNumber = chStmt.getRset().getInt("largest_transaction_id");
          } else {
@@ -110,10 +109,8 @@ public class TransactionIdManager {
       }
 
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, SQL3DataType.INTEGER, transactionNumber,
-            SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP, transactionTime, SQL3DataType.INTEGER, authorArtId,
-            SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-            TransactionDetailsType.NonBaselined.getId());
+      ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, transactionNumber, comment, transactionTime,
+            authorArtId, branch.getBranchId(), TransactionDetailsType.NonBaselined.getId());
 
       TransactionId transactionId =
             new TransactionId(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
@@ -126,7 +123,7 @@ public class TransactionIdManager {
    public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, SQL3DataType.INTEGER, branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
 
          ResultSet rset = chStmt.getRset();
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
@@ -161,7 +158,7 @@ public class TransactionIdManager {
          chStmt =
                ConnectionHandler.runPreparedQuery(
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
-                     SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.TIMESTAMP, time);
+                     branch.getBranchId(), time);
 
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
@@ -189,8 +186,7 @@ public class TransactionIdManager {
          chStmt =
                ConnectionHandler.runPreparedQuery(
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
-                     SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-                     transactionId.getTransactionNumber());
+                     transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
 
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
@@ -252,14 +248,12 @@ public class TransactionIdManager {
       try {
          if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS, SQL3DataType.INTEGER,
-                        startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS, startTransactionId.getBranch().getBranchId(),
                         startTransactionId.getTransactionNumber());
          } else {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, SQL3DataType.INTEGER,
-                        startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-                        startTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS_RANGE,
+                        startTransactionId.getBranch().getBranchId(), startTransactionId.getTransactionNumber(),
                         endTransactionId.getTransactionNumber());
          }
 
@@ -311,7 +305,7 @@ public class TransactionIdManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             if (rSet == null) {
-               chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, SQL3DataType.INTEGER, transactionNumber);
+               chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
                rSet = chStmt.getRset();
                if (!rSet.next()) {
                   throw new TransactionDoesNotExist(

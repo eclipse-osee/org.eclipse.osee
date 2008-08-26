@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -44,11 +43,9 @@ public class CommitTransactions extends DatabaseHealthTask {
             while (resultSet.next()) {
                int transactionNumber = resultSet.getInt(1);
                int updateCount =
-                     ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, SQL3DataType.INTEGER,
-                           transactionNumber, SQL3DataType.INTEGER, transactionNumber);
-               int deleteAttrCount =
-                     ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, SQL3DataType.INTEGER,
+                     ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, transactionNumber,
                            transactionNumber);
+               int deleteAttrCount = ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, transactionNumber);
 
                builder.append("For transaction: " + transactionNumber + " Number of update modTypes to 1:" + updateCount + " Number of deleted attrs: " + deleteAttrCount);
             }

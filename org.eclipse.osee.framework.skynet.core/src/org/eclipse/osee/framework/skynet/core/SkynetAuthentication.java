@@ -95,11 +95,16 @@ public class SkynetAuthentication {
       } catch (OseeCoreException ex) {
          // If exception, want to return to the state where cache is not loaded
          userCacheIsLoaded = false;
+         userIdToUserCache.clear();
+         nameToUserCache.clear();
+         enumeratedUserCache.clear();
          throw ex;
       } catch (SQLException ex) {
          // If exception, want to return to the state where cache is not loaded
          userCacheIsLoaded = false;
-         throw ex;
+         userIdToUserCache.clear();
+         nameToUserCache.clear();
+         enumeratedUserCache.clear();
       }
    }
 

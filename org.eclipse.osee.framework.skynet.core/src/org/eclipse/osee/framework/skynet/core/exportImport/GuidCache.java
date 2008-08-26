@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -74,7 +73,7 @@ public class GuidCache {
       } else {
          guid = GUID.generateGuidStr();
          if (newGuids != null) {
-            newGuids.add(new Object[] {SQL3DataType.VARCHAR, guid, SQL3DataType.INTEGER, id});
+            newGuids.add(new Object[] {guid, id});
          }
          map(id, guid);
       }

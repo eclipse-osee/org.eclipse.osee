@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -88,7 +87,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       ConnectionHandlerStatement stmt = null;
       try {
-         stmt = ConnectionHandler.runPreparedQuery(getConnection(), getQuery(), SQL3DataType.INTEGER, getJoinQueryId());
+         stmt = ConnectionHandler.runPreparedQuery(getConnection(), getQuery(), getJoinQueryId());
          while (stmt.next()) {
             processData(appendable, stmt.getRset());
          }

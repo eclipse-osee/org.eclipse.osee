@@ -43,7 +43,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -190,9 +189,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             if (associatedArtId == null) {
                associatedArtId = new Integer(-1);
             }
-            ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ASSOCIATION, SQL3DataType.INTEGER, associatedArtId,
-                  SQL3DataType.INTEGER, branchTypeEnum != null ? branchTypeEnum.ordinal() : null, SQL3DataType.INTEGER,
-                  newBranch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ASSOCIATION, associatedArtId,
+                  branchTypeEnum != null ? branchTypeEnum.ordinal() : null, newBranch.getBranchId());
 
             curBranch.push(newBranch);
          } else {
@@ -278,10 +276,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       Integer authorId = artifactGuidCache.getId(author);
       Integer commitArtId = artifactGuidCache.getId(commitArtGuid);
 
-      ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, SQL3DataType.INTEGER, currentTransactionId,
-            SQL3DataType.TIMESTAMP, time, SQL3DataType.VARCHAR, comment, SQL3DataType.INTEGER,
-            authorId == null ? -1 : authorId, SQL3DataType.INTEGER, curBranch.peek().getBranchId(),
-            SQL3DataType.INTEGER, commitArtId, SQL3DataType.INTEGER, txType);
+      ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, currentTransactionId, time, comment,
+            authorId == null ? -1 : authorId, curBranch.peek().getBranchId(), commitArtId, txType);
    }
 
    @Override
@@ -322,14 +318,12 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
             int artTypeId = artifactType.getArtTypeId();
             artifactGuidCache.map(currentArtifactId, guid);
-            ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,
-                  SQL3DataType.VARCHAR, hrid, SQL3DataType.INTEGER, artTypeId, SQL3DataType.VARCHAR, guid);
+            ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, currentArtifactId, hrid, artTypeId, guid);
          }
 
          int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
          int modificationInt = modificationType != null ? modificationType.getValue() : -1;
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
-               SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationInt);
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, currentArtifactId, gammaId, modificationInt);
          insertTxAddress(gammaId, modificationInt, txCurrent);
       } catch (IllegalArgumentException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
@@ -352,8 +346,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (attrId == null) {
          attrId = Query.getNextSeqVal(ATTR_ID_SEQ);
          attributeGuidCache.map(attrId, attributeGuid);
-         ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, SQL3DataType.INTEGER, attrId, SQL3DataType.VARCHAR,
-               attributeGuid);
+         ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, attrId, attributeGuid);
       }
       AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
       int attrTypeId = attributeType.getAttrTypeId();
@@ -385,9 +378,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          uriToStore = "";
       }
       int modificationInt = modificationType != null ? modificationType.getValue() : -1;
-      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, SQL3DataType.INTEGER, currentArtifactId,
-            SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
-            SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER, modificationInt);
+      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, currentArtifactId, attrId, attrTypeId, stringValue,
+            gammaId, uriToStore, modificationInt);
       insertTxAddress(gammaId, modificationInt, txCurrent);
    }
 
@@ -403,8 +395,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (relLinkId == null) {
          relLinkId = Query.getNextSeqVal(REL_LINK_ID_SEQ);
          linkGuidCache.map(relLinkId, guid);
-         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_GUID, SQL3DataType.INTEGER, relLinkId,
-               SQL3DataType.VARCHAR, guid);
+         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_GUID, relLinkId, guid);
       }
 
       int relLinkTypeId = RelationTypeManager.getType(type).getRelationTypeId();
@@ -425,10 +416,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       }
       int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
       int modificationInt = modificationType != null ? modificationType.getValue() : -1;
-      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK, SQL3DataType.INTEGER, relLinkId, SQL3DataType.INTEGER,
-            relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrderId,
-            SQL3DataType.INTEGER, bOrderId, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
-            SQL3DataType.INTEGER, modificationInt);
+      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK, relLinkId, relLinkTypeId, aArtId, bArtId, aOrderId,
+            bOrderId, rationale, gammaId, modificationInt);
       insertTxAddress(gammaId, modificationInt, txCurrent);
    }
 
@@ -459,8 +448,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    private void insertTxAddress(int gammaId, int modType, int txCurrent) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(INSERT_TX_ADDRESS, SQL3DataType.INTEGER, currentTransactionId,
-            SQL3DataType.INTEGER, gammaId, SQL3DataType.INTEGER, modType, SQL3DataType.INTEGER, txCurrent);
+      ConnectionHandler.runPreparedUpdate(INSERT_TX_ADDRESS, currentTransactionId, gammaId, modType, txCurrent);
    }
 
    private ZipFile getBinaryDataSource() {

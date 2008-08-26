@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.IS;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -86,18 +85,15 @@ public class AttributeValueSearch implements ISearchPrimitive {
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + " LIKE ?";
       else
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + "=?";
-      dataList.add(SQL3DataType.VARCHAR);
       dataList.add(attributeName);
 
       sql +=
             " AND " + ATTRIBUTE_TYPE_ALIAS_1.column("attr_type_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_type_id") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTIONS_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
 
       if (attributeValue != null) {
          sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
-         dataList.add(SQL3DataType.VARCHAR);
          if (operator == DepricatedOperator.CONTAINS)
             dataList.add("%" + attributeValue + "%");
          else

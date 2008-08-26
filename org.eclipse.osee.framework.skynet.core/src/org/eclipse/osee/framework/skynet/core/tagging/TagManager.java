@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -76,9 +75,8 @@ public class TagManager implements IAttributeSaveListener {
     * @throws SQLException
     */
    public static void clearTags(Artifact artifact, TagDescriptor tagDescriptor) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(false, DROP_TAGS_FROM_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(),
-            SQL3DataType.INTEGER, artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
-            tagDescriptor.getTagTypeId());
+      ConnectionHandler.runPreparedUpdate(false, DROP_TAGS_FROM_ARTIFACT, artifact.getArtId(),
+            artifact.getBranch().getBranchId(), tagDescriptor.getTagTypeId());
    }
 
    /**
@@ -111,9 +109,7 @@ public class TagManager implements IAttributeSaveListener {
             }
 
             for (Integer tagId : tagIds) {
-               tagData.add(new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, null,
-                     SQL3DataType.INTEGER, null, SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
-                     SQL3DataType.INTEGER, tagId});
+               tagData.add(new Object[] {artifact.getArtId(), null, null, artifact.getBranch().getBranchId(), tagId});
             }
          }
          ConnectionHandler.runPreparedUpdateBatch(ADD_TAG_TO_ARTIFACT, tagData);

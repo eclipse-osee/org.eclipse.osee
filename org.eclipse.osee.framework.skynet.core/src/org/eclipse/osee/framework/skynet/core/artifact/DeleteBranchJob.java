@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -118,22 +117,20 @@ class DeleteBranchJob extends Job {
        */
       @Override
       protected void handleTxWork() throws OseeCoreException, SQLException {
-         if (Query.getInt("child_branches", COUNT_CHILD_BRANCHES, SQL3DataType.INTEGER, branch.getBranchId()) > 0) throw new IllegalArgumentException(
+         if (Query.getInt("child_branches", COUNT_CHILD_BRANCHES, branch.getBranchId()) > 0) throw new IllegalArgumentException(
                "Can not delete a branch that has children");
 
          monitor.beginTask("Delete Branch: " + branch, 10);
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, SQL3DataType.INTEGER,
-                        branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-                        branch.getBranchId());
+                  ConnectionHandler.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, branch.getBranchId(),
+                        branch.getBranchId(), branch.getBranchId());
 
             if (chStmt.next()) {// checking to see if there are any gammas to delete
                // before inserting into delete table
-               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, SQL3DataType.INTEGER,
-                     branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-                     branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, branch.getBranchId(),
+                     branch.getBranchId(), branch.getBranchId());
                monitor.worked(1);
             }
             deleteAttributeVersions();
@@ -164,7 +161,7 @@ class DeleteBranchJob extends Job {
       private void deleteAttributeVersions() throws SQLException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete attribute versions");
-            ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_VERSIONS, SQL3DataType.INTEGER, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_VERSIONS, branch.getBranchId());
             monitor.worked(1);
          }
       }
@@ -172,7 +169,7 @@ class DeleteBranchJob extends Job {
       private void deleteRelationVersions() throws SQLException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete relation versions");
-            ConnectionHandler.runPreparedUpdate(DELETE_RELATION_VERSIONS, SQL3DataType.INTEGER, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_RELATION_VERSIONS, branch.getBranchId());
             monitor.worked(1);
          }
       }
@@ -180,7 +177,7 @@ class DeleteBranchJob extends Job {
       private void deleteArtifactVersions() throws SQLException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete artifact versions");
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_VERSIONS, SQL3DataType.INTEGER, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_VERSIONS, branch.getBranchId());
             monitor.worked(1);
          }
       }
@@ -188,7 +185,7 @@ class DeleteBranchJob extends Job {
       private void deleteBranch() throws SQLException {
          if (true != isCanceled()) {
             monitor.subTask("Delete Branch");
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, SQL3DataType.INTEGER, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, branch.getBranchId());
             monitor.worked(1);
             BranchPersistenceManager.removeBranchFromCache(branch.getBranchId());
          }

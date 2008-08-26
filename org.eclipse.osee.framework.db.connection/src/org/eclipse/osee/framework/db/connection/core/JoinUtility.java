@@ -15,7 +15,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -165,9 +164,7 @@ public class JoinUtility {
       public int delete(Connection connection) throws SQLException {
          int updated = 0;
          if (queryId != -1) {
-            updated =
-                  ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), SQL3DataType.INTEGER,
-                        queryId);
+            updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
          }
          return updated;
       }
@@ -187,13 +184,13 @@ public class JoinUtility {
 
    public static void deleteQuery(Connection connection, JoinItem item, int queryId) throws Exception {
       if (item != null) {
-         ConnectionHandler.runPreparedUpdate(connection, item.getDeleteSql(), SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(connection, item.getDeleteSql(), queryId);
       }
    }
 
    public static void deleteQuery(JoinItem item, int queryId) throws Exception {
       if (item != null) {
-         ConnectionHandler.runPreparedUpdate(item.getDeleteSql(), SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(item.getDeleteSql(), queryId);
       }
    }
 
@@ -216,8 +213,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, gammaId, SQL3DataType.INTEGER, transactionId};
+            return new Object[] {getQueryId(), insertTime, gammaId, transactionId};
          }
 
          /* (non-Javadoc)
@@ -266,8 +262,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId};
+            return new Object[] {getQueryId(), insertTime, artId, branchId};
          }
 
          public String toString() {
@@ -314,8 +309,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.VARCHAR, value};
+            return new Object[] {getQueryId(), insertTime, value};
          }
 
          /* (non-Javadoc)
@@ -362,8 +356,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.BIGINT, value};
+            return new Object[] {getQueryId(), insertTime, value};
          }
 
          /* (non-Javadoc)
@@ -410,8 +403,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.BIGINT, gammaId};
+            return new Object[] {getQueryId(), insertTime, gammaId};
          }
 
          /* (non-Javadoc)
@@ -460,8 +452,7 @@ public class JoinUtility {
 
          public Object[] toArray() {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {SQL3DataType.INTEGER, getQueryId(), SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.BIGINT, id1, SQL3DataType.BIGINT, id2};
+            return new Object[] {getQueryId(), insertTime, id1, id2};
          }
 
          /* (non-Javadoc)

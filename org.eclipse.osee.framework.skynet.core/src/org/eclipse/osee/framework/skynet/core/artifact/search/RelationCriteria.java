@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -67,12 +66,12 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
          builder.append(relAlias);
          builder.append(relationSide.isSideA() ? ".b_art_id" : ".a_art_id");
          builder.append("=? AND ");
-         builder.addParameter(SQL3DataType.INTEGER, artifactId);
+         builder.addParameter(artifactId);
       }
       if (relationType != null) {
          builder.append(relAlias);
          builder.append(".rel_link_type_id=? AND ");
-         builder.addParameter(SQL3DataType.INTEGER, relationType.getRelationTypeId());
+         builder.addParameter(relationType.getRelationTypeId());
       }
 
       builder.append(relAlias);

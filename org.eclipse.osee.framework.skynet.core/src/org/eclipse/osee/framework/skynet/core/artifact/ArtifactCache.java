@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -49,20 +51,23 @@ public class ArtifactCache {
     * 
     * @param artifact
     */
-   static void cache(Artifact artifact) throws OseeCoreException {
+   static void cache(Artifact artifact) {
+      if (artifact.isHistorical()) {
+         instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
+         instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+      } else {
+         instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
+         instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
+      }
+   }
+
+   static void cachePostAttributeLoad(Artifact artifact) throws OseeDataStoreException {
       try {
-         if (artifact.isHistorical()) {
-            instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
-            instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
-         } else {
-            instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
-            instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
-            for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
-               instance.staticIdArtifactCache.put(staticId, artifact);
-            }
+         for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+            instance.staticIdArtifactCache.put(staticId, artifact);
          }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 

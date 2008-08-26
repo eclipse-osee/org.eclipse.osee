@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -282,15 +281,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
                if (modType == ModificationType.DELETED.getValue()) {
                   tx_current_value = TxChange.DELETED.getValue();
                }
-               batchArgs.add(new Object[] {SQL3DataType.INTEGER, tx_current_value, SQL3DataType.BIGINT,
-                     resultSet.getLong(1), SQL3DataType.INTEGER, resultSet.getInt(2)});
+               batchArgs.add(new Object[] {tx_current_value, resultSet.getLong(1), resultSet.getInt(2)});
 
                if (monitor.isCanceled() != true && batchArgs.size() >= batchSize) {
                   writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
                   batchArgs.clear();
                }
             }
-         }, 0, SELECT_BASELINED_TRANSACTIONS, SQL3DataType.INTEGER, txNumber);
+         }, 0, SELECT_BASELINED_TRANSACTIONS, txNumber);
 
          if (monitor.isCanceled() != true && batchArgs.size() > 0) {
             writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
@@ -313,7 +311,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                public void processRow(ResultSet resultSet) throws Exception {
                   updates.add(new UpdateHelper(type, resultSet));
                }
-            }, 0, query, SQL3DataType.INTEGER, txNumber, SQL3DataType.INTEGER, txNumber);
+            }, 0, query, txNumber, txNumber);
             appendResultLine(String.format("%d updates for [%s]\n", totalRows, type));
 
             if (monitor.isCanceled()) {
@@ -328,16 +326,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
          final List<Object[]> setToUpdate = new ArrayList<Object[]>();
          IRowProcessor processor = new IRowProcessor() {
             public void processRow(ResultSet resultSet) throws Exception {
-               setToUpdate.add(new Object[] {SQL3DataType.BIGINT, resultSet.getLong(1), SQL3DataType.INTEGER,
-                     resultSet.getInt(2)});
+               setToUpdate.add(new Object[] {resultSet.getLong(1), resultSet.getInt(2)});
             }
          };
          // Set Stale Items to 0
          for (UpdateHelper data : updates) {
             String query = typesQueryMap.get(data.type).getValue();
             if (query != null && monitor.isCanceled() != true) {
-               executeQuery(monitor, connection, processor, 0, query, SQL3DataType.INTEGER, data.branch_id,
-                     SQL3DataType.INTEGER, data.id);
+               executeQuery(monitor, connection, processor, 0, query, data.branch_id, data.id);
             }
          }
 
@@ -356,8 +352,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          for (UpdateHelper data : updates) {
             TxChange txCurrentValue =
                   data.modification_id == ModificationType.DELETED.getValue() ? TxChange.DELETED : TxChange.CURRENT; // Set to Current or Current was Deleted
-            batchArgs.add(new Object[] {SQL3DataType.INTEGER, txCurrentValue.getValue(), SQL3DataType.BIGINT,
-                  data.gamma_id, SQL3DataType.INTEGER, data.transaction_id});
+            batchArgs.add(new Object[] {txCurrentValue.getValue(), data.gamma_id, data.transaction_id});
             if (monitor.isCanceled()) {
                break;
             }
@@ -417,8 +412,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                String updateSql = String.format(UPDATE_TXS_MOD_TYPE_SINGLE_CALL, innerSelect);
 
                long time = System.currentTimeMillis();
-               int count =
-                     ConnectionHandler.runPreparedUpdate(connection, updateSql, SQL3DataType.INTEGER, startAtTxNumber);
+               int count = ConnectionHandler.runPreparedUpdate(connection, updateSql, startAtTxNumber);
                appendResultLine(String.format("Updated [%s] rows for [%s] in [%d]ms\n", count, type.name(),
                      (System.currentTimeMillis() - time)));
                totalModified += count;

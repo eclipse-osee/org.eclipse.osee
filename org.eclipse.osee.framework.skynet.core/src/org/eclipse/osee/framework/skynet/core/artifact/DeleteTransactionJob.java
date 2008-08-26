@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
@@ -181,10 +180,9 @@ public class DeleteTransactionJob extends Job {
        */
       private void getAffectedArtifacts(Connection connection, IProgressMonitor monitor, int transactionQueryId) throws SQLException {
          artifactJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, SQL3DataType.INTEGER, artifactJoinId,
-               SQL3DataType.INTEGER, transactionQueryId, SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER,
-               transactionQueryId, SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, transactionQueryId,
-               SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, transactionQueryId);
+         ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
+               artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId, artifactJoinId,
+               transactionQueryId);
 
       }
 
@@ -218,8 +216,7 @@ public class DeleteTransactionJob extends Job {
 
       private void deleteTransactionsFromTxDetails(Connection connection, IProgressMonitor monitor, int queryId) throws SQLException {
          monitor.subTask("Deleting Tx");
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS,
-               SQL3DataType.INTEGER, queryId);
+         ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, queryId);
          monitor.worked(1);
       }
 
@@ -228,13 +225,12 @@ public class DeleteTransactionJob extends Job {
          TransactionJoinQuery txGammasToDelete = JoinUtility.createTransactionJoinQuery();
          try {
             populateJoinQueryFromSql(connection, txGammasToDelete, SELECT_GAMMAS_FROM_TRANSACTION, "transaction_id",
-                  SQL3DataType.INTEGER, txsToDeleteQueryId);
+                  txsToDeleteQueryId);
             txGammasToDelete.store();
             int deleteQueryId = txGammasToDelete.getQueryId();
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_VERSIONS, SQL3DataType.INTEGER,
-                  deleteQueryId);
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTES, SQL3DataType.INTEGER, deleteQueryId);
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATIONS, SQL3DataType.INTEGER, deleteQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_VERSIONS, deleteQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTES, deleteQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATIONS, deleteQueryId);
 
          } finally {
             if (txGammasToDelete != null && connection != null && connection.isClosed() != true) {
@@ -270,8 +266,7 @@ public class DeleteTransactionJob extends Job {
 
       private void updateTxCurrent(Connection conn, IProgressMonitor monitor) throws SQLException {
          monitor.subTask("Updating Previous Tx to Current");
-         ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, SQL3DataType.INTEGER, artifactJoinId,
-               SQL3DataType.INTEGER, artifactJoinId, SQL3DataType.INTEGER, artifactJoinId);
+         ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
          monitor.worked(1);
       }
 
@@ -283,9 +278,8 @@ public class DeleteTransactionJob extends Job {
             if (previousTransaction != null) {
                int toDeleteTransaction = entry.getTxToDelete().getTransactionNumber();
 
-               data.add(new Object[] {SQL3DataType.VARCHAR, String.valueOf(toDeleteTransaction), SQL3DataType.VARCHAR,
-                     String.valueOf(previousTransaction.getTransactionNumber()), SQL3DataType.VARCHAR,
-                     "%" + toDeleteTransaction});
+               data.add(new Object[] {String.valueOf(toDeleteTransaction),
+                     String.valueOf(previousTransaction.getTransactionNumber()), "%" + toDeleteTransaction});
             }
          }
          if (data.size() > 0) {
@@ -297,7 +291,7 @@ public class DeleteTransactionJob extends Job {
 
    private void checkForModifiedBaselines(Connection conn, boolean force, int queryId) throws Exception {
       ConnectionHandlerStatement chStmt = null;
-      chStmt = ConnectionHandler.runPreparedQuery(conn, TRANSACATION_GAMMA_IN_USE, SQL3DataType.INTEGER, queryId);
+      chStmt = ConnectionHandler.runPreparedQuery(conn, TRANSACATION_GAMMA_IN_USE, queryId);
       if (chStmt.next() && !force) {
          throw new OseeCoreException(
                "The Transaction " + chStmt.getRset().getInt("transaction_id") + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");

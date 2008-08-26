@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
@@ -227,8 +226,7 @@ public class ArtifactTypeManager {
 
    public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
       ConnectionHandler.runPreparedUpdate("UPDATE osee_define_artifact_type SET image = ? where art_type_id = ?",
-            SQL3DataType.BLOB, new ByteArrayInputStream(imageDescriptor.getData()), SQL3DataType.INTEGER,
-            descriptor.getArtTypeId());
+            new ByteArrayInputStream(imageDescriptor.getData()), descriptor.getArtTypeId());
 
       // TODO Update descriptor's cached copy of image
       descriptor.setImageDescriptor(imageDescriptor);
@@ -241,10 +239,8 @@ public class ArtifactTypeManager {
          InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
          ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, SQL3DataType.INTEGER, artTypeId,
-               SQL3DataType.INTEGER, factory.getFactoryId(), SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR,
-               artifactTypeName, SQL3DataType.VARCHAR, factoryKey, SQL3DataType.BLOB, new ByteArrayInputStream(
-                     imageDescriptor.getData()));
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
+               artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
 
          artifactType = new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
       } else {

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**
@@ -83,8 +82,8 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
       try {
          cloudDescriptor = new CloudDescriptor(descriptorName, Query.getNextSeqVal(SkynetDatabase.CLOUD_TYPE_ID_SEQ));
-         ConnectionHandler.runPreparedQuery(INSERT_CLOUD_TYPE, SQL3DataType.VARCHAR, cloudDescriptor.getName(),
-               SQL3DataType.INTEGER, cloudDescriptor.getCloudTypeId());
+         ConnectionHandler.runPreparedQuery(INSERT_CLOUD_TYPE, cloudDescriptor.getName(),
+               cloudDescriptor.getCloudTypeId());
 
          cache(cloudDescriptor);
       } catch (SQLException ex) {

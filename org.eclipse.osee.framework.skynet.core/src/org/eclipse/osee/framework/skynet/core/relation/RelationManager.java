@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -198,9 +197,8 @@ public class RelationManager {
                int branchId = relation.getBranch(resolvedSide).getBranchId();
                Artifact relatedArtifact = ArtifactCache.getActive(artId, branchId);
                if (relatedArtifact == null) {
-                  insertParameters.put(artId, branchId,
-                        new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                              SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId});
+                  insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
+                        SQL3DataType.INTEGER});
                } else {
                   relatedArtifacts.add(relatedArtifact);
                }
@@ -335,43 +333,46 @@ public class RelationManager {
     * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
     * @throws SQLException
     */
-   public static void persistRelationsFor(Artifact artifact,
-			RelationType relationType) throws SQLException {
-		List<RelationLink> selectedRelations;
-		if (relationType == null) {
-			selectedRelations = artifactToRelations.get(artifact);
-		} else {
-			selectedRelations = relationsByType.get(artifact, relationType);
-		}
+   public static void persistRelationsFor(Artifact artifact, RelationType relationType) throws SQLException {
+      List<RelationLink> selectedRelations;
+      if (relationType == null) {
+         selectedRelations = artifactToRelations.get(artifact);
+      } else {
+         selectedRelations = relationsByType.get(artifact, relationType);
+      }
 
-		if (selectedRelations != null) {
-			for (RelationLink relation : selectedRelations) {
-				if (relation.isDirty()) {
-					RelationPersistenceManager.makePersistent(relation);
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if (relation.isDirty()) {
+               RelationPersistenceManager.makePersistent(relation);
 
-					try {
-						Artifact artifactOnOtherSide = relation
-								.getArtifactOnOtherSide(artifact);
-						List<RelationLink> otherSideRelations = relationsByType.get(artifactOnOtherSide, relation.getRelationType());
-						for(int i = 0; i < otherSideRelations.size(); i++){
-							if(relation.equals(otherSideRelations.get(i))){
-								if(i+1 < otherSideRelations.size()){
-									RelationLink nextRelation = otherSideRelations.get(i+1);
-									if(nextRelation.isDirty()){
-										RelationPersistenceManager.makePersistent(nextRelation);
-									}
-								}
-							}
-						}
-					} catch (ArtifactDoesNotExist ex) {
-						OseeLog.log(RelationManager.class, Level.SEVERE, 
-								String.format("Unable to to persist other side relation order because the artifact on the other side of [%s, %s] doesn't exist. ", artifact.toString(), relation.toString()),ex);
-					}
+               try {
+                  Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
+                  List<RelationLink> otherSideRelations =
+                        relationsByType.get(artifactOnOtherSide, relation.getRelationType());
+                  for (int i = 0; i < otherSideRelations.size(); i++) {
+                     if (relation.equals(otherSideRelations.get(i))) {
+                        if (i + 1 < otherSideRelations.size()) {
+                           RelationLink nextRelation = otherSideRelations.get(i + 1);
+                           if (nextRelation.isDirty()) {
+                              RelationPersistenceManager.makePersistent(nextRelation);
+                           }
+                        }
+                     }
+                  }
+               } catch (ArtifactDoesNotExist ex) {
+                  OseeLog.log(
+                        RelationManager.class,
+                        Level.SEVERE,
+                        String.format(
+                              "Unable to to persist other side relation order because the artifact on the other side of [%s, %s] doesn't exist. ",
+                              artifact.toString(), relation.toString()), ex);
+               }
 
-				}
-			}
-		}
-	}
+            }
+         }
+      }
+   }
 
    public static List<RelationLink> getRelationsAll(Artifact artifact) {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
@@ -432,10 +433,11 @@ public class RelationManager {
 
          RelationManager.manageRelation(relation, RelationSide.SIDE_A);
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
-         
+
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                     relation.getASideName(), ModType.Added, RelationManager.class));
+               new CacheRelationModifiedEvent(relation, relation.getABranch(),
+                     relation.getRelationType().getTypeName(), relation.getASideName(), ModType.Added,
+                     RelationManager.class));
       }
    }
 
@@ -512,7 +514,7 @@ public class RelationManager {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
          String PURGE_RELATION = "Delete from osee_define_rel_link WHERE rel_link_id = ?";
          for (RelationLink link : links) {
-            batchArgs.add(new Object[] {SQL3DataType.INTEGER, link.getRelationId()});
+            batchArgs.add(new Object[] {link.getRelationId()});
             link.markAsPurged();
          }
          ConnectionHandler.runPreparedUpdateBatch(PURGE_RELATION, batchArgs);

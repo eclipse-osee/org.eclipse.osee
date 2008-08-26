@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -107,8 +106,7 @@ public class WordUtil {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, SQL3DataType.INTEGER, artId,
-                     SQL3DataType.INTEGER, attributeDescriptor.getAttrTypeId(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getAttrTypeId(),
                      branch.getBranchId());
 
          ResultSet rset = chStmt.getRset();
@@ -155,8 +153,7 @@ public class WordUtil {
             // Collections.toString(repeatGammas, "(", ",", ")"));
 
             for (Integer gamma : repeatGammas) {
-               ConnectionHandler.runPreparedUpdate("INSERT INTO " + table + " (gamma_id) values (?)",
-                     SQL3DataType.INTEGER, gamma);
+               ConnectionHandler.runPreparedUpdate("INSERT INTO " + table + " (gamma_id) values (?)", gamma);
             }
 
             return true;

@@ -60,24 +60,15 @@ public class AttributeTransactionData implements ITransactionData {
     * 
     */
    private void populateDataList() {
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(artId);
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(attrId);
-      dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(attrTypeId);
-      dataItems.add(SQL3DataType.VARCHAR);
-      dataItems.add(value);
-      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(value == null ? SQL3DataType.VARCHAR : value);
       dataItems.add(gammaId);
-      dataItems.add(SQL3DataType.VARCHAR);
-      dataItems.add(uri);
-      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(uri == null ? SQL3DataType.VARCHAR : uri);
       dataItems.add(modificationType.getValue());
 
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(attrId);
    }
 

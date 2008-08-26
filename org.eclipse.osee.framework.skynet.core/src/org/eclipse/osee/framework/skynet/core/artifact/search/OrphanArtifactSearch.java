@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -40,11 +39,8 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(aritfactType.getArtTypeId());
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(relationTypeId);
 
       return sql;

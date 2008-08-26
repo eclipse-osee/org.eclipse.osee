@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -143,8 +142,8 @@ public class ArtifactFactoryManager {
                int factoryId = Query.getNextSeqVal(FACTORY_ID_SEQ);
 
                ConnectionHandler.runPreparedUpdate(
-                     "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", SQL3DataType.INTEGER,
-                     factoryId, SQL3DataType.VARCHAR, factoryClassName);
+                     "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,
+                     factoryClassName);
 
                createFactory(factoryClassName, factoryId);
             }

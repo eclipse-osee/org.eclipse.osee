@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.utility.DatabaseUtil;
@@ -58,7 +57,7 @@ public class AttributeDataStore {
             attributeData.add(new AttributeData(resultSet.getLong("gamma_id"), resultSet.getString("value"),
                   resultSet.getString("uri"), resultSet.getString("tagger_id")));
          }
-      }, SQL3DataType.INTEGER, tagQueueQueryId);
+      }, tagQueueQueryId);
       return attributeData;
    }
 
@@ -84,13 +83,11 @@ public class AttributeDataStore {
    public static Set<AttributeData> getAttributesByTags(int branchId, Options options, int queryId) throws Exception {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       String sqlQuery = getQuery(branchId, options);
-      int dataSize = branchId > -1 ? 4 : 2;
+      int dataSize = branchId > -1 ? 2 : 1;
       Object[] data = new Object[dataSize];
-      data[0] = SQL3DataType.INTEGER;
-      data[1] = queryId;
+      data[0] = queryId;
       if (branchId > -1) {
-         data[2] = SQL3DataType.INTEGER;
-         data[3] = branchId;
+         data[1] = branchId;
       }
       DatabaseUtil.executeQuery(sqlQuery, new IRowProcessor() {
          @Override
@@ -108,7 +105,7 @@ public class AttributeDataStore {
    }
 
    public static Object[] getAllTaggableGammasByBranchQueryData(int branchId) {
-      return branchId > -1 ? new Object[] {SQL3DataType.INTEGER, branchId} : new Object[0];
+      return branchId > -1 ? new Object[] {branchId} : new Object[0];
    }
 
    private static String getBranchTaggingQueries(int branchId, boolean isCountQuery) throws SQLException {

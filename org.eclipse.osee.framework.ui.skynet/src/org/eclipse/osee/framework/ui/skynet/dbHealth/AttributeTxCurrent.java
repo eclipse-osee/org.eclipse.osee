@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -145,8 +144,7 @@ public class AttributeTxCurrent extends DatabaseHealthTask {
                      resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("tran_id_1") : resultSet.getInt("tran_id_2");
                int gamma_id =
                      resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("gamma_id_1") : resultSet.getInt("gamma_id_2");
-               ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, SQL3DataType.INTEGER,
-                     gamma_id, SQL3DataType.INTEGER, transaction_id);
+               ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, gamma_id, transaction_id);
                if (showDetails) {
                   builder.append("Set Transaction ");
                   builder.append(transaction_id);
@@ -173,13 +171,12 @@ public class AttributeTxCurrent extends DatabaseHealthTask {
                   builder.append("Cleaning up the following TX_Current Attribute Errors with no tx_current set:\n");
                }
                count++;
-               ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, SQL3DataType.INTEGER,
-                     resultSet.getInt("attr_id"), SQL3DataType.INTEGER, resultSet.getInt("branch_id"),
-                     SQL3DataType.INTEGER, resultSet.getInt("attr_id"));
+               ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, resultSet.getInt("attr_id"),
+                     resultSet.getInt("branch_id"), resultSet.getInt("attr_id"));
                if (showDetails) {
                   chStmt2 =
-                        ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, SQL3DataType.INTEGER,
-                              resultSet.getInt("branch_id"), SQL3DataType.INTEGER, resultSet.getInt("attr_id"));
+                        ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, resultSet.getInt("branch_id"),
+                              resultSet.getInt("attr_id"));
                   ResultSet resultSet2 = chStmt2.getRset();
                   int trans_id = 0, gamma_id = 0;
                   if (resultSet2.next()) {

@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -39,7 +38,7 @@ public class PurgeArtifactType extends AbstractBlam {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, SQL3DataType.INTEGER, artTypeId);
+         chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
          ResultSet rSet = chStmt.getRset();
          if (rSet.next() && rSet.getInt("artCount") != 0) {
             throw new IllegalArgumentException(
@@ -49,9 +48,9 @@ public class PurgeArtifactType extends AbstractBlam {
          DbUtil.close(chStmt);
       }
 
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, SQL3DataType.INTEGER, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, SQL3DataType.INTEGER, artTypeId);
+      ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
+      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, artTypeId);
+      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, artTypeId);
    }
 
    /* (non-Javadoc)

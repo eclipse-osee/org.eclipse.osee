@@ -45,7 +45,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -1214,9 +1213,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
    }
 
    /**
-    * Revert changes for a given artifact Id up to the transaction point being viewed by this report.<br/><br/>
-    * <i>Note that this job is constrained to being able to only revert at most 1000 attribute and 1000 link changes do
-    * to its direct use of the SQL IN clause.</i>
+    * Revert changes for a given artifact Id up to the transaction point being viewed by this report.<br/><br/> <i>Note
+    * that this job is constrained to being able to only revert at most 1000 attribute and 1000 link changes do to its
+    * direct use of the SQL IN clause.</i>
     * 
     * @author Robert A. Fisher
     */
@@ -1330,7 +1329,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          monitor.subTask("Cleaning up empty transactions");
          ConnectionHandler.runPreparedUpdate(
                "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")",
-               SQL3DataType.INTEGER, baseTransactionId.getBranch().getBranchId());
+               baseTransactionId.getBranch().getBranchId());
          monitor.worked(1);
 
       }

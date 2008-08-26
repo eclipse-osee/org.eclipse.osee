@@ -55,7 +55,7 @@ public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
          try {
             toReturn =
-                  ArtifactLoader.loadArtifactsFromQuery(queryIdAndSize.object1, ArtifactLoad.FULL, null,
+                  ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, ArtifactLoad.FULL, null,
                         queryIdAndSize.object2, false, false);
          } finally {
             JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());

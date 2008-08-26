@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -42,7 +41,6 @@ public class CommittingArtifactSearch implements ISearchPrimitive {
             TRANSACTION_DETAIL_TABLE.join(TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(
                   ARTIFACT_VERSION_TABLE, "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?";
 
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(artId);
 
       return whereConditions;

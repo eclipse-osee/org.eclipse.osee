@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -158,8 +156,7 @@ public class DataConversion {
                   }
                   try {
                      IResourceLocator actuallLocator = resourceManager.save(locator, resource, options);
-                     batchParams.add(new Object[] {SQL3DataType.VARCHAR, actuallLocator.getLocation().toString(),
-                           SQL3DataType.INTEGER, gamma});
+                     batchParams.add(new Object[] {actuallLocator.getLocation().toString(), gamma});
 
                      if (!typeToExtension.containsKey(typeName) && !nativeExtension.containsKey(artId)) {
                         ci.println(actuallLocator.getLocation());

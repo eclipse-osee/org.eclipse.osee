@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +61,8 @@ public class AccessControlManager {
    private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
          "SELECT aac1.*, art1.art_type_id FROM osee_define_artifact art1, osee_define_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
 
-   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST = "SELECT bac1.*, art1.art_type_id FROM osee_define_artifact art1, osee_define_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
+   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
+         "SELECT bac1.*, art1.art_type_id FROM osee_define_artifact art1, osee_define_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
    private static final String DELETE_ARTIFACT_ACL =
          "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
    private static final String DELETE_BRANCH_ACL =
@@ -236,8 +236,8 @@ public class AccessControlManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId,
-                        SQL3DataType.INTEGER, RelationTypeManager.getType("Users").getRelationTypeId());
+                  ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
+                        RelationTypeManager.getType("Users").getRelationTypeId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
@@ -462,14 +462,12 @@ public class AccessControlManager {
                ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, SQL3DataType.INTEGER,
-                        artifactAccessObject.getArtId(), SQL3DataType.INTEGER, data.getPermission().getPermId(),
-                        SQL3DataType.INTEGER, data.getSubject().getArtId(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
+                        data.getPermission().getPermId(), data.getSubject().getArtId(),
                         artifactAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, SQL3DataType.INTEGER,
-                        data.getPermission().getPermId(), SQL3DataType.INTEGER, data.getSubject().getArtId(),
-                        SQL3DataType.INTEGER, artifactAccessObject.getArtId(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), artifactAccessObject.getArtId(),
                         artifactAccessObject.getBranchId());
                }
 
@@ -502,13 +500,11 @@ public class AccessControlManager {
                BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, SQL3DataType.INTEGER,
-                        data.getPermission().getPermId(), SQL3DataType.INTEGER, data.getSubject().getArtId(),
-                        SQL3DataType.INTEGER, branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
                } else {
-                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, SQL3DataType.INTEGER,
-                        data.getPermission().getPermId(), SQL3DataType.INTEGER, data.getSubject().getArtId(),
-                        SQL3DataType.INTEGER, branchAccessObject.getBranchId());
+                  ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
+                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
                }
             }
             cacheAccessControlData(data);
@@ -599,14 +595,12 @@ public class AccessControlManager {
       try {
          if (data.getObject() instanceof ArtifactAccessObject) {
             ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, SQL3DataType.INTEGER,
-                  data.getSubject().getArtId(), SQL3DataType.INTEGER, object.getArtId(), SQL3DataType.INTEGER,
+            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
                   object.getBranchId());
 
          } else if (data.getObject() instanceof BranchAccessObject) {
             BranchAccessObject object = (BranchAccessObject) data.getObject();
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, SQL3DataType.INTEGER, data.getSubject().getArtId(),
-                  SQL3DataType.INTEGER, object.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
          }
          deCacheAccessControlData(data);
       } catch (SQLException ex) {
@@ -740,10 +734,8 @@ public class AccessControlManager {
          AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
             @Override
             protected void handleTxWork() throws OseeCoreException, SQLException {
-               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
-                     branch.getBranchId());
-               ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, SQL3DataType.INTEGER,
-                     branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
+               ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
             }
 
          };

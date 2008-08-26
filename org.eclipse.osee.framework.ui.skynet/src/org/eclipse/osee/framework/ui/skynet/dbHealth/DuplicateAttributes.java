@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -92,14 +91,12 @@ public class DuplicateAttributes extends DatabaseHealthTask {
          while (resultSet.next()) {
             try {
                connectionHandlerStatement2 =
-                     ConnectionHandler.runPreparedQuery(FILTER_DELTED, SQL3DataType.INTEGER,
-                           resultSet.getInt("attr_id_1"));
+                     ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_1"));
                resultSet2 = connectionHandlerStatement2.getRset();
                if (resultSet2.next()) {
                   DbUtil.close(connectionHandlerStatement2);
                   connectionHandlerStatement2 =
-                        ConnectionHandler.runPreparedQuery(FILTER_DELTED, SQL3DataType.INTEGER,
-                              resultSet.getInt("attr_id_2"));
+                        ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_2"));
                   resultSet2 = connectionHandlerStatement2.getRset();
                   if (resultSet2.next()) {
                      DuplicateAttribute duplicateAttribute;
@@ -139,8 +136,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       if (sameValues.isEmpty() && diffValues.isEmpty()) {
          builder.append("PASSED: No Duplicate Attributes Found\n");
       } else {
-         if (showDetails)
-         builder.append("FAILED: Found the following Duplicate Attributes\n");
+         if (showDetails) builder.append("FAILED: Found the following Duplicate Attributes\n");
          builder.append("ATTRIBUTES WITH THE SAME VALUES\n");
          if (sameValues.isEmpty()) {
             builder.append("  None Found\n");
@@ -181,13 +177,13 @@ public class DuplicateAttributes extends DatabaseHealthTask {
          }
 
          if (loopDuplicate.attrIDToDelete != 0 && removeAttribute) {
-            ConnectionHandler.runPreparedUpdate(DELETE_ATTR, SQL3DataType.INTEGER, loopDuplicate.attrIDToDelete);
+            ConnectionHandler.runPreparedUpdate(DELETE_ATTR, loopDuplicate.attrIDToDelete);
          }
-         if (showDetails){
-         showText(loopDuplicate, x++, removeAttribute, builder);
+         if (showDetails) {
+            showText(loopDuplicate, x++, removeAttribute, builder);
          }
       }
-      if (!showDetails){
+      if (!showDetails) {
          builder.append("     ");
          builder.append(x);
          builder.append(" instances found");
@@ -198,9 +194,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, SQL3DataType.INTEGER, attrId1,
-                     SQL3DataType.INTEGER, attrId2);
+         connectionHandlerStatement = ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
          ResultSet resultSet = connectionHandlerStatement.getRset();
          while (resultSet.next()) {
             branches.add(new Integer(resultSet.getInt("branch_id")));

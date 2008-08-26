@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,7 +36,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -183,7 +181,7 @@ public class RevisionManager implements IEventReceiver {
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS, SQL3DataType.INTEGER, branch.getBranchId());
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
 
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
@@ -275,10 +273,8 @@ public class RevisionManager implements IEventReceiver {
 
          while (cursor != null) {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, SQL3DataType.INTEGER, artId,
-                        SQL3DataType.INTEGER, cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                        cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, cursor.getBranchId(),
-                        SQL3DataType.INTEGER, limit);
+                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, cursor.getBranchId(),
+                        artId, cursor.getBranchId(), artId, cursor.getBranchId(), limit);
 
             ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
@@ -437,12 +433,12 @@ public class RevisionManager implements IEventReceiver {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-         List<Object[]> datas = new LinkedList<Object[]>();
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIds) {
-            datas.add(new Object[] {queryId, insertTime, artId,
-                  historical ? transactionId.getTransactionNumber() : branch.getBranchId()});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+                  historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, false, historical);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, historical);
       }
 
       return changes;
@@ -472,8 +468,7 @@ public class RevisionManager implements IEventReceiver {
             toTransactionId = branchStartEndTransaction.getValue();
 
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, SQL3DataType.INTEGER,
-                        sourceBranch.getBranchId());
+                  ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, sourceBranch.getBranchId());
          }
          //Changes per a transaction
          else {
@@ -481,7 +476,7 @@ public class RevisionManager implements IEventReceiver {
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES, SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES,
                         toTransactionId.getTransactionNumber());
          }
          ResultSet resultSet = connectionHandlerStatement.getRset();
@@ -526,20 +521,18 @@ public class RevisionManager implements IEventReceiver {
          //Changes per a branch
          if (hasBranch) {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, SQL3DataType.INTEGER,
-                        sourceBranch.getBranchId());
-            
-            Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                TransactionIdManager.getStartEndPoint(sourceBranch);
+                  ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, sourceBranch.getBranchId());
 
-          fromTransactionId = branchStartEndTransaction.getKey();
-          toTransactionId = branchStartEndTransaction.getValue();
+            Pair<TransactionId, TransactionId> branchStartEndTransaction =
+                  TransactionIdManager.getStartEndPoint(sourceBranch);
+
+            fromTransactionId = branchStartEndTransaction.getKey();
+            toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, SQL3DataType.INTEGER,
-                        transactionId.getTransactionNumber());
-            
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, transactionId.getTransactionNumber());
+
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
          }
@@ -554,10 +547,11 @@ public class RevisionManager implements IEventReceiver {
                artIds.add(aArtId);
                artIds.add(bArtId);
 
-               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, toTransactionId, fromTransactionId,
-                     ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
-                     resultSet.getString("rationale"), resultSet.getInt("a_order"), resultSet.getInt("b_order"),
-                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")), !hasBranch));
+               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, toTransactionId,
+                     fromTransactionId, ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING,
+                     bArtId, relLinkId, resultSet.getString("rationale"), resultSet.getInt("a_order"),
+                     resultSet.getInt("b_order"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")),
+                     !hasBranch));
             }
          }
       } finally {
@@ -592,8 +586,7 @@ public class RevisionManager implements IEventReceiver {
          //Changes per a branch
          if (hasBranch) {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, SQL3DataType.INTEGER,
-                        sourceBranch.getBranchId());
+                  ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -603,7 +596,7 @@ public class RevisionManager implements IEventReceiver {
          }//Changes per transaction number
          else {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES,
                         transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
@@ -658,8 +651,7 @@ public class RevisionManager implements IEventReceiver {
 
                // insert into the artifact_join_table
                for (int artId : artIds) {
-                  datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
+                  datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
                }
                ArtifactLoader.selectArtifacts(datas);
 
@@ -667,8 +659,8 @@ public class RevisionManager implements IEventReceiver {
                      "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
 
                connectionHandlerStatement =
-                     ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, SQL3DataType.INTEGER,
-                           sourceBranch.getBranchId(), SQL3DataType.INTEGER, queryId);
+                     ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, sourceBranch.getBranchId(),
+                           queryId);
                resultSet = connectionHandlerStatement.getRset();
 
                while (resultSet.next()) {
@@ -695,7 +687,7 @@ public class RevisionManager implements IEventReceiver {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS,
                      commitTransaction.getTransactionNumber());
 
          ResultSet resultSet = connectionHandlerStatement.getRset();
@@ -758,24 +750,18 @@ public class RevisionManager implements IEventReceiver {
       return conflicts;
    }
 
-   /**
-    * 
-    */
    private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws SQLException {
       if (artIdSet != null && !artIdSet.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-         List<Object[]> datas = new LinkedList<Object[]>();
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIdSet) {
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, sourceBranch.getBranchId()});
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, destinationBranch.getBranchId()});
-            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.TIMESTAMP, insertTime,
-                  SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, mergeBranch.getBranchId()});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), null});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getBranchId(), null});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(), null});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true, false);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false);
       }
    }
 
@@ -792,9 +778,9 @@ public class RevisionManager implements IEventReceiver {
 
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
-                     destinationBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber());
+               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, sourceBranch.getBranchId(),
+                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
+                     baselineTransaction.getTransactionNumber());
 
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -848,9 +834,8 @@ public class RevisionManager implements IEventReceiver {
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS_NEW, SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
-                     SQL3DataType.INTEGER, destinationBranch.getBranchId());
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS_NEW, sourceBranch.getBranchId(),
+                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId());
 
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -885,9 +870,8 @@ public class RevisionManager implements IEventReceiver {
 
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
-                     SQL3DataType.INTEGER, destinationBranch.getBranchId(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, sourceBranch.getBranchId(),
+                     baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
                      baselineTransaction.getTransactionNumber());
 
          ResultSet resultSet = connectionHandlerStatement.getRset();
@@ -933,15 +917,11 @@ public class RevisionManager implements IEventReceiver {
                   "was_gamma") + " FROM " + ATTRIBUTE_VERSION_TABLE + " attr1," + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", " + TRANSACTION_DETAIL_TABLE + "," + " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) T1" + " WHERE attr1.gamma_id = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND attr1.attr_type_id=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + (fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T1.branch_id" + " AND art_id = ?) data_table" + " ORDER BY gamma_id DESC";
 
       Collection<Object> dataList = new LinkedList<Object>();
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(fromTransactionNumber);
       if (fromTransactionNumber != toTransactionNumber) {
-         dataList.add(SQL3DataType.BIGINT);
          dataList.add(fromTransactionNumber);
       }
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(toTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(artId);
 
       try {
@@ -968,25 +948,17 @@ public class RevisionManager implements IEventReceiver {
                   " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?)", "T2") + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND a_art_id = ?)" + " ORDER BY gamma_id DESC";
 
       Collection<Object> dataList = new LinkedList<Object>();
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(fromTransactionNumber);
       if (fromTransactionNumber != toTransactionNumber) {
-         dataList.add(SQL3DataType.BIGINT);
          dataList.add(fromTransactionNumber);
       }
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(toTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(artId);
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(fromTransactionNumber);
       if (fromTransactionNumber != toTransactionNumber) {
-         dataList.add(SQL3DataType.BIGINT);
          dataList.add(fromTransactionNumber);
       }
-      dataList.add(SQL3DataType.BIGINT);
       dataList.add(toTransactionNumber);
-      dataList.add(SQL3DataType.INTEGER);
       dataList.add(artId);
 
       try {
@@ -1014,7 +986,7 @@ public class RevisionManager implements IEventReceiver {
 
          ConnectionHandlerStatement chStmt = null;
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, artId);
+            chStmt = ConnectionHandler.runPreparedQuery(sql, artId);
 
             if (chStmt.next()) name = chStmt.getRset().getString("value");
          } catch (SQLException e) {
@@ -1037,9 +1009,8 @@ public class RevisionManager implements IEventReceiver {
 
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(GET_CHANGED_ARTIFACTS, SQL3DataType.INTEGER, artId,
-                     SQL3DataType.INTEGER, fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedQuery(GET_CHANGED_ARTIFACTS, artId,
+                     fromTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(),
                      fromTransactionId.getBranch().getBranchId());
 
          Artifact artifact = ArtifactQuery.getArtifactFromId(artId, fromTransactionId.getBranch(), true);
@@ -1074,10 +1045,9 @@ public class RevisionManager implements IEventReceiver {
       }
 
       Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
-            headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, SQL3DataType.VARCHAR, "Name",
-            SQL3DataType.INTEGER, fromTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-            fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER, toTransactionId.getTransactionNumber(),
-            SQL3DataType.INTEGER, DELETED.getValue());
+            headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
+            fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
+            toTransactionId.getTransactionNumber(), DELETED.getValue());
 
       return deletedArtifacts;
    }
@@ -1096,13 +1066,13 @@ public class RevisionManager implements IEventReceiver {
       if (includeRelationOnlyChanges) {
          criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       }
-      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
    }
 
    public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction.getBranch());
+      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
    }
 
    /**
@@ -1145,10 +1115,8 @@ public class RevisionManager implements IEventReceiver {
                            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
                chStmt =
-                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                           toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                           fromTransactionId.getBranch().getBranchId());
+                     ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
+                           toTransactionId.getTransactionNumber(), fromTransactionId.getBranch().getBranchId());
 
                ResultSet rset = chStmt.getRset();
                while (rset.next()) {
@@ -1165,8 +1133,7 @@ public class RevisionManager implements IEventReceiver {
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
                            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
                chStmt1 =
-                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
                            fromTransactionId.getBranch().getBranchId());
 
                ResultSet rset = chStmt1.getRset();
@@ -1363,9 +1330,8 @@ public class RevisionManager implements IEventReceiver {
 
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, SQL3DataType.INTEGER, artifact.getArtId(),
-                        SQL3DataType.INTEGER, artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
-                        artifact.getBranch().getParentBranchId());
+                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(),
+                        artifact.getBranch().getBranchId(), artifact.getBranch().getParentBranchId());
 
             ResultSet rset = chStmt.getRset();
 

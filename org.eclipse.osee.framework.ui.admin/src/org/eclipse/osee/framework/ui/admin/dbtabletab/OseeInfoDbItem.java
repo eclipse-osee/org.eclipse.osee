@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -67,11 +66,10 @@ public class OseeInfoDbItem extends DbItem {
          String query;
          if (exists(key)) {
             query = "UPDATE " + getTableName() + " SET OSEE_KEY = ?, OSEE_VALUE = ? WHERE OSEE_KEY = ?";
-            ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value,
-                  SQL3DataType.VARCHAR, key);
+            ConnectionHandler.runPreparedUpdate(query, key, value, key);
          } else {
             query = "INSERT INTO " + getTableName() + " (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
-            ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value);
+            ConnectionHandler.runPreparedUpdate(query, key, value);
          }
       } catch (SQLException ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);

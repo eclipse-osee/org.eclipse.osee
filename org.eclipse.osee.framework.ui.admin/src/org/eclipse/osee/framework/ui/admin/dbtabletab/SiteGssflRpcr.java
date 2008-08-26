@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 
 public class SiteGssflRpcr extends DbItem {
@@ -68,12 +67,10 @@ public class SiteGssflRpcr extends DbItem {
          String query;
          if (exists(program)) {
             query = "UPDATE " + getTableName() + " SET directory = ?, program_id = ? WHERE PROGRAM = ?";
-            ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, dir, SQL3DataType.VARCHAR, programId,
-                  SQL3DataType.VARCHAR, program);
+            ConnectionHandler.runPreparedUpdate(query, dir, programId, program);
          } else {
             query = "INSERT INTO " + getTableName() + " (program,directory,program_id) VALUES (?,?,?)";
-            ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, program, SQL3DataType.VARCHAR, dir,
-                  SQL3DataType.VARCHAR, programId);
+            ConnectionHandler.runPreparedUpdate(query, program, dir, programId);
          }
       } catch (SQLException ex) {
          ex.printStackTrace();
