@@ -13,17 +13,18 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar
  */
 public class MetaData {
-   private final Map<String, Class<?>> dataConversionMap;
+   private final Map<String, SQL3DataType> dataConversionMap;
    private final String tableTarget;
    private String query;
 
    MetaData(String tableName) {
-      this.dataConversionMap = new LinkedHashMap<String, Class<?>>();
+      this.dataConversionMap = new LinkedHashMap<String, SQL3DataType>();
       this.tableTarget = tableName;
       this.query = null;
    }
@@ -46,8 +47,8 @@ public class MetaData {
       return toReturn;
    }
 
-   void addColumn(String columnName, Class<?> clazz) {
-      this.dataConversionMap.put(columnName, clazz);
+   void addColumn(String columnName, SQL3DataType sql3DataType) {
+      this.dataConversionMap.put(columnName, sql3DataType);
    }
 
    public int getColumnSize() {
@@ -69,8 +70,13 @@ public class MetaData {
       return query;
    }
 
-   public Class<?> toClass(String fieldName) {
+   public SQL3DataType toDataType(String fieldName) {
       return this.dataConversionMap.get(fieldName);
+   }
+
+   public Class<?> toClass(String fieldName) {
+      SQL3DataType dataType = this.dataConversionMap.get(fieldName);
+      return dataType != null ? dataType.getJavaEquivalentClass() : null;
    }
 
    /* (non-Javadoc)

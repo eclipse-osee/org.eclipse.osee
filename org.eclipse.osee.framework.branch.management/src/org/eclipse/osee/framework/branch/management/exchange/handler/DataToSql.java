@@ -24,9 +24,11 @@ public class DataToSql {
       int index = 0;
       for (String columnName : metadata.getColumnNames()) {
          Object dataValue = dataMap.get(columnName);
-         data[index] = dataValue;
          if (dataValue != null) {
+            data[index] = dataValue;
             notNullCount++;
+         } else {
+            data[index] = metadata.toDataType(columnName);
          }
          index++;
       }
@@ -45,8 +47,14 @@ public class DataToSql {
             if (object != null && translator.isTranslatable(columnName)) {
                object = translator.translate(connection, columnName, object);
             }
-            data[index] = object;
-            notNullCount++;
+            if (object != null) {
+               data[index] = object;
+               notNullCount++;
+            } else {
+               data[index] = metadata.toDataType(columnName);
+            }
+         } else {
+            data[index] = metadata.toDataType(columnName);
          }
          index++;
       }

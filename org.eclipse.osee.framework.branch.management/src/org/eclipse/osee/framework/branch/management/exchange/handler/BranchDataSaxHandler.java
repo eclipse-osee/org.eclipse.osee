@@ -73,6 +73,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       if (Strings.isValid(value)) {
          Class<?> clazz = getMetaData().toClass(key);
          toReturn = DataToSql.stringToObject(clazz, key, value);
+      } else {
+         toReturn = getMetaData().toDataType(key);
       }
       return toReturn;
    }
@@ -193,14 +195,15 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
       for (BranchData branchData : getSelectedBranchDataToImport(branchIds)) {//getImportBranches(branchesToImport)) {
          Long original = new Long(branchData.getBranchId());
-         getTranslator().addMappingTo("branch_id", original, original);
          if (branchData.getBranchId() != 1) {
-            //         int newValue = (Integer) getTranslator().translate(getConnection(), BRANCH_ID, original);
-            //         branchData.setBranchId(original);
+            Long newValue = (Long) getTranslator().translate(getConnection(), BRANCH_ID, original);
+            branchData.setBranchId(newValue.intValue());
             Object[] data = branchData.toArray();
             if (data != null) {
                addData(data);
             }
+         } else {
+            getTranslator().addMappingTo("branch_id", original, original);
          }
       }
       super.store(getConnection());

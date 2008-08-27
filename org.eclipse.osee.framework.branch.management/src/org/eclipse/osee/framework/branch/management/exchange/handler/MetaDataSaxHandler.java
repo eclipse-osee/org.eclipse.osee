@@ -96,7 +96,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       String columnName = attributes.getValue(ExportImportXml.ID);
       String typeName = attributes.getValue(ExportImportXml.TYPE);
       SQL3DataType sql3DataType = SQL3DataType.valueOf(typeName);
-      this.currentMetadata.addColumn(columnName, sql3DataType.getJavaEquivalentClass());
+      this.currentMetadata.addColumn(columnName, sql3DataType);
    }
 
 }
