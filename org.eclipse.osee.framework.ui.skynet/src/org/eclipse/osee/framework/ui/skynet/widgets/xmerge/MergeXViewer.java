@@ -169,7 +169,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       try {
          if (treeColumn.getText().equals(MergeXViewerFactory.Source.getName())) {
             if (conflict.statusNotResolvable()) {
-               MergeUtility.showArtifactDeletedConflict(conflict, shell);
+               MergeUtility.showDeletedConflict(conflict, shell);
             } else if (conflict.statusInformational()) {
                MergeUtility.showInformationalConflict(shell);
             } else {
@@ -177,26 +177,26 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
             }
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Destination.getName())) {
             if (conflict.statusNotResolvable()) {
-               MergeUtility.showArtifactDeletedConflict(conflict, shell);
+               MergeUtility.showDeletedConflict(conflict, shell);
             } else if (conflict.statusInformational()) {
                MergeUtility.showInformationalConflict(shell);
             } else {
                MergeUtility.setToDest(conflict, shell, true);
             }
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Merged.getName())) {
-            if (!(conflict.getConflictType().equals(Conflict.ConflictType.ARTIFACT))) {
+            if (conflict.statusNotResolvable()) {
+               MergeUtility.showDeletedConflict(conflict, shell);
+            } else if (!(conflict.getConflictType().equals(Conflict.ConflictType.ARTIFACT))) {
                conWizard = new ConflictResolutionWizard(conflict);
                WizardDialog dialog = new WizardDialog(shell, conWizard);
                dialog.create();
                if (dialog.open() == 0) {
                   conWizard.getResolved();
                }
-            } else if (conflict.statusNotResolvable()) {
-               MergeUtility.showArtifactDeletedConflict(conflict, shell);
             }
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Conflict_Resolved.getName())) {
             if (conflict.statusNotResolvable()) {
-               if (MergeUtility.showArtifactDeletedConflict(conflict, shell)) {
+               if (MergeUtility.showDeletedConflict(conflict, shell)) {
                   xMergeViewer.refreshTable();
                }
             } else if (conflict.statusInformational()) {

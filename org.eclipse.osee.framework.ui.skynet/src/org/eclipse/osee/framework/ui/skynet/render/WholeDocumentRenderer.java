@@ -75,8 +75,8 @@ public class WholeDocumentRenderer extends FileRenderer {
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
 
       try {
-         artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-               WordAttribute.CONTENT_NAME).getName());
+         if (artifact != null) artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(
+               artifact, WordAttribute.CONTENT_NAME).getName());
       } catch (AttributeDoesNotExist ex) {
          artifact.createAttribute(
                AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME), true);

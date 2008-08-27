@@ -144,6 +144,28 @@ public class ArtifactPersistenceManager {
 
    private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
 
+   private static final String REVERT_ATTRIBUTE_ADDRESSING =
+         "Delete from osee_define_txs where (gamma_id, transaction_id) in (SELECT txs.gamma_id, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? and det.tx_type = 0 and det.transaction_id = txs.transaction_id and txs.gamma_id = att.gamma_id and att.art_id = ? and att.attr_id = ?)";
+
+   private static final String REVERT_ATTRIBUTE_CURRENT =
+         "Update osee_define_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 ELSE 1  END  where (gamma_id, transaction_id) = (SELECT txs.gamma_id, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? and det.tx_type = 1 and det.transaction_id = txs.transaction_id and txs.gamma_id = att.gamma_id and att.art_id = ? and att.attr_id = ?)";
+
+   private static final String REVERT_ATTRIBUTE_DATA =
+         "DELETE FROM osee_define_attribute where gamma_id in (Select att3.gamma_id FROM osee_define_attribute att3 WHERE att3.attr_id = ? and att3.art_id = ? and NOT EXISTS (select 'x' from osee_define_attribute att, osee_define_txs txs WHERE att.attr_id = att3.attr_id and att.art_id = att3.art_id and att.gamma_id = txs.gamma_id))";
+
+   private static final String GET_GAMMAS_ATTRIBUTE_REVERT =
+         "SELECT txs.gamma_id, txs.transaction_id FROM osee_define_artifact_version art, osee_define_txs txs, osee_define_tx_details det Where art.art_id = ? AND art.gamma_id = txs.gamma_id AND txs.mod_type Not in (1,3) AND txs.transaction_id = det.transaction_id and det.branch_id = ? AND NOT EXISTS (Select 'x' From  osee_define_txs txs2, osee_define_attribute att where txs2.transaction_id = txs.transaction_id AND txs2.gamma_id = att.gamma_id)";
+
+   private static final String REMOVE_TXS_ATTRIBUTE_REVERT =
+         "DELETE FROM osee_define_txs where transaction_id = ? AND gamma_id = ?";
+   private static final String REMOVE_AV_ATTRIBUTE_REVERT =
+         "DELETE FROM osee_define_artifact_version where gamma_id = ?";
+   private static final String REMOVE_DET_ATTRIBUTE_REVERT =
+         "DELETE FROM osee_define_tx_details det WHERE det.branch_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_define_txs txs where det.transaction_id = txs.transaction_id)";
+   private static final String UPDATE_TXS_ATTRIBUTE_REVERT =
+         "SELECT txs.transaction_id, txs.gamma_id FROM osee_define_txs txs, osee_define_tx_details det, osee_define_artifact_version ver WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = ver.gamma_id AND ver.art_id = ?  order by transaction_id desc";
+   private static final String SET_TXS_ATTRIBUTE_REVERT =
+         "Update osee_define_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 ELSE 1  END  Where transaction_id = ? and gamma_id = ?";
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
    private IProgressMonitor monitor;
@@ -609,7 +631,36 @@ public class ArtifactPersistenceManager {
 
       @Override
       protected void handleTxWork() throws OseeCoreException, SQLException {
-
+         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_ADDRESSING, branchId, artId, attributeId);
+         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_CURRENT, branchId, artId, attributeId);
+         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_DATA, attributeId, artId);
+         //Clean up artifact version table and transaction details table.
+         ConnectionHandlerStatement connectionHandlerStatement = null;
+         ResultSet resultSet = null;
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, artId, branchId);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               ConnectionHandler.runPreparedUpdate(REMOVE_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
+                     resultSet.getInt("gamma_id"));
+               ConnectionHandler.runPreparedUpdate(REMOVE_AV_ATTRIBUTE_REVERT, resultSet.getInt("gamma_id"));
+            }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(UPDATE_TXS_ATTRIBUTE_REVERT, branchId, artId);
+            resultSet = connectionHandlerStatement.getRset();
+            if (resultSet.next()) {
+               ConnectionHandler.runPreparedUpdate(SET_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
+                     resultSet.getInt("gamma_id"));
+            }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+         }
+         ConnectionHandler.runPreparedUpdate(REMOVE_DET_ATTRIBUTE_REVERT, branchId);
       }
 
       @Override

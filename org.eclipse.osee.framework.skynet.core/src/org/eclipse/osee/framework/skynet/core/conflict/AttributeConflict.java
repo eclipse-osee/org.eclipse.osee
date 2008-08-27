@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -151,13 +152,21 @@ public class AttributeConflict extends Conflict {
 
    public Object getSourceObject() throws OseeCoreException, SQLException {
       if (sourceObject != null) return sourceObject;
-      sourceObject = getSourceAttribute().getValue();
+      try {
+         sourceObject = getSourceAttribute().getValue();
+      } catch (AttributeDoesNotExist ex) {
+         sourceObject = new String("DELETED");
+      }
       return sourceObject;
    }
 
    public Object getDestObject() throws OseeCoreException, SQLException {
       if (destObject != null) return destObject;
-      destObject = getDestAttribute().getValue();
+      try {
+         destObject = getDestAttribute().getValue();
+      } catch (AttributeDoesNotExist ex) {
+         destObject = new String("DELETED");
+      }
       return destObject;
    }
 
@@ -305,12 +314,23 @@ public class AttributeConflict extends Conflict {
    }
 
    public Status computeStatus() throws OseeCoreException, SQLException {
-      return super.computeStatus(attrId, Status.UNTOUCHED);
+      Status passedStatus = Status.UNTOUCHED;
+      try {
+         getSourceAttribute();
+      } catch (AttributeDoesNotExist ex) {
+         passedStatus = Status.INFORMATIONAL;
+      }
+      try {
+         getDestAttribute();
+      } catch (AttributeDoesNotExist ex) {
+         passedStatus = Status.NOT_RESOLVABLE;
+      }
+      return super.computeStatus(attrId, passedStatus);
    }
 
    @Override
    public String getMergeDisplayData() throws OseeCoreException, SQLException {
-      if ((status.equals(Status.UNTOUCHED)) && !(sourceEqualsDestination() && mergeEqualsSource())) {
+      if ((statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource())) || statusNotResolvable() || statusInformational()) {
          return NO_VALUE;
       }
       if (!isWordAttribute) {
@@ -363,6 +383,10 @@ public class AttributeConflict extends Conflict {
          return true;
       }
       return false;
+   }
+
+   public void revertSourceAttribute() throws OseeCoreException, SQLException {
+      ArtifactPersistenceManager.getInstance().revertAttribute(getSourceArtifact(), getSourceAttribute());
    }
 
 }

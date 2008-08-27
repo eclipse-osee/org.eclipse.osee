@@ -56,8 +56,10 @@ public class MergeUtility {
          "You can not change the value for a conflict that has been marked resolved or has already been commited.  Change the conflict status if the source branch has not been commited and you wish to modify the value.";
    public static final String ARTIFACT_DELETED_PROMPT =
          "This Artifact has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Artifact will need to be reverted on the source branch.  \n\nReverting the artifact is irreversible and you will need to restart OSEE after reverting to see changes.";
+   public static final String ATTRIBUTE_DELETED_PROMPT =
+         "This Attribute has been changed on the source branch, but has been deleted on the destination branch.  In order to commit this branch and resolve this conflict the Attribute will need to be reverted on the source branch.  \n\nReverting the attribute is irreversible and you will need to restart OSEE after reverting to see changes.";
    public static final String INFORMATIONAL_CONFLICT =
-         "This Artifact has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the artifact on the destination branch.";
+         "This Item has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the item on the destination branch.";
    public static final String OPEN_MERGE_DIALOG =
          "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
 
@@ -65,8 +67,6 @@ public class MergeUtility {
          Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern rsidRootPattern =
          Pattern.compile("\\</wsp:rsids\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findbaselineRsids =
-         Pattern.compile("\\<w:r\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern findSetRsids =
          Pattern.compile("wsp:rsidR=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern findSetRsidRPR =
@@ -174,6 +174,18 @@ public class MergeUtility {
    /**
     * @param conflict
     */
+   public static boolean showDeletedConflict(Conflict conflict, Shell shell) {
+      if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
+         return showArtifactDeletedConflict(conflict, shell);
+      } else if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
+         return showAttributeDeletedConflict(conflict, shell);
+      }
+      return false;
+   }
+
+   /**
+    * @param conflict
+    */
    public static boolean showArtifactDeletedConflict(Conflict conflict, Shell shell) {
       if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
          MessageDialog dialog =
@@ -182,6 +194,26 @@ public class MergeUtility {
          if (dialog.open() == 0) {
             try {
                ((ArtifactConflict) conflict).revertSourceArtifact();
+               return true;
+            } catch (Exception ex) {
+               OSEELog.logException(MergeUtility.class, ex, false);
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * @param conflict
+    */
+   public static boolean showAttributeDeletedConflict(Conflict conflict, Shell shell) {
+      if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
+         MessageDialog dialog =
+               new MessageDialog(shell, "Unresovable Conflict", null, ATTRIBUTE_DELETED_PROMPT, 1, new String[] {
+                     "Revert Source Attribute", "Handle Later"}, 1);
+         if (dialog.open() == 0) {
+            try {
+               ((AttributeConflict) conflict).revertSourceAttribute();
                return true;
             } catch (Exception ex) {
                OSEELog.logException(MergeUtility.class, ex, false);

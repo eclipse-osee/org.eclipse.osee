@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,7 +36,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -268,11 +266,11 @@ public class RevisionManager implements IEventReceiver {
 
       ConnectionHandlerStatement chStmt = null;
 
-     final Integer artId = artifact.getArtId();
-     Branch cursor = artifact.getBranch();
-     Integer limit = Integer.MAX_VALUE;
+         final Integer artId = artifact.getArtId();
+         Branch cursor = artifact.getBranch();
+         Integer limit = Integer.MAX_VALUE;
 
-     while (cursor != null) {
+         while (cursor != null) {
     	try{
             chStmt =
                   ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, cursor.getBranchId(),
@@ -290,9 +288,9 @@ public class RevisionManager implements IEventReceiver {
             } else {
                cursor = null;
             }
-    	} finally {
-    		DbUtil.close(chStmt);
-    	}
+      } finally {
+         DbUtil.close(chStmt);
+      }
       }
       return transactionDetails;
    }
@@ -756,9 +754,12 @@ public class RevisionManager implements IEventReceiver {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIdSet) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), null});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getBranchId(), null});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(), null});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(),
+                  SQL3DataType.INTEGER});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getBranchId(),
+                  SQL3DataType.INTEGER});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(),
+                  SQL3DataType.INTEGER});
          }
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false);
       }
@@ -849,7 +850,8 @@ public class RevisionManager implements IEventReceiver {
                int destGamma = resultSet.getInt("dest_gamma");
                int modType = resultSet.getInt("mod_type");
                int attrTypeId = resultSet.getInt("attr_type_id");
-               String sourceValue = resultSet.getString("source_value");
+               String sourceValue =
+                     resultSet.getString("source_value") != null ? resultSet.getString("source_value") : resultSet.getString("dest_value");
 
                if (attrId != nextAttrId && modType == ModificationType.NEW.getValue()) {
                   attrId = nextAttrId;
@@ -885,7 +887,8 @@ public class RevisionManager implements IEventReceiver {
             int destGamma = resultSet.getInt("dest_gamma");
             int attrTypeId = resultSet.getInt("attr_type_id");
             int beginGamma = resultSet.getInt("begin_gamma");
-            String sourceValue = resultSet.getString("source_value");
+            String sourceValue =
+                  resultSet.getString("source_value") != null ? resultSet.getString("source_value") : resultSet.getString("dest_value");
 
             if (attrId != nextAttrId && beginGamma != destGamma) {
                attrId = nextAttrId;

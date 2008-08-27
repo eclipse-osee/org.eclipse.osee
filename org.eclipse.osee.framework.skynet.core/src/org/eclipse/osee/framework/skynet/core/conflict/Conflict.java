@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -246,7 +247,10 @@ public abstract class Conflict implements IAdaptable {
 
    public Status computeStatus(int objectID, Status DefaultStatus) throws OseeCoreException, SQLException {
       Status passedStatus = DefaultStatus;
-      if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
+      try {
+         if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
+      } catch (AttributeDoesNotExist ex) {
+      }
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
                   getConflictType().Value(), passedStatus,
