@@ -126,6 +126,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       tree.setLinesVisible(true);
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
 
+      (new Label(mainComp, SWT.None)).setText("Select \"New Role\" to add.  Select icon in cell to update value.");
       loadTable();
    }
 
@@ -158,6 +159,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       newUserRoleItem.setImage(AtsPlugin.getInstance().getImage("userAdd.gif"));
       newUserRoleItem.setToolTipText("New Role");
       newUserRoleItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleNewUserRole();
          }
@@ -167,6 +169,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       deleteUserRoleItem.setImage(SkynetGuiPlugin.getInstance().getImage("redRemove.gif"));
       deleteUserRoleItem.setToolTipText("Delete Role");
       deleteUserRoleItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleDeleteUserRole(false);
          }
@@ -176,6 +179,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh Roles");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             loadTable();
          }
@@ -185,6 +189,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().handleTableCustomization();
          }
@@ -291,6 +296,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       xViewer.getTree().setFocus();
    }
 
+   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
@@ -401,10 +407,12 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
       this.editor = editor;
    }
 
+   @Override
    public boolean isEditable() {
       return editable;
    }
 
+   @Override
    public void setEditable(boolean editable) {
       this.editable = editable;
    }

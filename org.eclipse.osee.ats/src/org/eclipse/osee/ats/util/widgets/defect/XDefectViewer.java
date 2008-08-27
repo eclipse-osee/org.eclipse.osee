@@ -136,6 +136,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       tree.setLinesVisible(true);
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
 
+      (new Label(mainComp, SWT.None)).setText("Select \"New Defect\" to add.  Select icon in cell to update value.");
       loadTable();
    }
 
@@ -168,6 +169,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       newDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("newTask.gif"));
       newDefectItem.setToolTipText("New Defect");
       newDefectItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleNewDefect();
          }
@@ -177,6 +179,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       deleteDefectItem.setImage(SkynetGuiPlugin.getInstance().getImage("redRemove.gif"));
       deleteDefectItem.setToolTipText("Delete Defect");
       deleteDefectItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleDeleteDefect(false);
          }
@@ -186,6 +189,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh Defects");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             loadTable();
          }
@@ -195,6 +199,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.getCustomizeMgr().handleTableCustomization();
          }
@@ -229,6 +234,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       item.setText("Create Defects via simple list");
       item.setEnabled(editable);
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleImportDefectsViaList();
          }
@@ -358,6 +364,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       xViewer.getTree().setFocus();
    }
 
+   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
@@ -472,10 +479,12 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       this.editor = editor;
    }
 
+   @Override
    public boolean isEditable() {
       return editable;
    }
 
+   @Override
    public void setEditable(boolean editable) {
       this.editable = editable;
    }

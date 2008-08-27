@@ -98,17 +98,18 @@ public class UserRole {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof UserRole) {
-         UserRole di = (UserRole) obj;
-         return di.getGuid().equals(getGuid());
+         UserRole userRole = (UserRole) obj;
+         return userRole.getGuid().equals(getGuid());
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return toString().hashCode();
+      return getGuid().hashCode();
    }
 
+   @Override
    public String toString() {
       return role + " - " + user + " - " + hoursSpent + " - " + (completed ? "Completed" : "InWork");
    }

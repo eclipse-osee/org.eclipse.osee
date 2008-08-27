@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -195,8 +194,8 @@ public class UserRoleManager {
       double hoursSpent = 0.0;
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
-      SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-      smaMgr.getStateMgr().updateMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
+      SMAManager smaMgr = new SMAManager(artifact);
+      smaMgr.getStateMgr().setMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
       if (persist) artifact.persistAttributes();
    }
 
