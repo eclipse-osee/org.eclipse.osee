@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -46,18 +48,22 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      for (String artTypeName : Arrays.asList(TeamWorkFlowArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
-            DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME, "Lba V13 Code Team Workflow",
-            "Lba V13 Test Team Workflow", "Lba V13 Req Team Workflow", "Lba V13 SW Design Team Workflow",
-            "Lba V13 Tech Approach Team Workflow", "Lba V11 REU Code Team Workflow", "Lba V11 REU Test Team Workflow",
-            "Lba V11 REU Req Team Workflow", "Lba B3 Code Team Workflow", "Lba B3 Test Team Workflow",
-            "Lba B3 Req Team Workflow", "Lba B3 SW Design Team Workflow", "Lba B3 Tech Approach Team Workflow")) {
+      List<String> teamWorkflowNames =
+            Arrays.asList(TeamWorkFlowArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
+                  DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME);
+      teamWorkflowNames.addAll(TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames());
+
+      for (String artTypeName : teamWorkflowNames) {
+         System.out.println("Processing artifact type - " + artTypeName);
          for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
             if (art instanceof StateMachineArtifact) {
                ((StateMachineArtifact) art).updateAssigneeRelations();
+               if (art.isDirty()) {
+                  System.out.println("Updated assignee relations for " + art.getHumanReadableId() + " - " + art);
+               }
                art.persistRelations();
             }
          }
