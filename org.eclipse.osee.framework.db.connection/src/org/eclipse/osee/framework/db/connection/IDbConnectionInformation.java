@@ -20,5 +20,5 @@ public interface IDbConnectionInformation {
 
    public DbInformation getDatabaseInfo(String servicesId);
 
-   public DbInformation getDefaultDatabaseInfo();
+   public DbInformation getSelectedDatabaseInfo();
 }

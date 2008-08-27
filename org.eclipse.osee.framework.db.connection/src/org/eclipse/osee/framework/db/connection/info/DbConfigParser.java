@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.info;
 
-import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_DB_CONNECTION_ID;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.info.DbInformation.DbObjectType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -28,70 +23,27 @@ import org.w3c.dom.NodeList;
 /**
  * @author Roberto E. Escobar
  */
-public class ServerConfigUtil {
-   private static ServerConfigUtil instance = null;
+public class DbConfigParser {
 
-   Map<String, DbDetailData> dbInfoMap;
-   Map<String, DbSetupData> servicesMap;
-   Map<String, DbConnectionData> connectionMap;
+   private final Map<String, DbDetailData> dbInfoMap;
+   private final Map<String, DbSetupData> servicesMap;
+   private final Map<String, DbConnectionData> connectionMap;
 
-   private ServerConfigUtil() {
+   private DbConfigParser() {
       dbInfoMap = new HashMap<String, DbDetailData>();
       servicesMap = new HashMap<String, DbSetupData>();
       connectionMap = new HashMap<String, DbConnectionData>();
    }
 
-   public static ServerConfigUtil getInstance() {
-      if (instance == null) instance = new ServerConfigUtil();
-      return instance;
+   public static DbInformation[] parse(Element rootElement) {
+      DbConfigParser worker = new DbConfigParser();
+      worker.parseDbInfo(rootElement);
+      worker.parseDbService(rootElement);
+      worker.parseDbConnection(rootElement);
+      return worker.getAllDbServices();
    }
 
-   public static ServerConfigUtil getNewInstance() {
-      return new ServerConfigUtil();
-   }
-
-   public void parseDatabaseConfigFile(Element rootElement) {
-      this.parseDbInfo(rootElement);
-      this.parseDbService(rootElement);
-      this.parseDbConnection(rootElement);
-   }
-
-   public DbInformation getService(String servicesId) {
-      if (servicesMap.containsKey(servicesId)) {
-         DbSetupData serviceData = servicesMap.get(servicesId);
-         DbDetailData dbInfo = dbInfoMap.get(serviceData.getDbInfo());
-         DbConnectionData connectionData =
-               connectionMap.get(serviceData.getServerInfoValue(DbSetupData.ServerInfoFields.connectsWith));
-         if (dbInfo != null && connectionData != null) {
-            return new DbInformation(dbInfo, serviceData, connectionData);
-         }
-      }
-      return null;
-   }
-
-   public DbInformation getDefaultService() {
-      String dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
-      if (dbConnectionId != null) {
-         if (servicesMap.containsKey(dbConnectionId)) {
-            OseeLog.log(Activator.class, Level.INFO, "Using DEFAULT_DB_CONNECTION: " + dbConnectionId);
-            return buildDbInformation(dbConnectionId);
-         }
-         // Don't go to default if db connection id is specified but not valid
-         OseeLog.log(Activator.class, Level.SEVERE, "Invalid DB Connection Id=> " + dbConnectionId);
-         return null;
-      }
-      Set<String> keys = this.servicesMap.keySet();
-      for (String key : keys) {
-         DbSetupData serviceData = servicesMap.get(key);
-         if (serviceData.isDefault()) {
-            OseeLog.log(Activator.class, Level.INFO, "Using DEFAULT_DB_CONNECTION: " + key);
-            return buildDbInformation(key);
-         }
-      }
-      return null;
-   }
-
-   public DbInformation[] getAllDbServices() {
+   private DbInformation[] getAllDbServices() {
       DbInformation[] info = new DbInformation[servicesMap.size()];
       int i = 0;
       for (String name : servicesMap.keySet()) {

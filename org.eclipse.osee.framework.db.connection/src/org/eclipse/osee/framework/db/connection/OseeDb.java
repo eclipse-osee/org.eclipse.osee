@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 public class OseeDb {
 
    public static DbInformation getDefaultDatabaseService() {
-      return Activator.getInstance().getDbConnectionInformation().getDefaultDatabaseInfo();
+      return Activator.getInstance().getDbConnectionInformation().getSelectedDatabaseInfo();
    }
 
    public static DbInformation getDatabaseService(String id) {

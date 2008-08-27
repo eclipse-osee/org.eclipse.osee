@@ -7,8 +7,8 @@ package org.eclipse.osee.demo.db.connection;
 
 import java.net.URL;
 import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
+import org.eclipse.osee.framework.db.connection.info.DbConfigParser;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.info.ServerConfigUtil;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,8 +26,6 @@ public class DbConnectionInfo implements IDbConnectionInformationContributer {
       URL url = Activator.getInstance().getBundleContext().getBundle().getEntry("support/osee.demo.db.connection.xml");
       Document document = Jaxp.readXmlDocument(url.openStream());
       Element rootElement = document.getDocumentElement();
-      ServerConfigUtil util = ServerConfigUtil.getNewInstance();
-      util.parseDatabaseConfigFile(rootElement);
-      return util.getAllDbServices();
+      return DbConfigParser.parse(rootElement);
    }
 }

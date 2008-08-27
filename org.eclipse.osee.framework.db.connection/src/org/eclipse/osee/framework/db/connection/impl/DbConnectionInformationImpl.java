@@ -29,13 +29,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DbConnectionInformationImpl implements IDbConnectionInformation, IBind {
 
    private Map<String, DbInformation> dbInfo;
-   private String lastDefault;
-   private String dbConnectionId;
-   private DbInformation defaultInfo;
+   private DbInformation selectedDbInfo;
 
    public DbConnectionInformationImpl() {
       dbInfo = new HashMap<String, DbInformation>();
-      dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
    }
 
    /* (non-Javadoc)
@@ -47,21 +44,23 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getDefaultDatabaseInfo()
+    * @see org.eclipse.osee.framework.db.connection.IDbConnectionInformation#getSelectedDatabaseInfo()
     */
    @Override
-   public DbInformation getDefaultDatabaseInfo() {
-      if (defaultInfo == null) {
-         if (dbConnectionId != null) {
-            defaultInfo = getDatabaseInfo(dbConnectionId);
-         } else if (lastDefault != null) {
-            defaultInfo = getDatabaseInfo(lastDefault);
+   public DbInformation getSelectedDatabaseInfo() {
+      if (selectedDbInfo == null) {
+         String dbConnectionId = System.getProperty(OSEE_DB_CONNECTION_ID);
+         if (dbConnectionId != null && dbConnectionId.length() > 0) {
+            selectedDbInfo = getDatabaseInfo(dbConnectionId);
+            if (selectedDbInfo == null) {
+               throw new IllegalStateException(String.format("DB connection information was not found. [%s]",
+                     dbConnectionId));
+            }
+         } else {
+            throw new IllegalStateException("No DB connection information provided");
          }
       }
-      if (defaultInfo == null) {
-         throw new IllegalStateException("Unable to locate default DB connection information.");
-      }
-      return defaultInfo;
+      return selectedDbInfo;
    }
 
    /* (non-Javadoc)
@@ -72,9 +71,6 @@ public class DbConnectionInformationImpl implements IDbConnectionInformation, IB
       IDbConnectionInformationContributer contributer = (IDbConnectionInformationContributer) obj;
       try {
          for (DbInformation info : contributer.getDbInformation()) {
-            if (info.getDatabaseSetupDetails().isDefault()) {
-               lastDefault = info.getDatabaseSetupDetails().getId();
-            }
             dbInfo.put(info.getDatabaseSetupDetails().getId(), info);
          }
       } catch (Exception ex) {

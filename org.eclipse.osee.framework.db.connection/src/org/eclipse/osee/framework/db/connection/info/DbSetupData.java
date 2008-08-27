@@ -24,26 +24,17 @@ public class DbSetupData {
    }
 
    public enum ServerInfoFields {
-      id, dbInfo, hostAddress, port, connectsWith, isDefault, serverConfig, applicationServer;
+      id, dbInfo, hostAddress, port, connectsWith, serverConfig, applicationServer;
    }
 
    Map<ServerInfoFields, String> serverFieldMap;
-   private boolean isDefault;
 
    public DbSetupData() {
       this.serverFieldMap = new HashMap<ServerInfoFields, String>();
-      this.isDefault = false;
    }
 
    public void addServerInfo(ServerInfoFields field, String value) {
-      if (field.equals(ServerInfoFields.isDefault)) {
-         isDefault = Boolean.parseBoolean(value);
-      }
       serverFieldMap.put(field, value);
-   }
-
-   public boolean isDefault() {
-      return isDefault;
    }
 
    public String getServerInfoValue(ServerInfoFields field) {
