@@ -6,6 +6,8 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import java.util.HashMap;
+
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.service.packageadmin.ExportedPackage;
 import org.osgi.service.packageadmin.PackageAdmin;
@@ -21,6 +23,11 @@ public class ExportClassLoader extends ClassLoader {
    public ExportClassLoader(PackageAdmin packageAdmin) {
       super(ExportClassLoader.class.getClassLoader());
       this.packageAdmin = packageAdmin;
+   }
+   
+   public ExportClassLoader()
+   {
+      this(PluginCoreActivator.getInstance().getPackageAdmin());
    }
 
    /* (non-Javadoc)

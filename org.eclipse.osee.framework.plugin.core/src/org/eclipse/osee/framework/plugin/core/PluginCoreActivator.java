@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.plugin.core;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.osgi.framework.Bundle;
@@ -18,6 +19,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
+import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,17 +28,33 @@ import org.osgi.framework.BundleListener;
 public class PluginCoreActivator extends OseeActivator {
    private static PluginCoreActivator pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "osee.plugin.core";
+   private ServiceTracker packageAdminTracker;
 
    public PluginCoreActivator() {
       super();
       pluginInstance = this;
    }
 
+   
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      super.stop(context);
+      packageAdminTracker.close();
+   }
+
+
    /**
     * Returns the shared instance.
     */
    public static PluginCoreActivator getInstance() {
       return pluginInstance;
+   }
+   
+   public PackageAdmin getPackageAdmin() {
+      return (PackageAdmin) packageAdminTracker.getService();
    }
 
    /* (non-Javadoc)
@@ -45,6 +64,9 @@ public class PluginCoreActivator extends OseeActivator {
    public void start(BundleContext context) throws Exception {
       super.start(context);
 
+      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+      packageAdminTracker.open();
+      
       for (Bundle bundle : context.getBundles()) {
          checkForEarlyStartup(bundle);
       }
