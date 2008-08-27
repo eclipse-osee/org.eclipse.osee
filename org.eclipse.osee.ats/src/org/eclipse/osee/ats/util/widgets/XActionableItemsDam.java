@@ -51,7 +51,7 @@ public class XActionableItemsDam extends XTextDam {
    }
 
    public String getActionableItemsStr() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(getActionableItems());
+      return Artifacts.toString("; ", getActionableItems());
    }
 
    public List<String> getActionableItemGuids() throws SQLException {

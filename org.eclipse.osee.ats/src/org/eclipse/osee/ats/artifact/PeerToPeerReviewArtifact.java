@@ -54,6 +54,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       defectManager = new DefectManager(this);
    }
 
+   @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
          List<TeamWorkFlowArtifact> teams =
@@ -89,6 +90,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       return "peerToPeerReview";
    }
 
+   @Override
    public String getWorldViewVersion() throws OseeCoreException, SQLException {
       return "";
    }
@@ -116,6 +118,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
+   @Override
    public String getWorldViewTeam() throws OseeCoreException, SQLException {
       return "";
    }
@@ -135,26 +138,32 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
+   @Override
    public String getWorldViewDescription() throws OseeCoreException, SQLException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
+   @Override
    public String getWorldViewCategory() throws OseeCoreException, SQLException {
       return "";
    }
 
+   @Override
    public String getWorldViewCategory2() throws OseeCoreException, SQLException {
       return "";
    }
 
+   @Override
    public String getWorldViewCategory3() throws OseeCoreException, SQLException {
       return "";
    }
 
+   @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
 
+   @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
       return null;
    }
@@ -179,8 +188,9 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
+   @Override
    public String getWorldViewImplementer() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(State.Review.name()));
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(State.Review.name()));
    }
 
    /*
@@ -188,6 +198,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
+   @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
       return null;
    }
@@ -197,6 +208,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
+   @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
       return "";
    }
@@ -206,6 +218,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
+   @Override
    public double getWorldViewWeeklyBenefit() {
       return 0;
    }
@@ -215,6 +228,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWorkPackage()
     */
+   @Override
    public String getWorldViewWorkPackage() throws OseeCoreException, SQLException {
       return "";
    }
@@ -231,13 +245,15 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
+   @Override
    public String getWorldViewReviewAuthor() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
+      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Author));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
+   @Override
    public String getWorldViewReviewDecider() throws OseeCoreException, SQLException {
       return "";
    }
@@ -245,15 +261,17 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
+   @Override
    public String getWorldViewReviewModerator() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
+      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Moderator));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
+   @Override
    public String getWorldViewReviewReviewer() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
+      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Reviewer));
    }
 
 }

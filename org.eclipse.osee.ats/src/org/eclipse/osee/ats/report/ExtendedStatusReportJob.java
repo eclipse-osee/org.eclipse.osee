@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Display;
 public class ExtendedStatusReportJob extends Job {
    private final ArrayList<Artifact> arts;
    private IProgressMonitor monitor;
-   private String title;
+   private final String title;
 
    public ExtendedStatusReportJob(String title, ArrayList<Artifact> arts) {
       super("Creating " + title);
@@ -51,6 +51,7 @@ public class ExtendedStatusReportJob extends Job {
 
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       this.monitor = monitor;
       if (arts.size() == 0) {
@@ -76,7 +77,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport()throws OseeCoreException, SQLException{
+   public String getStatusReport() throws OseeCoreException, SQLException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(getStatusReportBody());
@@ -99,6 +100,7 @@ public class ExtendedStatusReportJob extends Job {
       Date_Created,
       Version;
 
+      @Override
       public String toString() {
          return name().replaceAll("_", " ");
       }
@@ -112,7 +114,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody()throws OseeCoreException, SQLException{
+   public String getStatusReportBody() throws OseeCoreException, SQLException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -137,7 +139,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma)throws OseeCoreException, SQLException{
+   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException, SQLException {
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {
@@ -186,7 +188,7 @@ public class ExtendedStatusReportJob extends Job {
             } else
                values.add(smaMgr.getOriginator().getName());
          } else if (col == Columns.Assignees)
-            values.add(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+            values.add(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          else if (col == Columns.Status_State)
             values.add(smaMgr.getStateMgr().getCurrentStateName());
          else if (col == Columns.Date_Created)

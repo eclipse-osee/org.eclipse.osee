@@ -294,7 +294,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(getImplementers());
+      return Artifacts.toString("; ", getImplementers());
    }
 
    public Collection<User> getImplementers() {

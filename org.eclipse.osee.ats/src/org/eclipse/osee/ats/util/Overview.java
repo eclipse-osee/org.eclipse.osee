@@ -140,9 +140,9 @@ public class Overview {
                "Creation Date", XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
             addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
-                  "Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
+                  "Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
          else
-            addTable(getLabelValue("Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
+            addTable(getLabelValue("Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
          addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
          if (smaMgr.isCancelled()) {
             LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
@@ -157,7 +157,8 @@ public class Overview {
             }
 
             SMAManager taskSmaMgr = new SMAManager(sma);
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.commaArts(taskSmaMgr.getStateMgr().getAssignees())}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
+                  "; ", taskSmaMgr.getStateMgr().getAssignees())}));
          }
          endBorderTable();
       } catch (SQLException ex) {
@@ -288,7 +289,7 @@ public class Overview {
 
    public void startStateBorderTable(SMAManager smaMgr, SMAState state) {
       String caption = state.getName();
-      String assgn = Artifacts.commaArts(state.getAssignees());
+      String assgn = Artifacts.toString("; ", state.getAssignees());
       startStateBorderTable(smaMgr.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);
    }
 

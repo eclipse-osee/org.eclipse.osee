@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
  * Utility methods for common tasks performed on Artifact's.
  * 
  * @author Robert A. Fisher
+ * @author Donald G. Dunne
  */
 public final class Artifacts {
 
@@ -38,6 +39,10 @@ public final class Artifacts {
 
    public static String commaArts(Collection<? extends Artifact> artifacts) {
       return toTextList(artifacts, ", ");
+   }
+
+   public static String toString(String separator, Collection<? extends Artifact> artifacts) {
+      return toTextList(artifacts, separator);
    }
 
    public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws OseeCoreException, SQLException {

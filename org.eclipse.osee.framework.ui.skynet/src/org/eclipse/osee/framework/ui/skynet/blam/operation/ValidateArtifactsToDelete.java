@@ -63,7 +63,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       rd.log("\n\n\n");
-      rd.log("Validation Artifacts: " + Artifacts.commaArts(artifacts));
+      rd.log("Validation Artifacts: " + Artifacts.toString("; ", artifacts));
       rd.report("Validate Artifacts to Delete");
    }
 
@@ -80,6 +80,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
    }

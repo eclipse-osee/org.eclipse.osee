@@ -200,6 +200,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return Result.TrueResult;
    }
 
+   @Override
    public String toString() {
       return atsWorkPage + " for " + getSmaMgr().getSma();
    }
@@ -247,7 +248,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          if (smaMgr.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
-            sb.append(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+            sb.append(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          }
       } else {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
@@ -298,7 +299,7 @@ public class SMAWorkFlowSection extends SectionPart {
       super.refresh();
       if (isEditable) {
          if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-            currentAssigneesLabel.setText(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+            currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
             currentAssigneesLabel.getParent().layout();
          }
          if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
@@ -337,7 +338,8 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
          });
-         currentAssigneesLabel = toolkit.createLabel(comp, Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+         currentAssigneesLabel =
+               toolkit.createLabel(comp, Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          if (smaMgr.getStateMgr().getAssignees().size() == 0) {
             Label errorLabel = toolkit.createLabel(comp, "Error: State has no assignees");
@@ -345,9 +347,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       } else if (smaMgr.getStateMgr().getAssignees().size() > 0) {
          Label errorLabel =
-               toolkit.createLabel(
-                     comp,
-                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+               toolkit.createLabel(comp,
+                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.toString("; ",
+                           smaMgr.getStateMgr().getAssignees()));
          errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }

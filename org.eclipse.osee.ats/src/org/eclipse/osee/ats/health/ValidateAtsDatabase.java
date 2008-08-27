@@ -50,8 +50,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements IAutoRunTask {
 
-   private boolean fixAssignees = true;
-   private boolean fixAttributeValues = false;
+   private final boolean fixAssignees = true;
+   private final boolean fixAttributeValues = false;
 
    /**
     * @param parent
@@ -223,7 +223,8 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
             }
             if (smaMgr.getStateMgr().getAssignees().size() > 1 && smaMgr.getStateMgr().getAssignees().contains(
                   unAssignedUser)) {
-               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
+               xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.toString(
+                     "; ", smaMgr.getStateMgr().getAssignees()));
                if (fixAssignees) {
                   smaMgr.getStateMgr().removeAssignee(unAssignedUser);
                   xResultData.log("Fixed");
@@ -282,6 +283,7 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
     */
+   @Override
    public String getDescription() {
       return "Ensure Actions have at least one Team Workflow and Workflows are related to one Action";
    }

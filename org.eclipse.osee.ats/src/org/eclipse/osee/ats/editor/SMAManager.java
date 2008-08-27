@@ -76,18 +76,18 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SMAManager {
 
-   private StateMachineArtifact sma;
-   private Set<User> transitionAssignees = new HashSet<User>();
+   private final StateMachineArtifact sma;
+   private final Set<User> transitionAssignees = new HashSet<User>();
    private static String SEPERATOR = ";  ";
-   private TaskManager taskMgr;
-   private ReviewManager reviewMgr;
-   private AtsBranchManager branchMgr;
-   private StateManager stateMgr;
-   private DeadlineManager deadlineMgr;
+   private final TaskManager taskMgr;
+   private final ReviewManager reviewMgr;
+   private final AtsBranchManager branchMgr;
+   private final StateManager stateMgr;
+   private final DeadlineManager deadlineMgr;
    private SMAEditor editor;
-   private ATSLog atsLog;
-   private ATSNote atsNote;
-   private AtsStateItems stateItems;
+   private final ATSLog atsLog;
+   private final ATSNote atsNote;
+   private final AtsStateItems stateItems;
    private boolean inTransition = false;
 
    public SMAManager(StateMachineArtifact sma, SMAEditor editor) {
@@ -264,7 +264,7 @@ public class SMAManager {
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New Originator");
       int result = ld.open();
       if (result == 0) {
-         User selectedUser = (User) ld.getSelection();
+         User selectedUser = ld.getSelection();
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
             smaMgr.setOriginator(selectedUser);
@@ -694,8 +694,9 @@ public class SMAManager {
    }
 
    public String getAssigneesWasIsStr() {
-      if (isCompleted() || isCancelled()) return "(" + Artifacts.commaArts(stateMgr.getAssignees(TaskStates.InWork.name())) + ")";
-      return Artifacts.commaArts(stateMgr.getAssignees());
+      if (isCompleted() || isCancelled()) return "(" + Artifacts.toString("; ",
+            stateMgr.getAssignees(TaskStates.InWork.name())) + ")";
+      return Artifacts.toString("; ", stateMgr.getAssignees());
    }
 
    public Image getAssigneeImage() throws OseeCoreException, SQLException {

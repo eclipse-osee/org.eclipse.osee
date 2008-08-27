@@ -68,17 +68,17 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * @author Donald G. Dunne
  */
 public class SMAWorkFlowTab extends FormPage implements IActionable {
-   private SMAManager smaMgr;
-   private ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
-   private XFormToolkit toolkit;
+   private final SMAManager smaMgr;
+   private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
+   private final XFormToolkit toolkit;
    private static String ORIGINATOR = "Originator:";
    private static String TEAM_ACTIONABLE_ITEMS = "Team Actionable Items: ";
    private static String ACTION_ACTIONABLE_ITEMS = "Action Actionable Items: ";
    private Label origLabel, teamActionableItemLabel, actionActionableItemsLabel;
-   private List<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
+   private final List<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
    private AtsWorkPage currentAtsWorkPage;
    private ScrolledForm scrolledForm;
-   private Integer HEADER_COMP_COLUMNS = 4;
+   private final Integer HEADER_COMP_COLUMNS = 4;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private final TeamWorkFlowArtifact teamWf;
    private SMARelationsComposite smaRelationsComposite;
@@ -154,6 +154,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
+   @Override
    public void dispose() {
       for (SMAWorkFlowSection section : sections)
          section.dispose();
@@ -214,7 +215,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Only display current or past states
       for (WorkPageDefinition workPageDefinition : smaMgr.getSma().getWorkFlowDefinition().getPagesOrdered()) {
          AtsWorkPage atsWorkPage =
-               (AtsWorkPage) new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
+               new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
                      ATSXWidgetOptionResolver.getInstance());
          if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
          if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
@@ -401,7 +402,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit.adapt(topLineComp);
       Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
-      text.setText(String.format("Assignee(s): %s", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
+      text.setText(String.format("Assignee(s): %s", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
    }
 
    private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {

@@ -491,7 +491,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(DefaultTeamState.Implement.name()));
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DefaultTeamState.Implement.name()));
    }
 
    /*

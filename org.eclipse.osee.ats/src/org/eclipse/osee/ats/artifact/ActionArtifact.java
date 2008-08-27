@@ -293,7 +293,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
-      return Artifacts.commaArts(pocs);
+      return Artifacts.toString("; ", pocs);
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException, SQLException {

@@ -470,7 +470,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public String getWorldViewActivePoc() throws OseeCoreException, SQLException {
-      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees());
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
    }
 
    public String getWorldViewCreatedDateStr() throws OseeCoreException, SQLException {
@@ -828,7 +828,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssignee()
     */
    public String getHyperAssignee() {
-      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees());
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
    }
 
    /*
