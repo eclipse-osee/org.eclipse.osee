@@ -98,11 +98,6 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
             final XResultData rd = new XResultData(AtsPlugin.getLogger());
             runIt(monitor, rd);
             rd.report(getName());
-         } catch (IllegalArgumentException e) {
-            if (e.getLocalizedMessage().contains(
-                  "The base and to transactions must not be the same transaction for branch")) {
-
-            }
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -121,7 +116,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       //      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-      //      for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+//           for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
       for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          StringBuffer sbByType = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
