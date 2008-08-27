@@ -24,7 +24,6 @@ public class OseeLog {
    static void makevalid() {
       sm = new StatusManager();
       log = new OseeLogger();
-//      log.registerLoggerListener(new ConsoleLogger());
    }
 
    private static OseeLogger getLog() {
