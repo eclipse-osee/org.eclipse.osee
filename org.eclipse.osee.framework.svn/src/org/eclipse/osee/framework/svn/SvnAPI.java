@@ -98,9 +98,6 @@ public class SvnAPI {
       IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(file.toURI());
       if (files != null && files.length > 0) {
          ILocalResource local = SVNRemoteStorage.instance().asLocalResource(files[0]);
-         //         InfoOperation op = new InfoOperation(files[0]);
-         //         UIMonitorUtility.doTaskBusyDefault(op);
-         //         ILocalResource local = op.getLocal();
          entry.setModifiedFlag(SVNUtility.getStatusText(local.getStatus()));
       }
       return entry;
