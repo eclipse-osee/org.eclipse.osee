@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Roberto E. Escobar
  */
-public class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
+final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    private Map<String, String> parameters;
 
-   public RemoteArtifactSearch(String query, int branchId, Map<String, Boolean> options) {
+   RemoteArtifactSearch(String query, int branchId, Map<String, Boolean> options) {
       this.parameters = new HashMap<String, String>();
       this.parameters.put("query", query);
       this.parameters.put("branchId", Integer.toString(branchId));

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,8 +66,8 @@ public class SearchComposite extends Composite implements Listener {
    public SearchComposite(Composite parent, int style, String[] options) {
       super(parent, style);
       this.listeners = new HashSet<Listener>();
-      this.optionsMap = new HashMap<String, Boolean>();
-      this.optionsButtons = new HashMap<String, Button>();
+      this.optionsMap = new LinkedHashMap<String, Boolean>();
+      this.optionsButtons = new LinkedHashMap<String, Button>();
       if (options != null) {
          for (String option : options) {
             this.optionsMap.put(option, false);

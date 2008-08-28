@@ -55,8 +55,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String MAIN_HELP_CONTEXT = "quick_search_text";
 
    private enum SearchOption {
-      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results."),
-      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field.");
+      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field."),
+      By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids."),
+      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.");
 
       private static String[] labels = null;
       private String helpContext;
@@ -211,8 +212,14 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       updateWidgetEnablements();
       if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
          NewSearchUI.activateSearchResultView();
-         NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-               BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+         if (searchComposite.getOptions().get(SearchOption.By_Id.asLabel()).booleanValue()) {
+            NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
+                  BranchPersistenceManager.getDefaultBranch(), searchComposite.getOptions().get(
+                        SearchOption.Include_Deleted.asLabel()).booleanValue()));
+         } else {
+            NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
+                  BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+         }
       }
    }
 

@@ -20,9 +20,7 @@
 if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) parent.ContentToolbarFrame.setButtonState("toggle_highlight","hidden");
 -->
 </script>
-
 </head>
-
 <body>
 	<h1>Quick Search View</h1>
 
@@ -38,15 +36,21 @@ if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) par
 		<img src="artifact_search.gif"  alt="search icon" border="0" />
 		<b>Window &gt; Show View &gt; Other... &gt; OSEE &gt; Quick Search</b></a>, to open the view.
   		</li>
-  		<li>Type your search string in the <b>Enter Search String</b> combo box, or use the 
+  		<li><p>Type your search string in the <b>Enter Search String</b> combo box, or use the 
       pull-down list to select a previously entered search expression. <br/> Special characters such as (<b><code>' '</code>, 
       <code>!</code>, <code>"</code>, <code>#</code>, <code>$</code>, 
       <code>%</code>, <code>(</code>, <code>)</code>, <code>*</code>, <code>+</code>, 
       <code>,</code>, <code>-</code>, <code>.</code>, <code>/</code>, <code>:</code>, 
       <code>;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>?</code>, <code>@</code>, 
       <code>[</code>, <code>\</code>, <code>]</code>, <code>^</code>, <code>{</code>, 
-      <code>|</code>, <code>}</code>, <code>~</code>, <code>_</code></b>) are assumed to be word separators 
-      (for example: <code>hello.world</code> will be translated to <code>hello</code> and <code>world</code>).
+      <code>|</code>, <code>}</code>, <code>~</code>, <code>_</code></b>) are assumed to be word separators unless <i>By Id</i> option is selected.
+      When <i>By Id</i> option is selected, (<b><code>,</code> and <code>' '</code></b>) are treated as separators.</p>
+      <p>For example:      	
+      	<ul>
+      		<li>When <i>By Id</i> is not selected, <b><code>hello.world</code></b> will be translated to <b><code>hello</code></b> and <b><code>world</code></b>. The search will match attributes with <b><code>hello</code></b>, <b><code>world</code></b>, and <b><code>hello.world</code></b> keywords.</li>
+      		<li>When <i>By Id</i> is selected, (<b><code>A+ABG7jFm+0BKaVZIxfqOQ,AFABG7jFm+0BKaVZIxfqOQ PX1FH</code></b>) will be interpreted as 2 GUID(s) and 1 HRID. The search will match artifacts containing <b><code>A+ABG7jFm+0BKaVZIxfqOQ</code></b> and <b><code>AFABG7jFm+0BKaVZIxfqOQ</code></b> as its GUID or <b><code>PX1FH</code></b> as its HRID.</li>
+      	</ul>
+      </p>
       </li>
   		<li>Finish entering your search options, (for example, to scope
       	the search to include deleted artifacts, check the include deleted option), 
@@ -65,8 +69,9 @@ if (parent.ContentToolbarFrame && parent.ContentToolbarFrame.setButtonState) par
 	</p>
 
 	<p><img border="0" src="ngrelr.png" alt="Related reference" /><br>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="in_name_option.html">Quick Search In Name Option</a><br/>
-		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="include_deleted_option.html">Quick Search Include Deleted Option</a>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="include_deleted_option.html">By Id Search Option</a>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="include_deleted_option.html">Include Deleted Search Option</a>
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="in_name_option.html">Name Only Search Option</a><br/>
 	</p>
 			
 </body>
