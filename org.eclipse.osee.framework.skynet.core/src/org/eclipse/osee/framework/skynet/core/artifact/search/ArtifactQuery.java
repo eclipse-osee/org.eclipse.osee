@@ -140,6 +140,10 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(30, null);
    }
 
+   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws SQLException {
+      return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
+   }
+
    public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria("Name", artifactName)).getArtifacts(
             30, null);

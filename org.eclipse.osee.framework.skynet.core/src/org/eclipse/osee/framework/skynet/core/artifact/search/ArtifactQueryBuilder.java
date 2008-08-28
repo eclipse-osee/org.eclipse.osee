@@ -77,6 +77,10 @@ public class ArtifactQueryBuilder {
       this(null, 0, guidOrHrids, null, null, branch, false, loadLevel);
    }
 
+   public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
+      this(null, 0, guidOrHrids, null, null, branch, allowDeleted, loadLevel);
+   }
+
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel);
    }

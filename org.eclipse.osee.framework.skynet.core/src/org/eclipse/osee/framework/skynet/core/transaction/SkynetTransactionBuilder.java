@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
 /**
- * Builder class to handle how a group of arbitrary <code>Artifact</code>'s and <code>RelationLink</code>'s are
- * placed into <code>Transaction</code>'s for the Skynet versioning system.<br/><br/> <b>This class is used
- * internal to the Skynet system, and is not supported as part of the Skynet API</b>
+ * Builder class to handle how a group of arbitrary <code>Artifact</code>'s and <code>RelationLink</code>'s are placed
+ * into <code>Transaction</code>'s for the Skynet versioning system.<br/><br/> <b>This class is used internal to the
+ * Skynet system, and is not supported as part of the Skynet API</b>
  * 
  * @author Robert A. Fisher
  */
@@ -70,7 +70,11 @@ public class SkynetTransactionBuilder {
       // No work is recorded since this reports children, and the number of children
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work
-      monitor.subTask("Deleting " + artifact.getDescriptiveName());
+      try {
+         monitor.subTask("Deleting " + artifact.getDescriptiveName());
+      } catch (Exception ex) {
+         monitor.subTask("Deleting art_id - " + artifact.getArtId());
+      }
       ArtifactPersistenceManager.getInstance().doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
    }
 
