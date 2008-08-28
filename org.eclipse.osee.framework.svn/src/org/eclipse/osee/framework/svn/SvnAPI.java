@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
-import org.eclipse.team.svn.core.operation.local.InfoOperation;
 import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
 import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
@@ -41,7 +40,6 @@ import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.action.remote.CheckoutAction;
-import org.eclipse.team.svn.ui.utility.UIMonitorUtility;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -99,9 +97,10 @@ public class SvnAPI {
 
       IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(file.toURI());
       if (files != null && files.length > 0) {
-         InfoOperation op = new InfoOperation(files[0]);
-         UIMonitorUtility.doTaskBusyDefault(op);
-         ILocalResource local = op.getLocal();
+         ILocalResource local = SVNRemoteStorage.instance().asLocalResource(files[0]);
+         //         InfoOperation op = new InfoOperation(files[0]);
+         //         UIMonitorUtility.doTaskBusyDefault(op);
+         //         ILocalResource local = op.getLocal();
          entry.setModifiedFlag(SVNUtility.getStatusText(local.getStatus()));
       }
       return entry;
