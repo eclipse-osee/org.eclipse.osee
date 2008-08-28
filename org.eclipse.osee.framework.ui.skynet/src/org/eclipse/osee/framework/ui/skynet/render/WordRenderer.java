@@ -100,10 +100,6 @@ public class WordRenderer extends FileRenderer {
          throw new IllegalArgumentException("Branch can not be null");
       }
 
-      if ((baseArtifacts == null && baseArtifacts.isEmpty()) || (newerArtifact == null && newerArtifact.isEmpty())) {
-         throw new IllegalArgumentException("Artifact lists can not empty.");
-      }
-
       if (baseArtifacts.size() != newerArtifact.size()) {
          throw new IllegalArgumentException(
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifact.size() + ".");
@@ -429,7 +425,6 @@ public class WordRenderer extends FileRenderer {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       final BlamVariableMap variableMap = new BlamVariableMap();
       String template;
-      boolean multipleArtifacts = artifacts.size() > 1;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
@@ -448,14 +443,16 @@ public class WordRenderer extends FileRenderer {
             }
          }
 
-         if (multipleArtifacts) {
+         if (presentationType == PresentationType.EDIT && artifacts.size() > 1) {
+            // currently we can't support the editing of multiple artifacts with OLE data
             for (Artifact artifact : artifacts) {
                if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.EDIT) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }
             displayNotMultiEditArtifacts(notMultiEditableArtifacts);
-         } else {
+            artifacts.removeAll(notMultiEditableArtifacts);
+         } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
@@ -463,19 +460,12 @@ public class WordRenderer extends FileRenderer {
                            WordAttribute.OLE_DATA_NAME, "") + OLE_END);
             }
          }
-
-         artifacts.removeAll(notMultiEditableArtifacts);
       }
 
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);
-
-      boolean renderInEditMode = false;
-      if (PresentationType.EDIT == presentationType && multipleArtifacts) {
-         renderInEditMode = true;
-      }
-
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode, multipleArtifacts);
+      return templateProcessor.applyTemplate(variableMap, template, null,
+            PresentationType.EDIT == presentationType && artifacts.size() > 1);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {

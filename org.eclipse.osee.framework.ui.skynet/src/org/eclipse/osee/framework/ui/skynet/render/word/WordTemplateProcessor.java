@@ -33,8 +33,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.jdk.core.collection.tree.Tree;
-import org.eclipse.osee.framework.jdk.core.collection.tree.TreeNode;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 /**
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
+ * @author Andrew M. Finkbeiner
  */
 public class WordTemplateProcessor {
    private static final String ARTIFACT = "Artifact";
@@ -107,14 +106,12 @@ public class WordTemplateProcessor {
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
-   private CoreRelationEnumeration outlineRelation;
    private String headingAttributeName;
    private List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
    private boolean saveParagraphNumOnArtifact = false;
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
-   private boolean isEditMode = false;
-   private boolean multipleArtifacts;
+   private boolean isMultiEditMode = false;
 
    public WordTemplateProcessor() throws CoreException {
       this(null, null);
@@ -128,12 +125,12 @@ public class WordTemplateProcessor {
 
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
-    * artifacts
+    * artifacts Only used by Publish SRS
     * 
     * @throws IOException
     */
    public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
-      isEditMode = false;
+      isMultiEditMode = false;
       String fileName = variableMap.getString("MasterFileName");
       if (fileName == null) {
          fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
@@ -144,7 +141,7 @@ public class WordTemplateProcessor {
 
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
-    * artifacts
+    * artifacts. Only used by Publish SRS
     * 
     * @throws IOException
     */
@@ -185,9 +182,8 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode, boolean multipleArtifacts) throws Exception {
-      this.isEditMode = isEditMode;
-      this.multipleArtifacts = multipleArtifacts;
+   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isMultiEditMode) throws Exception {
+      this.isMultiEditMode = isMultiEditMode;
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
@@ -207,10 +203,9 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
 
-            // write out the template up to the start of the artifact element (but don't change copyIndex becuase there are nested elements in the artifact element
+            // write out the template up to the start of the artifact element (but don't change copyIndex because there are nested elements in the artifact element
             wordMl.addWordMl(template.substring(previousTemplateCopyIndex, matcher.start()));
             previousTemplateCopyIndex = matcher.end();
-
             processArtifactSet(elementValue, variableMap, wordMl, outlineType);
 
          } else {
@@ -244,7 +239,6 @@ public class WordTemplateProcessor {
       return template;
    }
 
-   @SuppressWarnings("unchecked")
    protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) throws SQLException, MultipleAttributesExist, IllegalStateException, SQLException {
       String startParagraphNumber = "1";
       Matcher matcher = headElementsPattern.matcher(template);
@@ -274,35 +268,6 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   protected void processTreeObjects(String artifactElement, final Tree<Object> tree, final WordMLProducer wordMl, final String outlineType) throws Exception {
-      if (artifactElement != null && tree != null) {
-         // extract Artifact set options
-         Matcher setNameMatcher = setNamePattern.matcher(artifactElement);
-         setNameMatcher.find();
-
-         extractOutliningOptions(artifactElement);
-
-         attributeElements.clear();
-         extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
-
-         processTreeHelper(tree, wordMl, outlineType);
-      }
-   }
-
-   private void processTreeHelper(Tree<Object> tree, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      for (TreeNode<Object> treeNode : tree.getRoot().getChildren()) {
-
-         if (treeNode.getSelf() instanceof Artifact) {
-            Artifact artifact = (Artifact) treeNode.getSelf();
-
-            processObject(artifact, wordMl, outlineType);
-         } else if (treeNode.getSelf() instanceof String) {
-            // process String
-         }
-      }
-   }
-
-   @SuppressWarnings("unchecked")
    protected void processArtifactSet(final String artifactElement, final BlamVariableMap variableMap, final WordMLProducer wordMl, final String outlineType) throws Exception {
       if (artifactElement != null && variableMap != null) {
          // extract Artifact set options
@@ -310,29 +275,23 @@ public class WordTemplateProcessor {
          setNameMatcher.find();
          final String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
 
+         List<Artifact> artifacts = variableMap.getArtifacts(artifactSetName);
+
          if (outlineNumber != null) {
             wordMl.setNextParagraphNumberTo(outlineNumber);
          }
 
-         attributeElements.clear();
          extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
-         processArtifactSetHelper(artifactSetName, variableMap, wordMl, outlineType);
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   private void processArtifactSetHelper(String artifactSetName, BlamVariableMap variableMap, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      for (Artifact artifact : variableMap.getArtifacts(artifactSetName)) {
-         if (artifact != null) {
+         for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType);
-         } else {
-            wordMl.startOutlineSubSection("Times New Roman", "  ", outlineType);
-            wordMl.endOutlineSubSection();
          }
       }
    }
 
+   /**
+    * Only used by Publish SRS
+    */
    private void processExtensionTemplate(String elementValue, BlamVariableMap variableMap, IFolder folder, WordMLProducer wordMl) throws Exception {
       String extensionName;
       String subdocumentName = null;
@@ -424,8 +383,6 @@ public class WordTemplateProcessor {
 
          // Default values for optional/unspecified parameters
          recurseChildren = false;
-         outlineRelation = CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
-         //         outlineNumber = null;
 
          while (matcher.find()) {
             String elementType = matcher.group(3);
@@ -442,23 +399,12 @@ public class WordTemplateProcessor {
       } else {
          outlining = false;
          recurseChildren = false;
-         outlineRelation = null;
          headingAttributeName = null;
       }
    }
 
-   @SuppressWarnings("unchecked")
-   private void processObject(Object object, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      processObjectArtifact((Artifact) object, wordMl, outlineType);
-
-   }
-
-   @SuppressWarnings("unchecked")
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      boolean performedOutLining = false;
-
-      if (outlining && multipleArtifacts) {
-         performedOutLining = true;
+      if (outlining) {
          String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
@@ -472,14 +418,14 @@ public class WordTemplateProcessor {
 
       processAttributes(artifact, wordMl);
 
-      if (performedOutLining) {
-         if (recurseChildren) {
-            for (Artifact childArtifact : artifact.getRelatedArtifacts(outlineRelation)) {
-               processObjectArtifact(childArtifact, wordMl, outlineType);
-            }
+      if (recurseChildren) {
+         for (Artifact childArtifact : artifact.getChildren()) {
+            processObjectArtifact(childArtifact, wordMl, outlineType);
          }
+      }
 
-         if (performedOutLining) wordMl.endOutlineSubSection();
+      if (outlining) {
+         wordMl.endOutlineSubSection();
       }
    }
 
@@ -546,10 +492,10 @@ public class WordTemplateProcessor {
             if (value != null && value instanceof String) {
                String data = (String) value;
                String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
-               //Change the BinData Id so images do not get overriden by the other images
+               //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
-               if (isEditMode) {
+               if (isMultiEditMode) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);
@@ -613,7 +559,6 @@ public class WordTemplateProcessor {
    /**
     * Returns the set of keys necessary for the template
     */
-   @SuppressWarnings("unchecked")
    public Set<String> getTemplateKeys() {
       Set<String> keySet;
       keySet = new HashSet<String>();
@@ -638,6 +583,7 @@ public class WordTemplateProcessor {
    }
 
    private void extractSkynetAttributeReferences(String artifactElementTemplate) {
+      attributeElements.clear();
       Matcher matcher = attributeElementsPattern.matcher(artifactElementTemplate);
 
       while (matcher.find()) {
