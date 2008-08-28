@@ -89,7 +89,7 @@ public final class ArtifactLoader {
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
-      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, false);
+      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, transactionId != null);
       return artifacts;
    }
 
