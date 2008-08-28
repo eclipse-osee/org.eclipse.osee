@@ -55,7 +55,8 @@ public class WorkRuleDefinition extends WorkItemDefinition {
 
    public WorkRuleDefinition(Artifact artifact) throws OseeCoreException, SQLException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null);
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null, artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), ""));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
 
       try {

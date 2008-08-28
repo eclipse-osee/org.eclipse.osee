@@ -192,12 +192,17 @@ public class SMAManager {
    }
 
    /**
-    * @return true if this is a TeamWorkflow requires a targeted version at all times
+    * Return true if sma is TeamWorkflowArtifact and it's TeamDefinitionArtifact has rule set
+    * 
+    * @param ruleId
+    * @return if has rule
+    * @throws OseeCoreException
+    * @throws SQLException
     */
-   public boolean isRequireTargetedVersion() {
+   public boolean teamDefHasWorkRule(String ruleId) throws OseeCoreException, SQLException {
       if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
       try {
-         return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isRequireTargetedVersion();
+         return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().hasWorkRule(ruleId);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;

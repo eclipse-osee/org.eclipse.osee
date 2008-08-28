@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -89,7 +91,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          tda.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
-         tda.setSoleAttributeValue(ATSAttributes.REQUIRE_TARGETED_VERSION_ATTRIBUTE.getStoreName(), true);
+         tda.addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
       }
       tda.persistAttributesAndRelations();
 
@@ -135,7 +137,11 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @return parent TeamDefinition that holds the work flow id attribute
     */
    public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws SQLException {
-      if (getArtifacts(AtsRelation.WorkItem__Child, Artifact.class).size() > 0) return this;
+      for (Artifact artifact : getArtifacts(AtsRelation.WorkItem__Child, Artifact.class)) {
+         if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            return this;
+         }
+      }
       if (getParent() instanceof TeamDefinitionArtifact) {
          TeamDefinitionArtifact parentTda = (TeamDefinitionArtifact) getParent();
          if (parentTda != null) return parentTda.getTeamDefinitionHoldingWorkFlow();
@@ -239,8 +245,18 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException, SQLException {
       Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
       if (teamDef == null) return null;
-      Artifact workFlowArt =
-            getTeamDefinitionHoldingWorkFlow().getArtifacts(AtsRelation.WorkItem__Child, Artifact.class).iterator().next();
+      Artifact workFlowArt = null;
+      for (Artifact artifact : teamDef.getArtifacts(AtsRelation.WorkItem__Child, Artifact.class)) {
+         if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            if (workFlowArt != null) {
+               OSEELog.logException(
+                     AtsPlugin.class,
+                     "Multiple workflows found where only one expected for Team Definition " + getHumanReadableId() + " - " + getDescriptiveName(),
+                     null, false);
+            }
+            workFlowArt = artifact;
+         }
+      }
       if (workFlowArt == null) return null;
       return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getDescriptiveName());
    }
@@ -355,12 +371,28 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return getSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
    }
 
-   public boolean isRequireTargetedVersion() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleAttributeValue(ATSAttributes.REQUIRE_TARGETED_VERSION_ATTRIBUTE.getStoreName(), false);
-   }
-
    public boolean isActionable() throws IllegalStateException, SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
+   }
+
+   public void addWorkRule(String ruleId) throws OseeCoreException, SQLException {
+      if (!hasWorkRule(ruleId)) {
+         Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ruleId);
+         if (artifact == null)
+            throw new IllegalArgumentException("Rule \"" + ruleId + "\" does not exist.");
+         else {
+            addRelation(CoreRelationEnumeration.WorkItem__Child, artifact);
+         }
+      }
+   }
+
+   public boolean hasWorkRule(String ruleId) throws OseeCoreException, SQLException {
+      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+         if (art.getDescriptiveName().equals(ruleId)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**

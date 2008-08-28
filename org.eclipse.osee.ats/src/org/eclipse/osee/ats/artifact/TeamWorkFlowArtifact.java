@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.widgets.Display;
 
@@ -128,26 +130,48 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public Set<User> getPrivilegedUsers() {
       Set<User> users = new HashSet<User>();
       try {
-         addLeadUsersUpTree(getTeamDefinition(), users);
+         addPriviledgedUsersUpTeamDefinitionTree(getTeamDefinition(), users);
+
+         WorkPageDefinition workPageDefinition = smaMgr.getWorkPageDefinition();
+
+         // Add user if allowing privileged edit to all users
+         if (!users.contains(SkynetAuthentication.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()) || getTeamDefinition().hasWorkRule(
+               RuleWorkItemId.atsAllowPriviledgedEditToAll.name()))) {
+            users.add(SkynetAuthentication.getUser());
+         }
+
+         // Add user if user is team member and rule exists
+         if (!users.contains(SkynetAuthentication.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()) || getTeamDefinition().hasWorkRule(
+               RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()))) {
+            if (getTeamDefinition().getMembers().contains(SkynetAuthentication.getUser())) {
+               users.add(SkynetAuthentication.getUser());
+            }
+         }
+
+         // Add user if team member is originator and rule exists
+         if (!users.contains(SkynetAuthentication.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || getTeamDefinition().hasWorkRule(
+               RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()))) {
+            if (smaMgr.getOriginator().equals(SkynetAuthentication.getUser()) && getTeamDefinition().getMembers().contains(
+                  SkynetAuthentication.getUser())) {
+               users.add(SkynetAuthentication.getUser());
+            }
+         }
+
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return users;
    }
 
-   private void addLeadUsersUpTree(TeamDefinitionArtifact tda, Set<User> users) {
+   private void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) {
       try {
          users.addAll(tda.getLeads());
-         if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) addLeadUsersUpTree(
-               (TeamDefinitionArtifact) tda.getParent(), users);
-         // Add scenario where user is originator AND user is member of team that workflow is
-         // written
-         // against
-         if (!users.contains(SkynetAuthentication.getUser())) {
-            if (smaMgr.getOriginator().equals(SkynetAuthentication.getUser())) {
-               if (tda.getMembers().contains(SkynetAuthentication.getUser())) users.add(SkynetAuthentication.getUser());
-            }
+
+         // Walk up tree to get other editors
+         if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) {
+            addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
          }
+
       } catch (SQLException ex) {
          // Do nothing
       }

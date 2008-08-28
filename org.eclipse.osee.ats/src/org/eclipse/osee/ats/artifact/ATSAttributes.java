@@ -86,8 +86,6 @@ public class ATSAttributes {
          new ATSAttributes("Actionable", "True if item can have Action written against or assigned to.");
    public static final ATSAttributes TEAM_USES_VERSIONS_ATTRIBUTE =
          new ATSAttributes("Team Uses Versions", "True if Team Workflow uses versioning/releasing option.");
-   public static final ATSAttributes REQUIRE_TARGETED_VERSION_ATTRIBUTE =
-         new ATSAttributes("Require Targeted Version", "Require workflow to be targeted before transition.");
    public static final ATSAttributes LEGACY_PCR_ID_ATTRIBUTE =
          new ATSAttributes("Legacy PCR Id",
                "Field to register problem change report id from legacy items imported into ATS.");

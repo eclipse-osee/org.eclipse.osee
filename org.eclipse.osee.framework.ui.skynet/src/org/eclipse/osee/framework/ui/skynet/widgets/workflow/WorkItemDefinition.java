@@ -25,6 +25,15 @@ public abstract class WorkItemDefinition {
    protected final String id;
    protected final String name;
    protected final String parentId;
+   protected final String description;
+
+   /**
+    * @return the description
+    */
+   public String getDescription() {
+      return description;
+   }
+
    protected String type;
    protected Object data;
    public static enum WriteType {
@@ -36,10 +45,15 @@ public abstract class WorkItemDefinition {
    }
 
    public WorkItemDefinition(String name, String id, String parentId, String type) {
+      this(name, id, parentId, type, null);
+   }
+
+   public WorkItemDefinition(String name, String id, String parentId, String type, String description) {
       this.name = name;
       this.id = id;
       this.type = type;
       this.parentId = parentId;
+      this.description = description;
       if (parentId != null && parentId.equals("")) throw new IllegalArgumentException(
             "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
       if (type != null && type.equals("")) throw new IllegalArgumentException(
@@ -87,8 +101,13 @@ public abstract class WorkItemDefinition {
       return WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
    }
 
+   @Override
    public String toString() {
-      return "Name: \"" + name + "\"    Id: \"" + id + "\"   " + (parentId != null ? "   Parent: " + parentId : "");
+      return getArtifactTypeName() + ":    Name: \"" + name +
+      //
+      "\"    Id: \"" + id + "\"   " +
+      //
+      (parentId != null ? "   Parent: " + parentId : "");
    }
 
    /**
@@ -150,6 +169,8 @@ public abstract class WorkItemDefinition {
       artifact.setDescriptiveName(getName());
       if (getParentId() != null) artifact.setSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
+      if (getDescription() != null) artifact.setSoleAttributeValue(
+            WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), getDescription());
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
       if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
             getType());

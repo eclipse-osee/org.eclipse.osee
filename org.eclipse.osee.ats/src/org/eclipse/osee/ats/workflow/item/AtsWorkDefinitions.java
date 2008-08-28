@@ -52,14 +52,28 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static String ATS_DESCRIPTION_NOT_REQUIRED_ID =
          ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
    public static enum RuleWorkItemId {
-      atsRequireStateHourSpentPrompt,
-      atsAddDecisionValidateBlockingReview,
-      atsAddDecisionValidateNonBlockingReview,
-      atsAllowTransitionWithWorkingBranch,
-      atsAllowCreateBranch,
-      atsAllowCommitBranch,
-      atsForceAssigneesToTeamLeads,
-      atsRequireTargetedVersion
+      atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
+      atsAddDecisionValidateBlockingReview("Work Page Option: Will auto-create a blocking decision review for this state requesting validation for this workflow."),
+      atsAddDecisionValidateNonBlockingReview("Work Page Option: Will auto-create a non blocking decision review requesting validation of workflow changes."),
+      atsAllowTransitionWithWorkingBranch("Work Page Option: Will allow transition to next state without committing current working branch."),
+      atsAllowCreateBranch("Work Page Option: Allows a working branch to be created in this state."),
+      atsAllowCommitBranch("Work Page Option: Allows a working branch to be committed in this state."),
+      atsForceAssigneesToTeamLeads("Work Page Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state."),
+      atsRequireTargetedVersion("Work Page and Team Definition Option: Requires workflow to be targeted for version before transition is allowed."),
+      atsAllowPriviledgedEditToTeamMember("Work Page and Team Definition Option: Allow team member to priviledged edit workflow assigned to team."),
+      atsAllowPriviledgedEditToTeamMemberAndOriginator("Work Page and Team Definition Option: Allow team member to priviledged edit workflow assigned to team if user is originator."),
+      atsAllowPriviledgedEditToAll("Work Page and Team Definition Option: Allow anyone to priviledged edit workflow assigned to team."),
+      atsAllowEditToAll("Work Page and Team Definition Option: Allow anyone to edit workflow.");
+
+      public final String description;
+
+      public String getDescription() {
+         return description;
+      }
+
+      private RuleWorkItemId(String description) {
+         this.description = description;
+      }
    }
 
    public static void relatePageToBranchCommitRules(String pageId) throws OseeCoreException, SQLException {
@@ -79,6 +93,10 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCommitBranch.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireTargetedVersion.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
@@ -177,10 +195,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null);
-   }
-
-   public static boolean isRequireTargetedVersion(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
-      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) != null);
    }
 
    public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {

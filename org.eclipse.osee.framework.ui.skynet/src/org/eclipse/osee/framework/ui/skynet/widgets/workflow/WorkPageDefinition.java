@@ -20,7 +20,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
    public static String ARTIFACT_NAME = "Work Page Definition";
    private String pageName;
 
-   private List<String> workItemIds = new ArrayList<String>();
+   private final List<String> workItemIds = new ArrayList<String>();
 
    public WorkPageDefinition(String pageName, String pageId, String parentId) {
       this(pageId, pageName, pageId, parentId);
@@ -43,6 +43,10 @@ public class WorkPageDefinition extends WorkItemDefinition {
          String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null);
          workItemIds.add(widId);
       }
+   }
+
+   public boolean hasWorkRule(String ruleId) throws OseeCoreException, SQLException {
+      return getWorkItemDefinition(ruleId) != null;
    }
 
    @Override

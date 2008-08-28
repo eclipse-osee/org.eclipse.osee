@@ -96,7 +96,8 @@ public class SMAWorkFlowSection extends SectionPart {
       this.atsWorkPage = page;
       this.smaMgr = smaMgr;
       isEditable =
-            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.isCurrentState(page.getName()) && (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off || smaMgr.isAssigneeMe() || AtsPlugin.isAtsAdmin());
+            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.isCurrentState(page.getName()) && (smaMgr.getWorkPageDefinition().hasWorkRule(
+                  AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) || smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) || smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off || smaMgr.isAssigneeMe() || AtsPlugin.isAtsAdmin());
       isGlobalEditable =
             !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().getPriviledgedEditMode() == SMAEditor.PriviledgedEditMode.Global;
       isCurrentState = smaMgr.isCurrentState(page.getName());
@@ -575,7 +576,8 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Don't transition without targeted version if so configured
-            if (smaMgr.isRequireTargetedVersion() || AtsWorkDefinitions.isRequireTargetedVersion(smaMgr.getWorkPageDefinition())) {
+            if (smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
+                  AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
                if (smaMgr.getSma().getTargetedForVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
                   AWorkbench.popup("Error",
                         "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
