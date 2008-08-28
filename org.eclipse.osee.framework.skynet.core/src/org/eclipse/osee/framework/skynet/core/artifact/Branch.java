@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,24 +41,6 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
-   public static enum BranchType {
-      STANDARD(0), ROOT(1), BASELINE(2), MERGE(3);
-      private final int value;
-
-      BranchType(int value) {
-         this.value = value;
-      }
-
-      public final int getValue() {
-         return value;
-      }
-
-      public static BranchType getBranchType(int value) {
-         for (BranchType type : values())
-            if (type.getValue() == value) return type;
-         return null;
-      }
-   };
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
    private final int branchId;

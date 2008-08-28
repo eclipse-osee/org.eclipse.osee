@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
@@ -32,7 +33,7 @@ public class BranchCreation implements IBranchCreation {
          "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs txs1, osee_define_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
 
    private static final String BRANCH_TABLE_INSERT =
-         "INSERT INTO OSEE_DEFINE_BRANCH (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id) VALUES (?, ?, ?, ?, ?, ?)";
+         "INSERT INTO OSEE_DEFINE_BRANCH (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id, branch_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM osee_define_branch WHERE branch_name = ?";
 
@@ -96,7 +97,7 @@ public class BranchCreation implements IBranchCreation {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,
-                     creationComment, associatedArtifactId);
+                     creationComment, associatedArtifactId, BranchType.STANDARD);
          int newTransactionNumber = Query.getNextSeqVal(SkynetDatabase.TRANSACTION_ID_SEQ);
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchId, newTransactionNumber,
                creationComment, timestamp, authorId, 1);
@@ -106,13 +107,13 @@ public class BranchCreation implements IBranchCreation {
          success = true;
       }
 
-      private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId) throws SQLException {
+      private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) throws SQLException {
          if (checkAlreadyHasBranchName(branchName)) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
          int branchId = Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ);
          ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
-               parentBranchId, 0, associatedArtifactId);
+               parentBranchId, 0, associatedArtifactId, branchType.getValue());
 
          return branchId;
       }

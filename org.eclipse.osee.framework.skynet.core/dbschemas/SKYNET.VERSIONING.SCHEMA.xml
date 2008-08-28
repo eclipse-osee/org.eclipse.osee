@@ -72,7 +72,7 @@
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
 		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="FACTORY_KEY" defaultValue="not null" limits="100" type="VARCHAR" />
-	   <Column id="IMAGE" type="BLOB" />
+	    <Column id="IMAGE" defaultValue="not null" type="BLOB" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
 		<Constraint schema="OSEE" id="FACTORY_ID_FK" type="FOREIGN KEY" appliesTo="FACTORY_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_FACTORY" column="FACTORY_ID" onDelete="CASCADE" />
@@ -293,11 +293,11 @@
 	<Table name="OSEE_DEFINE_BRANCH" schema="OSEE">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />
-		<Column id="SHORT_NAME" limits="25" type="VARCHAR" />
+		<Column id="SHORT_NAME" defaultValue="not null" limits="25" type="VARCHAR" />
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ARCHIVED" defaultValue="not null" type="INTEGER" />
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_TYPE" type="INTEGER" />
+		<Column id="BRANCH_TYPE" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
 		<Index id="OSEE_BRANCH_A_IDX">
 			<AppliesTo id="ARCHIVED" />
