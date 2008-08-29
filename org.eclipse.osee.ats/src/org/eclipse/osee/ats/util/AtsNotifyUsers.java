@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class AtsNotifyUsers {
 
-   private static boolean testing = false; // Email goes to current user
+   private static boolean testing = false; // Email goes to current user (set OseeNotifyUsersJob.testing also)
    public static enum NotifyType {
       Subscribed, Cancelled, Completed, Assigned, Originator
    };
@@ -103,7 +103,7 @@ public class AtsNotifyUsers {
                         getIdString(sma),
                         NotifyType.Cancelled.name(),
                         String.format(
-                              sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
+                              sma.getArtifactTypeName() + " titled \"" + sma.getDescriptiveName() + "\" was cancelled from the \"%s\" state on \"%s\".<br>Reason: \"%s\"",
                               cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
                }
             }
