@@ -43,7 +43,7 @@
             point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
          <ArtifactImage
                ArtifactTypeName="Heading"
-               ImagePath="images/folder.gif">
+               ImagePath="images/heading.gif">
          </ArtifactImage>
          <ArtifactImage
                ArtifactTypeName="Narrative"
