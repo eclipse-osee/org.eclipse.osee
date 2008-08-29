@@ -41,9 +41,17 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    private URI resolve(IResourceLocator locator) throws URISyntaxException {
-      StringBuilder builder = new StringBuilder(RESOLVED_PATH);
-      builder.append(locator.getRawPath());
-      return new File(builder.toString()).toURI();
+      URI toReturn = null;
+      StringBuilder builder = new StringBuilder();
+      String rawPath = locator.getRawPath();
+      if (!rawPath.startsWith("file:/")) {
+         builder.append(RESOLVED_PATH);
+         builder.append(rawPath);
+         toReturn = new File(builder.toString()).toURI();
+      } else {
+         toReturn = new URI(rawPath);
+      }
+      return toReturn;
    }
 
    /* (non-Javadoc)

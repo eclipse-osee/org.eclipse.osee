@@ -55,7 +55,7 @@ public class Activator implements BundleActivator {
       httpBranchManagementTracker = new HttpServiceTracker(context, "/branch", BranchManagerServlet.class);
       httpBranchManagementTracker.open();
 
-      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.exchange", BranchExportServlet.class);
+      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.exchange", BranchExchangeServlet.class);
       httpBranchExportTracker.open();
 
    }

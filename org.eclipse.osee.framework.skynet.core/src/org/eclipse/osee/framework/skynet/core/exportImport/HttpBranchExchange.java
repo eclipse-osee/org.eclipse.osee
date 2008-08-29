@@ -45,6 +45,9 @@ public class HttpBranchExchange {
    public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeDataStoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", BRANCH_IMPORT);
+      if (!path.startsWith("exchange://")) {
+         path = "exchange://" + path;
+      }
       parameters.put("uri", path);
       if (allAsRootBranches) {
          parameters.put("all_as_root_branches", Boolean.toString(allAsRootBranches));

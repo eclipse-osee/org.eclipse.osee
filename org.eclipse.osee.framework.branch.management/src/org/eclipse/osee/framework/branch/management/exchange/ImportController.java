@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
@@ -68,7 +70,8 @@ final class ImportController extends DbTransaction {
 
       ZipFile zipFile = null;
       try {
-         zipFile = new ZipFile(new File(locator.getLocation()));
+         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+         zipFile = new ZipFile(new File(resource.getLocation()));
          ManifestSaxHandler manifestHandler = new ManifestSaxHandler();
          processImportFile(zipFile, "export.manifest.xml", manifestHandler);
 
