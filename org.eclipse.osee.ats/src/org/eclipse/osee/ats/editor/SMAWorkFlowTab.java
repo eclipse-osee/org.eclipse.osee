@@ -322,7 +322,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             });
             link.setToolTipText("Edit Actionable Items for the parent Action (this may add Team Workflows)");
             if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel = toolkit.createLabel(actionComp, "Error: No Actionable Items identified.");
+               Label errorLabel =
+                     toolkit.createLabel(actionComp,
+                           " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                actionActionableItemsLabel =
@@ -332,13 +334,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          } else {
             if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel = toolkit.createLabel(actionComp, "Error: No Actionable Items identified.");
+               Label errorLabel =
+                     toolkit.createLabel(actionComp,
+                           " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                Label label =
                      toolkit.createLabel(
                            actionComp,
-                           ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
+                           " " + ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
                label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
          }
@@ -352,7 +356,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          // Show Team Workflow's AIs
          if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(teamComp, TEAM_ACTIONABLE_ITEMS, SWT.NONE);
+            Hyperlink link = toolkit.createHyperlink(teamComp, " " + TEAM_ACTIONABLE_ITEMS, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                public void linkEntered(HyperlinkEvent e) {
@@ -372,7 +376,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             });
             link.setToolTipText("Edit Actionable Items for this Team Workflow");
             if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel = toolkit.createLabel(teamComp, "Error: No Actionable Items identified.");
+               Label errorLabel =
+                     toolkit.createLabel(teamComp,
+                           " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                teamActionableItemLabel =
@@ -381,12 +387,14 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          } else {
             if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
-               Label errorLabel = toolkit.createLabel(teamComp, "Error: No Actionable Items identified.");
+               Label errorLabel =
+                     toolkit.createLabel(teamComp,
+                           " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                Label label =
                      toolkit.createLabel(teamComp,
-                           TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
+                           " " + TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
                label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
          }

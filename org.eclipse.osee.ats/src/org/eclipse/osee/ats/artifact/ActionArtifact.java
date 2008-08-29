@@ -146,7 +146,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private Result resetActionItemsOffChildren() throws SQLException, OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
-         if (!(new SMAManager(team)).isCancelled()) {
+         if (getTeamWorkFlowArtifacts().size() == 1 || !(new SMAManager(team)).isCancelled()) {
             aias.addAll(team.getActionableItemsDam().getActionableItems());
          }
       return actionableItemsDam.setActionableItems(aias);
