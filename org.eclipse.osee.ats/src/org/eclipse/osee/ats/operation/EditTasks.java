@@ -76,22 +76,22 @@ public class EditTasks extends AbstractBlam {
                StringBuffer sb = new StringBuffer();
                TeamDefinitionArtifact teamDef = getSelectedTeamDefinition();
                if (teamDef != null) {
-                  sb.append("Team: " + teamDef + "\n");
+                  sb.append("Team: " + teamDef + " - ");
                   selected = true;
                }
                VersionArtifact verArt = getSelectedVersionArtifact();
                if (verArt != null) {
-                  sb.append("Version: " + verArt + "\n");
+                  sb.append("Version: " + verArt + " - ");
                   selected = true;
                }
                User user = variableMap.getUser("Assignee");
                if (user != null) {
-                  sb.append("Assignee: " + user + "\n");
+                  sb.append("Assignee: " + user + " - ");
                   selected = true;
                }
                boolean includeCompleted = variableMap.getBoolean("Include Completed");
                if (includeCompleted) {
-                  sb.append("Include Completed\n");
+                  sb.append("Include Completed");
                }
                if (!selected) {
                   AWorkbench.popup("ERROR", "You must select at least one option");
@@ -99,6 +99,9 @@ public class EditTasks extends AbstractBlam {
                }
 
                TaskSearchJob taskSearchJob = new TaskSearchJob(sb.toString(), teamDef, user, verArt, includeCompleted);
+               taskSearchJob.setUser(true);
+               taskSearchJob.setPriority(Job.LONG);
+               taskSearchJob.schedule();
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
