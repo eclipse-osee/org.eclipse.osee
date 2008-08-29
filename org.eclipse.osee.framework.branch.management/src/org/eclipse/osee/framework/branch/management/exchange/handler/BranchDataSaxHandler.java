@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -137,6 +138,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          if (branchData.getBranchId() != 1) {
             if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
                branchData.setParentBranchId(-1);
+               branchData.setBranchType(BranchType.ROOT);
             }
             Long newValue = (Long) getTranslator().translate(getConnection(), BRANCH_ID, original);
             branchData.setBranchId(newValue.intValue());
@@ -238,6 +240,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
       public void setParentBranchId(int nextSeqVal) {
          this.backingData.put(PARENT_BRANCH_ID, nextSeqVal);
+      }
+
+      public void setBranchType(BranchType branchType) {
+         this.backingData.put(BRANCH_TYPE, Integer.toString(branchType.ordinal()));
       }
    }
 
