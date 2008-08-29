@@ -27,7 +27,8 @@ import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
 /**
  * @author b1529404
  */
-public class JiniServiceSideConnector extends JiniConnector {
+public class JiniServiceSideConnector extends JiniConnector implements
+	IJiniConnectorLink {
    public static final String TYPE = "jini.service-end";
    private final HashMap<ServiceRegistration, LeaseRenewTask> registrations =
          new HashMap<ServiceRegistration, LeaseRenewTask>();
@@ -37,7 +38,8 @@ public class JiniServiceSideConnector extends JiniConnector {
    private final ServiceID serviceId;
    private final Timer timer = new Timer();
    private final ServiceItem serviceItem;
-
+   private final BasicJeriExporter linkExporter;
+   private final IJiniConnectorLink exportedThis;
    public JiniServiceSideConnector(Remote service, EnhancedProperties props) throws UnknownHostException, ExportException {
       super(props);
       this.service = service;
@@ -45,7 +47,13 @@ public class JiniServiceSideConnector extends JiniConnector {
       serviceExporter =
             new BasicJeriExporter(TcpServerEndpoint.getInstance(Network.getValidIP().getHostAddress(), 0),
                   new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
+      linkExporter = new BasicJeriExporter(TcpServerEndpoint.getInstance(
+		Network.getValidIP().getHostAddress(), 0), new BasicILFactory(
+		null, null, Activator.getDefault().getExportClassLoader()),
+		false, false);
       serviceProxy = (Remote) serviceExporter.export(service);
+      exportedThis = (IJiniConnectorLink) linkExporter.export(this);
+      props.setProperty(LINK_PROPERTY, (Serializable) exportedThis);
       serviceItem = new ServiceItem(serviceId, serviceProxy, createEntries());
    }
 
@@ -65,6 +73,7 @@ public class JiniServiceSideConnector extends JiniConnector {
       super.stop();
       removeAllRegistrations();
       serviceExporter.unexport(true);
+      linkExporter.unexport(true);
    }
 
    /**
@@ -139,5 +148,10 @@ public class JiniServiceSideConnector extends JiniConnector {
    public URI upload(File file) throws Exception {
       return null;
    }
+
+   @Override
+   public boolean ping() {
+	return true;
+    }
 
 }

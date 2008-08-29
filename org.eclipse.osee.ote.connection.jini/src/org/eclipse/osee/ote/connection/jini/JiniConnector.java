@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
  * @author b1529404
  */
 public abstract class JiniConnector implements IServiceConnector {
+    protected final static String LINK_PROPERTY = "JINI_CONNECTOR_LINK";
     private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
     private final EnhancedProperties properties;
     private final HashSet<IServicePropertyChangeListener> propertyChangeListeners = new HashSet<IServicePropertyChangeListener>();

@@ -65,4 +65,5 @@ public interface IServiceConnector {
     */
    URI upload(File file) throws Exception;
 
+   boolean ping();
 }

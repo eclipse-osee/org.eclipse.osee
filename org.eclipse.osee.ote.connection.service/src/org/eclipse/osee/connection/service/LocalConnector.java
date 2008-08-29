@@ -125,4 +125,9 @@ public class LocalConnector implements IServiceConnector {
       return file.toURI();
    }
 
+    @Override
+    public boolean ping() {
+	return true;
+    }
+
 }
