@@ -185,8 +185,8 @@
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="A_ORDER" type="INTEGER" />
-		<Column id="B_ORDER" type="INTEGER" />
+		<Column id="A_ORDER" defaultValue="not null" type="INTEGER" />
+		<Column id="B_ORDER" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />

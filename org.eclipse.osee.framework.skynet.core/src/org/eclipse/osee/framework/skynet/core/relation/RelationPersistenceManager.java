@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class RelationPersistenceManager {
    private static final String UPDATE_RELATION_ORDERS =
-         "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order=?, b_order=? WHERE gamma_id=?";
+         "UPDATE osee_define_rel_link SET a_order=?, b_order=? WHERE gamma_id=?";
 
    // This must be declared here cause it can't be declared in enum RelationSide
    public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =
