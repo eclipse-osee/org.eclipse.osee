@@ -25,7 +25,14 @@ public abstract class WorkItemDefinition {
    protected final String id;
    protected final String name;
    protected final String parentId;
-   protected final String description;
+   protected String description;
+
+   /**
+    * @param description the description to set
+    */
+   public void setDescription(String description) {
+      this.description = description;
+   }
 
    /**
     * @return the description
@@ -56,9 +63,13 @@ public abstract class WorkItemDefinition {
       this.description = description;
       if (parentId != null && parentId.equals("")) throw new IllegalArgumentException(
             "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
-      if (type != null && type.equals("")) throw new IllegalArgumentException(
-            "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
-      if (this.id == null || this.id.equals("")) throw new IllegalArgumentException("id must be unique and non-null");
+      if (type != null && type.equals("")) {
+         throw new IllegalArgumentException(
+               "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
+      }
+      if (this.id == null || this.id.equals("")) {
+         throw new IllegalArgumentException("id must be unique and non-null");
+      }
 
    }
 
