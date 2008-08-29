@@ -19,7 +19,7 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.branch.management.IExportImportListener;
+import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -32,7 +32,7 @@ public abstract class AbstractExportItem implements Runnable {
    private int priority;
    private File writeLocation;
    private Options options;
-   private Set<IExportImportListener> exportListeners;
+   private Set<IExchangeTaskListener> exportListeners;
    private String source;
    private boolean cancel;
 
@@ -43,7 +43,7 @@ public abstract class AbstractExportItem implements Runnable {
       this.options = null;
       this.cancel = false;
       this.source = source;
-      this.exportListeners = Collections.synchronizedSet(new HashSet<IExportImportListener>());
+      this.exportListeners = Collections.synchronizedSet(new HashSet<IExchangeTaskListener>());
    }
 
    public String getSource() {
@@ -82,13 +82,13 @@ public abstract class AbstractExportItem implements Runnable {
       return this.options;
    }
 
-   public void addExportListener(IExportImportListener exportListener) {
+   public void addExportListener(IExchangeTaskListener exportListener) {
       if (exportListener != null) {
          this.exportListeners.add(exportListener);
       }
    }
 
-   public void removeExportListener(IExportImportListener exportListener) {
+   public void removeExportListener(IExchangeTaskListener exportListener) {
       if (exportListener != null) {
          this.exportListeners.remove(exportListener);
       }
@@ -141,19 +141,19 @@ public abstract class AbstractExportItem implements Runnable {
    }
 
    protected void notifyOnExportException(Throwable ex) {
-      for (IExportImportListener listener : this.exportListeners) {
+      for (IExchangeTaskListener listener : this.exportListeners) {
          listener.onException(getName(), ex);
       }
    }
 
    protected void notifyOnExportItemStarted() {
-      for (IExportImportListener listener : this.exportListeners) {
+      for (IExchangeTaskListener listener : this.exportListeners) {
          listener.onExportItemStarted(getName());
       }
    }
 
    protected void notifyOnExportItemCompleted(long timeToProcess) {
-      for (IExportImportListener listener : this.exportListeners) {
+      for (IExchangeTaskListener listener : this.exportListeners) {
          listener.onExportItemCompleted(getName(), timeToProcess);
       }
    }

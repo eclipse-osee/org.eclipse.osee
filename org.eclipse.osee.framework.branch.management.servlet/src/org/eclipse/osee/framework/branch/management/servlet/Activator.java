@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.Servlet;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
-import org.eclipse.osee.framework.branch.management.IBranchExport;
+import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -23,12 +25,12 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Andrew M Finkbeiner
  */
 public class Activator implements BundleActivator {
-
+   private ServiceTracker resourceManagementTracker;
+   private ServiceTracker resourceLocatorManagerTracker;
    private HttpServiceTracker httpBranchManagementTracker;
    private HttpServiceTracker httpBranchExportTracker;
    private ServiceTracker branchCreationTracker;
-   private ServiceTracker branchExportTracker;
-
+   private ServiceTracker branchExchangeTracker;
    private static Activator instance;
 
    /*
@@ -38,17 +40,24 @@ public class Activator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      httpBranchManagementTracker = new HttpServiceTracker(context, "/branch", BranchManagerServlet.class);
-      httpBranchManagementTracker.open();
+      resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
+      resourceManagementTracker.open();
 
-      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.export", BranchExportServlet.class);
-      httpBranchExportTracker.open();
+      resourceLocatorManagerTracker = new ServiceTracker(context, IResourceLocatorManager.class.getName(), null);
+      resourceLocatorManagerTracker.open();
 
       branchCreationTracker = new ServiceTracker(context, IBranchCreation.class.getName(), null);
       branchCreationTracker.open();
 
-      branchExportTracker = new ServiceTracker(context, IBranchExport.class.getName(), null);
-      branchExportTracker.open();
+      branchExchangeTracker = new ServiceTracker(context, IBranchExchange.class.getName(), null);
+      branchExchangeTracker.open();
+
+      httpBranchManagementTracker = new HttpServiceTracker(context, "/branch", BranchManagerServlet.class);
+      httpBranchManagementTracker.open();
+
+      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.exchange", BranchExportServlet.class);
+      httpBranchExportTracker.open();
+
    }
 
    /*
@@ -57,9 +66,22 @@ public class Activator implements BundleActivator {
     */
    public void stop(BundleContext context) throws Exception {
       httpBranchManagementTracker.close();
+      httpBranchManagementTracker = null;
+
       httpBranchExportTracker.close();
+      httpBranchExportTracker = null;
+
       branchCreationTracker.close();
-      branchExportTracker.close();
+      branchCreationTracker = null;
+
+      branchExchangeTracker.close();
+      branchExchangeTracker = null;
+
+      resourceManagementTracker.close();
+      resourceManagementTracker = null;
+
+      resourceLocatorManagerTracker.close();
+      resourceLocatorManagerTracker = null;
       instance = null;
    }
 
@@ -71,8 +93,16 @@ public class Activator implements BundleActivator {
       return (IBranchCreation) branchCreationTracker.getService();
    }
 
-   public IBranchExport getBranchExport() {
-      return (IBranchExport) branchExportTracker.getService();
+   public IBranchExchange getBranchExchange() {
+      return (IBranchExchange) branchExchangeTracker.getService();
+   }
+
+   public IResourceManager getResourceManager() {
+      return (IResourceManager) resourceManagementTracker.getService();
+   }
+
+   public IResourceLocatorManager getResourceLocatorManager() {
+      return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
    }
 
    private class HttpServiceTracker extends ServiceTracker {

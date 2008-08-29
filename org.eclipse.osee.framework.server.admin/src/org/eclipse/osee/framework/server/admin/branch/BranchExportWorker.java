@@ -61,6 +61,6 @@ public class BranchExportWorker extends BaseCmdWorker {
 
       Options options = new Options();
       options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), excludeBaselineTxs);
-      Activator.getInstance().getBranchExport().export(exportFileName, options, branchIds);
+      Activator.getInstance().getBranchExchange().exportBranch(exportFileName, options, branchIds);
    }
 }

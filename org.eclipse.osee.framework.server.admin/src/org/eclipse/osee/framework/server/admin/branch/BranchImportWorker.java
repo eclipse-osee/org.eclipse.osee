@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.server.admin.branch;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.branch.management.ExportOptions;
+import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.resource.common.io.Files;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
 
@@ -33,16 +34,21 @@ public class BranchImportWorker extends BaseCmdWorker {
     */
    @Override
    protected void doWork(long startTime) throws Exception {
+      Options options = new Options();
       String arg = null;
       int count = 0;
-      boolean excludeBaselineTxs = false;
+
       List<Integer> branchIds = new ArrayList<Integer>();
       List<File> importFiles = new ArrayList<File>();
       do {
          arg = getCommandInterpreter().nextArgument();
          if (isValidArg(arg)) {
             if (arg.equals("-excludeBaselineTxs")) {
-               excludeBaselineTxs = true;
+               options.put(ImportOptions.EXCLUDE_BASELINE_TXS.name(), true);
+            } else if (arg.equals("-clean")) {
+               options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), true);
+            } else if (arg.equals("-allAsRootBranches")) {
+               options.put(ImportOptions.ALL_AS_ROOT_BRANCHES.name(), true);
             } else if (count == 0 && !arg.startsWith("-")) {
                importFiles.add(new File(arg));
             } else {
@@ -64,10 +70,9 @@ public class BranchImportWorker extends BaseCmdWorker {
          }
       }
 
-      Options options = new Options();
-      options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), excludeBaselineTxs);
       for (File fileToImport : importFiles) {
-         Activator.getInstance().getBranchImport().importBranch(fileToImport, options, branchIds);
+         Activator.getInstance().getBranchExchange().importBranch(new ResourceLocator(fileToImport.toURI()), options,
+               branchIds);
       }
    }
 }

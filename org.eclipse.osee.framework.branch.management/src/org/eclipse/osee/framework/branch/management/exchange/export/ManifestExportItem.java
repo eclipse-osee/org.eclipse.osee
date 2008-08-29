@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
@@ -39,6 +40,10 @@ public class ManifestExportItem extends AbstractExportItem {
     */
    @Override
    protected void doWork(Appendable appendable) throws Exception {
+      ExportImportXml.openPartialXmlNode(appendable, "export");
+      ExportImportXml.addXmlAttribute(appendable, "date", new Long(new Date().getTime()).toString());
+      ExportImportXml.closePartialXmlNode(appendable);
+
       for (AbstractExportItem relationalItem : exportItems) {
          if (!relationalItem.equals(this)) {
             addEntry(appendable, relationalItem.getFileName(), relationalItem.getPriority(), relationalItem.getSource());

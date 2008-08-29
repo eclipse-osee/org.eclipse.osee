@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
-import java.io.File;
-import java.util.List;
-import org.eclipse.osee.framework.resource.management.Options;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface IBranchImport {
+public interface IExchangeTaskListener {
 
-   public void importBranch(File fileToImport, Options options, int... branchesToImport) throws Exception;
+   public void onExportItemStarted(String name);
 
-   public void importBranch(File fileToImport, Options options, List<Integer> branchesToImport) throws Exception;
+   public void onExportItemCompleted(String name, long timeToProcess);
+
+   public void onException(String name, Throwable ex);
 }

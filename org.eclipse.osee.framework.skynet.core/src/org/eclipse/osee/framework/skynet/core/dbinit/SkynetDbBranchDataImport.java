@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -25,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -35,16 +31,11 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.plugin.core.util.LogProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exportImport.BranchImporterSaxHandler;
+import org.eclipse.osee.framework.skynet.core.exportImport.HttpBranchExchange;
 import org.osgi.framework.Bundle;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -71,17 +62,6 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
       return toReturn;
    }
 
-   private Branch getBranch(String branchName) throws Exception {
-      Branch toReturn = null;
-      try {
-         toReturn = BranchPersistenceManager.getBranch(branchName);
-      } catch (BranchDoesNotExist ex) {
-         toReturn = BranchPersistenceManager.createRootBranch(null, branchName, branchName, null, false);
-         logger.log(Level.INFO, String.format("Created [%s] Branch", branchName));
-      }
-      return toReturn;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
@@ -94,13 +74,13 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
                BranchPersistenceManager.deleteBranch(branch);
             }
          }
-
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
             logger.log(Level.INFO, String.format("Import Branch Data: [%s]", importData));
             File importFile = getImportFile(importData);
             try {
-               importBranchData(importFile, importData.getBranchName());
+               //               importBranchData(importFile, importData.getBranchName());
+               HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, String.format("Exception while importing branch: [%s]", importData), ex);
                throw new Exception(ex);
@@ -109,29 +89,40 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
       }
    }
 
-   private void importBranchData(File importFile, String branchTarget) throws Exception {
-      ZipFile zipFile = null;
-      try {
-         zipFile = new ZipFile(importFile);
-         ZipEntry entry = zipFile.getEntry("branch.data.xml");
-         XMLReader reader = XMLReaderFactory.createXMLReader();
-         InputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
-         try {
-            Branch branchToImportInto = getBranch(branchTarget);
-            reader.setContentHandler(new BranchImporterSaxHandler(zipFile, branchToImportInto, true, true,
-                  new LogProgressMonitor()));
-            reader.parse(new InputSource(inputStream));
-         } finally {
-            if (inputStream != null) {
-               inputStream.close();
-            }
-         }
-      } finally {
-         if (zipFile != null) {
-            zipFile.close();
-         }
-      }
-   }
+   //   private void importBranchData(File importFile, String branchTarget) throws Exception {
+   //      ZipFile zipFile = null;
+   //      try {
+   //         zipFile = new ZipFile(importFile);
+   //         ZipEntry entry = zipFile.getEntry("branch.data.xml");
+   //         XMLReader reader = XMLReaderFactory.createXMLReader();
+   //         InputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
+   //         try {
+   //            Branch branchToImportInto = getBranch(branchTarget);
+   //            reader.setContentHandler(new BranchImporterSaxHandler(zipFile, branchToImportInto, true, true,
+   //                  new LogProgressMonitor()));
+   //            reader.parse(new InputSource(inputStream));
+   //         } finally {
+   //            if (inputStream != null) {
+   //               inputStream.close();
+   //            }
+   //         }
+   //      } finally {
+   //         if (zipFile != null) {
+   //            zipFile.close();
+   //         }
+   //      }
+   //   }
+
+   //   private Branch getBranch(String branchName) throws Exception {
+   //      Branch toReturn = null;
+   //      try {
+   //         toReturn = BranchPersistenceManager.getBranch(branchName);
+   //      } catch (BranchDoesNotExist ex) {
+   //         toReturn = BranchPersistenceManager.createRootBranch(null, branchName, branchName, null, false);
+   //         logger.log(Level.INFO, String.format("Created [%s] Branch", branchName));
+   //      }
+   //      return toReturn;
+   //   }
 
    private Collection<ImportData> loadDataFromExtensions() throws Exception {
       List<ImportData> toReturn = new ArrayList<ImportData>();

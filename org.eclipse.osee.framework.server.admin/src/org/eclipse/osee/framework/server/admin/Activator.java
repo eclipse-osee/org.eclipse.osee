@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
-import org.eclipse.osee.framework.branch.management.IBranchExport;
-import org.eclipse.osee.framework.branch.management.IBranchImport;
+import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -27,8 +26,7 @@ public class Activator implements BundleActivator {
    private ServiceTracker resourceLocatorManagerTracker;
    private ServiceTracker searchTaggerTracker;
    private ServiceTracker searchEngineTracker;
-   private ServiceTracker branchExportTracker;
-   private ServiceTracker branchImportTracker;
+   private ServiceTracker branchExchangeTracker;
 
    /*
     * (non-Javadoc)
@@ -49,11 +47,8 @@ public class Activator implements BundleActivator {
       searchEngineTracker = new ServiceTracker(context, ISearchEngine.class.getName(), null);
       searchEngineTracker.open();
 
-      branchExportTracker = new ServiceTracker(context, IBranchExport.class.getName(), null);
-      branchExportTracker.open();
-
-      branchImportTracker = new ServiceTracker(context, IBranchImport.class.getName(), null);
-      branchImportTracker.open();
+      branchExchangeTracker = new ServiceTracker(context, IBranchExchange.class.getName(), null);
+      branchExchangeTracker.open();
    }
 
    /*
@@ -74,11 +69,8 @@ public class Activator implements BundleActivator {
       searchEngineTracker.close();
       searchEngineTracker = null;
 
-      branchExportTracker.close();
-      branchExportTracker = null;
-
-      branchImportTracker.close();
-      branchImportTracker = null;
+      branchExchangeTracker.close();
+      branchExchangeTracker = null;
    }
 
    public IResourceManager getResourceManager() {
@@ -97,12 +89,8 @@ public class Activator implements BundleActivator {
       return (ISearchEngine) searchEngineTracker.getService();
    }
 
-   public IBranchExport getBranchExport() {
-      return (IBranchExport) branchExportTracker.getService();
-   }
-
-   public IBranchImport getBranchImport() {
-      return (IBranchImport) branchImportTracker.getService();
+   public IBranchExchange getBranchExchange() {
+      return (IBranchExchange) branchExchangeTracker.getService();
    }
 
    public static Activator getInstance() {

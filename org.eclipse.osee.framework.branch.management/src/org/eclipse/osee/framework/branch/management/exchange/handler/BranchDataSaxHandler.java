@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -114,74 +115,12 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   private Map<Integer, BranchData> getDbBranchesMatchingImportFileBranchIds(Connection connection) throws SQLException {
-      Map<Integer, BranchData> databaseBranches = new HashMap<Integer, BranchData>();
-      ConnectionHandlerStatement chStmt = null;
-      ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery();
-      try {
-         for (Integer key : this.oldIdsToData.keySet()) {
-            joinQuery.add(key, -1);
-         }
-         joinQuery.store(connection);
-         chStmt = ConnectionHandler.runPreparedQuery(connection, BRANCH_QUERY, joinQuery.getQueryId());
-         while (chStmt.next()) {
-            BranchData dbData = new BranchData();
-            int nullCount = 0;
-            for (String columnName : getMetaData().getColumnNames()) {
-               String value = chStmt.getRset().getString(columnName);
-               Object converted = toObject(columnName, value);
-               dbData.setData(columnName, converted);
-               if (converted != null) {
-                  nullCount++;
-               }
-            }
-            if (nullCount > 0) {
-               databaseBranches.put(dbData.getBranchId(), dbData);
-            }
-         }
-      } finally {
-         DbUtil.close(chStmt);
-         joinQuery.delete(connection);
-      }
-      return databaseBranches;
-   }
-
    public List<BranchData> getImportedBranches() {
       List<BranchData> toReturn = toImport;
       if (toImport == null) {
          toReturn = java.util.Collections.emptyList();
       }
       return toReturn;
-   }
-
-   private List<BranchData> getImportBranches(int... branchIds) throws SQLException {
-      if (toImport == null) {
-         toImport = new ArrayList<BranchData>();
-         Map<Integer, BranchData> matchingBranches = getDbBranchesMatchingImportFileBranchIds(getConnection());
-         Collection<BranchData> selectedImportBranches = getSelectedBranchDataToImport(branchIds);
-         for (BranchData branchToImport : selectedImportBranches) {
-            BranchData dataInDb = matchingBranches.get(branchToImport.getBranchId());
-            if (dataInDb != null) {
-               if (!branchToImport.equals(dataInDb)) {
-                  if (branchToImport.getBranchName().equals(dataInDb.getBranchName())) {
-                     // Don't add to import since already in DB. 
-                     // Both Branch Name and Branch Id matched - that is all we care about
-                  } else {
-                     // Branch Names didn't Match -- branch_id has already been used 
-                     //                     // Get New Branch Id and add to Import
-                     //                     BranchData newItem = branchToImport.clone();
-                     //                     newItem.setBranchId(Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ));
-                     //                     toImport.add(newItem);
-                  }
-               } else {
-                  // Don't add to import since already in DB.
-               }
-            } else {
-               toImport.add(branchToImport);
-            }
-         }
-      }
-      return toImport;
    }
 
    public void store() throws Exception {
@@ -196,6 +135,9 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       for (BranchData branchData : getSelectedBranchDataToImport(branchIds)) {//getImportBranches(branchesToImport)) {
          Long original = new Long(branchData.getBranchId());
          if (branchData.getBranchId() != 1) {
+            if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
+               branchData.setParentBranchId(-1);
+            }
             Long newValue = (Long) getTranslator().translate(getConnection(), BRANCH_ID, original);
             branchData.setBranchId(newValue.intValue());
             Object[] data = branchData.toArray();
@@ -208,6 +150,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
       super.store(getConnection());
    }
+
    public final class BranchData implements Cloneable {
       private Map<String, Object> backingData;
 
@@ -292,5 +235,72 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       public void setBranchId(int nextSeqVal) {
          this.backingData.put(BRANCH_ID, nextSeqVal);
       }
+
+      public void setParentBranchId(int nextSeqVal) {
+         this.backingData.put(PARENT_BRANCH_ID, nextSeqVal);
+      }
+   }
+
+   // TODO: Determine whether this will be needed for future features
+   private List<BranchData> getImportBranches(int... branchIds) throws SQLException {
+      if (toImport == null) {
+         toImport = new ArrayList<BranchData>();
+         Map<Integer, BranchData> matchingBranches = getDbBranchesMatchingImportFileBranchIds(getConnection());
+         Collection<BranchData> selectedImportBranches = getSelectedBranchDataToImport(branchIds);
+         for (BranchData branchToImport : selectedImportBranches) {
+            BranchData dataInDb = matchingBranches.get(branchToImport.getBranchId());
+            if (dataInDb != null) {
+               if (!branchToImport.equals(dataInDb)) {
+                  if (branchToImport.getBranchName().equals(dataInDb.getBranchName())) {
+                     // Don't add to import since already in DB. 
+                     // Both Branch Name and Branch Id matched - that is all we care about
+                  } else {
+                     // Branch Names didn't Match -- branch_id has already been used 
+                     //                     // Get New Branch Id and add to Import
+                     //                     BranchData newItem = branchToImport.clone();
+                     //                     newItem.setBranchId(Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ));
+                     //                     toImport.add(newItem);
+                  }
+               } else {
+                  // Don't add to import since already in DB.
+               }
+            } else {
+               toImport.add(branchToImport);
+            }
+         }
+      }
+      return toImport;
+   }
+
+   private Map<Integer, BranchData> getDbBranchesMatchingImportFileBranchIds(Connection connection) throws SQLException {
+      Map<Integer, BranchData> databaseBranches = new HashMap<Integer, BranchData>();
+      ConnectionHandlerStatement chStmt = null;
+      ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery();
+      try {
+         for (Integer key : this.oldIdsToData.keySet()) {
+            joinQuery.add(key, -1);
+         }
+         joinQuery.store(connection);
+         chStmt = ConnectionHandler.runPreparedQuery(connection, BRANCH_QUERY, joinQuery.getQueryId());
+         while (chStmt.next()) {
+            BranchData dbData = new BranchData();
+            int nullCount = 0;
+            for (String columnName : getMetaData().getColumnNames()) {
+               String value = chStmt.getRset().getString(columnName);
+               Object converted = toObject(columnName, value);
+               dbData.setData(columnName, converted);
+               if (converted != null) {
+                  nullCount++;
+               }
+            }
+            if (nullCount > 0) {
+               databaseBranches.put(dbData.getBranchId(), dbData);
+            }
+         }
+      } finally {
+         DbUtil.close(chStmt);
+         joinQuery.delete(connection);
+      }
+      return databaseBranches;
    }
 }

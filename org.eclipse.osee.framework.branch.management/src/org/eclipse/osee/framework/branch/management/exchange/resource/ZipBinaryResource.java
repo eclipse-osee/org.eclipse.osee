@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.branch.management.exchange.handler;
+package org.eclipse.osee.framework.branch.management.exchange.resource;
 
 import java.io.IOException;
 import java.io.InputStream;

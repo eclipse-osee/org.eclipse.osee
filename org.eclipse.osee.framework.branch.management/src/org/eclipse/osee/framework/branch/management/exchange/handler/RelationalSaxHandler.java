@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;

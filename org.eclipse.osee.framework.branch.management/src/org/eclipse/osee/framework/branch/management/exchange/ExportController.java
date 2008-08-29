@@ -14,42 +14,53 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.branch.management.IExportImportListener;
+import org.eclipse.osee.framework.branch.management.Activator;
+import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
+import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
+import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar
  */
-final class ExportController extends DbTransaction implements IExportImportListener {
+final class ExportController extends DbTransaction implements IExchangeTaskListener {
    private static final String ZIP_EXTENSION = ".zip";
-
-   private BranchExport branchExport;
+   private static final String TEMP_NAME_PREFIX = "branch.xchng.";
    private String exportName;
    private Options options;
    private int[] branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
+   private List<String> errorList;
 
-   ExportController(BranchExport branchExport, String exportName, Options options, int... branchIds) throws Exception {
+   ExportController(String exportName, Options options, int... branchIds) throws Exception {
       if (branchIds == null || branchIds.length <= 0) {
          throw new Exception("No branch selected for export.");
       }
-      this.branchExport = branchExport;
       this.exportName = exportName;
       this.options = options;
       this.branchIds = branchIds;
       this.joinQuery = JoinUtility.createExportImportJoinQuery();
+      this.errorList = Collections.synchronizedList(new ArrayList<String>());
+   }
+
+   public IResourceLocator getExchangeFileLocator() throws MalformedLocatorException {
+      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
+            ExchangeLocatorProvider.PROTOCOL, "", this.exportName);
    }
 
    public int getExportQueryId() {
@@ -71,8 +82,12 @@ final class ExportController extends DbTransaction implements IExportImportListe
    }
 
    private File createTempFolder() {
-      String userHome = System.getProperty("user.home");
-      File rootDirectory = new File(userHome + File.separator + "export." + new Date().getTime() + File.separator);
+      String basePath = ExchangeProvider.getBasePath();
+      String fileName = TEMP_NAME_PREFIX + Lib.getDateTimeString();
+      if (!Strings.isValid(exportName)) {
+         this.exportName = fileName;
+      }
+      File rootDirectory = new File(basePath + fileName + File.separator);
       rootDirectory.mkdirs();
       return rootDirectory;
    }
@@ -106,7 +121,7 @@ final class ExportController extends DbTransaction implements IExportImportListe
    @Override
    protected void handleTxWork(Connection connection) throws Exception {
       long startTime = System.currentTimeMillis();
-      List<AbstractExportItem> taskList = branchExport.getTaskList();
+      List<AbstractExportItem> taskList = BranchExportTaskConfig.getTaskList();
       try {
          File tempFolder = createTempFolder();
          setUp(connection, taskList, tempFolder);
@@ -118,6 +133,9 @@ final class ExportController extends DbTransaction implements IExportImportListe
 
          for (Future<?> future : futures) {
             future.get();
+            if (this.errorList.size() > 0) {
+               throw new Exception(errorList.toString());
+            }
          }
 
          String zipTargetName = exportName + ZIP_EXTENSION;
@@ -138,9 +156,7 @@ final class ExportController extends DbTransaction implements IExportImportListe
     */
    @Override
    synchronized public void onException(String name, Throwable ex) {
-      System.err.println(String.format("Export Error in: [%s]\n", name));
-      ex.printStackTrace(System.err);
-      //      branchExport.cancelExport(getExportQueryId());
+      errorList.add(Lib.exceptionToString(ex));
    }
 
    /* (non-Javadoc)
@@ -156,7 +172,5 @@ final class ExportController extends DbTransaction implements IExportImportListe
     */
    @Override
    public void onExportItemStarted(String name) {
-      //      System.out.println(String.format("Exporting: [%s] ", name));
    }
-
 }

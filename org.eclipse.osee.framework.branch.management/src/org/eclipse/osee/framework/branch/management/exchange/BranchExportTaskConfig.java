@@ -12,19 +12,17 @@ package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.branch.management.IBranchExport;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchExport implements IBranchExport {
+public class BranchExportTaskConfig {
 
    private static final String ARTIFACT_TYPE_ID = "art_type_id";
    private static final String ATTRIBUTE_TYPE_ID = "attr_type_id";
@@ -60,23 +58,7 @@ public class BranchExport implements IBranchExport {
    private static final String RELATION_TYPE_QUERY =
          "SELECT type1.type_name, type1.rel_link_type_id FROM osee_define_rel_link_type type1, osee_join_export_import jex1 WHERE type1.rel_link_type_id = jex1.id1 AND jex1.query_id = ?";
 
-   public BranchExport() {
-   }
-
-   public void export(String exportName, Options options, List<Integer> branchIds) throws Exception {
-      int[] branchIdsArray = new int[branchIds.size()];
-      for (int index = 0; index < branchIds.size(); index++) {
-         branchIdsArray[index] = branchIds.get(index);
-      }
-      export(exportName, options, branchIdsArray);
-   }
-
-   public void export(String exportName, Options options, int... branchIds) throws Exception {
-      ExportController controller = new ExportController(this, exportName, options, branchIds);
-      controller.execute();
-   }
-
-   protected List<AbstractExportItem> getTaskList() {
+   protected static List<AbstractExportItem> getTaskList() {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(0, "export.manifest", items));
       items.add(new MetadataExportItem(0, "export.db.schema", items));
@@ -99,5 +81,8 @@ public class BranchExport implements IBranchExport {
             SkynetDatabase.RELATION_LINK_VERSION_TABLE.toString(), RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY,
             RELATION_TYPE_QUERY));
       return items;
+   }
+
+   private BranchExportTaskConfig() {
    }
 }

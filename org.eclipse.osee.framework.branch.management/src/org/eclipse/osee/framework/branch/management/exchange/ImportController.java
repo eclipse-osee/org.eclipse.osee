@@ -16,8 +16,10 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
@@ -29,6 +31,8 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSax
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -40,12 +44,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 final class ImportController extends DbTransaction {
 
-   private File importFile;
+   private IResourceLocator locator;
    private Options options;
    private int[] branchesToImport;
 
-   ImportController(File importFile, Options options, int... branchesToImport) {
-      this.importFile = importFile;
+   ImportController(IResourceLocator locator, Options options, int... branchesToImport) {
+      this.locator = locator;
       this.options = options;
       this.branchesToImport = branchesToImport;
    }
@@ -64,7 +68,7 @@ final class ImportController extends DbTransaction {
 
       ZipFile zipFile = null;
       try {
-         zipFile = new ZipFile(importFile);
+         zipFile = new ZipFile(new File(locator.getLocation()));
          ManifestSaxHandler manifestHandler = new ManifestSaxHandler();
          processImportFile(zipFile, "export.manifest.xml", manifestHandler);
 
@@ -77,6 +81,7 @@ final class ImportController extends DbTransaction {
          if (metadata == null) {
             throw new IllegalStateException("Invalid metadata for branch table");
          }
+         branchDataHandler.setOptions(options);
          branchDataHandler.setTranslator(translator);
          branchDataHandler.setMetaData(metadata);
          processImportFile(zipFile, manifestHandler.getBranchFile().getFileName(), branchDataHandler);
@@ -85,12 +90,12 @@ final class ImportController extends DbTransaction {
 
          RelationalTypeCheckSaxHandler typeCheckHandler =
                RelationalTypeCheckSaxHandler.newLimitedCacheRelationalTypeCheckSaxHandler(1000);
-         typeCheckHandler.configure(options);
+         typeCheckHandler.setOptions(options);
          typeCheckHandler.setZipFile(zipFile);
 
          RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.newLimitedCacheRelationalSaxHandler(1000);
          relationalSaxHandler.setSelectedBranchIds(branchesToImport);
-         relationalSaxHandler.configure(options);
+         relationalSaxHandler.setOptions(options);
          relationalSaxHandler.setZipFile(zipFile);
 
          processImportFiles(connection, zipFile, metadataHandler, translator, manifestHandler.getTypeFiles(),
@@ -116,10 +121,13 @@ final class ImportController extends DbTransaction {
          handler.setTranslator(translator);
          handler.setConnection(connection);
 
-         // REMOVE THIS LATER
          if (item.getPriority() > 0) {
-            System.out.println(String.format("Importing: [%s] Meta: %s", item.getSource(), metadata.getColumnNames()));
-            clearTableData(connection, item.getSource());
+            boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s", item.getSource(),
+                  cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
+            if (cleanDataTable) {
+               clearTableData(connection, item.getSource());
+            }
          }
          processImportFile(zipFile, item.getFileName(), handler);
          handler.store();
@@ -129,7 +137,6 @@ final class ImportController extends DbTransaction {
 
    private void clearTableData(Connection connection, String source) throws SQLException {
       ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s", source));
-
    }
 
    private void processImportFile(ZipFile zipFile, String fileToProcess, ContentHandler handler) throws Exception {
