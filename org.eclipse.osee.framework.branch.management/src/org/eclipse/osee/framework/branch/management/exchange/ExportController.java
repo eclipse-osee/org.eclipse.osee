@@ -82,7 +82,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    }
 
    private File createTempFolder() {
-      String basePath = ExchangeProvider.getBasePath();
+      String basePath = ExchangeProvider.getExchangeFilePath();
       String fileName = TEMP_NAME_PREFIX + Lib.getDateTimeString();
       if (!Strings.isValid(exportName)) {
          this.exportName = fileName;
