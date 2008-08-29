@@ -21,6 +21,24 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public interface IArtifactCheck {
 
+   /**
+    * Checks set of artifacts for validation prior to delete
+    * 
+    * @param artifacts
+    * @return Result with description of which artifact and why can't delete
+    * @throws OseeCoreException
+    * @throws SQLException
+    */
    public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException, SQLException;
+
+   /**
+    * Checks set of artifacts for validation prior to rename
+    * @param artifacts
+    * 
+    * @return Result with description of which artifact and why can't rename
+    * @throws OseeCoreException
+    * @throws SQLException
+    */
+   public Result isRenamable(Collection<Artifact> artifacts) throws OseeCoreException, SQLException;
 
 }

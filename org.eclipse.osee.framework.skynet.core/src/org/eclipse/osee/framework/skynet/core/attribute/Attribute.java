@@ -13,20 +13,24 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> {
    private final AttributeType attributeType;
-   private Artifact artifact;
+   private final Artifact artifact;
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;
    private int gammaId;
@@ -39,14 +43,37 @@ public abstract class Attribute<T> {
    }
 
    public void setValue(T value) throws OseeCoreException {
+      try {
+         if (attributeType.getName().equals("Name")) {
+            // Confirm artifact is fit to rename
+            for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+               Result result = check.isRenamable(Arrays.asList(artifact));
+               if (result.isFalse()) throw new OseeCoreException(result.getText());
+            }
+         }
+      } catch (SQLException ex) {
+         throw new OseeCoreException(ex);
+      }
+
       if (subClassSetValue(value)) {
          setDirty();
       }
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
-      boolean response = subClassSetValue(convertStringToValue(value));
+      try {
+         if (attributeType.getName().equals("Name")) {
+            // Confirm artifact is fit to rename
+            for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+               Result result = check.isRenamable(Arrays.asList(artifact));
+               if (result.isFalse()) throw new OseeCoreException(result.getText());
+            }
+         }
+      } catch (SQLException ex) {
+         throw new OseeCoreException(ex);
+      }
 
+      boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
          setDirty();
       }
