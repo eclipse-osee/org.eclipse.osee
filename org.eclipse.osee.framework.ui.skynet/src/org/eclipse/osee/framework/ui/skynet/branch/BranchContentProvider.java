@@ -70,9 +70,6 @@ import org.eclipse.osee.framework.ui.swt.TreeNode;
  * @author Robert A. Fisher
  */
 public class BranchContentProvider implements ITreeContentProvider, ArtifactChangeListener {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final SnapshotPersistenceManager snapshotManager = SnapshotPersistenceManager.getInstance();
-   private static final RevisionManager revisionManager = RevisionManager.getInstance();
    private static final Object[] EMPTY_ARRAY = new Object[0];
    private static final String EMPTY_REPORT = "No changes";
    private static final Object[] EMPTY_REPORT_CHILDREN = new Object[] {EMPTY_REPORT};
@@ -164,7 +161,8 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          } else if (parentElement instanceof ArtifactChange) {
             ArtifactChange change = (ArtifactChange) parentElement;
             if (change.getModType() != DELETED) {
-               return summarize(revisionManager.getTransactionChanges(change, artifactNameDescriptorCache)).toArray();
+               return summarize(
+                     RevisionManager.getInstance().getTransactionChanges(change, artifactNameDescriptorCache)).toArray();
             }
          } else if (parentElement instanceof ChangeSummary) {
             ChangeSummary change = (ChangeSummary) parentElement;
@@ -178,7 +176,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
       private Collection<Object> getTransactions(Branch branch) throws OseeCoreException, SQLException {
          if (!showTransactions) return Collections.emptyList();
-         List<TransactionData> transactions = revisionManager.getTransactionsPerBranch(branch);
+         List<TransactionData> transactions = RevisionManager.getInstance().getTransactionsPerBranch(branch);
          Collections.sort(transactions, new Comparator<TransactionData>() {
             public int compare(TransactionData o1, TransactionData o2) {
                return o1.getTransactionNumber() - o2.getTransactionNumber();
@@ -209,7 +207,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
       try {
          if (!input.isForceRefresh()) {
-            snapshotData = snapshotManager.getSnapshot(NAMESPACE, key);
+            snapshotData = SnapshotPersistenceManager.getInstance().getSnapshot(NAMESPACE, key);
          }
 
          // Check that the snapshot is the correct format, inherently performs null checking via
@@ -217,7 +215,8 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          if (!(snapshotData instanceof Pair && snapshotData.getKey() instanceof Pair && ((Pair) snapshotData.getKey()).getKey() instanceof ChangeReportInput && ((Pair) snapshotData.getKey()).getValue() instanceof Object[])) {
             changeReport = computeChangeReport(input);
 
-            snapshotManager.persistSnapshot(NAMESPACE, key, new Pair<ChangeReportInput, Object[]>(input, changeReport));
+            SnapshotPersistenceManager.getInstance().persistSnapshot(NAMESPACE, key,
+                  new Pair<ChangeReportInput, Object[]>(input, changeReport));
 
             changeTime = new Date();
             input.setForceRefresh(false);
@@ -301,11 +300,11 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                   baseParentTransaction.getBranch()).getValue();
 
       Collection<ArtifactChange> deletedArtChanges =
-            revisionManager.getDeletedArtifactChanges(baseParentTransaction, headParentTransaction, baseTransaction,
-                  toTransaction, artifactNameDescriptorCache);
+            RevisionManager.getInstance().getDeletedArtifactChanges(baseParentTransaction, headParentTransaction,
+                  baseTransaction, toTransaction, artifactNameDescriptorCache);
       Collection<ArtifactChange> newAndModArtChanges =
-            revisionManager.getNewAndModArtifactChanges(baseParentTransaction, headParentTransaction, baseTransaction,
-                  toTransaction, artifactNameDescriptorCache);
+            RevisionManager.getInstance().getNewAndModArtifactChanges(baseParentTransaction, headParentTransaction,
+                  baseTransaction, toTransaction, artifactNameDescriptorCache);
 
       // Combine both the collections into one of them to return one continuous data set
       newAndModArtChanges.addAll(deletedArtChanges);
@@ -328,13 +327,14 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                         toTransaction.getTransactionNumber());
 
             Collection<Artifact> artModConflicts =
-                  artifactManager.getArtifacts(conflictCriteria, headParentTransaction.getBranch());
+                  ArtifactPersistenceManager.getInstance().getArtifacts(conflictCriteria,
+                        headParentTransaction.getBranch());
             for (Artifact artifact : artModConflicts)
                parentBranchModConflicts.put(artifact.getArtId(), artifact);
 
             Collection<ArtifactChange> artDelConflicts =
-                  revisionManager.getDeletedArtifactChanges(null, null, baseParentTransaction, headParentTransaction,
-                        null);
+                  RevisionManager.getInstance().getDeletedArtifactChanges(null, null, baseParentTransaction,
+                        headParentTransaction, null);
             for (ArtifactChange change : artDelConflicts) {
                parentBranchDelConflicts.add(change.getArtifact().getArtId());
             }
@@ -369,8 +369,18 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
          if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
       }
+      if (element instanceof Branch) {
+         Branch branch = (Branch) element;
+         boolean readable = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
+         try {
+            return readable && (showTransactions || (!branch.getChildBranches().isEmpty() && showChildBranchesUnderParents));
+         } catch (SQLException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            return false;
+         }
+      }
 
-      return ((element instanceof Branch && AccessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
+      return (element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
    }
 
    public void dispose() {
