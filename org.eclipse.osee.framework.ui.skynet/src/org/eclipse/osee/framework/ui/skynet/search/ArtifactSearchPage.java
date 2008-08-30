@@ -90,11 +90,9 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private static FilterTableViewer filterviewer;
    private Composite artifactTypeControls;
    private ListViewer artifactTypeList;
-   private Text indexText;
 
    private SearchFilter HRID_VALUE_FILTER;
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
-   private SearchFilter INDEX_SEARCH_FILTER;
    private static int lastSearchTypeListSelected = 2; // Attribute
    private static int lastAttributeTypeListSelected = 0; // Name
 
@@ -154,29 +152,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       atLeastOneButton = new Button(allSelectionGroup, SWT.RADIO);
       atLeastOneButton.setText("At least one filter (OR)");
-   }
-
-   private void createIndexSearchControls(Composite optionsComposite) {
-      Composite composite = new Composite(optionsComposite, SWT.NONE);
-      composite.setLayout(new GridLayout());
-
-      indexText = new Text(composite, SWT.BORDER);
-      indexText.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-
-      Button caseSensitiveChk = new Button(composite, SWT.CHECK);
-      caseSensitiveChk.setText("Case sensitive");
-
-      Button partialMatchChk = new Button(composite, SWT.CHECK);
-      partialMatchChk.setText("Partial Match");
-
-      INDEX_SEARCH_FILTER = new IndexSearchFilter(composite, indexText, caseSensitiveChk, partialMatchChk);
-      addToSearchTypeList(INDEX_SEARCH_FILTER);
-
-      indexText.addModifyListener(new ModifyListener() {
-         public void modifyText(ModifyEvent e) {
-            addButton.setEnabled(INDEX_SEARCH_FILTER.isValid());
-         }
-      });
    }
 
    private void createArtifactTypeSearchControls(Composite optionsComposite) {
@@ -365,7 +340,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
       optionsComposite.setLayout(selectionLayout);
-      createIndexSearchControls(optionsComposite);
       createAttributeSearchControls(optionsComposite);
       createArtifactTypeSearchControls(optionsComposite);
       createOrphanSearchControls(optionsComposite);
@@ -505,9 +479,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
     */
    @Override
    public void setVisible(boolean visible) {
-      if (visible && indexText != null) {
-         indexText.setFocus();
-      }
       updateOKStatus();
       super.setVisible(visible);
    }

@@ -304,8 +304,6 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.TagArtifactsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
-      </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevealInArtifactExplorer"
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
@@ -875,14 +873,6 @@
              match="org.eclipse.osee.framework.ui.skynet.word MERGE_EDIT">
        </MatchCriteria>
     </Template>
- </extension>
- <extension
-       id="TagChangedArtifacts"
-       name="Tag Changed Artifacts"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.TagChangedArtifacts">
-    </Operation>
  </extension>
  <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">

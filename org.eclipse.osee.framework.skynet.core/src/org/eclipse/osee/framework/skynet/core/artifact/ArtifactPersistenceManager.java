@@ -65,8 +65,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
-import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -581,7 +579,6 @@ public class ArtifactPersistenceManager {
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.persistRelations();
-      TagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 
    public void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException, SQLException {

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.config.demo.config;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
@@ -52,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.TagBranchesJob;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -159,21 +157,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews();
 
-         // Tag all artifacts and all branches
-         tagAllArtifacts();
-
          OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Populate Complete", false);
 
       }
-   }
-
-   public void tagAllArtifacts() throws Exception {
-      OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Tagging Branches", false);
-      Job job = new TagBranchesJob(BranchPersistenceManager.getBranches());
-      job.setUser(false);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      job.join();
    }
 
    public class CreateMainWorkingBranchTx extends AbstractSkynetTxTemplate {
@@ -201,9 +187,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Branch parentBranch = BranchPersistenceManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
-            BranchPersistenceManager.createWorkingBranch(
-                  TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
-                  childBranchName, SkynetAuthentication.getUser(UserEnum.NoOne));
+            BranchPersistenceManager.createWorkingBranch(TransactionIdManager.getInstance().getEditableTransactionId(
+                  parentBranch), childBranchName, childBranchName, SkynetAuthentication.getUser(UserEnum.NoOne));
       return childBranch;
    }
 

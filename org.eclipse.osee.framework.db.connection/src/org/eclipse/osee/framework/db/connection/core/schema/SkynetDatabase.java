@@ -53,12 +53,6 @@ public class SkynetDatabase {
    public static final Table DELETED_ATTRIBUTES_TABLE = new Table("OSEE_DEFINE_DELETED_ATTRIBUTES");
    public static final Table DELETED_RELATION_LINKS_TABLE = new Table("OSEE_DEFINE_DELETED_LINKS");
 
-   public static final Table TAG_ART_MAP_TABLE = new Table("OSEE_TAG_ART_MAP");
-   public static final Table TAG_CLOUD_MAP_TABLE = new Table("OSEE_TAG_CLOUD_MAP");
-   public static final Table TAG_CLOUD_TABLE = new Table("OSEE_TAG_CLOUD");
-   public static final Table TAG_CLOUD_TYPE_TABLE = new Table("OSEE_TAG_CLOUD_TYPE");
-   public static final Table TAG_TABLE = new Table("OSEE_TAG");
-   public static final Table TAG_TYPE_TABLE = new Table("OSEE_TAG_TYPE");
    public static final Table SNAPSHOT_TABLE = new Table("OSEE_SNAPSHOT");
    public static final String TXD_COMMENT = "OSEE_COMMENT";
 

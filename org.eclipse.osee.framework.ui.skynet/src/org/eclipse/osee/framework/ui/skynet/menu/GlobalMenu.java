@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.TagArtifactsJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
@@ -73,7 +72,6 @@ public class GlobalMenu {
          parentMenu.addMenuListener(new EnablementMenuListener());
          if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.DeleteArtifacts)) createDeleteMenuItem(parentMenu);
          if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.PurgeArtifacts)) createPurgeMenuItem(parentMenu);
-         if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.TagArtifacts)) createTagMenuItem(parentMenu);
       }
    }
 
@@ -108,25 +106,6 @@ public class GlobalMenu {
          }
       }
    }
-
-   private void createTagMenuItem(Menu parentMenu) {
-      tagMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      tagMenuItem.setText("&Tag Artifact(s)");
-
-      tagMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            tagArtifactsAction.run();
-         }
-      });
-   }
-
-   private Action tagArtifactsAction = new Action("&Tag Artifact(s)", Action.AS_PUSH_BUTTON) {
-      @Override
-      public void run() {
-         Jobs.startJob(new TagArtifactsJob(globalMenuHelper.getArtifacts()));
-      }
-   };
 
    // Provided for addition to Menus
    private void createDeleteMenuItem(Menu parentMenu) {
