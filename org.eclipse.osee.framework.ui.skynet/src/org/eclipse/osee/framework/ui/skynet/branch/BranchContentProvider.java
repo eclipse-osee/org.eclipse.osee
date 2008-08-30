@@ -25,13 +25,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -61,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.osee.framework.ui.swt.TreeNode;
@@ -70,7 +70,6 @@ import org.eclipse.osee.framework.ui.swt.TreeNode;
  * @author Robert A. Fisher
  */
 public class BranchContentProvider implements ITreeContentProvider, ArtifactChangeListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchContentProvider.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final SnapshotPersistenceManager snapshotManager = SnapshotPersistenceManager.getInstance();
    private static final RevisionManager revisionManager = RevisionManager.getInstance();
@@ -139,7 +138,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                }
                return branches.toArray();
             } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          } else if (parentElement instanceof Branch) {
             Branch branch = (Branch) parentElement;
@@ -234,7 +233,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          node.setChildren(changeReport);
          changeReport = new Object[] {node};
       } catch (BranchDoesNotExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       return changeReport;
@@ -369,12 +368,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          TransactionData data = (TransactionData) element;
 
          if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
-      }
-      try {
-         if (element instanceof Branch && ((Branch) element).getChildBranches().isEmpty()) {
-            return false;
-         }
-      } catch (SQLException ex) {
       }
 
       return ((element instanceof Branch && AccessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
