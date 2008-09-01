@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.history;
 
 import java.util.logging.Level;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -61,8 +63,10 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class RevisionHistoryView extends ViewPart implements IActionable, IEventReceiver {
-   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
-   private static final String[] columnNames = {"Revision", "Time Stamp", "Author", "Comment"};
+   public static final String VIEW_ID =
+         "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
+   private static final String[] columnNames =
+         {"Revision", "Time Stamp", "Author", "Comment"};
    private static final String ARTIFACT_GUID = "GUID";
    private TreeViewer treeViewer;
    private Artifact artifact;
@@ -79,7 +83,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
       SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
-      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class, this);
+      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class,
+            this);
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
 
    }
@@ -88,8 +93,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
          RevisionHistoryView revisionHistoryView =
-               (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+               (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID,
+                     artifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
          revisionHistoryView.explore(artifact);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -118,13 +123,46 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       Menu popupMenu = new Menu(parent);
       ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, treeViewer);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts", null);
+      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts",
+            null);
       treeViewer.getTree().setMenu(popupMenu);
+      createActions();
 
-      OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Revision History");
       SkynetContributionItem.addTo(this, true);
 
       explore(artifact);
+   }
+
+   protected void createActions() {
+      Action expandAll = new Action("Expand All") {
+
+         @Override
+         public void run() {
+            treeViewer.expandAll();
+         }
+      };
+      expandAll.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor(
+            "expandAll.gif"));
+      expandAll.setToolTipText("Expand All");
+
+      Action refreshAction = new Action("Refresh") {
+
+         @Override
+         public void run() {
+            explore(artifact);
+         }
+      };
+      refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor(
+            "refresh.gif"));
+      refreshAction.setToolTipText("Refresh");
+
+      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(expandAll);
+      toolbarManager.add(refreshAction);
+
+      OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID,
+            "Revision History");
+
    }
 
    private void createTreeExpandListener() {
@@ -204,7 +242,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "revision_history_tree_viewer");
+      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(),
+            "revision_history_tree_viewer");
    }
 
    /* (non-Javadoc)
@@ -219,7 +258,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
             String guid = memento.getString(ARTIFACT_GUID);
             if (guid != null) {
                artifact =
-                     ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getDefaultBranch());
+                     ArtifactQuery.getArtifactFromId(guid,
+                           BranchPersistenceManager.getDefaultBranch());
             }
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -255,11 +295,13 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       }
 
       if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) || (event instanceof LocalDeletedBranchEvent) || (event instanceof RemoteDeletedBranchEvent)) {
-         closeView = artifact != null && ((BranchEvent) event).getBranchId() == artifact.getBranch().getBranchId();
+         closeView =
+               artifact != null && ((BranchEvent) event).getBranchId() == artifact.getBranch().getBranchId();
       }
 
       if (closeView) {
-         getViewSite().getPage().hideView(getViewSite().getPage().findViewReference(VIEW_ID, artifact.getGuid()));
+         getViewSite().getPage().hideView(
+               getViewSite().getPage().findViewReference(VIEW_ID, artifact.getGuid()));
       }
    }
 
