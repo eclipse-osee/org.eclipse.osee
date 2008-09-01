@@ -46,9 +46,11 @@ public class XResultData {
 
       rd.log("Here is a nice table");
       rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
-      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title",
+            "Status"}));
       for (int x = 0; x < 3; x++)
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x,
+               x + ""}));
       rd.addRaw(AHTML.endMultiColumnTable());
       rd.report("This is my report title");
    }
@@ -107,6 +109,7 @@ public class XResultData {
       }
    }
 
+   @Override
    public String toString() {
       return sb.toString();
    }
@@ -134,4 +137,5 @@ public class XResultData {
       return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
             (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
    }
+
 }

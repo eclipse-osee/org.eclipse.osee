@@ -269,7 +269,7 @@ public class XResultView extends ViewPart implements IActionable {
                AWorkbench.popup("ERROR", "Nothing to export");
                return;
             }
-            currentPage.handleSave();
+            currentPage.saveToFile();
          }
       };
       action.setToolTipText("Save report to file");
