@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -81,6 +83,9 @@ public class NavigateView extends ViewPart implements IActionable {
 
       AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID);
       createActions();
+      if (savedFilterStr != null) {
+         xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+      }
       xNavComp.refresh();
       xNavComp.getFilteredTree().getFilterControl().setFocus();
    }
@@ -214,4 +219,38 @@ public class NavigateView extends ViewPart implements IActionable {
       return "";
    }
 
+   private static final String INPUT = "filter";
+   private static final String FILTER_STR = "filterStr";
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.ui.part.ViewPart#saveState(org.eclipse.ui.IMemento)
+    */
+   @Override
+   public void saveState(IMemento memento) {
+      super.saveState(memento);
+      memento = memento.createChild(INPUT);
+
+      if (xNavComp != null && xNavComp.getFilteredTree().getFilterControl() != null && !xNavComp.getFilteredTree().isDisposed()) {
+         String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
+         memento.putString(FILTER_STR, filterStr);
+      }
+   }
+   private String savedFilterStr = null;
+
+   @Override
+   public void init(IViewSite site, IMemento memento) throws PartInitException {
+      super.init(site, memento);
+      try {
+         if (memento != null) {
+            memento = memento.getChild(INPUT);
+            if (memento != null) {
+               savedFilterStr = memento.getString(FILTER_STR);
+            }
+         }
+      } catch (Exception ex) {
+         OSEELog.logWarning(SkynetGuiPlugin.class, "NavigateView error on init", ex, false);
+      }
+   }
 }
