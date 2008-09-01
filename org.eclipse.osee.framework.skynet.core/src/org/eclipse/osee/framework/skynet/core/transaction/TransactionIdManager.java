@@ -23,7 +23,7 @@ import java.util.zip.Checksum;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -95,7 +95,7 @@ public class TransactionIdManager {
    }
 
    public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws SQLException {
-      Integer transactionNumber = SkynetDatabase.getNextTransactionId();
+      Integer transactionNumber = SequenceManager.getNextTransactionId();
       if (comment == null) {
          comment = "";
       }

@@ -28,8 +28,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
@@ -235,7 +234,7 @@ public class ArtifactTypeManager {
    public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException, IllegalStateException, OseeCoreException {
       ArtifactType artifactType;
       if (!typeExists(namespace, artifactTypeName)) {
-         int artTypeId = Query.getNextSeqVal(SkynetDatabase.ART_TYPE_ID_SEQ);
+         int artTypeId = SequenceManager.getNextArtifactTypeId();
          InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
          ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 

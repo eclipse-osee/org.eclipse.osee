@@ -35,9 +35,9 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -225,7 +225,7 @@ public class ArtifactPersistenceManager {
          modType = ModificationType.NEW;
       }
 
-      int artGamma = SkynetDatabase.getNextGammaId();
+      int artGamma = SequenceManager.getNextGammaId();
 
       if (!artifact.isInDb()) {
          addArtifactData(artifact, transaction);
@@ -570,7 +570,7 @@ public class ArtifactPersistenceManager {
    public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
       if (!artifact.isInDb()) return;
 
-      processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SkynetDatabase.getNextGammaId());
+      processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
 
       transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
             transaction.getTransactionNumber(), artifact.getArtId(), artifact.getArtTypeId(),

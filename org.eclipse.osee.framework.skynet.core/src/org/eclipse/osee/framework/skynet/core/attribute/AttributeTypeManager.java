@@ -12,9 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_PROVIDER_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_TYPE_ID_SEQ;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -23,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -207,7 +204,7 @@ public class AttributeTypeManager {
       Class<? extends IAttributeDataProvider> providerAttributeClass =
             extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
 
-      int attrTypeId = Query.getNextSeqVal(ATTR_TYPE_ID_SEQ);
+      int attrTypeId = SequenceManager.getNextAttributeTypeId();
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
@@ -232,8 +229,7 @@ public class AttributeTypeManager {
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_provider_type_id");
          } else {
-            attrBaseTypeId = Query.getNextSeqVal(ATTR_PROVIDER_TYPE_ID_SEQ);
-
+            attrBaseTypeId = SequenceManager.getNextAttributeProviderTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId, attrProviderExtension);
          }
       } finally {
@@ -251,8 +247,7 @@ public class AttributeTypeManager {
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_base_type_id");
          } else {
-            attrBaseTypeId = Query.getNextSeqVal(ATTR_BASE_TYPE_ID_SEQ);
-
+            attrBaseTypeId = SequenceManager.getNextAttributeBaseTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, attrBaseTypeId, attrBaseExtension);
          }
       } finally {

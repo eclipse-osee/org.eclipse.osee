@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +39,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -473,7 +472,7 @@ public class BranchPersistenceManager {
     * @throws SQLException
     */
    static int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
-      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+      int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = "Commit Branch " + childBranch.getBranchName();
@@ -494,7 +493,7 @@ public class BranchPersistenceManager {
     * @throws SQLException
     */
    int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
-      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+      int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
             toBranch.getBranchId(), newTransactionNumber, "Commit Branch " + fromTransactionID.getTransactionNumber(),

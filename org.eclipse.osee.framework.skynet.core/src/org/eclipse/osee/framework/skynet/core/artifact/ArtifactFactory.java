@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -54,7 +54,7 @@ public abstract class ArtifactFactory {
             getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
 
       try {
-         artifact.setArtId(SkynetDatabase.getNextArtifactId());
+         artifact.setArtId(SequenceManager.getNextArtifactId());
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }

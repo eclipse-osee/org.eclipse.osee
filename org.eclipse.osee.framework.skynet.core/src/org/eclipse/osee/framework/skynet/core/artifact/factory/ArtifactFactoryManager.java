@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.FACTORY_ID_SEQ;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +21,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -139,7 +138,7 @@ public class ArtifactFactoryManager {
          for (String factoryClassName : factoryBundleMap.keySet()) {
             if (!factoryNameMap.containsKey(factoryClassName)) {
 
-               int factoryId = Query.getNextSeqVal(FACTORY_ID_SEQ);
+               int factoryId = SequenceManager.getNextFactoryId();
 
                ConnectionHandler.runPreparedUpdate(
                      "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,

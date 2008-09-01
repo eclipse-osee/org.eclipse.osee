@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 
 public class Translator {
@@ -53,15 +52,15 @@ public class Translator {
 
    private List<IdTranslator> getTranslators() {
       List<IdTranslator> translators = new ArrayList<IdTranslator>();
-      translators.add(new IdTranslator(SkynetDatabase.GAMMA_ID_SEQ, "gamma_id"));
-      translators.add(new IdTranslator(SkynetDatabase.TRANSACTION_ID_SEQ, "transaction_id"));
-      translators.add(new IdTranslator(SkynetDatabase.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new IdTranslator(SkynetDatabase.ART_TYPE_ID_SEQ, "art_type_id"));
-      translators.add(new IdTranslator(SkynetDatabase.ATTR_ID_SEQ, "attr_id"));
-      translators.add(new IdTranslator(SkynetDatabase.ATTR_TYPE_ID_SEQ, "attr_type_id"));
-      translators.add(new IdTranslator(SkynetDatabase.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new IdTranslator(SkynetDatabase.REL_LINK_ID_SEQ, "rel_link_id"));
-      translators.add(new IdTranslator(SkynetDatabase.REL_LINK_TYPE_ID_SEQ, "rel_link_type_id"));
+      translators.add(new IdTranslator(SequenceManager.GAMMA_ID_SEQ, "gamma_id"));
+      translators.add(new IdTranslator(SequenceManager.TRANSACTION_ID_SEQ, "transaction_id"));
+      translators.add(new IdTranslator(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new IdTranslator(SequenceManager.ART_TYPE_ID_SEQ, "art_type_id"));
+      translators.add(new IdTranslator(SequenceManager.ATTR_ID_SEQ, "attr_id"));
+      translators.add(new IdTranslator(SequenceManager.ATTR_TYPE_ID_SEQ, "attr_type_id"));
+      translators.add(new IdTranslator(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new IdTranslator(SequenceManager.REL_LINK_ID_SEQ, "rel_link_id"));
+      translators.add(new IdTranslator(SequenceManager.REL_LINK_TYPE_ID_SEQ, "rel_link_type_id"));
       return translators;
    }
 
@@ -126,7 +125,7 @@ public class Translator {
          } else {
             newVersion = this.idMap.get(originalLong);
             if (newVersion == null) {
-               newVersion = (long) Query.getNextSeqVal(getSequence());
+               newVersion = SequenceManager.getNextSequence(getSequence());
                idMap.put(originalLong, newVersion);
             }
          }

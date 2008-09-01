@@ -14,12 +14,10 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +34,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -138,7 +136,7 @@ public class BranchCreator {
                   associatedArtifact, branchType);
 
       // insert the new transaction data first.
-      int newTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+      int newTransactionNumber = SequenceManager.getNextTransactionId();
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
                   "time", "author", "tx_type");
@@ -204,7 +202,7 @@ public class BranchCreator {
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
       List<Object[]> txAddressData = new LinkedList<Object[]>();
       for (Integer parentTransactionNumber : transactions) {
-         int nextTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+         int nextTransactionNumber = SequenceManager.getNextTransactionId();
 
          ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAILS_FOR_HISTORY, newBranch.getBranchId(),
                nextTransactionNumber, parentTransactionNumber.intValue());
@@ -371,7 +369,7 @@ public class BranchCreator {
          DbUtil.close(chStmt);
       }
 
-      int branchId = Query.getNextSeqVal(BRANCH_ID_SEQ);
+      int branchId = SequenceManager.getNextBranchId();
       int parentBranchNumber =
             parentBranchId == null ? Branch.NULL_PARENT_BRANCH_ID : parentBranchId.getBranch().getBranchId();
       int associatedArtifactId = -1;

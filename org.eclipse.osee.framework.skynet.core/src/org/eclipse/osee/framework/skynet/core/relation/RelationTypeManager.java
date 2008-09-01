@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.REL_LINK_TYPE_ID_SEQ;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -209,7 +208,7 @@ public class RelationTypeManager {
             "The shortName can not be null or empty");
 
       try {
-         int relationTypeId = Query.getNextSeqVal(REL_LINK_TYPE_ID_SEQ);
+         int relationTypeId = SequenceManager.getNextRelationTypeId();
 
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
                sideAName, sideBName, abPhrasing, baPhrasing, shortName);

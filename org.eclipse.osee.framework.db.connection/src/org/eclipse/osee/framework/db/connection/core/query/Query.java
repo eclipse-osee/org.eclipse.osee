@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.db.connection.core.query;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -72,17 +70,6 @@ public class Query {
       } finally {
          DbUtil.close(chStmt);
       }
-   }
-
-   /**
-    * Burns exactly one value from a database sequence and returns the value.
-    * 
-    * @param sequence The name of the sequence to burn the value from.
-    * @return The next value that was available from the sequence.
-    * @throws SQLException See {@link Statement#executeQuery(java.lang.String)}
-    */
-   public static int getNextSeqVal(String sequence) throws SQLException {
-      return (int) OseeSequenceManager.getInstance().getNextSequence(sequence);
    }
 
    /**

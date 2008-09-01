@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core.schema;
 
-import java.sql.SQLException;
-import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
-
 /**
  * Provides the ability to build the tables and sequences necessary for the Define tools to be able to work. This class
  * is only intended for installation purposes, and is not to support general runtime needs.
@@ -63,50 +60,7 @@ public class SkynetDatabase {
 
    private static final View[] skynetViews = new View[] {};
 
-   public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
-   public static final String ART_TYPE_ID_SEQ = "SKYNET_ART_TYPE_ID_SEQ";
-   public static final String ATTR_BASE_TYPE_ID_SEQ = "SKYNET_ATTR_BASE_TYPE_ID_SEQ";
-   public static final String ATTR_PROVIDER_TYPE_ID_SEQ = "SKYNET_ATTR_PROVIDER_TYPE_ID_SEQ";
-   public static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
-   public static final String ATTR_TYPE_ID_SEQ = "SKYNET_ATTR_TYPE_ID_SEQ";
-   public static final String FACTORY_ID_SEQ = "SKYNET_FACTORY_ID_SEQ";
-   public static final String BRANCH_ID_SEQ = "SKYNET_BRANCH_ID_SEQ";
-   public static final String REL_LINK_TYPE_ID_SEQ = "SKYNET_REL_LINK_TYPE_ID_SEQ";
-   public static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
-   public static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
-   public static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
-
-   public static final String TAG_ID_SEQ = "SKYNET_TAG_ID_SEQ";
-   public static final String TAG_TYPE_ID_SEQ = "SKYNET_TAG_TYPE_ID_SEQ";
-   public static final String CLOUD_ID_SEQ = "SKYNET_CLOUD_ID_SEQ";
-   public static final String CLOUD_TYPE_ID_SEQ = "SKYNET_CLOUD_TYPE_ID_SEQ";
-
-   public static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
-
-   public static final String[] sequences =
-         new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_PROVIDER_TYPE_ID_SEQ, ATTR_ID_SEQ,
-               ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ,
-               TRANSACTION_ID_SEQ, TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ, TTE_SESSION_SEQ};
-
    public static View[] getSkynetViews() {
       return skynetViews;
-   }
-   // must be initialized after table names since they are used in the static initializers for OseeSequenceManager
-   private static final OseeSequenceManager sequenceManager = OseeSequenceManager.getInstance();
-
-   public static int getNextGammaId() throws SQLException {
-      return (int) sequenceManager.getNextSequence(GAMMA_ID_SEQ);
-   }
-
-   public static int getNextArtifactId() throws SQLException {
-      return (int) sequenceManager.getNextSequence(ART_ID_SEQ);
-   }
-
-   public static int getNextTransactionId() throws SQLException {
-      return (int) sequenceManager.getNextSequence(TRANSACTION_ID_SEQ);
-   }
-
-   public static int getNextSessionId() throws SQLException {
-      return (int) sequenceManager.getNextSequence(TTE_SESSION_SEQ);
    }
 }

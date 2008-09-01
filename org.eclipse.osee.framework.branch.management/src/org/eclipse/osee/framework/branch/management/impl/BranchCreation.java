@@ -19,8 +19,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -98,7 +97,7 @@ public class BranchCreation implements IBranchCreation {
          branchId =
                initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,
                      creationComment, associatedArtifactId, BranchType.STANDARD);
-         int newTransactionNumber = Query.getNextSeqVal(SkynetDatabase.TRANSACTION_ID_SEQ);
+         int newTransactionNumber = SequenceManager.getNextTransactionId();
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchId, newTransactionNumber,
                creationComment, timestamp, authorId, 1);
 
@@ -111,7 +110,7 @@ public class BranchCreation implements IBranchCreation {
          if (checkAlreadyHasBranchName(branchName)) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
-         int branchId = Query.getNextSeqVal(SkynetDatabase.BRANCH_ID_SEQ);
+         int branchId = SequenceManager.getNextBranchId();
          ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
                parentBranchId, 0, associatedArtifactId, branchType.getValue());
 

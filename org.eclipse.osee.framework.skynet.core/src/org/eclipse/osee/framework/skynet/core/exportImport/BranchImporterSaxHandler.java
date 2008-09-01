@@ -13,18 +13,13 @@ package org.eclipse.osee.framework.skynet.core.exportImport;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ART_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.GAMMA_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.REL_LINK_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -43,7 +38,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -272,7 +267,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       }
 
       monitor.subTask("Transaction " + ++transactionOnBranchCount);
-      currentTransactionId = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+      currentTransactionId = SequenceManager.getNextTransactionId();
       Integer authorId = artifactGuidCache.getId(author);
       Integer commitArtId = artifactGuidCache.getId(commitArtGuid);
 
@@ -313,7 +308,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                OseeLog.log(SkynetActivator.class, Level.WARNING,
                      "Initial creation of artifact " + hrid + " was a delete version");
             }
-            currentArtifactId = Query.getNextSeqVal(ART_ID_SEQ);
+            currentArtifactId = SequenceManager.getNextArtifactId();
 
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
             int artTypeId = artifactType.getArtTypeId();
@@ -321,7 +316,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, currentArtifactId, hrid, artTypeId, guid);
          }
 
-         int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
+         int gammaId = SequenceManager.getNextGammaId();
          int modificationInt = modificationType != null ? modificationType.getValue() : -1;
          ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, currentArtifactId, gammaId, modificationInt);
          insertTxAddress(gammaId, modificationInt, txCurrent);
@@ -344,13 +339,13 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       Integer attrId = attributeGuidCache.getId(attributeGuid);
       if (attrId == null) {
-         attrId = Query.getNextSeqVal(ATTR_ID_SEQ);
+         attrId = SequenceManager.getNextAttributeId();
          attributeGuidCache.map(attrId, attributeGuid);
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_GUID, attrId, attributeGuid);
       }
       AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
       int attrTypeId = attributeType.getAttrTypeId();
-      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
+      int gammaId = SequenceManager.getNextGammaId();
 
       ModificationType modificationType = null;
       if (Strings.isValid(modType)) {
@@ -393,7 +388,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       monitor.subTask("Transaction " + transactionOnBranchCount + " Link " + ++linkOnTransactionCount);
       Integer relLinkId = linkGuidCache.getId(guid);
       if (relLinkId == null) {
-         relLinkId = Query.getNextSeqVal(REL_LINK_ID_SEQ);
+         relLinkId = SequenceManager.getNextRelationId();
          linkGuidCache.map(relLinkId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_GUID, relLinkId, guid);
       }
@@ -414,7 +409,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (Strings.isValid(modType)) {
          modificationType = ModificationType.valueOf(modType);
       }
-      int gammaId = Query.getNextSeqVal(GAMMA_ID_SEQ);
+      int gammaId = SequenceManager.getNextGammaId();
       int modificationInt = modificationType != null ? modificationType.getValue() : -1;
       ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK, relLinkId, relLinkTypeId, aArtId, bArtId, aOrderId,
             bOrderId, rationale, gammaId, modificationInt);

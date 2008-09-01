@@ -15,27 +15,47 @@ import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 
-public class OseeSequenceManager {
-   private static final String SEQUENCE_NAME = "SEQUENCE_NAME";
+/**
+ * @author Ryan D. Brooks
+ */
+public class SequenceManager {
    private static final String LAST_SEQUENCE = "LAST_SEQUENCE";
    private static final String QUERY_SEQUENCE =
-         "SELECT " + LAST_SEQUENCE + " FROM " + SkynetDatabase.SEQUENCE_TABLE + " WHERE " + SEQUENCE_NAME + " = ? ";
+         "SELECT last_sequence FROM osee_define_sequence WHERE sequence_name = ?";
    private static final String INSERT_SEQUENCE =
-         "INSERT INTO " + SkynetDatabase.SEQUENCE_TABLE + " ( " + LAST_SEQUENCE + ", " + SEQUENCE_NAME + ") VALUES (?,?)";
+         "INSERT INTO osee_define_sequence (last_sequence, sequence_name) VALUES (?,?)";
    private static final String UPDATE_SEQUENCE =
-         "UPDATE " + SkynetDatabase.SEQUENCE_TABLE + " SET " + LAST_SEQUENCE + " = ? WHERE " + SEQUENCE_NAME + " = ? AND " + LAST_SEQUENCE + " = ?";
+         "UPDATE osee_define_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
 
    private HashMap<String, SequenceRange> sequences;
 
-   private static final OseeSequenceManager instance = new OseeSequenceManager();
+   public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
+   public static final String ART_TYPE_ID_SEQ = "SKYNET_ART_TYPE_ID_SEQ";
+   public static final String ATTR_BASE_TYPE_ID_SEQ = "SKYNET_ATTR_BASE_TYPE_ID_SEQ";
+   public static final String ATTR_PROVIDER_TYPE_ID_SEQ = "SKYNET_ATTR_PROVIDER_TYPE_ID_SEQ";
+   public static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
+   public static final String ATTR_TYPE_ID_SEQ = "SKYNET_ATTR_TYPE_ID_SEQ";
+   public static final String FACTORY_ID_SEQ = "SKYNET_FACTORY_ID_SEQ";
+   public static final String BRANCH_ID_SEQ = "SKYNET_BRANCH_ID_SEQ";
+   public static final String REL_LINK_TYPE_ID_SEQ = "SKYNET_REL_LINK_TYPE_ID_SEQ";
+   public static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
+   public static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
+   public static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
+   public static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
 
-   private OseeSequenceManager() {
+   public static final String[] sequenceNames =
+         new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_PROVIDER_TYPE_ID_SEQ, ATTR_ID_SEQ,
+               ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ,
+               TRANSACTION_ID_SEQ, TTE_SESSION_SEQ};
+
+   private static final SequenceManager instance = new SequenceManager();
+
+   private SequenceManager() {
       sequences = new HashMap<String, SequenceRange>(30);
    }
 
-   public static OseeSequenceManager getInstance() {
+   public static SequenceManager getInstance() {
       return instance;
    }
 
@@ -43,7 +63,7 @@ public class OseeSequenceManager {
       SequenceRange range = sequences.get(sequenceName);
       if (range == null) {
          // do this to keep transaction id's sequential in the face of concurrent transaction by multiple users
-         range = new SequenceRange(!sequenceName.equals(SkynetDatabase.TRANSACTION_ID_SEQ));
+         range = new SequenceRange(!sequenceName.equals(TRANSACTION_ID_SEQ));
          sequences.put(sequenceName, range);
       }
       return range;
@@ -91,7 +111,7 @@ public class OseeSequenceManager {
          if (chStmt.next()) {
             toReturn = chStmt.getRset().getLong(LAST_SEQUENCE);
          } else {
-            throw new SQLException("Sequence name [" + sequenceName + "] not found in " + SkynetDatabase.SEQUENCE_TABLE);
+            throw new SQLException("Sequence name [" + sequenceName + "] was not found");
          }
       } finally {
          DbUtil.close(chStmt);
@@ -99,10 +119,10 @@ public class OseeSequenceManager {
       return toReturn;
    }
 
-   public synchronized long getNextSequence(String sequenceName) throws SQLException {
-      SequenceRange range = getRange(sequenceName);
+   public static synchronized long getNextSequence(String sequenceName) throws SQLException {
+      SequenceRange range = instance.getRange(sequenceName);
       if (range.lastAvailable == 0) {
-         prefetch(sequenceName);
+         instance.prefetch(sequenceName);
       }
 
       range.currentValue++;
@@ -116,6 +136,58 @@ public class OseeSequenceManager {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;
       insertSequenceValue(sequenceName, 0);
+   }
+
+   public static int getNextSessionId() throws SQLException {
+      return (int) getNextSequence(TTE_SESSION_SEQ);
+   }
+
+   public static int getNextTransactionId() throws SQLException {
+      return (int) getNextSequence(TRANSACTION_ID_SEQ);
+   }
+
+   public static int getNextArtifactId() throws SQLException {
+      return (int) getNextSequence(ART_ID_SEQ);
+   }
+
+   public static int getNextGammaId() throws SQLException {
+      return (int) getNextSequence(GAMMA_ID_SEQ);
+   }
+
+   public static int getNextArtifactTypeId() throws SQLException {
+      return (int) getNextSequence(ART_TYPE_ID_SEQ);
+   }
+
+   public static int getNextAttributeBaseTypeId() throws SQLException {
+      return (int) getNextSequence(ATTR_BASE_TYPE_ID_SEQ);
+   }
+
+   public static int getNextAttributeProviderTypeId() throws SQLException {
+      return (int) getNextSequence(ATTR_PROVIDER_TYPE_ID_SEQ);
+   }
+
+   public static int getNextAttributeId() throws SQLException {
+      return (int) getNextSequence(ATTR_ID_SEQ);
+   }
+
+   public static int getNextAttributeTypeId() throws SQLException {
+      return (int) getNextSequence(ATTR_TYPE_ID_SEQ);
+   }
+
+   public static int getNextFactoryId() throws SQLException {
+      return (int) getNextSequence(FACTORY_ID_SEQ);
+   }
+
+   public static int getNextBranchId() throws SQLException {
+      return (int) getNextSequence(BRANCH_ID_SEQ);
+   }
+
+   public static int getNextRelationTypeId() throws SQLException {
+      return (int) getNextSequence(REL_LINK_TYPE_ID_SEQ);
+   }
+
+   public static int getNextRelationId() throws SQLException {
+      return (int) getNextSequence(REL_LINK_ID_SEQ);
    }
 
    private class SequenceRange {

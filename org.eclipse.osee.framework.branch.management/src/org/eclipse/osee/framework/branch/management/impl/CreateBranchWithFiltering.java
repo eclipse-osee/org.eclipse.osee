@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,7 +29,7 @@ import org.eclipse.osee.framework.branch.management.impl.BranchCreation.CreateBr
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -122,7 +121,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
       for (Integer parentTransactionNumber : transactions) {
-         int nextTransactionNumber = Query.getNextSeqVal(TRANSACTION_ID_SEQ);
+         int nextTransactionNumber = SequenceManager.getNextTransactionId();
 
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS_FOR_HISTORY, getNewBranchId(),
                nextTransactionNumber, 0, parentTransactionNumber.intValue());

@@ -15,8 +15,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -84,7 +83,7 @@ public class RelationPersistenceManager {
       // persisted by its other artifact
       link.setNotDirty();
 
-      int gammaId = SkynetDatabase.getNextGammaId();
+      int gammaId = SequenceManager.getNextGammaId();
       ModType modType;
       ModificationType modId;
 
@@ -120,7 +119,7 @@ public class RelationPersistenceManager {
             bArtifact.persistAttributes();
          }
 
-         int relationId = Query.getNextSeqVal(SkynetDatabase.REL_LINK_ID_SEQ);
+         int relationId = SequenceManager.getNextRelationId();
          link.setPersistenceIds(relationId, gammaId);
          modType = ModType.Added;
          modId = ModificationType.NEW;

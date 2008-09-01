@@ -28,8 +28,7 @@ import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.OseeDbVersion;
-import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -114,8 +113,8 @@ public class SkynetDbInit extends DbInitializationTask {
     * @throws SQLException
     */
    private void populateSequenceTable() throws SQLException {
-      OseeSequenceManager seqManager = OseeSequenceManager.getInstance();
-      for (String sequenceName : SkynetDatabase.sequences) {
+      SequenceManager seqManager = SequenceManager.getInstance();
+      for (String sequenceName : SequenceManager.sequenceNames) {
          seqManager.initializeSequence(sequenceName);
       }
    }

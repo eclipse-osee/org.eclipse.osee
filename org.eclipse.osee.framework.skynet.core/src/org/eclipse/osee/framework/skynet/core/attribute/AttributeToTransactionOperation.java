@@ -19,8 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -84,7 +83,7 @@ public class AttributeToTransactionOperation {
       ModType modType = null;
       ModificationType attrModType = null;
       if (attribute.isInDatastore()) {
-         attribute.setGammaId(SkynetDatabase.getNextGammaId());
+         attribute.setGammaId(SequenceManager.getNextGammaId());
 
          modType = ModType.Changed;
          attrModType = ModificationType.CHANGE;
@@ -145,9 +144,9 @@ public class AttributeToTransactionOperation {
             DbUtil.close(connectionHandlerStatement);
          }
       }
-      int gammaId = SkynetDatabase.getNextGammaId();
+      int gammaId = SequenceManager.getNextGammaId();
       if (attrId < 1) {
-         attrId = Query.getNextSeqVal(SkynetDatabase.ATTR_ID_SEQ);
+         attrId = SequenceManager.getNextAttributeId();
       }
       attribute.setIds(attrId, gammaId);
    }
@@ -162,7 +161,7 @@ public class AttributeToTransactionOperation {
    private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws SQLException {
       if (!attribute.isInDatastore()) return;
 
-      int gammaId = SkynetDatabase.getNextGammaId();
+      int gammaId = SequenceManager.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionId(), null,
             ModificationType.DELETED, transaction.getBranch()));
