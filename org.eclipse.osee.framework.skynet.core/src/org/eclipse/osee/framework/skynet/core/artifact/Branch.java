@@ -317,10 +317,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return associatedArtifactId != SkynetAuthentication.getNoOneArtifactId();
    }
 
-   // TODO fix this HACK
    public boolean isBaselineBranch() {
-      System.out.println("Branch.isBaselineBranch...fix this");
-      return !getBranchName().contains("RPCR");
+      return branchType.equals(BranchType.BASELINE);
    }
 
    public boolean isRootBranch() {
