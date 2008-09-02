@@ -5,8 +5,6 @@
    <extension-point id="ArtifactFactory" name="ArtifactFactory" schema="schema/ArtifactFactory.exsd"/>
    <extension-point id="ArtifactTypeImage" name="ArtifactTypeImage" schema="schema/ArtifactTypeImage.exsd"/>
    <extension-point id="HttpServerRequest" name="HttpServerRequest" schema="schema/HttpServerRequest.exsd"/>
-   <extension-point id="Tagger" name="Tagger" schema="schema/Tagger.exsd"/>
-   <extension-point id="TaggerCustomization" name="TaggerCustomization" schema="schema/TaggerCustomization.exsd"/>
    <extension-point id="HttpServerPort" name="HttpServerPort" schema="schema/HttpServerPort.exsd"/>
    <extension-point id="OseeTypes" name="OseeTypes" schema="schema/OseeTypes.exsd"/>
    <extension-point id="AtsLib" name="AtsLib" schema="schema/AtsLib.exsd"/>
@@ -165,12 +163,6 @@
                ArtifactTypeName="Artifact"
                ImagePath="images/laser_16_16.gif">
          </ArtifactImage>
-      </extension>
-      <extension
-            point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">
-         <ignoreSkynetAttribute
-               attributeName="Native Content">
-         </ignoreSkynetAttribute>
       </extension>
       <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
