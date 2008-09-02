@@ -165,7 +165,7 @@ public class RevisionManager implements IEventReceiver {
 
    private static final RevisionManager instance = new RevisionManager();
 
-   private Map<Integer, String> bemsToName;
+   private final Map<Integer, String> bemsToName;
 
    private RevisionManager() {
       super();
@@ -266,12 +266,12 @@ public class RevisionManager implements IEventReceiver {
 
       ConnectionHandlerStatement chStmt = null;
 
-         final Integer artId = artifact.getArtId();
-         Branch cursor = artifact.getBranch();
-         Integer limit = Integer.MAX_VALUE;
+      final Integer artId = artifact.getArtId();
+      Branch cursor = artifact.getBranch();
+      Integer limit = Integer.MAX_VALUE;
 
-         while (cursor != null) {
-    	try{
+      while (cursor != null) {
+         try {
             chStmt =
                   ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, cursor.getBranchId(),
                         artId, cursor.getBranchId(), artId, cursor.getBranchId(), limit);
@@ -288,9 +288,9 @@ public class RevisionManager implements IEventReceiver {
             } else {
                cursor = null;
             }
-      } finally {
-         DbUtil.close(chStmt);
-      }
+         } finally {
+            DbUtil.close(chStmt);
+         }
       }
       return transactionDetails;
    }
@@ -1068,7 +1068,13 @@ public class RevisionManager implements IEventReceiver {
       if (includeRelationOnlyChanges) {
          criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       }
-      return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
+      Set<Artifact> modOnlyArtifacts = new HashSet<Artifact>();
+      for (Artifact artifact : ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null)) {
+         if (!artifact.isDeleted()) {
+            modOnlyArtifacts.add(artifact);
+         }
+      }
+      return modOnlyArtifacts;
    }
 
    public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
@@ -1166,18 +1172,17 @@ public class RevisionManager implements IEventReceiver {
             baselineTransaction = maxUnderTransaction;
          else
             baselineTransaction = minOverTransaction;
-         
+
          ModificationType modificationType;
-         if(artifact.isDeleted()){
-        	 modificationType = ModificationType.DELETED;
-         }else{
-        	 modificationType = (maxUnderTransaction == null && baselineTransaction != fromTransactionId) ? ModificationType.NEW : ModificationType.CHANGE;
+         if (artifact.isDeleted()) {
+            modificationType = ModificationType.DELETED;
+         } else {
+            modificationType =
+                  (maxUnderTransaction == null && baselineTransaction != fromTransactionId) ? ModificationType.NEW : ModificationType.CHANGE;
          }
-         
-         newAndModArtChanges.add(new ArtifactChange(
-               OUTGOING,
-               modificationType, artifact, baseParentTransactionId, headParentTransactionId, baselineTransaction, fromTransactionId,
-               toTransactionId, -1));
+
+         newAndModArtChanges.add(new ArtifactChange(OUTGOING, modificationType, artifact, baseParentTransactionId,
+               headParentTransactionId, baselineTransaction, fromTransactionId, toTransactionId, -1));
       }
 
       return newAndModArtChanges;
