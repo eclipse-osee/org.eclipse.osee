@@ -21,8 +21,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -56,21 +54,25 @@ public class SearchComposite extends Composite implements Listener {
    private Button clear;
    private Map<String, Boolean> optionsMap;
    private Map<String, Button> optionsButtons;
+   private Set<String> mutuallyExclusiveOptionSet;
    private boolean entryChanged;
    private Group optionGroup;
 
-   public SearchComposite(Composite parent, int style) {
-      this(parent, style, null);
-   }
-
-   public SearchComposite(Composite parent, int style, String[] options) {
+   public SearchComposite(Composite parent, int style, String[] options, String[] mutuallyExclusiveOptions) {
       super(parent, style);
       this.listeners = new HashSet<Listener>();
       this.optionsMap = new LinkedHashMap<String, Boolean>();
       this.optionsButtons = new LinkedHashMap<String, Button>();
+      this.mutuallyExclusiveOptionSet = new HashSet<String>();
       if (options != null) {
          for (String option : options) {
             this.optionsMap.put(option, false);
+         }
+      }
+      if (mutuallyExclusiveOptions != null) {
+         for (String option : mutuallyExclusiveOptions) {
+            this.optionsMap.put(option, false);
+            this.mutuallyExclusiveOptionSet.add(option);
          }
       }
       this.entryChanged = false;
@@ -97,12 +99,6 @@ public class SearchComposite extends Composite implements Listener {
       this.searchArea = new Combo(group, SWT.BORDER);
       this.searchArea.setFont(getFont());
       this.searchArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      this.searchArea.addSelectionListener(new SelectionAdapter() {
-         public void widgetSelected(SelectionEvent e) {
-            updateFromSourceField();
-         }
-      });
-
       this.searchArea.addKeyListener(new KeyAdapter() {
          public void keyPressed(KeyEvent event) {
             // If there has been a key pressed then mark as dirty
@@ -110,6 +106,11 @@ public class SearchComposite extends Composite implements Listener {
 
             if (event.character == '\r') {
                if (executeSearch.getEnabled()) {
+                  if (entryChanged) {
+                     entryChanged = false;
+                     updateFromSourceField();
+                  }
+
                   Event sendEvent = new Event();
                   sendEvent.widget = event.widget;
                   sendEvent.character = event.character;
@@ -119,6 +120,7 @@ public class SearchComposite extends Composite implements Listener {
             }
          }
       });
+
       this.searchArea.addModifyListener(new ModifyListener() {
          @Override
          public void modifyText(ModifyEvent e) {
@@ -126,15 +128,6 @@ public class SearchComposite extends Composite implements Listener {
          }
       });
 
-      this.searchArea.addFocusListener(new FocusAdapter() {
-         public void focusLost(FocusEvent event) {
-            // Clear the flag to prevent constant update
-            if (entryChanged) {
-               entryChanged = false;
-               updateFromSourceField();
-            }
-         }
-      });
       this.searchArea.setToolTipText(SEARCH_COMBO_TOOLTIP);
       createButtonBar(group);
    }
@@ -168,17 +161,17 @@ public class SearchComposite extends Composite implements Listener {
 
       this.executeSearch = new Button(composite, SWT.NONE);
       this.executeSearch.setText("Search");
-      this.executeSearch.addListener(SWT.Selection, this);
       this.executeSearch.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Event sendEvent = new Event();
-            sendEvent.widget = executeSearch;
-            sendEvent.type = SWT.Selection;
-            notifyListener(sendEvent);
+            if (entryChanged) {
+               entryChanged = false;
+               updateFromSourceField();
+            }
          }
       });
+      this.executeSearch.addListener(SWT.Selection, this);
       this.executeSearch.setEnabled(false);
       this.executeSearch.setFont(getFont());
       this.executeSearch.setToolTipText(SEARCH_BUTTON_TOOLTIP);
@@ -208,7 +201,19 @@ public class SearchComposite extends Composite implements Listener {
                Object object = e.getSource();
                if (object instanceof Button) {
                   Button button = (Button) object;
-                  optionsMap.put((String) button.getData(), button.getSelection());
+                  if (mutuallyExclusiveOptionSet.contains((String) button.getData())) {
+                     if (button.getSelection()) {
+                        for (String entry : mutuallyExclusiveOptionSet) {
+                           Button other = optionsButtons.get(entry);
+                           if (!other.equals(button)) {
+                              other.setSelection(false);
+                           }
+                           optionsMap.put((String) other.getData(), other.getSelection());
+                        }
+                     } else {
+                        optionsMap.put((String) button.getData(), button.getSelection());
+                     }
+                  }
                }
             }
          });
@@ -259,13 +264,17 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    private void updateWidgetEnablements() {
-      if (isWidgetAccessible(this.searchArea) && isWidgetAccessible(this.executeSearch) && isWidgetAccessible(this.clear)) {
+      if (isWidgetAccessible(this.searchArea)) {
          String value = this.searchArea.getText();
          if (value != null) {
             value = value.trim();
          }
-         this.executeSearch.setEnabled(Strings.isValid(value));
-         this.clear.setEnabled(this.searchArea.getItemCount() > 0);
+         if (isWidgetAccessible(this.executeSearch)) {
+            this.executeSearch.setEnabled(Strings.isValid(value));
+         }
+         if (isWidgetAccessible(this.clear)) {
+            this.clear.setEnabled(this.searchArea.getItemCount() > 0);
+         }
       }
    }
 

@@ -55,17 +55,20 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    private static final String MAIN_HELP_CONTEXT = "quick_search_text";
 
    private enum SearchOption {
-      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field."),
-      By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids."),
-      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.");
+      Name_Only("quick_search_name_option", "When selected, searches only through the artifact's name attribute field.", true),
+      By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
+      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false);
 
       private static String[] labels = null;
+      private static String[] mutuallyExclusive = null;
       private String helpContext;
       private String toolTip;
+      private boolean isRadio;
 
-      SearchOption(String helpContext, String toolTip) {
+      SearchOption(String helpContext, String toolTip, boolean isRadio) {
          this.helpContext = "";
          this.toolTip = toolTip;
+         this.isRadio = isRadio;
       }
 
       public String asLabel() {
@@ -78,6 +81,19 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       public String getToolTip() {
          return toolTip;
+      }
+
+      public static String[] getMutuallyExclusiveOptions() {
+         if (mutuallyExclusive == null) {
+            List<String> exclusiveOptions = new ArrayList<String>();
+            for (SearchOption option : SearchOption.values()) {
+               if (option.isRadio) {
+                  exclusiveOptions.add(option.asLabel());
+               }
+            }
+            mutuallyExclusive = exclusiveOptions.toArray(new String[exclusiveOptions.size()]);
+         }
+         return mutuallyExclusive;
       }
 
       public static String[] asLabels() {
@@ -177,7 +193,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       panel.setLayout(gL);
       panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      searchComposite = new SearchComposite(panel, SWT.NONE, SearchOption.asLabels());
+      searchComposite =
+            new SearchComposite(panel, SWT.NONE, SearchOption.asLabels(), SearchOption.getMutuallyExclusiveOptions());
       searchComposite.addListener(this);
 
       loadState();
@@ -210,15 +227,17 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    public void handleEvent(Event event) {
       updateWidgetEnablements();
-      if (searchComposite != null && searchComposite.isExecuteSearchEvent(event)) {
-         NewSearchUI.activateSearchResultView();
-         if (searchComposite.getOptions().get(SearchOption.By_Id.asLabel()).booleanValue()) {
-            NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
-                  BranchPersistenceManager.getDefaultBranch(), searchComposite.getOptions().get(
-                        SearchOption.Include_Deleted.asLabel()).booleanValue()));
-         } else {
-            NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-                  BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+      if (searchComposite != null) {
+         if (searchComposite.isExecuteSearchEvent(event)) {
+            NewSearchUI.activateSearchResultView();
+            if (searchComposite.getOptions().get(SearchOption.By_Id.asLabel()).booleanValue()) {
+               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
+                     BranchPersistenceManager.getDefaultBranch(), searchComposite.getOptions().get(
+                           SearchOption.Include_Deleted.asLabel()).booleanValue()));
+            } else {
+               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
+                     BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+            }
          }
       }
    }
