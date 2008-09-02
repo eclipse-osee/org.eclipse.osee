@@ -50,11 +50,6 @@ public class AtsAdminStat extends WorkPageService {
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
-      if (AtsPlugin.isAtsUseWorkflowFiles()) {
-         label = toolkit.createLabel(workGroup, "AtsUseWorkflowFiles");
-         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      }
-
       if (AtsPlugin.isAtsIgnoreConfigUpgrades()) {
          label = toolkit.createLabel(workGroup, "AtsIgnoreConfigUpgrades");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));

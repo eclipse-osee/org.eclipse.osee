@@ -106,16 +106,17 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    protected Browser browser;
    public static final String VIEW_ID = "org.eclipse.osee.ats.world.WorldView";
    public static final String HELP_CONTEXT_ID = "atsWorldView";
-   private ActionDebug debug = new ActionDebug(false, "WorldView");
+   private final ActionDebug debug = new ActionDebug(false, "WorldView");
    private Action filterCompletedAction, releaseMetricsAction, selectionMetricsAction;
    private Label warningLabel, searchNameLabel, extraInfoLabel;
    private WorldSearchItem lastSearchItem;
    private WorldXViewer xViewer;
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(WorldView.class);
-   private SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
-   private Set<Artifact> worldArts = new HashSet<Artifact>(200);
-   private Set<Artifact> otherArts = new HashSet<Artifact>(200);
+   private static Logger logger =
+         ConfigUtil.getConfigFactory().getLogger(WorldView.class);
+   private final SkynetEventManager eventManager = SkynetEventManager.getInstance();
+   private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
+   private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
+   private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
 
    /**
     * The constructor.
@@ -124,12 +125,14 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    public static WorldView getWorldView() {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IWorkbenchPage page =
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
          return (WorldView) page.showView(WorldView.VIEW_ID);
       } catch (PartInitException e1) {
-         MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-               "Couldn't Launch OSEE World View " + e1.getMessage());
+         MessageDialog.openInformation(
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Launch Error", "Couldn't Launch OSEE World View " + e1.getMessage());
       }
       return null;
    }
@@ -147,12 +150,15 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
           * @see java.lang.Runnable#run()
           */
          public void run() {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IWorkbenchPage page =
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             try {
                WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
-               worldView.load(name, arts, options.toArray(new TableLoadOption[options.size()]));
+               worldView.load(name, arts,
+                     options.toArray(new TableLoadOption[options.size()]));
             } catch (PartInitException e1) {
-               OSEELog.logSevere(AtsPlugin.class, "Couldn't Launch XViewer Dev View ", true);
+               OSEELog.logSevere(AtsPlugin.class, "Couldn't Launch XViewer Dev View ",
+                     true);
             }
          }
       }, options.contains(TableLoadOption.ForcePend));
@@ -198,9 +204,11 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }, true);
    }
 
+   @Override
    public void setFocus() {
    }
 
+   @Override
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
@@ -231,11 +239,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       searchNameLabel = new Label(headerComp, SWT.NONE);
 
       String adminStr = "";
-      if (AtsPlugin.isAtsAdmin())
-         adminStr = "Admin - " + getWhoAmI();
-      else if (AtsPlugin.isAtsShowUser()) adminStr = getWhoAmI();
+      if (AtsPlugin.isAtsAdmin()) adminStr = "Admin - " + getWhoAmI();
       if (AtsPlugin.isAtsDisableEmail()) adminStr += " - Email Disabled";
-      if (AtsPlugin.isAtsUseWorkflowFiles()) adminStr += " - AtsUseWorkflowFiles";
       if (AtsPlugin.isAtsAlwaysEmailMe()) adminStr += " - AtsAlwaysEmailMe";
       if (!adminStr.equals("")) {
          Label label = new Label(headerComp, SWT.NONE);
@@ -258,7 +263,9 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       AtsPlugin.getInstance().setHelp(xViewer.getControl(), HELP_CONTEXT_ID);
 
       Tree tree = xViewer.getTree();
-      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
+      GridData gridData =
+            new GridData(
+                  GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
@@ -325,7 +332,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
             String item = "work";
             event.data =
                   new ArtifactData(xViewer.getSelectedArtifacts().toArray(
-                        new Artifact[xViewer.getSelectedArtifacts().size()]), item, WorldView.VIEW_ID);
+                        new Artifact[xViewer.getSelectedArtifacts().size()]), item,
+                        WorldView.VIEW_ID);
          }
 
          public void dragStart(DragSourceEvent event) {
@@ -334,7 +342,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    private String getWhoAmI() {
-      return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+      return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+            ConfigField.DatabaseName) + ", " + OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
             ConfigField.UserName) + " - " + SkynetAuthentication.getUser().getName();
    }
 
@@ -438,22 +447,27 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
             if (artifacts.size() == 0) {
                if (searchItem.isCancelled()) {
                   monitor.done();
-                  setTableTitle("CANCELLED - " + searchItem.getSelectedName(searchType), false);
+                  setTableTitle("CANCELLED - " + searchItem.getSelectedName(searchType),
+                        false);
                   return Status.CANCEL_STATUS;
                } else {
                   monitor.done();
-                  setTableTitle("No Results Found - " + searchItem.getSelectedName(searchType), true);
+                  setTableTitle(
+                        "No Results Found - " + searchItem.getSelectedName(searchType),
+                        true);
                   return Status.OK_STATUS;
                }
             }
-            load(searchItem,
+            load(
+                  searchItem,
                   (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : ""),
                   artifacts);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
                   " => " + ex.getLocalizedMessage();
-            setTableTitle("Searching Error - " + searchItem.getSelectedName(searchType), false);
+            setTableTitle("Searching Error - " + searchItem.getSelectedName(searchType),
+                  false);
             logger.log(Level.SEVERE, "Searching Error - " + ex.getLocalizedMessage(), ex);
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
@@ -494,6 +508,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
       Action myWorldAction = new Action("My World") {
 
+         @Override
          public void run() {
             try {
                loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem());
@@ -502,34 +517,40 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
             }
          }
       };
-      myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
+      myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor(
+            "MyWorld.gif"));
       myWorldAction.setToolTipText("My World");
 
       Action expandAllAction = new Action("Expand All") {
 
+         @Override
          public void run() {
             xViewer.expandAll();
          }
       };
-      expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("expandAll.gif"));
+      expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor(
+            "expandAll.gif"));
       expandAllAction.setToolTipText("Expand All");
 
-      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
+      filterCompletedAction =
+            new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
 
-         public void run() {
-            if (filterCompletedAction.isChecked()) {
-               xViewer.addFilter(worldCompletedFilter);
-            } else {
-               xViewer.removeFilter(worldCompletedFilter);
-            }
-            updateExtendedStatusString();
-            xViewer.refresh();
-         }
-      };
+               @Override
+               public void run() {
+                  if (filterCompletedAction.isChecked()) {
+                     xViewer.addFilter(worldCompletedFilter);
+                  } else {
+                     xViewer.removeFilter(worldCompletedFilter);
+                  }
+                  updateExtendedStatusString();
+                  xViewer.refresh();
+               }
+            };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             try {
                if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch);
@@ -538,49 +559,61 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
             }
          }
       };
-      refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor(
+            "refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
       Action whoAmIAction = new Action("Who Am I") {
 
+         @Override
          public void run() {
-            MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Who Am I", getWhoAmI());
+            MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
+                  "Who Am I", getWhoAmI());
          }
       };
       whoAmIAction.setToolTipText("Who Am I");
 
-      releaseMetricsAction = new Action("Show Release Metrics by Release Version - Ctrl-Z", Action.AS_CHECK_BOX) {
+      releaseMetricsAction =
+            new Action("Show Release Metrics by Release Version - Ctrl-Z",
+                  Action.AS_CHECK_BOX) {
 
-         public void run() {
-            if (releaseMetricsAction.isChecked()) selectionMetricsAction.setChecked(false);
-            updateExtraInfoLine();
-         }
-      };
+               @Override
+               public void run() {
+                  if (releaseMetricsAction.isChecked()) selectionMetricsAction.setChecked(false);
+                  updateExtraInfoLine();
+               }
+            };
       releaseMetricsAction.setToolTipText("Show Release Metrics by Release Version - Ctrl-Z");
 
-      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", Action.AS_CHECK_BOX) {
+      selectionMetricsAction =
+            new Action("Show Release Metrics by Selection - Ctrl-X", Action.AS_CHECK_BOX) {
 
-         public void run() {
-            if (selectionMetricsAction.isChecked()) releaseMetricsAction.setChecked(false);
-            updateExtraInfoLine();
-         }
-      };
+               @Override
+               public void run() {
+                  if (selectionMetricsAction.isChecked()) releaseMetricsAction.setChecked(false);
+                  updateExtraInfoLine();
+               }
+            };
       selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
 
-      Action toAction = new Action("Re-display WorkFlows as Actions", Action.AS_PUSH_BUTTON) {
+      Action toAction =
+            new Action("Re-display WorkFlows as Actions", Action.AS_PUSH_BUTTON) {
 
-         public void run() {
-            redisplayAsAction();
-         }
-      };
+               @Override
+               public void run() {
+                  redisplayAsAction();
+               }
+            };
       toAction.setToolTipText("Re-display WorkFlows as Actions");
 
-      Action toWorkFlow = new Action("Re-display Actions as WorkFlows", Action.AS_PUSH_BUTTON) {
+      Action toWorkFlow =
+            new Action("Re-display Actions as WorkFlows", Action.AS_PUSH_BUTTON) {
 
-         public void run() {
-            redisplayAsWorkFlow();
-         }
-      };
+               @Override
+               public void run() {
+                  redisplayAsWorkFlow();
+               }
+            };
       toWorkFlow.setToolTipText("Re-display Actions as WorkFlows");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
@@ -602,7 +635,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
          manager.add(new Separator());
       }
       xViewer.addCustomizeToViewToolbar(this);
-      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
+      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID,
+            "ATS World");
    }
 
    public static ArrayList<Artifact> getLoadedArtifacts() {

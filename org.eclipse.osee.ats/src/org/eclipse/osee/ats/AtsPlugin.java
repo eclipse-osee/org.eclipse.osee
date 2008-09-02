@@ -37,7 +37,8 @@ public class AtsPlugin extends OseeUiActivator {
    private static Cursor waitCursor;
    public static ActionDebug debug = new ActionDebug(false, "AtsPlugin");
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(AtsPlugin.class);
+   private static Logger logger =
+         ConfigUtil.getConfigFactory().getLogger(AtsPlugin.class);
    private static boolean emailEnabled = true;
    public static Color ACTIVE_COLOR = new Color(null, 206, 212, 241);
 
@@ -93,14 +94,6 @@ public class AtsPlugin extends OseeUiActivator {
 
    public static boolean isAtsAdmin() {
       return AtsAdmin.isAtsAdmin();
-   }
-
-   public static boolean isAtsUseWorkflowFiles() {
-      return System.getProperty("AtsUseWorkflowFiles") != null;
-   }
-
-   public static boolean isAtsShowUser() {
-      return System.getProperty("AtsShowUser") != null;
    }
 
    public static boolean isAtsIgnoreConfigUpgrades() {
