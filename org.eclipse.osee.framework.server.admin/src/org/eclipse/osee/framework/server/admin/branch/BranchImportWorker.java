@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.admin.branch;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
@@ -71,8 +72,8 @@ public class BranchImportWorker extends BaseCmdWorker {
       }
 
       for (File fileToImport : importFiles) {
-         Activator.getInstance().getBranchExchange().importBranch(new ResourceLocator(fileToImport.toURI()), options,
-               branchIds);
+         URI uri = new URI("exchange://" + fileToImport.toURI().toASCIIString());
+         Activator.getInstance().getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds);
       }
    }
 }
