@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 
 /**
@@ -111,7 +112,6 @@ public class WordTemplateProcessor {
    private boolean saveParagraphNumOnArtifact = false;
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
-   private boolean isMultiEditMode = false;
 
    public WordTemplateProcessor() throws CoreException {
       this(null, null);
@@ -130,7 +130,6 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
-      isMultiEditMode = false;
       String fileName = variableMap.getString("MasterFileName");
       if (fileName == null) {
          fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
@@ -164,7 +163,8 @@ public class WordTemplateProcessor {
 
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
-            processArtifactSet(elementValue, variableMap, wordMl, outlineType);
+            processArtifactSet(elementValue, variableMap.getArtifacts(WordRenderer.DEFAULT_SET_NAME), wordMl,
+                  outlineType, PresentationType.PREVIEW);
          } else if (elementType.equals(EXTENSION_PROCESSOR)) {
             processExtensionTemplate(elementValue, variableMap, folder, wordMl);
          } else {
@@ -182,13 +182,12 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isMultiEditMode) throws Exception {
-      this.isMultiEditMode = isMultiEditMode;
+   public InputStream applyTemplate(List<Artifact> artifacts, String template, String outlineType, PresentationType presentationType) throws Exception {
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
-      outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
+      outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts);
       //modifications to the template must be done before the matcher
       template = wordMl.setHeadingNumbers(outlineNumber, template);
 
@@ -203,10 +202,15 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
 
+            if (presentationType == PresentationType.EDIT && artifacts.size() == 1) {
+               // for single edit override outlining options
+               outlining = false;
+            }
+
             // write out the template up to the start of the artifact element (but don't change copyIndex because there are nested elements in the artifact element
             wordMl.addWordMl(template.substring(previousTemplateCopyIndex, matcher.start()));
             previousTemplateCopyIndex = matcher.end();
-            processArtifactSet(elementValue, variableMap, wordMl, outlineType);
+            processArtifactSet(elementValue, artifacts, wordMl, outlineType, presentationType);
 
          } else {
             throw new IllegalArgumentException("Invalid input: " + elementType);
@@ -239,21 +243,14 @@ public class WordTemplateProcessor {
       return template;
    }
 
-   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) throws SQLException, MultipleAttributesExist, IllegalStateException, SQLException {
+   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, List<Artifact> artifacts) throws SQLException, MultipleAttributesExist, IllegalStateException, SQLException {
       String startParagraphNumber = "1";
       Matcher matcher = headElementsPattern.matcher(template);
 
       if (matcher.find()) {
          String elementType = matcher.group(3);
-         String elementValue = matcher.group(4);
 
          if (elementType.equals(ARTIFACT)) {
-            Matcher setNameMatcher = setNamePattern.matcher(elementValue);
-            setNameMatcher.find();
-            final String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
-
-            Collection<Artifact> artifacts = variableMap.getArtifacts(artifactSetName);
-
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
@@ -268,24 +265,15 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   protected void processArtifactSet(final String artifactElement, final BlamVariableMap variableMap, final WordMLProducer wordMl, final String outlineType) throws Exception {
-      if (artifactElement != null && variableMap != null) {
-         // extract Artifact set options
-         Matcher setNameMatcher = setNamePattern.matcher(artifactElement);
-         setNameMatcher.find();
-         final String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
+   private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws Exception {
+      if (outlineNumber != null) {
+         wordMl.setNextParagraphNumberTo(outlineNumber);
+      }
 
-         List<Artifact> artifacts = variableMap.getArtifacts(artifactSetName);
+      extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
-         if (outlineNumber != null) {
-            wordMl.setNextParagraphNumberTo(outlineNumber);
-         }
-
-         extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
-
-         for (Artifact artifact : artifacts) {
-            processObjectArtifact(artifact, wordMl, outlineType);
-         }
+      for (Artifact artifact : artifacts) {
+         processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
       }
    }
 
@@ -403,7 +391,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       if (outlining) {
          String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -416,11 +404,11 @@ public class WordTemplateProcessor {
          }
       }
 
-      processAttributes(artifact, wordMl);
+      processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
 
       if (recurseChildren) {
          for (Artifact childArtifact : artifact.getChildren()) {
-            processObjectArtifact(childArtifact, wordMl, outlineType);
+            processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
          }
       }
 
@@ -429,18 +417,21 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeElement.getAttributeName().equals("*")) {
-
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
-               processAttribute(artifact, wordMl, attributeElement, attributeTypeName, true);
+               if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
+                  processAttribute(artifact, wordMl, attributeElement, attributeTypeName, true, presentationType,
+                        multipleArtifacts);
+               }
             }
          } else {
             if (artifact.isAttributeTypeValid(attributeName)) {
-               processAttribute(artifact, wordMl, attributeElement, attributeName, false);
+               processAttribute(artifact, wordMl, attributeElement, attributeName, false, presentationType,
+                     multipleArtifacts);
             }
          }
       }
@@ -448,7 +439,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes
@@ -495,7 +486,7 @@ public class WordTemplateProcessor {
                //Change the BinData Id so images do not get overridden by the other images
                wordContent = WordUtil.reassignBinDataID(wordContent);
 
-               if (isMultiEditMode) {
+               if (presentationType == PresentationType.EDIT && multipleArtifacts) {
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);

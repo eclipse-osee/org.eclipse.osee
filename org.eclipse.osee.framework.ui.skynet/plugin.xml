@@ -636,7 +636,7 @@
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
 		<Template presentationType="ALL" templateFile="support/templates/PREVIEW default.xml" templateName="default"/>
-		<Template presentationType="ALL" templateFile="support/templates/PREVIEW Software Requirement.xml" templateName="Software Requirement"/>
+		<Template presentationType="ALL" templateFile="support/templates/Word Edit Template.xml" templateName="Software Requirement"/>
 		<Template presentationType="ALL" templateFile="support/templates/PREVIEW Subsystem Requirement.xml" templateName="Subsystem Requirement"/>
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler">
@@ -645,10 +645,6 @@
 	<extension point="org.eclipse.osee.framework.ui.skynet.OseeDictionary">
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary"/>
 		<OseeDictionary classname="org.eclipse.osee.framework.ui.skynet.util.OseeMainDictionary"/>
-	</extension>
-	<extension point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">
-		<ignoreSkynetAttribute attributeName="Word Template">
-         </ignoreSkynetAttribute>
 	</extension>
 	<extension point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
 		<ArtifactAnnotation classname="org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationHandler">
@@ -856,7 +852,7 @@
        </MatchCriteria>
     </Template>
     <Template
-          File="support/templates/PREVIEW Software Requirement.xml">
+          File="support/templates/Word Edit Template.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word EDIT">
        </MatchCriteria>
@@ -865,7 +861,7 @@
        </MatchCriteria>
     </Template>
     <Template
-          File="support/templates/PREVIEW Software Requirement.xml">
+          File="support/templates/Word Edit Template.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word MERGE">
        </MatchCriteria>

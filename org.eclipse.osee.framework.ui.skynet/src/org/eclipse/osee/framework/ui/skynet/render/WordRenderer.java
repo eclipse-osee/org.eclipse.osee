@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
@@ -423,7 +422,6 @@ public class WordRenderer extends FileRenderer {
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
-      final BlamVariableMap variableMap = new BlamVariableMap();
       String template;
 
       if (artifacts.isEmpty()) {
@@ -462,10 +460,8 @@ public class WordRenderer extends FileRenderer {
          }
       }
 
-      variableMap.setValue(DEFAULT_SET_NAME, artifacts);
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(variableMap, template, null,
-            PresentationType.EDIT == presentationType && artifacts.size() > 1);
+      return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
