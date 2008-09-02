@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -21,7 +20,6 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
-import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -182,36 +180,19 @@ public class WholeDocumentRenderer extends FileRenderer {
          diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
       }
 
+      VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
+      diffGenerator.initialize(presentationType != PresentationType.MERGE, true);
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         compare(baseFile, newerFile, diffPath, false, plugin.getPluginFile("support/compareDocs2.vbs"));
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
+         diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
       } else {
-         compare(baseFile, newerFile, diffPath, presentationType != PresentationType.MERGE,
-               plugin.getPluginFile("support/compareDocs.vbs"));
+         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs");
       }
 
       return diffPath;
-   }
-
-   public void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
-
-      // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
-      String cmd[] =
-            {
-                  "cmd",
-                  "/s /c",
-                  "\"" + vbDiffScript.getPath() + "\"",
-                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString() + "\" /visible:\"" + visible};
-
-      Process proc = Runtime.getRuntime().exec(cmd);
-
-      StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", logger);
-      StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
-
-      errorCatcher.start();
-      outputCatcher.start();
-      proc.waitFor();
    }
 
 }

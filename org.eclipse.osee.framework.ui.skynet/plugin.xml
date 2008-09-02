@@ -746,9 +746,6 @@
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
-       </command>
-       <command
              commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
              label="Open Final Version">
        </command>

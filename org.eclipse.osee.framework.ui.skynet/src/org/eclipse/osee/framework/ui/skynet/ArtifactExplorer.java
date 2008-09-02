@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -318,7 +319,15 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
     */
    public static void revealArtifact(Artifact artifact) {
       try {
-         if (artifact.isOrphan()) {
+    	 
+    	 if (artifact.isDeleted()) {
+             OSEELog.logInfo(SkynetGuiPlugin.class,
+                   "The artifact " + artifact.getDescriptiveName() + " has been deleted.", true);
+          }
+    	 else if(artifact.isHistorical()){
+     		 artifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(), false);
+     	 }
+    	 else if (artifact.isOrphan()) {
             OSEELog.logInfo(SkynetGuiPlugin.class,
                   "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).", true);
          } else {

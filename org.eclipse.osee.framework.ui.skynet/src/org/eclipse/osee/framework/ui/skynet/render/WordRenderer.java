@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -108,14 +106,15 @@ public class WordRenderer extends FileRenderer {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               monitor.beginTask("Word Change Report ", newerArtifact.size());
-
+               monitor.beginTask("Word Change Report ", newerArtifact.size() * 2);
                ArrayList<String> fileNames = new ArrayList<String>(newerArtifact.size());
                IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
                IFolder changeReportFolder = OseeData.getFolder(".diff/" + GUID.generateGuidStr());
-               String baseFileStr = null;
+               String baseFileStr = "c:/UserData";
                String fileName = null;
 
+               VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
+               generator.initialize(false, true);
                for (int i = 0; i < newerArtifact.size(); i++) {
                   IFile baseFile =
                         renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
@@ -130,7 +129,7 @@ public class WordRenderer extends FileRenderer {
                   fileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
                   fileNames.add(fileName);
 
-                  monitor.setTaskName("Processing diff for: " + (newerArtifact.get(i) == null ? baseArtifacts.get(i).getDescriptiveName() : newerArtifact.get(
+                  monitor.setTaskName("Adding to Diff Script: " + (newerArtifact.get(i) == null ? baseArtifacts.get(i).getDescriptiveName() : newerArtifact.get(
                         i).getDescriptiveName()));
                   monitor.worked(1);
 
@@ -139,8 +138,12 @@ public class WordRenderer extends FileRenderer {
                      monitor.done();
                      return Status.CANCEL_STATUS;
                   }
-                  compare(baseFile, newerFile, fileName, false, plugin.getPluginFile("support/compareDocs.vbs"));
+                  generator.addComparison(baseFile, newerFile, fileName, false);
+                  //compare(baseFile, newerFile, fileName, false, plugin.getPluginStoreFile("support/compareDocs3.vbs"));
+
                }
+               monitor.setTaskName("Running Diff Script");
+               generator.finish(baseFileStr + "/compareDocs.vbs");
                createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
             } catch (Exception ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
@@ -243,36 +246,20 @@ public class WordRenderer extends FileRenderer {
                getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT).getLocation().toOSString() + '\\' + fileName;
       }
 
+      VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
+      diffGenerator.initialize(presentationType != PresentationType.MERGE, true);
+
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
          addFileToWatcher(getRenderFolder(baseVersion.getBranch(), PresentationType.EDIT),
                diffPath.substring(diffPath.lastIndexOf('\\') + 1));
-         compare(baseFile, newerFile, diffPath, false, plugin.getPluginFile("support/compareDocs2.vbs"));
+         diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs");
       } else {
-         compare(baseFile, newerFile, diffPath, presentationType != PresentationType.MERGE,
-               plugin.getPluginFile("support/compareDocs.vbs"));
+         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs");
       }
 
       return diffPath;
-   }
-
-   private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible, File vbDiffScript) throws IOException, InterruptedException {
-
-      // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
-      String cmd[] =
-            {
-                  "cmd",
-                  "/s /c",
-                  "\"" + vbDiffScript.getPath() + "\"",
-                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:True /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString() + "\" /visible:\"" + visible};
-
-      Process proc = Runtime.getRuntime().exec(cmd);
-
-      StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", logger);
-      StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
-
-      errorCatcher.start();
-      outputCatcher.start();
-      proc.waitFor();
    }
 
    /**

@@ -96,12 +96,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             WordRenderer renderer =
                   (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
             try {
-               renderer.compareArtifacts(
-                     baseArtifacts,
-                     newerArtifacts,
-                     DIFF_ARTIFACT,
-                     null,
-                     baseArtifacts.get(0) == null ? newerArtifacts.get(0).getBranch() : baseArtifacts.get(0).getBranch());
+	               renderer.compareArtifacts(baseArtifacts,newerArtifacts,DIFF_ARTIFACT,null,
+	                       baseArtifacts.get(0) == null ? newerArtifacts.get(0).getBranch() : baseArtifacts.get(0).getBranch());  
             } catch (CoreException ex) {
                OSEELog.logException(getClass(), ex, true);
             } catch (Exception ex) {

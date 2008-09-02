@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -256,6 +257,8 @@ public class MergeUtility {
                   @Override
                   protected IStatus run(final IProgressMonitor monitor) {
                      try {
+                        VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
+                        generator.initialize(false, true);
                         String sourceChangeFile =
                               MergeUtility.CreateMergeDiffFile(getStartArtifact(attributeConflict),
                                     attributeConflict.getSourceArtifact(), null);

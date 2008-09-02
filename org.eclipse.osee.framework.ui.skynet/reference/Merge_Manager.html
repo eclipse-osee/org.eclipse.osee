@@ -1,0 +1,235 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Merge Manager View</title>
+</head>
+
+<body>
+
+<h1>Merge Manager View</h1>
+<img border="0" src="Merge_1.jpg"><br>
+&nbsp;<h2>Purpose</h2>
+<p>The Merge Manager is used to resolve conflicts that arise when doing 
+development on parallel branches.&nbsp; The Merge Manager makes conflicts that 
+arise easily identifiable and then provides the means for resolving the 
+conflicts, so that the working branch can be committed.</p>
+<h2>Icons</h2>
+<ul>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_disabled.gif" width="16" height="16">&nbsp; 
+	Resolution has been started for the conflict</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/accept.gif" width="16" height="16">&nbsp; 
+	Conflict has been resolved and is ready to be committed, In the Merge column 
+	it means that the Source and Destination Branches have the same value even 
+	though they were both changed. </li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_enabled_conflicted.gif" width="16" height="16">&nbsp; 
+	After a conflict has been marked as resolved the value changed on the source 
+	or destination branch</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/issue.gif" width="16" height="16">&nbsp; 
+	A conflict that provides the user special information but does not need to 
+	be resolved</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/red_light.gif" width="16" height="16">&nbsp; 
+	A conflict that can not be resolved except by reverting the Artifact or 
+	Attribute, because it was deleted on the Destination Branch</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/blue_d.gif" width="16" height="16">&nbsp; 
+	Shows that the item defined by the column it is in has the Destination 
+	Branches value</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/green_s.gif" width="16" height="16">&nbsp; 
+	Shows that the item defined by the column it is in has the Source Branches 
+	value</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/yellow_m.gif" width="16" height="16">&nbsp; 
+	Shows that the item defined by the column it is in has a new value that is 
+	neither the Source Branch nor Destination Branch value.</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/conflict.gif" width="16" height="16">&nbsp; 
+	Shows that the conflict has not been given an initial value </li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/user.gif" width="16" height="16">&nbsp; 
+	Opens the Associated Artifact for the merge</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/branch_change_source.gif" width="16" height="16">&nbsp; 
+	Opens up the Change Report for the Source Branch</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/branch_change_dest.gif" width="16" height="16">&nbsp; 
+	Opens up the Change Report for the Destination Branch</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/refresh.gif" width="16" height="16">&nbsp; 
+	Refreshes the Merge Manger view to find new conflicts</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/customize.gif" width="16" height="16">&nbsp; 
+	Allows the user to customize the Merge Manager tables</li>
+	<li>
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/bug.gif" width="16" height="16">&nbsp; 
+	Report a bug with the Merge Manager</li>
+</ul>
+<h2>Overview</h2>
+<p>The Merge Manager is in place to find conflicts and help users resolve these 
+conflicts.&nbsp; A conflict exists if the value of an attribute/artifact has 
+changed on both the Destination and Source Branches.&nbsp; For reference the 
+Source Branch is the users working branch.&nbsp; It is the branch that the user 
+has been making changes to and would like to then add back into the Destination 
+Branch or Baseline Branch.&nbsp; Both branches are identified by name in the 
+header of the Merge Manager.&nbsp; </p>
+<p>Depending upon the conflict found, the user may have several choices for 
+resolution.&nbsp; These include </p>
+<ul>
+	<li>Accept the value on the Source Branch and overwrite the value on the 
+	Destination Branch</li>
+	<li>Accept the value on the Destination Branch and do not add any of the 
+	Source Branch changes, (These will still show up as merged on
+	<a href="change_table.html">Change Reports</a>)</li>
+	<li>Create a solution that is a combination of the two changes </li>
+	<li>Revert the changes on the Source Branch&nbsp; (This is the only 
+	available solution when the Artifact/Attribute was deleted on the 
+	Destination Branch, will show up as no change on the
+	<a href="change_table.html">Change Report</a>)</li>
+	<li>Do nothing (only possible for informational conflicts)</li>
+</ul>
+<p>Committing of Branches is blocked until all conflicts are resolved.</p>
+<h2>The GUI</h2>
+<p>The GUI is organized to provide the user with an ability to quickly identify 
+conflicts.</p>
+<ul>
+	<li><b>The Heading</b> - The Heading contains text to help identify what is 
+	being merged. It identifies the Source Branch, and the Destination Branch.&nbsp; 
+	It also provides the user with information about how many conflicts there 
+	are and if they have been resolved.&nbsp; The Heading also contains easy 
+	launch icons for additional tools in connection with the Merge Manager.</li>
+	<li><b>The Conflict Resolution Column</b> - This column provides the user 
+	information about the state of the conflict.&nbsp; A blank entry in the 
+	column means that the conflict is new and has not had any actions performed 
+	on it. A
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_disabled.gif" width="16" height="16"> 
+	indicates that conflict is in the modified state.&nbsp; This means the user 
+	has begun merging the conflict but has not marked it as resolved.&nbsp; The 
+	user may transition it into the resolved state by left clicking on the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_disabled.gif" width="16" height="16"> 
+	icon. The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/accept.gif" width="16" height="16"> 
+	icon indicates the the user has marked the conflict as resolved.&nbsp; This 
+	means they have selected a value for it and have verified the value going in 
+	is what they want.&nbsp; No additional changes are allowed on a conflict 
+	once it is in the resolved state.&nbsp; It can be placed back into the 
+	modified state by left clicking on the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/accept.gif" width="16" height="16"> 
+	icon. The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_enabled_conflicted.gif" width="16" height="16"> 
+	means that a conflict was in the resolved state but a new change has 
+	occurred on either the Source or Destination Branch.&nbsp; It serves to 
+	notify the user that the conflict was not in the finalized state when they 
+	resolved the conflict.&nbsp; The user can return to resolved state by left 
+	clicking on the&nbsp;
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/chkbox_enabled_conflicted.gif" width="16" height="16"> 
+	icon.&nbsp; The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/red_light.gif" width="16" height="16"> 
+	icon indicates that an Artifact or Attribute must be reverted on the Source 
+	Branch.&nbsp; This indicates that the Artifact/Attribute was deleted on the 
+	Destination Branch and can not have a change committed onto it.&nbsp; The 
+	user must abandon any change to that artifact attribute by using the revert 
+	command.&nbsp; Once the Artifact/Attribute has been reverted the Merge 
+	Manager will be refreshed and the conflict will be removed. The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/issue.gif" width="16" height="16">icon 
+	indicates an informational conflict.&nbsp; The user does not have to take 
+	any action to resolve these conflicts.&nbsp; It just provides the 
+	information that the Source Branch deleted the Artifact/Attribute but the 
+	Destination Branch has been modified.&nbsp; The user is free to act as 
+	desired based on the provided information.</li>
+	<li><b>The Artifact Name Column</b> - This column tells which artifact the 
+	conflict occurred on.&nbsp; If the name is different between the Source and 
+	Destination Branches, (this will show up as a conflict) it will at first 
+	showing use the Source Branch value and then use whatever the name is 
+	resolved to be after that has occurred.</li>
+	<li><b>The Artifact Type Column</b> - Simply lists what type of Artifact is 
+	conflicted</li>
+	<li><b>The Conflicting Item Column</b> - In the case of an attribute 
+	conflict it states what attribute type is conflicting.&nbsp; In the case of 
+	an artifact conflict it will always say &quot;Artifact State&quot;</li>
+	<li><b>The Source Value Column</b> - When possible this column tells what 
+	value the Source Branch has for the conflict.&nbsp; It will always have a
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/green_s.gif" width="16" height="16"> 
+	icon. If the conflicting item is Word Formatted Content the words &quot;Stream 
+	data&quot; will be shown.&nbsp; For artifact conflicts it will either show 
+	&quot;Modified&quot; or &quot;Deleted&quot;.&nbsp; Left clicking on the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/green_s.gif" width="16" height="16"> 
+	icon will populate the Merge Branch with value found on the Source Branch.</li>
+	<li><b>The Destination Value Column</b> - When possible this column tells 
+	what value the Destination Branch has for the conflict.&nbsp; It will always 
+	have a
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/blue_d.gif" width="16" height="16"> 
+	icon. If the conflicting item is Word Formatted Content the words &quot;Stream 
+	data&quot; will be shown.&nbsp; For artifact conflicts it will either show 
+	&quot;Modified&quot; or &quot;Deleted&quot;.&nbsp; Left clicking on the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/blue_d.gif" width="16" height="16"> 
+	icon will populate the Merge Branch with value found on the Destination 
+	Branch.</li>
+	<li><b>The Merge Value Column</b> - The Merged Value column serves to show 
+	the user the value that has been selected for use when the Branch is 
+	committed.&nbsp; The Merge value is actually kept on a new &quot;Merge Branch&quot; 
+	and so any changes made to it will not affect the value seen on the Source 
+	or Destination Branches.&nbsp; When the Merge Value column is blank with no 
+	icon, the conflict is informational and no actions are provided.&nbsp; When 
+	the Merge Value column contains a&nbsp;
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/conflict.gif" width="16" height="16">icon 
+	the value has not been set.&nbsp; This is the icon you should see for all 
+	conflicts (Except informational conflicts, or same value conflicts) the 
+	first time you bring up the merge manager.&nbsp; The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/green_s.gif" width="16" height="16"> 
+	icon indicates that the Source Value was selected as the final value.&nbsp; 
+	The actual Source Value text will also be shown in this column if possible. 
+	The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/blue_d.gif" width="16" height="16"> 
+	icon indicates that the Destination Value was selected as the final value.&nbsp; 
+	The Destination Value text will also be shown in this column if possible. 
+	The
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/yellow_m.gif" width="16" height="16"> 
+	icon will be shown when a new value has been selected for the final value.&nbsp; 
+	This indicates that the user has modified the final value so that it is no 
+	longer a copy of the Source or Destination, but some variation thereof.&nbsp; 
+	A
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/accept.gif" width="16" height="16"> 
+	icon indicates that although both the Source Branch Value and Destination 
+	Branch Value have changed they were both changed to the same value and so 
+	there is not really a conflict. Left clicking on the icon in the Merge Value 
+	column will bring up the Merge Wizard or in the case of un-resolvable 
+	conflicts a dialog offering the ability to revert the conflicting item.</li>
+	<li><b>The Right Click Menu</b> - Right clicking on any row will display a 
+	menu with options for dealing with conflicts.&nbsp; Most of these options 
+	are directed towards resolving Word Formatted Content conflicts as the other 
+	conflicts are trivial.&nbsp; These options are explored below.</li>
+</ul>
+<h2>Resolution Of Conflicts</h2>
+<p>Resolution of conflicts is provided in two different ways.&nbsp; The user may 
+right click on the conflict row and bring up the conflict menu, and use that in 
+combination with the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/green_s.gif" width="16" height="16"> 
+icon in the Source Value column and the
+	<img border="0" src="../../org.eclipse.osee.framework.ui.skynet/images/blue_d.gif" width="16" height="16"> 
+icon in the Destination Value column. The other way is to bring up the Merge 
+Wizard by left clicking on the icon that is in the Merge Value column. </p>
+<p>There are entries on the context menu that are not shown on the wizard.&nbsp; 
+These include &quot;Set Source as Default Branch&quot;, &quot;Set Destination as Default 
+Branch&quot;, &quot;Reveal Artifact in Explorer&quot; and &quot;Resource History&quot;.&nbsp; These tools 
+are intended to allow quick evaluation of the conflicts.&nbsp; The &quot;Set Source 
+as Default Branch&quot; and &quot;Set Destination as Default Branch&quot; entries allow for the 
+quick changing of the default branch between the Source and Destination 
+Branches.&nbsp; The other two commands are used only when the Source or 
+Destination Branch is selected as the default branch.&nbsp; If either the Source 
+or Destination Branch is selected as the Default Branch it will be grayed out 
+and will have a check mark next to it.&nbsp; The &quot;Reveal Artifact in Explorer&quot; 
+will reveal the artifact in Explorer for the branch that is selected as the 
+default branch.&nbsp; &quot;Resource History&quot; will likewise show the resource history 
+for the Artifact on the branch that is selected as the default branch.</p>
+<p><img border="0" src="Merge_2.jpg"></p>
+
+</body>
+
+</html>
