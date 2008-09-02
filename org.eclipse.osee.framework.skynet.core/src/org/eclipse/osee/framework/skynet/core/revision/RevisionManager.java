@@ -1166,10 +1166,17 @@ public class RevisionManager implements IEventReceiver {
             baselineTransaction = maxUnderTransaction;
          else
             baselineTransaction = minOverTransaction;
+         
+         ModificationType modificationType;
+         if(artifact.isDeleted()){
+        	 modificationType = ModificationType.DELETED;
+         }else{
+        	 modificationType = (maxUnderTransaction == null && baselineTransaction != fromTransactionId) ? ModificationType.NEW : ModificationType.CHANGE;
+         }
+         
          newAndModArtChanges.add(new ArtifactChange(
                OUTGOING,
-               (maxUnderTransaction == null && baselineTransaction != fromTransactionId) ? ModificationType.NEW : ModificationType.CHANGE,
-               artifact, baseParentTransactionId, headParentTransactionId, baselineTransaction, fromTransactionId,
+               modificationType, artifact, baseParentTransactionId, headParentTransactionId, baselineTransaction, fromTransactionId,
                toTransactionId, -1));
       }
 
