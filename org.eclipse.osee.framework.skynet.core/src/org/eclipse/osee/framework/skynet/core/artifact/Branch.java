@@ -329,10 +329,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchType;
    }
 
-   //   public boolean isBaselineBranch() {
-   //      return branchType.equals(BranchType.BASELINE);
-   //   }
-
    public boolean isMergeBranch() {
       return branchType.equals(BranchType.MERGE);
    }
