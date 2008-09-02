@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.jini;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -35,9 +34,12 @@ public class JiniPlugin extends Plugin {
          e.printStackTrace();
       }
 
-      String[] lookupLocations = ConfigUtil.getConfigFactory().getOseeConfig().getServiceLookups();
-      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance());// .addLookupLocators(lookupLocations);
-      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance()).addLookupLocators(lookupLocations);
+  // String[] lookupLocations =
+	// ConfigUtil.getConfigFactory().getOseeConfig().getServiceLookups();
+	//ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance
+	// ());// .addLookupLocators(lookupLocations);
+	//ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance
+	// ()).addLookupLocators(lookupLocations);
    }
 
    /**
