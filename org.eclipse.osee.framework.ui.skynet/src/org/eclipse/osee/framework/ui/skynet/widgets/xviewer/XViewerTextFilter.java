@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class XViewerTextFilter extends ViewerFilter {
 
    private final XViewer xViewer;
-   private Set<Object> matchedObjects = new HashSet<Object>();
+   private final Set<Object> matchedObjects = new HashSet<Object>();
    private Pattern pattern;
    private Matcher matcher;
 
@@ -30,7 +30,7 @@ public class XViewerTextFilter extends ViewerFilter {
    }
 
    public void setFilterText(String text) {
-      pattern = Pattern.compile(text, Pattern.CASE_INSENSITIVE);
+      pattern = Pattern.compile("\\Q" + text + "\\E", Pattern.CASE_INSENSITIVE);
       matchedObjects.clear();
       for (TreeItem item : xViewer.getTree().getItems()) {
          findRecursively(item);
