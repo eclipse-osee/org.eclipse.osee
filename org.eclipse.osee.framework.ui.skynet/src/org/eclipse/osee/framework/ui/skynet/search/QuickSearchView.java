@@ -230,10 +230,10 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (searchComposite != null) {
          if (searchComposite.isExecuteSearchEvent(event)) {
             NewSearchUI.activateSearchResultView();
-            if (searchComposite.getOptions().get(SearchOption.By_Id.asLabel()).booleanValue()) {
+            if (searchComposite.isOptionSelected(SearchOption.By_Id.asLabel())) {
                NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(),
-                     BranchPersistenceManager.getDefaultBranch(), searchComposite.getOptions().get(
-                           SearchOption.Include_Deleted.asLabel()).booleanValue()));
+                     BranchPersistenceManager.getDefaultBranch(),
+                     searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
                      BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));

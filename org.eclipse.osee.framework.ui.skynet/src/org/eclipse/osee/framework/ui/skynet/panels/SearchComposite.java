@@ -210,10 +210,9 @@ public class SearchComposite extends Composite implements Listener {
                            }
                            optionsMap.put((String) other.getData(), other.getSelection());
                         }
-                     } else {
-                        optionsMap.put((String) button.getData(), button.getSelection());
                      }
                   }
+                  optionsMap.put((String) button.getData(), button.getSelection());
                }
             }
          });
@@ -291,6 +290,11 @@ public class SearchComposite extends Composite implements Listener {
       return optionsMap;
    }
 
+   public boolean isOptionSelected(String key) {
+      Boolean value = optionsMap.get(key);
+      return value != null ? value.booleanValue() : false;
+   }
+
    public void handleEvent(Event event) {
       updateWidgetEnablements();
       notifyListener(event);
@@ -317,7 +321,7 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    public String[] getQueryHistory() {
-      return this.searchArea.getItems();
+      return isWidgetAccessible(this.searchArea) ? this.searchArea.getItems() : new String[0];
    }
 
    private void setCombo(List<String> values, String lastSelected) {
