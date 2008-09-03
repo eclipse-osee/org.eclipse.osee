@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -99,6 +100,22 @@ public class Collections {
          }
       }
       return intersection;
+   }
+
+   /**
+    * Returns the unique union of the given lists
+    * 
+    * @param <T>
+    * @param lists
+    * @return Set
+    */
+   public static <T> Set<T> setUnion(Collection<T>... lists) {
+      Set<T> union = new HashSet<T>(lists[0].size() * 2);
+
+      for (int x = 0; x < lists.length; x++) {
+         union.addAll(lists[x]);
+      }
+      return union;
    }
 
    /**
