@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -97,7 +98,8 @@ public class HttpBranchCreation {
       String response = "";
       try {
          response =
-               HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("branch", parameters)));
+               HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
+                     OseeApplicationServerContext.BRANCH_CREATION_CONTEXT, parameters)));
          int branchId = Integer.parseInt(response);
          branch = BranchPersistenceManager.getBranch(branchId);
       } catch (NumberFormatException ex) {

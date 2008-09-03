@@ -10,16 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.common;
 
+import org.eclipse.osee.framework.resource.common.internal.ApplicationServerManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
+
+   private ServiceRegistration applicationManagerService;
+   private ServiceTracker applicationManagerTracker;
+   private static Activator instance;
 
    /*
     * (non-Javadoc)
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
+      instance = this;
+
+      applicationManagerService =
+            context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(), null);
+      applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
+      applicationManagerTracker.open();
    }
 
    /*
@@ -27,6 +40,18 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
+      applicationManagerService.unregister();
+      applicationManagerService = null;
+
+      instance = null;
+
    }
 
+   public static Activator getInstance() {
+      return instance;
+   }
+
+   public IApplicationServerManager getApplicationServerManager() {
+      return (IApplicationServerManager) applicationManagerTracker.getService();
+   }
 }

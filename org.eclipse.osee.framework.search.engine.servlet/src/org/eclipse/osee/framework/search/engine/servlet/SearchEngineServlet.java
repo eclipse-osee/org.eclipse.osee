@@ -18,12 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchEngineServlet extends CustomHttpServlet {
+public class SearchEngineServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 3722992788943330970L;
 

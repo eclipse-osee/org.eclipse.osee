@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
@@ -24,8 +25,6 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
  * @author Roberto E. Escobar
  */
 public class HttpBranchExchange {
-
-   private static final String BRANCH_EXCHANGE_CONTEXT = "branch.exchange";
    private static final String BRANCH_EXPORT = "exportBranch";
    private static final String BRANCH_IMPORT = "importBranch";
 
@@ -63,7 +62,7 @@ public class HttpBranchExchange {
       try {
          String returnVal =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
-                     BRANCH_EXCHANGE_CONTEXT, parameters)));
+                     OseeApplicationServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
          OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchExchangeServlet extends HttpServlet {
+public class BranchExchangeServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -1642995618810911260L;
 

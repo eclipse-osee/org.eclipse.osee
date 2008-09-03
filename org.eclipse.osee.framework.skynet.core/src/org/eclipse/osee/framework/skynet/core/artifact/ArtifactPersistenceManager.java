@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTem
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
@@ -902,9 +903,10 @@ public class ArtifactPersistenceManager {
          try {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("queryId", Integer.toString(transactionJoinId));
-            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
-            String response = HttpProcessor.delete(new URL(url));
-
+            String url =
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.TAGGING_CONTEXT,
+                        parameters);
+            HttpProcessor.delete(new URL(url));
          } catch (Exception ex) {
             OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
          }

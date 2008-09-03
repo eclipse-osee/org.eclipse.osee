@@ -39,9 +39,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -235,7 +237,9 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("branchId", Integer.toString(branch.getBranchId()));
             parameters.put("wait", "true");
-            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+            String url =
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.TAGGING_CONTEXT,
+                        parameters);
             response.append(HttpProcessor.post(new URL(url)));
             OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());
             OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging Completed in [%d ms]",
@@ -271,8 +275,11 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       Integer authorId = artifactGuidCache.getId(author);
       Integer commitArtId = artifactGuidCache.getId(commitArtGuid);
 
-      ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL, currentTransactionId, time, comment,
-            authorId == null ? -1 : authorId, curBranch.peek().getBranchId(), commitArtId, txType);
+      ConnectionHandler.runPreparedUpdate(INSERT_TX_DETAIL,
+            currentTransactionId != null ? currentTransactionId : SQL3DataType.INTEGER,
+            time != null ? time : SQL3DataType.TIMESTAMP, comment != null ? comment : SQL3DataType.VARCHAR,
+            authorId == null ? -1 : authorId, curBranch.peek().getBranchId(),
+            commitArtId != null ? commitArtId : SQL3DataType.INTEGER, txType != null ? txType : SQL3DataType.INTEGER);
    }
 
    @Override
@@ -373,8 +380,9 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          uriToStore = "";
       }
       int modificationInt = modificationType != null ? modificationType.getValue() : -1;
-      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, currentArtifactId, attrId, attrTypeId, stringValue,
-            gammaId, uriToStore, modificationInt);
+      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, currentArtifactId, attrId, attrTypeId,
+            stringValue != null ? stringValue : SQL3DataType.VARCHAR, gammaId,
+            uriToStore != null ? uriToStore : SQL3DataType.VARCHAR, modificationInt);
       insertTxAddress(gammaId, modificationInt, txCurrent);
    }
 

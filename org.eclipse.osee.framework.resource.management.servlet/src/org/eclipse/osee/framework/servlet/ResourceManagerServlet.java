@@ -17,7 +17,9 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.common.io.Streams;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -33,15 +35,15 @@ import org.eclipse.osee.framework.servlet.data.ServletResourceBridge;
  * 
  * @author Robeto E. Escobar
  */
-public class ResourceManagerServlet extends CustomHttpServlet {
+public class ResourceManagerServlet extends OseeHttpServlet {
    private static final long serialVersionUID = 3777506351978711657L;
 
    private void handleError(HttpServletResponse response, String message, Throwable ex) {
-      Activator.getInstance().getLogger().log(Level.SEVERE, message, ex);
+      OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
       try {
          response.getWriter().println(message);
       } catch (IOException ex1) {
-         Activator.getInstance().getLogger().log(Level.SEVERE, message, ex);
+         OseeLog.log(this.getClass(), Level.SEVERE, message, ex);
       }
    }
 

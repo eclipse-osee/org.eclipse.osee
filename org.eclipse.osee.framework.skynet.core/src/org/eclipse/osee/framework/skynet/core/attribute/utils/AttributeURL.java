@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
  * @author Roberto E. Escobar
  */
 public class AttributeURL {
-   private static final String SERVLET_CONTEXT = "resource";
 
    private AttributeURL() {
    }
@@ -41,7 +41,9 @@ public class AttributeURL {
          if (Strings.isValid(extension) != false) {
             parameterMap.put("extension", extension);
          }
-         String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
+         String urlString =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
+                     parameterMap);
          return new URL(urlString);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);
@@ -52,7 +54,9 @@ public class AttributeURL {
       try {
          Map<String, String> parameterMap = new HashMap<String, String>();
          parameterMap.put("uri", uri);
-         String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(SERVLET_CONTEXT, parameterMap);
+         String urlString =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
+                     parameterMap);
          return new URL(urlString);
       } catch (Exception ex) {
          throw new OseeDataStoreException(ex);

@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,7 +80,9 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       ObjectPair<Integer, Integer> toReturn = null;
       Result result = SkynetGuiPlugin.areOSEEServicesAvailable();
       if (result.isTrue()) {
-         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+         String url =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_CONTEXT,
+                     parameters);
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          AcquireResult httpRequestResult = HttpProcessor.acquire(new URL(url), outputStream);
          if (httpRequestResult.wasSuccessful()) {

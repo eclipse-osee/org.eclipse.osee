@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -434,7 +435,9 @@ public class BranchExporter {
          outputStream = new FileOutputStream(target);
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("uri", uriTarget);
-         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameters);
+         String url =
+               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
+                     parameters);
          AcquireResult acquireResult = HttpProcessor.acquire(new URL(url), outputStream);
          if (acquireResult.wasSuccessful()) {
             toReturn = target.getName();

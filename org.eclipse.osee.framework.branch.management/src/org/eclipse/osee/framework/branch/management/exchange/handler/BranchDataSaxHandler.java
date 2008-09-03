@@ -168,8 +168,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          return (String) backingData.get(BRANCH_NAME);
       }
 
-      public Object getBranchType() {
-         return (String) backingData.get(BRANCH_TYPE);
+      public Integer getBranchType() {
+         return (Integer) backingData.get(BRANCH_TYPE);
       }
 
       public int getAssociatedArtId() {
@@ -243,7 +243,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
 
       public void setBranchType(BranchType branchType) {
-         this.backingData.put(BRANCH_TYPE, Integer.toString(branchType.ordinal()));
+         this.backingData.put(BRANCH_TYPE, branchType.ordinal());
       }
    }
 

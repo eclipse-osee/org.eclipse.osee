@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEv
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
@@ -129,7 +130,9 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
             payload.append(XML_FINISH);
 
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
-            String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search", parameters);
+            String url =
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.TAGGING_CONTEXT,
+                        parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
             OseeLog.log(TagService.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
                   System.currentTimeMillis() - start));

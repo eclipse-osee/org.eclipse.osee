@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.servlet;
 
-import javax.servlet.Servlet;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -27,8 +26,8 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
-   private HttpServiceTracker httpBranchManagementTracker;
-   private HttpServiceTracker httpBranchExportTracker;
+   private OseeHttpServiceTracker httpBranchManagementTracker;
+   private OseeHttpServiceTracker httpBranchExportTracker;
    private ServiceTracker branchCreationTracker;
    private ServiceTracker branchExchangeTracker;
    private static Activator instance;
@@ -52,10 +51,14 @@ public class Activator implements BundleActivator {
       branchExchangeTracker = new ServiceTracker(context, IBranchExchange.class.getName(), null);
       branchExchangeTracker.open();
 
-      httpBranchManagementTracker = new HttpServiceTracker(context, "/branch", BranchManagerServlet.class);
+      httpBranchManagementTracker =
+            new OseeHttpServiceTracker(context, OseeApplicationServerContext.BRANCH_CREATION_CONTEXT,
+                  BranchManagerServlet.class);
       httpBranchManagementTracker.open();
 
-      httpBranchExportTracker = new HttpServiceTracker(context, "/branch.exchange", BranchExchangeServlet.class);
+      httpBranchExportTracker =
+            new OseeHttpServiceTracker(context, OseeApplicationServerContext.BRANCH_EXCHANGE_CONTEXT,
+                  BranchExchangeServlet.class);
       httpBranchExportTracker.open();
 
    }
@@ -103,34 +106,5 @@ public class Activator implements BundleActivator {
 
    public IResourceLocatorManager getResourceLocatorManager() {
       return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
-   }
-
-   private class HttpServiceTracker extends ServiceTracker {
-      private String contextName;
-      private Class<? extends Servlet> servletClass;
-
-      public HttpServiceTracker(BundleContext context, String contextName, Class<? extends Servlet> servletClass) {
-         super(context, HttpService.class.getName(), null);
-         this.contextName = contextName;
-         this.servletClass = servletClass;
-      }
-
-      public Object addingService(ServiceReference reference) {
-         HttpService httpService = (HttpService) context.getService(reference);
-         try {
-            Servlet servlet = (Servlet) this.servletClass.getConstructor(new Class[0]).newInstance(new Object[0]);
-            httpService.registerServlet(contextName, servlet, null, null);
-            System.out.println(String.format("Registered servlet '%s'", contextName));
-         } catch (Exception ex) {
-         }
-         return httpService;
-      }
-
-      public void removedService(ServiceReference reference, Object service) {
-         HttpService httpService = (HttpService) service;
-         httpService.unregister(contextName);
-         System.out.println(String.format("De-registering servlet '%s'", contextName));
-         super.removedService(reference, service);
-      }
    }
 }

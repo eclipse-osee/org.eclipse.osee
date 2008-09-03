@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.artifact.servlet;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 
    private static Activator instance;
 
-   private HttpServiceTracker httpTracker;
+   private OseeHttpServiceTracker httpTracker;
    private ServiceTracker resourceManagementTracker;
    private ServiceTracker resourceLocatorManagerTracker;
 
@@ -42,7 +42,8 @@ public class Activator implements BundleActivator {
       resourceManagementTracker = new ServiceTracker(context, IResourceManager.class.getName(), null);
       resourceManagementTracker.open();
 
-      httpTracker = new HttpServiceTracker(context);
+      httpTracker =
+            new OseeHttpServiceTracker(context, OseeApplicationServerContext.PROCESS_CONTEXT, ArtifactFileServlet.class);
       httpTracker.open();
    }
 
@@ -73,28 +74,5 @@ public class Activator implements BundleActivator {
 
    public IResourceLocatorManager getResourceLocatorManager() {
       return (IResourceLocatorManager) resourceLocatorManagerTracker.getService();
-   }
-
-   private class HttpServiceTracker extends ServiceTracker {
-      public HttpServiceTracker(BundleContext context) {
-         super(context, HttpService.class.getName(), null);
-      }
-
-      public Object addingService(ServiceReference reference) {
-         HttpService httpService = (HttpService) context.getService(reference);
-         try {
-            httpService.registerServlet("/GET.ARTIFACT", new ArtifactFileServlet(), null, null);
-            System.out.println("Registered servlet '/GET.ARTIFACT'");
-         } catch (Exception ex) {
-         }
-         return httpService;
-      }
-
-      public void removedService(ServiceReference reference, Object service) {
-         HttpService httpService = (HttpService) service;
-         httpService.unregister("/GET.ARTIFACT");
-         System.out.println("De-registering servlet '/GET.ARTIFACT'");
-         super.removedService(reference, service);
-      }
    }
 }

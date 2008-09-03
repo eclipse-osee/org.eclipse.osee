@@ -14,16 +14,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.common.io.Streams;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -32,7 +30,7 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactFileServlet extends HttpServlet {
+public class ArtifactFileServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = -6334080268467740905L;
 

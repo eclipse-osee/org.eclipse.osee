@@ -12,23 +12,18 @@ package org.eclipse.osee.framework.branch.management.servlet;
 
 import java.io.IOException;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.resource.common.osgi.OseeHttpServlet;
 
 /**
  * @author Andrew M Finkbeiner
  */
-public class BranchManagerServlet extends HttpServlet {
+public class BranchManagerServlet extends OseeHttpServlet {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 226986283540461526L;
 
    /* (non-Javadoc)
@@ -46,7 +41,8 @@ public class BranchManagerServlet extends HttpServlet {
                branchId =
                      Activator.getInstance().getBranchCreation().createChildBranch(info.getParentBranchId(),
                            info.getBranchShortName(), info.getBranchName(), info.getCreationComment(),
-                           info.getAssociatedArtifactId(), info.getAuthorId(), info.branchWithFiltering(), info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
+                           info.getAssociatedArtifactId(), info.getAuthorId(), info.branchWithFiltering(),
+                           info.getCompressArtTypeIds(), info.getPreserveArtTypeIds());
                break;
             case createRootBranch:
                branchId =
@@ -61,8 +57,8 @@ public class BranchManagerServlet extends HttpServlet {
             resp.getWriter().write("Unknown Error during branch creation.");
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Failed to respond to a branch servlet request [%s]", req.toString()), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Failed to respond to a branch servlet request [%s]",
+               req.toString()), ex);
          resp.getWriter().write(Lib.exceptionToString(ex));
       }
       resp.getWriter().flush();
