@@ -35,31 +35,38 @@ public class ExportClassLoader extends ClassLoader {
     */
    @Override
    protected Class<?> findClass(String name) throws ClassNotFoundException {
-      try {
-         final String pkg = name.substring(0, name.lastIndexOf('.'));
-         Bundle cachedBundle = cache.get(pkg);
-         if (cachedBundle != null) {
-            return cachedBundle.loadClass(name);
-         }
-         ExportedPackage[] list = packageAdmin.getExportedPackages(pkg);
-         if (list != null) {
-            for (ExportedPackage ep : list) {
-               final Bundle bundle = ep.getExportingBundle();
-               final int state = bundle.getState();
-               if (state == Bundle.INSTALLED) {
-                  packageAdmin.resolveBundles(new Bundle[] {bundle});
-               }
-               if (state == Bundle.RESOLVED || state == Bundle.STARTING || state == Bundle.ACTIVE || state == Bundle.STOPPING) {
-                  cache.put(pkg, bundle);
-                  return bundle.loadClass(name);
-               }
-            }
-         }
-         throw new ClassNotFoundException("could not locate a class for " + name);
-      } catch (Exception e) {
-         throw new ClassNotFoundException("could not locate a class for " + name, e);
-      }
-
+       try {
+	    Bundle bundle = getExportingBundle(name);
+	    if (bundle != null) {
+		return bundle.loadClass(name);
+	    }
+	    throw new ClassNotFoundException("could not locate a class for "
+		    + name);
+	} catch (Exception e) {
+	    throw new ClassNotFoundException("could not locate a class for "
+		    + name, e);
+	}
    }
+   
+   public Bundle getExportingBundle(String name) {
+	final String pkg = name.substring(0, name.lastIndexOf('.'));
+	Bundle cachedBundle = cache.get(pkg);
+	if (cachedBundle != null) {
+	    return cachedBundle;
+	}
+	ExportedPackage[] list = packageAdmin.getExportedPackages(pkg);
+	if (list != null) {
+	    for (ExportedPackage ep : list) {
+		final Bundle bundle = ep.getExportingBundle();
+		final int state = bundle.getState();
+		if (state == Bundle.RESOLVED || state == Bundle.STARTING
+			|| state == Bundle.ACTIVE || state == Bundle.STOPPING) {
+		    cache.put(pkg, bundle);
+		    return bundle;
+		}
+	    }
+	}
+	return null;
+    }
 
 }
