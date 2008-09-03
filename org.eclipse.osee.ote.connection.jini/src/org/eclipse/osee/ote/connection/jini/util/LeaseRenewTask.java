@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 
-import net.jini.core.lease.Lease;
 import net.jini.core.lookup.ServiceRegistration;
 
 import org.eclipse.osee.ote.connection.jini.Activator;
@@ -21,15 +20,14 @@ public class LeaseRenewTask extends TimerTask {
 
    public LeaseRenewTask(Timer timer, ServiceRegistration registration) {
       this.registration = registration;
-      long delay = registration.getLease().getExpiration() - System.currentTimeMillis() - RENEWAL_TIME;
-      timer.scheduleAtFixedRate(this, delay, delay);
+      timer.scheduleAtFixedRate(this, 0, RENEWAL_TIME);
    }
 
    public void run() {
       System.out.println("renewing lease");
       try {
          // Renew for the maximum amount of time allowed
-         registration.getLease().renew(Lease.FOREVER);
+	    registration.getLease().renew(RENEWAL_TIME + 10000);
       } catch (Exception ex) {
          Activator.log(Level.SEVERE, "error renewing lease", ex);
       }
