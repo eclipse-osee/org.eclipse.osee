@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,12 +37,10 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
    private Set<Integer> branchesToImport;
    private ZipFile zipFile;
-   private Map<String, ZipEntry> binaryDataEntries;
 
    protected RelationalSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
-      this.binaryDataEntries = new HashMap<String, ZipEntry>();
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -64,45 +60,35 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       return zipFile;
    }
 
-   protected Map<String, ZipEntry> getBinaryDataEntries() {
-      if (binaryDataEntries.isEmpty()) {
-         if (this.zipFile != null) {
-            ZipEntry entry = null;
-            Enumeration<? extends ZipEntry> e = zipFile.entries();
-            while (e.hasMoreElements()) {
-               entry = (ZipEntry) e.nextElement();
-               String entryName = entry.toString();
-               if (entryName.startsWith(ExportImportXml.RESOURCE_FOLDER_NAME)) {
-                  entryName =
-                        entryName.substring(ExportImportXml.RESOURCE_FOLDER_NAME.length() + 1, entryName.length());
-                  binaryDataEntries.put(entryName, entry);
-               }
-            }
-         } else {
-            throw new IllegalStateException("ZipFile was Null.");
-         }
-      }
-      return binaryDataEntries;
-   }
-
    public void store() throws Exception {
       super.store(this.getConnection());
    }
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
-      ZipEntry entry = getBinaryDataEntries().get(uriValue);
+      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + "\\" + uriValue;
+      if (this.zipFile != null) {
+         ZipEntry entry = zipFile.getEntry(entrySearch);
+         if (entry == null) {
+            entry = zipFile.getEntry(entrySearch.replace('\\', '/'));
+         }
 
-      if (entry != null) {
-         IResourceLocator locatorHint =
-               Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, uriValue);
+         if (entry != null) {
 
-         IResourceLocator locator =
-               Activator.getInstance().getResourceManager().save(locatorHint,
-                     new ZipBinaryResource(getZipFile(), entry, locatorHint), new Options());
-         return locator.getLocation().toASCIIString();
+            String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
+            IResourceLocator locatorHint =
+                  Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
+
+            IResourceLocator locator =
+                  Activator.getInstance().getResourceManager().save(locatorHint,
+                        new ZipBinaryResource(getZipFile(), entry, locatorHint), new Options());
+            return locator.getLocation().toASCIIString();
+         } else {
+            throw new RuntimeException(String.format(
+                  "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
+         }
+      } else {
+         throw new RuntimeException("ZipFile was Null.");
       }
-      throw new IllegalStateException(String.format(
-            "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
    }
 
    @Override
@@ -130,7 +116,8 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             String uriValue = fieldMap.get(BINARY_CONTENT_LOCATION);
             if (Strings.isValid(uriValue)) {
                String gammaId = fieldMap.get("gamma_id");
-               uriValue = importBinaryContent(uriValue, gammaId);
+               Object translated = getTranslator().translate(getConnection(), "gamma_id", Long.valueOf(gammaId));
+               uriValue = importBinaryContent(uriValue, translated.toString());
                fieldMap.put("uri", uriValue);
             }
             String stringValue = fieldMap.get(STRING_CONTENT);

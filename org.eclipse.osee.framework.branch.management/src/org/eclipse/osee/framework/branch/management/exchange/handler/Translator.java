@@ -120,7 +120,7 @@ public class Translator {
             System.out.println("Error here: " + original.getClass().getName());
          }
          Long newVersion = null;
-         if (originalLong == -1L) {
+         if (originalLong <= 0L) {
             newVersion = originalLong;
          } else {
             newVersion = this.idMap.get(originalLong);

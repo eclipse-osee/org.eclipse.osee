@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
@@ -71,17 +74,36 @@ public class RelationalExportItem extends AbstractDbExportItem {
       if (tempFolder.exists() != true) {
          tempFolder.mkdirs();
       }
-      int index = uriTarget.lastIndexOf("/");
-      String fileName = uriTarget.substring(index + 1, uriTarget.length());
-
-      Options options = new Options();
 
       IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
 
-      File target = new File(tempFolder, fileName);
-      Lib.copyFile(new File(resource.getLocation()), target);
-      return target.getName();
+      File target = new File(tempFolder, locator.getRawPath());
+      if (target.getParentFile() != null) {
+         target.getParentFile().mkdirs();
+      }
+
+      InputStream sourceStream = null;
+      OutputStream outputStream = null;
+      try {
+         sourceStream = resource.getContent();
+         outputStream = new FileOutputStream(target);
+         Lib.inputStreamToOutputStream(sourceStream, outputStream);
+      } finally {
+         if (sourceStream != null) {
+            try {
+               sourceStream.close();
+            } catch (Exception ex) {
+            }
+         }
+         if (outputStream != null) {
+            try {
+               outputStream.close();
+            } catch (Exception ex) {
+            }
+         }
+      }
+      return locator.getRawPath().replace('/', '\\');
    }
 
    protected void doWork(Appendable appendable) throws Exception {
@@ -173,9 +195,9 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private void handleBinaryContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet) throws Exception {
       String uriData = resultSet.getString(name);
       if (Strings.isValid(uriData)) {
-         String relativePath = exportBinaryDataTo(tempFolder, uriData);
+         uriData = exportBinaryDataTo(tempFolder, uriData);
          ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.BINARY_CONTENT);
-         ExportImportXml.addXmlAttribute(appendable, "location", relativePath);
+         ExportImportXml.addXmlAttribute(appendable, "location", uriData);
          ExportImportXml.closePartialXmlNode(appendable);
       }
    }
