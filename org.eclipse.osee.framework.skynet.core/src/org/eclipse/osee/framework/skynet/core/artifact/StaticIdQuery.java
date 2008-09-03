@@ -48,7 +48,7 @@ public class StaticIdQuery {
 
          // Store results in cache
          for (Artifact artifact : artifacts) {
-            ArtifactCache.cache(artifact);
+            ArtifactCache.cachePostAttributeLoad(artifact);
          }
          return artifacts;
       } catch (SQLException ex) {
