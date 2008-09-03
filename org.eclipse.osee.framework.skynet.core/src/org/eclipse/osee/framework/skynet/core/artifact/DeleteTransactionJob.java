@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -76,12 +78,12 @@ public class DeleteTransactionJob extends Job {
    private final static String GET_ARTIFACTS = "Select * from osee_join_artifact where query_id = ?";
 
    private final static String LOAD_ARTIFACTS =
-         "INSERT INTO osee_join_artifact (query_id, art_id, branch_id) (Select ?, art_id, branch_id from osee_define_txs txs, osee_define_attribute att, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, art_id, branch_id from osee_define_txs txs, osee_define_artifact_version art, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, a_art_id as art_id, branch_id from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, b_art_id as art_id, branch_id from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id)";
+         "INSERT INTO osee_join_artifact (query_id, art_id, branch_id,insert_time) (Select ?, art_id, branch_id, ? from osee_define_txs txs, osee_define_attribute att, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, art_id, branch_id, ? from osee_define_txs txs, osee_define_artifact_version art, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, a_art_id as art_id, branch_id, ? from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id) UNION (Select ?, b_art_id as art_id, branch_id, ? from osee_define_txs txs, osee_define_rel_link rel, osee_join_transaction tran, osee_define_tx_details det where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and det.transaction_id = txs.transaction_id)";
    private static final String UPDATE_TXS =
          "UPDATE osee_define_txs  set tx_current = (CASE WHEN mod_type = 3 THEN 2 ELSE 1 END) WHERE (transaction_id, gamma_id) IN ((SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_attribute att2, (SELECT MAX(txs.transaction_id) AS maxt, att.attr_id AS atid FROM osee_define_txs txs, osee_define_attribute att, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id and att.art_id = jar.art_id AND jar.query_id = ? GROUP BY att.attr_id, det.branch_id) new_stuff WHERE txs2.gamma_id = att2.gamma_id AND att2.attr_id = atid AND maxt = txs2.transaction_id) UNION (SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_artifact_version ver2, (SELECT MAX(txs.transaction_id) AS maxt, ver.art_id AS atid FROM osee_define_txs txs, osee_define_artifact_version ver, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = ver.gamma_id and ver.art_id = jar.art_id AND jar.query_id = ? GROUP BY ver.art_id, det.branch_id) new_stuff WHERE txs2.gamma_id = ver2.gamma_id AND ver2.art_id = atid AND maxt = txs2.transaction_id)UNION(SELECT maxt, txs2.gamma_id FROM osee_define_txs txs2, osee_define_rel_link rel2, (SELECT MAX(txs.transaction_id) AS maxt, rel.rel_link_id AS linkid FROM osee_define_txs txs, osee_define_rel_link rel, osee_define_tx_details det, osee_join_artifact jar WHERE det.branch_id = jar.branch_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id and (rel.a_art_id = jar.art_id or rel.b_art_id = jar.art_id) AND jar.query_id = ? GROUP BY rel.rel_link_id, det.branch_id) new_stuff WHERE txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = linkid AND maxt = txs2.transaction_id))";
 
    private final int[] txIdsToDelete;
-   private boolean force;
+   private final boolean force;
    private int artifactJoinId;
 
    /**
@@ -127,7 +129,7 @@ public class DeleteTransactionJob extends Job {
    }
 
    private final class DeleteTransactionTx extends DbTransaction {
-      private IProgressMonitor monitor;
+      private final IProgressMonitor monitor;
 
       public DeleteTransactionTx(IProgressMonitor monitor) {
          this.monitor = monitor;
@@ -175,14 +177,14 @@ public class DeleteTransactionJob extends Job {
       }
 
       /**
-       * @return
        * @throws SQLException
        */
       private void getAffectedArtifacts(Connection connection, IProgressMonitor monitor, int transactionQueryId) throws SQLException {
+         Timestamp insert_time = GlobalTime.GreenwichMeanTimestamp();
          artifactJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
-               artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId, artifactJoinId,
-               transactionQueryId);
+         ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, insert_time,
+               transactionQueryId, artifactJoinId, insert_time, transactionQueryId, artifactJoinId, insert_time,
+               transactionQueryId, artifactJoinId, insert_time, transactionQueryId);
 
       }
 
@@ -299,8 +301,8 @@ public class DeleteTransactionJob extends Job {
    }
 
    private final class TxDeleteInfo {
-      private TransactionId txToDelete;
-      private TransactionId previousTxFromTxToDelete;
+      private final TransactionId txToDelete;
+      private final TransactionId previousTxFromTxToDelete;
 
       public TxDeleteInfo(TransactionId txToDelete, TransactionId previousTxFromTxToDelete) {
          super();

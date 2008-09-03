@@ -412,7 +412,7 @@ public final class ConnectionHandler {
          }
 
          if (dataValue == null) {
-            throw new IllegalArgumentException(
+            throw new SQLException(
                   "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
          } else if (dataValue instanceof SQL3DataType) {
             int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
