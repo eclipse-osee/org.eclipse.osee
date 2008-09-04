@@ -319,8 +319,4 @@ public class ArtifactQuery {
    public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) throws Exception {
       return new HttpArtifactQuery(queryString, nameOnly, includeDeleted, branch).getArtifacts(FULL, null, false, false);
    }
-
-   //   public static List<Artifact> getArtifactsFromArtifactTypeAndAttributeKeywords(String queryString, boolean nameOnly, boolean includeDeleted, int... branchId) {
-   //      return null;
-   //   }
 }

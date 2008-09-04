@@ -30,13 +30,13 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 /**
  * @author Roberto E. Escobar
  */
-public class HttpArtifactQuery {
+final class HttpArtifactQuery {
    private String queryString;
    private boolean nameOnly;
    private boolean includeDeleted;
    private Branch branch;
 
-   public HttpArtifactQuery(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) {
+   protected HttpArtifactQuery(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) {
       this.branch = branch;
       this.includeDeleted = includeDeleted;
       this.nameOnly = nameOnly;
