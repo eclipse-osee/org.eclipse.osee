@@ -342,7 +342,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          VersionArtifact versionArt =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), name);
-         versionArt.addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
+         addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
          versionArt.persistAttributesAndRelations();
          AtsCache.cache(versionArt);
          return versionArt;
