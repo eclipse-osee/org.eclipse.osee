@@ -25,13 +25,14 @@ class SearchStats extends BaseCmdWorker {
    @Override
    protected void doWork(long startTime) throws Exception {
       ISearchStatistics stats = Activator.getInstance().getSearchEngine().getStatistics();
-
-      println("\n----------------------------------------------");
-      println("                  Search Stats                ");
-      println("----------------------------------------------");
-      println(String.format("Total Searches - [%d]", stats.getTotalSearches()));
-      println(String.format("Search Time    - avg: [%s] ms - longest: [%s] ms", stats.getAverageSearchTime(),
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("\n----------------------------------------------\n");
+      buffer.append("                  Search Stats                \n");
+      buffer.append("----------------------------------------------\n");
+      buffer.append(String.format("Total Searches - [%d]\n", stats.getTotalSearches()));
+      buffer.append(String.format("Search Time    - avg: [%s] ms - longest: [%s] ms\n", stats.getAverageSearchTime(),
             stats.getLongestSearchTime()));
-      println(String.format("Longest Search  - %s", stats.getLongestSearch()));
+      buffer.append(String.format("Longest Search  - %s\n", stats.getLongestSearch()));
+      println(buffer.toString());
    }
 }

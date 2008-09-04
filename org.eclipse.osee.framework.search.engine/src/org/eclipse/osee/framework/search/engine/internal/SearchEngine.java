@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal;
 
+import java.sql.Connection;
 import java.util.Collection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.search.engine.Activator;
@@ -49,7 +51,15 @@ public class SearchEngine implements ISearchEngine {
          }
       }
       secondPass = System.currentTimeMillis() - secondPass;
-      joinQuery.store();
+      Connection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         joinQuery.store(connection);
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
+      }
       System.out.println(String.format("Search for [%s] Pass 1: [%d items in %d ms] 2nd Pass: [%d items in %d ms]",
             searchString, tagMatches.size(), timeAfterPass1, joinQuery.size(), secondPass));
       statistics.addEntry(searchString, branchId, options, joinQuery.size(), System.currentTimeMillis() - startTime);

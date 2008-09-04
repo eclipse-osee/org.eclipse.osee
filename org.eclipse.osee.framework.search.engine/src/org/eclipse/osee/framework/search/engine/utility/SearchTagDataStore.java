@@ -19,9 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.jdk.core.type.MutableDouble;
-import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
@@ -50,13 +48,12 @@ public class SearchTagDataStore {
    public static long getTotalQueryIdsInQueue() {
       final MutableDouble toReturn = new MutableDouble(-1);
       try {
-         DatabaseUtil.executeQuery(SELECT_TOTAL_QUERY_IDS_IN_QUEUE, new IRowProcessor() {
+         DatabaseUtil.executeQueryInternalConnection(SELECT_TOTAL_QUERY_IDS_IN_QUEUE, new IRowProcessor() {
 
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
                toReturn.setValue(resultSet.getLong(1));
             }
-
          });
       } catch (Exception ex) {
          // Do Nothing
@@ -67,7 +64,7 @@ public class SearchTagDataStore {
    public static long getTotalTags() {
       final MutableDouble toReturn = new MutableDouble(-1);
       try {
-         DatabaseUtil.executeQuery(SELECT_TOTAL_TAGS, new IRowProcessor() {
+         DatabaseUtil.executeQueryInternalConnection(SELECT_TOTAL_TAGS, new IRowProcessor() {
 
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
@@ -92,25 +89,11 @@ public class SearchTagDataStore {
       return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
    }
 
-   public static int deleteTags(Collection<IAttributeLocator> locators) throws Exception {
-      return deleteTags(locators.toArray(new IAttributeLocator[locators.size()]));
+   public static int deleteTags(Connection connection, Collection<IAttributeLocator> locators) throws Exception {
+      return deleteTags(connection, locators.toArray(new IAttributeLocator[locators.size()]));
    }
 
-   public static int deleteTags(IAttributeLocator... locators) throws SQLException {
-      int updated = -1;
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         updated = deleteTags(connection, locators);
-      } finally {
-         if (connection != null && connection.isClosed() != true) {
-            connection.close();
-         }
-      }
-      return updated;
-   }
-
-   private static int deleteTags(Connection connection, IAttributeLocator... locators) throws SQLException {
+   public static int deleteTags(Connection connection, IAttributeLocator... locators) throws SQLException {
       List<Object[]> datas = new ArrayList<Object[]>();
       for (IAttributeLocator locator : locators) {
          datas.add(new Object[] {locator.getGammaId()});
@@ -118,40 +101,32 @@ public class SearchTagDataStore {
       return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
    }
 
-   public static int storeTags(Collection<SearchTag> searchTags) throws SQLException {
-      return storeTags(searchTags.toArray(new SearchTag[searchTags.size()]));
+   public static int storeTags(Connection connection, Collection<SearchTag> searchTags) throws SQLException {
+      return storeTags(connection, searchTags.toArray(new SearchTag[searchTags.size()]));
    }
 
-   public static int storeTags(SearchTag... searchTags) throws SQLException {
+   public static int storeTags(Connection connection, SearchTag... searchTags) throws SQLException {
       int updated = 0;
       if (searchTags != null && searchTags.length > 0) {
-         Connection connection = null;
-         try {
-            connection = OseeDbConnection.getConnection();
-            for (SearchTag searchTag : searchTags) {
-               List<Object[]> data = new ArrayList<Object[]>();
-               for (Long codedTag : searchTag.getTags()) {
-                  data.add(new Object[] {searchTag.getGammaId(), codedTag, searchTag.getGammaId(), codedTag});
-               }
-               updated += ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
+         for (SearchTag searchTag : searchTags) {
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (Long codedTag : searchTag.getTags()) {
+               data.add(new Object[] {searchTag.getGammaId(), codedTag, searchTag.getGammaId(), codedTag});
             }
-         } finally {
-            if (connection != null && connection.isClosed() != true) {
-               connection.close();
-            }
+            updated += ConnectionHandler.runPreparedUpdate(connection, getInsertSQL(connection), data);
          }
       }
       return updated;
    }
 
-   public static Set<IAttributeLocator> fetchTagEntries(Options options, Collection<Long> codedTags) throws Exception {
-      return fetchTagEntries(options, codedTags.toArray(new Long[codedTags.size()]));
+   public static Set<IAttributeLocator> fetchTagEntries(Connection connection, Collection<Long> codedTags) throws Exception {
+      return fetchTagEntries(connection, codedTags.toArray(new Long[codedTags.size()]));
    }
 
-   public static Set<IAttributeLocator> fetchTagEntries(Options options, Long... codedTags) throws Exception {
+   public static Set<IAttributeLocator> fetchTagEntries(Connection connection, Long... codedTags) throws Exception {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
       for (Long codedTag : codedTags) {
-         DatabaseUtil.executeQuery(SELECT_SEARCH_TAGS, new IRowProcessor() {
+         DatabaseUtil.executeQuery(connection, SELECT_SEARCH_TAGS, new IRowProcessor() {
             @Override
             public void processRow(ResultSet resultSet) throws Exception {
                toReturn.add(new AttributeVersion(resultSet.getLong("gamma_id")));
@@ -161,17 +136,7 @@ public class SearchTagDataStore {
       return toReturn;
    }
 
-   public static int deleteTags(int joinQueryId) throws SQLException {
-      Connection connection = null;
-      int updated = -1;
-      try {
-         connection = OseeDbConnection.getConnection();
-         updated = ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, joinQueryId);
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
-      }
-      return updated;
+   public static int deleteTags(Connection connection, int joinQueryId) throws SQLException {
+      return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, joinQueryId);
    }
 }

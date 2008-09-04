@@ -44,9 +44,8 @@ class TaggerAllWorker extends BaseCmdWorker {
       ConnectionHandlerStatement stmt = null;
       try {
          stmt =
-               ConnectionHandler.runPreparedQuery(connection,
-                     AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
-                     AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
+               ConnectionHandler.runPreparedQuery(connection, AttributeDataStore.getAllTaggableGammasByBranchQuery(
+                     connection, branchId), AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          while (stmt.next() && isExecutionAllowed()) {
             long gammaId = stmt.getRset().getLong("gamma_id");
@@ -73,7 +72,7 @@ class TaggerAllWorker extends BaseCmdWorker {
          println(String.format("Tagging Attributes For: [%s]", branchId > -1 ? "Branch " + branchId : "All Branches"));
          connection = OseeDbConnection.getConnection();
 
-         int totalAttributes = AttributeDataStore.getTotalTaggableItems(branchId);
+         int totalAttributes = AttributeDataStore.getTotalTaggableItems(connection, branchId);
          processor = new TagProcessListener(startTime, totalAttributes);
          fetchAndProcessGammas(connection, branchId, processor);
          if (!processor.isProcessingDone()) {

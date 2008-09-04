@@ -25,23 +25,26 @@ class TaggerStats extends BaseCmdWorker {
 
       ITaggerStatistics stats = tagger.getStatistics();
 
-      println("\n----------------------------------------------");
-      println("                  Tagger Stats                ");
-      println("----------------------------------------------");
-      println(String.format("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms",
+      StringBuffer buffer = new StringBuffer();
+      buffer.append("\n----------------------------------------------\n");
+      buffer.append("                  Tagger Stats                \n");
+      buffer.append("----------------------------------------------\n");
+      buffer.append(String.format("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms\n",
             stats.getAverageQueryIdProcessingTime(), stats.getLongestQueryIdProcessingTime()));
-      println(String.format("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms",
+      buffer.append(String.format("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms\n",
             stats.getAverageQueryIdWaitTime(), stats.getLongestQueryIdWaitTime()));
 
-      println(String.format("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms",
+      buffer.append(String.format("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms\n",
             stats.getAverageAttributeProcessingTime(), stats.getLongestAttributeProcessingTime()));
-      println(String.format("Attribute with longest processing time - %s", toString(stats.getLongestTask())));
-      println(String.format("Attribute with most tags - %s", toString(stats.getMostTagsTask())));
-      println(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]", stats.getTotalQueryIdsProcessed(),
-            stats.getTotalAttributesProcessed(), stats.getTotalTags()));
-      println(String.format("Total Query Ids Waiting to be Processing - [%d]", tagger.getWorkersInQueue()));
-      println(String.format("Total Query Ids in Tag Queue Table - [%d]", stats.getTotalQueryIdsInQueue()));
-      println(String.format("Total Tags in System - [%d]\n", stats.getTagsInSystem()));
+      buffer.append(String.format("Attribute with longest processing time - %s\n", toString(stats.getLongestTask())));
+      buffer.append(String.format("Attribute with most tags - %s\n", toString(stats.getMostTagsTask())));
+      buffer.append(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]\n",
+            stats.getTotalQueryIdsProcessed(), stats.getTotalAttributesProcessed(), stats.getTotalTags()));
+      buffer.append(String.format("Total Query Ids Waiting to be Processing - [%d]\n", tagger.getWorkersInQueue()));
+      buffer.append(String.format("Total Query Ids in Tag Queue Table - [%d]\n", stats.getTotalQueryIdsInQueue()));
+      buffer.append(String.format("Total Tags in System - [%d]\n\n", stats.getTagsInSystem()));
+
+      println(buffer.toString());
    }
 
    private String toString(ITagItemStatistics task) {

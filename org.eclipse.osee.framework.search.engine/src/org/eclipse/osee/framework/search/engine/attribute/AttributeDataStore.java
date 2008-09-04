@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.utility.DatabaseUtil;
@@ -49,9 +48,9 @@ public class AttributeDataStore {
    private AttributeDataStore() {
    }
 
-   public static Collection<AttributeData> getAttribute(final int tagQueueQueryId) throws Exception {
+   public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws Exception {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
-      DatabaseUtil.executeQuery(LOAD_ATTRIBUTE, new IRowProcessor() {
+      DatabaseUtil.executeQuery(connection, LOAD_ATTRIBUTE, new IRowProcessor() {
          @Override
          public void processRow(ResultSet resultSet) throws Exception {
             attributeData.add(new AttributeData(resultSet.getLong("gamma_id"), resultSet.getString("value"),
@@ -61,7 +60,7 @@ public class AttributeDataStore {
       return attributeData;
    }
 
-   private static String getQuery(int branchId, Options options) {
+   private static String getQuery(final int branchId, final Options options) {
       StringBuilder toReturn = new StringBuilder(SELECT_ATTRIBUTE_BY_TAG);
       if (branchId > -1) {
          toReturn.append(RESTRICT_BRANCH);
@@ -80,7 +79,7 @@ public class AttributeDataStore {
       return toReturn.toString();
    }
 
-   public static Set<AttributeData> getAttributesByTags(int branchId, Options options, int queryId) throws Exception {
+   public static Set<AttributeData> getAttributesByTags(final Connection connection, final int branchId, final Options options, final int queryId) throws Exception {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       String sqlQuery = getQuery(branchId, options);
       int dataSize = branchId > -1 ? 2 : 1;
@@ -89,7 +88,7 @@ public class AttributeDataStore {
       if (branchId > -1) {
          data[1] = branchId;
       }
-      DatabaseUtil.executeQuery(sqlQuery, new IRowProcessor() {
+      DatabaseUtil.executeQuery(connection, sqlQuery, new IRowProcessor() {
          @Override
          public void processRow(ResultSet resultSet) throws Exception {
             toReturn.add(new AttributeData(resultSet.getInt("art_id"), resultSet.getLong("gamma_id"),
@@ -100,27 +99,19 @@ public class AttributeDataStore {
       return toReturn;
    }
 
-   public static String getAllTaggableGammasByBranchQuery(int branchId) throws SQLException {
-      return getBranchTaggingQueries(branchId, false);
+   public static String getAllTaggableGammasByBranchQuery(final Connection connection, final int branchId) throws SQLException {
+      return getBranchTaggingQueries(connection, branchId, false);
    }
 
-   public static Object[] getAllTaggableGammasByBranchQueryData(int branchId) {
+   public static Object[] getAllTaggableGammasByBranchQueryData(final int branchId) {
       return branchId > -1 ? new Object[] {branchId} : new Object[0];
    }
 
-   private static String getBranchTaggingQueries(int branchId, boolean isCountQuery) throws SQLException {
+   private static String getBranchTaggingQueries(final Connection connection, final int branchId, final boolean isCountQuery) throws SQLException {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
-            builder.append(POSTGRESQL_CHECK);
-         }
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
+      if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
+         builder.append(POSTGRESQL_CHECK);
       }
       if (branchId > -1) {
          builder.append(RESTRICT_BY_BRANCH);
@@ -128,9 +119,9 @@ public class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(int branchId) throws Exception {
+   public static int getTotalTaggableItems(final Connection connection, final int branchId) throws Exception {
       final MutableInteger total = new MutableInteger(-1);
-      DatabaseUtil.executeQuery(getBranchTaggingQueries(branchId, true), new IRowProcessor() {
+      DatabaseUtil.executeQuery(connection, getBranchTaggingQueries(connection, branchId, true), new IRowProcessor() {
          @Override
          public void processRow(ResultSet resultSet) throws Exception {
             total.setValue(resultSet.getInt(1));

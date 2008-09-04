@@ -12,11 +12,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -28,15 +24,13 @@ import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
  * @author Roberto E. Escobar
  */
 public class BranchTaggerRunnable implements Runnable {
-   private static int CACHE_LIMIT = 1000;
-   private ISearchEngineTagger tagger;
-   private int branchId;
-   private ITagListener listener;
 
-   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId) {
-      this.tagger = tagger;
+   private final int branchId;
+   private final BranchToQueryTx branchToQueryTx;
+
+   BranchTaggerRunnable(ISearchEngineTagger tagger, ITagListener listener, int branchId, boolean isCacheAll, int cacheLimit) {
+      this.branchToQueryTx = new BranchToQueryTx(tagger, listener, isCacheAll, cacheLimit);
       this.branchId = branchId;
-      this.listener = listener;
    }
 
    /* (non-Javadoc)
@@ -44,51 +38,29 @@ public class BranchTaggerRunnable implements Runnable {
     */
    @Override
    public void run() {
-      Connection connection = null;
-      TagQueryDispatcher dispatcher = null;
       try {
-         connection = OseeDbConnection.getConnection();
-         if (listener != null) {
-            int totalAttributes = AttributeDataStore.getTotalTaggableItems(branchId);
-            int remainder = totalAttributes % 1000;
-            int totalQueries = totalAttributes / 1000 + (remainder > 0 ? 1 : 0);
-            listener.onTagExpectedQueryIdSubmits(totalQueries);
-         }
-         dispatcher = new TagQueryDispatcher(connection);
-         DatabaseUtil.executeQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId), dispatcher,
-               AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
-         dispatcher.dispatchQueryId(connection);
+         branchToQueryTx.execute();
       } catch (Exception ex) {
-         if (listener != null) {
-            int queryId = -2;
-            if (dispatcher != null) {
-               queryId = dispatcher.getCurrentJoinQuery();
-            }
-            listener.onTagError(queryId, ex);
-         }
          OseeLog.log(BranchTaggerRunnable.class, Level.SEVERE, ex);
-      } finally {
-         if (connection != null) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-               OseeLog.log(BranchTaggerRunnable.class, Level.SEVERE, ex);
-            }
-         }
       }
    }
 
-   private final class TagQueryDispatcher implements IRowProcessor {
-      private TagQueueJoinQuery joinQuery;
+   private final class BranchToQueryTx extends InputToTagQueueTx implements IRowProcessor {
       private Connection connection;
 
-      public TagQueryDispatcher(Connection connection) {
-         this.joinQuery = null;
-         this.connection = connection;
+      public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) {
+         super(tagger, listener, isCacheAll, cacheLimit);
       }
 
-      public int getCurrentJoinQuery() {
-         return joinQuery != null ? joinQuery.getQueryId() : -1;
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
+       */
+      @Override
+      protected void convertInput(Connection connection) throws Exception {
+         this.connection = connection;
+         DatabaseUtil.executeQuery(connection, AttributeDataStore.getAllTaggableGammasByBranchQuery(connection,
+               branchId), BranchToQueryTx.this, AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
+         this.connection = null;
       }
 
       /* (non-Javadoc)
@@ -96,22 +68,7 @@ public class BranchTaggerRunnable implements Runnable {
        */
       @Override
       public void processRow(ResultSet resultSet) throws Exception {
-         long gammaId = resultSet.getLong("gamma_id");
-         if (joinQuery == null) {
-            joinQuery = JoinUtility.createTagQueueJoinQuery();
-         }
-         joinQuery.add(gammaId);
-         if (joinQuery.size() >= CACHE_LIMIT) {
-            dispatchQueryId(connection);
-            joinQuery = null;
-         }
-      }
-
-      private void dispatchQueryId(Connection connection) throws SQLException {
-         if (joinQuery != null && joinQuery.size() > 0) {
-            joinQuery.store(connection);
-            tagger.tagByQueueQueryId(listener, joinQuery.getQueryId());
-         }
+         addEntry(connection, resultSet.getLong("gamma_id"));
       }
    }
 }

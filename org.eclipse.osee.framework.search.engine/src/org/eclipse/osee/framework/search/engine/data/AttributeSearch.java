@@ -49,7 +49,7 @@ public final class AttributeSearch implements ITagCollector {
          this.tags = JoinUtility.createSearchTagJoinQuery();
          TagProcessor.collectFromString(searchString, this);
          this.tags.store(connection);
-         toReturn = AttributeDataStore.getAttributesByTags(branchId, options, this.tags.getQueryId());
+         toReturn = AttributeDataStore.getAttributesByTags(connection, branchId, options, this.tags.getQueryId());
       } finally {
          if (connection != null) {
             tags.delete(connection);

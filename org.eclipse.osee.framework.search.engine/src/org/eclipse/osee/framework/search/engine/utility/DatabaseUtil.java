@@ -21,9 +21,21 @@ import org.eclipse.osee.framework.db.connection.OseeDbConnection;
  */
 public class DatabaseUtil {
 
-   public static void executeQuery(String sql, IRowProcessor processor, Object... data) throws Exception {
-      Connection connection = null;
+   public static void executeQuery(final Connection connection, final String sql, final IRowProcessor processor, final Object... data) throws Exception {
       ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
+         while (chStmt.next()) {
+            processor.processRow(chStmt.getRset());
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+   }
+
+   public static void executeQueryInternalConnection(final String sql, final IRowProcessor processor, final Object... data) throws Exception {
+      ConnectionHandlerStatement chStmt = null;
+      Connection connection = null;
       try {
          connection = OseeDbConnection.getConnection();
          chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);

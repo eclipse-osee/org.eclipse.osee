@@ -16,26 +16,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
+import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class SearchEngineTagger implements ISearchEngineTagger {
-
+   private static final int CACHE_LIMIT = 1000;
    private ExecutorService executor;
    private Map<Integer, FutureTask<?>> futureTasks;
    private TaggerStatistics statistics;
@@ -45,8 +39,8 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
       this.executor = Executors.newFixedThreadPool(3);
 
-//      Timer timer = new Timer("Start-Up Tagger");
-//      timer.schedule(new StartUpRunnable(this), 2000);
+      //      Timer timer = new Timer("Start-Up Tagger");
+      //      timer.schedule(new StartUpRunnable(this), 2000);
    }
 
    /* (non-Javadoc)
@@ -54,7 +48,9 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public int deleteTags(int joinQueryId) throws Exception {
-      return SearchTagDataStore.deleteTags(joinQueryId);
+      DeleteTagsTx deleteTransaction = new DeleteTagsTx(joinQueryId);
+      deleteTransaction.execute();
+      return deleteTransaction.rowsDeleted();
    }
 
    /* (non-Javadoc)
@@ -70,7 +66,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public void tagByQueueQueryId(ITagListener listener, int queryId) {
-      TaggerRunnable runnable = new TaggerRunnable(queryId);
+      TaggerRunnable runnable = new TaggerRunnable(queryId, false, CACHE_LIMIT);
       runnable.addListener(statistics);
       if (listener != null) {
          runnable.addListener(listener);
@@ -86,7 +82,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public void tagByBranchId(ITagListener listener, int branchId) {
-      this.executor.submit(new BranchTaggerRunnable(this, listener, branchId));
+      this.executor.submit(new BranchTaggerRunnable(this, listener, branchId, false, CACHE_LIMIT));
    }
 
    /* (non-Javadoc)
@@ -102,28 +98,9 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
     */
    @Override
    public void tagFromXmlStream(ITagListener listener, InputStream inputStream) throws Exception {
-      TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
-      Connection connection = null;
-      try {
-         connection = OseeDbConnection.getConnection();
-         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-         xmlReader.setContentHandler(new AttributeXmlParser(connection, joinQuery));
-         xmlReader.parse(new InputSource(inputStream));
-         joinQuery.store(connection);
-         if (listener != null) {
-            listener.onTagExpectedQueryIdSubmits(1);
-         }
-         tagByQueueQueryId(listener, joinQuery.getQueryId());
-      } catch (Exception ex) {
-         if (listener != null) {
-            listener.onTagError(joinQuery.getQueryId(), ex);
-         }
-         throw new Exception("Error during tagFromXmlStream. ", ex);
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
-      }
+      InputStreamTagProcessor inputStreamTagProcessor =
+            new InputStreamTagProcessor(this, listener, inputStream, false, CACHE_LIMIT);
+      inputStreamTagProcessor.execute();
    }
 
    /* (non-Javadoc)
@@ -212,6 +189,27 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       @Override
       protected void done() {
          futureTasks.remove(runnable.getTagQueueQueryId());
+      }
+   }
+
+   private final class DeleteTagsTx extends DbTransaction {
+
+      private final int queryId;
+      private int updated;
+
+      public DeleteTagsTx(int queryId) {
+         super();
+         this.queryId = queryId;
+         this.updated = -1;
+      }
+
+      public int rowsDeleted() {
+         return updated;
+      }
+
+      @Override
+      protected void handleTxWork(Connection connection) throws Exception {
+         this.updated = SearchTagDataStore.deleteTags(connection, queryId);
       }
    }
 }

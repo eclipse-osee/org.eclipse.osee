@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
@@ -54,55 +55,69 @@ public class TestSearchDataStore extends TestCase {
       for (SearchTag searchTag : testData) {
          totalTags += searchTag.cacheSize();
       }
-
-      int updated = SearchTagDataStore.storeTags(testData);
-      assertEquals(totalTags, updated);
-
-      for (SearchTag tag : testData) {
-         for (Long codedTag : tag.getTags()) {
-            Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(new Options(), codedTag);
-            assertEquals(locators.size(), 1);
-            IAttributeLocator locator = locators.iterator().next();
-            assertEquals(locator.getGammaId(), tag.getGammaId());
-         }
-      }
-
-      List<IAttributeLocator> locators = Collections.castAll(testData);
-      updated = SearchTagDataStore.deleteTags(locators);
-      assertEquals(totalTags, updated);
-   }
-
-   public void testSearchTagDataStoreDeleteByQuery() throws Exception {
-      List<SearchTag> testData = getTestSearchTagDataStoreData();
-      TransactionJoinQuery joinQuery = null;
+      Connection connection = null;
       try {
-         int totalTags = 0;
-         for (SearchTag searchTag : testData) {
-            totalTags += searchTag.cacheSize();
-         }
-
-         int updated = SearchTagDataStore.storeTags(testData);
+         connection = OseeDbConnection.getConnection();
+         int updated = SearchTagDataStore.storeTags(connection, testData);
          assertEquals(totalTags, updated);
 
          for (SearchTag tag : testData) {
             for (Long codedTag : tag.getTags()) {
-               Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(new Options(), codedTag);
+               Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(connection, codedTag);
                assertEquals(locators.size(), 1);
                IAttributeLocator locator = locators.iterator().next();
                assertEquals(locator.getGammaId(), tag.getGammaId());
             }
          }
-         joinQuery = JoinUtility.createTransactionJoinQuery();
-         for (SearchTag tag : testData) {
-            joinQuery.add((int) tag.getGammaId(), -1);
+
+         List<IAttributeLocator> locators = Collections.castAll(testData);
+         updated = SearchTagDataStore.deleteTags(connection, locators);
+         assertEquals(totalTags, updated);
+      } finally {
+         if (connection != null) {
+            connection.close();
          }
-         joinQuery.store();
-         updated = SearchTagDataStore.deleteTags(joinQuery.getQueryId());
+      }
+   }
+
+   public void testSearchTagDataStoreDeleteByQuery() throws Exception {
+      List<SearchTag> testData = getTestSearchTagDataStoreData();
+      TransactionJoinQuery joinQuery = null;
+      Connection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         int totalTags = 0;
+         for (SearchTag searchTag : testData) {
+            totalTags += searchTag.cacheSize();
+         }
+
+         int updated = SearchTagDataStore.storeTags(connection, testData);
          assertEquals(totalTags, updated);
 
+         for (SearchTag tag : testData) {
+            for (Long codedTag : tag.getTags()) {
+               Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(connection, codedTag);
+               assertEquals(locators.size(), 1);
+               IAttributeLocator locator = locators.iterator().next();
+               assertEquals(locator.getGammaId(), tag.getGammaId());
+            }
+         }
+         try {
+            joinQuery = JoinUtility.createTransactionJoinQuery();
+            for (SearchTag tag : testData) {
+               joinQuery.add((int) tag.getGammaId(), -1);
+            }
+            joinQuery.store(connection);
+            updated = SearchTagDataStore.deleteTags(connection, joinQuery.getQueryId());
+            assertEquals(totalTags, updated);
+         } finally {
+            if (joinQuery != null) {
+               joinQuery.delete(connection);
+            }
+         }
       } finally {
-         if (joinQuery != null) {
-            joinQuery.delete();
+         if (connection != null) {
+            connection.close();
          }
       }
    }
