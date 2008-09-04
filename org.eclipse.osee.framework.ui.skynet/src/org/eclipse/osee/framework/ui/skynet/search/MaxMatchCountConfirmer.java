@@ -23,31 +23,17 @@ public class MaxMatchCountConfirmer implements ISearchConfirmer {
    private static final int MAX_RESULTS = 2000;
 
    public boolean canProceed(final int count) {
-      if (count < MAX_RESULTS) return true;
+      if (count < MAX_RESULTS) {
+         return true;
+      }
 
       final MutableBoolean result = new MutableBoolean(false);
-      final MutableBoolean done = new MutableBoolean(false);
-
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             result.setValue(MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Search",
                   "The search returned " + count + " results and may take a long time to load, continue?"));
-            synchronized (done) {
-               done.setValue(true);
-               done.notifyAll();
-            }
          }
       });
-
-      synchronized (done) {
-         while (!done.getValue()) {
-            try {
-               done.wait();
-            } catch (InterruptedException e) {
-               break;
-            }
-         }
-      }
 
       return result.getValue();
    }

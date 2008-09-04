@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -89,7 +90,8 @@ public final class ArtifactLoader {
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
-      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, transactionId != null);
+      List<Artifact> artifacts =
+            loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, transactionId != null);
       return artifacts;
    }
 
@@ -392,7 +394,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException {
+   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException, ArtifactDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
       try {
          if (historical) {
@@ -424,6 +426,9 @@ public final class ArtifactLoader {
                   artifact = ArtifactCache.getHistorical(artifactId, rSet.getInt("stripe_transaction_id"));
                } else {
                   artifact = ArtifactCache.getActive(artifactId, branchId);
+               }
+               if (artifact == null) {
+                  throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
                }
                if (artifact.isAttributesLoaded()) {
                   artifact = null;

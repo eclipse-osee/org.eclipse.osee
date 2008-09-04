@@ -32,7 +32,7 @@ final class IdArtifactSearch extends AbstractArtifactSearchQuery {
       this.branchToSearch = branchToSearch;
       this.allowDeleted = allowDeleted;
 
-      this.idsToSearch.addAll(Arrays.asList(searchString.split("\\s+,*\\s+")));
+      this.idsToSearch.addAll(Arrays.asList(searchString.split("[\\s,]+")));
    }
 
    /* (non-Javadoc)
