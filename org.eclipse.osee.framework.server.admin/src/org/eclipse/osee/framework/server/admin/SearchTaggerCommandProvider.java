@@ -89,8 +89,8 @@ public class SearchTaggerCommandProvider implements CommandProvider {
       sb.append("\n---OSEE Server Admin Commands---\n");
       sb.append("        tag_all [<branchId>] - tag all attributes in a branch or tag all attributes in all branches if id not specified\n");
       sb.append("        tag_all_stop - stop tagging all attributes\n");
-      sb.append("        tag [<gammaId> <gammaId> ...]- tag individual items");
-      sb.append("        tag_stop - stop tagging individual items");
+      sb.append("        tag [<gammaId> <gammaId> ...]- tag individual item\n");
+      sb.append("        tag_stop - stop tagging individual items\n");
       sb.append("        drop_all_tags - drops all tags\n");
       sb.append("        drop_all_tags_stop - stop dropping all tags\n");
       sb.append("        tagger_stats - get tagger stats\n");
