@@ -579,7 +579,9 @@ public class ArtifactPersistenceManager {
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
-      artifact.persistRelations();
+      artifact.deleteAttributes();
+      
+      artifact.persistAttributesAndRelations();
    }
 
    public void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException, SQLException {
