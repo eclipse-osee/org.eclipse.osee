@@ -21,7 +21,7 @@ public class OseeApplicationServerContext {
    public static final String SEARCH_CONTEXT = asAbsoluteContext("search");
    public static final String BRANCH_CREATION_CONTEXT = asAbsoluteContext("branch");
    public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext("branch/exchange");
-   public static final String TAGGING_CONTEXT = asAbsoluteContext("search");
+   public static final String SEARCH_TAGGING_CONTEXT = asAbsoluteContext("search/tagger");
    public static final String RESOURCE_CONTEXT = asAbsoluteContext("resource");
 
    private static final String asAbsoluteContext(String value) {

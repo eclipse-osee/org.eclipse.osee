@@ -121,7 +121,7 @@ public class ArtifactQuery {
     * 
     * @param artifactIds
     * @param branch
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
@@ -133,7 +133,7 @@ public class ArtifactQuery {
     * 
     * @param artifactIds
     * @param branch
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws SQLException {
@@ -223,7 +223,7 @@ public class ArtifactQuery {
     * 
     * @param branch
     * @param criteria
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
@@ -235,7 +235,7 @@ public class ArtifactQuery {
     * 
     * @param branch
     * @param criteria
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws SQLException {
@@ -248,7 +248,7 @@ public class ArtifactQuery {
     * @param artifactId
     * @param branch
     * @param criteria
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws SQLException {
@@ -286,17 +286,41 @@ public class ArtifactQuery {
             30, null);
    }
 
-   /**
-    * @param artifactCountEstimate
-    * @param confirmer
-    * @param artifact_name
-    * @param string
-    * @param actionItemNames
-    * @param atsBranch
-    * @return
-    */
    public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, Branch branch, int artifactCountEstimate) throws SQLException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
             new AttributeCriteria(attributeTypeName, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
+
+   /**
+    * Searches for artifacts having attributes which contain matching keywords entered in the query string.
+    * <p>
+    * Special characters such as (<b><code>' '</code>, <code>!</code>, <code>"</code>, <code>#</code>, <code>$</code>,
+    * <code>%</code>, <code>(</code>, <code>)</code>, <code>*</code>, <code>+</code>, <code>,</code>, <code>-</code>,
+    * <code>.</code>, <code>/</code>, <code>:</code>, <code>;</code>, <code>&lt;</code>, <code>&gt;</code>,
+    * <code>?</code>, <code>@</code>, <code>[</code>, <code>\</code>, <code>]</code>, <code>^</code>, <code>{</code>,
+    * <code>|</code>, <code>}</code>, <code>~</code>, <code>_</code></b>) are assumed to be word separators.
+    * </p>
+    * <p>
+    * For example:
+    * <ul>
+    * <li><b>'<code>hello.world</code>'</b> will be translated to <b>'<code>hello</code>'</b> and <b>'<code>world</code>
+    * '</b>. The search will match attributes with <b>'<code>hello</code>'</b>, <b>'<code>world</code>'</b>, and <b>'
+    * <code>hello.world</code>'</b> keywords.</li>
+    * </ul>
+    * </p>
+    * 
+    * @param queryString keywords to match
+    * @param nameOnly <b>true</b> searches in name attributes only; <b>false</b> includes all tagged attribute types
+    * @param includeDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
+    * @param branch
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws Exception
+    */
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) throws Exception {
+      return new HttpArtifactQuery(queryString, nameOnly, includeDeleted, branch).getArtifacts(FULL, null, false, false);
+   }
+
+   //   public static List<Artifact> getArtifactsFromArtifactTypeAndAttributeKeywords(String queryString, boolean nameOnly, boolean includeDeleted, int... branchId) {
+   //      return null;
+   //   }
 }

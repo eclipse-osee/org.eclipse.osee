@@ -21,7 +21,8 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
    private static Activator instance;
 
-   private OseeHttpServiceTracker httpTracker;
+   private OseeHttpServiceTracker searchEngineHttpTracker;
+   private OseeHttpServiceTracker searchEngineTaggerHttpTracker;
    private ServiceTracker searchServiceTracker;
    private ServiceTracker taggerServiceTracker;
 
@@ -38,9 +39,14 @@ public class Activator implements BundleActivator {
       taggerServiceTracker = new ServiceTracker(context, ISearchEngineTagger.class.getName(), null);
       taggerServiceTracker.open();
 
-      httpTracker =
+      searchEngineHttpTracker =
             new OseeHttpServiceTracker(context, OseeApplicationServerContext.SEARCH_CONTEXT, SearchEngineServlet.class);
-      httpTracker.open();
+      searchEngineHttpTracker.open();
+
+      searchEngineTaggerHttpTracker =
+            new OseeHttpServiceTracker(context, OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
+                  SearchEngineTaggerServlet.class);
+      searchEngineTaggerHttpTracker.open();
    }
 
    /*
@@ -48,8 +54,11 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      httpTracker.close();
-      httpTracker = null;
+      searchEngineHttpTracker.close();
+      searchEngineHttpTracker = null;
+
+      searchEngineTaggerHttpTracker.close();
+      searchEngineTaggerHttpTracker = null;
 
       searchServiceTracker.close();
       searchServiceTracker = null;

@@ -238,7 +238,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             parameters.put("branchId", Integer.toString(branch.getBranchId()));
             parameters.put("wait", "true");
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.TAGGING_CONTEXT,
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
                         parameters);
             response.append(HttpProcessor.post(new URL(url)));
             OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());

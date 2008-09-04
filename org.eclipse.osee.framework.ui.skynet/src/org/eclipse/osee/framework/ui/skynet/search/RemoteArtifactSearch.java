@@ -10,40 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import java.io.ByteArrayOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
-import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Roberto E. Escobar
  */
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
-   private Map<String, String> parameters;
+   private String queryString;
+   private boolean nameOnly;
+   private boolean includeDeleted;
+   private Branch branch;
 
-   RemoteArtifactSearch(String query, int branchId, Map<String, Boolean> options) {
-      this.parameters = new HashMap<String, String>();
-      this.parameters.put("query", query);
-      this.parameters.put("branchId", Integer.toString(branchId));
-      if (options != null) {
-         for (String optionName : options.keySet()) {
-            this.parameters.put(optionName, options.get(optionName).toString());
-         }
-      }
+   RemoteArtifactSearch(String queryString, Branch branch, boolean nameOnly, boolean includeDeleted) {
+      this.branch = branch;
+      this.includeDeleted = includeDeleted;
+      this.nameOnly = nameOnly;
+      this.queryString = queryString;
    }
 
    /* (non-Javadoc)
@@ -51,21 +36,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      Collection<Artifact> toReturn = null;
-      ObjectPair<Integer, Integer> queryIdAndSize = executeSearch();
-      if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
-         try {
-            toReturn =
-                  ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, ArtifactLoad.FULL, null,
-                        queryIdAndSize.object2, false, false);
-         } finally {
-            JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
-         }
-      }
-      if (toReturn == null) {
-         toReturn = java.util.Collections.emptyList();
-      }
-      return toReturn;
+      return ArtifactQuery.getArtifactsFromAttributeWithKeywords(queryString, nameOnly, includeDeleted, branch);
    }
 
    /* (non-Javadoc)
@@ -73,34 +44,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public String getCriteriaLabel() {
-      return parameters.get("query");
+      return String.format("(%s) - Options:[%s%s]", queryString, nameOnly ? "Name Only " : "",
+            includeDeleted ? "Include Deleted " : "");
    }
-
-   private ObjectPair<Integer, Integer> executeSearch() throws Exception {
-      ObjectPair<Integer, Integer> toReturn = null;
-      Result result = SkynetGuiPlugin.areOSEEServicesAvailable();
-      if (result.isTrue()) {
-         String url =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_CONTEXT,
-                     parameters);
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult httpRequestResult = HttpProcessor.acquire(new URL(url), outputStream);
-         if (httpRequestResult.wasSuccessful()) {
-            String queryIdString = outputStream.toString("UTF-8");
-            if (Strings.isValid(queryIdString)) {
-               String[] entries = queryIdString.split(",\\s*");
-               if (entries.length >= 2) {
-                  toReturn = new ObjectPair<Integer, Integer>(new Integer(entries[0]), new Integer(entries[1]));
-               }
-            }
-         } else if (httpRequestResult.getCode() != HttpURLConnection.HTTP_NO_CONTENT) {
-            throw new Exception(String.format("Search error due to bad request: url[%s] status code: [%s]", url,
-                  httpRequestResult.getCode()));
-         }
-      } else {
-         throw new Exception(String.format("Unable to perform search: %s", result.getText()));
-      }
-      return toReturn;
-   }
-
 }

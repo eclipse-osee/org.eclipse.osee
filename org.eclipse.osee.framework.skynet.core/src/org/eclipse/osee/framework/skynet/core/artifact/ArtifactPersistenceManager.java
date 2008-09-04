@@ -904,7 +904,7 @@ public class ArtifactPersistenceManager {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("queryId", Integer.toString(transactionJoinId));
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.TAGGING_CONTEXT,
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
                         parameters);
             HttpProcessor.delete(new URL(url));
          } catch (Exception ex) {

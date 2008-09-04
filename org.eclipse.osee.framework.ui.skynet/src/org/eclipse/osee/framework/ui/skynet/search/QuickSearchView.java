@@ -236,7 +236,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
                      searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             } else {
                NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(),
-                     BranchPersistenceManager.getDefaultBranch().getBranchId(), searchComposite.getOptions()));
+                     BranchPersistenceManager.getDefaultBranch(),
+                     searchComposite.isOptionSelected(SearchOption.Name_Only.asLabel()),
+                     searchComposite.isOptionSelected(SearchOption.Include_Deleted.asLabel())));
             }
          }
       }
