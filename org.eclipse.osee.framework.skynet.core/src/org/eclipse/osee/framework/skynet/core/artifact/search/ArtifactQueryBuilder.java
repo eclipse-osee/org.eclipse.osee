@@ -138,9 +138,9 @@ public class ArtifactQueryBuilder {
          if (guidOrHrids.size() == 1) {
             this.guidOrHrid = guidOrHrids.get(0);
          } else {
+            hrids = new ArrayList<String>();
+            guids = new ArrayList<String>();
             for (String id : guidOrHrids) {
-               hrids = new ArrayList<String>();
-               guids = new ArrayList<String>();
                if (GUID.isValid(id)) {
                   guids.add(id);
                } else {
