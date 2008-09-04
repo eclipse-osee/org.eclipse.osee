@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -44,7 +47,15 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
     */
    @Override
    public String getCriteriaLabel() {
-      return String.format("(%s) - Options:[%s%s]", queryString, nameOnly ? "Name Only " : "",
-            includeDeleted ? "Include Deleted " : "");
+      List<String> optionsList = new ArrayList<String>();
+      if (nameOnly) {
+         optionsList.add("Name Only");
+      }
+
+      if (includeDeleted) {
+         optionsList.add("Include Deleted");
+      }
+      String options = String.format(" - Options:[%s]", StringFormat.listToValueSeparatedString(optionsList, "& "));
+      return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
    }
 }
