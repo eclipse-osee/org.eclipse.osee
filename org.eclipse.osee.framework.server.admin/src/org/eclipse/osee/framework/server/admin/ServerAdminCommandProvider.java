@@ -11,21 +11,33 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.io.File;
-import org.eclipse.osee.framework.server.admin.conversion.CompressedContentFix;
+import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CompressedContentFixCmd implements CommandProvider {
+public class ServerAdminCommandProvider implements CommandProvider {
 
-   public void _native_content_fix(CommandInterpreter ci) {
-      CompressedContentFix.getInstance().execute(ci);
-   }
+   //   public void _native_content_fix(CommandInterpreter ci) {
+   //      CompressedContentFix.getInstance().execute(ci);
+   //   }
+   //
+   //   public void _native_content_fix_stop(CommandInterpreter ci) {
+   //      CompressedContentFix.getInstance().executeStop(ci);
+   //   }
+   //
+   //   public void _convert(CommandInterpreter ci) {
+   //      DataConversion.getInstance().convert(ci);
+   //   }
+   //
+   //   public void _convertstop(CommandInterpreter ci) {
+   //      DataConversion.getInstance().convertStop(ci);
+   //   }
 
-   public void _native_content_fix_stop(CommandInterpreter ci) {
-      CompressedContentFix.getInstance().executeStop(ci);
+   public void _server_status(CommandInterpreter ci) {
+      AdminCommands.getInstance().getServerStatus(ci);
    }
 
    public void _configini(CommandInterpreter ci) {
@@ -55,9 +67,11 @@ public class CompressedContentFixCmd implements CommandProvider {
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Server Admin Commands---\n");
-      sb.append("        native_content_fix - converts some data\n");
-      sb.append("        native_content_fix_stop - stop the conversion\n");
+      sb.append("        server_status - displays server status\n");
+      //      sb.append("        native_content_fix - converts some data\n");
+      //      sb.append("        native_content_fix_stop - stop the conversion\n");
+      //      sb.append("        convert - converts some data\n");
+      //      sb.append("        convertstop - stop the conversion\n");
       return sb.toString();
    }
-
 }

@@ -19,18 +19,16 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.common.Activator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
@@ -58,9 +56,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       this.errorList = Collections.synchronizedList(new ArrayList<String>());
    }
 
-   public IResourceLocator getExchangeFileLocator() throws MalformedLocatorException {
-      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
-            ExchangeLocatorProvider.PROTOCOL, "", this.exportName);
+   public String getExchangeFileName() throws MalformedLocatorException {
+      return this.exportName;
    }
 
    public int getExportQueryId() {
@@ -108,7 +105,9 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          }
          exportItem.addExportListener(this);
       }
-      executorService = Executors.newFixedThreadPool(2);
+      executorService =
+            Executors.newFixedThreadPool(2,
+                  Activator.getInstance().getApplicationServerManager().createNewThreadFactory("branch.export.worker"));
    }
 
    private Future<?> submitTask(int exportQueryId, Runnable runnable) {

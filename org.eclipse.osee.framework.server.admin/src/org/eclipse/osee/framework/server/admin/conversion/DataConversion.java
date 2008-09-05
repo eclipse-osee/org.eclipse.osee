@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,7 +88,6 @@ public class DataConversion {
    private class Query implements Runnable {
 
       private CommandInterpreter ci;
-      ExecutorService exec;
 
       Query(CommandInterpreter cmdi) {
          ci = cmdi;

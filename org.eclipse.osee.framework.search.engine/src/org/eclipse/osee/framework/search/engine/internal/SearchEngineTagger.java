@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.resource.common.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
@@ -37,7 +38,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    public SearchEngineTagger() {
       this.statistics = new TaggerStatistics();
       this.futureTasks = Collections.synchronizedMap(new HashMap<Integer, FutureTask<?>>());
-      this.executor = Executors.newFixedThreadPool(3);
+      this.executor = Executors.newFixedThreadPool(3, Activator.getInstance().createNewThreadFactory("tagger.worker"));
 
       //      Timer timer = new Timer("Start-Up Tagger");
       //      timer.schedule(new StartUpRunnable(this), 2000);

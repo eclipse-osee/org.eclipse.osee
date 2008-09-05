@@ -60,7 +60,7 @@ public class BranchManagementCommandProvider implements CommandProvider {
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
-      sb.append("\n---OSEE Server Admin Commands---\n");
+      sb.append("\n---OSEE Branch Commands---\n");
       sb.append("        export_branch <exchangeFileName> [-exclude_baseline_txs] [<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
       sb.append("        export_branch_stop - stop branch export\n");
       sb.append("        import_branch <exchangeFilePath> [-exclude_baseline_txs] [-allAsRootBranches] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");

@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.common;
 
-import org.eclipse.osee.framework.resource.common.internal.ApplicationServerManager;
+import java.util.concurrent.ThreadFactory;
+import org.eclipse.osee.framework.resource.common.osgi.ApplicationServerManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -31,6 +32,7 @@ public class Activator implements BundleActivator {
 
       applicationManagerService =
             context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(), null);
+
       applicationManagerTracker = new ServiceTracker(context, IApplicationServerManager.class.getName(), null);
       applicationManagerTracker.open();
    }
@@ -44,11 +46,14 @@ public class Activator implements BundleActivator {
       applicationManagerService = null;
 
       instance = null;
-
    }
 
    public static Activator getInstance() {
       return instance;
+   }
+
+   public ThreadFactory createNewThreadFactory(String name) {
+      return getApplicationServerManager().createNewThreadFactory(name);
    }
 
    public IApplicationServerManager getApplicationServerManager() {

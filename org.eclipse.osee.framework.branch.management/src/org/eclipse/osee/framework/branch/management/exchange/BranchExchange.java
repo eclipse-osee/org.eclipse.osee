@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.List;
+import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -27,7 +29,8 @@ public class BranchExchange implements IBranchExchange {
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
       ExportController controller = new ExportController(exportName, options, branchIds);
       controller.execute();
-      return controller.getExchangeFileLocator();
+      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
+            ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
    }
 
    /* (non-Javadoc)

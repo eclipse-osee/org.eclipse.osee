@@ -8,26 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.common;
-
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
+package org.eclipse.osee.framework.resource.common.osgi;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IApplicationServerManager {
-
-   public void shutdown();
-
-   public ThreadFactory createNewThreadFactory(String name);
-
-   public boolean isSystemIdle();
-
-   public int getNumberOfActiveThreads();
-
-   public List<String> getCurrentProcesses();
-
-   public void setServletRequestsAllowed(boolean value);
-
+enum ProcessingStateEnum {
+   BUSY, IDLE;
 }
