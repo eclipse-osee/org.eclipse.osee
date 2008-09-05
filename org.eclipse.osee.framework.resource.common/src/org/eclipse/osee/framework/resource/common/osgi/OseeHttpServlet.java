@@ -29,7 +29,7 @@ public class OseeHttpServlet extends HttpServlet {
    private HttpServletRequest request;
 
    public OseeHttpServlet() {
-      this.areRequestsAllowed = false;
+      this.areRequestsAllowed = true;
       this.areLogsAllowed = false;
       this.processingState = ProcessingStateEnum.IDLE;
       this.request = null;
