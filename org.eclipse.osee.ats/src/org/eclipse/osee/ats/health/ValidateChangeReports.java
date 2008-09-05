@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -112,6 +114,8 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
    // Lba V11 REU Req Team Workflow
    // Lba V13 Req Team Workflow
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException, SQLException {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
@@ -289,6 +293,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
          // this gives results as you go instead of waiting for final report
          if (foundChangeReport) {
             sbByType.append(AHTML.endMultiColumnTable());
+
             XResultData xResultdata = new XResultData(AtsPlugin.getLogger());
             xResultdata.addRaw(sbByType.toString().replaceAll("\n", ""));
             xResultdata.report("Change Report Test for " + artifactTypeName);
@@ -298,6 +303,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
          }
       }
       sbFull.append(AHTML.endMultiColumnTable());
+      System.err.println(String.format("%d SevereLogs during test.\n", monitorLog.getSevereLogs().size()));
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
    }
 
