@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.editor.service.branch;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
+import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
@@ -39,7 +41,9 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
     */
    @Override
    public Action createToolbarService() {
+      if (!AtsPlugin.isAtsAdmin()) return null;
       toolBarAction = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         @Override
          public void run() {
             performService();
          }
@@ -59,6 +63,14 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
    @Override
    public String getName() {
       return "Show OLD Change Report";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
+   @Override
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return super.isShowSidebarService(page);
    }
 
    private boolean isEnabled() {
