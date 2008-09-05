@@ -38,6 +38,9 @@ Steps Taken:
 =======  stored outlines  =======
 Doc ID: 	Note:6336044.8 which is preventing creating a stored outline
 
+
+alter system set use_stored_outlines=true;
+
 -- do this:
 alter session set create_stored_outlines = true;
 -- now execute exact sql (copy from enterprise manager) and the outline will automatically be created
@@ -56,4 +59,12 @@ end;
 /
 
 -- now test for success
+select * from dba_outlines;
 select * from user_outlines;
+alter system set use_stored_outlines=true;
+write database startup trigger
+
+
+
+
+ UPDATE osee_Define_txs txs1 set tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_Define_artifact_version av3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = :1 AND txs2.gamma_id = av3.gamma_id AND av3.art_id = :2 AND txs2.tx_current = 1) 
