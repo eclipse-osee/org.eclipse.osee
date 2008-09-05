@@ -49,13 +49,9 @@
 
    <element name="OseeDbImportData">
       <complexType>
-         <attribute name="branchName" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-            </annotation>
-         </attribute>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="BranchesToImport"/>
+         </sequence>
          <attribute name="branchData" type="string" use="required">
             <annotation>
                <documentation>
@@ -64,6 +60,18 @@
                <appinfo>
                   <meta.attribute kind="resource"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="BranchesToImport">
+      <complexType>
+         <attribute name="branchName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

@@ -17,10 +17,11 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -46,21 +47,7 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
    private static final String EXTENSION_POINT = SkynetActivator.PLUGIN_ID + "." + ELEMENT_NAME;
    private static final String BRANCH_NAME = "branchName";
    private static final String BRANCH_DATA = "branchData";
-
-   private File getImportFile(ImportData importData) throws Exception {
-      if (importData.getBranchData().endsWith("zip") != true) {
-         throw new IOException(String.format("Branch data file is invalid [%s] ", importData.getBranchData()));
-      }
-      Bundle bundle = Platform.getBundle(importData.getBundleName());
-      URL url = bundle.getResource(importData.getBranchData());
-      url = FileLocator.resolve(url);
-      File toReturn = new File(url.getFile());
-      if (toReturn.exists() != true) {
-         throw new FileNotFoundException(String.format("Branch data file cannot be found [%s]",
-               importData.getBranchData()));
-      }
-      return toReturn;
-   }
+   private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
@@ -74,12 +61,13 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
                BranchPersistenceManager.deleteBranch(branch);
             }
          }
+
          Collection<ImportData> importDatas = loadDataFromExtensions();
          for (ImportData importData : importDatas) {
             logger.log(Level.INFO, String.format("Import Branch Data: [%s]", importData));
-            File importFile = getImportFile(importData);
             try {
-               //               importBranchData(importFile, importData.getBranchName());
+               File importFile = importData.getExchangeFile();
+               //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, String.format("Exception while importing branch: [%s]", importData), ex);
@@ -89,105 +77,83 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
       }
    }
 
-   //   private void importBranchData(File importFile, String branchTarget) throws Exception {
-   //      ZipFile zipFile = null;
-   //      try {
-   //         zipFile = new ZipFile(importFile);
-   //         ZipEntry entry = zipFile.getEntry("branch.data.xml");
-   //         XMLReader reader = XMLReaderFactory.createXMLReader();
-   //         InputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
-   //         try {
-   //            Branch branchToImportInto = getBranch(branchTarget);
-   //            reader.setContentHandler(new BranchImporterSaxHandler(zipFile, branchToImportInto, true, true,
-   //                  new LogProgressMonitor()));
-   //            reader.parse(new InputSource(inputStream));
-   //         } finally {
-   //            if (inputStream != null) {
-   //               inputStream.close();
-   //            }
-   //         }
-   //      } finally {
-   //         if (zipFile != null) {
-   //            zipFile.close();
-   //         }
-   //      }
-   //   }
-
-   //   private Branch getBranch(String branchName) throws Exception {
-   //      Branch toReturn = null;
-   //      try {
-   //         toReturn = BranchPersistenceManager.getBranch(branchName);
-   //      } catch (BranchDoesNotExist ex) {
-   //         toReturn = BranchPersistenceManager.createRootBranch(null, branchName, branchName, null, false);
-   //         logger.log(Level.INFO, String.format("Created [%s] Branch", branchName));
-   //      }
-   //      return toReturn;
-   //   }
-
    private Collection<ImportData> loadDataFromExtensions() throws Exception {
       List<ImportData> toReturn = new ArrayList<ImportData>();
-      Map<String, String> branchNames = new HashMap<String, String>();
+      Map<String, String> selectedBranches = new HashMap<String, String>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT, ELEMENT_NAME);
-      int currentCount = 1;
       for (IConfigurationElement element : elements) {
          String bundleName = element.getContributor().getName();
-         String branchName = element.getAttribute(BRANCH_NAME);
          String branchData = element.getAttribute(BRANCH_DATA);
 
-         if (Strings.isValid(bundleName) && Strings.isValid(branchName) && Strings.isValid(branchData)) {
-            if (!branchNames.containsKey(branchName.toLowerCase())) {
-               branchNames.put(branchName.toLowerCase(), bundleName);
-               toReturn.add(new ImportData(bundleName, branchName, branchData, currentCount++));
-            } else {
-               throw new Exception(String.format(
-                     "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
-                     branchName, branchNames.get(branchName.toLowerCase())));
+         if (Strings.isValid(bundleName) && Strings.isValid(branchData)) {
+            File exchangeFile = getExchangeFile(bundleName, branchData);
+            ImportData importData = new ImportData(exchangeFile);
+            for (IConfigurationElement innerElement : element.getChildren(BRANCHES_TO_IMPORT)) {
+               String branchName = innerElement.getAttribute(BRANCH_NAME);
+               if (Strings.isValid(branchName)) {
+                  importData.addSelectedBranch(branchName);
+                  if (!selectedBranches.containsKey(branchName.toLowerCase())) {
+                     selectedBranches.put(branchName.toLowerCase(),
+                           element.getDeclaringExtension().getUniqueIdentifier());
+                  } else {
+                     throw new Exception(
+                           String.format(
+                                 "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
+                                 branchName, selectedBranches.get(branchName.toLowerCase())));
+                  }
+               }
             }
+            toReturn.add(importData);
          } else {
             throw new Exception(String.format("Branch import error: [%s] attributes were empty.",
                   element.getDeclaringExtension().getExtensionPointUniqueIdentifier()));
          }
       }
-      Collections.sort(toReturn);
       return toReturn;
    }
 
-   private final class ImportData implements Comparable<ImportData> {
-      private String bundleName;
-      private String branchName;
-      private String branchData;
-      private int priority;
+   private File getExchangeFile(String bundleName, String exchangeFile) throws Exception {
+      if (exchangeFile.endsWith("zip") != true) {
+         throw new IOException(String.format("Branch data file is invalid [%s] ", exchangeFile));
+      }
+      Bundle bundle = Platform.getBundle(bundleName);
+      URL url = bundle.getResource(exchangeFile);
+      url = FileLocator.resolve(url);
+      File toReturn = new File(url.getFile());
+      if (toReturn.exists() != true) {
+         throw new FileNotFoundException(String.format("Branch data file cannot be found [%s]", exchangeFile));
+      }
+      return toReturn;
+   }
 
-      public ImportData(String bundleName, String branchName, String branchData, int currentCount) {
+   private final class ImportData {
+      private File exchangeFile;
+      private Set<String> selectedBranches;
+
+      public ImportData(File exchangeFile) {
          super();
-         this.bundleName = bundleName;
-         this.branchName = branchName;
-         this.branchData = branchData;
-         this.priority = branchName.toLowerCase().equals("common") ? 0 : currentCount;
+         this.exchangeFile = exchangeFile;
+         this.selectedBranches = new HashSet<String>();
       }
 
-      /* (non-Javadoc)
-       * @see java.lang.Comparable#compareTo(java.lang.Object)
-       */
-      @Override
-      public int compareTo(ImportData o) {
-         return this.priority - o.priority;
+      public void addSelectedBranch(String branchName) {
+         this.selectedBranches.add(branchName);
       }
 
       public String toString() {
-         return String.format("%s - %s", branchName, branchData);
+         return String.format("%s - %s", exchangeFile, selectedBranches);
       }
 
-      public String getBranchName() {
-         return branchName;
+      public boolean areAllSelected() {
+         return this.selectedBranches.size() == 0;
       }
 
-      public String getBranchData() {
-         return branchData;
+      public Set<String> getSelectedBranches() {
+         return selectedBranches;
       }
 
-      public String getBundleName() {
-         return bundleName;
+      public File getExchangeFile() {
+         return exchangeFile;
       }
    }
 }
