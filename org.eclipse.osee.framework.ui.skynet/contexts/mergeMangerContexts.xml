@@ -1,0 +1,6 @@
+<contexts>
+   <context id="Merge_Manager_View" title="Merge Manager">
+      <description>Shows conflicts and allows resolution of conflicts  found between a working branch and baseline branch.</description>
+      <topic href="reference/Merge_Manager.html" label="Using the Merge Manager"/>
+   </context>
+</contexts>

@@ -509,6 +509,8 @@
 		<contexts file="reference/queryLog/contexts.xml"/>
 		<contexts file="reference/quickSearch/contexts.xml"/>
 		<contexts file="reference/contexts.xml"/>
+  		<contexts file="contexts/mergeMangerContexts.xml">
+  </contexts>
 	</extension>
 	<extension point="org.eclipse.help.toc">
 		<toc file="reference/toc.xml" primary="true"/>

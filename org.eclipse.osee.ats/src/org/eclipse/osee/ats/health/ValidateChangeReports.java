@@ -116,8 +116,8 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       //      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-//           for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
-      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
+           for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+//      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          StringBuffer sbByType = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          sbByType.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));

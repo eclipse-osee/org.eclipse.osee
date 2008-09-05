@@ -343,7 +343,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       createOpenArtifactsMenuItem(menuManager);
       menuManager.add(new Separator());
       createSetDefaultCommand(menuManager);
-      createChangeReportCommand(menuManager);
       createBranchCommand(menuManager);
       createSelectivelyBranchCommand(menuManager);
       createCommitCommand(menuManager);
@@ -420,7 +419,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       addViewTableMenuItem(menuManager);
       menuManager.add(new Separator());
       addAccessControlCommand(menuManager);
-      addChangeReportCommand(menuManager);
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
    }
@@ -1179,68 +1177,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          }
       });
 
-   }
-
-   private String addChangeReportCommand(MenuManager menuManager) {
-      CommandContributionItem showChangeReportCommand =
-            Commands.getLocalCommandContribution(getSite(), "createChangeReportCommand", "Old Change Report", null,
-                  null, null, "C", null, "branch_manager_show_change_report_menu");
-      menuManager.add(showChangeReportCommand);
-      return showChangeReportCommand.getId();
-   }
-
-   private void createChangeReportCommand(MenuManager menuManager) {
-
-      handlerService.activateHandler(addChangeReportCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @SuppressWarnings("unchecked")
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Iterator<JobbedNode> iter = selection.iterator();
-
-            if (!iter.hasNext()) return null;
-
-            Object obj = iter.next().getBackingData();
-
-            try {
-               if (obj instanceof Branch) {
-                  Branch branch = (Branch) obj;
-                  ChangeReportView.openViewUpon(branch);
-               } else {
-                  // Enablement code should ensure this only gets called
-                  TransactionId transaction1 = ((TransactionData) obj).getTransactionId();
-                  TransactionId transaction2 = ((TransactionData) iter.next().getBackingData()).getTransactionId();
-
-                  TransactionId base =
-                        transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
-                  TransactionId to =
-                        transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
-
-                  ChangeReportView.openViewUpon(new ChangeReportInput(base.getBranch().getDisplayName(), base, to));
-               }
-            } catch (Exception ex) {
-               OSEELog.logException(getClass(), ex, true);
-            }
-
-            return null;
-         }
-
-         @Override
-         public boolean isEnabled() {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-            try {
-               return (SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
-                     SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || SkynetSelections.twoTransactionsSelectedOnSameBranch(selection);
-            } catch (SQLException ex) {
-               return false;
-            } catch (OseeCoreException ex) {
-               return false;
-            }
-         }
-      });
    }
 
    private void addMarkAsFavoriteCommand(MenuManager menuManager) {

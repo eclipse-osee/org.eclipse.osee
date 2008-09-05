@@ -71,11 +71,9 @@ public class MergeView extends ViewPart implements IActionable {
    private static final RendererManager rendererManager = RendererManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
-   private static String HELP_CONTEXT_ID = "MergeManagerView";
+   public static String HELP_CONTEXT_ID = "Merge_Manager_View";
    private XMergeViewer xMergeViewer;
    private Conflict[] conflicts;
-
-   private static final String START_MERGING = "";
 
    /*
     *   Code development
@@ -168,7 +166,7 @@ public class MergeView extends ViewPart implements IActionable {
       try {
          if (conflicts != null) xMergeViewer.setConflicts(conflicts);
       } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         OSEELog.logException(MergeView.class, ex, true);
       }
 
       MenuManager menuManager = new MenuManager();
@@ -403,7 +401,7 @@ public class MergeView extends ViewPart implements IActionable {
       CommandContributionItem mergeArtifactCommand;
       mergeArtifactCommand =
             Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
-                  "Merge Source/Destination Artifacts (Developmental)", null, null, null, "E", null,
+                  "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
                   "Merge_Source_Destination_Artifact");
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
