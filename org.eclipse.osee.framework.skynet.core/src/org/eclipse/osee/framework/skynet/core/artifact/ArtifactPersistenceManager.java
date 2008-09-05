@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -45,11 +47,9 @@ import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -217,21 +217,21 @@ public class ArtifactPersistenceManager {
    }
 
    public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException, SQLException {
-      workingOn(artifact.getDescriptiveName());
+      workingOn(artifact.getInternalDescriptiveName());
       ModificationType modType;
 
       if (artifact.isInDb()) {
-         modType = ModificationType.CHANGE;
+    	  if(artifact.isDeleted()){
+    		  modType = ModificationType.DELETED;    		  
+    	  }else{
+    		  modType = ModificationType.CHANGE;    
+    	  }
       } else {
          modType = ModificationType.NEW;
-      }
-
-      int artGamma = SequenceManager.getNextGammaId();
-
-      if (!artifact.isInDb()) {
          addArtifactData(artifact, transaction);
       }
 
+      int artGamma = SequenceManager.getNextGammaId();
       artifact.setGammaId(artGamma);
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
 
@@ -556,10 +556,13 @@ public class ArtifactPersistenceManager {
          for (Artifact childArtifact : artifact.getChildren()) {
             deleteTrace(childArtifact, builder);
          }
-
-         builder.deleteArtifact(artifact);
-
-         artifact.setDeleted();
+         try{
+             artifact.setDeleted();
+             builder.deleteArtifact(artifact);
+         } catch(Exception ex){
+        	 artifact.setNotDeleted();
+        	 throw new OseeCoreException(ex);
+         } 
       }
    }
 
@@ -570,13 +573,6 @@ public class ArtifactPersistenceManager {
     */
    public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
       if (!artifact.isInDb()) return;
-
-      processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
-
-      transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
-            transaction.getTransactionNumber(), artifact.getArtId(), artifact.getArtTypeId(),
-            artifact.getFactory().getClass().getCanonicalName(), SkynetAuthentication.getUser().getArtId()));
-      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.deleteAttributes();

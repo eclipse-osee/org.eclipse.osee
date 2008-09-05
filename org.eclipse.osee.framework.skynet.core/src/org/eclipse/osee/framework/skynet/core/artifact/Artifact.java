@@ -80,7 +80,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private boolean dirty = false;
    private boolean deleted = false;
-   private final Branch branch;
+
+private final Branch branch;
    private final String guid;
    private ArtifactType artifactType;
    private String humanReadableId;
@@ -1088,6 +1089,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    void setDeleted() {
       this.deleted = true;
    }
+   
+   void setNotDeleted() {
+	   deleted = false;
+	}
 
    public void setDirty() {
       dirty = true;

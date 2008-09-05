@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -164,9 +166,11 @@ public class SkynetTransaction {
                transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
                modType.getValue(), TxChange.getCurrent(modType).getValue());
 
-         //Add specific object values to the their tables
-         ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
+         if(transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED){
+        	 //Add specific object values to the their tables
+        	 ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
                transactionData.getTransactionChangeData().toArray());
+         }
       }
       return insertTransactionDataItems;
    }

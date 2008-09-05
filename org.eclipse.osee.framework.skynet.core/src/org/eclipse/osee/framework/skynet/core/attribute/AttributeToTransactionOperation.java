@@ -82,11 +82,11 @@ public class AttributeToTransactionOperation {
    private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       ModType modType = null;
       ModificationType attrModType = null;
+      
       if (attribute.isInDatastore()) {
-         attribute.setGammaId(SequenceManager.getNextGammaId());
-
-         modType = ModType.Changed;
-         attrModType = ModificationType.CHANGE;
+          attribute.setGammaId(SequenceManager.getNextGammaId());
+          modType = ModType.Changed;
+          attrModType = ModificationType.CHANGE; 
       } else {
          createNewAttributeMemo(attribute);
          attrModType = ModificationType.NEW;
@@ -161,10 +161,20 @@ public class AttributeToTransactionOperation {
    private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws SQLException {
       if (!attribute.isInDatastore()) return;
 
-      int gammaId = SequenceManager.getNextGammaId();
+      int attrGammaId;
+      ModificationType modificationType;
+      
+      if(artifact.isDeleted()){
+    	  attrGammaId = attribute.getGammaId();
+    	  modificationType = ModificationType.ARTIFACT_DELETED;
+      }else{
+    	  attrGammaId = SequenceManager.getNextGammaId();
+          modificationType = ModificationType.DELETED;
+      }
+      
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionId(), null,
-            ModificationType.DELETED, transaction.getBranch()));
+            attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
+            modificationType, transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }

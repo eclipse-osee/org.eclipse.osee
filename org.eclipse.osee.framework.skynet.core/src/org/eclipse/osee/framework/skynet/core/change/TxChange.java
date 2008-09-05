@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.change;
  * @author Ryan D. Brooks
  */
 public enum TxChange {
-   NOT_CURRENT(0), CURRENT(1), DELETED(2);
+   NOT_CURRENT(0), CURRENT(1), DELETED(2), ARTIFACT_DELETED(3);
 
    private int value;
 
@@ -34,6 +34,15 @@ public enum TxChange {
    }
    
    public static TxChange getCurrent(ModificationType type){
-	   return type == ModificationType.DELETED ? TxChange.DELETED : TxChange.CURRENT;
+	   TxChange txChange = null;
+	   
+	   if(type == ModificationType.DELETED){
+		   txChange = TxChange.DELETED;
+	   }else if (type == ModificationType.ARTIFACT_DELETED){
+		   txChange = TxChange.ARTIFACT_DELETED;
+	   }else{
+		   txChange = TxChange.CURRENT;
+	   }
+	   return txChange;
    }
 }
