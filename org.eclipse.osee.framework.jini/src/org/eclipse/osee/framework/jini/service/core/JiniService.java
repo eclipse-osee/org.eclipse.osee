@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
+
 import net.jini.core.entry.Entry;
 import net.jini.core.lease.UnknownLeaseException;
 import net.jini.core.lookup.ServiceID;
@@ -24,9 +25,10 @@ import net.jini.id.UuidFactory;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.Name;
 import net.jini.lookup.entry.ServiceInfo;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.jini.service.interfaces.IService;
+import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.plugin.core.server.ClassServer;
 import org.eclipse.osee.framework.plugin.core.server.PathResourceFinder;
 
@@ -168,7 +170,7 @@ public abstract class JiniService implements IService {
             group = new GroupEntry();
             entries.add(group);
          }
-         group.group = OseeProperties.getInstance().getOseeJiniServiceGroups();
+         group.group = JiniLookupGroupConfig.getOseeJiniServiceGroups();
 
          entry = new Entry[entries.size()];
          for (int i = 0; i < entries.size(); i++) {

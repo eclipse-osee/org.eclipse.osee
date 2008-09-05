@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FILE;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -70,34 +72,9 @@ public class OSEEConfig {
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
 
-         try {
-            Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.jini");
-            serviceGroups = new String[1];
-            serviceGroups[0] = (String) bundle.getHeaders().get("Bundle-Version");
-         } catch (Exception ex) {
-            logger.log(Level.INFO, "Error getting bundle org.eclipse.osee.framework.jini");
-         }
-         String[] filterGroups = OseeProperties.getInstance().getOseeJiniServiceGroups();
-         if (filterGroups != null && filterGroups.length > 0) {
-            serviceGroups = filterGroups;
-         }
-
-         if (serviceGroups == null || serviceGroups.length == 0) {
-            logger.log(
-                  Level.SEVERE,
-                  "[-D" + OseeProperties.OSEE_JINI_SERVICE_GROUPS + "] was not set.\n" + "Please enter the Jini Group this service register with.");
-            System.exit(1);
-         } else {
-            String toStore = "";
-            for (int index = 0; index < serviceGroups.length; index++) {
-               toStore += serviceGroups[index];
-               if (index + 1 < serviceGroups.length) {
-                  toStore += ",";
-               }
-            }
-            logger.log(Level.INFO, "osee.jini.lookup.groups: " + toStore);
-            System.setProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS, toStore);
-         }
+         
+         serviceGroups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
+         
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage());
          throw new IllegalStateException(ex.getLocalizedMessage());

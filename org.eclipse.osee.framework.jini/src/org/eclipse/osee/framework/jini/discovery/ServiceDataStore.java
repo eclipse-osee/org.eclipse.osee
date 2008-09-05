@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -39,7 +40,9 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
+
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 
 public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryListener {
 
@@ -85,7 +88,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
 
    private void registerWithJINI() {
       try {
-         String[] filterGroups = OseeProperties.getInstance().getOseeJiniServiceGroups();
+         String[] filterGroups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
          if (filterGroups == null) {
             logger.log(
                   Level.SEVERE,

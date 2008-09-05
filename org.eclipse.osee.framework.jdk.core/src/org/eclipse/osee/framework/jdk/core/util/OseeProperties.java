@@ -59,20 +59,7 @@ public class OseeProperties {
       }
       return instance;
    }
-
-   public String[] getOseeJiniServiceGroups() {
-      String serviceGroup = System.getProperty(OSEE_JINI_SERVICE_GROUPS);
-      // String[] filterGroups = null;
-      if (serviceGroup != null && serviceGroup.length() > 0) {
-         String[] values = serviceGroup.split(",");
-         for (int index = 0; index < values.length; index++) {
-            values[index] = values[index].trim();
-         }
-         return values;
-      }
-      return null;
-   }
-
+   
    public void setDeveloper(boolean developer) {
       System.setProperty(OSEE_DEVELOPER, Boolean.toString(developer));
    }

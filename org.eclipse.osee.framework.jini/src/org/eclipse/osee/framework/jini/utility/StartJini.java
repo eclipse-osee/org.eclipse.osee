@@ -26,9 +26,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.jini.core.entry.Entry;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
+
 import org.eclipse.osee.framework.jdk.core.util.CmdLineArgs;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.jini.service.core.JiniService;
 import org.eclipse.osee.framework.jini.service.core.SimpleFormattedEntry;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
 import org.eclipse.osee.framework.plugin.core.config.NonEclipseConfigurationFactory;
 import org.eclipse.osee.framework.plugin.core.config.NonEclipseManifestHeader;
 
@@ -66,7 +69,7 @@ public class StartJini extends JiniService {
          }
          jiniHome = jiniHome.replace('\\', '/');
 
-         String[] groups = OseeProperties.getInstance().getOseeJiniServiceGroups();
+         String[] groups = JiniLookupGroupConfig.getOseeJiniServiceGroups();
          String allowedGroups = "";
          if (groups != null) {
             allowedGroups = StringFormat.commaSeparate(groups);
