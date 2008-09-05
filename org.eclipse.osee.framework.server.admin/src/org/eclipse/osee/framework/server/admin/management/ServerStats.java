@@ -28,13 +28,18 @@ class ServerStats extends BaseCmdWorker {
       buffer.append("----------------------------------------------\n");
       buffer.append(String.format("Server State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
       buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
-      buffer.append("Current Tasks: \n");
+      buffer.append("Current Tasks: ");
       List<String> entries = manager.getCurrentProcesses();
-      for (int index = 0; index < entries.size(); index++) {
-         buffer.append(String.format("[%s] ", index));
-         buffer.append(entries.get(index));
-         if (index + 1 < entries.size()) {
-            buffer.append("\n");
+      if (entries.isEmpty()) {
+         buffer.append("[NONE]");
+      } else {
+         buffer.append("\n");
+         for (int index = 0; index < entries.size(); index++) {
+            buffer.append(String.format("[%s] ", index));
+            buffer.append(entries.get(index));
+            if (index + 1 < entries.size()) {
+               buffer.append("\n");
+            }
          }
       }
       println(buffer.toString());
