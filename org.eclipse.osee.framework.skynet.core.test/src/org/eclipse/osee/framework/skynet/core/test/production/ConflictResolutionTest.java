@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.skynet.core.test.production;
 
 import java.util.Collection;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -47,6 +49,8 @@ public class ConflictResolutionTest extends TestCase {
    }
 
    public void testResolveConflicts() {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       try {
          Collection<Conflict> conflicts =
                RevisionManager.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
@@ -80,5 +84,7 @@ public class ConflictResolutionTest extends TestCase {
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 }

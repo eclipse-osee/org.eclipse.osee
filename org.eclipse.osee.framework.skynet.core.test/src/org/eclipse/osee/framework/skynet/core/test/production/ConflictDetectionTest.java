@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.skynet.core.test.production;
 import java.util.Collection;
 import java.util.HashSet;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -45,9 +47,12 @@ public class ConflictDetectionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.revision.RevisionManager#getConflictsPerBranch(org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}.
+    * {@link org.eclipse.osee.framework.skynet.core.revision.RevisionManager#getConflictsPerBranch(org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
+    * .
     */
    public void testGetConflictsPerBranch() {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       RevisionManager revisionManager = RevisionManager.getInstance();
       Collection<Conflict> conflicts = new HashSet<Conflict>();
       try {
@@ -60,6 +65,8 @@ public class ConflictDetectionTest extends TestCase {
       }
       assertEquals("Number of conflicts found is not equal to the number of conflicts expected",
             ConflictTestManager.numberOfConflicts(), conflicts.toArray().length);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 
 }

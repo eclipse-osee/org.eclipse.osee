@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.test.production;
 
 import java.util.Collection;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -45,26 +47,33 @@ public class MergeBranchManagementTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}.
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}
+    * .
     */
    public void testGetMergeBranchNotCreated() {
-
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
-            BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
+               BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
                      ConflictTestManager.getDestBranch().getBranchId());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}.
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}
+    * .
     */
    public void testGetMergeBranchCreated() {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       try {
          Branch mergeBranch =
                BranchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
@@ -76,6 +85,8 @@ public class MergeBranchManagementTest extends TestCase {
       } catch (Exception ex) {
          fail(ex.getMessage());
       }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 
 }

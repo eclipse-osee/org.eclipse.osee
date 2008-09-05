@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.skynet.core.test.production;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 
@@ -42,6 +44,8 @@ public class ConflictedBranchCommitingTest extends TestCase {
    }
 
    public void CheckCommitWithResolutionErrors() {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       try {
          BranchPersistenceManager.commitBranch(ConflictTestManager.getSourceBranch(),
                ConflictTestManager.getDestBranch(), false, false).join();
@@ -50,9 +54,13 @@ public class ConflictedBranchCommitingTest extends TestCase {
       } catch (Exception ex) {
          fail("Only the ConflictDetectionException should be thrown not a " + ex.getLocalizedMessage() + "Exception");
       }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 
    public void CheckCommitWithoutResolutionErrors() {
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
       try {
          BranchPersistenceManager.commitBranch(ConflictTestManager.getSourceBranch(),
                ConflictTestManager.getDestBranch(), false, false).join();
@@ -60,5 +68,7 @@ public class ConflictedBranchCommitingTest extends TestCase {
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
       }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 }
