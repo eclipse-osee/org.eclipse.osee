@@ -74,8 +74,8 @@ public abstract class TransactionEvent extends Event {
          if (event instanceof ArtifactModifiedEvent) {
             Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
             modified.add(artifact.getArtId());
-            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact.getArtId());
-            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact.getArtId());
+            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ArtifactModType.Deleted) deleted.add(artifact.getArtId());
+            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ArtifactModType.Purged) purged.add(artifact.getArtId());
          } else if (event instanceof RelationModifiedEvent) {
             relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
             relChanged.add(((RelationModifiedEvent) event).getLink().getBArtifactId());

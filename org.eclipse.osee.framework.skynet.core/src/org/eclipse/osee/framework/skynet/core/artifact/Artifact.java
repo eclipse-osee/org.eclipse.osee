@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeCh
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
@@ -80,8 +80,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private boolean dirty = false;
    private boolean deleted = false;
-
-private final Branch branch;
+   private final Branch branch;
    private final String guid;
    private ArtifactType artifactType;
    private String humanReadableId;
@@ -919,7 +918,7 @@ private final Branch branch;
       prepareForReload();
 
       new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts(1);
-      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
+      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ArtifactModType.Reverted, this));
    }
 
    void prepareForReload() {
@@ -1089,7 +1088,7 @@ private final Branch branch;
    void setDeleted() {
       this.deleted = true;
    }
-   
+
    void setNotDeleted() {
 	   deleted = false;
 	}

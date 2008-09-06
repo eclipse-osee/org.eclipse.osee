@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 
 /**
  * @author Ryan D. Brooks
@@ -436,7 +436,7 @@ public class RelationManager {
 
          SkynetEventManager.getInstance().kick(
                new CacheRelationModifiedEvent(relation, relation.getABranch(),
-                     relation.getRelationType().getTypeName(), relation.getASideName(), ModType.Added,
+                     relation.getRelationType().getTypeName(), relation.getASideName(), RelationModType.Added,
                      RelationManager.class));
       }
    }
@@ -554,7 +554,7 @@ public class RelationManager {
       }
       SkynetEventManager.getInstance().kick(
             new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                  relation.getASideName(), ModType.Added, RelationManager.class));
+                  relation.getASideName(), RelationModType.Added, RelationManager.class));
 
    }
 
@@ -626,7 +626,7 @@ public class RelationManager {
             artifactATarget, artifactB);
       SkynetEventManager.getInstance().kick(
             new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                  relation.getASideName(), ModType.Added, RelationManager.class));
+                  relation.getASideName(), RelationModType.Added, RelationManager.class));
    }
 
    /**

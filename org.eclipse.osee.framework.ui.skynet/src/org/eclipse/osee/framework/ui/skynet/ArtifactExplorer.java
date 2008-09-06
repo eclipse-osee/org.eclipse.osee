@@ -1182,9 +1182,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                Artifact artifact = artifactModifiedEvent.getArtifact();
 
                if (artifact != null) {
-                  if (artifactModifiedEvent.getType() == ArtifactModifiedEvent.ModType.Purged) {
+                  if (artifactModifiedEvent.getType() == ArtifactModifiedEvent.ArtifactModType.Purged) {
                      treeViewer.refresh(artifact.getParent());
-                  } else if (artifact.isDeleted() || artifactModifiedEvent.getType() == ArtifactModifiedEvent.ModType.Reverted) {
+                  } else if (artifact.isDeleted() || artifactModifiedEvent.getType() == ArtifactModifiedEvent.ArtifactModType.Reverted) {
                      treeViewer.refresh(artifact.getParent());
                   } else
                      treeViewer.refresh(artifact);

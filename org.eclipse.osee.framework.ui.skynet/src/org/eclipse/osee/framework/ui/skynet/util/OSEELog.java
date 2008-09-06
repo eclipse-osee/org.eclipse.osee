@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.PlatformUI;
 
@@ -24,18 +25,28 @@ public class OSEELog {
    public static void logException(Class<?> clazz, String str, Exception ex, boolean popup) {
       Logger logger = ConfigUtil.getConfigFactory().getLogger(clazz);
       if (popup && PlatformUI.isWorkbenchRunning()) {
-         if (ex == null)
+         if (ex == null) {
             AWorkbench.popup("ERROR", str);
-         else
-            AWorkbench.popup("ERROR", (str == null ? "" : str + "\n\n") + ex.getLocalizedMessage());
+         } else
+            AWorkbench.popup("ERROR",
+                  (str == null ? "" : str + "\n\n") + ex.getLocalizedMessage());
       }
       if (ex != null)
          if (str == null || str.equals(""))
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          else
             logger.log(Level.SEVERE, str, ex);
-      else
-         logger.log(Level.SEVERE, str);
+      else {
+         // Throw an exception so we get a stack trace
+         try {
+            throw new OseeCoreException(str);
+         } catch (Exception ex2) {
+            if (str == null || str.equals(""))
+               logger.log(Level.SEVERE, ex2.getLocalizedMessage(), ex2);
+            else
+               logger.log(Level.SEVERE, str, ex2);
+         }
+      }
    }
 
    public static void logSevere(Class<?> clazz, String str, boolean popup) {

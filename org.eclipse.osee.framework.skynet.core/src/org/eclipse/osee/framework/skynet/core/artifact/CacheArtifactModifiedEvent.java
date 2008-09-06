@@ -20,7 +20,7 @@ public class CacheArtifactModifiedEvent extends ArtifactModifiedEvent {
     * @param type
     * @param sender
     */
-   public CacheArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
+   public CacheArtifactModifiedEvent(Artifact artifact, ArtifactModType type, Object sender) {
       super(artifact, type, sender);
    }
 }

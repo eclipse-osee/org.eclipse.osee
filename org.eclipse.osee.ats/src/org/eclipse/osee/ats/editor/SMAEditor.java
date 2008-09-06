@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
@@ -42,6 +43,8 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -90,18 +93,20 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "Historical Error",
                "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
       } else if (!smaMgr.isAccessControlWrite()) {
-         AWorkbench.popup("Authentication Error",
+         AWorkbench.popup(
+               "Authentication Error",
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
       } else {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws OseeCoreException, SQLException {
-                  // Save widget data to artifact
-                  workFlowTab.saveXWidgetToArtifact();
-                  smaMgr.getSma().saveSMA();
-               }
-            };
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws OseeCoreException, SQLException {
+                        // Save widget data to artifact
+                        workFlowTab.saveXWidgetToArtifact();
+                        smaMgr.getSma().saveSMA();
+                     }
+                  };
             txWrapper.execute();
             workFlowTab.refresh();
          } catch (Exception ex) {
@@ -118,9 +123,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    void enableGlobalPrint() {
       printAction = new SMAPrint(smaMgr, workFlowTab, taskComposite);
-      getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
+      getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(),
+            printAction);
    }
 
+   @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
    }
@@ -150,7 +157,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          Result result = workFlowTab.isXWidgetDirty();
          if (result.isTrue()) return result;
 
-         result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
+         result =
+               ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
 
       } catch (Exception ex) {
@@ -160,6 +168,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return Result.FalseResult;
    }
 
+   @Override
    public String toString() {
       return "SMAEditor " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " - " + smaMgr.getSma().getDescriptiveName();
    }
@@ -186,14 +195,16 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             if (aei.getArtifact() instanceof StateMachineArtifact)
                sma = (StateMachineArtifact) aei.getArtifact();
             else
-               throw new IllegalArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
+               throw new IllegalArgumentException(
+                     "SMAEditorInput artifact must be StateMachineArtifact");
          }
       } else
          throw new IllegalArgumentException("Editor Input not SMAEditorInput");
 
       if (sma == null) {
-         MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
-               "Can't Find Action in DB");
+         MessageDialog.openError(
+               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Open Error", "Can't Find Action in DB");
          return;
       }
       try {
@@ -235,14 +246,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       enableGlobalPrint();
    }
 
-   public void redrawPages() {
-      if (workFlowTab != null) workFlowTab.dispose();
-      if (taskComposite != null) taskComposite.dispose();
-      int page = getActivePage();
-      for (int x = getPageCount() - 1; x >= 0; x--)
-         removePage(x);
-      addPages();
-      if (page < getPageCount() && page != -1) setActivePage(page);
+   public void refreshPages() throws OseeCoreException, SQLException {
+      if (workFlowTab != null) workFlowTab.refresh();
+      if (historyComposite != null) historyComposite.refresh();
+      smaMgr.getEditor().onDirtied();
    }
 
    public static void editArtifact(Artifact artifact) {
@@ -281,7 +288,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public static void close(StateMachineArtifact artifact, boolean save) {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IWorkbenchPage page =
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
@@ -311,7 +319,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          (event instanceof LocalNewBranchEvent) || (event instanceof RemoteNewBranchEvent)) {
             int branchId = ((BranchEvent) event).getBranchId();
             if (smaMgr.getBranchMgr().getBranchId() != null && smaMgr.getBranchMgr().getBranchId() == branchId) {
-               redrawPages();
+               refreshPages();
             }
          } else if (event instanceof TransactionEvent) {
             EventData ed = ((TransactionEvent) event).getEventData(smaMgr.getSma());
@@ -320,24 +328,25 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                return;
             } else if (ed.isHasEvent()) {
                setTitleImage(smaMgr.getSma().getImage());
-               redrawPages();
+               refreshPages();
             } else if (smaMgr.getReviewManager().hasReviews()) {
                // If related review has made a change, redraw
                for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews()) {
                   EventData revEd = ((TransactionEvent) event).getEventData(reviewArt);
                   if (revEd.isHasEvent()) {
-                     redrawPages();
+                     refreshPages();
                      break;
                   }
                }
             }
          } else if (event instanceof CacheArtifactModifiedEvent) {
-            if (((CacheArtifactModifiedEvent) event).getType() == ModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
+            if (((CacheArtifactModifiedEvent) event).getType() == ArtifactModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
                   smaMgr.getSma())) {
-               redrawPages();
+               refreshPages();
             }
          } else
-            OSEELog.logException(AtsPlugin.class, "Unexpected event => " + event, null, false);
+            OSEELog.logException(AtsPlugin.class, "Unexpected event => " + event, null,
+                  false);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
@@ -426,7 +435,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    public boolean isUsingTaskResolutionOptions() throws OseeCoreException, SQLException {
       if (smaMgr.getWorkPageDefinition() == null) return false;
-      return (smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE).size() == 1);
+      return (smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(
+            TaskResolutionOptionRule.WORK_TYPE).size() == 1);
    }
 
    /*
@@ -447,18 +457,38 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    /**
     * @param priviledgedEditMode the priviledgedEditMode to set
+    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) {
+   public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException, SQLException {
       this.priviledgedEditMode = priviledgedEditMode;
       smaMgr.getSma().saveSMA();
-      redrawPages();
+      workFlowTab.refresh();
    }
 
    /**
     * @return the isAccessControlWrite
     */
    public boolean isAccessControlWrite() {
-      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(smaMgr.getSma(), PermissionEnum.WRITE);
+      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(
+            smaMgr.getSma(), PermissionEnum.WRITE);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getRelationChangeAction(org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent)
+    */
+   @Override
+   public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException {
+      try {
+         if (relEvent.effectsArtifact(smaMgr.getSma())) {
+            if (relEvent.getRelationType().equals(AtsRelation.SmaToTask_Sma.getTypeName())) {
+               return relEvent.getModType();
+            }
+         }
+         return null;
+      } catch (SQLException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
 }

@@ -17,12 +17,20 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IXTaskViewer {
+
+   public enum RelationChangeAction {
+      RemoveTask, AddTask, UpdateTask, ReLoadTable, None
+   };
+
+   public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException;
 
    public String getTabName() throws OseeCoreException, SQLException;
 
@@ -42,10 +50,10 @@ public interface IXTaskViewer {
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click
-    * and alt-left-click editing functionailty.
+    * and alt-left-click editing functionality.
     * 
     * @return false if tasks are readonly from the TaskViewer
-    * @throws Exception TODO
+    * @throws
     */
    public boolean isTasksEditable() throws OseeCoreException, SQLException;
 

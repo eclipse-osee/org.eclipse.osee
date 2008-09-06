@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -290,7 +290,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       if (event instanceof ArtifactModifiedEvent) {
          ArtifactModifiedEvent artModEvent = (ArtifactModifiedEvent) event;
          closeView =
-               artifact != null && artModEvent.getType() == ModType.Deleted && artModEvent.getArtifact().equals(
+               artifact != null && artModEvent.getType() == ArtifactModType.Deleted && artModEvent.getArtifact().equals(
                      artifact);
       }
 

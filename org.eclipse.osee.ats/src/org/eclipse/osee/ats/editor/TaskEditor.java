@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -64,13 +66,14 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-            @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
-               for (TaskArtifact taskArt : tasks)
-                  taskArt.saveSMA();
-            }
-         };
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                  @Override
+                  protected void handleTxWork() throws OseeCoreException, SQLException {
+                     for (TaskArtifact taskArt : tasks)
+                        taskArt.saveSMA();
+                  }
+               };
          txWrapper.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -101,6 +104,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return taskComposite.getXTask().getXViewer().getLoadedArtifacts();
    }
 
+   @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
    }
@@ -129,6 +133,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return false;
    }
 
+   @Override
    public String toString() {
       return "TaskEditor";
    }
@@ -147,7 +152,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          IEditorInput editorInput = getEditorInput();
          if (editorInput instanceof TaskEditorInput) {
             TaskEditorInput aei = (TaskEditorInput) editorInput;
-            tasks = ((TaskEditorInput) aei).getTaskArts();
+            tasks = (aei).getTaskArts();
          } else
             throw new IllegalArgumentException("Editor Input not TaskEditorInput");
 
@@ -212,7 +217,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getOptions()
     */
    public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException, SQLException {
-      if (((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions() != null) return ((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions();
+      if (((TaskEditorInput) getEditorInput()).getResOptions() != null) return ((TaskEditorInput) getEditorInput()).getResOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
 
@@ -297,7 +302,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    private static class LoadTableJob extends Job {
 
-      @SuppressWarnings("unused")
       private final WorldSearchItem searchItem;
       private boolean cancel = false;
       private final SearchType searchType;
@@ -334,7 +338,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                       */
                      @Override
                      public void run() {
-                        AWorkbench.popup("ERROR", "No Tasks Found for \"" + searchItem.getName() + "\"");
+                        AWorkbench.popup("ERROR",
+                              "No Tasks Found for \"" + searchItem.getName() + "\"");
                      }
                   }, true);
                }
@@ -351,11 +356,20 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
          } catch (final Exception ex) {
             monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks",
+                  ex);
          }
          monitor.done();
          return Status.OK_STATUS;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getRelationChangeAction(org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent)
+    */
+   @Override
+   public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException {
+      return null;
    }
 
 }

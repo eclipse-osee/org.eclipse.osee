@@ -21,16 +21,16 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public abstract class RelationModifiedEvent extends Event {
 
-   private RelationLink link;
-   private String relationType;
-   private String relationSide;
-   private ModType modType;
-   public enum ModType {
+   private final RelationLink link;
+   private final String relationType;
+   private final String relationSide;
+   private final RelationModType modType;
+   public enum RelationModType {
       Changed, Deleted, Added, RationaleMod
    };
 
-   public static ModType getModType(String type) {
-      for (ModType e : ModType.values())
+   public static RelationModType getModType(String type) {
+      for (RelationModType e : RelationModType.values())
          if (e.name().equals(type)) return e;
       return null;
    }
@@ -39,7 +39,7 @@ public abstract class RelationModifiedEvent extends Event {
     * @param branch TODO
     * @param sender TODO
     */
-   public RelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
+   public RelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, RelationModType modType, Object sender) {
       super(sender);
       this.link = link;
       this.relationType = relationType;
@@ -51,7 +51,7 @@ public abstract class RelationModifiedEvent extends Event {
       this(link, branch, relationType, relationSide, getModType(modType), sender);
    }
 
-   public ModType getModType() {
+   public RelationModType getModType() {
       return modType;
    }
 
@@ -78,11 +78,16 @@ public abstract class RelationModifiedEvent extends Event {
 
    public boolean effectsArtifact(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       boolean isEffected = false;
-
+      // Do a first check to see if artIds event match;  This should save framework from having to load other artifact if not loaded
       isEffected =
-            (getLink().getArtifactA() != null && getLink().getArtifactA().equals(artifact)) || (getLink().getArtifactB() != null && getLink().getArtifactB().equals(
-                  artifact));
-
+            getLink().getAArtifactId() == artifact.getArtId() || getLink().getBArtifactId() == artifact.getArtId();
+      if (isEffected) {
+         // Perform deeper equals check
+         isEffected =
+               (getLink().getArtifactA() != null && getLink().getArtifactA().equals(
+                     artifact)) || (getLink().getArtifactB() != null && getLink().getArtifactB().equals(
+                     artifact));
+      }
       return isEffected;
    }
 }

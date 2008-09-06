@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 
 /**
  * @author Jeff C. Phillips
@@ -30,12 +30,12 @@ public class RelationLink {
    private int aOrder;
    private int bOrder;
    private String rationale;
-   private RelationType relationType;
+   private final RelationType relationType;
    private boolean dirty;
-   private int aArtifactId;
-   private int bArtifactId;
-   private Branch aBranch;
-   private Branch bBranch;
+   private final int aArtifactId;
+   private final int bArtifactId;
+   private final Branch aBranch;
+   private final Branch bBranch;
 
    public RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder) {
       this.relationType = relationType;
@@ -53,8 +53,8 @@ public class RelationLink {
    }
 
    public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale) {
-      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
-            0, rationale, 0, 0);
+      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(),
+            bArtifact.getBranch(), relationType, 0, 0, rationale, 0, 0);
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -64,7 +64,8 @@ public class RelationLink {
       if (bArtifactId == artifact.getArtId()) {
          return RelationSide.SIDE_B;
       }
-      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
+      throw new IllegalArgumentException(
+            "The artifact " + artifact + " is on neither side of " + this);
    }
 
    @Deprecated
@@ -75,7 +76,8 @@ public class RelationLink {
       if (bArtifactId == artifact.getArtId()) {
          return false;
       }
-      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
+      throw new IllegalArgumentException(
+            "The artifact " + artifact + " is on neither side of " + this);
    }
 
    /**
@@ -130,8 +132,8 @@ public class RelationLink {
          dirty = true;
          RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                     ModType.Deleted.name(), this, getBranch()));
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(),
+                     getASideName(), RelationModType.Deleted.name(), this, getBranch()));
       }
    }
 
@@ -154,7 +156,8 @@ public class RelationLink {
    public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       Artifact relatedArtifact = getArtifactIfLoaded(relationSide);
       if (relatedArtifact == null) {
-         return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
+         return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide),
+               getBranch(relationSide));
       }
       return relatedArtifact;
    }
@@ -267,8 +270,9 @@ public class RelationLink {
 
       if (notify) {
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                     ModType.RationaleMod.name(), this, getABranch()));
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(),
+                     getASideName(), RelationModType.RationaleMod.name(), this,
+                     getABranch()));
       }
    }
 
@@ -353,9 +357,10 @@ public class RelationLink {
       return relationType.getSideBName();
    }
 
+   @Override
    public String toString() {
-      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(), aArtifactId, aOrder,
-            bArtifactId, bOrder);
+      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(),
+            aArtifactId, aOrder, bArtifactId, bOrder);
    }
 
    public boolean isExplorable() {
@@ -403,7 +408,7 @@ public class RelationLink {
    }
 
    /**
-    * @return
+    * @return Branch
     */
    public Branch getBranch() {
       return getBranch(RelationSide.SIDE_A);

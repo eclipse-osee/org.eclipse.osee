@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
@@ -561,11 +561,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
          if (eventArtifact != null && eventArtifact.equals(artifact)) {
             if (event instanceof ArtifactModifiedEvent) {
-               ModType modType = ((ArtifactModifiedEvent) event).getType();
+               ArtifactModType modType = ((ArtifactModifiedEvent) event).getType();
 
-               if (modType == ModType.Deleted) {
+               if (modType == ArtifactModType.Deleted) {
                   AWorkbench.getActivePage().closeEditor(editor, false);
-               } else if (modType == ModType.Added || modType == ModType.Changed || modType == ModType.Reverted) {
+               } else if (modType == ArtifactModType.Added || modType == ArtifactModType.Changed || modType == ArtifactModType.Reverted) {
 
                   setPartName(getEditorInput().getName());
                   setTitleImage(artifact.getImage());

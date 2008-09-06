@@ -60,7 +60,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -335,7 +335,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 	         Artifact artifact = ArtifactCache.getActive(artId, branchId);
 
 	         if (artifact != null && !artifact.isHistorical()) {
-	            ModType modType = null;
+	            ArtifactModType modType = null;
 
 	            if (event instanceof NetworkArtifactModifiedEvent) {
 	               for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
@@ -364,11 +364,11 @@ public class RemoteEventManager implements IServiceLookupListener {
 	                  	}
 	                  }
 	               }
-	               modType = ModType.Changed;
+	               modType = ArtifactModType.Changed;
 	            } else if (event instanceof NetworkArtifactDeletedEvent) {
 	               artifact.setDeleted();
 	               artifact.setNotDirty();
-	               modType = ModType.Deleted;
+	               modType = ArtifactModType.Deleted;
 	            }
 	            localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, RemoteEventManager.instance));            
 	         }
@@ -389,7 +389,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       try {
          RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
          Branch branch = BranchPersistenceManager.getBranch(event.getBranchId());
-         org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType modType = null;
+         org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType modType = null;
          Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
          Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
          boolean aArtifactLoaded = aArtifact != null;
@@ -408,7 +408,7 @@ public class RemoteEventManager implements IServiceLookupListener {
             //            }
             //TODO Maybe just send a link change refresh event
             if (event instanceof NetworkRelationLinkModifiedEvent) {
-               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Changed;
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType.Changed;
                RelationLink relation =
                      RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                            event.getArtAId(), event.getArtBId(), branch, branch);
@@ -436,7 +436,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   relation.setNotDirty();
                }
             } else if (event instanceof NetworkRelationLinkDeletedEvent) {
-               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Deleted;
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType.Deleted;
                RelationLink relation =
                      RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                            event.getArtAId(), event.getArtBId(), branch, branch);
@@ -444,7 +444,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   relation.deleteWithoutDirtyAndEvent();
                }
             } else if (event instanceof NetworkNewRelationLinkEvent) {
-               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType.Added;
                RelationLink relation =
                      RelationManager.getLoadedRelation(RelationTypeManager.getType(event.getRelTypeId()),
                            event.getArtAId(), event.getArtBId(), branch, branch);

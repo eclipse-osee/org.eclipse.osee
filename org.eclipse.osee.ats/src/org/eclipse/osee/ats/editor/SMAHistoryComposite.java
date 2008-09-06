@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class SMAHistoryComposite extends Composite {
 
-   private XResultsComposite xResultsComp;
+   private final XResultsComposite xResultsComp;
    private final SMAManager smaMgr;
 
    /**
@@ -46,11 +46,13 @@ public class SMAHistoryComposite extends Composite {
       createTaskActionBar();
 
       xResultsComp = new XResultsComposite(this, SWT.BORDER);
-      xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      xResultsComp.setLayoutData(new GridData(
+            GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
       xResultsComp.setLayoutData(gd);
-      xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true), smaMgr.getSma().getArtifactTypeName() + " History");
+      xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true),
+            smaMgr.getSma().getArtifactTypeName() + " History");
 
       Label button = new Label(this, SWT.NONE);
       button.setText("    ");
@@ -64,6 +66,13 @@ public class SMAHistoryComposite extends Composite {
             ArtifactEditor.editArtifact(fSmaMgr.getSma());
          }
       });
+   }
+
+   public void refresh() throws OseeCoreException, SQLException {
+      if (xResultsComp != null && !xResultsComp.isDisposed()) {
+         xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true),
+               smaMgr.getSma().getArtifactTypeName() + " History");
+      }
    }
 
    public void createTaskActionBar() throws OseeCoreException, SQLException {
@@ -90,6 +99,7 @@ public class SMAHistoryComposite extends Composite {
       item.setImage(SkynetGuiPlugin.getInstance().getImage("edit.gif"));
       item.setToolTipText("View Full History");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             RevisionHistoryView.open(smaMgr.getSma());
          }

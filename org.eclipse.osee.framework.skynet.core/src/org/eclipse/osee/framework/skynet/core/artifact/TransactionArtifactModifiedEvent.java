@@ -19,7 +19,7 @@ public class TransactionArtifactModifiedEvent extends ArtifactModifiedEvent {
     * @param type
     * @param sender
     */
-   public TransactionArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
+   public TransactionArtifactModifiedEvent(Artifact artifact, ArtifactModType type, Object sender) {
       super(artifact, type, sender);
    }
 }

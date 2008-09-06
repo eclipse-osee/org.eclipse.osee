@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -66,7 +66,7 @@ public class ChangeArtifactType extends AbstractBlam {
          if (doesUserAcceptArtifactChange(artifact, descriptor)) {
             changeArtifactType(artifact, descriptor);
 
-            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Changed, this));
+            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
          }
       }
    }

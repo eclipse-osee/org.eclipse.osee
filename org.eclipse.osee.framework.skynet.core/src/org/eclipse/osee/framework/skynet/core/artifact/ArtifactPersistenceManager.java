@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -50,7 +48,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
@@ -82,7 +80,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactPersistenceManager.class);
+   private static final Logger logger =
+         ConfigUtil.getConfigFactory().getLogger(ArtifactPersistenceManager.class);
 
    private static final String INSERT_ARTIFACT =
          "INSERT INTO " + ARTIFACT_TABLE + " (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
@@ -90,8 +89,10 @@ public class ArtifactPersistenceManager {
    private static final String REMOVE_EMPTY_TRANSACTION_DETAILS =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")";
 
-   private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t1");
-   private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t2");
+   private static final LocalAliasTable ATTRIBUTE_ALIAS_1 =
+         new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t1");
+   private static final LocalAliasTable ATTRIBUTE_ALIAS_2 =
+         new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t2");
 
    private static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ATTRIBUTE_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
@@ -116,21 +117,26 @@ public class ArtifactPersistenceManager {
    private static final String SET_TX_CURRENT_REVERT =
          "UPDATE osee_define_txs txs1 SET tx_current = 1 WHERE (txs1.transaction_id , txs1.gamma_id ) in (SELECT txh1.transaction_id , txh1.gamma_id FROM osee_join_transaction  txh1 WHERE query_id = ? )";
 
-   private static final String PURGE_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
+   private static final String PURGE_ATTRIBUTE =
+         "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
          "DELETE" + " FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id IN" + "(SELECT gamma_id" + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?)";
 
    private static final String SELECT_ATTRIBUTES_FOR_ARTIFACT =
-         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "uri") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id",
+               "value", "uri") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-   private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
+   private static final String UPDATE_ARTIFACT_TYPE =
+         "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
    private static final String SELECT_ARTIFACT_START =
          "SELECT art1.*, txs1.*, txd1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
          " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
-   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
-   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
+   private static final String SELECT_ARTIFACT_BY_GUID =
+         SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
+   private static final String SELECT_ARTIFACT_BY_ID =
+         SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
 
    private static final String ARTIFACT_SELECT =
          "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
@@ -141,7 +147,8 @@ public class ArtifactPersistenceManager {
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
 
-   private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
+   private static final String ARTIFACT_COUNT_SELECT =
+         "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
 
    private static final String REVERT_ATTRIBUTE_ADDRESSING =
          "Delete from osee_define_txs where (gamma_id, transaction_id) in (SELECT txs.gamma_id, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? and det.tx_type = 0 and det.transaction_id = txs.transaction_id and txs.gamma_id = att.gamma_id and att.art_id = ? and att.attr_id = ?)";
@@ -165,20 +172,22 @@ public class ArtifactPersistenceManager {
          "SELECT txs.transaction_id, txs.gamma_id FROM osee_define_txs txs, osee_define_tx_details det, osee_define_artifact_version ver WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = ver.gamma_id AND ver.art_id = ?  order by transaction_id desc";
    private static final String SET_TXS_ATTRIBUTE_REVERT =
          "Update osee_define_txs set tx_current = CASE WHEN mod_type = 3 THEN 2 ELSE 1  END  Where transaction_id = ? and gamma_id = ?";
-   private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
+   private final ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
    private IProgressMonitor monitor;
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
    public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 
-   private static final ArtifactPersistenceManager instance = new ArtifactPersistenceManager();
+   private static final ArtifactPersistenceManager instance =
+         new ArtifactPersistenceManager();
 
    public static boolean initFinished = false;
 
    private ArtifactPersistenceManager() {
       this.attributeSaveListeners =
             new ExtensionDefinedObjects<IAttributeSaveListener>(
-                  "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
+                  "org.eclipse.osee.framework.skynet.core.AttributeSaveListener",
+                  "AttributeSaveListener", "classname");
    }
 
    public static ArtifactPersistenceManager getInstance() {
@@ -224,7 +233,7 @@ public class ArtifactPersistenceManager {
     	  if(artifact.isDeleted()){
     		  modType = ModificationType.DELETED;    		  
     	  }else{
-    		  modType = ModificationType.CHANGE;    
+         modType = ModificationType.CHANGE;
     	  }
       } else {
          modType = ModificationType.NEW;
@@ -236,13 +245,17 @@ public class ArtifactPersistenceManager {
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
 
       // Add Attributes to Transaction
-      AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
+      AttributeToTransactionOperation operation =
+            new AttributeToTransactionOperation(artifact, transaction);
       operation.execute();
 
       notifyOnAttributeSave(artifact);
 
       if (modType != ModificationType.NEW) {
-         transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact, transaction.getTransactionNumber()));
+         transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactModifiedEvent(
+               artifact, transaction.getTransactionNumber()));
+         transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact,
+               ArtifactModType.Added, this));
       }
       workedOneUnit();
    }
@@ -253,8 +266,8 @@ public class ArtifactPersistenceManager {
    }
 
    private void addArtifactData(Artifact artifact, SkynetTransaction transaction) throws SQLException {
-      transaction.addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
-            artifact.getHumanReadableId());
+      transaction.addToBatch(INSERT_ARTIFACT, artifact.getArtId(),
+            artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
    }
 
    /**
@@ -279,11 +292,13 @@ public class ArtifactPersistenceManager {
       Object data;
       String idString;
       if (useGuid) {
-         artifact = ArtifactCache.getHistorical(guid, transactionLimit.getTransactionNumber());
+         artifact =
+               ArtifactCache.getHistorical(guid, transactionLimit.getTransactionNumber());
          data = guid;
          idString = "guid \"" + guid + "\"";
       } else {
-         artifact = ArtifactCache.getHistorical(artId, transactionLimit.getTransactionNumber());
+         artifact =
+               ArtifactCache.getHistorical(artId, transactionLimit.getTransactionNumber());
          data = artId;
          idString = "id \"" + artId + "\"";
       }
@@ -293,7 +308,8 @@ public class ArtifactPersistenceManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(1, query, data, transactionLimit.getTransactionNumber(),
+                  ConnectionHandler.runPreparedQuery(1, query, data,
+                        transactionLimit.getTransactionNumber(),
                         transactionLimit.getBranch().getBranchId());
 
             ResultSet rSet = chStmt.getRset();
@@ -302,13 +318,15 @@ public class ArtifactPersistenceManager {
                      "The artifact with " + idString + " does not exist for transaction \"" + transactionLimit + "\"");
             }
 
-            ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+            ArtifactType artifactType =
+                  ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
             ArtifactFactory factory = artifactType.getFactory();
             TransactionId transactionId = TransactionIdManager.getTransactionId(rSet);
 
             artifact =
-                  factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getString("guid"),
-                        rSet.getString("human_readable_id"), artifactType, rSet.getInt("gamma_id"), transactionId,
+                  factory.loadExisitingArtifact(rSet.getInt("art_id"),
+                        rSet.getString("guid"), rSet.getString("human_readable_id"),
+                        artifactType, rSet.getInt("gamma_id"), transactionId,
                         ModificationType.getMod(rSet.getInt("mod_type")), true);
 
             setAttributesOnHistoricalArtifact(artifact);
@@ -351,12 +369,14 @@ public class ArtifactPersistenceManager {
 
    public int getArtifactCount(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       List<Object> dataList = new LinkedList<Object>();
-      return getArtifactCount(getSql(searchCriteria, ARTIFACT_COUNT_SELECT, dataList, branch), dataList);
+      return getArtifactCount(getSql(searchCriteria, ARTIFACT_COUNT_SELECT, dataList,
+            branch), dataList);
    }
 
    public int getArtifactCount(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
       List<Object> dataList = new LinkedList<Object>();
-      return getArtifactCount(getSql(searchCriteria, all, ARTIFACT_COUNT_SELECT, dataList, branch), dataList);
+      return getArtifactCount(getSql(searchCriteria, all, ARTIFACT_COUNT_SELECT,
+            dataList, branch), dataList);
    }
 
    private int getArtifactCount(String sql, List<Object> dataList) throws SQLException {
@@ -428,16 +448,18 @@ public class ArtifactPersistenceManager {
    public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
-      return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, null, null);
+      return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT,
+            queryParameters, branch), queryParameters.toArray(), 100, ArtifactLoad.FULL,
+            false, null, null);
    }
 
    @Deprecated
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
-      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null);
+      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT,
+            queryParameters, branch), queryParameters.toArray(), 100, ArtifactLoad.FULL,
+            false, confirmer, null);
    }
 
    @Deprecated
@@ -452,8 +474,9 @@ public class ArtifactPersistenceManager {
    public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(transactionId.getBranch().getBranchId());
-      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
-            transactionId.getBranch()), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer,
+      return ArtifactLoader.getArtifacts(getSql(searchCriteria, all,
+            ARTIFACT_SELECT_NOT_CURRENT, queryParameters, transactionId.getBranch()),
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer,
             transactionId);
    }
 
@@ -472,14 +495,15 @@ public class ArtifactPersistenceManager {
       try {
          // Acquire previously stored attributes
          chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT, artifact.getArtId(),
-                     ModificationType.DELETED.getValue(), artifact.getTransactionNumber(),
-                     artifact.getBranch().getBranchId());
+               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT,
+                     artifact.getArtId(), ModificationType.DELETED.getValue(),
+                     artifact.getTransactionNumber(), artifact.getBranch().getBranchId());
 
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
-            AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
-                  rSet.getInt("attr_id"), rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
+            AttributeToTransactionOperation.initializeAttribute(artifact,
+                  rSet.getInt("attr_type_id"), rSet.getInt("attr_id"),
+                  rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
@@ -528,7 +552,8 @@ public class ArtifactPersistenceManager {
       final Branch branch = artifacts[0].getBranch();
       if (SkynetTransactionManager.getInstance().isInBatch(branch)) {
          for (Artifact artifact : artifacts) {
-            deleteTrace(artifact, SkynetTransactionManager.getInstance().getTransactionBuilder(branch));
+            deleteTrace(artifact,
+                  SkynetTransactionManager.getInstance().getTransactionBuilder(branch));
          }
       } else {
          AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
@@ -558,7 +583,7 @@ public class ArtifactPersistenceManager {
          }
          try{
              artifact.setDeleted();
-             builder.deleteArtifact(artifact);
+         builder.deleteArtifact(artifact);
          } catch(Exception ex){
         	 artifact.setNotDeleted();
         	 throw new OseeCoreException(ex);
@@ -574,14 +599,21 @@ public class ArtifactPersistenceManager {
    public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
       if (!artifact.isInDb()) return;
 
+      processTransactionForArtifact(artifact, ModificationType.DELETED, transaction,
+            SequenceManager.getNextGammaId());
+
+      transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactDeleteEvent(
+            artifact, transaction.getTransactionNumber()));
+      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact,
+            ArtifactModType.Deleted, this));
+
       RelationManager.deleteRelationsAll(artifact);
-      artifact.deleteAttributes();
-      
-      artifact.persistAttributesAndRelations();
+      artifact.persistRelations();
    }
 
    public void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException, SQLException {
-      if (artifact == null) throw new IllegalArgumentException("Artifact = null in purgeArtifactFromBranch");
+      if (artifact == null) throw new IllegalArgumentException(
+            "Artifact = null in purgeArtifactFromBranch");
       purgeArtifacts(Collections.getAggregate(artifact));
    }
 
@@ -598,12 +630,14 @@ public class ArtifactPersistenceManager {
 
       //Remove from Baseline
       ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ATTRIBUTE_TRANS, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_RELATION_TRANS, branchId, artId, artId);
+      ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_RELATION_TRANS, branchId, artId,
+            artId);
       ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
    public void revertAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException, SQLException {
-      revertAttribute(artifact.getBranch().getBranchId(), artifact.getArtId(), attribute.getAttrId());
+      revertAttribute(artifact.getBranch().getBranchId(), artifact.getArtId(),
+            attribute.getAttrId());
    }
 
    public void revertAttribute(int branchId, int artId, int attributeId) throws OseeCoreException, SQLException {
@@ -627,31 +661,36 @@ public class ArtifactPersistenceManager {
 
       @Override
       protected void handleTxWork() throws OseeCoreException, SQLException {
-         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_ADDRESSING, branchId, artId, attributeId);
-         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_CURRENT, branchId, artId, attributeId);
+         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_ADDRESSING, branchId,
+               artId, attributeId);
+         ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_CURRENT, branchId, artId,
+               attributeId);
          ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_DATA, attributeId, artId);
          //Clean up artifact version table and transaction details table.
          ConnectionHandlerStatement connectionHandlerStatement = null;
          ResultSet resultSet = null;
          try {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, artId, branchId);
+                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, artId,
+                        branchId);
             resultSet = connectionHandlerStatement.getRset();
             while (resultSet.next()) {
-               ConnectionHandler.runPreparedUpdate(REMOVE_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
+               ConnectionHandler.runPreparedUpdate(REMOVE_TXS_ATTRIBUTE_REVERT,
+                     resultSet.getInt("transaction_id"), resultSet.getInt("gamma_id"));
+               ConnectionHandler.runPreparedUpdate(REMOVE_AV_ATTRIBUTE_REVERT,
                      resultSet.getInt("gamma_id"));
-               ConnectionHandler.runPreparedUpdate(REMOVE_AV_ATTRIBUTE_REVERT, resultSet.getInt("gamma_id"));
             }
          } finally {
             DbUtil.close(connectionHandlerStatement);
          }
          try {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(UPDATE_TXS_ATTRIBUTE_REVERT, branchId, artId);
+                  ConnectionHandler.runPreparedQuery(UPDATE_TXS_ATTRIBUTE_REVERT,
+                        branchId, artId);
             resultSet = connectionHandlerStatement.getRset();
             if (resultSet.next()) {
-               ConnectionHandler.runPreparedUpdate(SET_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
-                     resultSet.getInt("gamma_id"));
+               ConnectionHandler.runPreparedUpdate(SET_TXS_ATTRIBUTE_REVERT,
+                     resultSet.getInt("transaction_id"), resultSet.getInt("gamma_id"));
             }
          } finally {
             DbUtil.close(connectionHandlerStatement);
@@ -688,7 +727,8 @@ public class ArtifactPersistenceManager {
 
       @Override
       protected void handleTxWork() throws OseeCoreException, SQLException {
-         TransactionJoinQuery gammaIdsModifications = JoinUtility.createTransactionJoinQuery();
+         TransactionJoinQuery gammaIdsModifications =
+               JoinUtility.createTransactionJoinQuery();
          TransactionJoinQuery gammaIdsBaseline = JoinUtility.createTransactionJoinQuery();
 
          //Get attribute Gammas
@@ -696,14 +736,16 @@ public class ArtifactPersistenceManager {
          ResultSet resultSet = null;
          try {
             connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId, branchId, artId, artId,
-                        branchId, artId);
+                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId,
+                        branchId, artId, artId, branchId, artId);
             resultSet = connectionHandlerStatement.getRset();
             while (resultSet.next()) {
                if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-                  gammaIdsModifications.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
+                  gammaIdsModifications.add(resultSet.getInt("gamma_id"),
+                        resultSet.getInt("transaction_id"));
                } else {
-                  gammaIdsBaseline.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
+                  gammaIdsBaseline.add(resultSet.getInt("gamma_id"),
+                        resultSet.getInt("transaction_id"));
                }
             }
          } finally {
@@ -716,15 +758,20 @@ public class ArtifactPersistenceManager {
             try {
                gammaIdsModifications.store();
                int gammaIdModsQID = gammaIdsModifications.getQueryId();
-               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT, gammaIdModsQID);
-               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT, gammaIdModsQID);
-               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT,
+                     gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT,
+                     gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT,
+                     gammaIdModsQID);
 
-               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT, gammaIdModsQID);
+               ConnectionHandler.runPreparedUpdate(DELETE_TXS_GAMMAS_REVERT,
+                     gammaIdModsQID);
 
                if (!gammaIdsBaseline.isEmpty()) {
                   gammaIdsBaseline.store();
-                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT, gammaIdsBaseline.getQueryId());
+                  ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT,
+                        gammaIdsBaseline.getQueryId());
                }
             } finally {
                gammaIdsModifications.delete();
@@ -747,15 +794,19 @@ public class ArtifactPersistenceManager {
          Artifact root = ArtifactCache.getByTextId(DEFAULT_HIERARCHY_ROOT_NAME, branch);
          if (root == null) {
             root =
-                  ArtifactQuery.getArtifactFromTypeAndName(ROOT_ARTIFACT_TYPE_NAME, DEFAULT_HIERARCHY_ROOT_NAME, branch);
+                  ArtifactQuery.getArtifactFromTypeAndName(ROOT_ARTIFACT_TYPE_NAME,
+                        DEFAULT_HIERARCHY_ROOT_NAME, branch);
             ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
          }
          return root;
       } catch (ArtifactDoesNotExist ex) {
          if (createIfNecessary) {
-            logger.log(Level.INFO, "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
+            logger.log(
+                  Level.INFO,
+                  "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
             Artifact root =
-                  ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
+                  ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch,
+                        DEFAULT_HIERARCHY_ROOT_NAME);
             root.persistAttributes();
             ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
             return root;
@@ -787,7 +838,8 @@ public class ArtifactPersistenceManager {
     * @throws SQLException
     */
    public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, artifactType.getArtTypeId(), artifact.getArtId());
+      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE,
+            artifactType.getArtTypeId(), artifact.getArtId());
    }
 
    /**
@@ -839,15 +891,17 @@ public class ArtifactPersistenceManager {
       try {
          for (Artifact art : artifactsToPurge) {
             for (Branch branch : art.getBranch().getChildBranches(true)) {
-               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), branch.getBranchId(),
-                     SQL3DataType.INTEGER});
+               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(),
+                     branch.getBranchId(), SQL3DataType.INTEGER});
             }
          }
          if (batchParameters.size() > 0) {
             ArtifactLoader.selectArtifacts(batchParameters);
             ConnectionHandlerStatement stmt = null;
             try {
-               stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
+               stmt =
+                     ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS,
+                           queryId);
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
                while (stmt.getRset().next()) {
@@ -859,8 +913,10 @@ public class ArtifactPersistenceManager {
                   sb.append("]\n");
                }
                if (failed) {
-                  throw new OseeCoreException(String.format(
-                        "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
+                  throw new OseeCoreException(
+                        String.format(
+                              "Unable to purge because the following artifacts exist on child branches.\n%s",
+                              sb.toString()));
                }
             } finally {
                ArtifactLoader.clearQuery(queryId);
@@ -875,38 +931,52 @@ public class ArtifactPersistenceManager {
 
          // insert into the artifact_join_table
          for (Artifact art : artifactsToPurge) {
-            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
-                  SQL3DataType.INTEGER});
+            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(),
+                  art.getBranch().getBranchId(), SQL3DataType.INTEGER});
          }
          ArtifactLoader.selectArtifacts(batchParameters);
 
          //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
          int transactionJoinId = ArtifactLoader.getNewQueryId();
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, transactionJoinId, insertTime, queryId);
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, transactionJoinId, insertTime, queryId);
-         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, transactionJoinId, insertTime, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_RELATIONS, transactionJoinId,
+               insertTime, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ATTRIBUTES, transactionJoinId,
+               insertTime, queryId);
+         ConnectionHandler.runPreparedUpdate(INSERT_SELECT_ARTIFACTS, transactionJoinId,
+               insertTime, queryId);
 
          //delete from the txs table
          int txsDeletes =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS_USING_JOIN_TRANSACTION, transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(
+                     DELETE_FROM_TXS_USING_JOIN_TRANSACTION, transactionJoinId);
 
          int txdDeletes =
-               ConnectionHandler.runPreparedUpdate(DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION, transactionJoinId);
+               ConnectionHandler.runPreparedUpdate(
+                     DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION, transactionJoinId);
 
-         int relationVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS, transactionJoinId);
-         int attributeVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_VERSIONS, transactionJoinId);
-         int artifactVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
-         int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, queryId);
+         int relationVersions =
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_RELATION_VERSIONS,
+                     transactionJoinId);
+         int attributeVersions =
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_VERSIONS,
+                     transactionJoinId);
+         int artifactVersions =
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS,
+                     transactionJoinId);
+         int artifact =
+               ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, queryId);
 
          try {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("queryId", Integer.toString(transactionJoinId));
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("search",
                         parameters);
-            HttpProcessor.delete(new URL(url));
+            String response = HttpProcessor.delete(new URL(url));
+
          } catch (Exception ex) {
-            OseeLog.log(SkynetActivator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
+                  "Error Deleting Tags during purge.", ex);
          }
 
          OseeLog.log(
@@ -914,10 +984,12 @@ public class ArtifactPersistenceManager {
                Level.INFO,
                String.format(
                      "Purge Row Deletes: txs rows [%d], rel ver rows [%d], attr ver rows [%d] art ver rows [%d] art rows [%d].  txs vs. total versions [%d vs %d]",
-                     txsDeletes, relationVersions, attributeVersions, artifactVersions, artifact, txsDeletes,
+                     txsDeletes, relationVersions, attributeVersions, artifactVersions,
+                     artifact, txsDeletes,
                      (relationVersions + attributeVersions + artifactVersions)));
 
-         ConnectionHandler.runPreparedUpdate("DELETE FROM osee_join_transaction where query_id = ?", transactionJoinId);
+         ConnectionHandler.runPreparedUpdate(
+               "DELETE FROM osee_join_transaction where query_id = ?", transactionJoinId);
 
          for (Artifact art : artifactsToPurge) {
             art.setDeleted();
@@ -927,7 +999,9 @@ public class ArtifactPersistenceManager {
             for (Attribute<?> attr : art.internalGetAttributes()) {
                attr.markAsPurged();
             }
-            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(art, ModType.Purged, instance));
+            SkynetEventManager.getInstance().kick(
+                  new TransactionArtifactModifiedEvent(art, ArtifactModType.Purged,
+                        instance));
          }
       } finally {
          ArtifactLoader.clearQuery(queryId);

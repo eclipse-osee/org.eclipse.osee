@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -80,17 +80,17 @@ public class AttributeToTransactionOperation {
    }
 
    private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
-      ModType modType = null;
+      ArtifactModType modType = null;
       ModificationType attrModType = null;
-      
       if (attribute.isInDatastore()) {
-          attribute.setGammaId(SequenceManager.getNextGammaId());
-          modType = ModType.Changed;
-          attrModType = ModificationType.CHANGE; 
+         attribute.setGammaId(SequenceManager.getNextGammaId());
+
+         modType = ArtifactModType.Changed;
+         attrModType = ModificationType.CHANGE;
       } else {
          createNewAttributeMemo(attribute);
          attrModType = ModificationType.NEW;
-         modType = ModType.Added;
+         modType = ArtifactModType.Added;
       }
       attribute.getAttributeDataProvider().persist();
       DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
@@ -176,7 +176,7 @@ public class AttributeToTransactionOperation {
             attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
             modificationType, transaction.getBranch()));
 
-      transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
+      transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
    }
 
    public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeDataStoreException {

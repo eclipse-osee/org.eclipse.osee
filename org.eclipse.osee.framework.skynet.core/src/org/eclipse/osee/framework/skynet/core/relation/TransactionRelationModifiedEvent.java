@@ -25,7 +25,7 @@ public class TransactionRelationModifiedEvent extends RelationModifiedEvent {
     * @param modType
     * @param sender
     */
-   public TransactionRelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
+   public TransactionRelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, RelationModType modType, Object sender) {
       super(link, branch, relationType, relationSide, modType, sender);
    }
 

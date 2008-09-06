@@ -17,13 +17,13 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
  */
 public abstract class ArtifactModifiedEvent extends ArtifactEvent {
 
-   private ModType modType;
-   public enum ModType {
+   private final ArtifactModType modType;
+   public enum ArtifactModType {
       Deleted, Added, Changed, Reverted, Purged, PrePurge, PurgedFromBranch;
    };
 
-   public static ModType getModType(String type) {
-      for (ModType e : ModType.values())
+   public static ArtifactModType getModType(String type) {
+      for (ArtifactModType e : ArtifactModType.values())
          if (e.name().equals(type)) return e;
       return null;
    }
@@ -33,12 +33,12 @@ public abstract class ArtifactModifiedEvent extends ArtifactEvent {
     * @param type
     * @param sender
     */
-   public ArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
+   public ArtifactModifiedEvent(Artifact artifact, ArtifactModType type, Object sender) {
       super(artifact, sender);
       this.modType = type;
    }
 
-   public ModType getType() {
+   public ArtifactModType getType() {
       return modType;
    }
 }

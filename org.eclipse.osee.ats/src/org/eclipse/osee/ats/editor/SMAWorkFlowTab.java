@@ -69,7 +69,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final SMAManager smaMgr;
-   private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
+   private final ArrayList<SMAWorkFlowSection> sections =
+         new ArrayList<SMAWorkFlowSection>();
    private final XFormToolkit toolkit;
    private static String ORIGINATOR = "Originator:";
    private static String TEAM_ACTIONABLE_ITEMS = "Team Actionable Items: ";
@@ -79,9 +80,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private AtsWorkPage currentAtsWorkPage;
    private ScrolledForm scrolledForm;
    private final Integer HEADER_COMP_COLUMNS = 4;
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
+   private static Map<String, Integer> guidToScrollLocation =
+         new HashMap<String, Integer>();
    private final TeamWorkFlowArtifact teamWf;
    private SMARelationsComposite smaRelationsComposite;
+   private IManagedForm managedForm;
+   private Composite body;
+   private Composite atsBody;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -100,6 +105,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
     */
    @Override
    protected void createFormContent(IManagedForm managedForm) {
+      this.managedForm = managedForm;
       try {
          scrolledForm = managedForm.getForm();
          scrolledForm.addDisposeListener(new DisposeListener() {
@@ -117,13 +123,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.refresh();
 
          ServicesArea toolbarArea = new ServicesArea(smaMgr);
-         toolbarArea.createToolbarServices(currentAtsWorkPage, scrolledForm.getToolBarManager());
+         toolbarArea.createToolbarServices(currentAtsWorkPage,
+               scrolledForm.getToolBarManager());
 
-         OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
-               scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
+         OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this,
+               AtsPlugin.getInstance(), scrolledForm.getToolBarManager(),
+               SMAEditor.EDITOR_ID, "ATS Editor");
 
-         if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
-               smaMgr.getSma().getHelpContext());
+         if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(
+               scrolledForm, smaMgr.getSma().getHelpContext());
 
          scrolledForm.updateToolBar();
          // restoreScrollLocation();
@@ -172,7 +180,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       StringBuffer sb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
-         if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
+         if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(
+               page.getName())) {
             sb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor));
             sb.append(AHTML.newline());
          }
@@ -181,12 +190,20 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void fillBody(IManagedForm managedForm) throws OseeCoreException, SQLException {
-      Composite body = managedForm.getForm().getBody();
+      body = managedForm.getForm().getBody();
       GridLayout gridLayout = new GridLayout(1, false);
       body.setLayout(gridLayout);
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-      Composite headerComp = toolkit.createComposite(body);
+      createBody(body);
+   }
+
+   private void createBody(Composite body) throws OseeCoreException, SQLException {
+      atsBody = toolkit.createComposite(body);
+      atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
+      atsBody.setLayout(ALayout.getZeroMarginLayout(1, false));
+
+      Composite headerComp = toolkit.createComposite(atsBody);
       headerComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
@@ -205,7 +222,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          pages.clear();
 
          if (SMARelationsComposite.relationExists(smaMgr.getSma())) {
-            smaRelationsComposite = new SMARelationsComposite(body, toolkit, SWT.NONE);
+            smaRelationsComposite = new SMARelationsComposite(atsBody, toolkit, SWT.NONE);
             smaRelationsComposite.create(smaMgr);
          }
       } catch (Exception ex) {
@@ -217,12 +234,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          AtsWorkPage atsWorkPage =
                new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
                      ATSXWidgetOptionResolver.getInstance());
-         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage = atsWorkPage;
-         if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
+         if (smaMgr.isCurrentState(atsWorkPage.getName())) currentAtsWorkPage =
+               atsWorkPage;
+         if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(
+               atsWorkPage.getName())) {
             // Don't show completed or cancelled state if not currently those state
             if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
             if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
-            SMAWorkFlowSection section = new SMAWorkFlowSection(body, toolkit, SWT.NONE, atsWorkPage, smaMgr);
+            SMAWorkFlowSection section =
+                  new SMAWorkFlowSection(atsBody, toolkit, SWT.NONE, atsWorkPage, smaMgr);
             control = section.getMainComp();
             sections.add(section);
             managedForm.addPart(section);
@@ -231,14 +251,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       if (AtsPlugin.isAtsAdmin()) {
-         SMAWorkFlowDebugSection section = new SMAWorkFlowDebugSection(body, toolkit, SWT.NONE, smaMgr);
+         SMAWorkFlowDebugSection section =
+               new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr);
          control = section.getMainComp();
          sections.add(section);
          managedForm.addPart(section);
          section.getSection().setExpanded(true);
       }
 
-      body.setFocus();
+      atsBody.setFocus();
       // Jump to scroll location if set
       Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
       if (selection != null) {
@@ -303,7 +324,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          // Show Action's AIs
          if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(actionComp, ACTION_ACTIONABLE_ITEMS, SWT.NONE);
+            Hyperlink link =
+                  toolkit.createHyperlink(actionComp, ACTION_ACTIONABLE_ITEMS, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                public void linkEntered(HyperlinkEvent e) {
@@ -323,19 +345,23 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             link.setToolTipText("Edit Actionable Items for the parent Action (this may add Team Workflows)");
             if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
                Label errorLabel =
-                     toolkit.createLabel(actionComp,
+                     toolkit.createLabel(
+                           actionComp,
                            " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                actionActionableItemsLabel =
-                     toolkit.createLabel(actionComp,
+                     toolkit.createLabel(
+                           actionComp,
                            teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
-               actionActionableItemsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+               actionActionableItemsLabel.setLayoutData(new GridData(
+                     GridData.FILL_HORIZONTAL));
             }
          } else {
             if (teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItems().size() == 0) {
                Label errorLabel =
-                     toolkit.createLabel(actionComp,
+                     toolkit.createLabel(
+                           actionComp,
                            " " + ACTION_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
@@ -356,7 +382,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          // Show Team Workflow's AIs
          if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(teamComp, " " + TEAM_ACTIONABLE_ITEMS, SWT.NONE);
+            Hyperlink link =
+                  toolkit.createHyperlink(teamComp, " " + TEAM_ACTIONABLE_ITEMS, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                public void linkEntered(HyperlinkEvent e) {
@@ -377,23 +404,28 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             link.setToolTipText("Edit Actionable Items for this Team Workflow");
             if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
                Label errorLabel =
-                     toolkit.createLabel(teamComp,
+                     toolkit.createLabel(
+                           teamComp,
                            " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                teamActionableItemLabel =
-                     toolkit.createLabel(teamComp, teamWf.getActionableItemsDam().getActionableItemsStr());
-               teamActionableItemLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+                     toolkit.createLabel(teamComp,
+                           teamWf.getActionableItemsDam().getActionableItemsStr());
+               teamActionableItemLabel.setLayoutData(new GridData(
+                     GridData.FILL_HORIZONTAL));
             }
          } else {
             if (teamWf.getActionableItemsDam().getActionableItems().size() == 0) {
                Label errorLabel =
-                     toolkit.createLabel(teamComp,
+                     toolkit.createLabel(
+                           teamComp,
                            " " + TEAM_ACTIONABLE_ITEMS + "Error: No Actionable Items identified.");
                errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
             } else {
                Label label =
-                     toolkit.createLabel(teamComp,
+                     toolkit.createLabel(
+                           teamComp,
                            " " + TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
                label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
@@ -410,7 +442,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit.adapt(topLineComp);
       Text text = new Text(topLineComp, SWT.WRAP | SWT.NO_TRIM);
       toolkit.adapt(text, true, true);
-      text.setText(String.format("Assignee(s): %s", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      text.setText(String.format("Assignee(s): %s", Artifacts.toString("; ",
+            smaMgr.getStateMgr().getAssignees())));
    }
 
    private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {
@@ -435,7 +468,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          // Do nothing
       }
 
-      toolkit.createLabel(topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id:");
+      toolkit.createLabel(topLineComp,
+            smaMgr.getSma().getArtifactSuperTypeName() + " Id:");
       text = new Text(topLineComp, SWT.NONE);
       toolkit.adapt(text, true, true);
       text.setText(smaMgr.getSma().getHumanReadableId());
@@ -460,7 +494,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan) throws SQLException, MultipleAttributesExist {
       // Display SMA Note
-      String note = smaMgr.getSma().getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+      String note =
+            smaMgr.getSma().getSoleAttributeValue(
+                  ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       if (!note.equals("")) {
          createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note, false);
       }
@@ -470,14 +506,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display global Notes
       for (NoteItem noteItem : smaMgr.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
-            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toHTML(), false);
+            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toHTML(),
+                  false);
          }
       }
    }
 
    private static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str, boolean onlyState) {
       if (str.length() > 150) {
-         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
+         Hyperlink label =
+               toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
          label.setToolTipText("click to view all");
          label.addListener(SWT.MouseUp, new Listener() {
             /*
@@ -524,7 +562,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          });
          if (smaMgr.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(comp, "Error: No originator identified.");
+            Label errorLabel =
+                  toolkit.createLabel(comp, "Error: No originator identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
             origLabel = toolkit.createLabel(comp, smaMgr.getOriginator().getName());
@@ -532,10 +571,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       } else {
          if (smaMgr.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(comp, "Error: No originator identified.");
+            Label errorLabel =
+                  toolkit.createLabel(comp, "Error: No originator identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            Label origLabel = toolkit.createLabel(comp, "     " + ORIGINATOR + smaMgr.getOriginator().getName());
+            Label origLabel =
+                  toolkit.createLabel(comp,
+                        "     " + ORIGINATOR + smaMgr.getOriginator().getName());
             origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       }
@@ -551,9 +593,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void refresh() throws OseeCoreException, SQLException {
-      for (SMAWorkFlowSection section : sections)
-         section.refresh();
-      if (smaRelationsComposite != null) smaRelationsComposite.refresh();
+      if (smaMgr.getEditor() != null && !smaMgr.isInTransition()) {
+         for (SMAWorkFlowSection section : sections)
+            section.dispose();
+         atsBody.dispose();
+         createBody(body);
+      }
    }
 
 }

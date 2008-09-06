@@ -24,7 +24,7 @@ public class CacheRelationModifiedEvent extends RelationModifiedEvent {
     * @param modType
     * @param sender
     */
-   public CacheRelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
+   public CacheRelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, RelationModType modType, Object sender) {
       super(link, branch, relationType, relationSide, modType, sender);
    }
 

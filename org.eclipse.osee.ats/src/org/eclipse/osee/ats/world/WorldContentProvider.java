@@ -32,7 +32,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    protected Collection<Artifact> rootSet = new HashSet<Artifact>();
    private final WorldXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
+   private final ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
 
    public WorldContentProvider(WorldXViewer WorldXViewer) {
       super();
@@ -47,7 +47,11 @@ public class WorldContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.addAll(items);
+            for (Artifact item : items) {
+               if (!rootSet.contains(item)) {
+                  rootSet.add(item);
+               }
+            }
             xViewer.refresh();
          };
       });
@@ -57,7 +61,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            clear();
+            rootSet.clear();
             add(arts);
          };
       });
@@ -71,7 +75,9 @@ public class WorldContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.remove(arts);
+            for (Artifact art : arts) {
+               rootSet.remove(art);
+            }
             xViewer.refresh();
          };
       });
@@ -84,7 +90,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             rootSet.clear();
             xViewer.refresh();
          };
-      }, true);
+      });
    }
 
    public Object[] getChildren(Object parentElement) {
