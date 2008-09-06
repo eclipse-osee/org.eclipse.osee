@@ -55,6 +55,7 @@ public class ATSLog {
       this.artifact = artifact;
    }
 
+   @Override
    public String toString() {
       return getLogItems().toString();
    }
@@ -88,7 +89,7 @@ public class ATSLog {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         OSEELog.logException(AtsPlugin.class, "Error Parsing ATS Log for " + artifact.getHumanReadableId(), ex, true);
       }
       return logItems;
    }
