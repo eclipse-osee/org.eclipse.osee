@@ -660,7 +660,7 @@ public class XTaskViewer extends XWidget implements IActionable {
                               }
                               taskArt.addRelation(AtsRelation.SmaToTask_Sma,
                                     iXTaskViewer.getParentSmaMgr().getSma());
-                              taskArt.delete();
+                              taskArt.persistRelations();
                            }
                         }
                      }
