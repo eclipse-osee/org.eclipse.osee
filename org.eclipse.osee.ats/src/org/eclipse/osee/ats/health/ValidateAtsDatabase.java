@@ -107,12 +107,12 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException, SQLException {
       this.xResultData = xResultData;
       loadAtsBranchArtifacts();
-      //      testAtsBranchAttributeValues();
-      //      testAtsActionsHaveTeamWorkflow();
-      //      testAtsWorkflowsHaveAction();
-      //      testAtsWorkflowsHaveZeroOrOneVersion();
-      //      testTasksHaveParentWorkflow();
-      //      testReviewsHaveParentWorkflowOrActionableItems();
+      testAtsBranchAttributeValues();
+      testAtsActionsHaveTeamWorkflow();
+      testAtsWorkflowsHaveAction();
+      testAtsWorkflowsHaveZeroOrOneVersion();
+      testTasksHaveParentWorkflow();
+      testReviewsHaveParentWorkflowOrActionableItems();
       testStateMachineAssignees();
       xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
    }
@@ -206,7 +206,7 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
    }
 
    public void testStateMachineAssignees() throws OseeCoreException, SQLException {
-      xResultData.log("testReviewsHaveParentWorkflowOrActionableItems");
+      xResultData.log("testStateMachineAssignees");
       User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);
       for (Artifact art : artifacts) {
