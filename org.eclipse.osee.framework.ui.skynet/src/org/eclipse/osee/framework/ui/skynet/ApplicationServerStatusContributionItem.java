@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.sql.SQLException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
+import org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.ui.plugin.event.ConnectionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.CoreEventManager;
@@ -27,7 +26,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Roberto E. Escobar
  */
-public class ApplicationServerStatusContributionItem extends SkynetContributionItem implements IDbConnectionListener {
+public class ApplicationServerStatusContributionItem extends SkynetContributionItem implements IApplicationServerConnectionListener {
    private static final String ID = "app.server.connection";
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
    private static final Image ENABLED = skynetGuiPlugin.getImage("appserver.gif");
@@ -42,7 +41,7 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
 
    private void init() {
       updateStatus(OseeApplicationServer.isApplicationServerAlive());
-      ConnectionHandler.addListener(this);
+      OseeApplicationServer.addListener(this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -91,14 +90,14 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    }
 
    /* (non-Javadoc)
-   * @see org.eclipse.osee.framework.database.IDbConnectionListener#onConnectionStatusUpdate(boolean)
-   */
+    * @see org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener#onConnectionStatusChange(boolean)
+    */
    @Override
-   public void onConnectionStatusUpdate(final boolean open) {
+   public void onConnectionStatusChange(final boolean status) {
       Display.getDefault().asyncExec(new Runnable() {
          @Override
          public void run() {
-            updateStatus(OseeApplicationServer.isApplicationServerAlive());
+            updateStatus(status);
          }
       });
    }
