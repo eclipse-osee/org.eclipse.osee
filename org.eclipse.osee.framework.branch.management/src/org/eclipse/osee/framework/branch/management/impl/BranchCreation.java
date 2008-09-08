@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class BranchCreation implements IBranchCreation {
 
