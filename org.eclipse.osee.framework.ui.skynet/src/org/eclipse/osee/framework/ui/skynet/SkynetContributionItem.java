@@ -55,13 +55,21 @@ public abstract class SkynetContributionItem extends StatusLineContributionItem 
       this.enabledToolTip = enabledToolTip;
    }
 
+   protected String getEnabledToolTip() {
+      return disabledToolTip;
+   }
+
+   protected String getDisabledToolTip() {
+      return enabledToolTip;
+   }
+
    protected void updateStatus(boolean active) {
       if (active) {
          setImage(enabled);
-         setToolTipText(enabledToolTip);
+         setToolTipText(getEnabledToolTip());
       } else {
          setImage(disabled);
-         setToolTipText(disabledToolTip);
+         setToolTipText(getDisabledToolTip());
       }
    }
 
@@ -70,6 +78,7 @@ public abstract class SkynetContributionItem extends StatusLineContributionItem 
       if (OseeAts.isAtsAdmin()) AdminContributionItem.addTo(manager);
       SkynetServiceContributionItem.addTo(manager);
       SkynetConnectionContributionItem.addTo(manager);
+      ApplicationServerStatusContributionItem.addTo(manager);
       SkynetAuthenticationContributionItem.addTo(manager);
    }
 

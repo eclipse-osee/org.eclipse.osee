@@ -487,9 +487,9 @@
        point="org.eclipse.ui.preferencePages">
     <page
           category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-          class="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails"
           id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
-          name="Http Server">
+          name="Configuration Details">
     </page>
  </extension>
 	<extension point="org.eclipse.ui.startup">
