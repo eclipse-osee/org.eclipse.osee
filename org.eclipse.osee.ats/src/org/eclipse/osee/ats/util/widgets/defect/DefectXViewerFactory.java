@@ -36,7 +36,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("osee.defect.injectionActivity", "Injection Activity", 35, SWT.LEFT, true,
                SortDataType.String, false, null);
    public static XViewerColumn Description_Col =
-         new XViewerColumn("osee.defect.description", "Description", 200, SWT.CENTER, true,
+         new XViewerColumn("osee.defect.description", "Description", 200, SWT.LEFT, true,
                SortDataType.String_MultiLine, false, null);
    public static XViewerColumn Location_Col =
          new XViewerColumn("osee.defect.location", "Location", 200, SWT.LEFT, true, SortDataType.String_MultiLine,
