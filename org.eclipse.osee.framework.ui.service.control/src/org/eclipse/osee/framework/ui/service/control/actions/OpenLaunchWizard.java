@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.service.control.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.widgets.ManagerMain;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchWizard;
@@ -26,7 +27,10 @@ public class OpenLaunchWizard extends Action {
       super();
       setImageDescriptor(ControlPlugin.getInstance().getImageDescriptor("rocket.gif"));
       setText("Launch A Service");
-      setToolTipText("Open the service launching wizard.");
+//      setToolTipText("Open the service launching wizard.");
+      //TODO: Please remove next two lines upon action 4ZXCH completion.
+      this.setToolTipText("Disabled until action 4ZXCH is complete.  See OSEE personnel for assistance.");
+      this.setEnabled(false);
    }
 
    public void run() {
@@ -36,4 +40,5 @@ public class OpenLaunchWizard extends Action {
       dialog.setBlockOnOpen(true);
       dialog.open();
    }
+      
 }
