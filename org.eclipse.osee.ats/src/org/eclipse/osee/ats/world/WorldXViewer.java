@@ -385,6 +385,7 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
          return false;
       }
       // Currently don't know how to multi-edit anything but attribute
+      if (!(treeColumn.getData() instanceof XViewerAttributeColumn)) return false;
       XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
       final String attrName = xCol.getAttributeTypeName();
       if (attrName == null) {
