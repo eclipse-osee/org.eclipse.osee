@@ -40,8 +40,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
       this.threadFactories.remove(key);
    }
 
-   public ThreadFactory createNewThreadFactory(String name) {
-      OseeServerThreadFactory factory = new OseeServerThreadFactory(name);
+   public ThreadFactory createNewThreadFactory(String name, int priority) {
+      OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
       this.threadFactories.put(name, factory);
       return factory;
    }

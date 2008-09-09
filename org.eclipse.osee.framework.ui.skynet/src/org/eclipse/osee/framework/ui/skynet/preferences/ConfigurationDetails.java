@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -75,7 +76,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       composite.setText("Connections");
 
-      TableViewer tableViewer = new TableViewer(composite, SWT.READ_ONLY | SWT.NO_SCROLL);
+      TableViewer tableViewer = new TableViewer(composite, SWT.READ_ONLY);
       tableViewer.setContentProvider(new ArrayContentProvider());
       Table table = tableViewer.getTable();
       table.setLayout(new GridLayout());
@@ -162,6 +163,10 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    private String getDbStatus(String dbName, String dbVersion, String url) {
       StringBuffer dbInfo = new StringBuffer();
+      if (Strings.isValid(dbName)) {
+         dbName = dbName.replaceAll("\n", "");
+         dbName = dbName.replaceAll("\r", "");
+      }
       dbInfo.append(dbName);
       dbInfo.append(" ");
       dbInfo.append(dbVersion);

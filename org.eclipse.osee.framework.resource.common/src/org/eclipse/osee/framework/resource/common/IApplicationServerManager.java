@@ -20,7 +20,7 @@ public interface IApplicationServerManager {
 
    public void shutdown();
 
-   public ThreadFactory createNewThreadFactory(String name);
+   public ThreadFactory createNewThreadFactory(String name, int priority);
 
    public boolean isSystemIdle();
 

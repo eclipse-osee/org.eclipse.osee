@@ -106,8 +106,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          exportItem.addExportListener(this);
       }
       executorService =
-            Executors.newFixedThreadPool(2,
-                  Activator.getInstance().getApplicationServerManager().createNewThreadFactory("branch.export.worker"));
+            Executors.newFixedThreadPool(2, Activator.getInstance().createNewThreadFactory("branch.export.worker"));
    }
 
    private Future<?> submitTask(int exportQueryId, Runnable runnable) {

@@ -53,7 +53,11 @@ public class Activator implements BundleActivator {
    }
 
    public ThreadFactory createNewThreadFactory(String name) {
-      return getApplicationServerManager().createNewThreadFactory(name);
+      return getApplicationServerManager().createNewThreadFactory(name, Thread.NORM_PRIORITY);
+   }
+
+   public ThreadFactory createNewThreadFactory(String name, int priority) {
+      return getApplicationServerManager().createNewThreadFactory(name, priority);
    }
 
    public IApplicationServerManager getApplicationServerManager() {
