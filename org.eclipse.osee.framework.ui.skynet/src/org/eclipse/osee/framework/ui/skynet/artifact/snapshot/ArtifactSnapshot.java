@@ -93,7 +93,7 @@ final class ArtifactSnapshot implements Serializable {
     * @return isStale <b>true</b> if the snapshot is stale, otherwise <b>false</b>
     */
    public boolean isStaleComparedTo(Artifact artifact) throws OseeCoreException, SQLException {
-      boolean snapshotGammaLessThanArts = this.getGamma() < getGamma(artifact);
+      boolean snapshotGammaLessThanArts = this.getGamma() != getGamma(artifact);
       boolean snapshotCreationAfterArtifacts = this.getCreatedOn().before(getCreationDate(artifact));
       return snapshotGammaLessThanArts || snapshotCreationAfterArtifacts;
    }
