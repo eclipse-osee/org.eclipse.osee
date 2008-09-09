@@ -57,14 +57,14 @@ final class HttpArtifactQuery {
             parameters);
    }
 
-   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical) throws Exception {
+   public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws Exception {
       List<Artifact> toReturn = null;
       ObjectPair<Integer, Integer> queryIdAndSize = executeSearch(getSearchUrl());
       if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
          try {
             toReturn =
                   ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
-                        queryIdAndSize.object2, reload, historical);
+                        queryIdAndSize.object2, reload, historical, allowDeleted);
          } finally {
             JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
          }

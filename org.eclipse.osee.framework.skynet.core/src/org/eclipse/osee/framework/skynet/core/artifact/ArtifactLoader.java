@@ -55,14 +55,25 @@ public final class ArtifactLoader {
    private static final String SELECT_RELATIONS =
          "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order, b_order, rel1.gamma_id, rationale, al1.branch_id FROM osee_join_artifact al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
+   private static final String SELECT_CURRENT_ATTRIBUTES_PREFIX =
+         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id AND txs1.tx_current ";
    private static final String SELECT_CURRENT_ATTRIBUTES =
-         "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND (txs1.tx_current=" + TxChange.CURRENT.getValue() + " OR txs1.tx_current="+ TxChange.ARTIFACT_DELETED.getValue() +") AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, al1.art_id";
+         SELECT_CURRENT_ATTRIBUTES_PREFIX + "= " + TxChange.CURRENT.getValue() + " order by al1.branch_id, al1.art_id";
+
+   private static final String SELECT_CURRENT_ATTRIBUTES_WITH_DELETED =
+         SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (" + TxChange.CURRENT.getValue() + ", " + TxChange.ARTIFACT_DELETED.getValue() + ") order by al1.branch_id, al1.art_id";
 
    private static final String SELECT_HISTORICAL_ATTRIBUTES =
          "SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs1.mod_type, txd1.transaction_id, al1.transaction_id as stripe_transaction_id FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
 
+   private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
+         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current ";
+
    private static final String SELECT_CURRENT_ARTIFACTS =
-         "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
+         SELECT_CURRENT_ARTIFACTS_PREFIX + "= " + TxChange.CURRENT.getValue();
+
+   private static final String SELECT_CURRENT_ARTIFACTS_WITH_DELETED =
+         SELECT_CURRENT_ARTIFACTS_PREFIX + "in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
    private static final String SELECT_HISTORICAL_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, mod_type, txd1.*, art_type_id, guid, human_readable_id, al1.transaction_id as stripe_transaction_id FROM osee_join_artifact al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= al1.transaction_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by al1.branch_id, art1.art_id, txs1.transaction_id desc";
@@ -81,17 +92,19 @@ public final class ArtifactLoader {
     * @param loadLevel
     * @param reload
     * @param confirmer
-    * @param transactionId TODO
+    * @param transactionId
+    * @param allowDeleted
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId) throws SQLException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId, boolean allowDeleted) throws SQLException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
       List<Artifact> artifacts =
-            loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, transactionId != null);
+            loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload, transactionId != null,
+                  allowDeleted);
       return artifacts;
    }
 
@@ -103,12 +116,14 @@ public final class ArtifactLoader {
     * @param artifactCountEstimate
     * @param loadLevel
     * @param reload
+    * @param allowDeleted TODO
     * @param historical TODO
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionId transactionId) throws SQLException {
-      return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId);
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionId transactionId, boolean allowDeleted) throws SQLException {
+      return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId,
+            allowDeleted);
    }
 
    /**
@@ -118,10 +133,11 @@ public final class ArtifactLoader {
     * @param fetchSize
     * @param reload
     * @param historical
+    * @param allowDeleted TODO
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical) throws SQLException {
+   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws SQLException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
          ConnectionHandlerStatement chStmt = null;
@@ -129,7 +145,8 @@ public final class ArtifactLoader {
             if (historical) {
                chStmt = ConnectionHandler.runPreparedQuery(fetchSize, SELECT_HISTORICAL_ARTIFACTS, queryId);
             } else {
-               chStmt = ConnectionHandler.runPreparedQuery(fetchSize, SELECT_CURRENT_ARTIFACTS, queryId);
+               String sql = allowDeleted ? SELECT_CURRENT_ARTIFACTS_WITH_DELETED : SELECT_CURRENT_ARTIFACTS;
+               chStmt = ConnectionHandler.runPreparedQuery(fetchSize, sql, queryId);
             }
 
             int previousArtId = -1;
@@ -153,7 +170,7 @@ public final class ArtifactLoader {
          }
 
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
-            loadArtifactsData(queryId, artifacts, loadLevel, reload, historical);
+            loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
          }
       } catch (OseeCoreException ex) {
          throw new SQLException(ex);
@@ -176,17 +193,19 @@ public final class ArtifactLoader {
     * @param insertParameters
     * @param reload
     * @param historical TODO
+    * @param allowDeleted TODO
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload, boolean historical) throws SQLException {
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws SQLException {
       List<Artifact> artifacts = Collections.emptyList();
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
          try {
             selectArtifacts(insertParameters);
             artifacts =
-                  loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical);
+                  loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
+                        allowDeleted);
          } finally {
             OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
@@ -316,16 +335,15 @@ public final class ArtifactLoader {
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
-         loadArtifactsData(queryId, artifacts, loadLevel, false, false);
+         loadArtifactsData(queryId, artifacts, loadLevel, false, false, artifact.isDeleted());
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
          clearQuery(queryId);
       }
-
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload, boolean historical) throws OseeCoreException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       if (reload) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
@@ -335,11 +353,11 @@ public final class ArtifactLoader {
       if (loadLevel == SHALLOW) {
          return;
       } else if (loadLevel == ATTRIBUTE) {
-         loadAttributeData(queryId, artifacts, historical);
+         loadAttributeData(queryId, artifacts, historical, allowDeleted);
       } else if (loadLevel == RELATION) {
          loadRelationData(queryId, artifacts, historical);
       } else if (loadLevel == FULL) {
-         loadAttributeData(queryId, artifacts, historical);
+         loadAttributeData(queryId, artifacts, historical, allowDeleted);
          loadRelationData(queryId, artifacts, historical);
       }
 
@@ -394,13 +412,14 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical) throws OseeDataStoreException, ArtifactDoesNotExist {
+   private static void loadAttributeData(int queryId, Collection<Artifact> artifacts, boolean historical, boolean allowDeletedArtifacts) throws OseeDataStoreException, ArtifactDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
       try {
          if (historical) {
             chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_HISTORICAL_ATTRIBUTES, queryId);
          } else {
-            chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_CURRENT_ATTRIBUTES, queryId);
+            String sql = allowDeletedArtifacts ? SELECT_CURRENT_ATTRIBUTES_WITH_DELETED : SELECT_CURRENT_ATTRIBUTES;
+            chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
          ResultSet rSet = chStmt.getRset();

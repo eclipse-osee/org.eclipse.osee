@@ -217,7 +217,8 @@ class CommitJob extends Job {
             Object[] dataList =
                   new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
                         newTransactionNumber};
-            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null);
+            // reload the committed artifacts since the commit changed them on the destination branch
+            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
             tagArtifacts(toBranch, fromBranchId, monitor);
 
             if (archiveBranch) {

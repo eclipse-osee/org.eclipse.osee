@@ -336,7 +336,7 @@ public class ArtifactQueryBuilder {
    private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
       List<Artifact> artifacts =
             ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
-                  loadLevel, reload, confirmer, null);
+                  loadLevel, reload, confirmer, null, allowDeleted);
       clearCriteria();
       return artifacts;
    }

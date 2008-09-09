@@ -435,7 +435,7 @@ public class RevisionManager implements IEventReceiver {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, historical);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, historical, true);
       }
 
       return changes;
@@ -761,7 +761,7 @@ public class RevisionManager implements IEventReceiver {
             insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
    }
 

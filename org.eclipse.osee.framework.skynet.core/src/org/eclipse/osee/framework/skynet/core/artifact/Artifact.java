@@ -1090,8 +1090,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    void setNotDeleted() {
-	   deleted = false;
-	}
+      deleted = false;
+   }
 
    public void setDirty() {
       dirty = true;

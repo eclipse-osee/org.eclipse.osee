@@ -424,7 +424,7 @@ public class ArtifactPersistenceManager {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, null, null);
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, null, null, false);
    }
 
    @Deprecated
@@ -432,7 +432,7 @@ public class ArtifactPersistenceManager {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
-            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null);
+            queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null, false);
    }
 
    @Deprecated
@@ -449,7 +449,7 @@ public class ArtifactPersistenceManager {
       queryParameters.add(transactionId.getBranch().getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
             transactionId.getBranch()), queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer,
-            transactionId);
+            transactionId, true);
    }
 
    /**

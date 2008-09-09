@@ -311,12 +311,13 @@ public class ArtifactQuery {
     * 
     * @param queryString keywords to match
     * @param nameOnly <b>true</b> searches in name attributes only; <b>false</b> includes all tagged attribute types
-    * @param includeDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
+    * @param allowDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws Exception
     */
-   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean nameOnly, boolean includeDeleted, Branch branch) throws Exception {
-      return new HttpArtifactQuery(queryString, nameOnly, includeDeleted, branch).getArtifacts(FULL, null, false, false);
+   public static List<Artifact> getArtifactsFromAttributeWithKeywords(String queryString, boolean nameOnly, boolean allowDeleted, Branch branch) throws Exception {
+      return new HttpArtifactQuery(queryString, nameOnly, allowDeleted, branch).getArtifacts(FULL, null, false, false,
+            allowDeleted);
    }
 }
