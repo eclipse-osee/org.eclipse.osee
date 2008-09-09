@@ -100,6 +100,12 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements IEventReceiver {
+   private static final String BRANCH_ATTRIBUTE_WAS_CHANGE =
+        "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
+
+   private static final String TRANSACTION_ATTRIBUTE_WAS_CHANGE =
+        "SELECT att1.attr_id, att1.value as was_value, txs1.mod_type FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE  al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id < ? AND al1.query_id = ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
+  
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND (t1.tx_current = " + TxChange.DELETED.getValue() + " OR t1.tx_current = " + TxChange.CURRENT.getValue() + ") AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
@@ -541,14 +547,14 @@ public class RevisionManager implements IEventReceiver {
             int relLinkId = resultSet.getInt("rel_link_id");
 
             if (!newAndDeletedArtifactIds.contains(aArtId) && !newAndDeletedArtifactIds.contains(bArtId)) {
+               ModificationType modificationType = ModificationType.getMod(resultSet.getInt("mod_type"));
+               String rationale = modificationType != ModificationType.DELETED? resultSet.getString("rationale") :  "";
                artIds.add(aArtId);
                artIds.add(bArtId);
-
+               
                changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, toTransactionId,
-                     fromTransactionId, ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING,
-                     bArtId, relLinkId, resultSet.getString("rationale"), resultSet.getInt("a_order"),
-                     resultSet.getInt("b_order"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")),
-                     !hasBranch));
+                     fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId, relLinkId, rationale, resultSet.getInt("a_order"),
+                     resultSet.getInt("b_order"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")), !hasBranch));
             }
          }
       } finally {
@@ -565,7 +571,7 @@ public class RevisionManager implements IEventReceiver {
     * @throws OseeDataStoreException
     */
    private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
-      Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
+      Map<Integer, Change> attributesWasValueCache = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
@@ -575,10 +581,10 @@ public class RevisionManager implements IEventReceiver {
       TransactionId toTransactionId;
       int queryId;
 
-      for (Change change : changes) {
+      for (Change change : changes) {// cache in map for performance look ups
          artModTypes.put(change.getArtId(), change.getModificationType());
       }
-
+      
       try {
          //Changes per a branch
          if (hasBranch) {
@@ -608,8 +614,8 @@ public class RevisionManager implements IEventReceiver {
             int sourceGamma = resultSet.getInt(4);
             int attrTypeId = resultSet.getInt(5);
             int artTypeId = resultSet.getInt(1);
-            int modType = resultSet.getInt(7);
             String isValue = resultSet.getString(6);
+            ModificationType modificationType = ModificationType.getMod(resultSet.getInt(7));
 
             if (artModTypes.containsKey(artId)) {
                artModType = artModTypes.get(artId);
@@ -630,45 +636,59 @@ public class RevisionManager implements IEventReceiver {
                }
                attributeChanged =
                      new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
-                           fromTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
-                           ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType, !hasBranch);
+                           fromTransactionId, modificationType != ModificationType.DELETED? ModificationType.NEW: modificationType, ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType, !hasBranch);
 
                changes.add(attributeChanged);
-               mightNeedWasValue.put(attrId, attributeChanged);
+               attributesWasValueCache.put(attrId, attributeChanged);
                artIds.add(artId);
             }
          }
 
          //Load was values for branch change reports only
-         if (hasBranch && !artIds.isEmpty()) {
+         if (!artIds.isEmpty()) {
+        	 int sqlParamter;  // Will either be a branch id or transaction id
+        	 Branch wasValueBranch;
+        	 String sql;
+        	 
+        	 if(hasBranch){
+        		wasValueBranch = sourceBranch;
+        		sql = BRANCH_ATTRIBUTE_WAS_CHANGE;
+        		sqlParamter = wasValueBranch.getBranchId();
+        	 } else{
+        		wasValueBranch = transactionId.getBranch();
+        		sql = TRANSACTION_ATTRIBUTE_WAS_CHANGE;
+        		sqlParamter = transactionId.getTransactionNumber();
+        	 }
+        	 
             queryId = ArtifactLoader.getNewQueryId();
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+            List<Object[]> datas = new LinkedList<Object[]>();
+            
             try {
-               Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-               List<Object[]> datas = new LinkedList<Object[]>();
-
                // insert into the artifact_join_table
                for (int artId : artIds) {
-                  datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
+                  datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getBranchId(), SQL3DataType.INTEGER});
                }
                ArtifactLoader.selectArtifacts(datas);
 
-               String BRANCH_ATTRIBUTE_WAS_CHANGE =
-                     "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8, osee_join_artifact t9 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id = t9.art_id AND t2.branch_id = t9.branch_id AND t9.query_id = ?";
-
                connectionHandlerStatement =
-                     ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_WAS_CHANGE, sourceBranch.getBranchId(),
-                           queryId);
+                     ConnectionHandler.runPreparedQuery(sql, sqlParamter, queryId);
                resultSet = connectionHandlerStatement.getRset();
-
+               int previousAttrId = -1;
+               
                while (resultSet.next()) {
-                  int attrId = resultSet.getInt("attr_id");
-                  String wasValue = resultSet.getString("was_value");
-
-                  if (mightNeedWasValue.containsKey(attrId) && mightNeedWasValue.get(attrId) instanceof AttributeChanged) {
-                     AttributeChanged changed = (AttributeChanged) mightNeedWasValue.get(attrId);
-                     changed.setModType(ModificationType.CHANGE);
-                     changed.setWasValue(wasValue);
-                  }
+                   int attrId = resultSet.getInt("attr_id");
+            	   if(previousAttrId != attrId){
+	                  String wasValue = resultSet.getString("was_value");
+	                  if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
+	                     AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
+	                     if(changed.getModificationType() != ModificationType.DELETED){
+	                    	 changed.setModType(ModificationType.CHANGE);
+	                     }
+	                     changed.setWasValue(wasValue);
+	                  }
+	                  previousAttrId = attrId;
+            	   }
                }
             } finally {
                ArtifactLoader.clearQuery(queryId);
