@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.Timestamp;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
@@ -27,7 +26,7 @@ public class RelationTransactionData implements ITransactionData {
          "INSERT INTO osee_define_rel_link (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order, b_order, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_txs txs2, osee_Define_rel_link at3 WHERE txs2.transaction_id = txd1.transaction_id AND txs2.gamma_id = at3.gamma_id AND txd1.branch_id = ? AND at3.rel_link_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
+         "INSERT INTO osee_join_transaction(query_id, transaction_id, gamma_id, insert_time) SELECT ?, txs1.transaction_id, txs1.gamma_id, ? FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
    private static final int PRIME_NUMBER = 7;
 
@@ -36,8 +35,6 @@ public class RelationTransactionData implements ITransactionData {
    private TransactionId transactionId;
    private ModificationType modificationType;
    private Branch branch;
-   private List<Object> dataItems = new LinkedList<Object>();
-   private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
    public RelationTransactionData(RelationLink link, int gammaId, TransactionId transactionId, ModificationType modificationType, Branch branch) {
       super();
@@ -46,41 +43,6 @@ public class RelationTransactionData implements ITransactionData {
       this.transactionId = transactionId;
       this.modificationType = modificationType;
       this.branch = branch;
-
-      populateDataList();
-   }
-
-   /**
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist
-    */
-   private void populateDataList() {
-      dataItems.add(link.getRelationId());
-      dataItems.add(link.getRelationType().getRelationTypeId());
-      dataItems.add(link.getAArtifactId());
-      dataItems.add(link.getBArtifactId());
-      dataItems.add(link.getRationale());
-      dataItems.add(link.getAOrder());
-      dataItems.add(link.getBOrder());
-      dataItems.add(gammaId);
-      dataItems.add(modificationType.getValue());
-
-      notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(link.getRelationId());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeSql()
-    */
-   public String getTransactionChangeSql() {
-      return INSERT_INTO_RELATION_TABLE;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeData()
-    */
-   public List<Object> getTransactionChangeData() {
-      return dataItems;
    }
 
    /* (non-Javadoc)
@@ -131,19 +93,21 @@ public class RelationTransactionData implements ITransactionData {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public List<Object> getPreviousTxNotCurrentData() {
-      return notCurrentDataItems;
+   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, link.getRelationId(),
+            branch.getBranchId());
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#setPreviousTxNotCurrentSql()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public String setPreviousTxNotCurrentSql() {
-      return SET_PREVIOUS_TX_NOT_CURRENT;
+   public void insertTransactionChange() throws SQLException {
+      ConnectionHandler.runPreparedUpdate(INSERT_INTO_RELATION_TABLE, link.getRelationId(),
+            link.getRelationType().getRelationTypeId(), link.getAArtifactId(), link.getBArtifactId(),
+            link.getRationale(), link.getAOrder(), link.getBOrder(), gammaId, modificationType.getValue());
    }
-
 }

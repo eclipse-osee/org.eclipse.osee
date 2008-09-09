@@ -123,6 +123,7 @@ public class JoinUtility {
    private static abstract class JoinQueryEntry {
       public final JoinItem joinItem;
       private final int queryId;
+      private final Timestamp insertTime;
       protected Set<IJoinRow> entries;
       private boolean wasStored;
       private int storedSize;
@@ -131,6 +132,7 @@ public class JoinUtility {
          this.wasStored = false;
          this.joinItem = joinItem;
          this.queryId = getNewQueryId();
+         this.insertTime = GlobalTime.GreenwichMeanTimestamp();
          this.entries = new HashSet<IJoinRow>();
          this.storedSize = -1;
       }
@@ -145,6 +147,10 @@ public class JoinUtility {
 
       public int getQueryId() {
          return queryId;
+      }
+
+      public Timestamp getInsertTime() {
+         return insertTime;
       }
 
       public void store(Connection connection) throws SQLException {
@@ -213,8 +219,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, gammaId, transactionId};
+            return new Object[] {getQueryId(), getInsertTime(), gammaId, transactionId};
          }
 
          /* (non-Javadoc)
@@ -262,8 +267,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, artId, branchId};
+            return new Object[] {getQueryId(), getInsertTime(), artId, branchId};
          }
 
          public String toString() {
@@ -309,8 +313,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, value != null ? value : SQL3DataType.VARCHAR};
+            return new Object[] {getQueryId(), getInsertTime(), value != null ? value : SQL3DataType.VARCHAR};
          }
 
          /* (non-Javadoc)
@@ -356,8 +359,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, value};
+            return new Object[] {getQueryId(), getInsertTime(), value};
          }
 
          /* (non-Javadoc)
@@ -403,8 +405,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, gammaId};
+            return new Object[] {getQueryId(), getInsertTime(), gammaId};
          }
 
          /* (non-Javadoc)
@@ -452,8 +453,7 @@ public class JoinUtility {
          }
 
          public Object[] toArray() {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-            return new Object[] {getQueryId(), insertTime, id1, id2};
+            return new Object[] {getQueryId(), getInsertTime(), id1, id2};
          }
 
          /* (non-Javadoc)

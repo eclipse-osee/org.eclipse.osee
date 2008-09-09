@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -25,7 +26,7 @@ public class AttributeTransactionData implements ITransactionData {
          "INSERT INTO osee_define_attribute (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_txs txs2, osee_define_attribute at3 WHERE txs2.transaction_id = txd1.transaction_id AND txs2.gamma_id = at3.gamma_id AND txd1.branch_id = ? AND at3.attr_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
+         "INSERT INTO osee_join_transaction(query_id, transaction_id, gamma_id, insert_time) SELECT ?, txs1.transaction_id, txs1.gamma_id, ? FROM osee_define_attribute atr1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE atr1.attr_id = ? AND atr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue();
 
    private static final int PRIME_NUMBER = 5;
 
@@ -38,8 +39,6 @@ public class AttributeTransactionData implements ITransactionData {
    private String uri;
    private ModificationType modificationType;
    private Branch branch;
-   private List<Object> dataItems = new LinkedList<Object>();
-   private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
    public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, TransactionId transactionId, String uri, ModificationType modificationType, Branch branch) {
       super();
@@ -52,38 +51,6 @@ public class AttributeTransactionData implements ITransactionData {
       this.uri = uri;
       this.modificationType = modificationType;
       this.branch = branch;
-
-      populateDataList();
-   }
-
-   /**
-    * 
-    */
-   private void populateDataList() {
-      dataItems.add(artId);
-      dataItems.add(attrId);
-      dataItems.add(attrTypeId);
-      dataItems.add(value == null ? SQL3DataType.VARCHAR : value);
-      dataItems.add(gammaId);
-      dataItems.add(uri == null ? SQL3DataType.VARCHAR : uri);
-      dataItems.add(modificationType.getValue());
-
-      notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(attrId);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeSql()
-    */
-   public String getTransactionChangeSql() {
-      return INSERT_ATTRIBUTE;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeData()
-    */
-   public List<Object> getTransactionChangeData() {
-      return dataItems;
    }
 
    /* (non-Javadoc)
@@ -145,18 +112,21 @@ public class AttributeTransactionData implements ITransactionData {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public List<Object> getPreviousTxNotCurrentData() {
-      return notCurrentDataItems;
+   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, attrId,
+            branch.getBranchId());
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#setPreviousTxNotCurrentSql()
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public String setPreviousTxNotCurrentSql() {
-      return SET_PREVIOUS_TX_NOT_CURRENT;
+   public void insertTransactionChange() throws SQLException {
+      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, artId, attrId, attrTypeId,
+            value == null ? SQL3DataType.VARCHAR : value, gammaId, uri == null ? SQL3DataType.VARCHAR : uri,
+            modificationType.getValue());
    }
 }

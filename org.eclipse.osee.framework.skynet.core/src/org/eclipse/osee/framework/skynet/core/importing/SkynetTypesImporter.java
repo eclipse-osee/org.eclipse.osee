@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -64,8 +62,6 @@ public class SkynetTypesImporter implements RowProcessor {
    private final boolean debugRows = false;
    private final XMLReader xmlReader;
 
-   private SkynetTransaction transaction;
-
    /**
     * @throws SAXException
     * @throws IOException
@@ -79,10 +75,6 @@ public class SkynetTypesImporter implements RowProcessor {
 
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);
-
-      // Start Batch
-      ConnectionHandler.startTransactionLevel(this);
-      transaction = new SkynetTransaction(branch);
    }
 
    public void extractTypesFromSheet(InputStream importFile) throws IOException, SAXException {
@@ -104,16 +96,6 @@ public class SkynetTypesImporter implements RowProcessor {
          out = new BufferedWriter(new FileWriter(OseeData.getFile("RelationSide.java")));
          out.write(relSideStr);
          out.close();
-
-         if (transaction == null) throw new RuntimeException("Batch has not been started");
-         try {
-            transaction.execute();
-            ConnectionHandler.setTransactionLevelAsSuccessful(this);
-         } finally {
-            ConnectionHandler.endTransactionLevel(this);
-            transaction = null;
-         }
-
       } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }

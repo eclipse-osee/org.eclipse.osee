@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHA
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,14 +22,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility;
+import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,9 +48,8 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  * @author Robert A. Fisher
  */
 public class SkynetTransaction {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransaction.class);
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-
+   private static final String UPDATE_TXS_NOT_CURRENT =
+         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE EXISTS (SELECT 1 FROM osee_join_transaction jt1 WHERE jt1.query_id = ? AND txs1.transaction_id = jt1.transaction_id AND txs1.gamma_id = jt1.gamma_id)";
    private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_define_tx_details WHERE transaction_id =?";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
          "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
@@ -68,7 +70,6 @@ public class SkynetTransaction {
       this(branch, SkynetAuthentication.getUser(), comment);
    }
 
-   @SuppressWarnings("unchecked")
    public SkynetTransaction(Branch branch, User userToBlame) throws SQLException {
       this(branch, userToBlame, "");
    }
@@ -114,7 +115,8 @@ public class SkynetTransaction {
          deleteTransactionDetail = true;
          transactionCleanUp();
          ConnectionHandler.requestRollback();
-         logger.log(Level.SEVERE, "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE,
+               "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
          throw ex;
       } finally {
          if (deleteTransactionDetail) {
@@ -139,7 +141,7 @@ public class SkynetTransaction {
                try {
                   HttpProcessor.delete(AttributeURL.getDeleteURL(uri));
                } catch (Exception ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -150,24 +152,31 @@ public class SkynetTransaction {
    public boolean executeTransactionDataItems() throws SQLException {
       boolean insertTransactionDataItems = transactionItems.size() > 0;
 
-      for (ITransactionData transactionData : transactionItems.keySet()) {
-         //This must be called before adding the new transaction information, because it
-         //will update the current transaction to 0.
-         ConnectionHandler.runPreparedUpdate(transactionData.setPreviousTxNotCurrentSql(),
-               transactionData.getPreviousTxNotCurrentData().toArray());
+      TransactionJoinQuery transactionJoin = JoinUtility.createTransactionJoinQuery();
+      Timestamp insertTime = transactionJoin.getInsertTime();
+      int queryId = transactionJoin.getQueryId();
+      try {
+         for (ITransactionData transactionData : transactionItems.keySet()) {
+            //This must be called before adding the new transaction information, because it
+            //will update the current transaction to 0.
+            transactionData.setPreviousTxNotCurrent(insertTime, queryId);
 
-         //Add current transaction information
-         ModificationType modType = transactionData.getModificationType();
+            //Add current transaction information
+            ModificationType modType = transactionData.getModificationType();
 
-         ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE,
-               transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
-               modType.getValue(), TxChange.getCurrent(modType).getValue());
+            ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE,
+                  transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
+                  modType.getValue(), TxChange.getCurrent(modType).getValue());
 
-         if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-            //Add specific object values to the their tables
-            ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
-                  transactionData.getTransactionChangeData().toArray());
+            if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+               //Add specific object values to the their tables
+               transactionData.insertTransactionChange();
+            }
          }
+
+         ConnectionHandler.runPreparedUpdate(UPDATE_TXS_NOT_CURRENT, queryId);
+      } finally {
+         transactionJoin.delete();
       }
       return insertTransactionDataItems;
    }
@@ -216,7 +225,7 @@ public class SkynetTransaction {
     */
    public void kickEvents() {
       if (localEvents != null) {
-         eventManager.kick(new LocalTransactionEvent(localEvents, this));
+         SkynetEventManager.getInstance().kick(new LocalTransactionEvent(localEvents, this));
          localEvents.clear();
       }
 
