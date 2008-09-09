@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.jini;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
@@ -44,11 +46,10 @@ public class JiniLookupPlatformRunnable implements IApplication {
       return new File(url.getFile()).getAbsolutePath();
    }
 
-   private File getJiniManifest() throws IOException {
+   private InputStream getJiniManifest() throws IOException {
       Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.jini");
       URL url = bundle.getEntry("META-INF/MANIFEST.MF");
-      url = FileLocator.resolve(url);
-      return new File(url.getFile());
+      return url.openStream();
    }
 
    /*

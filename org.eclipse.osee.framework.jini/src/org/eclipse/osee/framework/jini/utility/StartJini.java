@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.jini.utility;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
@@ -55,7 +57,7 @@ public class StartJini extends JiniService {
 
    private List<Process> jiniProcesses;
 
-   public StartJini(String port, boolean nohup, boolean browser, String jiniHome, File manifestFile) {
+   public StartJini(String port, boolean nohup, boolean browser, String jiniHome, InputStream manifestFile) {
       super();
 
       jiniProcesses = new ArrayList<Process>();
@@ -167,26 +169,32 @@ public class StartJini extends JiniService {
       return host;
    }
 
-   private static File getManifestFile(String[] args) {
-      File toReturn = null;
+   private static InputStream getManifestFile(String[] args) {
+      InputStream toReturn = null;
       CmdLineArgs cmdLineArgs = new CmdLineArgs(args);
       String manifestFileString = cmdLineArgs.get("-manifest");
 
       if (manifestFileString == null || manifestFileString.length() == 0) {
          manifestFileString = "META-INF/MANIFEST.MF";
       }
-
-      toReturn = new File(manifestFileString);
-      if (toReturn == null || !toReturn.exists()) {
+      File file = new File(manifestFileString);
+      
+      if (file == null || !file.exists()) {
          logger.log(Level.SEVERE, "The Specified Manifest File does not exist!!");
          System.exit(1);
       }
+      try {
+		toReturn = new FileInputStream(file);
+	} catch (FileNotFoundException ex) {
+		logger.log(Level.SEVERE, "The Specified Manifest File can not be opened!!",ex);
+        System.exit(1);
+	}
       return toReturn;
    }
 
-   private static Dictionary<Object, Object> getHeaders(File manifestFile) {
+   private static Dictionary<Object, Object> getHeaders(InputStream manifestFile) {
       try {
-         return NonEclipseManifestHeader.parseManifest(new FileInputStream(manifestFile));
+         return NonEclipseManifestHeader.parseManifest(manifestFile);
       } catch (Exception ex) {
          ex.printStackTrace();
       }
@@ -196,7 +204,7 @@ public class StartJini extends JiniService {
    public static void main(String[] args) {
       System.setProperty(OseeProperties.OSEE_CONFIG_FACTORY, NonEclipseConfigurationFactory.class.getName());
       logger.log(Level.INFO, "num args + " + args.length);
-      File manifestFile = getManifestFile(args);
+      InputStream manifestFile = getManifestFile(args);
       if (args.length == 1) {
          new StartJini(args[0], false, false, null, manifestFile);
       } else if (args.length > 1) {
