@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.dbinit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -119,7 +120,9 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
       Bundle bundle = Platform.getBundle(bundleName);
       URL url = bundle.getResource(exchangeFile);
       url = FileLocator.toFileURL(url);
-      File toReturn = new File(url.toURI());
+      String urlValue = url.toString();
+      URI uri = new URI(urlValue.replaceAll(" ", "%20"));
+      File toReturn = new File(uri);
       if (toReturn.exists() != true) {
          throw new FileNotFoundException(String.format("Branch data file cannot be found [%s]", exchangeFile));
       }

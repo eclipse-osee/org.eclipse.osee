@@ -49,6 +49,7 @@ public class ExchangeProvider implements IResourceProvider {
          builder.append(rawPath);
          toReturn = new File(builder.toString()).toURI();
       } else {
+         rawPath = rawPath.replaceAll(" ", "%20");
          toReturn = new URI(rawPath);
       }
       return toReturn;
