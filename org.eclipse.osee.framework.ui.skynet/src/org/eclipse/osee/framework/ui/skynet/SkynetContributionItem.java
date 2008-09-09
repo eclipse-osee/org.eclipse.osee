@@ -56,19 +56,27 @@ public abstract class SkynetContributionItem extends StatusLineContributionItem 
    }
 
    protected String getEnabledToolTip() {
-      return disabledToolTip;
+      return enabledToolTip;
    }
 
    protected String getDisabledToolTip() {
-      return enabledToolTip;
+      return disabledToolTip;
+   }
+
+   protected Image getEnabledImage() {
+      return enabled;
+   }
+
+   protected Image getDisabledImage() {
+      return disabled;
    }
 
    protected void updateStatus(boolean active) {
       if (active) {
-         setImage(enabled);
+         setImage(getEnabledImage());
          setToolTipText(getEnabledToolTip());
       } else {
-         setImage(disabled);
+         setImage(getDisabledImage());
          setToolTipText(getDisabledToolTip());
       }
    }
