@@ -14,6 +14,8 @@ package org.eclipse.osee.framework.skynet.core.test.production;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -42,13 +44,15 @@ public class ConflictTestManager {
    private static final String DEST_BRANCH = "Conflict_Test_Destination_Branch";
    private static Branch sourceBranch;
    private static Branch destBranch;
-   private static final int NUMBER_OF_ARTIFACTS = 10;
+   private static final int NUMBER_OF_ARTIFACTS = 20;
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private static int NUMBER_OF_CONFLICTS = 0;
    private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 0;
+   public static int DELETION_TEST_QUERY = 1;
+   public static int DELETION_ATTRIBUTE_TEST_QUERY = 2;
 
    protected static class AttributeValue {
       protected String attributeName;
@@ -78,11 +82,15 @@ public class ConflictTestManager {
       protected String artifactType;
       protected boolean sourceDelete;
       protected boolean destDelete;
+      protected int rootArtifact;
+      protected int queryNumber;
 
-      protected void setValues(String artifactType, boolean sourceDelete, boolean destDelete) {
+      protected void setValues(String artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
          this.artifactType = artifactType;
          this.sourceDelete = sourceDelete;
          this.destDelete = destDelete;
+         this.rootArtifact = rootArtifact;
+         this.queryNumber = queryNumber;
       }
    }
 
@@ -106,7 +114,12 @@ public class ConflictTestManager {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
          //               ConfigurationPersistenceManager.getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
-         destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
+         if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
+            destArtifacts[i] =
+                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(artType, "Test Artifact Number " + i);
+         } else {
+            destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
+         }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
             destArtifacts[i].persistAttributes();
@@ -329,10 +342,10 @@ public class ConflictTestManager {
          conflictDefs[i] = new ConflictDefinition();
       }
 
-      conflictDefs[0].setValues("Software Requirement", false, false);
-      conflictDefs[1].setValues("Software Requirement", false, false);
+      conflictDefs[0].setValues("Software Requirement", false, false, 0, 0);
+      conflictDefs[1].setValues("Software Requirement", false, false, 0, 0);
 
-      conflictDefs[2].setValues("Software Requirement", false, false);
+      conflictDefs[2].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
             StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("CSCI", "Sights", "Navigation", "Source", StringAttribute.class));
@@ -341,7 +354,7 @@ public class ConflictTestManager {
       conflictDefs[2].values.add(new AttributeValue("Name", "Test Artifact Number 2 - Source",
             "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
-      conflictDefs[3].setValues("Software Requirement", true, false);
+      conflictDefs[3].setValues("Software Requirement", true, false, 0, 0);
       conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
             StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
@@ -350,9 +363,9 @@ public class ConflictTestManager {
       conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
             StringAttribute.class));
 
-      conflictDefs[4].setValues("Software Requirement", false, false);
+      conflictDefs[4].setValues("Software Requirement", false, false, 0, 0);
 
-      conflictDefs[5].setValues("Software Requirement", false, true);
+      conflictDefs[5].setValues("Software Requirement", false, true, 0, 0);
       conflictDefs[5].values.add(new AttributeValue("Safety Criticality", "1", "4", "Source", StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Destination",
             StringAttribute.class));
@@ -360,16 +373,73 @@ public class ConflictTestManager {
       conflictDefs[5].values.add(new AttributeValue("Name", "Test Artifact Number 5 - Source", null, "Source",
             StringAttribute.class));
 
-      conflictDefs[6].setValues("Software Requirement", false, false);
+      conflictDefs[6].setValues("Software Requirement", false, false, 0, 0);
 
-      conflictDefs[7].setValues("Version", false, false);
+      conflictDefs[7].setValues("Version", false, false, 0, 0);
 
-      conflictDefs[8].setValues("Version", false, false);
+      conflictDefs[8].setValues("Version", false, false, 0, 0);
       conflictDefs[8].values.add(new AttributeValue("ats.Release Date", "2000", "50000000", "Source",
             DateAttribute.class));
 
-      conflictDefs[9].setValues("Version", false, false);
+      conflictDefs[9].setValues("Version", false, false, 0, 0);
 
+      conflictDefs[10].setValues("Software Requirement", false, false, 0, DELETION_TEST_QUERY);
+      conflictDefs[10].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[10].values.add(new AttributeValue("Name", "Test Artifact Number 10 - Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[11].setValues("Software Requirement", false, false, 10, 0);
+      conflictDefs[11].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[11].values.add(new AttributeValue("Name", "Test Artifact Number 11 - Child", null, "Source",
+            StringAttribute.class));
+      conflictDefs[12].setValues("Software Requirement", false, false, 10, 0);
+      conflictDefs[12].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[12].values.add(new AttributeValue("Name", "Test Artifact Number 12 - Child/Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[13].setValues("Software Requirement", false, false, 12, 0);
+      conflictDefs[13].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[13].values.add(new AttributeValue("Name", "Test Artifact Number 13 - Child", null, "Source",
+            StringAttribute.class));
+
+      conflictDefs[14].setValues("Software Requirement", false, false, 0, 0);
+      conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
+      conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[15].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
+            StringAttribute.class));
+      conflictDefs[16].setValues("Software Requirement", false, false, 14, 0);
+      conflictDefs[16].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[16].values.add(new AttributeValue("Name", "Test Artifact Number 16 - Child/Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[17].setValues("Software Requirement", false, false, 15, 0);
+      conflictDefs[17].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[17].values.add(new AttributeValue("Name", "Test Artifact Number 17 - Child", null, "Source",
+            StringAttribute.class));
+
+      conflictDefs[18].setValues("Software Requirement", false, false, 0, 0);
+      conflictDefs[18].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[18].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[19].setValues("Software Requirement", false, false, 18, DELETION_ATTRIBUTE_TEST_QUERY);
+      conflictDefs[19].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[19].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
+            StringAttribute.class));
+
+   }
+
+   public static List<Artifact> getArtifacts(boolean sourceBranch, int queryId) {
+      List<Artifact> queriedArtifacts = new LinkedList<Artifact>();
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         if (conflictDefs[i].queryNumber == queryId) {
+            if (sourceBranch) {
+               queriedArtifacts.add(sourceArtifacts[i]);
+            } else {
+               queriedArtifacts.add(destArtifacts[i]);
+            }
+         }
+      }
+      return queriedArtifacts;
    }
 
    @SuppressWarnings( {"unchecked"})
@@ -405,7 +475,7 @@ public class ConflictTestManager {
       if (clas.equals(CompressedContentAttribute.class)) {
          return value;
       }
-
       return value;
    }
+
 }

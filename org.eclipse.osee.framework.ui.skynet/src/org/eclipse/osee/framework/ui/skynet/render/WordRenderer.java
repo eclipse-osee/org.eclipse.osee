@@ -144,7 +144,11 @@ public class WordRenderer extends FileRenderer {
                }
                monitor.setTaskName("Running Diff Script");
                generator.finish(baseFileStr + "/compareDocs.vbs");
-               createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
+               if (fileNames.size() == 1) {
+                  getAssociatedProgram(null).execute(fileNames.get(0));
+               } else {
+                  createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
+               }
             } catch (Exception ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }

@@ -1,7 +1,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -17,8 +17,8 @@ import org.osgi.framework.Bundle;
  * @author Jeff C. Phillips
  */
 public class DatabaseHealth extends AbstractBlam {
-   private Map<String, DatabaseHealthTask> dbFix = new HashMap<String, DatabaseHealthTask>();
-   private Map<String, DatabaseHealthTask> dbVerify = new HashMap<String, DatabaseHealthTask>();
+   private Map<String, DatabaseHealthTask> dbFix = new TreeMap<String, DatabaseHealthTask>();
+   private Map<String, DatabaseHealthTask> dbVerify = new TreeMap<String, DatabaseHealthTask>();
    private static final String SHOW_DETAILS_PROMPT = "Show Details of Operations";
 
    public DatabaseHealth() {
