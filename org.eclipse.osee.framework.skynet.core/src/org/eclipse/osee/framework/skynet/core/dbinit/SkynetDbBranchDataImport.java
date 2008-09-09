@@ -118,8 +118,8 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
       }
       Bundle bundle = Platform.getBundle(bundleName);
       URL url = bundle.getResource(exchangeFile);
-      url = FileLocator.resolve(url);
-      File toReturn = new File(url.getFile());
+      url = FileLocator.toFileURL(url);
+      File toReturn = new File(url.toURI());
       if (toReturn.exists() != true) {
          throw new FileNotFoundException(String.format("Branch data file cannot be found [%s]", exchangeFile));
       }
