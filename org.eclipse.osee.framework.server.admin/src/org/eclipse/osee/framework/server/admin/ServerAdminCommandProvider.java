@@ -40,6 +40,10 @@ public class ServerAdminCommandProvider implements CommandProvider {
       AdminCommands.getInstance().getServerStatus(ci);
    }
 
+   public void _server_process_requests(CommandInterpreter ci) {
+      AdminCommands.getInstance().setServletRequestProcessing(ci);
+   }
+
    public void _configini(CommandInterpreter ci) {
       StringBuilder sb = new StringBuilder();
       sb.append("eclipse.ignoreApp=true\n");
@@ -68,6 +72,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Server Admin Commands---\n");
       sb.append("        server_status - displays server status\n");
+      sb.append("        server_process_requests [true | false]- command servlets to accept/reject requests\n");
       //      sb.append("        native_content_fix - converts some data\n");
       //      sb.append("        native_content_fix_stop - stop the conversion\n");
       //      sb.append("        convert - converts some data\n");
