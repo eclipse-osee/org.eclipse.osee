@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactTypeAndDescriptiveLabelProvider implements ILabelProvider {
 
    public Image getImage(Object arg0) {
-      return null;
+      return ((Artifact) arg0).getImage();
    }
 
    public String getText(Object arg0) {

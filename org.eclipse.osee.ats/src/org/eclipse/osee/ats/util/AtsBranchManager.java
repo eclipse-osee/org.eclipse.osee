@@ -525,11 +525,14 @@ public class AtsBranchManager {
       return Result.TrueResult;
    }
 
-   public ArtifactChange getArtifactChange(String artifactName) throws OseeCoreException, SQLException {
+   public List<ArtifactChange> getArtifactChange(String artifactName) throws OseeCoreException, SQLException {
+      List<ArtifactChange> changes = new ArrayList<ArtifactChange>();
       for (ArtifactChange artChange : getArtifactChanges()) {
-         if (artChange.getName().equals(artifactName)) return artChange;
+         if (artChange.getName().equals(artifactName)) {
+            changes.add(artChange);
+         }
       }
-      return null;
+      return changes;
    }
 
    public Collection<ArtifactChange> getArtifactChanges() throws OseeCoreException, SQLException {
