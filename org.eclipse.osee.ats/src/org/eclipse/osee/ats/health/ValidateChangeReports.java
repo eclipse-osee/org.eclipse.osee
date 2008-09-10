@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -42,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeSummary;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -119,8 +122,9 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      //      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-           for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+//            for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+
+            	           for (String artifactTypeName : new String[] {"Lba V11 REU Req Team Workflow"}) {
 //      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          StringBuffer sbByType = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
@@ -140,13 +144,13 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
                   Collection<Change> changes = null;
                   if (teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) {
                      changes =
-                           RevisionManager.getInstance().getChangesPerTransaction(
+                           ChangeManager.getInstance().getChangesPerTransaction(
                                  teamArt.getSmaMgr().getBranchMgr().getTransactionId());
                      foundChangeReport = true;
 
                   } else if (teamArt.getSmaMgr().getBranchMgr().isWorkingBranch()) {
                      changes =
-                           RevisionManager.getInstance().getChangesPerBranch(
+                           ChangeManager.getInstance().getChangesPerBranch(
                                  teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());
                      foundChangeReport = true;
                      loadNewArtIdsPerBranch(teamArt.getSmaMgr().getBranchMgr().getWorkingBranch());

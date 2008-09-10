@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -281,10 +282,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
 
             try {
                if (hasBranch) {
-                  changes = RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
+                  changes = ChangeManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
                } else {
                   changes =
-                        RevisionManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
+                        ChangeManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {

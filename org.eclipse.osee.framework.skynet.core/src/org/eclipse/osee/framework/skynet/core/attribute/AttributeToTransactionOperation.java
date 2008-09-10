@@ -80,22 +80,20 @@ public class AttributeToTransactionOperation {
    }
 
    private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
-      ArtifactModType modType = null;
       ModificationType attrModType = null;
       if (attribute.isInDatastore()) {
          attribute.setGammaId(SequenceManager.getNextGammaId());
 
-         modType = ArtifactModType.Changed;
          attrModType = ModificationType.CHANGE;
       } else {
          createNewAttributeMemo(attribute);
          attrModType = ModificationType.NEW;
-         modType = ArtifactModType.Added;
+
       }
       attribute.getAttributeDataProvider().persist();
       DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
       transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction, attrModType));
-      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, modType, artifact));
+      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Changed, artifact));
    }
 
    private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
