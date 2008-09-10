@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
@@ -470,7 +470,7 @@ public class AtsBranchManager {
             if (result.isFalse()) return result;
          }
       }
-      ConflictManager conflictManager = new ConflictManager(branch.getParentBranch(), branch);
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
       if (!popup) {
          BranchPersistenceManager.commitBranch(branch, true, true);
       } else if (conflictManager.getRemainingConflicts().size() > 0) {
