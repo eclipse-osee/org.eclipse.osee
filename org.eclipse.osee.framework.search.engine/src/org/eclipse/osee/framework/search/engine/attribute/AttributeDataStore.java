@@ -16,8 +16,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.utility.DatabaseUtil;
 import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
@@ -32,8 +34,12 @@ public class AttributeDataStore {
 
    private static final String RESTRICT_BRANCH = " AND txd1.branch_id = ?";
 
-   private static final String SELECT_ATTRIBUTE_BY_TAG =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee.osee_join_search_tags jq1, osee_search_tags ost1, osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype WHERE jq1.query_id = ? AND jq1.coded_tag_id = ost1.coded_tag_id AND ost1.gamma_id = attr1.gamma_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id";
+   private static final String SEARCH_TAG_TABLE = "osee_search_tags ost%s";
+   private static final String SELECT_ATTRIBUTE_BY_TAG_TEMPLATE =
+         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype, %s WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id AND %s";
+
+   //   private static final String SELECT_ATTRIBUTE_BY_TAG =
+   //         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee.osee_join_search_tags jq1, osee_search_tags ost1, osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype WHERE jq1.query_id = ? AND jq1.coded_tag_id = ost1.coded_tag_id AND ost1.gamma_id = attr1.gamma_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id";
 
    private static final String GET_TAGGABLE_SQL_BODY =
          " FROM osee_define_attribute attr1, osee_define_attribute_type type1,  osee_define_txs txs1, osee_define_tx_details txd1, osee_define_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
@@ -60,8 +66,27 @@ public class AttributeDataStore {
       return attributeData;
    }
 
-   private static String getQuery(final int branchId, final Options options) {
-      StringBuilder toReturn = new StringBuilder(SELECT_ATTRIBUTE_BY_TAG);
+   private static String getAttributeTagQuery(int numberOfTags) {
+      List<String> tables = new ArrayList<String>();
+      StringBuilder postBuffer = new StringBuilder();
+      for (int index = 0; index < numberOfTags; index++) {
+         tables.add(String.format(SEARCH_TAG_TABLE, index));
+
+         if (index == 0) {
+            postBuffer.append(" ost0.gamma_id = attr1.gamma_id");
+         }
+         postBuffer.append(String.format(" and ost%s.coded_tag_id = ?", index));
+
+         if (index > 0) {
+            postBuffer.append(String.format(" and ost%s.gamma_id = ost%s.gamma_id", index - 1, index));
+         }
+      }
+      return String.format(SELECT_ATTRIBUTE_BY_TAG_TEMPLATE, StringFormat.listToCommaSeparatedString(tables),
+            postBuffer.toString());
+   }
+
+   private static String getQuery(final int branchId, final Options options, final int numberOfTags) {
+      StringBuilder toReturn = new StringBuilder(getAttributeTagQuery(numberOfTags));
       if (branchId > -1) {
          toReturn.append(RESTRICT_BRANCH);
       }
@@ -79,14 +104,13 @@ public class AttributeDataStore {
       return toReturn.toString();
    }
 
-   public static Set<AttributeData> getAttributesByTags(final Connection connection, final int branchId, final Options options, final int queryId) throws Exception {
+   public static Set<AttributeData> getAttributesByTags(final Connection connection, final int branchId, final Options options, final Collection<Long> tagData) throws Exception {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
-      String sqlQuery = getQuery(branchId, options);
-      int dataSize = branchId > -1 ? 2 : 1;
-      Object[] data = new Object[dataSize];
-      data[0] = queryId;
+      String sqlQuery = getQuery(branchId, options, tagData.size());
+      List<Object> params = new ArrayList<Object>();
+      params.addAll(tagData);
       if (branchId > -1) {
-         data[1] = branchId;
+         params.add(branchId);
       }
       DatabaseUtil.executeQuery(connection, sqlQuery, new IRowProcessor() {
          @Override
@@ -95,7 +119,7 @@ public class AttributeDataStore {
                   resultSet.getInt("branch_id"), resultSet.getString("value"), resultSet.getString("uri"),
                   resultSet.getString("tagger_id")));
          }
-      }, data);
+      }, params.toArray(new Object[params.size()]));
       return toReturn;
    }
 
