@@ -73,11 +73,8 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -96,7 +93,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.export.ExportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -1045,7 +1041,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private String addOpenAssociatedArtifactCommand(MenuManager menuManager) {
       CommandContributionItem setBranchShortNameCommand =
             Commands.getLocalCommandContribution(getSite(), "openAssociatedArtifactCommand",
-                  "Open Branch Associated Artifact", null, null, null, null, null, null);
+                  "Open Associated ATS Action", null, null, null, null, null, null);
       menuManager.add(setBranchShortNameCommand);
       return setBranchShortNameCommand.getId();
    }
