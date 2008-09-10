@@ -43,6 +43,7 @@ import net.jini.lookup.ServiceDiscoveryManager;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 
 public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryListener {
 
@@ -81,7 +82,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       noFilterServiceListeners = Collections.synchronizedSet(new HashSet<IServiceLookupListener>());
       locators = Collections.synchronizedSet(new HashSet<String>());
 
-      Thread.currentThread().setContextClassLoader(this.loader);
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       System.setSecurityManager(new RelaxedSecurity());
       registerWithJINI();
    }
@@ -175,7 +176,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
       }
 
       public void run() {
-         Thread.currentThread().setContextClassLoader(ServiceDataStore.this.loader);
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          System.setSecurityManager(new RelaxedSecurity());
          if (lookupLocations != null) {
             List<LookupLocator> locatorList = new ArrayList<LookupLocator>();
@@ -276,7 +277,7 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
          everythingCache = serviceDiscoveryManager.createLookupCache(null, null, this);
       } else {
          if (lookupCaches.get(classType) == null) {
-            Thread.currentThread().setContextClassLoader(this.loader);
+            Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
             lookupCaches.put(classType, serviceDiscoveryManager.createLookupCache(new ServiceTemplate(null,
                   new Class[] {classType}, null), null, this));
          }
@@ -666,11 +667,11 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    private void addLookupLocators(Collection<String> lookupList, boolean addToLocators) {
       String value = System.getProperty("OseeJiniDisableForcedReggieSearch", "false");
       if (!value.equalsIgnoreCase("true")) {
-         Thread.currentThread().setContextClassLoader(this.loader);
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          if (addToLocators) locators.addAll(lookupList);
 
          Thread thread = new LookupList(lookupList);
-         thread.setContextClassLoader(this.loader);
+         thread.setContextClassLoader(ExportClassLoader.getInstance());
          thread.start();
       }
    }

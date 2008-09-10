@@ -17,9 +17,17 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class ExportClassLoader extends ClassLoader {
 
+   private static ExportClassLoader exportClassloaderInstance;
    private final PackageAdmin packageAdmin;
    private final HashMap<String, Bundle> cache = new HashMap<String, Bundle>(1024);
 
+   public static ExportClassLoader getInstance(){
+	   if(exportClassloaderInstance == null){
+		   exportClassloaderInstance = new ExportClassLoader();
+	   }
+	   return exportClassloaderInstance;
+   }
+   
    public ExportClassLoader(PackageAdmin packageAdmin) {
       super(ExportClassLoader.class.getClassLoader());
       this.packageAdmin = packageAdmin;
