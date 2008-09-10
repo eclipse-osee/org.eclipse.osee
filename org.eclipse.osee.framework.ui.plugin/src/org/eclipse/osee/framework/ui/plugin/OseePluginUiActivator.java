@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.plugin;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
@@ -52,35 +51,41 @@ public class OseePluginUiActivator extends OseeUiActivator {
    public void start(BundleContext context) throws Exception {
       super.start(context);
       OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
-      PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener(){
 
-		@Override
-		public void postShutdown(IWorkbench workbench) {
-		}
+      if (PlatformUI.isWorkbenchRunning()) {
+         IWorkbench workbench = PlatformUI.getWorkbench();
+         workbench.addWorkbenchListener(new IWorkbenchListener() {
 
-		@Override
-		public boolean preShutdown(IWorkbench workbench, boolean forced) {
-			try{
-				if(Lib.isWindows()){
-					String clearCache = OseeInfo.getValue("clear_cache");
-					if(Boolean.parseBoolean(clearCache)){
-						Location location = Platform.getInstallLocation();
-						URL url = FileLocator.toFileURL(location.getURL());
-						File file = new File(url.getFile());
-						File cache = new File(new File(new File(file, "p2"), "org.eclipse.equinox.p2.metadata.repository"), "cache");
-						File[] files = cache.listFiles();
-						for(File toDelete:files){
-							toDelete.delete();
-						}
-					}
-				}
-			} catch (Throwable th){
-				
-			}
-			return true;
-		}
-    	  
-      });
+            @Override
+            public void postShutdown(IWorkbench workbench) {
+            }
+
+            @Override
+            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+               try {
+                  if (Lib.isWindows()) {
+                     String clearCache = OseeInfo.getValue("clear_cache");
+                     if (Boolean.parseBoolean(clearCache)) {
+                        Location location = Platform.getInstallLocation();
+                        URL url = FileLocator.toFileURL(location.getURL());
+                        File file = new File(url.getFile());
+                        File cache =
+                              new File(new File(new File(file, "p2"), "org.eclipse.equinox.p2.metadata.repository"),
+                                    "cache");
+                        File[] files = cache.listFiles();
+                        for (File toDelete : files) {
+                           toDelete.delete();
+                        }
+                     }
+                  }
+               } catch (Throwable th) {
+
+               }
+               return true;
+            }
+
+         });
+      }
    }
 
    /*
