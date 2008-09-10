@@ -85,6 +85,8 @@ public class CustomizeManager {
             String name = storedCol.getName();
             if (name.equals("Impacted Items")) {
                resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn("ats.column.actionableItems");
+            } else if (name.equals("State Percent")) {
+               resolvedCol = xViewer.getXViewerFactory().getDefaultXViewerColumn("ats.column.statePercentComplete");
             }
          }
          // if not found, may have been stored without namespace; try to resolve for backward compatibility
