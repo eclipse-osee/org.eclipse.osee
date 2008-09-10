@@ -28,13 +28,13 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  */
 public abstract class TransactionEvent extends Event {
 
-   private Collection<Event> localEvents;
+   private final Collection<Event> localEvents;
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private boolean processedLookups = false;
-   private Set<Integer> modified = new HashSet<Integer>();
-   private Set<Integer> deleted = new HashSet<Integer>();
-   private Set<Integer> purged = new HashSet<Integer>();
-   private Set<Integer> relChanged = new HashSet<Integer>();
+   private final Set<Integer> modified = new HashSet<Integer>();
+   private final Set<Integer> deleted = new HashSet<Integer>();
+   private final Set<Integer> purged = new HashSet<Integer>();
+   private final Set<Integer> relChanged = new HashSet<Integer>();
    public enum TransactionChangeType {
       Modified, Deleted, Purged, RelChanged
    };
@@ -124,7 +124,6 @@ public abstract class TransactionEvent extends Event {
       private boolean hasEvent;
       private boolean modified;
       private boolean relChange;
-      private boolean artifactVersionIncremented;
 
       /**
        * @return true if any event was found
@@ -187,18 +186,5 @@ public abstract class TransactionEvent extends Event {
          this.deleted = deleted;
       }
 
-      /**
-       * @return the artifactVersionIncremented
-       */
-      public boolean isArtifactVersionIncremented() {
-         return artifactVersionIncremented;
-      }
-
-      /**
-       * @param artifactVersionIncremented the artifactVersionIncremented to set
-       */
-      public void setArtifactVersionIncremented(boolean artifactVersionIncremented) {
-         this.artifactVersionIncremented = artifactVersionIncremented;
-      }
    }
 }
