@@ -47,9 +47,9 @@ import org.eclipse.swt.widgets.Group;
 public class ServicesArea {
 
    private final SMAManager smaMgr;
-   private List<WorkPageService> sideBarServices = new ArrayList<WorkPageService>();
-   private List<WorkPageService> toolBarServices = new ArrayList<WorkPageService>();
-   private ArrayList<Group> groups = new ArrayList<Group>();
+   private final List<WorkPageService> sideBarServices = new ArrayList<WorkPageService>();
+   private final List<WorkPageService> toolBarServices = new ArrayList<WorkPageService>();
+   private final ArrayList<Group> groups = new ArrayList<Group>();
    public static String STATISTIC_CATEGORY = "Statistics";
    public static String OPERATION_CATEGORY = "Operation";
    public static String DEBUG_PAGE_CATEGORY = "Debug";
@@ -88,7 +88,8 @@ public class ServicesArea {
          sideBarServices.add(new BlockingReview(smaMgr));
          // Add page configured branchable state items
          if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
-            if (page.isAllowCreateBranch()) sideBarServices.add(new CreateWorkingBranchService(smaMgr));
+            if (page.isAllowCreateBranch()) sideBarServices.add(new CreateWorkingBranchService(
+                  smaMgr));
             sideBarServices.add(new ShowWorkingBranchService(smaMgr));
             sideBarServices.add(new SetAsDefaultBranchService(smaMgr));
             sideBarServices.add(new ShowChangeReportService(smaMgr));
@@ -111,8 +112,7 @@ public class ServicesArea {
    public void loadToolbarServices(AtsWorkPage atsWorkPage) throws OseeCoreException, SQLException {
       if (toolBarServices.size() == 0) {
          // Toolbar Services
-         // Add page configured branchable state items
-         if (atsWorkPage != null && (smaMgr.getBranchMgr().isCommittedBranch() || smaMgr.getBranchMgr().isWorkingBranch())) {
+         if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranch() || smaMgr.getBranchMgr().isWorkingBranch())) {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
             toolBarServices.add(new ShowChangeReportToolbarServiceOld(smaMgr));
@@ -169,7 +169,8 @@ public class ServicesArea {
       // Determine services that are in this category and confirm that they should be displayed
       List<WorkPageService> displayServices = new ArrayList<WorkPageService>();
       for (WorkPageService service : sideBarServices)
-         if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(category) && service.isShowSidebarService(page)) displayServices.add(service);
+         if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(
+               category) && service.isShowSidebarService(page)) displayServices.add(service);
       if (displayServices.size() == 0) return;
 
       Group workComp = new Group(comp, SWT.NONE);
@@ -180,7 +181,8 @@ public class ServicesArea {
       layout.marginWidth = layout.marginHeight = 7;
 
       workComp.setLayout(layout);
-      workComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
+      workComp.setLayoutData(new GridData(
+            GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
       toolkit.paintBordersFor(workComp);
 
       for (WorkPageService service : displayServices)

@@ -118,26 +118,32 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                storeScrollLocation();
             }
          });
+
          scrolledForm.setText(getEditorInput().getName());
          fillBody(managedForm);
-         managedForm.refresh();
-
-         ServicesArea toolbarArea = new ServicesArea(smaMgr);
-         toolbarArea.createToolbarServices(currentAtsWorkPage,
-               scrolledForm.getToolBarManager());
-
-         OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this,
-               AtsPlugin.getInstance(), scrolledForm.getToolBarManager(),
-               SMAEditor.EDITOR_ID, "ATS Editor");
+         refreshToolbar();
 
          if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(
                scrolledForm, smaMgr.getSma().getHelpContext());
 
-         scrolledForm.updateToolBar();
-         // restoreScrollLocation();
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
       }
+   }
+
+   private void refreshToolbar() throws OseeCoreException, SQLException {
+      if (toolbarArea != null) {
+         toolbarArea.dispose();
+         scrolledForm.getToolBarManager().removeAll();
+      }
+      toolbarArea = new ServicesArea(smaMgr);
+      toolbarArea.createToolbarServices(currentAtsWorkPage,
+            scrolledForm.getToolBarManager());
+
+      OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
+            scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
+
+      scrolledForm.updateToolBar();
    }
 
    public Result isXWidgetDirty() throws OseeCoreException, SQLException {
@@ -166,6 +172,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public void dispose() {
       for (SMAWorkFlowSection section : sections)
          section.dispose();
+      toolbarArea.dispose();
       toolkit.dispose();
    }
 
@@ -197,6 +204,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       createBody(body);
    }
+
+   private ServicesArea toolbarArea;
 
    private void createBody(Composite body) throws OseeCoreException, SQLException {
       atsBody = toolkit.createComposite(body);
@@ -266,6 +275,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
       }
+
+      managedForm.refresh();
+
    }
    private Control control = null;
 
@@ -594,11 +606,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public void refresh() throws OseeCoreException, SQLException {
       if (smaMgr.getEditor() != null && !smaMgr.isInTransition()) {
-         for (SMAWorkFlowSection section : sections)
+         for (SMAWorkFlowSection section : sections) {
             section.dispose();
+         }
          atsBody.dispose();
          createBody(body);
+         refreshToolbar();
       }
    }
-
 }

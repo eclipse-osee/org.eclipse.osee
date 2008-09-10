@@ -15,15 +15,12 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -114,9 +111,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IEvent
       boolean enabled = false;
       try {
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            Pair<TransactionId, TransactionId> transactionToFrom =
-                  TransactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getWorkingBranch());
-            enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
+            enabled = true;
          } else {
             enabled = smaMgr.getBranchMgr().getTransactionId() != null;
          }
