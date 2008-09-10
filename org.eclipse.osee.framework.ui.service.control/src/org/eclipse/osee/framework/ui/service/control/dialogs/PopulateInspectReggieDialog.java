@@ -11,16 +11,18 @@
 package org.eclipse.osee.framework.ui.service.control.dialogs;
 
 import java.rmi.RemoteException;
+
 import net.jini.core.lookup.ServiceItem;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.managers.ServiceTreeBuilder;
 import org.eclipse.swt.widgets.Display;
@@ -50,7 +52,7 @@ public class PopulateInspectReggieDialog extends Job {
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       try {
-         this.getThread().setContextClassLoader(EclipseJiniClassloader.getInstance());
+         this.getThread().setContextClassLoader(ExportClassLoader.getInstance());
          ServiceMatches serviceMatches = reggie.lookup(new ServiceTemplate(null, null, null), Integer.MAX_VALUE);
          final ServiceItem[] serviceItemArray = serviceMatches.items;
          Display.getDefault().asyncExec(new Runnable() {

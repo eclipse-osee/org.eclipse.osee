@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceMatches;
@@ -34,8 +35,10 @@ import net.jini.discovery.DiscoveryEvent;
 import net.jini.discovery.DiscoveryListener;
 import net.jini.discovery.LookupDiscoveryManager;
 import net.jini.lookup.ServiceDiscoveryManager;
+
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 
 public class ReggieCache implements DiscoveryListener {
 
@@ -56,7 +59,7 @@ public class ReggieCache implements DiscoveryListener {
       serviceRegistrars = Collections.synchronizedMap(new HashMap<ServiceID, ServiceRegistrar>());
       locators = Collections.synchronizedSet(new HashSet<String>());
 
-      Thread.currentThread().setContextClassLoader(this.loader);
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       System.setSecurityManager(new RelaxedSecurity());
       registerWithJINI();
    }
@@ -97,7 +100,7 @@ public class ReggieCache implements DiscoveryListener {
       }
 
       public void run() {
-         Thread.currentThread().setContextClassLoader(ReggieCache.this.loader);
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          System.setSecurityManager(new RelaxedSecurity());
          try {
             if (lookupLocations != null) {
@@ -209,19 +212,19 @@ public class ReggieCache implements DiscoveryListener {
    }
 
    public ServiceMatches lookupAllServices(ServiceRegistrar reggie) throws RemoteException {
-      Thread.currentThread().setContextClassLoader(this.loader);
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       ServiceTemplate st = new ServiceTemplate(null, null, null);
       return reggie.lookup(st, Integer.MAX_VALUE);
    }
 
    public void addLookupLocators(String[] lookups) {
-      Thread.currentThread().setContextClassLoader(this.loader);
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       for (int i = 0; i < lookups.length; i++) {
          locators.add(lookups[i]);
       }
 
       Thread thread = new LookupList(lookups);
-      thread.setContextClassLoader(this.loader);
+      thread.setContextClassLoader(ExportClassLoader.getInstance());
       thread.start();
    }
 

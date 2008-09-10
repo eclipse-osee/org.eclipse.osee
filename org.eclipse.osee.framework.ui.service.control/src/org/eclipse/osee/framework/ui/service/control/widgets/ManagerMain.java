@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.ui.service.control.widgets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.type.InputManager;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.framework.ui.service.control.actions.InspectLookUpServerAction;
 import org.eclipse.osee.framework.ui.service.control.actions.LookupUpdates;
 import org.eclipse.osee.framework.ui.service.control.actions.NodeDoubleClicked;
@@ -194,7 +196,7 @@ public class ManagerMain extends Composite implements IConnectionListener, IServ
    }
 
    private void registerServiceRenderers() {
-      Thread.currentThread().setContextClassLoader(contributionManager);
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
 
       Map<String, String> interfaceToRenderer = contributionManager.getInterfaceToRendererMap();
       for (String interfaceName : interfaceToRenderer.keySet()) {
