@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -53,7 +54,7 @@ public class ConflictResolutionTest extends TestCase {
       OseeLog.registerLoggerListener(monitorLog);
       try {
          Collection<Conflict> conflicts =
-               RevisionManager.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
                      TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
          int whichChange = 1;
@@ -71,7 +72,7 @@ public class ConflictResolutionTest extends TestCase {
          }
 
          conflicts =
-               RevisionManager.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+        	 ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
                      TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
 

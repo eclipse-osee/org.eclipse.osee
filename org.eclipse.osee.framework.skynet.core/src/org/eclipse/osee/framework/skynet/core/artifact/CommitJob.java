@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManager;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
@@ -87,11 +87,11 @@ class CommitJob extends Job {
 
    private IProgressMonitor monitor;
    private CommitDbTx commitDbTx;
-   private ConflictManager conflictManager;
+   private ConflictManagerExternal conflictManager;
 
    public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch, boolean forceCommit) throws OseeCoreException, SQLException {
       super("Committing Branch: " + fromBranch.getBranchName());
-      conflictManager = new ConflictManager(toBranch, fromBranch);
+      conflictManager = new ConflictManagerExternal(toBranch, fromBranch);
 
       if (conflictManager.remainingConflictsExist() && !forceCommit) {
          throw new ConflictDetectionException(
@@ -128,7 +128,7 @@ class CommitJob extends Job {
       private boolean success = true;
       private int fromBranchId = -1;
 
-      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManager conflictManager) {
+      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, ConflictManagerExternal conflictManager) {
          super();
          this.toBranch = toBranch;
          this.fromBranch = fromBranch;

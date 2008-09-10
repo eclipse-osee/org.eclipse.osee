@@ -8,21 +8,22 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class ConflictManager {
+public class ConflictManagerExternal {
 
    Branch toBranch;
    Branch fromBranch;
    List<Conflict> originalConflicts;
 
-   public ConflictManager(Branch toBranch, Branch fromBranch) {
+   public ConflictManagerExternal(Branch toBranch, Branch fromBranch) {
       this.toBranch = toBranch;
       this.fromBranch = fromBranch;
    }
@@ -30,7 +31,7 @@ public class ConflictManager {
    public List<Conflict> getOriginalConflicts() throws OseeCoreException, SQLException {
       if (originalConflicts == null) {
          originalConflicts =
-               RevisionManager.getInstance().getConflictsPerBranch(fromBranch, toBranch,
+               ConflictManagerInternal.getInstance().getConflictsPerBranch(fromBranch, toBranch,
                      TransactionIdManager.getStartEndPoint(fromBranch).getKey());
       }
       return originalConflicts;
