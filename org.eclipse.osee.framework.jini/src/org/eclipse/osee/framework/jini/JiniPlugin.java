@@ -11,9 +11,7 @@
 
 package org.eclipse.osee.framework.jini;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.osgi.framework.BundleContext;
@@ -44,28 +42,6 @@ public class JiniPlugin extends Plugin {
 	// ()).addLookupLocators(lookupLocations);
    }
 
-   
-   public static String[] getLookupVersion()
-   {
-
-      String serviceGroup = System.getProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS);
-      if( serviceGroup == null || serviceGroup.length() <= 0)
-      {
-         serviceGroup = (String)Platform.getBundle("").getHeaders().get("Bundle-Version");
-      }
-      // String[] filterGroups = null;
-      if (serviceGroup != null && serviceGroup.length() > 0) {
-         String[] values = serviceGroup.split(",");
-         for (int index = 0; index < values.length; index++) {
-            values[index] = values[index].trim();
-         }
-         return values;
-      }
-      return null;
-    
-   }
-  
-   
    
    /**
     * This method is called when the plug-in is stopped
