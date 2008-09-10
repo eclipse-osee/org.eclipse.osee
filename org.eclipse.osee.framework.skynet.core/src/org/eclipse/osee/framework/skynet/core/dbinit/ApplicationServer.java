@@ -51,8 +51,8 @@ public class ApplicationServer {
             if (socket.getInetAddress().isLoopbackAddress()) {
                logger.log(Level.INFO, "Deleting binary data from application server...");
                String binaryDataPath = OseeProperties.getInstance().getOseeApplicationServerData();
-               Lib.deleteContents(new File(binaryDataPath + File.separator + "attr"));
-               Lib.deleteContents(new File(binaryDataPath + File.separator + "snapshot"));
+               Lib.deleteDir(new File(binaryDataPath + File.separator + "attr"));
+               Lib.deleteDir(new File(binaryDataPath + File.separator + "snapshot"));
             } else {
                displayWarning = true;
             }
