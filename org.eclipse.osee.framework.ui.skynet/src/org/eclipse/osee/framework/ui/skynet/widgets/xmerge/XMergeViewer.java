@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -275,10 +276,10 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
          if (!(conflicts.length == 0)) {
             Conflict[] artifactChanges = new Conflict[0];
             if (conflicts[0].getToTransactionId() != null) {
-               setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
+               setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
                      conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
             } else {
-               setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getCommitTransactionId()).toArray(
+               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getCommitTransactionId()).toArray(
                      artifactChanges));
             }
          }
@@ -468,10 +469,10 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             try {
                if (commitTrans == null) {
                   conflicts =
-                        RevisionManager.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                	  ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
                               new Conflict[0]);
                } else {
-                  conflicts = RevisionManager.getInstance().getConflictsPerBranch(commitTrans).toArray(new Conflict[0]);
+                  conflicts = ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(new Conflict[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
