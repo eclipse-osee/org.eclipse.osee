@@ -67,7 +67,7 @@ public class AttributeDataStore {
       }
       // txs1 is for attributes, txs2 is for artifact
       if (options.getBoolean("include deleted")) {
-         toReturn.append(" AND txs1.tx_current IN (1,2)");
+         toReturn.append(" AND txs1.tx_current IN (1,3)");
       } else {
          toReturn.append(" AND txs1.tx_current = 1");
       }
