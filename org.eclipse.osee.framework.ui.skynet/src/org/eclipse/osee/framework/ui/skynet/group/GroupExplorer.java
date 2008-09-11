@@ -89,6 +89,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
     * 
     * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
@@ -149,6 +150,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    protected void createActions() {
       Action refreshAction = new Action("Refresh", Action.AS_PUSH_BUTTON) {
 
+         @Override
          public void run() {
             refresh();
          }
@@ -172,6 +174,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       item.setText("&Remove from Group");
       item.setEnabled(isOnlyArtifactsSelected());
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleRemoveFromGroup();
          }
@@ -181,6 +184,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       item.setText("&Delete Group");
       item.setEnabled(isOnlyGroupsSelected());
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleDeleteGroup();
          }
@@ -190,6 +194,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       item.setText("&New Group");
       item.setEnabled(true);
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             handleNewGroup();
          }
@@ -208,6 +213,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       item = new MenuItem(previewMenu, SWT.PUSH);
       item.setText("Expand All\tCtrl+X");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             expandAll((IStructuredSelection) treeViewer.getSelection());
          }
@@ -352,14 +358,14 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
     * 
     * @see org.eclipse.ui.IWorkbenchPart#setFocus()
     */
+   @Override
    public void setFocus() {
    }
 
    public void onEvent(final Event event) {
       try {
          if (event instanceof TransactionEvent) {
-            Artifact topArt =
-                  UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
+            Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
             if (topArt == null) {
                refresh();
                return;
@@ -385,16 +391,16 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
+         isCtrlPressed = (e.keyCode == SWT.CONTROL);
+      }
+
+      public void keyReleased(KeyEvent e) {
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             treeViewer.getTree().selectAll();
          }
          if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL) {
             expandAll((IStructuredSelection) treeViewer.getSelection());
          }
-         isCtrlPressed = (e.keyCode == SWT.CONTROL);
-      }
-
-      public void keyReleased(KeyEvent e) {
          isCtrlPressed = !(e.keyCode == SWT.CONTROL);
       }
    }
@@ -406,8 +412,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
       Artifact topArt = null;
       try {
-         topArt =
-               UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
+         topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }

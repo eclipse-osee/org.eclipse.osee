@@ -57,7 +57,7 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class XViewerCustomMenu {
 
    protected XViewer xViewer;
-   private Clipboard clipboard = new Clipboard(null);
+   private final Clipboard clipboard = new Clipboard(null);
 
    protected Action clearAllSorting;
    protected Action tableProperties;
@@ -108,36 +108,43 @@ public class XViewerCustomMenu {
 
    protected void setupActions() {
       copySelected = new Action("Copy Selected Row(s)- Ctrl-C") {
+         @Override
          public void run() {
             performCopy();
          };
       };
       viewSelectedCell = new Action("View Selected Cell Data") {
+         @Override
          public void run() {
             performViewCell();
          };
       };
       copySelectedCell = new Action("Copy Selected Cell - Ctrl-Shift-C") {
+         @Override
          public void run() {
             performCopyCell();
          };
       };
       clearAllSorting = new Action("Clear All Sorting") {
+         @Override
          public void run() {
             xViewer.getCustomizeMgr().clearSorter();
          };
       };
       tableProperties = new Action("Table Customization") {
+         @Override
          public void run() {
             xViewer.getCustomizeMgr().handleTableCustomization();
          }
       };
       viewTableReport = new Action("View Table Report") {
+         @Override
          public void run() {
             new XViewerTreeReport(xViewer).open();
          }
       };
       columnMultiEdit = new Action("Column Multi Edit") {
+         @Override
          public void run() {
             Set<TreeColumn> editableColumns = new HashSet<TreeColumn>();
             Collection<TreeItem> selectedTreeItems = Arrays.asList(xViewer.getTree().getSelection());
@@ -162,14 +169,14 @@ public class XViewerCustomMenu {
 
    private class KeySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
+      }
+
+      public void keyReleased(KeyEvent e) {
          if (e.keyCode == 'c' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
             performCopyCell();
          } else if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
             performCopy();
          }
-      }
-
-      public void keyReleased(KeyEvent e) {
       }
    }
 

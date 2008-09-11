@@ -55,20 +55,10 @@ public class OSEEFilteredTree extends FilteredTree {
    protected void createFilterText(Composite parent) {
       super.createFilterText(parent);
       filterText.addKeyListener(new KeyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyPressed(KeyEvent e) {
             filterText.setFocus();
          }
 
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyReleased(KeyEvent e) {
             filterText.setFocus();
          }

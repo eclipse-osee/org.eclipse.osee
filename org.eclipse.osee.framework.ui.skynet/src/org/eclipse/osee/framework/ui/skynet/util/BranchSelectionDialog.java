@@ -83,19 +83,9 @@ public class BranchSelectionDialog extends MessageDialog {
          }
       });
       oseeFilteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyPressed(KeyEvent e) {
          }
 
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
          public void keyReleased(KeyEvent e) {
             if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) handleDoubleClick();
          }

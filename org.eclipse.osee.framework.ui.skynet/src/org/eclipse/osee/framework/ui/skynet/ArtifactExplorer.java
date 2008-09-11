@@ -727,17 +727,20 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       Object myTreeItemObject = myTreeItem.getData();
       myTextBeingRenamed.setText(((Artifact) myTreeItemObject).getDescriptiveName());
       myTextBeingRenamed.addFocusListener(new FocusAdapter() {
+         @Override
          public void focusLost(FocusEvent e) {
             updateText(myTextBeingRenamed.getText(), myTreeItem);
             myTextBeingRenamed.dispose();
 
          }
 
+         @Override
          public void focusGained(FocusEvent e) {
          }
       });
 
       myTextBeingRenamed.addKeyListener(new KeyAdapter() {
+         @Override
          public void keyReleased(KeyEvent e) {
             if ((e.character == SWT.CR)) {
                updateText(myTextBeingRenamed.getText(), myTreeItem);
@@ -1261,6 +1264,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
+      }
+
+      public void keyReleased(KeyEvent e) {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
@@ -1282,9 +1288,6 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
-      }
-
-      public void keyReleased(KeyEvent e) {
       }
    }
 

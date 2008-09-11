@@ -86,7 +86,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
    private NeedArtifactMenuListener needArtifactListener;
-   private IDirtiableEditor editor;
+   private final IDirtiableEditor editor;
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames = new String[] {" ", "Rationale"};
    // the index of column order
@@ -98,13 +98,13 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private MenuItem deleteRelationMenuItem;
    private MenuItem deleteArtifactMenuItem;
    private MenuItem massEditMenuItem;
-   private Artifact artifact;
-   private SkynetEventManager eventManager;
+   private final Artifact artifact;
+   private final SkynetEventManager eventManager;
    private final boolean readOnly;
-   private RelationLabelProvider relationLabelProvider;
-   private ToolBar toolBar;
+   private final RelationLabelProvider relationLabelProvider;
+   private final ToolBar toolBar;
 
-   private Map<Integer, RelationLink> artifactToLinkMap;
+   private final Map<Integer, RelationLink> artifactToLinkMap;
 
    public RelationsComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
       this(editor, parent, style, artifact, false, null);
@@ -279,6 +279,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       deleteRelationMenuItem.setText("&Delete Relation");
       deleteRelationMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
@@ -300,6 +301,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       deleteArtifactMenuItem.setText("&Delete Artifact");
       deleteArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
@@ -315,6 +317,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       massEditMenuItem.setText("&Mass Edit");
       massEditMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
@@ -330,6 +333,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       viewRelationTreeItem.setText("&View Relation Table Report");
       viewRelationTreeItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             TreeViewerReport report =
                   new TreeViewerReport("Relation View Report for " + artifact.getDescriptiveName(), treeViewer);
@@ -348,6 +352,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       needArtifactListener.add(openMenuItem);
       needSelectedArtifactListener.add(openMenuItem);
       openMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             openViewer((IStructuredSelection) treeViewer.getSelection());
          }
@@ -398,6 +403,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
       needArtifactListener.add(editMenuItem);
       editMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object object = selection.getFirstElement();
@@ -416,6 +422,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    }
 
    public class ExpandListener extends SelectionAdapter {
+      @Override
       public void widgetSelected(SelectionEvent event) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Iterator<?> iter = selection.iterator();
@@ -548,7 +555,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          if (object instanceof RelationLink) {
             ((RelationLink) object).delete();
 
-            RelationType relationType = (RelationType) ((RelationLink) object).getRelationType();
+            RelationType relationType = ((RelationLink) object).getRelationType();
             int sideAMax =
                   RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
             int sideBMax =
@@ -590,6 +597,9 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
+      }
+
+      public void keyReleased(KeyEvent e) {
          if (e.keyCode == SWT.DEL) {
             try {
                performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
@@ -605,9 +615,6 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL) {
             expandAll((IStructuredSelection) treeViewer.getSelection());
          }
-      }
-
-      public void keyReleased(KeyEvent e) {
       }
    }
 

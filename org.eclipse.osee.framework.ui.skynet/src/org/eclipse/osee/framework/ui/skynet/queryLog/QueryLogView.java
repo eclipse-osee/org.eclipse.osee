@@ -79,6 +79,7 @@ public class QueryLogView extends ViewPart implements IActionable {
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             viewer.refresh();
          }
@@ -88,6 +89,7 @@ public class QueryLogView extends ViewPart implements IActionable {
 
       Action clearLogAction = new Action("Delete Log") {
 
+         @Override
          public void run() {
             ((QueryLog) viewer.getInput()).clear();
             viewer.refresh();
@@ -139,6 +141,9 @@ public class QueryLogView extends ViewPart implements IActionable {
 
    private class KeySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
+      }
+
+      public void keyReleased(KeyEvent e) {
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             viewer.getTree().selectAll();
          } else if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL) {
@@ -146,9 +151,6 @@ public class QueryLogView extends ViewPart implements IActionable {
          } else if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
             performCopy();
          }
-      }
-
-      public void keyReleased(KeyEvent e) {
       }
    }
 

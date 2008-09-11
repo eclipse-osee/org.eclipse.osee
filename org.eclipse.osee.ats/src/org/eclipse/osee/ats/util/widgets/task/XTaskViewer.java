@@ -89,8 +89,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    private TaskXViewer xViewer;
    private ToolItem currentStateFilterItem;
-   private MenuItem currentStateFilterMenuItem, filterCompletedMenuItem,
-         selectionMetricsMenuItem;
+   private MenuItem currentStateFilterMenuItem, filterCompletedMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
 
    /**
@@ -131,8 +130,8 @@ public class XTaskViewer extends XWidget implements IActionable {
          createTaskActionBar(mainComp);
 
          xViewer =
-               new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-                     iXTaskViewer.getEditor(), iXTaskViewer.getResOptions(), this);
+               new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(),
+                     iXTaskViewer.getResOptions(), this);
          xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
          xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -144,13 +143,10 @@ public class XTaskViewer extends XWidget implements IActionable {
             }
          });
          xViewer.getTree().addKeyListener(new KeyListener() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-             */
             public void keyPressed(KeyEvent event) {
-               // if CTRL key is already pressed
+            }
+
+            public void keyReleased(KeyEvent event) {
                if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
                   if (event.keyCode == 'a') {
                      xViewer.getTree().setSelection(xViewer.getTree().getItems());
@@ -167,15 +163,6 @@ public class XTaskViewer extends XWidget implements IActionable {
                      }
                   }
                }
-               // System.out.println("keypressed " + event.keyCode);
-            }
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-             */
-            public void keyReleased(KeyEvent event) {
             }
          });
 
@@ -304,8 +291,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
       });
 
-      OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar,
-            SMAEditor.EDITOR_ID, "ATS Task Tab");
+      OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
       createTaskActionBarPulldown(toolBar, rightComp);
 
    }
@@ -320,8 +306,7 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    public void updateCurrentStateFilter() throws OseeCoreException, SQLException {
       if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
-         currentStateFilter =
-               new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
+         currentStateFilter = new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
          getXViewer().addFilter(currentStateFilter);
       } else {
          if (currentStateFilter != null) getXViewer().removeFilter(currentStateFilter);
@@ -427,16 +412,14 @@ public class XTaskViewer extends XWidget implements IActionable {
    }
 
    public void handleImportTasksViaList() throws OseeCoreException, SQLException {
-      BlamOperation blamOperation =
-            BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
+      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
       ((ImportTasksFromSimpleList) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
    }
 
    public void handleImportTasksViaSpreadsheet() throws OseeCoreException, SQLException {
-      BlamOperation blamOperation =
-            BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
+      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
       ((ImportTasksFromSpreadsheet) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
@@ -458,24 +441,22 @@ public class XTaskViewer extends XWidget implements IActionable {
          }
       }
       boolean delete =
-            MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Delete Task", builder.toString());
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
+                  builder.toString());
       if (delete) {
          try {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws OseeCoreException, SQLException {
-                        // Done for concurrent modification purposes
-                        ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
-                        delItems.addAll(items);
-                        for (TaskArtifact taskArt : delItems) {
-                           SMAEditor.close(taskArt, false);
-                           taskArt.delete();
-                        }
-                     }
-                  };
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws OseeCoreException, SQLException {
+                  // Done for concurrent modification purposes
+                  ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
+                  delItems.addAll(items);
+                  for (TaskArtifact taskArt : delItems) {
+                     SMAEditor.close(taskArt, false);
+                     taskArt.delete();
+                  }
+               }
+            };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -486,14 +467,11 @@ public class XTaskViewer extends XWidget implements IActionable {
    public TaskArtifact handleNewTask() {
       TaskArtifact taskArt = null;
       EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Task",
-                  null, "Enter Task Title/Description", MessageDialog.QUESTION,
-                  new String[] {"OK", "Cancel"}, 0);
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Task", null,
+                  "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt =
-                  iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(
-                        ed.getEntry(), false);
+            taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry(), false);
             iXTaskViewer.getEditor().onDirtied();
             xViewer.add(taskArt);
             xViewer.getTree().setFocus();
@@ -555,19 +533,15 @@ public class XTaskViewer extends XWidget implements IActionable {
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State",
-               "POC", "%", "Hrs", "Resolution", "ID"}));
+         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs",
+               "Resolution", "ID"}));
          for (TaskArtifact art : iXTaskViewer.getTaskArtifacts("")) {
             SMAManager smaMgr = new SMAManager(art);
-            html.append(AHTML.addRowMultiColumnTable(new String[] {
-                  art.getDescriptiveName(),
-                  art.getSmaMgr().getStateMgr().getCurrentStateName().replaceAll(
-                        "(Task|State)", ""),
-                  smaMgr.getAssigneesWasIsStr(),
-                  smaMgr.getSma().getPercentCompleteSMATotal() + "",
+            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getDescriptiveName(),
+                  art.getSmaMgr().getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
+                  smaMgr.getAssigneesWasIsStr(), smaMgr.getSma().getPercentCompleteSMATotal() + "",
                   smaMgr.getSma().getHoursSpentSMATotal() + "",
-                  art.getSoleAttributeValue(
-                        ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
+                  art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
                   art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());
@@ -611,9 +585,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          public void dragSetData(DragSourceEvent event) {
             Collection<TaskArtifact> arts = xViewer.getSelectedTaskArtifacts();
             if (arts.size() > 0) {
-               event.data =
-                     new ArtifactData(arts.toArray(new Artifact[arts.size()]), "",
-                           SMAEditor.EDITOR_ID);
+               event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", SMAEditor.EDITOR_ID);
             }
          }
 
@@ -622,8 +594,8 @@ public class XTaskViewer extends XWidget implements IActionable {
       });
 
       DropTarget target = new DropTarget(xViewer.getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {FileTransfer.getInstance(),
-            TextTransfer.getInstance(), ArtifactTransfer.getInstance()});
+      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
+            ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
          @Override
@@ -647,24 +619,21 @@ public class XTaskViewer extends XWidget implements IActionable {
          try {
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws OseeCoreException, SQLException {
-                        for (Artifact art : artsToRelate) {
-                           if (art instanceof TaskArtifact) {
-                              TaskArtifact taskArt = (TaskArtifact) art;
-                              if (taskArt.getParentSMA() != null) {
-                                 taskArt.deleteRelation(AtsRelation.SmaToTask_Sma,
-                                       taskArt.getParentSMA());
-                              }
-                              taskArt.addRelation(AtsRelation.SmaToTask_Sma,
-                                    iXTaskViewer.getParentSmaMgr().getSma());
-                              taskArt.persistRelations();
-                           }
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws OseeCoreException, SQLException {
+                  for (Artifact art : artsToRelate) {
+                     if (art instanceof TaskArtifact) {
+                        TaskArtifact taskArt = (TaskArtifact) art;
+                        if (taskArt.getParentSMA() != null) {
+                           taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
                         }
+                        taskArt.addRelation(AtsRelation.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
+                        taskArt.persistRelations();
                      }
-                  };
+                  }
+               }
+            };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(SkynetActivator.class, ex, true);

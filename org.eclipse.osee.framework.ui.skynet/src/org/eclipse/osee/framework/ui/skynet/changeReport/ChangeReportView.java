@@ -386,6 +386,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
    ViewerSorter viewerSorter = new ViewerSorter() {
 
+      @Override
       @SuppressWarnings("unchecked")
       public int compare(Viewer viewer, Object o1, Object o2) {
          if ((o1 instanceof TreeNode) && (o2 instanceof TreeNode)) {
@@ -1088,12 +1089,12 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
-         if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
-            performCopy();
-         }
       }
 
       public void keyReleased(KeyEvent e) {
+         if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
+            performCopy();
+         }
       }
    }
 
