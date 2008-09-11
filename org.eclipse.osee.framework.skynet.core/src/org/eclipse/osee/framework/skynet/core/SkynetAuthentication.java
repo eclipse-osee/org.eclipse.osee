@@ -113,7 +113,9 @@ public class SkynetAuthentication {
       // If cacheUser is called outside of the main loadUserCache, then load cache first
       if (!isLoadingUsersCache) loadUsersCache();
       // Check to make sure user is not in databaes more than once
-      if (userIdToUserCache.put(user.getUserId(), user) != null) {
+      User currentUser = userIdToUserCache.get(user.getUserId());
+      // Allows the same user artifact to be re-cached
+      if (currentUser != null && currentUser.getArtId() != user.getArtId()) {
          UserInDatabaseMultipleTimes exception =
                new UserInDatabaseMultipleTimes(
                      "User of userId \"" + user.getUserId() + "\" in datastore more than once");
