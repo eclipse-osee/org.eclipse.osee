@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -65,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
@@ -1193,18 +1196,17 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                }
             } else if (event instanceof RelationModifiedEvent) {
                RelationModifiedEvent relationModifiedEvent = (RelationModifiedEvent) event;
-
-               Artifact aArt = relationModifiedEvent.getLink().getArtifactA();
-               Artifact bArt = relationModifiedEvent.getLink().getArtifactB();
-
-               if (aArt != null && !aArt.isDeleted() && !aArt.isReadOnly()) {
-                  // make sure his linkmanager is loaded
-                  treeViewer.refresh(aArt, false);
-               }
-
-               if (bArt != null && !bArt.isDeleted() && !bArt.isReadOnly()) {
-                  // make sure his linkmanager is loaded
-                  treeViewer.refresh(bArt, false);
+               if(relationModifiedEvent.isConcernedWith(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())){
+            	   Artifact aArt = ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_A), BranchPersistenceManager.getDefaultBranch());
+            	   Artifact bArt = ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_B), BranchPersistenceManager.getDefaultBranch());
+            	   if (aArt != null && !aArt.isDeleted() && !aArt.isReadOnly()) {
+                      // make sure his linkmanager is loaded
+                      treeViewer.refresh(aArt, false);
+                   }
+                   if (bArt != null && !bArt.isDeleted() && !bArt.isReadOnly()) {
+                      // make sure his linkmanager is loaded
+                      treeViewer.refresh(bArt, false);
+                   }
                }
             } else if (event instanceof TransactionEvent) {
                ((TransactionEvent) event).fireSingleEvent(artifactExplorer);
