@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRI
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -164,7 +166,7 @@ public final class ArtifactLoader {
                }
                previousArtId = artId;
                previousBranchId = branchId;
-            }
+            }            
          } finally {
             DbUtil.close(chStmt);
          }
@@ -447,9 +449,9 @@ public final class ArtifactLoader {
                   artifact = ArtifactCache.getActive(artifactId, branchId);
                }
                if (artifact == null) {
-                  throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
-               }
-               if (artifact.isAttributesLoaded()) {
+                  //TODO just masking a DB issue, we should probably really have an error here - throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
+            	  OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format("Orphaned attribute for artifact id[%d] branch[%d]", artifactId, branchId));
+               } else if (artifact.isAttributesLoaded()) {
                   artifact = null;
                }
             }
