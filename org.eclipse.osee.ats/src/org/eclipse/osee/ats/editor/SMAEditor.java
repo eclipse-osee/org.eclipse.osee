@@ -480,10 +480,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException {
       try {
-         if (relEvent.effectsArtifact(smaMgr.getSma())) {
-            if (relEvent.getRelationType().equals(AtsRelation.SmaToTask_Sma.getTypeName())) {
-               return relEvent.getModType();
-            }
+         if (relEvent.effectsArtifact(smaMgr.getSma()) && relEvent.isConcernedWith(AtsRelation.SmaToTask_Sma.getRelationType())){
+            return relEvent.getModType();
          }
          return null;
       } catch (SQLException ex) {
