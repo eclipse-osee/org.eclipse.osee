@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -715,10 +716,16 @@ public class RelationManager {
     * @throws ArtifactDoesNotExist
     */
    static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist, SQLException {
-      setOrderValues(relationLink.getArtifact(RelationSide.SIDE_A), relationLink.getRelationType(),
+      Artifact aArt = ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_A), relationLink.getBranch(RelationSide.SIDE_A));
+      if(aArt != null){
+    	  setOrderValues(aArt, relationLink.getRelationType(),
             RelationSide.SIDE_B, markAsNotDirty);
-      setOrderValues(relationLink.getArtifact(RelationSide.SIDE_B), relationLink.getRelationType(),
+      }
+      Artifact bArt = ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_B), relationLink.getBranch(RelationSide.SIDE_B));
+      if(bArt != null){
+    	  setOrderValues(bArt, relationLink.getRelationType(),
             RelationSide.SIDE_A, markAsNotDirty);
+      }
    }
 
    private static void setOrderValues(Artifact sourceArtifact, RelationType type, RelationSide side, boolean markAsNotDirty) {
