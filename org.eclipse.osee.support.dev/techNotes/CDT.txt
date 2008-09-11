@@ -1,0 +1,7 @@
+download and install MinGW-3.1.0-1.exe from www.mingw.org/download.shtml#hdr1
+
+Eclipse (and plug-ins) download site:  http://www.eclipse.org/downloads/index.php
+
+
+For CDT use the following URL in a Site Bookmark in the update manager:    http://update.eclipse.org/tools/cdt/releases/new
+To access the Update Manager, select Software Updates->Find and Install... from the Help menu. To access the update site listed above, select Search for New Features to Install and click on Next. Add a new remote site with the URL provided above, and then expand the site node to reveal the available downloads. 
