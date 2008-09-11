@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
@@ -79,15 +80,21 @@ public abstract class RelationModifiedEvent extends Event {
    public boolean effectsArtifact(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       boolean isEffected = false;
       // Do a first check to see if artIds event match;  This should save framework from having to load other artifact if not loaded
-      isEffected =
-            getLink().getAArtifactId() == artifact.getArtId() || getLink().getBArtifactId() == artifact.getArtId();
-      if (isEffected) {
-         // Perform deeper equals check
-         isEffected =
-               (getLink().getArtifactA() != null && getLink().getArtifactA().equals(
-                     artifact)) || (getLink().getArtifactB() != null && getLink().getArtifactB().equals(
-                     artifact));
-      }
+      isEffected = (getLink().getAArtifactId() == artifact.getArtId() && getLink().getABranch().equals(artifact.getBranch()))  
+            	|| (getLink().getBArtifactId() == artifact.getArtId() && getLink().getBBranch().equals(artifact.getBranch()));
       return isEffected;
    }
+
+	/**
+	 * @param relationType2
+	 * @return true if the link type in the method matches something in the given list
+	 */
+	public boolean isConcernedWith(RelationType... relationTypes) {
+		for(RelationType relationType:relationTypes){
+			if(relationType.getRelationTypeId() == this.link.getRelationType().getRelationTypeId()){
+				return true;
+			}
+		}
+		return false;
+	}
 }
