@@ -156,7 +156,7 @@ public class SkynetAuthentication {
    /**
     * Returns the currently authenticated user
     * 
-    * @return
+    * @return User
     */
    public static User getUser() {
       return instance.getAuthenticatedUser();
@@ -202,13 +202,13 @@ public class SkynetAuthentication {
       return currentUser;
    }
 
-   private void persistUser(User user) throws OseeCoreException, SQLException {
-      duringUserCreation = true;
+   public static void persistUser(User user) throws OseeCoreException, SQLException {
+      instance.duringUserCreation = true;
       try {
          user.persistAttributesAndRelations();
-         cacheUser(user, null);
+         instance.cacheUser(user, null);
       } catch (SQLException ex) {
-         duringUserCreation = false;
+         instance.duringUserCreation = false;
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
    }
@@ -217,7 +217,7 @@ public class SkynetAuthentication {
       instance.loadUsersCache();
       User user =
             instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
-      instance.persistUser(user);
+      persistUser(user);
       return user;
    }
 
