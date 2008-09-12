@@ -159,7 +159,9 @@ public class SkynetTransaction {
          for (ITransactionData transactionData : transactionItems.keySet()) {
             //This must be called before adding the new transaction information, because it
             //will update the current transaction to 0.
-            transactionData.setPreviousTxNotCurrent(insertTime, queryId);
+             if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+            	 transactionData.setPreviousTxNotCurrent(insertTime, queryId);
+             }
 
             //Add current transaction information
             ModificationType modType = transactionData.getModificationType();
