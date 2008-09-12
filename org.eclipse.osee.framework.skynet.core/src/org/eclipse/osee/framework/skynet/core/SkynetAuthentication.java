@@ -124,6 +124,8 @@ public class SkynetAuthentication {
          } else {
             OseeLog.log(SkynetAuthentication.class, Level.SEVERE, exception);
          }
+      } else {
+         userIdToUserCache.put(user.getUserId(), user);
       }
       if (user.isActive()) activeUserCache.add(user);
       nameToUserCache.put(user.getDescriptiveName(), user);
@@ -204,7 +206,7 @@ public class SkynetAuthentication {
       return currentUser;
    }
 
-   public static void persistUser(User user) throws OseeCoreException, SQLException {
+   private static void persistUser(User user) throws OseeCoreException, SQLException {
       instance.duringUserCreation = true;
       try {
          user.persistAttributesAndRelations();
@@ -217,9 +219,24 @@ public class SkynetAuthentication {
 
    public static User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
       instance.loadUsersCache();
-      User user =
-            instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
-      persistUser(user);
+      // Determine if user with id has already been created; boot strap issue with dbInit
+      User user = instance.userIdToUserCache.get(userEnum.getUserID());
+      if (user != null) {
+         // Update user with this enum data
+         instance.nameToUserCache.remove(user.getDescriptiveName());
+         user.setDescriptiveName(userEnum.getName());
+         instance.nameToUserCache.put(userEnum.getName(), user);
+         user.setEmail(userEnum.getEmail());
+         user.setActive(userEnum.isActive());
+         if (!instance.activeUserCache.contains(user) && userEnum.isActive()) {
+            instance.activeUserCache.add(user);
+         }
+         instance.enumeratedUserCache.put(userEnum, user);
+         user.persistAttributes();
+      } else {
+         user = instance.createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
+         persistUser(user);
+      }
       return user;
    }
 
