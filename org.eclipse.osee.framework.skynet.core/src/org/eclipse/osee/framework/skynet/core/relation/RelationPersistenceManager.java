@@ -99,6 +99,7 @@ public class RelationPersistenceManager {
         		 modId = ModificationType.ARTIFACT_DELETED;
         	 }else{
         		 modId = ModificationType.DELETED;
+        		 link.setGammaId(gammaId);
         	 }
             modType = RelationModType.Deleted;
 
