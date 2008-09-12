@@ -27,7 +27,7 @@ public class Translator {
                "a_art_id", "b_art_id", "commit_art_id", "author"};
 
    private static final String[] BRANCH_ID_ALIASES =
-         new String[] {"branch_id", "parent_branch_id", "a_branch_id", "b_branch_id"};
+         new String[] {"branch_id", "parent_branch_id", "a_branch_id", "b_branch_id", "mapped_branch_id"};
 
    private List<IdTranslator> translators;
    private Map<String, IdTranslator> translatorMap;
