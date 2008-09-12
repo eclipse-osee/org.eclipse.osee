@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLi
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -91,8 +92,15 @@ public class RelationPersistenceManager {
 
       if (link.isInDb()) {
          if (link.isDeleted()) {
+        	 Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+        	 Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+        	 
+        	 if((aArtifact != null && aArtifact.isDeleted()) || (bArtifact != null && bArtifact.isDeleted())){
+        		 modId = ModificationType.ARTIFACT_DELETED;
+        	 }else{
+        		 modId = ModificationType.DELETED;
+        	 }
             modType = RelationModType.Deleted;
-            modId = ModificationType.DELETED;
 
             transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(
                   link.getRelationType().getRelationTypeId(), link.getGammaId(),
@@ -143,14 +151,14 @@ public class RelationPersistenceManager {
                link.getRelationType().getRelationTypeId(),
                link.getRelationType().getTypeName(),
                SkynetAuthentication.getUser().getArtId()));
+         
+	    transaction.addLocalEvent(new TransactionRelationModifiedEvent(link,
+	       link.getBranch(), link.getRelationType().getTypeName(), link.getASideName(),
+	       modType, instance));
       }
 
-      transaction.addTransactionDataItem(new RelationTransactionData(link, gammaId,
+      transaction.addTransactionDataItem(new RelationTransactionData(link, link.getGammaId(),
             transaction.getTransactionId(), modId, transaction.getBranch()));
-
-      transaction.addLocalEvent(new TransactionRelationModifiedEvent(link,
-            link.getBranch(), link.getRelationType().getTypeName(), link.getASideName(),
-            modType, instance));
    }
 
    /**
