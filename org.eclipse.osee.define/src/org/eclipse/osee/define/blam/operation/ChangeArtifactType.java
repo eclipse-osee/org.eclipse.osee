@@ -17,16 +17,18 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -65,10 +67,12 @@ public class ChangeArtifactType extends AbstractBlam {
 
          if (doesUserAcceptArtifactChange(artifact, descriptor)) {
             changeArtifactType(artifact, descriptor);
-
-            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
          }
       }
+
+      // Kick Local and Remote Events
+      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+      XEventManager.kickArtifactsChangeTypeEvent(sender, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
    }
 
    /**
@@ -128,8 +132,8 @@ public class ChangeArtifactType extends AbstractBlam {
 
    private class ArtifactChangeMessageRunnable implements Runnable {
       private boolean accept = false;
-      private Artifact artifact;
-      private ArtifactType descriptor;
+      private final Artifact artifact;
+      private final ArtifactType descriptor;
 
       public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactType descriptor) {
          this.artifact = artifact;
@@ -178,6 +182,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }

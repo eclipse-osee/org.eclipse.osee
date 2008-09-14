@@ -29,8 +29,13 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.TransactionChangeType;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -76,6 +81,24 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       });
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      registerEvents();
+   }
+
+   private void registerEvents() {
+      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+
+         @Override
+         public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            remove(cacheArtifacts.toArray());
+         }
+      });
+      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
+
+         @Override
+         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            remove(cacheArtifacts.toArray());
+         }
+      });
    }
 
    @Override
@@ -233,7 +256,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
    @Override
    public void dispose() {
       SkynetEventManager.getInstance().unRegisterAll(this);
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
       // Tell the label provider to release its ressources
       getLabelProvider().dispose();
    }
@@ -309,7 +332,6 @@ public class MassXViewer extends XViewer implements IEventReceiver {
          if (modArts.size() > 0) update(modArts.toArray(), null);
 
          artIds = transEvent.getArtIds(TransactionChangeType.Deleted);
-         artIds.addAll(transEvent.getArtIds(TransactionChangeType.Purged));
          modArts.clear();
          for (int artId : artIds) {
             Artifact art = ArtifactCache.getActive(artId, ((MassArtifactEditor) editor).getBranch());

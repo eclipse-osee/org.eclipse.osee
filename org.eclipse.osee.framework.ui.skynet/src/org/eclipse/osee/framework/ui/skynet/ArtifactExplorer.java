@@ -16,11 +16,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -62,6 +63,9 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
@@ -72,6 +76,8 @@ import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifi
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
@@ -310,6 +316,36 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
+
+      registerEvents();
+   }
+
+   private void registerEvents() {
+      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+
+         @Override
+         public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            treeViewer.refresh();
+         }
+      });
+      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
+
+         @Override
+         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            try {
+               Set<Artifact> parents = new HashSet<Artifact>();
+               for (Artifact art : cacheArtifacts) {
+                  if (art.getParent() != null) {
+                     parents.add(art.getParent());
+                  }
+               }
+               treeViewer.refresh(parents);
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+         }
+
+      });
    }
 
    /**
@@ -1187,26 +1223,28 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                Artifact artifact = artifactModifiedEvent.getArtifact();
 
                if (artifact != null) {
-                  if (artifactModifiedEvent.getType() == ArtifactModifiedEvent.ArtifactModType.Purged) {
-                     treeViewer.refresh(artifact.getParent());
-                  } else if (artifact.isDeleted() || artifactModifiedEvent.getType() == ArtifactModifiedEvent.ArtifactModType.Reverted) {
+                  if (artifact.isDeleted() || artifactModifiedEvent.getType() == ArtifactModifiedEvent.ArtifactModType.Reverted) {
                      treeViewer.refresh(artifact.getParent());
                   } else
                      treeViewer.refresh(artifact);
                }
             } else if (event instanceof RelationModifiedEvent) {
                RelationModifiedEvent relationModifiedEvent = (RelationModifiedEvent) event;
-               if(relationModifiedEvent.isConcernedWith(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())){
-            	   Artifact aArt = ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_A), BranchPersistenceManager.getDefaultBranch());
-            	   Artifact bArt = ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_B), BranchPersistenceManager.getDefaultBranch());
-            	   if (aArt != null && !aArt.isDeleted() && !aArt.isReadOnly()) {
-                      // make sure his linkmanager is loaded
-                      treeViewer.refresh(aArt, false);
-                   }
-                   if (bArt != null && !bArt.isDeleted() && !bArt.isReadOnly()) {
-                      // make sure his linkmanager is loaded
-                      treeViewer.refresh(bArt, false);
-                   }
+               if (relationModifiedEvent.isConcernedWith(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
+                  Artifact aArt =
+                        ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_A),
+                              BranchPersistenceManager.getDefaultBranch());
+                  Artifact bArt =
+                        ArtifactCache.getActive(relationModifiedEvent.getLink().getArtifactId(RelationSide.SIDE_B),
+                              BranchPersistenceManager.getDefaultBranch());
+                  if (aArt != null && !aArt.isDeleted() && !aArt.isReadOnly()) {
+                     // make sure his linkmanager is loaded
+                     treeViewer.refresh(aArt, false);
+                  }
+                  if (bArt != null && !bArt.isDeleted() && !bArt.isReadOnly()) {
+                     // make sure his linkmanager is loaded
+                     treeViewer.refresh(bArt, false);
+                  }
                }
             } else if (event instanceof TransactionEvent) {
                ((TransactionEvent) event).fireSingleEvent(artifactExplorer);
@@ -1341,6 +1379,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    public void dispose() {
       super.dispose();
       SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
       if (treeViewer != null) {
          trees.remove(treeViewer.getTree());
       }

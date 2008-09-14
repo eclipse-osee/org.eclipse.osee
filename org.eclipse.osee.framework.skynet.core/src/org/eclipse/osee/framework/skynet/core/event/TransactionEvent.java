@@ -33,10 +33,9 @@ public abstract class TransactionEvent extends Event {
    private boolean processedLookups = false;
    private final Set<Integer> modified = new HashSet<Integer>();
    private final Set<Integer> deleted = new HashSet<Integer>();
-   private final Set<Integer> purged = new HashSet<Integer>();
    private final Set<Integer> relChanged = new HashSet<Integer>();
    public enum TransactionChangeType {
-      Modified, Deleted, Purged, RelChanged
+      Modified, Deleted, RelChanged
    };
 
    /**
@@ -54,7 +53,6 @@ public abstract class TransactionEvent extends Event {
       if (transactionChangeType == TransactionChangeType.Deleted) return deleted;
       if (transactionChangeType == TransactionChangeType.RelChanged) return relChanged;
       if (transactionChangeType == TransactionChangeType.Modified) return modified;
-      if (transactionChangeType == TransactionChangeType.Purged) return purged;
       return Collections.emptySet();
    }
 
@@ -75,7 +73,6 @@ public abstract class TransactionEvent extends Event {
             Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
             modified.add(artifact.getArtId());
             if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ArtifactModType.Deleted) deleted.add(artifact.getArtId());
-            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ArtifactModType.Purged) purged.add(artifact.getArtId());
          } else if (event instanceof RelationModifiedEvent) {
             relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
             relChanged.add(((RelationModifiedEvent) event).getLink().getBArtifactId());
@@ -114,13 +111,11 @@ public abstract class TransactionEvent extends Event {
       ed.setDeleted(deleted.contains(artifact.getArtId()));
       ed.setModified(modified.contains(artifact.getArtId()));
       ed.setRelChange(relChanged.contains(artifact.getArtId()));
-      ed.setPurged(purged.contains(artifact.getArtId()));
-      ed.setHasEvent(ed.isRelChange() || ed.isDeleted() || ed.isModified() || ed.isPurged());
+      ed.setHasEvent(ed.isRelChange() || ed.isDeleted() || ed.isModified());
       return ed;
    }
    public static class EventData {
       private boolean deleted;
-      private boolean purged;
       private boolean hasEvent;
       private boolean modified;
       private boolean relChange;
@@ -145,7 +140,7 @@ public abstract class TransactionEvent extends Event {
        * @return true if deleted or purged
        */
       public boolean isRemoved() {
-         return deleted || purged;
+         return deleted;
       }
 
       public boolean isModified() {
@@ -162,14 +157,6 @@ public abstract class TransactionEvent extends Event {
 
       public void setRelChange(boolean relChange) {
          this.relChange = relChange;
-      }
-
-      public boolean isPurged() {
-         return purged;
-      }
-
-      public void setPurged(boolean purged) {
-         this.purged = purged;
       }
 
       /**

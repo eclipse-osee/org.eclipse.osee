@@ -15,11 +15,13 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
 /**
  * @author Robert A. Fisher
  */
-public abstract class ArtifactModifiedEvent extends ArtifactEvent {
+public class ArtifactModifiedEvent extends ArtifactEvent {
 
    private final ArtifactModType modType;
    public enum ArtifactModType {
-      Deleted, Added, Changed, Reverted, Purged, PrePurge, PurgedFromBranch;
+      Deleted, Added, Changed,
+      // Dirtied artifact was reloaded to last saved state (not propagated remotely)
+      Reverted
    };
 
    public static ArtifactModType getModType(String type) {

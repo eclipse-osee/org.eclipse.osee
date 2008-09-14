@@ -25,7 +25,7 @@ public class SkynetEventBase implements ISkynetEvent {
    /**
     * @param branchId
     * @param transactionId
-    * @param author TODO
+    * @param author
     */
    public SkynetEventBase(int branchId, int transactionId, int author) {
       this.branchId = branchId;

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -25,11 +26,16 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -64,6 +70,26 @@ public class SMATaskComposite extends Composite implements IEventReceiver {
 
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+
+      registerEvents();
+   }
+
+   private void registerEvents() {
+      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+
+         @Override
+         public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            xTaskViewer.getXViewer().remove(cacheArtifacts.toArray());
+         }
+      });
+      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
+
+         @Override
+         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            xTaskViewer.getXViewer().remove(cacheArtifacts.toArray());
+         }
+
+      });
    }
 
    /* (non-Javadoc)
@@ -73,6 +99,7 @@ public class SMATaskComposite extends Composite implements IEventReceiver {
    public void dispose() {
       xTaskViewer.dispose();
       SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
       super.dispose();
    }
 
@@ -103,20 +130,16 @@ public class SMATaskComposite extends Composite implements IEventReceiver {
                      // the objects and let the viewer decided if the objects are in the composite
                      if (((ArtifactModifiedEvent) localEvent).getType() == ArtifactModifiedEvent.ArtifactModType.Deleted) {
                         removeTasks.add(artifact);
-                     } else if (((ArtifactModifiedEvent) localEvent).getType() == ArtifactModifiedEvent.ArtifactModType.Purged) {
-                        removeTasks.add(artifact);
                      } else {
                         updateTasks.add(artifact);
                      }
                   }
                } else if (localEvent instanceof RelationModifiedEvent) {
                   // Make sure this is a relation that applies to this task composite
-                  RelationModType modType =
-                        iXTaskViewer.getRelationChangeAction((RelationModifiedEvent) localEvent);
+                  RelationModType modType = iXTaskViewer.getRelationChangeAction((RelationModifiedEvent) localEvent);
                   if (modType == null) continue;
                   Artifact taskArt =
-                        ((RelationModifiedEvent) localEvent).getLink().getArtifact(
-                              AtsRelation.SmaToTask_Task.getSide());
+                        ((RelationModifiedEvent) localEvent).getLink().getArtifact(AtsRelation.SmaToTask_Task.getSide());
                   if (taskArt instanceof TaskArtifact) {
                      if (modType == RelationModType.Added) {
                         addTasks.add(taskArt);
@@ -139,8 +162,7 @@ public class SMATaskComposite extends Composite implements IEventReceiver {
                //               System.out.println("Updating to \"" + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma().getDescriptiveName() + "\" tasks " + updateTasks);
             }
          } else
-            OSEELog.logException(AtsPlugin.class, "Unexpected event => " + event, null,
-                  false);
+            OSEELog.logException(AtsPlugin.class, "Unexpected event => " + event, null, false);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

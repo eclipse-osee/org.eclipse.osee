@@ -26,7 +26,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.database,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.eclipse.osee.framework.messaging.event.skynet;bundle-version="0.4.0",
+ org.eclipse.osee.framework.jini;bundle-version="0.4.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.info

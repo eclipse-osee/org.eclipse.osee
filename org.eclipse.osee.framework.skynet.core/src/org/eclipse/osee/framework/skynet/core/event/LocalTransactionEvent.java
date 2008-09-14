@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
@@ -24,6 +25,10 @@ public class LocalTransactionEvent extends TransactionEvent {
     */
    public LocalTransactionEvent(Collection<Event> events, Object sender) {
       super(events, sender);
+   }
+
+   public LocalTransactionEvent(Event event, Object sender) {
+      this(Arrays.asList(event), sender);
    }
 
 }

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -55,7 +56,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -71,7 +72,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManag
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -242,7 +246,7 @@ public class ArtifactPersistenceManager {
       if (modType != ModificationType.NEW) {
          transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactModifiedEvent(artifact,
                transaction.getTransactionNumber()));
-         transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Added, this));
+         transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Added, this));
       }
       workedOneUnit();
    }
@@ -573,11 +577,11 @@ public class ArtifactPersistenceManager {
 
       transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactDeleteEvent(artifact,
             transaction.getTransactionNumber()));
-      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Deleted, this));
+      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.deleteAttributes();
-      
+
       artifact.persistAttributesAndRelations();
    }
 
@@ -927,9 +931,14 @@ public class ArtifactPersistenceManager {
             for (Attribute<?> attr : art.internalGetAttributes()) {
                attr.markAsPurged();
             }
-            SkynetEventManager.getInstance().kick(
-                  new TransactionArtifactModifiedEvent(art, ArtifactModType.Purged, instance));
          }
+
+         // Kick Local and Remote Events
+         Sender sender =
+               new Sender(Source.Local, ArtifactPersistenceManager.getInstance(),
+                     SkynetAuthentication.getUser().getArtId());
+         XEventManager.kickArtifactsPurgedEvent(sender, new LoadedArtifacts(artifactsToPurge));
+
       } finally {
          ArtifactLoader.clearQuery(queryId);
       }
