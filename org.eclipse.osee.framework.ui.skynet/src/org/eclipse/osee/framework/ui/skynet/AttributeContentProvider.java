@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +36,7 @@ public class AttributeContentProvider implements IStructuredContentProvider {
    public Object[] getElements(Object inputElement) {
       if (inputElement instanceof Artifact) {
          try {
-            return ((Artifact) inputElement).getAttributes().toArray();
+            return ((Artifact) inputElement).getAttributes(false).toArray();
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
