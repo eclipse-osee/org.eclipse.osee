@@ -14,7 +14,9 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.osee.framework.skynet.core.test.production.ConflictTestManager;
+
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.DeletionTest;
 
 /**
  * @author Theron Virgin

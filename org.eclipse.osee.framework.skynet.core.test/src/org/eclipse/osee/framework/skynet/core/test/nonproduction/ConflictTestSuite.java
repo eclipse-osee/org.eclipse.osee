@@ -9,7 +9,13 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.test.production;
+package org.eclipse.osee.framework.skynet.core.test.nonproduction;
+
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictDetectionTest;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictResolutionTest;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictedBranchCommitingTest;
+import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.MergeBranchManagementTest;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;

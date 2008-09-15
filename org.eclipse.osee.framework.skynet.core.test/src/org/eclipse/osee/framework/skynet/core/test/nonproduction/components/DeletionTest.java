@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.nonproduction;
+package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.test.production.ConflictTestManager;
 
 /**
  * @author Theron Virgin
@@ -129,7 +128,7 @@ public class DeletionTest extends TestCase {
          }
 
          //Check that attributes are Artifact Deleted
-         for (Attribute<?> attribute : artifact.getAttributes()) {
+         for (Attribute<?> attribute : artifact.getAttributes(true)) {
             checkAttribute(artifact, attribute, 3);
          }
          //Check that relations are deleted.
@@ -168,7 +167,7 @@ public class DeletionTest extends TestCase {
          }
 
          //Check that attributes are Artifact Deleted
-         for (Attribute<?> attribute : artifact.getAttributes()) {
+         for (Attribute<?> attribute : artifact.getAttributes(true)) {
             try {
                chstmt =
                      ConnectionHandler.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE,
@@ -229,7 +228,7 @@ public class DeletionTest extends TestCase {
                ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_ATTRIBUTE_TEST_QUERY).get(0);
 
          if (artifactForDeletionCheck != null) {
-            Attribute<?> attribute = artifactForDeletionCheck.getAttributes().get(0);
+            Attribute<?> attribute = artifactForDeletionCheck.getAttributes(true).get(0);
             RelationLink relation =
                   artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
             attribute.delete();
