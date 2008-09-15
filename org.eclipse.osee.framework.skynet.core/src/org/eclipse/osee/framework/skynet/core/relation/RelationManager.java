@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -375,7 +374,7 @@ public class RelationManager {
       }
    }
 
-   public static List<RelationLink> getRelationsAll(Artifact artifact) {
+   public static List<RelationLink> getRelationsAll(Artifact artifact, boolean includeDeleted) {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
 
       if (selectedRelations == null) {
@@ -384,7 +383,7 @@ public class RelationManager {
 
       List<RelationLink> relations = new ArrayList<RelationLink>(selectedRelations.size());
       for (RelationLink relation : selectedRelations) {
-         if (!relation.isDeleted()) {
+         if (!relation.isDeleted() || includeDeleted) {
             relations.add(relation);
          }
       }
@@ -725,7 +724,7 @@ public class RelationManager {
       if(bArt != null){
     	  setOrderValues(bArt, relationLink.getRelationType(),
             RelationSide.SIDE_A, markAsNotDirty);
-      }
+   }
    }
 
    private static void setOrderValues(Artifact sourceArtifact, RelationType type, RelationSide side, boolean markAsNotDirty) {

@@ -925,7 +925,7 @@ public class ArtifactPersistenceManager {
 
          for (Artifact art : artifactsToPurge) {
             art.setDeleted();
-            for (RelationLink rel : art.getRelationsAll()) {
+            for (RelationLink rel : art.getRelationsAll(false)) {
                rel.markAsPurged();
             }
             for (Attribute<?> attr : art.internalGetAttributes()) {

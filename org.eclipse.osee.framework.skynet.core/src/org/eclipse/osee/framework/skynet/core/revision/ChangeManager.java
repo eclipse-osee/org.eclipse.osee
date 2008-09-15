@@ -50,13 +50,13 @@ public class ChangeManager {
 	        "SELECT att1.attr_id, att1.value as was_value, txs1.mod_type FROM osee_join_artifact al1, osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE  al1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.transaction_id < ? AND al1.query_id = ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id order by txd1.branch_id, att1.art_id, att1.attr_id, txd1.transaction_id desc";
 	  
 	   private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
-	         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND (t1.tx_current = " + TxChange.DELETED.getValue() + " OR t1.tx_current = " + TxChange.CURRENT.getValue() + ") AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
+	         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() +", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
 	   private static final String TRANSACTION_ATTRIBUTE_CHANGES =
 	         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.transaction_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
 	   private static final String BRANCH_REL_CHANGES =
-	         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where (tx1.tx_current = " + TxChange.DELETED.getValue() + " OR tx1.tx_current = " + TxChange.CURRENT.getValue() + ") AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
+	         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current in (" + TxChange.DELETED.getValue() + ", " + TxChange.CURRENT.getValue() +", " + TxChange.ARTIFACT_DELETED.getValue() + ") AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
 
 	   private static final String TRANSACTION_REL_CHANGES =
 	         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order, rl3.b_order, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where td2.tx_type = 0 AND td2.transaction_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
@@ -331,9 +331,14 @@ public class ChangeManager {
                   changes.add(artifactChanged);
                   modifiedArtifacts.add(artId);
                }
+               
+               if(modificationType != ModificationType.DELETED && modificationType != ModificationType.ARTIFACT_DELETED){
+            	   modificationType = ModificationType.NEW;
+               }
+               
                attributeChanged =
                      new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
-                           fromTransactionId, modificationType != ModificationType.DELETED? ModificationType.NEW: modificationType, ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType, !hasBranch);
+                           fromTransactionId, modificationType, ChangeType.OUTGOING, isValue, "", attrId, attrTypeId, artModType, !hasBranch);
 
                changes.add(attributeChanged);
                attributesWasValueCache.put(attrId, attributeChanged);
@@ -379,7 +384,7 @@ public class ChangeManager {
 	                  String wasValue = resultSet.getString("was_value");
 	                  if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
 	                     AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
-	                     if(changed.getModificationType() != ModificationType.DELETED){
+	                     if(changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED){
 	                    	 changed.setModType(ModificationType.CHANGE);
 	                     }
 	                     changed.setWasValue(wasValue);

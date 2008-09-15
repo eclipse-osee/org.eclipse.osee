@@ -79,7 +79,7 @@ public class FullPortableExport {
 
       HashSet<RelationLink> links = new HashSet<RelationLink>();
       for (Artifact artifact : artifacts) {
-         links.addAll(artifact.getRelationsAll());
+         links.addAll(artifact.getRelationsAll(false));
       }
 
       for (RelationLink link : links) {

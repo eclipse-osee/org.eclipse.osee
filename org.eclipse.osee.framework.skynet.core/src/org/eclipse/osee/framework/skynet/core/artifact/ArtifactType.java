@@ -13,16 +13,19 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.MERGED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.sql.SQLException;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -258,6 +261,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
          imageRegistry.put(BASE + INCOMING + CHANGE, new OverlayImage(imageRegistry.get(BASE), incChange));
          imageRegistry.put(BASE + INCOMING + NEW, new OverlayImage(imageRegistry.get(BASE), incNew));
          imageRegistry.put(BASE + OUTGOING + DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
+         imageRegistry.put(BASE + OUTGOING + ARTIFACT_DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
          imageRegistry.put(BASE + OUTGOING + CHANGE, new OverlayImage(imageRegistry.get(BASE), outChange));
          imageRegistry.put(BASE + OUTGOING + MERGED, new OverlayImage(imageRegistry.get(BASE), merge));
          imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));

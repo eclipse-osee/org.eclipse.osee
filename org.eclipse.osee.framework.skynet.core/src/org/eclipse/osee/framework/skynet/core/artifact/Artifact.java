@@ -476,12 +476,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return
     * @throws SQLException
     */
-   public List<Attribute<?>> getAttributes() throws SQLException {
+   public List<Attribute<?>> getAttributes(boolean includeDeleted) throws SQLException {
       ensureAttributesLoaded();
       List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
       for (String attributeTypeName : attributes.keySet()) {
          for (Attribute<?> attribute : attributes.getValues(attributeTypeName)) {
-            if (!attribute.isDeleted()) {
+            if (!attribute.isDeleted() || includeDeleted) {
                notDeltedAttributes.add(attribute);
             }
          }
@@ -532,7 +532,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return null;
    }
 
-   private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
+   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
@@ -893,7 +893,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isReadOnly() {
-      return isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
+      return deleted || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
    }
 
    private boolean anAttributeIsDirty() throws SQLException {
@@ -1021,7 +1021,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    @Deprecated
    public ArrayList<RelationLink> getRelations(Artifact artifact) throws SQLException {
       ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
-      for (RelationLink relation : getRelationsAll()) {
+      for (RelationLink relation : getRelationsAll(false)) {
          try {
             if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
                relations.add(relation);
@@ -1328,7 +1328,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private void copyAttributes(Artifact artifact) throws SQLException {
-      for (Attribute<?> attribute : getAttributes()) {
+      for (Attribute<?> attribute : getAttributes(false)) {
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
    }
@@ -1545,8 +1545,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelations(this, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
-   public List<RelationLink> getRelationsAll() {
-      return RelationManager.getRelationsAll(this);
+   public List<RelationLink> getRelationsAll(boolean includeDeleted) {
+      return RelationManager.getRelationsAll(this, includeDeleted);
    }
 
    /**

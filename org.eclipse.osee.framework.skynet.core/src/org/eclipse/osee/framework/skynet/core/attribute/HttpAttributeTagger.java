@@ -89,7 +89,7 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
     */
    @Override
    public void notifyOnAttributeSave(Artifact artifact) throws Exception {
-      List<Attribute<?>> attributes = artifact.getAttributes();
+      List<Attribute<?>> attributes = artifact.getAttributes(false);
       for (Attribute<?> attribute : attributes) {
          if (attribute.isDirty() && attribute.getAttributeType().isTaggable()) {
             addAttributeGammaForTagging(attribute.getGammaId());
@@ -131,8 +131,8 @@ public class HttpAttributeTagger implements IAttributeSaveListener, IDbTransacti
 
             inputStream = new ByteArrayInputStream(payload.toString().getBytes("UTF-8"));
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
-                        parameters);
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
+                        OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT, parameters);
             response.append(HttpProcessor.put(new URL(url), inputStream, "application/xml", "UTF-8"));
             OseeLog.log(TagService.class, Level.FINEST, String.format("Transmitted to Tagger in [%d ms]",
                   System.currentTimeMillis() - start));
