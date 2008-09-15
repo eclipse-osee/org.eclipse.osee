@@ -553,7 +553,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       Object[] objects = selection.toArray();
       for (Object object : objects) {
          if (object instanceof RelationLink) {
-            ((RelationLink) object).delete();
+            ((RelationLink) object).delete(true);
 
             RelationType relationType = ((RelationLink) object).getRelationType();
             int sideAMax =
@@ -633,7 +633,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             if (artifact == modifiedArtifact) {
                treeViewer.refresh(modifiedArtifact);
             } else {
-               for (RelationLink rel : modifiedArtifact.getRelationsAll()) {
+               for (RelationLink rel : modifiedArtifact.getRelationsAll(false)) {
                   try {
                      if (rel.getArtifactOnOtherSide(modifiedArtifact) == artifact) {
                         treeViewer.update(rel, null);
