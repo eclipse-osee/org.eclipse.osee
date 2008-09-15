@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.Conf
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictedBranchCommitingTest;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.MergeBranchManagementTest;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;

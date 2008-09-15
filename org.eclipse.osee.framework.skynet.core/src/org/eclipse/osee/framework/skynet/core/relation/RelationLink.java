@@ -53,8 +53,8 @@ public class RelationLink {
    }
 
    public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale) {
-      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(),
-            bArtifact.getBranch(), relationType, 0, 0, rationale, 0, 0);
+      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
+            0, rationale, 0, 0);
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -64,8 +64,7 @@ public class RelationLink {
       if (bArtifactId == artifact.getArtId()) {
          return RelationSide.SIDE_B;
       }
-      throw new IllegalArgumentException(
-            "The artifact " + artifact + " is on neither side of " + this);
+      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
 
    @Deprecated
@@ -76,8 +75,7 @@ public class RelationLink {
       if (bArtifactId == artifact.getArtId()) {
          return false;
       }
-      throw new IllegalArgumentException(
-            "The artifact " + artifact + " is on neither side of " + this);
+      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
 
    /**
@@ -126,14 +124,16 @@ public class RelationLink {
       return dirty;
    }
 
-   public void delete() throws ArtifactDoesNotExist, SQLException {
+   public void delete(boolean reorder) throws ArtifactDoesNotExist, SQLException {
       if (!deleted) {
          markAsDeleted();
-         dirty = true;
-         RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
+         setDirty();
+         if (reorder) {
+            RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
+         }
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(),
-                     getASideName(), RelationModType.Deleted.name(), this, getBranch()));
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
+                     RelationModType.Deleted.name(), this, getBranch()));
       }
    }
 
@@ -150,14 +150,13 @@ public class RelationLink {
 
    public void markAsPurged() {
       markAsDeleted();
-      dirty = false;
+      setNotDirty();
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       Artifact relatedArtifact = getArtifactIfLoaded(relationSide);
       if (relatedArtifact == null) {
-         return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide),
-               getBranch(relationSide));
+         return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
       }
       return relatedArtifact;
    }
@@ -196,7 +195,7 @@ public class RelationLink {
     */
    public void setAOrder(int order) {
       this.aOrder = order;
-      dirty = true;
+      setDirty();
    }
 
    /**
@@ -215,7 +214,7 @@ public class RelationLink {
     */
    public void setBOrder(int order) {
       this.bOrder = order;
-      dirty = true;
+      setDirty();
    }
 
    @Deprecated
@@ -266,13 +265,12 @@ public class RelationLink {
       if (this.rationale.equals(rationale)) return;
 
       this.rationale = rationale;
-      dirty = true;
+      setDirty();
 
       if (notify) {
          SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(),
-                     getASideName(), RelationModType.RationaleMod.name(), this,
-                     getABranch()));
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
+                     RelationModType.RationaleMod.name(), this, getABranch()));
       }
    }
 
@@ -359,8 +357,8 @@ public class RelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(),
-            aArtifactId, aOrder, bArtifactId, bOrder);
+      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(), aArtifactId, aOrder,
+            bArtifactId, bOrder);
    }
 
    public boolean isExplorable() {

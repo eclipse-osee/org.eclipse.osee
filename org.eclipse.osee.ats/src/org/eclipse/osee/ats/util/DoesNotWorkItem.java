@@ -114,7 +114,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
                   "Lba B3 Code Team Workflow", "Lba B3 Test Team Workflow", "Lba B3 Req Team Workflow",
                   "Lba B3 SW Design Team Workflow", "Lba B3 Tech Approach Team Workflow")) {
                for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
-                  for (Attribute<?> attr : team.getAttributes()) {
+                  for (Attribute<?> attr : team.getAttributes(false)) {
                      if (attr.getValue() == null) {
                         System.out.println(team.getHumanReadableId() + " - " + attr.getNameValueDescription());
                         attr.delete();
@@ -140,7 +140,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
             int x = 0;
             for (String artTypeName : Arrays.asList(User.ARTIFACT_NAME)) {
                for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
-                  for (Attribute<?> attr : team.getAttributes()) {
+                  for (Attribute<?> attr : team.getAttributes(false)) {
                      if (attr.getValue() == null) {
                         System.out.println(team.getHumanReadableId() + " - " + attr.getNameValueDescription());
                         attr.delete();

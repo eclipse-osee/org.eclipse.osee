@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.ConflictTestManager;
 import org.eclipse.osee.framework.skynet.core.test.nonproduction.components.DeletionTest;
 
@@ -32,15 +31,7 @@ public class DeletionTestSuite {
 
    public static Test suite() {
       TestSuite suite = new TestSuite();
-      // Only include short tests
       suite.addTest(new DeletionTest("deleteAndCheckTXCurrents"));
-      //      suite.addTest(new ConflictDetectionTest("testGetConflictsPerBranch"));
-      //      suite.addTest(new MergeBranchManagementTest("testGetMergeBranchCreated"));
-      //      suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithResolutionErrors"));
-      //      //Test conflict resolution
-      //      suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
-      //      suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithoutResolutionErrors"));
-
       TestSetup wrapper = new TestSetup(suite) {
          protected void setUp() throws Exception {
             oneTimeSetUp();

@@ -132,7 +132,7 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
    public void testAtsBranchAttributeValues() throws OseeCoreException, SQLException {
       xResultData.log("testAtsBranchAttributeValues");
       for (Artifact artifact : artifacts) {
-         for (Attribute<?> attr : artifact.getAttributes()) {
+         for (Attribute<?> attr : artifact.getAttributes(false)) {
             if (attr.getValue() == null) {
                xResultData.logError("Artifact: " + artifact.getHumanReadableId() + " Types: " + artifact.getArtifactTypeName() + " - Null Attribute: " + attr.getNameValueDescription());
                if (fixAttributeValues) {

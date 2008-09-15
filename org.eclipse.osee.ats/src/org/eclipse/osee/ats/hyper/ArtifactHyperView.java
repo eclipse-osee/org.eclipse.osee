@@ -120,7 +120,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
-         for (RelationLink link : currentArtifact.getRelationsAll()) {
+         for (RelationLink link : currentArtifact.getRelationsAll(false)) {
             debug.report("relation " + link.getRelationType().getTypeName());
 
             // Don't process link if onlyShowRel is populated and doesn't contain link name

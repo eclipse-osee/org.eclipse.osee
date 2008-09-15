@@ -1190,7 +1190,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException, ArtifactDoesNotExist {
       // Delete all existing relations
       for (RelationLink relationLink : getRelations(relationSide)) {
-         relationLink.delete();
+         relationLink.delete(true);
       }
       setRelations(relationSide, Arrays.asList(artifact));
    }

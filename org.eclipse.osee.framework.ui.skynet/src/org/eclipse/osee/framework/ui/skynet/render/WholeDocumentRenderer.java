@@ -24,10 +24,11 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -71,13 +72,20 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+      if (artifact != null) {
+         Attribute<?> attribute =
+               artifact.getSoleAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                     WordAttribute.CONTENT_NAME).getName());
+         if (attribute == null) {
+            attribute =
+                  artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                        WordAttribute.CONTENT_NAME), true);
+         }
+         if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
+            throw new OseeCoreException(
+                  "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
 
-      try {
-         if (artifact != null) artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(
-               artifact, WordAttribute.CONTENT_NAME).getName());
-      } catch (AttributeDoesNotExist ex) {
-         artifact.createAttribute(
-               AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME), true);
+         }
       }
 
       InputStream stream =

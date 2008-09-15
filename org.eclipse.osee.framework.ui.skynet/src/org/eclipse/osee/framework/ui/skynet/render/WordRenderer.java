@@ -22,11 +22,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -45,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -59,7 +56,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
-
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -428,26 +424,18 @@ public class WordRenderer extends FileRenderer {
          template = getTemplate(firstArtifact, presentationType, option);
 
          for (Artifact artifact : artifacts) {
-            try {
-               artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                     WordAttribute.CONTENT_NAME).getName());
-            } catch (AttributeDoesNotExist ex) {
-               artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                     WordAttribute.CONTENT_NAME), true);
+            Attribute<?> attribute =
+                  artifact.getSoleAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                        WordAttribute.CONTENT_NAME).getName());
+            if (attribute == null) {
+               attribute =
+                     artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
+                           WordAttribute.CONTENT_NAME), true);
             }
-            //TODO once we get a sole attribute call will be able to simplify this block that checks for word markup when performing a diff. 
-            if (presentationType == PresentationType.DIFF) {
-                Attribute<?> attribute;
-                try {
-                   attribute =
-                         artifact.getAttributes(
-                               AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME).getName()).get(0);
-                } catch (Exception ex) {
-                   attribute = null;
-                }
-                if (attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
-                   throw new OseeCoreException("Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be diffed.");
-                }
+            if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
+               throw new OseeCoreException(
+                     "Trying to diff the " + artifact.getDescriptiveName() + " artifact on the " + artifact.getBranch().getBranchShortName() + " branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.");
+
             }
          }
 
@@ -473,7 +461,7 @@ public class WordRenderer extends FileRenderer {
       template = WordUtil.removeGUIDFromTemplate(template);
       return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
-   
+
    protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), option);
    }

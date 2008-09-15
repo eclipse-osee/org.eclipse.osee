@@ -476,14 +476,14 @@ public class RelationManager {
 
    public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist, SQLException {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
-      relation.delete();
+      relation.delete(true);
    }
 
    public static void deleteRelationsAll(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            relation.delete();
+            relation.delete(false);
          }
       }
    }
@@ -493,10 +493,10 @@ public class RelationManager {
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
-               relation.delete();
+               relation.delete(true);
             } else {
                if (relation.getSide(artifact) != relationSide) {
-                  relation.delete();
+                  relation.delete(true);
                }
             }
          }
@@ -715,16 +715,18 @@ public class RelationManager {
     * @throws ArtifactDoesNotExist
     */
    static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist, SQLException {
-      Artifact aArt = ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_A), relationLink.getBranch(RelationSide.SIDE_A));
-      if(aArt != null){
-    	  setOrderValues(aArt, relationLink.getRelationType(),
-            RelationSide.SIDE_B, markAsNotDirty);
+      Artifact aArt =
+            ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_A),
+                  relationLink.getBranch(RelationSide.SIDE_A));
+      if (aArt != null) {
+         setOrderValues(aArt, relationLink.getRelationType(), RelationSide.SIDE_B, markAsNotDirty);
       }
-      Artifact bArt = ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_B), relationLink.getBranch(RelationSide.SIDE_B));
-      if(bArt != null){
-    	  setOrderValues(bArt, relationLink.getRelationType(),
-            RelationSide.SIDE_A, markAsNotDirty);
-   }
+      Artifact bArt =
+            ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_B),
+                  relationLink.getBranch(RelationSide.SIDE_B));
+      if (bArt != null) {
+         setOrderValues(bArt, relationLink.getRelationType(), RelationSide.SIDE_A, markAsNotDirty);
+      }
    }
 
    private static void setOrderValues(Artifact sourceArtifact, RelationType type, RelationSide side, boolean markAsNotDirty) {

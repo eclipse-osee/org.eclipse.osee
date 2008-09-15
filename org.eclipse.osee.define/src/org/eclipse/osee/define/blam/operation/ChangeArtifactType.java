@@ -107,7 +107,7 @@ public class ChangeArtifactType extends AbstractBlam {
    private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
       relationsToDelete = new LinkedList<RelationLink>();
 
-      for (RelationLink link : artifact.getRelationsAll()) {
+      for (RelationLink link : artifact.getRelationsAll(false)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
             relationsToDelete.add(link);
          }
@@ -171,7 +171,7 @@ public class ChangeArtifactType extends AbstractBlam {
       }
 
       for (RelationLink relation : relationsToDelete) {
-         relation.delete();
+         relation.delete(true);
       }
 
       artifact.changeArtifactType(descriptor);

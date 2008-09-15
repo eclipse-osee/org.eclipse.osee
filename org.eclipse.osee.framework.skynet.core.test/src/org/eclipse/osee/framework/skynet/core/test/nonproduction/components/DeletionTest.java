@@ -232,7 +232,7 @@ public class DeletionTest extends TestCase {
             RelationLink relation =
                   artifactForDeletionCheck.getRelations(RelationTypeManager.getType("Default Hierarchical")).get(0);
             attribute.delete();
-            relation.delete();
+            relation.delete(true);
             artifactForDeletionCheck.persistAttributesAndRelations();
             //check for internal deletions and then check the database
 
