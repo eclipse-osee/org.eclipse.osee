@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -109,7 +109,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             for (RelationLink relationLink : relations) {
                Artifact art = relationLink.getArtifactOnOtherSide(artifact);
                SkynetEventManager.getInstance().register(RelationModifiedEvent.class, art, relComp);
-               SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, art, relComp);
+               SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, art, relComp);
             }
             SkynetEventManager.getInstance().register(RelationModifiedEvent.class, artifact, relComp);
             return relations.toArray();

@@ -18,8 +18,16 @@ import org.eclipse.osee.ats.world.WorldContentProvider;
  */
 public class TaskContentProvider extends WorldContentProvider {
 
+   private final TaskXViewer taskXViewer;
+
    public TaskContentProvider(TaskXViewer taskXViewer) {
       super(taskXViewer);
+      this.taskXViewer = taskXViewer;
+   }
+
+   @Override
+   public String toString() {
+      return "TaskContentProvider: " + taskXViewer.toString();
    }
 
    /*

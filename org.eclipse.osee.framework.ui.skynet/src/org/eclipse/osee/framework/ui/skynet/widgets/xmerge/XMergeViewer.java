@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
@@ -73,7 +73,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
    private MergeXViewer xCommitViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
-   private static final String LOADING = "Loading ...  ";
+   private static final String LOADING = "Loading ...";
    private static final String NO_CONFLICTS = "No conflicts were found";
    private Label extraInfoLabel;
    private Conflict[] conflicts;
@@ -382,28 +382,29 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
 
    public void onEvent(final Event eventArg) {
       if (xCommitViewer == null || xCommitViewer.getTree() == null || xCommitViewer.getTree().isDisposed()) return;
+
       if (eventArg instanceof TransactionEvent) {
          for (Event event : ((TransactionEvent) eventArg).getLocalEvents()) {
             try {
-               if (event instanceof TransactionArtifactModifiedEvent) {
-                  Artifact artifact = ((TransactionArtifactModifiedEvent) event).getArtifact();
-                  Branch branch = artifact.getBranch();
-                  for (Conflict conflict : conflicts) {
+            if (event instanceof ArtifactModifiedEvent) {
+               Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
+               Branch branch = artifact.getBranch();
+               for (Conflict conflict : conflicts) {
                      if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
                         setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
                               "Source Artifact Changed");
                         if (artifact.equals(conflict.getSourceArtifact()) & eventArg instanceof LocalTransactionEvent) {
-                           new MessageDialog(
-                                 Display.getCurrent().getActiveShell().getShell(),
-                                 "Modifying Source artifact while merging",
-                                 null,
-                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                 new MessageDialog(
+                                       Display.getCurrent().getActiveShell().getShell(),
+                                       "Modifying Source artifact while merging",
+                                       null,
+                                       "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
                                  2, new String[] {"OK"}, 1).open();
-                        }
+                           }
                         return;
-                     }
+                        }
 
-                  }
+                     }
                   if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
                      setInputData(
                            sourceBranch,
@@ -475,7 +476,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             try {
                if (commitTrans == null) {
                   conflicts =
-                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                	  ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
                               new Conflict[0]);
                } else {
                   conflicts =

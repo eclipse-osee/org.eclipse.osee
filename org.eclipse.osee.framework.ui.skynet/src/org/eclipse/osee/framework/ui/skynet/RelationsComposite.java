@@ -35,7 +35,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -627,8 +627,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
    public void onEvent(org.eclipse.osee.framework.ui.plugin.event.Event event) {
       if (treeViewer != null && treeViewer.getInput() instanceof Artifact) {
-         if (event instanceof CacheArtifactModifiedEvent) {
-            CacheArtifactModifiedEvent ev = (CacheArtifactModifiedEvent) event;
+         if (event instanceof ArtifactModifiedEvent) {
+            ArtifactModifiedEvent ev = (ArtifactModifiedEvent) event;
             Artifact modifiedArtifact = ev.getArtifact();
             if (artifact == modifiedArtifact) {
                treeViewer.refresh(modifiedArtifact);

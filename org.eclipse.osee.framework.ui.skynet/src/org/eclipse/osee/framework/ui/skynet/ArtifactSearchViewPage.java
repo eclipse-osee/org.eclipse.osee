@@ -43,9 +43,8 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -778,10 +777,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private void registerForEvents() {
       eventManager.unRegisterAll(this);
 
-      eventManager.register(CacheArtifactModifiedEvent.class, this);
+      eventManager.register(ArtifactModifiedEvent.class, this);
       eventManager.register(CacheRelationModifiedEvent.class, this);
       eventManager.register(TransactionRelationModifiedEvent.class, this);
-      eventManager.register(TransactionArtifactModifiedEvent.class, this);
    }
 
    @Override

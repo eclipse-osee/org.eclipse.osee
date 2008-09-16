@@ -66,14 +66,13 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
-                     for (TaskArtifact taskArt : tasks)
-                        taskArt.saveSMA();
-                  }
-               };
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            @Override
+            protected void handleTxWork() throws OseeCoreException, SQLException {
+               for (TaskArtifact taskArt : tasks)
+                  taskArt.saveSMA();
+            }
+         };
          txWrapper.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -338,8 +337,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                       */
                      @Override
                      public void run() {
-                        AWorkbench.popup("ERROR",
-                              "No Tasks Found for \"" + searchItem.getName() + "\"");
+                        AWorkbench.popup("ERROR", "No Tasks Found for \"" + searchItem.getName() + "\"");
                      }
                   }, true);
                }
@@ -356,8 +354,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
          } catch (final Exception ex) {
             monitor.done();
-            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks",
-                  ex);
+            return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Can't load tasks", ex);
          }
          monitor.done();
          return Status.OK_STATUS;

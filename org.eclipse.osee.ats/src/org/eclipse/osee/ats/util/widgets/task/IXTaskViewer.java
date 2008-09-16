@@ -57,4 +57,6 @@ public interface IXTaskViewer {
     */
    public boolean isTasksEditable() throws OseeCoreException, SQLException;
 
+   public String toString();
+
 }

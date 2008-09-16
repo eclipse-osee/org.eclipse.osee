@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -91,14 +92,18 @@ public class SMATaskComposite extends Composite {
       XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
 
          @Override
-         public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+         public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            if (cacheArtifacts.size() == 0) return;
+            // ContentProvider ensures in display thread
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
          }
       });
       XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
 
          @Override
-         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            if (cacheArtifacts.size() == 0) return;
+            // ContentProvider ensures in display thread
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
          }
 
@@ -109,15 +114,26 @@ public class SMATaskComposite extends Composite {
           * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsChanged(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
           */
          @Override
-         public void handleArtifactsChanged(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            xTaskViewer.getXViewer().update(cacheArtifacts, null);
+         public void handleArtifactsChanged(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            if (cacheArtifacts.size() == 0) return;
+            Displays.ensureInDisplayThread(new Runnable() {
+               /* (non-Javadoc)
+                * @see java.lang.Runnable#run()
+                */
+               @Override
+               public void run() {
+                  xTaskViewer.getXViewer().update(cacheArtifacts, null);
+               }
+            });
          }
 
          /* (non-Javadoc)
           * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
           */
          @Override
-         public void handleArtifactsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+         public void handleArtifactsDeleted(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            if (cacheArtifacts.size() == 0) return;
+            // ContentProvider ensures in display thread
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
          }
 
@@ -126,7 +142,9 @@ public class SMATaskComposite extends Composite {
           */
          @Override
          public void handleRelationsAdded(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
-            Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
+            final Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
+            if (artifacts.size() == 0) return;
+            // ContentProvider ensures in display thread
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
          }
 
@@ -135,7 +153,9 @@ public class SMATaskComposite extends Composite {
           */
          @Override
          public void handleRelationsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
-            Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
+            final Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
+            if (artifacts.size() == 0) return;
+            // ContentProvider ensures in display thread
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
          }
 

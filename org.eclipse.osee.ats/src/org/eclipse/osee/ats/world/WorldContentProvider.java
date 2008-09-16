@@ -39,6 +39,11 @@ public class WorldContentProvider implements ITreeContentProvider {
       this.xViewer = WorldXViewer;
    }
 
+   @Override
+   public String toString() {
+      return "WorldContentProvider";
+   }
+
    public void add(final Artifact item) {
       add(Arrays.asList(item));
    }

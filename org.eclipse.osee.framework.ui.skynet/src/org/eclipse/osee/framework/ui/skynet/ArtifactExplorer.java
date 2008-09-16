@@ -52,9 +52,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
@@ -1057,10 +1055,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       SkynetEventManager.getInstance().unRegisterAll(this);
       SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
-      SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
+      SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, this);
       SkynetEventManager.getInstance().register(CacheRelationModifiedEvent.class, this);
       SkynetEventManager.getInstance().register(TransactionRelationModifiedEvent.class, this);
-      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
       SkynetEventManager.getInstance().register(ArtifactLockStatusChanged.class, this);

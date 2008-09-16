@@ -32,9 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -214,12 +212,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       setTitleImage(getEditorInput().getArtifact().getImage());
 
       String guid = getEditorInput().getArtifact().getGuid();
-      eventManager.register(CacheArtifactModifiedEvent.class, guid, this);
+      eventManager.register(ArtifactModifiedEvent.class, guid, this);
       eventManager.register(CacheRelationModifiedEvent.class, this);
       eventManager.register(RemoteTransactionEvent.class, this);
       eventManager.register(TransactionRelationModifiedEvent.class, this);
       eventManager.register(DefaultBranchChangedEvent.class, this);
-      eventManager.register(TransactionArtifactModifiedEvent.class, this);
       eventManager.register(VisitorEvent.class, this);
       eventManager.register(LocalCommitBranchEvent.class, this);
       eventManager.register(RemoteCommitBranchEvent.class, this);
@@ -341,6 +338,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(skynetGuiPlugin.getImage("edit.gif"));
       item.setToolTipText("Show this artifact in the Resource History");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             RevisionHistoryView.open(getEditorInput().getArtifact());
          }
@@ -350,6 +348,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(skynetGuiPlugin.getImage("magnify.gif"));
       item.setToolTipText("Reveal this artifact in the Artifact Explorer");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             Artifact artifact = getEditorInput().getArtifact();
             try {
@@ -367,6 +366,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(skynetGuiPlugin.getImage("edit_artifact.gif"));
       item.setToolTipText("Present this artifact for editing");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             RendererManager.getInstance().editInJob(getEditorInput().getArtifact());
          }
@@ -378,6 +378,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
       item.setToolTipText("Present this artifact for previewing (read-only)");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             RendererManager.getInstance().previewInJob(getEditorInput().getArtifact());
          }
@@ -388,6 +389,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(skynetGuiPlugin.getImage("delete.gif"));
       item.setToolTipText(deleteAction.getText());
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             deleteAction.run();
          }
@@ -401,6 +403,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch.gif"));
       item.setToolTipText("Reveal the branch this artifact is on in the Branch Manager");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             BranchView.revealBranch(getEditorInput().getArtifact().getBranch());
          }
@@ -412,6 +415,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.setImage(SkynetGuiPlugin.getInstance().getImage("authenticated.gif"));
       item.setToolTipText("Access Control");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), getEditorInput().getArtifact());
             pd.open();
@@ -425,6 +429,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       back.setImage(skynetGuiPlugin.getImage("nav_backward.gif"));
       back.setToolTipText("Back to previous page");
       back.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             previewComposite.back();
          }
@@ -433,6 +438,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       forward.setImage(skynetGuiPlugin.getImage("nav_forward.gif"));
       forward.setToolTipText("Forward to the next page.");
       forward.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             previewComposite.forward();
          }
@@ -442,6 +448,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       refresh.setImage(skynetGuiPlugin.getImage("refresh.gif"));
       refresh.setToolTipText("Refresh the current page");
       refresh.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent event) {
             previewComposite.refresh();
          }
@@ -452,6 +459,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          snapshotSave.setImage(skynetGuiPlugin.getImage("snashotSave.gif"));
          snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
          snapshotSave.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                final String oldUrl = previewComposite.getUrl();
                if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
@@ -487,6 +495,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
       }
 
+      @Override
       public void run() {
          try {
             MessageDialog dialog =
@@ -526,6 +535,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       return "";
    }
 
+   @Override
    public ArtifactEditorInput getEditorInput() {
       return (ArtifactEditorInput) super.getEditorInput();
    }
@@ -561,18 +571,18 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
          if (eventArtifact != null && eventArtifact.equals(artifact)) {
             if (event instanceof ArtifactModifiedEvent) {
-               ArtifactModType modType = ((ArtifactModifiedEvent) event).getType();
+               ArtifactModType artifactModType = ((ArtifactModifiedEvent) event).getType();
 
-               if (modType == ArtifactModType.Deleted) {
+               if (artifactModType == ArtifactModType.Deleted) {
                   AWorkbench.getActivePage().closeEditor(editor, false);
-               } else if (modType == ArtifactModType.Added || modType == ArtifactModType.Changed || modType == ArtifactModType.Reverted) {
+               } else if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
 
                   setPartName(getEditorInput().getName());
                   setTitleImage(artifact.getImage());
                   attributeComposite.refreshArtifact(artifact);
 
-                  if (event instanceof CacheArtifactModifiedEvent) {
-                     CacheArtifactModifiedEvent cachedEvent = (CacheArtifactModifiedEvent) event;
+                  if (event instanceof ArtifactModifiedEvent) {
+                     ArtifactModifiedEvent cachedEvent = (ArtifactModifiedEvent) event;
                      if (cachedEvent.getSender() instanceof WordAttribute) {
                         renderPreviewPage();
                      }
@@ -661,9 +671,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private final class BrowserProgressListener implements ProgressListener {
 
-      private BrowserComposite browserComposite;
-      private ToolItem back;
-      private ToolItem forward;
+      private final BrowserComposite browserComposite;
+      private final ToolItem back;
+      private final ToolItem forward;
 
       private BrowserProgressListener(BrowserComposite browserComposite, ToolItem back, ToolItem forward) {
          this.browserComposite = browserComposite;

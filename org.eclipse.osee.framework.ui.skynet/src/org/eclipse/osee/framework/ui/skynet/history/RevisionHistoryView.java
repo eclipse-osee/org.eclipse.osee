@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -82,8 +82,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
       SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
-      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class,
+      SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, this);
+      SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class,
             this);
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
 
