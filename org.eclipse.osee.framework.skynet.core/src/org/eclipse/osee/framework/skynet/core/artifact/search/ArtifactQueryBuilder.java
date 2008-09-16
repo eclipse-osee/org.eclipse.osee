@@ -52,6 +52,7 @@ public class ArtifactQueryBuilder {
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
    private boolean count = false;
+   private boolean emptyCriteria = false;
 
    /**
     * @param artId
@@ -71,14 +72,17 @@ public class ArtifactQueryBuilder {
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(artifactIds, 0, null, null, null, branch, allowDeleted, loadLevel);
+      emptyCriteria = artifactIds.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, false, loadLevel);
+      emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, branch, allowDeleted, loadLevel);
+      emptyCriteria = guidOrHrids.size() == 0;
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel) {
@@ -91,30 +95,31 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
       this(null, 0, null, null, artifactTypes, branch, false, loadLevel);
+      emptyCriteria = artifactTypes.size() == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, null, branch, allowDeleted, loadLevel);
    }
 
-   private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
-      return criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]);
-   }
-
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, null, branch, allowDeleted, loadLevel, criteria);
+      emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, null, branch, false, loadLevel, toArray(criteria));
+      emptyCriteria = criteria.size() == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, criteria);
+      emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, Arrays.asList(artifactType), branch, false, loadLevel, toArray(criteria));
+      emptyCriteria = criteria.size() == 0;
    }
 
    private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
@@ -156,6 +161,10 @@ public class ArtifactQueryBuilder {
       nextAliases.put("osee_define_artifact_version", new NextAlias("arv"));
       nextAliases.put("osee_define_attribute", new NextAlias("att"));
       nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
+   }
+
+   private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
+      return criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]);
    }
 
    private static String ensureValid(String id) {
@@ -334,6 +343,9 @@ public class ArtifactQueryBuilder {
    }
 
    private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
+      if (emptyCriteria) {
+         return java.util.Collections.emptyList();
+      }
       List<Artifact> artifacts =
             ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
                   loadLevel, reload, confirmer, null, allowDeleted);
@@ -357,7 +369,9 @@ public class ArtifactQueryBuilder {
 
    public int countArtifacts() throws SQLException {
       int artifactCount = 0;
-
+      if (emptyCriteria) {
+         return 0;
+      }
       ConnectionHandlerStatement chStmt = null;
       count = true;
       try {
@@ -375,6 +389,9 @@ public class ArtifactQueryBuilder {
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      if (emptyCriteria) {
+         throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
+      }
       Collection<Artifact> artifacts = getArtifacts(1, null);
 
       if (artifacts.size() == 0) {
