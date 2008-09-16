@@ -21,6 +21,8 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
    private final int artId;
    private final int artTypeId;
    private final String factoryName;
+   private final int transactionId;
+   private final int branchId;
 
    /**
     * @param branchId
@@ -30,11 +32,27 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
     * @param author TODO
     */
    public SkynetArtifactEventBase(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
-      super(branchId, transactionId, author);
+      super(author);
+      this.branchId = branchId;
 
       this.artId = artId;
       this.artTypeId = artTypeId;
       this.factoryName = factoryName;
+      this.transactionId = transactionId;
+   }
+
+   /**
+    * @return the branchId
+    */
+   public int getBranchId() {
+      return branchId;
+   }
+
+   /**
+    * @return Returns the transactionId.
+    */
+   public int getTransactionId() {
+      return transactionId;
    }
 
    /**

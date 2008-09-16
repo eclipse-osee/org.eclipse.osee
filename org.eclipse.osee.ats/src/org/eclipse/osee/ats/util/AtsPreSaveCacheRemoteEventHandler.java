@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -48,8 +48,8 @@ public class AtsPreSaveCacheRemoteEventHandler implements IEventReceiver {
       try {
          if (event instanceof RemoteTransactionEvent) {
             for (Event localEvent : ((RemoteTransactionEvent) event).getLocalEvents()) {
-               if (localEvent instanceof TransactionArtifactModifiedEvent) {
-                  Artifact artifact = ((TransactionArtifactModifiedEvent) localEvent).getArtifact();
+               if (localEvent instanceof ArtifactModifiedEvent) {
+                  Artifact artifact = ((ArtifactModifiedEvent) localEvent).getArtifact();
                   if (artifact instanceof StateMachineArtifact) {
                      ((StateMachineArtifact) artifact).initalizePreSaveCache();
                   }

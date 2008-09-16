@@ -270,6 +270,12 @@ public class SkynetAuthentication {
       return user;
    }
 
+   public static int getAuthor() {
+      if (duringUserCreation()) return -1;
+      if (getUser() == null) return -1;
+      return getUser().getArtId();
+   }
+
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */

@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 public class SkynetEventBase implements ISkynetEvent {
    private static final long serialVersionUID = -5381855085551886510L;
 
-   private final int branchId;
-   private final int transactionId;
    private final int author;
 
    /**
@@ -27,24 +25,8 @@ public class SkynetEventBase implements ISkynetEvent {
     * @param transactionId
     * @param author
     */
-   public SkynetEventBase(int branchId, int transactionId, int author) {
-      this.branchId = branchId;
-      this.transactionId = transactionId;
+   public SkynetEventBase(int author) {
       this.author = author;
-   }
-
-   /**
-    * @return Returns the branchId.
-    */
-   public int getBranchId() {
-      return branchId;
-   }
-
-   /**
-    * @return Returns the transactionId.
-    */
-   public int getTransactionId() {
-      return transactionId;
    }
 
    public int compareTo(Object o) {

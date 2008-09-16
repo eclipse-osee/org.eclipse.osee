@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -35,10 +36,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Ryan D. Brooks
@@ -307,6 +311,7 @@ public class RelationManager {
     * @throws SQLException
     * @deprecated
     */
+   @Deprecated
    public static void revertRelationsFor(Artifact artifact) {
       //This is inappropriate to use as references held to links by other applications will continue to exist.
       artifactToRelations.remove(artifact);
@@ -555,6 +560,10 @@ public class RelationManager {
       SkynetEventManager.getInstance().kick(
             new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
                   relation.getASideName(), RelationModType.Added, RelationManager.class));
+
+      Sender sender = new Sender(Source.Local, RelationManager.class, SkynetAuthentication.getAuthor());
+      XEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, relation, relation.getBranch(),
+            relation.getRelationType().getTypeName(), "");
 
    }
 

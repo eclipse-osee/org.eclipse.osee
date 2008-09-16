@@ -24,7 +24,7 @@ public class NetworkBroadcastEvent extends SkynetEventBase {
     * @param author TODO
     */
    public NetworkBroadcastEvent(int branchId, int transactionId, String message, int author) {
-      super(branchId, transactionId, author);
+      super(author);
       this.message = message;
    }
 

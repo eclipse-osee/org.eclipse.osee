@@ -43,7 +43,6 @@ public class ChangeArtifactType extends AbstractBlam {
    private List<Attribute<?>> attributesToPurge;
    private List<RelationLink> relationsToDelete;
 
-   @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       processChange(variableMap.getArtifacts("artifacts"),
             variableMap.getArtifactSubtypeDescriptor("New Artifact Type"));

@@ -17,11 +17,9 @@ public class ConfigurationModifiedEvent extends SkynetEventBase {
    private static final long serialVersionUID = 4199206743701390599L;
 
    /**
-    * @param branchId
-    * @param transactionId
-    * @param author TODO
+    * @param author
     */
-   public ConfigurationModifiedEvent(int branchId, int transactionId, int author) {
-      super(branchId, transactionId, author);
+   public ConfigurationModifiedEvent(int author) {
+      super(author);
    }
 }

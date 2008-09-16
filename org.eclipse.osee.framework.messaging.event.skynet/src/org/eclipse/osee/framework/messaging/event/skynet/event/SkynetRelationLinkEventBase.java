@@ -21,8 +21,11 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
    private final Integer relId;
    private final int relTypeId;
    private final int artAId;
+   private final int artATypeId;
    private final int artBId;
-   private int gammaId;
+   private final int artBTypeId;
+   private final int gammaId;
+   private final int branchId;
 
    /**
     * @param branchId
@@ -32,13 +35,37 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
     * @param artBId
     * @param author TODO
     */
-   public SkynetRelationLinkEventBase(int relTypeId, int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, int author) {
-      super(branchId, transactionId, author);
+   public SkynetRelationLinkEventBase(int relTypeId, int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, int author) {
+      super(author);
+      this.branchId = branchId;
       this.relId = relId;
       this.artAId = artAId;
+      this.artATypeId = artATypeId;
       this.artBId = artBId;
       this.gammaId = gammaId;
       this.relTypeId = relTypeId;
+      this.artBTypeId = artBTypeId;
+   }
+
+   /**
+    * @return the branchId
+    */
+   public int getBranchId() {
+      return branchId;
+   }
+
+   /**
+    * @return the artATypeId
+    */
+   public int getArtATypeId() {
+      return artATypeId;
+   }
+
+   /**
+    * @return the artBTypeId
+    */
+   public int getArtBTypeId() {
+      return artBTypeId;
    }
 
    /**

@@ -33,11 +33,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
  * @author Robert A. Fisher
  */
 public class SkynetTransactionBuilder {
-   private Collection<SkynetTransaction> transactions;
+   private final Collection<SkynetTransaction> transactions;
    private SkynetTransaction versionedTransaction;
-   private Branch branch;
+   private final Branch branch;
    private boolean finished;
-   private IProgressMonitor monitor;
+   private final IProgressMonitor monitor;
    private final Object transactionKey;
 
    protected SkynetTransactionBuilder(Branch branch) throws SQLException {
@@ -62,7 +62,7 @@ public class SkynetTransactionBuilder {
       ArtifactPersistenceManager.getInstance().persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
    }
 
-   public void addLinkToPersist(RelationLink link) throws SQLException, ArtifactDoesNotExist {
+   public void addLinkToPersist(RelationLink link) throws OseeCoreException, SQLException, ArtifactDoesNotExist {
       RelationPersistenceManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 

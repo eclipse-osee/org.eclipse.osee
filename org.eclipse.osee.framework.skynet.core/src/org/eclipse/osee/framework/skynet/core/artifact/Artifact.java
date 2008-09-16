@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
@@ -51,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
@@ -68,6 +70,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -76,7 +80,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   private HashCollection<String, Attribute<?>> attributes =
+   private final HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
    private boolean dirty = false;
    private boolean deleted = false;
@@ -84,7 +88,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private final String guid;
    private ArtifactType artifactType;
    private String humanReadableId;
-   private ArtifactFactory parentFactory;
+   private final ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
    private TransactionId transactionId;
    private int artId;
@@ -302,6 +306,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return getArtifactTypeName().equals(artifactType);
    }
 
+   @Override
    public String toString() {
       return getDescriptiveName();
    }
@@ -542,7 +547,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                "The attribute \'%s\' can have no more than one instance for sole attribute operations; guid \'%s\'",
                attributeTypeName, getGuid()));
       }
-      return (Attribute<T>) (soleAttributes.iterator().next());
+      return (soleAttributes.iterator().next());
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
@@ -577,7 +582,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          throw new MultipleAttributesExist(
                "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + ".");
       }
-      return (T) soleAttributes.iterator().next().getValue();
+      return soleAttributes.iterator().next().getValue();
    }
 
    /**
@@ -648,7 +653,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws MultipleAttributesExist, SQLException {
-      return (T) getSoleAttributeValue(attributeTypeName, defaultReturnValue);
+      return getSoleAttributeValue(attributeTypeName, defaultReturnValue);
    }
 
    /**
@@ -918,7 +923,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       prepareForReload();
 
       new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts(1);
-      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ArtifactModType.Reverted, this));
+
+      SkynetEventManager.getInstance().kick(new ArtifactModifiedEvent(this, ArtifactModType.Reverted, this));
+
+      // Kick Local Event
+      try {
+         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+         XEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Reverted, this);
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
    }
 
    void prepareForReload() {
@@ -962,6 +976,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void persistAttributesAndRelations() throws SQLException {
+      if (isDeleted()) return;
       persistAttributes();
       persistRelations();
    }
@@ -1358,7 +1373,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns dirty attributes.
     * @throws Exception
     */
-   public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws Exception {
+   public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws OseeCoreException {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : internalGetAttributes()) {

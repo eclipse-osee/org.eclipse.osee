@@ -54,6 +54,11 @@ public class LoadedArtifacts {
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
    }
 
+   @Override
+   public String toString() {
+      return "LoadedArtifacts - " + this.artifacts.size() + " arts - " + this.unloadedArtifacts.size() + " unlodaded";
+   }
+
    public List<Integer> getAllArtifactIds() {
       return new ArrayList<Integer>();
    }

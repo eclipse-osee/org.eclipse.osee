@@ -47,25 +47,20 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.TransactionChangeType;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.LoadedRelation;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -90,7 +85,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements IEventReceiver {
+public class WorldXViewer extends XViewer {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -116,8 +111,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
             handleDoubleClick();
          };
       });
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
       registerEvents();
    }
 
@@ -126,16 +119,59 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
 
          @Override
          public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            remove(cacheArtifacts.toArray());
+            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
          }
       });
       XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
 
          @Override
          public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            remove(cacheArtifacts.toArray());
+            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
          }
 
+      });
+      XEventManager.addListener(this, new FrameworkTransactionEvent() {
+
+         /* (non-Javadoc)
+          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsChanged(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
+          */
+         @Override
+         public void handleArtifactsChanged(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            update(cacheArtifacts, null);
+         }
+
+         /* (non-Javadoc)
+          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
+          */
+         @Override
+         public void handleArtifactsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
+         }
+
+         /* (non-Javadoc)
+          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleRelationsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection, java.util.Collection)
+          */
+         @Override
+         public void handleRelationsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
+            try {
+               Set<Artifact> artifacts = new HashSet<Artifact>();
+               for (LoadedRelation loadedRelation : cacheRelations) {
+                  try {
+                     if (loadedRelation.getArtifactA() != null) {
+                        artifacts.add(loadedRelation.getArtifactA());
+                     }
+                     if (loadedRelation.getArtifactB() != null) {
+                        artifacts.add(loadedRelation.getArtifactB());
+                     }
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
+               }
+               ((WorldContentProvider) getContentProvider()).remove(artifacts);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
+         }
       });
    }
 
@@ -545,7 +581,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources
       getLabelProvider().dispose();
-      SkynetEventManager.getInstance().unRegisterAll(this);
       XEventManager.removeListeners(this);
    }
 
@@ -860,74 +895,6 @@ public class WorldXViewer extends XViewer implements IEventReceiver {
     */
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
-   }
-
-   public void onEvent(final Event event) {
-      if (getTree() == null || getTree().isDisposed()) {
-         dispose();
-         return;
-      }
-      if (event instanceof TransactionEvent) {
-         TransactionEvent transEvent = (TransactionEvent) event;
-         Set<Integer> artIds = transEvent.getArtIds(TransactionChangeType.Modified);
-         Set<Artifact> modArts = new HashSet<Artifact>(20);
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-               try {
-                  if (art instanceof IATSArtifact) {
-                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
-                     if (parentArt != null) {
-                        modArts.add(parentArt);
-                     }
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-         if (modArts.size() > 0) update(modArts.toArray(), null);
-
-         artIds = transEvent.getArtIds(TransactionChangeType.Deleted);
-         modArts.clear();
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-            }
-         }
-         if (modArts.size() > 0) remove(modArts.toArray());
-
-         artIds = transEvent.getArtIds(TransactionChangeType.RelChanged);
-         modArts.clear();
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, AtsPlugin.getAtsBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-               try {
-                  if (art instanceof IATSArtifact) {
-                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
-                     if (parentArt != null) {
-                        modArts.add(parentArt);
-                     }
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-         if (modArts.size() > 0) {
-            for (Artifact art : modArts) {
-               refresh(art);
-            }
-         }
-      } else
-         OSEELog.logSevere(AtsPlugin.class, "Unexpected event => " + event, true);
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
 }

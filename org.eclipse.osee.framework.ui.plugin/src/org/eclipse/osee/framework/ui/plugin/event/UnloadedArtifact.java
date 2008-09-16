@@ -10,6 +10,14 @@ package org.eclipse.osee.framework.ui.plugin.event;
  */
 public class UnloadedArtifact {
    private int artifactId;
+   private int branchId;
+   private int artifactTypeId;
+
+   public UnloadedArtifact(int branchId, int artifactId, int artifactTypeId) {
+      this.branchId = branchId;
+      this.artifactId = artifactId;
+      this.artifactTypeId = artifactTypeId;
+   }
 
    /**
     * @return the artifactId
@@ -53,12 +61,4 @@ public class UnloadedArtifact {
       this.artifactTypeId = artifactTypeId;
    }
 
-   private int branchId;
-   private int artifactTypeId;
-
-   public UnloadedArtifact(int branchId, int artifactId, int artifactTypeId) {
-      this.branchId = branchId;
-      this.artifactId = artifactId;
-      this.artifactTypeId = artifactTypeId;
-   }
 }

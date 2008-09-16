@@ -220,15 +220,19 @@ public class ArtifactPersistenceManager {
    public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException, SQLException {
       workingOn(artifact.getInternalDescriptiveName());
       ModificationType modType;
+      ArtifactModType artifactModType;
 
       if (artifact.isInDb()) {
          if (artifact.isDeleted()) {
             modType = ModificationType.DELETED;
+            artifactModType = ArtifactModType.Deleted;
          } else {
             modType = ModificationType.CHANGE;
+            artifactModType = ArtifactModType.Changed;
          }
       } else {
          modType = ModificationType.NEW;
+         artifactModType = ArtifactModType.Added;
          transaction.addToBatch(INSERT_ARTIFACT, artifact.getArtId(), artifact.getArtTypeId(), artifact.getGuid(),
                artifact.getHumanReadableId());
       }
@@ -248,6 +252,11 @@ public class ArtifactPersistenceManager {
                transaction.getTransactionNumber()));
          transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Added, this));
       }
+
+      // Kick Local Event
+      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+      transaction.addArtifactModifiedEvent(sender, artifactModType, artifact);
+
       workedOneUnit();
    }
 
@@ -578,6 +587,10 @@ public class ArtifactPersistenceManager {
       transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactDeleteEvent(artifact,
             transaction.getTransactionNumber()));
       transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Deleted, this));
+
+      // Kick Local Event
+      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+      transaction.addArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact);
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.deleteAttributes();

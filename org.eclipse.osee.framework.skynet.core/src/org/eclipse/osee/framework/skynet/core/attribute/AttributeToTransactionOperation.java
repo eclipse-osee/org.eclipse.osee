@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -33,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * This class is responsible for persisting an attribute for a particular artifact. Upon completion the attribute will
@@ -93,7 +95,15 @@ public class AttributeToTransactionOperation {
       attribute.getAttributeDataProvider().persist();
       DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
       transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction, attrModType));
-      transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, ArtifactModType.Changed, artifact));
+      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Changed, artifact));
+
+      // Kick Local Event
+      try {
+         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+         transaction.addArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+      } catch (Exception ex) {
+         // do nothing
+      }
    }
 
    private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
@@ -161,20 +171,28 @@ public class AttributeToTransactionOperation {
 
       int attrGammaId;
       ModificationType modificationType;
-      
-      if(artifact.isDeleted()){
-    	  attrGammaId = attribute.getGammaId();
-    	  modificationType = ModificationType.ARTIFACT_DELETED;
-      }else{
-    	  attrGammaId = SequenceManager.getNextGammaId();
-          modificationType = ModificationType.DELETED;
+
+      if (artifact.isDeleted()) {
+         attrGammaId = attribute.getGammaId();
+         modificationType = ModificationType.ARTIFACT_DELETED;
+      } else {
+         attrGammaId = SequenceManager.getNextGammaId();
+         modificationType = ModificationType.DELETED;
       }
-      
+
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
             modificationType, transaction.getBranch()));
 
-      transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
+      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
+
+      // Kick Local Event
+      try {
+         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+         transaction.addArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+      } catch (Exception ex) {
+         // do nothing
+      }
    }
 
    public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeDataStoreException {
@@ -197,8 +215,8 @@ public class AttributeToTransactionOperation {
    }
 
    private final class DAOToSQL {
-      private String uri;
-      private String value;
+      private final String uri;
+      private final String value;
 
       public DAOToSQL(Object... data) {
          this.uri = getItemAt(1, data);

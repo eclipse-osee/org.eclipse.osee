@@ -32,6 +32,11 @@ public class SkynetAttributeChange implements SkynetChange {
       this.gammaId = gammaId;
    }
 
+   @Override
+   public String toString() {
+      return name + "(" + attributeId + ")" + " => " + value;
+   }
+
    /**
     * @return Returns the name.
     */

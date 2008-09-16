@@ -17,11 +17,17 @@ public interface ISkynetRelationLinkEvent extends ISkynetEvent {
 
    public int getArtAId();
 
+   public int getArtATypeId();
+
    public int getArtBId();
+
+   public int getArtBTypeId();
 
    public Integer getRelId();
 
    public Integer getGammaId();
 
    public int getRelTypeId();
+
+   public int getBranchId();
 }

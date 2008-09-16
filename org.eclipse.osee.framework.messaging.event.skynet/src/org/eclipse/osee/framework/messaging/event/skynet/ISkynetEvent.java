@@ -21,9 +21,5 @@ import java.io.Serializable;
 public interface ISkynetEvent extends Serializable, Comparable {
    public static final ISkynetEvent[] EMPTY_ARRAY = new ISkynetEvent[0];
 
-   public int getTransactionId();
-
-   public int getBranchId();
-
    public int getAuthor();
 }

@@ -47,7 +47,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public static String ASSIGNEES = "Assignees";
    public static String TASK_IMPORT_TITLES = "Task Import Titles";
    public static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   public static String PERSIST = "Persist";
    private TaskableStateMachineArtifact taskableStateMachineArtifact;
 
    public ImportTasksFromSimpleList() throws IOException {
@@ -56,7 +55,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -67,7 +66,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   title = title.replaceAll("\r", "");
                   if (!title.equals("")) titles.add(title);
                }
-               boolean persist = variableMap.getBoolean(PERSIST);
 
                if (artifacts.size() == 0) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to add tasks.");
@@ -88,19 +86,15 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  if (persist) {
-                     AbstractSkynetTxTemplate txWrapper =
-                           new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                              @Override
-                              protected void handleTxWork()throws OseeCoreException, SQLException{
-                                 handleCreateTasks(assignees, titles, teamArt);
-                                 teamArt.persistAttributesAndRelations();
-                              }
-                           };
-                     txWrapper.execute();
-                  } else {
-                     handleCreateTasks(assignees, titles, teamArt);
-                  }
+                  AbstractSkynetTxTemplate txWrapper =
+                        new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                           @Override
+                           protected void handleTxWork() throws OseeCoreException, SQLException {
+                              handleCreateTasks(assignees, titles, teamArt);
+                              teamArt.persistAttributesAndRelations();
+                           }
+                        };
+                  txWrapper.execute();
                } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                   return;
@@ -114,7 +108,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       });
    }
 
-   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt)throws OseeCoreException, SQLException{
+   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt) throws OseeCoreException, SQLException {
       for (String title : titles) {
          TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title, false);
          if (assignees != null && assignees.size() > 0) {
@@ -133,7 +127,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#widgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)throws OseeCoreException, SQLException{
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException, SQLException {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
@@ -145,11 +139,11 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
+   @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
       buffer.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       buffer.append("<XWidget xwidgetType=\"XMembersList\" displayName=\"" + ASSIGNEES + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();

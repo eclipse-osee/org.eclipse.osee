@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -339,8 +339,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                   }
                }
             }
-         } else if (event instanceof CacheArtifactModifiedEvent) {
-            if (((CacheArtifactModifiedEvent) event).getType() == ArtifactModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
+         } else if (event instanceof ArtifactModifiedEvent) {
+            if (((ArtifactModifiedEvent) event).getType() == ArtifactModType.Reverted && ((ArtifactModifiedEvent) event).getArtifact().equals(
                   smaMgr.getSma())) {
                refreshPages();
             }

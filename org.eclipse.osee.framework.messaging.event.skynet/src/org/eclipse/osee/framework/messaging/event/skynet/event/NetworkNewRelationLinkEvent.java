@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
 /**
+ * @author Donald G. Dunne
  * @author Jeff C. Phillips
  */
 public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
@@ -20,15 +21,15 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
     */
    private static final long serialVersionUID = -519877422249674503L;
 
-   private String rationale;
+   private final String rationale;
    private String aGuid;
    private String aHumanId;
    private String bHumanId;
    private String bGuid;
-   private String descriptorName;
-   private int aOrder;
-   private int bOrder;
-   private int relTypeId;
+   private final String descriptorName;
+   private final int aOrder;
+   private final int bOrder;
+   private final int relTypeId;
 
    /**
     * @param branchId
@@ -36,11 +37,11 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
     * @param relId
     * @param artAId
     * @param artBId
-    * @param author TODO
+    * @param author
     */
 
-   public NetworkNewRelationLinkEvent(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, int author) {
-      super(relTypeId, gammaId, branchId, transactionId, relId, artAId, artBId, author);
+   public NetworkNewRelationLinkEvent(int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, int author) {
+      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, author);
 
       this.rationale = rationale;
       this.aOrder = aOrder;
@@ -73,6 +74,7 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
    /**
     * @return Returns the relTypeId.
     */
+   @Override
    public int getRelTypeId() {
       return relTypeId;
    }

@@ -11,12 +11,13 @@
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
 /**
+ * @author Donald G. Dunne
  * @author Robert A. Fisher
  */
 public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBase {
    private static final long serialVersionUID = 548299278567054333L;
 
-   private String rationale;
+   private final String rationale;
    int aOrder;
    int bOrder;
 
@@ -29,8 +30,8 @@ public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBas
     * @param author
     * @param relTypeId
     */
-   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artBId, String rationale, int aOrder, int bOrder, int author, int relTypeId) {
-      super(relTypeId, gammaId, branchId, transactionId, relId, artAId, artBId, author);
+   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int author, int relTypeId) {
+      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, author);
 
       this.rationale = rationale;
       this.aOrder = aOrder;
