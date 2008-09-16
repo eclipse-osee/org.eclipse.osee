@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
-import org.eclipse.osee.framework.search.engine.utility.WordsUtil;
 import org.eclipse.osee.framework.search.engine.utility.XmlTextInputStream;
 import org.osgi.framework.Bundle;
 
@@ -57,6 +56,22 @@ public class TestTagProcessor extends TestCase {
       return toReturn;
    }
 
+   private void checkValue(int currentCount, Scanner expectedTags, String test, String word, Long codedTag) {
+      try {
+         if (expectedTags.hasNext()) {
+            assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
+                  expectedTags.next(), word);
+            assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", currentCount, test, word),
+                  expectedTags.nextLong(), codedTag.longValue());
+         } else {
+            assertTrue(String.format("Line: [%d] Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", currentCount,
+                  test, word, codedTag), false);
+         }
+      } catch (Exception ex) {
+         System.out.println(String.format("%s %s", word, codedTag));
+      }
+   }
+
    public void testTagFromInputStream() throws IOException {
       Map<String, TestData<URL, URL>> testMap = getTestTagData();
       for (final String key : testMap.keySet()) {
@@ -68,21 +83,13 @@ public class TestTagProcessor extends TestCase {
             dataStream = new BufferedInputStream(testData.data.openStream());
             expectedStream = new BufferedInputStream(testData.expected.openStream());
             final Scanner expectedTags = new Scanner(expectedStream, "UTF-8");
-            Scanner sourceScanner = WordsUtil.inputStreamToXmlTextScanner(dataStream);
+
+            Scanner sourceScanner = new Scanner(new XmlTextInputStream(dataStream));
             final MutableInteger count = new MutableInteger(0);
             TagProcessor.collectFromScanner(sourceScanner, new ITagCollector() {
                @Override
                public void addTag(String word, Long codedTag) {
-                  count.getValueAndInc();
-                  if (expectedTags.hasNext()) {
-                     assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", count, key, word),
-                           expectedTags.next(), word);
-                     assertEquals(String.format("Line: [%d] Test: [%s] word: [%s]", count, key, word),
-                           expectedTags.nextLong(), codedTag.longValue());
-                  } else {
-                     assertTrue(String.format("Line: [%d] Test: [%s] word: [%s] tag: [%d] -- Extra Tag Found", count,
-                           key, word, codedTag), false);
-                  }
+                  checkValue(count.getValueAndInc(), expectedTags, key, word, codedTag);
                }
             });
          } finally {
