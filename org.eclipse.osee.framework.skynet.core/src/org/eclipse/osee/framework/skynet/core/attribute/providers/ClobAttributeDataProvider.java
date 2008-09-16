@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
@@ -68,7 +66,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
             fromStorage = new String(data, "UTF-8");
          }
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         throw new IllegalStateException("Error retrieving data.", ex);
       }
       String toReturn = fromStorage != null ? fromStorage : rawStringValue;
       return toReturn != null ? toReturn : "";
@@ -88,7 +86,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
             response = true;
          }
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         throw new IllegalStateException("Error comitting data.", ex);
       }
       return response;
    }

@@ -14,10 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
@@ -28,8 +25,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
  * @author Roberto E. Escobar
  */
 public class UriAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider, IBinaryAttributeDataProvider {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UriAttributeDataProvider.class);
    private DataStore dataStore;
    private String displayable;
 
@@ -75,7 +70,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
                   dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                   response = true;
                } catch (Exception ex) {
-                  logger.log(Level.WARNING, "Error compressing data", ex);
+                  throw new IllegalStateException("Error compressing data. - ", ex);
                }
             } else {
                String loc = dataStore.getLocator();
@@ -84,7 +79,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             }
          }
       } catch (Exception ex1) {
-         logger.log(Level.SEVERE, ex1.toString(), ex1);
+         throw new IllegalStateException("Error committing data. ", ex1);
       }
       return response;
    }
@@ -101,7 +96,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          }
       } catch (Exception ex) {
-         logger.log(Level.WARNING, "Error acquiring data. - ", ex);
+         throw new IllegalStateException("Error acquiring data. - ", ex);
       }
       return decompressed;
    }
@@ -117,7 +112,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            throw new IllegalStateException("Error encoding data.", ex);
          }
       } else {
          toReturn = "";
@@ -135,7 +130,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            throw new IllegalStateException("Error encoding data.", ex);
          }
       }
       setValue(toSet);
