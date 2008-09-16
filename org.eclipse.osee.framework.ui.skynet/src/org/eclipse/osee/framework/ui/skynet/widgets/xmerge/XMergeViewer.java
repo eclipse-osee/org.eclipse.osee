@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -74,7 +73,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
    private MergeXViewer xCommitViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
-   private static final String LOADING = "Loading ...";
+   private static final String LOADING = "Loading ...  ";
    private static final String NO_CONFLICTS = "No conflicts were found";
    private Label extraInfoLabel;
    private Conflict[] conflicts;
@@ -279,8 +278,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
                setConflicts(ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
                      conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
             } else {
-               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(conflicts[0].getCommitTransactionId()).toArray(
-                     artifactChanges));
+               setConflicts(org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal.getInstance().getConflictsPerBranch(
+                     conflicts[0].getCommitTransactionId()).toArray(artifactChanges));
             }
          }
       } catch (Exception ex) {
@@ -383,36 +382,39 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
 
    public void onEvent(final Event eventArg) {
       if (xCommitViewer == null || xCommitViewer.getTree() == null || xCommitViewer.getTree().isDisposed()) return;
-
       if (eventArg instanceof TransactionEvent) {
          for (Event event : ((TransactionEvent) eventArg).getLocalEvents()) {
-            if (event instanceof TransactionArtifactModifiedEvent) {
-               Artifact artifact = ((TransactionArtifactModifiedEvent) event).getArtifact();
-               Branch branch = artifact.getBranch();
-               for (Conflict conflict : conflicts) {
-                  try {
-                     if (conflict.getSourceBranch() == null) return;
+            try {
+               if (event instanceof TransactionArtifactModifiedEvent) {
+                  Artifact artifact = ((TransactionArtifactModifiedEvent) event).getArtifact();
+                  Branch branch = artifact.getBranch();
+                  for (Conflict conflict : conflicts) {
                      if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
-                        setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans);
-                        if (artifact.equals(conflict.getSourceArtifact())) {
-                           MessageDialog dialog =
-                                 new MessageDialog(
-                                       Display.getCurrent().getActiveShell().getShell(),
-                                       "Modifying Source artifact while merging",
-                                       null,
-                                       "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
-                                       2, new String[] {"OK"}, 1);
-                           if (eventArg instanceof LocalTransactionEvent) {
-                              dialog.open();
-                           }
+                        setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
+                              "Source Artifact Changed");
+                        if (artifact.equals(conflict.getSourceArtifact()) & eventArg instanceof LocalTransactionEvent) {
+                           new MessageDialog(
+                                 Display.getCurrent().getActiveShell().getShell(),
+                                 "Modifying Source artifact while merging",
+                                 null,
+                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                 2, new String[] {"OK"}, 1).open();
                         }
                         return;
-                     } else if (artifact.equals(conflict.getArtifact()) && branch.equals(conflict.getMergeBranch())) {
-                        loadTable();
                      }
-                  } catch (Exception ex) {
+
+                  }
+                  if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
+                     setInputData(
+                           sourceBranch,
+                           destBranch,
+                           tranId,
+                           mergeView,
+                           commitTrans,
+                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed");
                   }
                }
+            } catch (Exception ex) {
             }
          }
       }
@@ -453,26 +455,32 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       this.editable = editable;
    }
 
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans) {
+      setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "");
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans) {
+   private void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
       this.mergeView = mergeView;
       this.commitTrans = commitTrans;
-      extraInfoLabel.setText(LOADING);
+      extraInfoLabel.setText(LOADING + loadingText);
       Job job = new Job("Loading Merge Manager") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
                if (commitTrans == null) {
                   conflicts =
-                	  ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
                               new Conflict[0]);
                } else {
-                  conflicts = ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(new Conflict[0]);
+                  conflicts =
+                        ConflictManagerInternal.getInstance().getConflictsPerBranch(commitTrans).toArray(
+                              new Conflict[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
@@ -483,7 +491,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
                         } else {
                            setConflicts(conflicts);
                            mergeView.setConflicts(conflicts);
-                           loadTable();
+                           refresh();
                         }
                      } catch (SQLException ex) {
                         OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
