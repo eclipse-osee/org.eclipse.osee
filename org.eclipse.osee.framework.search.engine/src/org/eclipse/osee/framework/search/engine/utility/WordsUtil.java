@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 
@@ -27,9 +25,6 @@ import org.eclipse.osee.framework.search.engine.Activator;
  * @author Roberto E. Escobar
  */
 public class WordsUtil {
-   private static final Pattern SKIP_XML_TAGS = Pattern.compile("\\s*<.*?>\\s*", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern SKIP_WORDML_TAGS =
-         Pattern.compile(".*?<w:t>|</w:t>.*", Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final String VOWELS = "aeiou";
    private static final String IES_ENDING = "ies";
@@ -163,12 +158,6 @@ public class WordsUtil {
          }
       }
       return toReturn;
-   }
-
-   public static Scanner inputStreamToXmlTextScanner(InputStream inputStream) {
-      Scanner scanner = new Scanner(inputStream, "UTF-8");
-      Pattern pattern = isWordML(inputStream) ? SKIP_WORDML_TAGS : SKIP_XML_TAGS;
-      return scanner.useDelimiter(pattern);
    }
 
    public static boolean isWordML(InputStream inputStream) {
