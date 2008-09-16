@@ -83,23 +83,13 @@ public class TagProcessor {
    }
 
    private static void processWord(String original, ITagCollector tagCollector) {
-      boolean originalStored = false;
       if (Strings.isValid(original) && (original.length() >= 2 || 0 == WordsUtil.countPuntuation(original))) {
          original = original.toLowerCase();
-
-         String toCheck =
-               WordsUtil.endsWithPunctuation(original) ? original.substring(0, original.length() - 1) : original;
          for (String toEncode : WordsUtil.splitOnPunctuation(original)) {
             if (wordsToSkip.contains(toEncode) != true) {
                String target = WordsUtil.toSingular(WordsUtil.stripPossesive(toEncode));
-               if (toEncode.equals(toCheck)) {
-                  originalStored = true;
-               }
                TagEncoder.encode(target, tagCollector);
             }
-         }
-         if (!originalStored) {
-            TagEncoder.encode(original, tagCollector);
          }
       }
    }
