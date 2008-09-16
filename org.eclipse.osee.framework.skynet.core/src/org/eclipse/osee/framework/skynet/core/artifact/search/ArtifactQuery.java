@@ -304,8 +304,8 @@ public class ArtifactQuery {
     * For example:
     * <ul>
     * <li><b>'<code>hello.world</code>'</b> will be translated to <b>'<code>hello</code>'</b> and <b>'<code>world</code>
-    * '</b>. The search will match attributes with <b>'<code>hello</code>'</b>, <b>'<code>world</code>'</b>, and <b>'
-    * <code>hello.world</code>'</b> keywords.</li>
+    * '</b>. The search will match attributes with <b>'<code>hello</code>'</b> and <b>'<code>world</code>'</b> keywords.
+    * </li>
     * </ul>
     * </p>
     * 
