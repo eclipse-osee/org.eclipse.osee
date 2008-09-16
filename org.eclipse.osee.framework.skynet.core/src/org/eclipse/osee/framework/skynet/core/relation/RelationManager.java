@@ -99,7 +99,7 @@ public class RelationManager {
       Artifact artifact =
             ArtifactCache.getActive(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
 
-      if (artifact != null) {// && (!artifact.isLinksLoaded() || !relation.isInDb())) {
+      if (artifact != null) {
          List<RelationLink> artifactsRelations = artifactToRelations.get(artifact);
          if (artifactsRelations == null) {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();

@@ -297,8 +297,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       if (associatedArtifact == null && associatedArtifactId > 0) {
          associatedArtifact =
                ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchPersistenceManager.getCommonBranch());
-         // TODO: this method must get the artifact based on an art id and use the
-         // right branch when doing so (the artifact is not necessarily a user artifact)
       }
       return associatedArtifact;
    }
