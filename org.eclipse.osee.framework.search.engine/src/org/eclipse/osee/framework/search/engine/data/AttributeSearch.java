@@ -15,10 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility;
-import org.eclipse.osee.framework.db.connection.core.JoinUtility.SearchTagJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Options;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
@@ -30,14 +27,12 @@ import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
  * @author Roberto E. Escobar
  */
 public final class AttributeSearch implements ITagCollector {
-//   private SearchTagJoinQuery tags;
    private String searchString;
    private int branchId;
    private Options options;
    private Set<Long> tagStore;
 
    public AttributeSearch(String searchString, int branchId, Options options) {
-//      this.tags = null;
       this.tagStore = new HashSet<Long>();
       this.branchId = branchId;
       this.searchString = searchString;
@@ -50,16 +45,10 @@ public final class AttributeSearch implements ITagCollector {
       long start = System.currentTimeMillis();
       try {
          connection = OseeDbConnection.getConnection();
-//         this.tags = JoinUtility.createSearchTagJoinQuery();
          TagProcessor.collectFromString(searchString, this);
-//         this.tags.store(connection);
-         //toReturn = AttributeDataStore.getAttributesByTagsOLD(connection, branchId, options, this.tags.getQueryId());
-         
          toReturn = AttributeDataStore.getAttributesByTags(connection, branchId, options, this.tagStore);
       } finally {
          if (connection != null) {
-//            tags.delete(connection);
-//            tags = null;
             connection.close();
          }
       }
@@ -79,7 +68,6 @@ public final class AttributeSearch implements ITagCollector {
     */
    @Override
    public void addTag(String word, Long codedTag) {
-//      this.tags.add(codedTag);
       this.tagStore.add(codedTag);
    }
 }
