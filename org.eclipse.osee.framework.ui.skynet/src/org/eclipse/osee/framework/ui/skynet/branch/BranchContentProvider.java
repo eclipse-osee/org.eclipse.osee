@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -206,17 +205,10 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       ChangeReportInput oldInput = null;
 
       try {
-         if (!input.isForceRefresh()) {
-            snapshotData = SnapshotPersistenceManager.getInstance().getSnapshot(NAMESPACE, key);
-         }
-
          // Check that the snapshot is the correct format, inherently performs null checking via
          // instanceof
          if (!(snapshotData instanceof Pair && snapshotData.getKey() instanceof Pair && ((Pair) snapshotData.getKey()).getKey() instanceof ChangeReportInput && ((Pair) snapshotData.getKey()).getValue() instanceof Object[])) {
             changeReport = computeChangeReport(input);
-
-            SnapshotPersistenceManager.getInstance().persistSnapshot(NAMESPACE, key,
-                  new Pair<ChangeReportInput, Object[]>(input, changeReport));
 
             changeTime = new Date();
             input.setForceRefresh(false);
