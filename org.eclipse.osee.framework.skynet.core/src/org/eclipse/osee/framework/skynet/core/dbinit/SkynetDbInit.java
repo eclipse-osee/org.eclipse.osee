@@ -78,7 +78,7 @@ public class SkynetDbInit extends DbInitializationTask {
    private List<URL> getSchemaFiles() throws Exception {
       List<URL> toReturn = new ArrayList<URL>();
       List<IConfigurationElement> list =
-            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.SkynetDbSchema", "Schema");
+            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.OseeDbSchema", "Schema");
       for (IConfigurationElement element : list) {
          String fileName = element.getAttribute("SchemaFile");
          String bundleName = element.getContributor().getName();
