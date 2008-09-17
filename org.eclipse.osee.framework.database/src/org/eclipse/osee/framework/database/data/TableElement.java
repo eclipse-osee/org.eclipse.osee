@@ -20,6 +20,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,7 +38,7 @@ public class TableElement implements Xmlizable {
    };
    
    public enum TableDescriptionFields {
-      name, schema, backupData, importData, importFrom;
+      name, schema, backupData, importData, importFrom, tablespace;
    };
 
    public enum ColumnFields {
@@ -227,5 +228,10 @@ public class TableElement implements Xmlizable {
    public int hashCode() {
       return new HashCodeBuilder(79, 17).append(tableDescription).append(columns)
       .append(constraints).append(foreignKeys).append(indeces).toHashCode();
+   }
+
+   public String getTablespace() {
+      String toReturn = getDescription().get(TableDescriptionFields.tablespace);
+      return Strings.isValid(toReturn) ? toReturn : "";
    }
 }

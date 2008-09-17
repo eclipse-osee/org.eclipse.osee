@@ -153,7 +153,9 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
 
       if (DatabaseActivator.getInstance().isProductionDb()) {
-         System.err.println("You are not allowed to run config client against production servers.\nExiting.");
+         System.err.println(String.format(
+               "You are not allowed to run config client against production servers. %s\nExiting.",
+               DatabaseActivator.getInstance().getProductionDbs()));
          return false;
       }
       String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);

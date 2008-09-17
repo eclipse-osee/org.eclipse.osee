@@ -17,6 +17,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.eclipse.osee.framework.database.data.AppliesToClause.OrderType;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,18 +27,20 @@ import org.w3c.dom.Element;
 public class IndexElement implements Xmlizable {
 
    public enum IndexFields {
-      id, mySqlIgnore, type
+      id, mySqlIgnore, type, tablespace;
    }
 
    private String id;
    private String indexType;
    private List<AppliesToClause> appliesToList;
    private boolean ignoreMySql = false;
+   private String tablespace;
 
    public IndexElement(String id) {
       this.id = id;
       this.appliesToList = new ArrayList<AppliesToClause>();
       this.indexType = "";
+      this.tablespace = "";
    }
 
    public void setId(String id) {
@@ -103,9 +106,6 @@ public class IndexElement implements Xmlizable {
       return new HashCodeBuilder(113, 67).append(id).append(appliesToList).toHashCode();
    }
 
-   /**
-    * @param b
-    */
    public void setMySqlIgnore(boolean b) {
       this.ignoreMySql = b;
    }
@@ -122,5 +122,13 @@ public class IndexElement implements Xmlizable {
 
    public boolean ignoreMySql() {
       return this.ignoreMySql;
+   }
+
+   public String getTablespace() {
+      return Strings.isValid(tablespace) ? tablespace : "";
+   }
+
+   public void setTablespace(String tablespace) {
+      this.tablespace = tablespace;
    }
 }

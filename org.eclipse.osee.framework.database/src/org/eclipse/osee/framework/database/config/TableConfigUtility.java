@@ -179,6 +179,7 @@ public class TableConfigUtility {
          String id = indexDataEntry.getAttribute(IndexFields.id.name());
          String ignore = indexDataEntry.getAttribute(IndexFields.mySqlIgnore.name());
          Attr indexType = indexDataEntry.getAttributeNode(IndexFields.type.name());
+         String tablespace = indexDataEntry.getAttribute(IndexFields.tablespace.name());
          if (id.length() > 0) {
             IndexElement indexData = new IndexElement(id);
             if (Boolean.parseBoolean(ignore)) {
@@ -186,6 +187,9 @@ public class TableConfigUtility {
             }
             if (indexType != null) {
                indexData.setIndexType(indexType.getValue());
+            }
+            if (tablespace != null) {
+               indexData.setTablespace(tablespace);
             }
             parseAppliesToClause(indexDataEntry, indexData);
             tableEntry.addIndexData(indexData);

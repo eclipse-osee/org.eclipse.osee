@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.db.connection.OseeDb;
@@ -41,14 +42,22 @@ public class DatabaseActivator extends OseeActivator {
       return plugin;
    }
 
-   public boolean isProductionDb() {
+   public List<String> getProductionDbs() {
+      List<String> productionDbs = new ArrayList<String>();
       List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "ProductionDatabase",
                   "ProductionDatabase");
+      for (IConfigurationElement element : elements) {
+         productionDbs.add(element.getAttribute("databaseInstance"));
+      }
+      return productionDbs;
+   }
+
+   public boolean isProductionDb() {
       String dbServiceId =
             OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
-      for (IConfigurationElement element : elements) {
-         if (dbServiceId.equals(element.getAttribute("databaseInstance"))) {
+      for (String productionDb : getProductionDbs()) {
+         if (dbServiceId.equals(productionDb)) {
             return true;
          }
       }

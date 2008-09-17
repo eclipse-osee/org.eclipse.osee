@@ -266,11 +266,16 @@ public abstract class SqlManager {
             }
          }
          String toExecute =
-               String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId, tableName,
+               String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                      appliesTo);
+         toExecute = createIndexPostProcess(iData, toExecute);
          logger.log(Level.INFO, toExecute + "\n");
          executeStatement(connection, toExecute);
       }
+   }
+
+   protected String createIndexPostProcess(IndexElement indexElement, String original) {
+      return original;
    }
 
    public void dropIndex(Connection connection, TableElement tableDef) throws SQLException, Exception {

@@ -30,7 +30,7 @@ public class SqlFactory {
       SqlManager instance = null;
       switch (db) {
          case oracle:
-            instance = new SqlManagerImpl(new OracleSqlDataType());
+            instance = new OracleSqlManager(new OracleSqlDataType());
             break;
          case derby:
             instance = new DerbySqlManager(new DerbySqlDataType());

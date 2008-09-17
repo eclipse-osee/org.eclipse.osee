@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
+import org.eclipse.osee.framework.database.data.IndexElement;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
@@ -29,19 +30,11 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
  */
 public class OracleSqlManager extends SqlManager {
 
-   private static String SEQUENCE_IDENTIFIER = "_SEQ";
-
    public OracleSqlManager(SqlDataType sqlDataType) {
       super(ConfigUtil.getConfigFactory().getLogger(OracleSqlManager.class), sqlDataType);
    }
 
-   private void createSequence(Connection connection, String sequenceName) throws SQLException, Exception {
-      String sequenceCreate =
-            SqlManager.CREATE_STRING + " SEQUENCE " + formatQuotedString(sequenceName, "\\.") + " MINVALUE 1" + " MAXVALUE 999999999999999999999999999" + " INCREMENT BY 1" + " NOCYCLE" + " NOORDER" + " NOCACHE";
-      executeStatement(connection, sequenceCreate);
-   }
-
-   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) throws SQLException {
+   protected String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) throws SQLException {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();
       for (String key : keys) {
@@ -52,56 +45,39 @@ public class OracleSqlManager extends SqlManager {
       return toExecute;
    }
 
-   @Override
    public void createTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
-      String toExecute =
-            SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " ( \n";
-      // String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
-      toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
-      toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getName());
-      toExecute += handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getName());
-      toExecute += " \n)\n";
+      StringBuilder toExecute = new StringBuilder();
+      toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
+            "\\.") + " ( \n");
+      toExecute.append(handleColumnCreationSection(connection, tableDef.getColumns()));
+      toExecute.append(handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName()));
+      toExecute.append(handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
+            tableDef.getFullyQualifiedTableName()));
+      toExecute.append(" \n)");
+      toExecute.append(" tablespace ");
+      toExecute.append(tableDef.getTablespace());
+      toExecute.append("\n");
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute);
-
-      List<String> sequences = getSequences(tableDef);
-      for (String sequenceName : sequences) {
-         createSequence(connection, sequenceName);
-      }
+      executeStatement(connection, toExecute.toString());
    }
 
-   private List<String> getSequences(TableElement tableDef) {
-      List<String> sequences = new ArrayList<String>();
-      Map<String, ColumnMetadata> columns = tableDef.getColumns();
-      Set<String> keys = columns.keySet();
-      for (String key : keys) {
-         Map<ColumnFields, String> column = columns.get(key).getColumnFields();
-         String identity = column.get(ColumnFields.identity);
-         if (identity != null) {
-            if (identity.toUpperCase().equals("TRUE")) {
-               sequences.add(tableDef.getSchema() + ".SKYNET_" + column.get(ColumnFields.id) + SEQUENCE_IDENTIFIER);
-            }
-         }
-      }
-      return sequences;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.database.sql.SqlManager#createIndexPostProcess(java.lang.String)
+    */
+   @Override
+   protected String createIndexPostProcess(IndexElement indexElement, String original) {
+      StringBuilder buffer = new StringBuilder(original);
+      buffer.append(" tablespace ");
+      buffer.append(indexElement.getTablespace());
+      return buffer.toString();
    }
 
    @Override
    public void dropTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
-      List<String> sequences = getSequences(tableDef);
-      for (String sequenceName : sequences) {
-         String toExecute = SqlManager.DROP_STRING + " SEQUENCE " + formatQuotedString(sequenceName, "\\.");
-         logger.log(Level.INFO, "Dropping Sequence: [ " + sequenceName + "]");
-         try {
-            executeStatement(connection, toExecute);
-         } catch (Exception e) {
-            logger.log(Level.WARNING, e.getMessage(), e);
-         }
-
-      }
-      String toExecute =
-            SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
+      StringBuilder toExecute = new StringBuilder();
+      toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
+            "\\."));
       logger.log(Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute);
+      executeStatement(connection, toExecute.toString());
    }
 }
