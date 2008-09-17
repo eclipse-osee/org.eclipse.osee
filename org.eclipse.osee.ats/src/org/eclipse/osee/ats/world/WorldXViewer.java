@@ -48,10 +48,10 @@ import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.LoadedRelation;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.TransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -135,67 +134,23 @@ public class WorldXViewer extends XViewer {
          }
 
       });
-      XEventManager.addListener(this, new FrameworkTransactionEvent() {
+      XEventManager.addListener(this, new IFrameworkTransactionEventListener() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsChanged(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
-          */
          @Override
-         public void handleArtifactsChanged(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
+         public void handleFrameworkTransactionEvent(Source source, final TransactionData transData) {
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
                 * @see java.lang.Runnable#run()
                 */
                @Override
                public void run() {
-                  update(cacheArtifacts, null);
+                  ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
+                  update(transData.cacheChangedArtifacts, null);
+                  refresh(transData.cacheRelationAddedArtifacts);
+                  refresh(transData.cacheRelationChangedArtifacts);
+                  refresh(transData.cacheRelationDeletedArtifacts);
                }
             });
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
-          */
-         @Override
-         public void handleArtifactsDeleted(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleRelationsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection, java.util.Collection)
-          */
-         @Override
-         public void handleRelationsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
-            try {
-               final Set<Artifact> artifacts = new HashSet<Artifact>();
-               for (LoadedRelation loadedRelation : cacheRelations) {
-                  try {
-                     if (loadedRelation.getArtifactA() != null) {
-                        artifacts.add(loadedRelation.getArtifactA());
-                     }
-                     if (loadedRelation.getArtifactB() != null) {
-                        artifacts.add(loadedRelation.getArtifactB());
-                     }
-                  } catch (Exception ex) {
-                     // do nothing
-                  }
-               }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  /* (non-Javadoc)
-                   * @see java.lang.Runnable#run()
-                   */
-                  @Override
-                  public void run() {
-                     ((WorldContentProvider) getContentProvider()).remove(artifacts);
-                  }
-               });
-
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
-            }
          }
       });
    }

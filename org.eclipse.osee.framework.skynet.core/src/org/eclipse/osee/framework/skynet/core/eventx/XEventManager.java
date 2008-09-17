@@ -19,6 +19,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkCommitBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactAddedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactChangeTypeEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
@@ -33,6 +37,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -59,236 +65,50 @@ public class XEventManager {
    private static final boolean debug = false;
    private static boolean disableEvents = false;
 
-   public static void kickTransactionEvent(Source source, Collection<XModifiedEvent> xModifiedEvents) {
+   /**
+    * Kick local and remote branch events
+    * 
+    * @param sender
+    * @param branchModType
+    * @param branchId
+    * @throws OseeCoreException
+    */
+   public static void kickBranchEvent(Sender sender, BranchModType branchModType, int branchId) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickTransactionEvent " + source + " #ModEvents: " + xModifiedEvents.size());
-      // Roll-up change information
-      Set<Artifact> cacheChangedArtifacts = new HashSet<Artifact>();
-      Set<Artifact> cacheDeletedArtifacts = new HashSet<Artifact>();
-      Set<Artifact> cacheAddedArtifacts = new HashSet<Artifact>();
-
-      Set<UnloadedArtifact> unloadedChangedArtifacts = new HashSet<UnloadedArtifact>();
-      Set<UnloadedArtifact> unloadedDeletedArtifacts = new HashSet<UnloadedArtifact>();
-      Set<UnloadedArtifact> unloadedAddedArtifacts = new HashSet<UnloadedArtifact>();
-
-      Set<LoadedRelation> cacheChangedRelations = new HashSet<LoadedRelation>();
-      Set<LoadedRelation> cacheAddedRelations = new HashSet<LoadedRelation>();
-      Set<LoadedRelation> cacheDeletedRelations = new HashSet<LoadedRelation>();
-
-      Set<UnloadedRelation> unloadedChangedRelations = new HashSet<UnloadedRelation>();
-      Set<UnloadedRelation> unloadedAddedRelations = new HashSet<UnloadedRelation>();
-      Set<UnloadedRelation> unloadedDeletedRelations = new HashSet<UnloadedRelation>();
-
-      Set<Artifact> cacheRelationChangedArtifacts = new HashSet<Artifact>();
-      Set<Artifact> cacheRelationDeletedArtifacts = new HashSet<Artifact>();
-      Set<Artifact> cacheRelationAddedArtifacts = new HashSet<Artifact>();
-
-      for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
-         if (xModifiedEvent instanceof XArtifactModifiedEvent) {
-            XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
-            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
-               if (xArtifactModifiedEvent.artifact != null) {
-                  cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
-               } else {
-                  unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-               }
-            }
-            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
-               if (xArtifactModifiedEvent.artifact != null) {
-                  cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
-               } else {
-                  unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-               }
-            }
-            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
-               if (xArtifactModifiedEvent.artifact != null) {
-                  cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
-               } else {
-                  unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-               }
-            }
-         }
-         if (xModifiedEvent instanceof XRelationModifiedEvent) {
-            XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
-            UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
-            LoadedRelation loadedRelation = null;
-            if (xRelationModifiedEvent.link != null) {
-               try {
-                  loadedRelation =
-                        new LoadedRelation(xRelationModifiedEvent.link.getArtifactA(),
-                              xRelationModifiedEvent.link.getArtifactB(),
-                              xRelationModifiedEvent.link.getRelationType(), xRelationModifiedEvent.branch,
-                              unloadedRelation);
-               } catch (Exception ex) {
-                  SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-               }
-            }
-            if (unloadedRelation != null) {
-               Artifact artA =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getBranchId());
-               Artifact artB =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getBranchId());
-               if (artA != null || artB != null) {
-                  try {
-                     loadedRelation =
-                           new LoadedRelation(artA, artB,
-                                 RelationTypeManager.getType(unloadedRelation.getRelationTypeId()),
-                                 artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
-                  } catch (Exception ex) {
-                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                  }
-               }
-            }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
-               if (loadedRelation != null) {
-                  cacheAddedRelations.add(loadedRelation);
-                  if (loadedRelation.getArtifactA() != null) cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
-                  if (loadedRelation.getArtifactB() != null) cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
-               }
-               if (unloadedRelation != null) {
-                  unloadedAddedRelations.add(unloadedRelation);
-               }
-            }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
-               if (loadedRelation != null) {
-                  cacheDeletedRelations.add(loadedRelation);
-                  if (loadedRelation.getArtifactA() != null) cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
-                  if (loadedRelation.getArtifactB() != null) cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
-               }
-               if (unloadedRelation != null) {
-                  unloadedDeletedRelations.add(unloadedRelation);
-               }
-            }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
-               if (loadedRelation != null) {
-                  cacheChangedRelations.add(loadedRelation);
-                  if (loadedRelation.getArtifactA() != null) cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
-                  if (loadedRelation.getArtifactB() != null) cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
-               }
-               if (unloadedRelation != null) {
-                  unloadedChangedRelations.add(unloadedRelation);
-               }
-            }
-         }
+      if (debug) System.out.println("kickBranchEvent " + sender.getAuthor() + " branchModType: " + branchModType + " id: " + branchId);
+      Branch branch = null;
+      try {
+         branch = BranchPersistenceManager.getBranch(branchId);
+      } catch (Exception ex) {
+         // do nothing
       }
-
-      // Clean out known duplicates
-      cacheChangedArtifacts.removeAll(cacheDeletedArtifacts);
-      cacheAddedArtifacts.removeAll(cacheDeletedArtifacts);
-
       // Kick Local
       for (IXEventListener listener : listenerMap.getValues()) {
-         if (listener instanceof IFrameworkTransactionEvent) {
+         if (listener instanceof IBranchEventListener) {
             // Don't fail on any one listener's exception
             try {
-               if (cacheDeletedArtifacts.size() > 0 || unloadedDeletedArtifacts.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleArtifactsDeleted(source, cacheDeletedArtifacts,
-                        unloadedDeletedArtifacts);
-               }
-               if (cacheAddedArtifacts.size() > 0 || unloadedAddedArtifacts.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleArtifactsAdded(source, cacheAddedArtifacts,
-                        unloadedAddedArtifacts);
-               }
-               if (cacheChangedArtifacts.size() > 0 || unloadedChangedArtifacts.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleArtifactsChanged(source, cacheChangedArtifacts,
-                        unloadedChangedArtifacts);
-               }
-
-               if (cacheRelationDeletedArtifacts.size() > 0 || cacheDeletedRelations.size() > 0 || unloadedDeletedRelations.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleRelationsDeleted(source, cacheRelationDeletedArtifacts,
-                        cacheDeletedRelations, unloadedDeletedRelations);
-               }
-               if (cacheRelationAddedArtifacts.size() > 0 || cacheAddedRelations.size() > 0 || unloadedAddedRelations.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleRelationsAdded(source, cacheRelationAddedArtifacts,
-                        cacheAddedRelations, unloadedAddedRelations);
-               }
-               if (cacheRelationChangedArtifacts.size() > 0 || cacheChangedRelations.size() > 0 || unloadedChangedRelations.size() > 0) {
-                  ((IFrameworkTransactionEvent) listener).handleRelationsChanged(source, cacheRelationChangedArtifacts,
-                        cacheChangedRelations, unloadedChangedRelations);
-               }
+               ((IBranchEventListener) listener).handleBranchEvent(sender, branchModType, branch, branchId);
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
       }
-      // Kick Remote (If sender was Local)
+      // Kick Remote (If source was Local and this was not a default branch changed event
       try {
-         if (source == Source.Local) {
-            List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
-            for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
-               if (xModifiedEvent instanceof XArtifactModifiedEvent) {
-                  XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
-                  if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
-                     Artifact artifact = xArtifactModifiedEvent.artifact;
-                     events.add(new NetworkArtifactModifiedEvent(artifact.getBranch().getBranchId(),
-                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                           artifact.getFactory().getClass().getCanonicalName(),
-                           xArtifactModifiedEvent.dirtySkynetAttributeChanges,
-                           xArtifactModifiedEvent.sender.getAuthor()));
-                  } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
-                     Artifact artifact = xArtifactModifiedEvent.artifact;
-                     events.add(new NetworkArtifactAddedEvent(artifact.getBranch().getBranchId(),
-                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                           artifact.getFactory().getClass().getCanonicalName(),
-                           xArtifactModifiedEvent.sender.getAuthor()));
-                  } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
-                     Artifact artifact = xArtifactModifiedEvent.artifact;
-                     events.add(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
-                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                           artifact.getFactory().getClass().getCanonicalName(),
-                           xArtifactModifiedEvent.sender.getAuthor()));
-                  } else {
-                     SkynetActivator.getLogger().log(Level.SEVERE,
-                           "Unhandled xArtifactModifiedEvent event: " + xArtifactModifiedEvent);
-                  }
-               } else if (xModifiedEvent instanceof XRelationModifiedEvent) {
-                  XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
-                  if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
-                     RelationLink link = xRelationModifiedEvent.link;
-                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-                     NetworkRelationLinkModifiedEvent networkRelationLinkModifiedEvent =
-                           new NetworkRelationLinkModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
-                                 link.getRelationId(), link.getAArtifactId(),
-                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
-                                 link.getAOrder(), link.getBOrder(), SkynetAuthentication.getUser().getArtId(),
-                                 link.getRelationType().getRelationTypeId());
-                     events.add(networkRelationLinkModifiedEvent);
-                  } else if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
-                     RelationLink link = xRelationModifiedEvent.link;
-                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-                     NetworkRelationLinkDeletedEvent networkRelationLinkModifiedEvent =
-                           new NetworkRelationLinkDeletedEvent(link.getRelationType().getRelationTypeId(),
-                                 link.getGammaId(), link.getBranch().getBranchId(), link.getRelationId(),
-                                 link.getArtifactId(RelationSide.SIDE_A),
-                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1),
-                                 link.getArtifactId(RelationSide.SIDE_B),
-                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1),
-                                 SkynetAuthentication.getUser().getArtId());
-                     events.add(networkRelationLinkModifiedEvent);
-                  } else if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
-                     RelationLink link = xRelationModifiedEvent.link;
-                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-                     NetworkNewRelationLinkEvent networkRelationLinkModifiedEvent =
-                           new NetworkNewRelationLinkEvent(link.getGammaId(), link.getBranch().getBranchId(),
-                                 link.getRelationId(), link.getAArtifactId(),
-                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
-                                 link.getAOrder(), link.getBOrder(), link.getRelationType().getRelationTypeId(),
-                                 link.getRelationType().getTypeName(), SkynetAuthentication.getUser().getArtId());
-                     events.add(networkRelationLinkModifiedEvent);
-                  } else {
-                     SkynetActivator.getLogger().log(Level.SEVERE,
-                           "Unhandled xRelationModifiedEvent event: " + xRelationModifiedEvent);
-                  }
-               }
+         if (sender.getSource() == Source.Local && branchModType != BranchModType.DefaultBranchChanged) {
+            if (branchModType == BranchModType.Added) {
+               RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getAuthor()));
+            } else if (branchModType == BranchModType.Deleted) {
+               RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getAuthor()));
+            } else if (branchModType == BranchModType.Committed) {
+               RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getAuthor()));
+            } else if (branchModType == BranchModType.Renamed) {
+               RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getAuthor(),
+                     branch.getBranchName(), branch.getBranchShortName()));
             }
          }
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         throw new OseeCoreException(ex);
       }
    }
 
@@ -438,6 +258,197 @@ public class XEventManager {
          }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
+      }
+   }
+
+   public static void kickTransactionEvent(Source source, Collection<XModifiedEvent> xModifiedEvents) {
+      if (isDisableEvents()) return;
+      if (debug) System.out.println("kickTransactionEvent " + source + " #ModEvents: " + xModifiedEvents.size());
+      // Roll-up change information
+      TransactionData transData = new TransactionData();
+
+      for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
+         if (xModifiedEvent instanceof XArtifactModifiedEvent) {
+            XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
+               } else {
+                  transData.unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
+               } else {
+                  transData.unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+               }
+            }
+            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
+               if (xArtifactModifiedEvent.artifact != null) {
+                  transData.cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
+               } else {
+                  transData.unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
+               }
+            }
+         }
+         if (xModifiedEvent instanceof XRelationModifiedEvent) {
+            XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
+            UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
+            LoadedRelation loadedRelation = null;
+            if (xRelationModifiedEvent.link != null) {
+               try {
+                  loadedRelation =
+                        new LoadedRelation(xRelationModifiedEvent.link.getArtifactA(),
+                              xRelationModifiedEvent.link.getArtifactB(),
+                              xRelationModifiedEvent.link.getRelationType(), xRelationModifiedEvent.branch,
+                              unloadedRelation);
+               } catch (Exception ex) {
+                  SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               }
+            }
+            if (unloadedRelation != null) {
+               Artifact artA =
+                     ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getBranchId());
+               Artifact artB =
+                     ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getBranchId());
+               if (artA != null || artB != null) {
+                  try {
+                     loadedRelation =
+                           new LoadedRelation(artA, artB,
+                                 RelationTypeManager.getType(unloadedRelation.getRelationTypeId()),
+                                 artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
+                  } catch (Exception ex) {
+                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  }
+               }
+            }
+            if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
+               if (loadedRelation != null) {
+                  transData.cacheAddedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
+                  if (loadedRelation.getArtifactB() != null) transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedAddedRelations.add(unloadedRelation);
+               }
+            }
+            if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
+               if (loadedRelation != null) {
+                  transData.cacheDeletedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
+                  if (loadedRelation.getArtifactB() != null) transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedDeletedRelations.add(unloadedRelation);
+               }
+            }
+            if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
+               if (loadedRelation != null) {
+                  transData.cacheChangedRelations.add(loadedRelation);
+                  if (loadedRelation.getArtifactA() != null) transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
+                  if (loadedRelation.getArtifactB() != null) transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
+               }
+               if (unloadedRelation != null) {
+                  transData.unloadedChangedRelations.add(unloadedRelation);
+               }
+            }
+         }
+      }
+
+      // Clean out known duplicates
+      transData.cacheChangedArtifacts.removeAll(transData.cacheDeletedArtifacts);
+      transData.cacheAddedArtifacts.removeAll(transData.cacheDeletedArtifacts);
+
+      // Kick Local
+      for (IXEventListener listener : listenerMap.getValues()) {
+         if (listener instanceof IFrameworkTransactionEventListener) {
+            // Don't fail on any one listener's exception
+            try {
+               ((IFrameworkTransactionEventListener) listener).handleFrameworkTransactionEvent(source, transData);
+            } catch (Exception ex) {
+               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+         }
+      }
+      // Kick Remote (If sender was Local)
+      try {
+         if (source == Source.Local) {
+            List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
+            for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
+               if (xModifiedEvent instanceof XArtifactModifiedEvent) {
+                  XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
+                  if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
+                     Artifact artifact = xArtifactModifiedEvent.artifact;
+                     events.add(new NetworkArtifactModifiedEvent(artifact.getBranch().getBranchId(),
+                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
+                           artifact.getFactory().getClass().getCanonicalName(),
+                           xArtifactModifiedEvent.dirtySkynetAttributeChanges,
+                           xArtifactModifiedEvent.sender.getAuthor()));
+                  } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
+                     Artifact artifact = xArtifactModifiedEvent.artifact;
+                     events.add(new NetworkArtifactAddedEvent(artifact.getBranch().getBranchId(),
+                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
+                           artifact.getFactory().getClass().getCanonicalName(),
+                           xArtifactModifiedEvent.sender.getAuthor()));
+                  } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
+                     Artifact artifact = xArtifactModifiedEvent.artifact;
+                     events.add(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
+                           xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
+                           artifact.getFactory().getClass().getCanonicalName(),
+                           xArtifactModifiedEvent.sender.getAuthor()));
+                  } else {
+                     SkynetActivator.getLogger().log(Level.SEVERE,
+                           "Unhandled xArtifactModifiedEvent event: " + xArtifactModifiedEvent);
+                  }
+               } else if (xModifiedEvent instanceof XRelationModifiedEvent) {
+                  XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
+                  if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
+                     RelationLink link = xRelationModifiedEvent.link;
+                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+                     NetworkRelationLinkModifiedEvent networkRelationLinkModifiedEvent =
+                           new NetworkRelationLinkModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
+                                 link.getRelationId(), link.getAArtifactId(),
+                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
+                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
+                                 link.getAOrder(), link.getBOrder(), SkynetAuthentication.getUser().getArtId(),
+                                 link.getRelationType().getRelationTypeId());
+                     events.add(networkRelationLinkModifiedEvent);
+                  } else if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
+                     RelationLink link = xRelationModifiedEvent.link;
+                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+                     NetworkRelationLinkDeletedEvent networkRelationLinkModifiedEvent =
+                           new NetworkRelationLinkDeletedEvent(link.getRelationType().getRelationTypeId(),
+                                 link.getGammaId(), link.getBranch().getBranchId(), link.getRelationId(),
+                                 link.getArtifactId(RelationSide.SIDE_A),
+                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1),
+                                 link.getArtifactId(RelationSide.SIDE_B),
+                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1),
+                                 SkynetAuthentication.getUser().getArtId());
+                     events.add(networkRelationLinkModifiedEvent);
+                  } else if (xRelationModifiedEvent.relationModType == RelationModType.Added) {
+                     RelationLink link = xRelationModifiedEvent.link;
+                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+                     NetworkNewRelationLinkEvent networkRelationLinkModifiedEvent =
+                           new NetworkNewRelationLinkEvent(link.getGammaId(), link.getBranch().getBranchId(),
+                                 link.getRelationId(), link.getAArtifactId(),
+                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
+                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
+                                 link.getAOrder(), link.getBOrder(), link.getRelationType().getRelationTypeId(),
+                                 link.getRelationType().getTypeName(), SkynetAuthentication.getUser().getArtId());
+                     events.add(networkRelationLinkModifiedEvent);
+                  } else {
+                     SkynetActivator.getLogger().log(Level.SEVERE,
+                           "Unhandled xRelationModifiedEvent event: " + xRelationModifiedEvent);
+                  }
+               }
+            }
+         }
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 

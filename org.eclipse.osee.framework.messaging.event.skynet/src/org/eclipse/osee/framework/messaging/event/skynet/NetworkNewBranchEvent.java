@@ -17,16 +17,12 @@ package org.eclipse.osee.framework.messaging.event.skynet;
  */
 public class NetworkNewBranchEvent implements ISkynetEvent {
    private static final long serialVersionUID = 8339596149601337894L;
-   private int branchId;
-   private int author;
+   private final int branchId;
+   private final int author;
 
    public NetworkNewBranchEvent(int branchId, int author) {
       this.branchId = branchId;
       this.author = author;
-   }
-
-   public int getTransactionId() {
-      return 0;
    }
 
    public int getBranchId() {

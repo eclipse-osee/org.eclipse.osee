@@ -16,12 +16,11 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * 
  * @author Donald G. Dunne
  */
-public class AtsBranchAccessHandler implements IEventReceiver {
+public class AtsBranchAccessHandler implements IBranchEventListener {
 
    private static AtsBranchAccessHandler atsBranchAccessHandler = new AtsBranchAccessHandler();
 
@@ -39,17 +38,20 @@ public class AtsBranchAccessHandler implements IEventReceiver {
 
    private AtsBranchAccessHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Branch Access Handler", false);
-      SkynetEventManager.getInstance().register(LocalNewBranchEvent.class, this);
+      XEventManager.addListener(this, this);
+   }
+
+   public void dispose() {
+      XEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
-   public void onEvent(Event event) {
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, Branch branch, int branchId) {
       try {
-         if (event instanceof LocalNewBranchEvent) {
-            Branch branch =
-                  BranchPersistenceManager.getBranch(((LocalNewBranchEvent) event).getBranchId());
+         if (branchModType == BranchModType.Added) {
             Artifact artifact = branch.getAssociatedArtifact();
             if (artifact instanceof StateMachineArtifact) {
                ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().updateBranchAccessControl();
@@ -61,16 +63,4 @@ public class AtsBranchAccessHandler implements IEventReceiver {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
-
-   public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
 }

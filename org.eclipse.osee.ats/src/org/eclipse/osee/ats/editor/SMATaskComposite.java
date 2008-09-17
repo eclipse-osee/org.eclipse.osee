@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.editor;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
@@ -21,18 +19,17 @@ import org.eclipse.osee.ats.util.widgets.task.TaskContentProvider;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.LoadedRelation;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.TransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -108,93 +105,49 @@ public class SMATaskComposite extends Composite {
          }
 
       });
-      XEventManager.addListener(this, new FrameworkTransactionEvent() {
+      XEventManager.addListener(this, new IFrameworkTransactionEventListener() {
 
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsChanged(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
-          */
          @Override
-         public void handleArtifactsChanged(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
+         public void handleFrameworkTransactionEvent(Source source, final TransactionData transData) {
+
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)
                 * @see java.lang.Runnable#run()
                 */
                @Override
                public void run() {
-                  xTaskViewer.getXViewer().update(cacheArtifacts, null);
+
+                  ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
+                  xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
+
+                  try {
+                     Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
+                     if (parentSma != null) {
+                        // Add any new tasks related to parent sma
+                        Collection<Artifact> artifacts =
+                              transData.getRelatedArtifacts(parentSma.getArtId(),
+                                    AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                                    AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
+                        if (artifacts.size() > 0) {
+                           ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
+                        }
+
+                        // Remove any tasks related to parent sma
+                        artifacts =
+                              transData.getRelatedArtifacts(parentSma.getArtId(),
+                                    AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                                    AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
+                        if (artifacts.size() > 0) {
+                           ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
+                        }
+                     }
+                  } catch (Exception ex) {
+                     OSEELog.logException(AtsPlugin.class, ex, false);
+                  }
                }
             });
          }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleArtifactsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection)
-          */
-         @Override
-         public void handleArtifactsDeleted(Source source, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleRelationsAdded(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection, java.util.Collection)
-          */
-         @Override
-         public void handleRelationsAdded(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
-            final Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
-            if (artifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
-         }
-
-         /* (non-Javadoc)
-          * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEvent#handleRelationsDeleted(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, java.util.Collection, java.util.Collection, java.util.Collection)
-          */
-         @Override
-         public void handleRelationsDeleted(Source source, Collection<? extends Artifact> cacheArtifacts, Collection<LoadedRelation> cacheRelations, Collection<UnloadedRelation> unloadedRelation) {
-            final Collection<Artifact> artifacts = getRelatedTasks(cacheRelations);
-            if (artifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
-         }
-
       });
-   }
-
-   /**
-    * Return tasks related to this artifact from event service cacheRelations
-    * 
-    * @param cacheRelations
-    * @return
-    */
-   private Collection<Artifact> getRelatedTasks(Collection<LoadedRelation> cacheRelations) {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      try {
-         Set<Integer> artifactIds = new HashSet<Integer>();
-         for (LoadedRelation loadedRelation : cacheRelations) {
-            try {
-               if (loadedRelation.getArtifactA() != null && loadedRelation.getArtifactA().equals(
-                     xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma())) {
-                  if (loadedRelation.getRelationType().equals(AtsRelation.SmaToTask_Task.getRelationType())) {
-                     if (loadedRelation.getArtifactB() != null) {
-                        artifacts.add(loadedRelation.getArtifactB());
-                     } else {
-                        artifactIds.add(loadedRelation.getUnloadedRelation().getArtifactBId());
-                     }
-                  }
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
-         }
-         if (artifactIds.size() > 0) {
-            artifacts.addAll(ArtifactQuery.getArtifactsFromIds(artifactIds, AtsPlugin.getAtsBranch(), false));
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return artifacts;
    }
 
    /**

@@ -394,7 +394,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
    private class LoadTableJob extends Job {
 
-      @SuppressWarnings("unused")
       private final WorldSearchItem searchItem;
       private boolean cancel = false;
       private final SearchType searchType;

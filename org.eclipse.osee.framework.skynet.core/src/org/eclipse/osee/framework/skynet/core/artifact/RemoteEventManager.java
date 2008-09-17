@@ -66,10 +66,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Art
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
@@ -303,30 +299,50 @@ public class RemoteEventManager implements IServiceLookupListener {
                         Branch branch = BranchPersistenceManager.getBranch(branchId);
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
-                        eventManager.kick(new RemoteRenameBranchEvent(this, branchId, branch.getBranchName(),
-                              branch.getBranchShortName()));
+                        try {
+                           Sender sender =
+                                 new Sender(Source.Remote, null, ((NetworkRenameBranchEvent) event).getAuthor());
+                           XEventManager.kickBranchEvent(sender, BranchModType.Renamed, branchId);
+                        } catch (Exception ex) {
+                           logger.log(Level.SEVERE, ex.toString(), ex);
+                        }
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
                   } else if (event instanceof NetworkNewBranchEvent) {
-                     eventManager.kick(new RemoteNewBranchEvent(this, ((NetworkNewBranchEvent) event).getBranchId()));
+                     int branchId = ((NetworkNewBranchEvent) event).getBranchId();
+                     try {
+                        Sender sender = new Sender(Source.Remote, null, ((NetworkNewBranchEvent) event).getAuthor());
+                        XEventManager.kickBranchEvent(sender, BranchModType.Added, branchId);
+                     } catch (Exception ex) {
+                        logger.log(Level.SEVERE, ex.toString(), ex);
+                     }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
-                     eventManager.kick(new RemoteDeletedBranchEvent(this, branchId));
+                     try {
+                        Sender sender =
+                              new Sender(Source.Remote, null, ((NetworkDeletedBranchEvent) event).getAuthor());
+                        XEventManager.kickBranchEvent(sender, BranchModType.Deleted, branchId);
+                     } catch (Exception ex) {
+                        logger.log(Level.SEVERE, ex.toString(), ex);
+                     }
                   } else if (event instanceof NetworkCommitBranchEvent) {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
-                     eventManager.kick(new RemoteCommitBranchEvent(this, branchId));
+                     try {
+                        Sender sender = new Sender(Source.Remote, null, ((NetworkCommitBranchEvent) event).getAuthor());
+                        XEventManager.kickBranchEvent(sender, BranchModType.Committed, branchId);
+                     } catch (Exception ex) {
+                        logger.log(Level.SEVERE, ex.toString(), ex);
+                     }
                   } else if (event instanceof NetworkBroadcastEvent) {
                      handleBroadcastMessageEvent((NetworkBroadcastEvent) event);
                   } else if (event instanceof ISkynetArtifactEvent) {
                      updateArtifacts((ISkynetArtifactEvent) event, localEvents, xModifiedEvents);
                   } else if (event instanceof ISkynetRelationLinkEvent) {
                      updateRelations((ISkynetRelationLinkEvent) event, localEvents, xModifiedEvents);
-                  }
-                  // Converted to new event design
-                  else if (event instanceof NetworkArtifactChangeTypeEvent) {
+                  } else if (event instanceof NetworkArtifactChangeTypeEvent) {
                      try {
                         Sender sender =
                               new Sender(Source.Remote, null, ((NetworkArtifactChangeTypeEvent) event).getAuthor());
