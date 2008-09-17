@@ -257,7 +257,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void onInitializationComplete() {
    };
-   
+
    @Deprecated
    public void onAttributePersist()throws OseeCoreException{
    };
@@ -1003,26 +1003,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                descendants.add(child);
             }
             descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
-         }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-
-      return descendants;
-   }
-
-   /**
-    * Returns all of the descendants through the primary decomposition tree that are already loaded.
-    */
-   public Collection<Artifact> getLoadedDescendants() {
-      Collection<Artifact> descendants = new LinkedList<Artifact>();
-
-      try {
-         if (isLinksLoaded()) {
-            for (Artifact child : getChildren()) {
-               descendants.add(child);
-               descendants.addAll(child.getLoadedDescendants());
-            }
          }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

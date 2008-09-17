@@ -1436,17 +1436,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   Artifact[] artifactsToBeRelated = artData.getArtifacts();
 
                   for (Artifact artifact : artifactsToBeRelated) {
-                     if (parentArtifact == artifact) {
+                     if (parentArtifact.equals(artifact)) {
                         return false;
                      }
-                     for (Artifact descendant : artifact.getLoadedDescendants()) {
-                        if (parentArtifact == descendant) {
-                           return false;
-                        }
-                     }
-
                   }
-
                   return true;
                }
             } else {
