@@ -37,7 +37,7 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
    }
 
    public String toString() {
-      return getDescriptiveName();
+      return getInternalDescriptiveName();
    }
 
    public String getHyperlinkHtml() {
