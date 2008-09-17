@@ -7,7 +7,7 @@
 	<!--                                                       -->
 	<!-- _____________________________________________________ -->
 
-	<Table name="OSEE_DEFINE_ARTIFACT" schema="OSEE">
+	<Table name="OSEE_DEFINE_ARTIFACT" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
@@ -16,40 +16,40 @@
 		<Constraint schema="OSEE" id="ART_TYPE_ID1_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_ARTIFACT_H_A_IDX" type="UNIQUE">
+		<Index id="OSEE_ARTIFACT_H_A_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="HUMAN_READABLE_ID"/>
 			<AppliesTo id="ART_ID"/>
 		</Index>
-		<Index id="OSEE_ARTIFACT_AT_IDX">
+		<Index id="OSEE_ARTIFACT_AT_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_TYPE_ID"/>
 		</Index>
-		<Index id="OSEE_ARTIFACT_G_IDX" type="UNIQUE">
+		<Index id="OSEE_ARTIFACT_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="GUID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE">
+	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_ARTIFACT_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
-		<Index id="OSEE_JOIN_ARTIFACT_Q_IDX">
+		<Index id="OSEE_JOIN_ARTIFACT_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_JOIN_ATTRIBUTE" schema="OSEE">
+	<Table name="OSEE_JOIN_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
 		<Column id="ATTR_QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="VALUE" defaultValue="not null" limits="4000" type="VARCHAR" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_ATTRIBUTE_A_IDX">
+		<Index id="OSEE_JOIN_ATTRIBUTE_A_IDX" tablespace="osee_index">
 			<AppliesTo id="ATTR_QUERY_ID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_DEFINE_ARTIFACT_VERSION" schema="OSEE">
+	<Table name="OSEE_DEFINE_ARTIFACT_VERSION" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
@@ -57,16 +57,16 @@
 		<Constraint schema="OSEE" id="ART_ID2_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_ARTIFACT_VER_AR_G_IDX" type="UNIQUE">
+		<Index id="OSEE_ARTIFACT_VER_AR_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_ARTIFACT_VER_A_IDX">
+		<Index id="OSEE_ARTIFACT_VER_A_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 		</Index>
 	</Table>
 
-	<Table name="OSEE_DEFINE_ARTIFACT_TYPE" schema="OSEE">
+	<Table name="OSEE_DEFINE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
@@ -77,17 +77,17 @@
 		<Constraint schema="OSEE" id="FACTORY_ID_FK" type="FOREIGN KEY" appliesTo="FACTORY_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_FACTORY" column="FACTORY_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE">
+		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
 	</Table>
 
-	<Table name="OSEE_ATTRIBUTE" schema="OSEE">
+	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
 		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
 	</Table>
 
-	<Table name="OSEE_DEFINE_ATTRIBUTE" schema="OSEE">
+	<Table name="OSEE_DEFINE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
@@ -99,36 +99,36 @@
 		<Constraint schema="OSEE" id="ART_ID1_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_ATTRIBUTE_ATT_IDX">
+		<Index id="OSEE_ATTRIBUTE_ATT_IDX" tablespace="osee_index">
 			<AppliesTo id="ATTR_TYPE_ID"/>
 		</Index>
- 	  	<Index id="OSEE_ATTRIBUTE_V_IDX" mySqlIgnore="true">
+ 	  	<Index id="OSEE_ATTRIBUTE_V_IDX" mySqlIgnore="true" tablespace="osee_index">
 			<AppliesTo id="VALUE"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_AR_V_IDX" mySqlIgnore="true">
+		<Index id="OSEE_ATTRIBUTE_AR_V_IDX" mySqlIgnore="true" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 			<AppliesTo id="VALUE"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_AR_G_IDX" type="UNIQUE">
+		<Index id="OSEE_ATTRIBUTE_AR_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_G_AT_IDX" type="UNIQUE">
+		<Index id="OSEE_ATTRIBUTE_G_AT_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="GAMMA_ID"/>
 			<AppliesTo id="ATTR_ID"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_G_IDX" type="UNIQUE">
+		<Index id="OSEE_ATTRIBUTE_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_AT_IDX">
+		<Index id="OSEE_ATTRIBUTE_AT_IDX" tablespace="osee_index">
 			<AppliesTo id="ATTR_ID"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_AR_IDX" mySqlIgnore="true">
+		<Index id="OSEE_ATTRIBUTE_AR_IDX" mySqlIgnore="true" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_DEFINE_ATTRIBUTE_TYPE" schema="OSEE">
+	<Table name="OSEE_DEFINE_ATTRIBUTE_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
@@ -148,38 +148,38 @@
 		<Constraint schema="OSEE" id="ATTR_PROVIDER_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ATTR_PROVIDER_TYPE" column="ATTR_PROVIDER_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX">
+		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
 	</Table>
 
-	<Table name="OSEE_DEFINE_ATTR_BASE_TYPE" schema="OSEE">
+	<Table name="OSEE_DEFINE_ATTR_BASE_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
 	</Table>
 	
-	<Table name="OSEE_DEFINE_ATTR_PROVIDER_TYPE" schema="OSEE">
+	<Table name="OSEE_DEFINE_ATTR_PROVIDER_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
 	</Table>
 	
-	<Table name="OSEE_DEFINE_FACTORY" schema="OSEE">
+	<Table name="OSEE_DEFINE_FACTORY" schema="OSEE" tablespace="osee_data">
 		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="FACTORY_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_FACTORY_FI_PK" type="PRIMARY KEY" appliesTo="FACTORY_ID" />
-		<Index id="OSEE_FACTORY_FC_IDX" type="UNIQUE">
+		<Index id="OSEE_FACTORY_FC_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="FACTORY_CLASS"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_REL_LINK" schema="OSEE">
+	<Table name="OSEE_REL_LINK" schema="OSEE" tablespace="osee_data">
 		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="REL_LINK_ID" defaultValue="not null" type="INTEGER" />
 	</Table>
 
-	<Table name="OSEE_DEFINE_REL_LINK" schema="OSEE">
+	<Table name="OSEE_DEFINE_REL_LINK" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="REL_LINK_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
@@ -196,49 +196,49 @@
 		<Constraint schema="OSEE" id="OSEE_DEFINE_FOREIGN_A_ART" type="FOREIGN KEY" appliesTo="A_ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_REL_LINK_RL_IDX">
+		<Index id="OSEE_REL_LINK_RL_IDX" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_RL_G_IDX" type="UNIQUE">
+		<Index id="OSEE_REL_LINK_RL_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_AA_IDX">
+		<Index id="OSEE_REL_LINK_AA_IDX" tablespace="osee_index">
 			<AppliesTo id="A_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_BA_IDX">
+		<Index id="OSEE_REL_LINK_BA_IDX" tablespace="osee_index">
 			<AppliesTo id="B_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_BA_RL_IDX">
+		<Index id="OSEE_REL_LINK_BA_RL_IDX" tablespace="osee_index">
 			<AppliesTo id="B_ART_ID"/>
 			<AppliesTo id="REL_LINK_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_RL_AA_IDX">
+		<Index id="OSEE_REL_LINK_RL_AA_IDX" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
 			<AppliesTo id="A_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_AA_BA_IDX">
+		<Index id="OSEE_REL_LINK_AA_BA_IDX" tablespace="osee_index">
 			<AppliesTo id="A_ART_ID"/>
 			<AppliesTo id="B_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_BA_AA_IDX">
+		<Index id="OSEE_REL_LINK_BA_AA_IDX" tablespace="osee_index">
 			<AppliesTo id="B_ART_ID"/>
 			<AppliesTo id="A_ART_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_AA_G_IDX" type="UNIQUE">
+		<Index id="OSEE_REL_LINK_AA_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="A_ART_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_BA_G_IDX" type="UNIQUE">
+		<Index id="OSEE_REL_LINK_BA_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="B_ART_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
 		</Index>
-		<Index id="OSEE_REL_LINK_RT_IDX">
+		<Index id="OSEE_REL_LINK_RT_IDX" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_TYPE_ID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_DEFINE_REL_LINK_TYPE" schema="OSEE">
+	<Table name="OSEE_DEFINE_REL_LINK_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
@@ -250,7 +250,7 @@
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
 	</Table>
 	
-	<Table name="OSEE_DEFINE_VALID_ATTRIBUTES" schema="OSEE">
+	<Table name="OSEE_DEFINE_VALID_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_VALID_ATTR_AR_AT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID" />
@@ -262,7 +262,7 @@
 		</Constraint>
 	</Table>
 
-	<Table name="OSEE_DEFINE_VALID_RELATIONS" schema="OSEE">
+	<Table name="OSEE_DEFINE_VALID_RELATIONS" schema="OSEE" tablespace="osee_data">
 		<Column id="SIDE_A_MAX" defaultValue="not null" type="INTEGER" />
 		<Column id="SIDE_B_MAX" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
@@ -274,7 +274,7 @@
 		</Constraint>
 	</Table>
 	
-	<Table name="OSEE_SNAPSHOT" schema="OSEE">
+	<Table name="OSEE_SNAPSHOT" schema="OSEE" tablespace="osee_data">
 		<Column id="NAMESPACE" defaultValue="not null" limits="1000" type="VARCHAR" />
 		<Column id="KEY_ID" defaultValue="not null" limits="1000" type="VARCHAR" />
 		<Column id="OBJECT" type="BLOB" />
@@ -290,7 +290,7 @@
 	<!-- __________________________________________________________ -->
 	
 	
-	<Table name="OSEE_DEFINE_BRANCH" schema="OSEE">
+	<Table name="OSEE_DEFINE_BRANCH" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />
 		<Column id="SHORT_NAME" defaultValue="not null" limits="25" type="VARCHAR" />
@@ -299,12 +299,12 @@
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_TYPE" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
-		<Index id="OSEE_BRANCH_A_IDX">
+		<Index id="OSEE_BRANCH_A_IDX" tablespace="osee_index">
 			<AppliesTo id="ARCHIVED" />
 		</Index>
 	</Table>
 
-	<Table name="OSEE_BRANCH_ANCESTRY" schema="OSEE">
+	<Table name="OSEE_BRANCH_ANCESTRY" schema="OSEE" tablespace="osee_data">
 		<Column id="ANCESTOR_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="DESCENDENT_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="BRANCH_ID_FK2" type="FOREIGN KEY" appliesTo="ANCESTOR_ID" deferrable="true">
@@ -315,7 +315,7 @@
 		</Constraint>
 	</Table>
 	
-	<Table name="OSEE_DEFINE_TXS" schema="OSEE">
+	<Table name="OSEE_DEFINE_TXS" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="MOD_TYPE" type="INTEGER" /> <!-- CHANGE TO NOT ACCEPT NULLS -->
@@ -324,15 +324,15 @@
 		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_TXS_G_IDX">
+		<Index id="OSEE_TXS_G_IDX" tablespace="osee_index">
 			<AppliesTo id="GAMMA_ID" />
 		</Index>
-		<Index id="OSEE_TXS_TX_IDX" >
+		<Index id="OSEE_TXS_TX_IDX" tablespace="osee_index">
 			<AppliesTo id="TRANSACTION_ID" />
 		</Index>
 	</Table>
 
-	<Table name="OSEE_DEFINE_TX_DETAILS" schema="OSEE">
+	<Table name="OSEE_DEFINE_TX_DETAILS" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_TYPE" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
@@ -344,20 +344,20 @@
 		<Constraint schema="OSEE" id="BRANCH_ID_FK1" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_TX_DETAILS_B_TX_IDX" type="UNIQUE">
+		<Index id="OSEE_TX_DETAILS_B_TX_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="BRANCH_ID"/>
 			<AppliesTo id="TRANSACTION_ID" />
 		</Index>
-		<Index id="OSEE_TX_DETAILS_TX_B_IDX" type="UNIQUE">
+		<Index id="OSEE_TX_DETAILS_TX_B_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="TRANSACTION_ID" />
 			<AppliesTo id="BRANCH_ID"/>
 		</Index>
-		<Index id="OSEE_TX_DETAILS_B_IDX">
+		<Index id="OSEE_TX_DETAILS_B_IDX" tablespace="osee_index">
 			<AppliesTo id="BRANCH_ID" />
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_DEFINE_TX_NAMES" schema="OSEE">
+	<Table name="OSEE_DEFINE_TX_NAMES" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="NAME" defaultValue="not null" limits="100" type="VARCHAR" />
 		<Constraint schema="OSEE" id="TRANSACTION_ID2_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
@@ -373,7 +373,7 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_DEFINE_ARTIFACT_ACL" schema="OSEE">
+	<Table name="OSEE_DEFINE_ARTIFACT_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
@@ -384,7 +384,7 @@
 		</Constraint>
    </Table>
 	   
-   <Table name="OSEE_DEFINE_REL_LINK_TYPE_ACL" schema="OSEE">
+   <Table name="OSEE_DEFINE_REL_LINK_TYPE_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
@@ -395,7 +395,7 @@
 		</Constraint>
    </Table>
 	   
-   <Table name="OSEE_DEFINE_ARTIFACT_TYPE_ACL" schema="OSEE">
+   <Table name="OSEE_DEFINE_ARTIFACT_TYPE_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
@@ -406,7 +406,7 @@
 		</Constraint>
    </Table>
 	   
-   <Table name="OSEE_DEFINE_ATTRIBUTE_TYPE_ACL" schema="OSEE">
+   <Table name="OSEE_DEFINE_ATTRIBUTE_TYPE_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
@@ -417,7 +417,7 @@
 		</Constraint>
    </Table>
 	   
-   <Table name="OSEE_DEFINE_BRANCH_ACL" schema="OSEE">
+   <Table name="OSEE_DEFINE_BRANCH_ACL" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
@@ -430,7 +430,7 @@
 		</Constraint>
    </Table>
 	   
-   <Table name="OSEE_DEFINE_PERMISSION" schema="OSEE">
+   <Table name="OSEE_DEFINE_PERMISSION" schema="OSEE" tablespace="osee_data">
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Constraint schema="OSEE" id="PERMISSION_PK" type="PRIMARY KEY" appliesTo="PERMISSION_ID" />
@@ -442,26 +442,26 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	   
-	<Table name="OSEE_SEARCH_TAGS" schema="OSEE">
+	<Table name="OSEE_SEARCH_TAGS" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
 		<Constraint schema="OSEE" id="OSEE_SEARCH_TAGS__PK" type="PRIMARY KEY" appliesTo="CODED_TAG_ID, GAMMA_ID" />
-		<Index id="OSEE_SEARCH_TAGS_C_IDX">
+		<Index id="OSEE_SEARCH_TAGS_C_IDX" tablespace="osee_index">
 			<AppliesTo id="CODED_TAG_ID"/>
 		</Index>
 	</Table>
 	
-	<Table name="OSEE_JOIN_SEARCH_TAGS" schema="OSEE">
+	<Table name="OSEE_JOIN_SEARCH_TAGS" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_SEARCH_TAGS_Q_C_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, CODED_TAG_ID" />
-		<Index id="OSEE_JOIN_SEARCH_TAGS_Q_IDX">
+		<Index id="OSEE_JOIN_SEARCH_TAGS_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
 	   
-	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE">
+	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
@@ -474,7 +474,7 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
    
-   <Table name="OSEE_USAGE" schema="OSEE">
+   <Table name="OSEE_USAGE" schema="OSEE" tablespace="osee_data">
 		<Column id="USER_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
 		<Column id="EVENT_ID" defaultValue="not null" type="INTEGER" />
@@ -486,7 +486,7 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_DEFINE_SEQUENCE" schema="OSEE">
+	<Table name="OSEE_DEFINE_SEQUENCE" schema="OSEE" tablespace="osee_data">
 		<Column id="LAST_SEQUENCE" defaultValue="not null" type="BIGINT" />
 		<Column id="SEQUENCE_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
 		<Constraint schema="OSEE" id="SEQUENCE_ID_UN" type="UNIQUE" appliesTo="SEQUENCE_NAME" />
@@ -498,7 +498,7 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_BRANCH_DEFINITIONS" schema="OSEE">
+	<Table name="OSEE_BRANCH_DEFINITIONS" schema="OSEE" tablespace="osee_data">
 		<Column id="MAPPED_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="STATIC_BRANCH_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
 		<Constraint schema="OSEE" id="BRANCH_DEFINITIONS_SBN_PK" type="PRIMARY KEY" appliesTo="STATIC_BRANCH_NAME" />
@@ -507,7 +507,7 @@
 		</Constraint>
 	</Table>
 	
-	<Table name="OSEE_BRANCH_DELETE_HELPER" schema="OSEE">
+	<Table name="OSEE_BRANCH_DELETE_HELPER" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBDH_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID">
@@ -515,7 +515,7 @@
 		</Constraint>
 	</Table>
 
-  <Table name="OSEE_INFO" schema="OSEE">
+  <Table name="OSEE_INFO" schema="OSEE" tablespace="osee_data">
     <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="50" />
     <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="50" />
     <Constraint schema="OSEE" id="OSEE_INFO_KEY_UN_IDX" type="UNIQUE" appliesTo="OSEE_KEY" />
@@ -527,7 +527,7 @@
 	<!--                                                            -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_DEFINE_MERGE" schema="OSEE">
+	<Table name="OSEE_DEFINE_MERGE" schema="OSEE" tablespace="osee_data">
 		<Column id="SOURCE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
@@ -537,7 +537,7 @@
 		</Constraint>
    </Table>
    
-   <Table name="OSEE_DEFINE_CONFLICT" schema="OSEE">
+   <Table name="OSEE_DEFINE_CONFLICT" schema="OSEE" tablespace="osee_data">
 		<Column id="CONFLICT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="CONFLICT_TYPE" defaultValue="not null" type="INTEGER" />
@@ -550,12 +550,12 @@
    </Table>
    
    	
-	<Table name="OSEE_JOIN_TRANSACTION" schema="OSEE">
+	<Table name="OSEE_JOIN_TRANSACTION" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX">
+		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
@@ -565,12 +565,12 @@
 	<!--                      IMPORT TABLES                         -->
 	<!-- __________________________________________________________ -->
 	
-	<Table name="OSEE_JOIN_EXPORT_IMPORT" schema="OSEE">
+	<Table name="OSEE_JOIN_EXPORT_IMPORT" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ID1" defaultValue="not null" type="BIGINT" />
 		<Column id="ID2" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_EXPORT_IMPORT_Q_IDX">
+		<Index id="OSEE_JOIN_EXPORT_IMPORT_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
