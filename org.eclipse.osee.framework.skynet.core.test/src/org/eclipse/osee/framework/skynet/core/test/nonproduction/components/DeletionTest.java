@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import junit.framework.TestCase;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -61,7 +62,8 @@ public class DeletionTest extends TestCase {
    private static final String GET_RELATION_DEBUG =
          "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_rel_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
 
-   private boolean DEBUG = false;
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    /**
     * @param name
@@ -305,6 +307,9 @@ public class DeletionTest extends TestCase {
 
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
             monitorLog.getSevereLogs().size() == 0);
+      if (DEBUG) {
+         fail("Deletion Test was run with tracing enabled to prevent stopping at a failure so no conditions were checked.");
+      }
    }
 
    private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws SQLException {
