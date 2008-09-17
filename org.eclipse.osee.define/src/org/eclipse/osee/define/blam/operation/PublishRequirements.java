@@ -13,6 +13,7 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -31,7 +32,7 @@ public class PublishRequirements extends AbstractBlam {
       RendererManager rendererManager = RendererManager.getInstance();
       boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
 
-      for (Artifact artifact : variableMap.getArtifacts("artifact")) {
+      for (Artifact artifact : variableMap.getArtifacts("artifacts")) {
          if (monitor.isCanceled()) {
             return;
          }
@@ -63,6 +64,14 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
+    */
+   @Override
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+      return variableMap.getArtifacts("artifacts").get(0).getBranch();
    }
 }
