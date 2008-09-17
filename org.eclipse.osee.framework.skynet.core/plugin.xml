@@ -10,7 +10,7 @@
    <extension-point id="AtsLib" name="AtsLib" schema="schema/AtsLib.exsd"/>
    <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="schema/DefaultInitialBranchProvider.exsd"/>
    <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="schema/ArtifactAnnotation.exsd"/>
-   <extension-point id="SkynetDbSchema" name="SkynetDbSchema" schema="schema/SkynetDbSchema.exsd"/>
+   <extension-point id="OseeDbSchema" name="OseeDbSchema" schema="schema/OseeDbSchema.exsd"/>
    <extension-point id="WordMLConversionHandler" name="WordMLConversionHandler" schema="schema/WordMLConversionHandler.exsd"/>
    <extension-point id="HtmlImageHandler" name="HtmlImageHandler" schema="schema/HtmlImageHandler.exsd"/>
    <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
@@ -215,17 +215,9 @@
       <extension
             id="SkynetSchemaDefinition"
             name="SkynetSchemaDefinition"
-            point="org.eclipse.osee.framework.skynet.core.SkynetDbSchema">
+            point="org.eclipse.osee.framework.skynet.core.OseeDbSchema">
          <Schema
                SchemaFile="dbschemas/SKYNET.VERSIONING.SCHEMA.xml">
-         </Schema>
-      </extension>
-      <extension
-            id="ReportsDbSchema"
-            name="ReportsDbSchema"
-            point="org.eclipse.osee.framework.skynet.core.SkynetDbSchema">
-         <Schema
-               SchemaFile="dbschemas/REPORTS.SCHEMA.xml">
          </Schema>
       </extension>
       <extension

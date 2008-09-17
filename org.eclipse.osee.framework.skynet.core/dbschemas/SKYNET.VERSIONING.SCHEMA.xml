@@ -274,15 +274,6 @@
 		</Constraint>
 	</Table>
 	
-	<Table name="OSEE_SNAPSHOT" schema="OSEE" tablespace="osee_data">
-		<Column id="NAMESPACE" defaultValue="not null" limits="1000" type="VARCHAR" />
-		<Column id="KEY_ID" defaultValue="not null" limits="1000" type="VARCHAR" />
-		<Column id="OBJECT" type="BLOB" />
-		<Column id="LAST_UPDATED" defaultValue="not null" type="TIMESTAMP" />
-		<Column id="LAST_ACCESSED" defaultValue="not null" type="TIMESTAMP" />
-		<Constraint schema="OSEE" id="OSEE_SNAPSHOT__K_N_PK" type="PRIMARY KEY" appliesTo="KEY_ID, NAMESPACE" />
-	</Table>
-
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--  MAIN VERSIONING TABLES - CHANGE, TX, AND BRANCH SUPPORT   -->

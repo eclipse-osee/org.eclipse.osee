@@ -42,11 +42,8 @@ import org.osgi.framework.Bundle;
  */
 public class SkynetDbInit extends DbInitializationTask {
    private static final String ADD_PERMISSION =
-         "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME"); // + ")
-   // VALUES
-   // (?,?)";
+         "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
    private static boolean isInDbInit;
-   private static boolean isPreArtifactCreation;
 
    public void run(Connection connection) throws Exception {
       setIsInDbInit(true);
@@ -78,21 +75,33 @@ public class SkynetDbInit extends DbInitializationTask {
       SkynetDbInit.isInDbInit = isInDbInit;
    }
 
-   private List<URL> getSchemaFiles() {
+   private List<URL> getSchemaFiles() throws Exception {
       List<URL> toReturn = new ArrayList<URL>();
       List<IConfigurationElement> list =
             ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.SkynetDbSchema", "Schema");
       for (IConfigurationElement element : list) {
          String fileName = element.getAttribute("SchemaFile");
          String bundleName = element.getContributor().getName();
+         String initRuleClassName = element.getAttribute("DbInitRule");
 
          if (Strings.isValid(bundleName) && Strings.isValid(fileName)) {
             if (false != fileName.endsWith(DbConfigFileInformation.getSchemaFileExtension())) {
                Bundle bundle = Platform.getBundle(bundleName);
-               URL url = bundle.getEntry(fileName);
-               if (url != null) {
-                  System.out.println("Adding Schema: [" + fileName + "]");
-                  toReturn.add(url);
+
+               boolean isAllowed = true;
+               if (Strings.isValid(initRuleClassName)) {
+                  isAllowed = false;
+                  Class<?> taskClass = bundle.loadClass(initRuleClassName);
+                  IDbInitRule rule = (IDbInitRule) taskClass.newInstance();
+                  isAllowed = rule.isAllowed();
+               }
+
+               if (isAllowed) {
+                  URL url = bundle.getEntry(fileName);
+                  if (url != null) {
+                     System.out.println("Adding Schema: [" + fileName + "]");
+                     toReturn.add(url);
+                  }
                }
             }
          }
