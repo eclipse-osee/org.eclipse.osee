@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -203,14 +204,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persistAttributes()
     */
    @Override
-   public void persistAttributes() throws SQLException {
-      super.persistAttributes();
-      // Since multiple ways exist to change the assignees, notification is performed on the persist
+   public void onAttributePersist() throws OseeCoreException {
+	      // Since multiple ways exist to change the assignees, notification is performed on the persist
+	   if(isDeleted()){
+		   return;
+	   }
       notifyNewAssigneesAndReset();
       notifyOriginatorAndReset();
       try {
          updateAssigneeRelations();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }

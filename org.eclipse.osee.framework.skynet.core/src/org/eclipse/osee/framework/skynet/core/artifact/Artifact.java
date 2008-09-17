@@ -257,6 +257,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void onInitializationComplete() {
    };
+   
+   @Deprecated
+   public void onAttributePersist()throws OseeCoreException{
+   };
 
    /**
     * @return Returns the artId.
@@ -942,7 +946,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.revertRelationsFor(this);
    }
 
-   public void persistAttributes() throws SQLException {
+   public final void persistAttributes() throws SQLException {
       if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + getBranch());
       if (isHistorical()) {
@@ -955,6 +959,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          protected void handleTxWork() throws OseeCoreException, SQLException {
             if (isDirty()) {
                getTxBuilder().addArtifactToPersist(Artifact.this);
+               onAttributePersist();
             }
          }
       };
@@ -965,18 +970,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void persistRelations() throws SQLException {
+   public final void persistRelations() throws SQLException {
       RelationManager.persistRelationsFor(this, null);
    }
 
-   public void persistRelations(Collection<RelationType> relationTypes) throws SQLException {
+   public final void persistRelations(Collection<RelationType> relationTypes) throws SQLException {
       for (RelationType relationType : relationTypes) {
          RelationManager.persistRelationsFor(this, relationType);
       }
    }
 
-   public void persistAttributesAndRelations() throws SQLException {
-      if (isDeleted()) return;
+   public final void persistAttributesAndRelations() throws SQLException {
       persistAttributes();
       persistRelations();
    }
