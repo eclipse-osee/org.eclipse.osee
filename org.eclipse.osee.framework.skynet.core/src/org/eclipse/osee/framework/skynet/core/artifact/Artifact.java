@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
@@ -68,8 +67,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -257,7 +254,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    };
 
    @Deprecated
-   public void onAttributePersist()throws OseeCoreException{
+   public void onAttributePersist() throws OseeCoreException {
    };
 
    /**
@@ -880,6 +877,24 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
+    * 
+    * @throws SQLException
+    */
+   public void setDeleted() {
+      this.deleted = true;
+   }
+
+   /**
+    * This is used to mark that the artifact not deleted. This should only be called by the RemoteEventManager.
+    * 
+    * @throws SQLException
+    */
+   public void setNotDeleted() {
+      this.deleted = false;
+   }
+
+   /**
     * @return Returns the dirty.
     * @throws SQLException
     */
@@ -928,8 +943,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       // Kick Local Event
       try {
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         OseeEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Reverted, this);
+         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Reverted, this);
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -1078,14 +1092,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public boolean isDeleted() {
       return deleted;
-   }
-
-   void setDeleted() {
-      this.deleted = true;
-   }
-
-   void setNotDeleted() {
-      deleted = false;
    }
 
    public void setDirty() {

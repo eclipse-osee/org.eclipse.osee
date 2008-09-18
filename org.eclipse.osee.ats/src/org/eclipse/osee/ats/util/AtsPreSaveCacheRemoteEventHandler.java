@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -46,7 +46,7 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       for (Artifact artifact : transData.cacheChangedArtifacts) {
          if (artifact instanceof StateMachineArtifact) {
             ((StateMachineArtifact) artifact).initalizePreSaveCache();

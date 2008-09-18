@@ -24,8 +24,8 @@ public class NetworkArtifactPurgeEvent extends SkynetArtifactsEventBase {
     * @param toArtifactTypeId
     * @param author
     */
-   public NetworkArtifactPurgeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, int author) {
-      super(branchId, artifactIds, artifactTypeIds, author);
+   public NetworkArtifactPurgeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, NetworkSender networkSender) {
+      super(branchId, artifactIds, artifactTypeIds, networkSender);
    }
 
    /**

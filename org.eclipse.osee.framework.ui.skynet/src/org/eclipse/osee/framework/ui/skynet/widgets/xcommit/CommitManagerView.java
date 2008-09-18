@@ -26,8 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -217,7 +216,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(final Source source, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

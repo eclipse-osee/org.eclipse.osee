@@ -29,13 +29,13 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Robert A. Fisher
@@ -140,7 +140,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void kickRenameEvents() throws OseeCoreException {
-      OseeEventManager.kickBranchEvent(OseeEventManager.getSender(Source.Local, this), BranchModType.Renamed, branchId);
+      OseeEventManager.kickBranchEvent(this, BranchModType.Renamed, branchId);
    }
 
    /**

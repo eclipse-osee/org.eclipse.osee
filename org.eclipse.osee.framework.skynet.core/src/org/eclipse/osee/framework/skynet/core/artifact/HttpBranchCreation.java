@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author b1528444
@@ -107,8 +105,7 @@ public class HttpBranchCreation {
       }
 
       // Kick events
-      Sender sender = new Sender(Source.Local, HttpBranchCreation.class, SkynetAuthentication.getUser().getArtId());
-      OseeEventManager.kickBranchEvent(sender, BranchModType.Added, branch.getBranchId());
+      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchModType.Added, branch.getBranchId());
 
       return branch;
    }

@@ -33,8 +33,8 @@ public class NetworkArtifactChangeTypeEvent extends SkynetArtifactsEventBase {
     * @param toArtifactTypeId
     * @param author
     */
-   public NetworkArtifactChangeTypeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, int toArtifactTypeId, int author) {
-      super(branchId, artifactIds, artifactTypeIds, author);
+   public NetworkArtifactChangeTypeEvent(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds, int toArtifactTypeId, NetworkSender networkSender) {
+      super(branchId, artifactIds, artifactTypeIds, networkSender);
       this.toArtifactTypeId = toArtifactTypeId;
    }
 

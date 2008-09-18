@@ -40,12 +40,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -205,9 +205,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    @Override
    public void onAttributePersist() throws OseeCoreException {
       // Since multiple ways exist to change the assignees, notification is performed on the persist
-	   if(isDeleted()){
-		   return;
-	   }
+      if (isDeleted()) {
+         return;
+      }
       notifyNewAssigneesAndReset();
       notifyOriginatorAndReset();
       try {
@@ -1230,12 +1230,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (isDeleted()) return;
       try {
          // Check if LocalEvent and NOT RemoteEvent. Since EventService will handle moving access
          // control changes across the OSEE instances, only handle local events
-         if (source == Source.Local) {
+         if (sender.isLocal()) {
             // Only update access control if THIS artifact is modified
             if (transData.isChanged(this)) {
                // Update branch access control

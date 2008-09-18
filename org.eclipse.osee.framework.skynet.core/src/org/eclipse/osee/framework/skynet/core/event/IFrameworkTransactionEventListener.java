@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Event that represents a collection of artifact and relation change events that are collected and persisted within a
@@ -21,6 +20,6 @@ public interface IFrameworkTransactionEventListener extends IEventListner {
     * @param source
     * @param transData collection of all changes within transaction
     */
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData);
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData);
 
 }

@@ -27,15 +27,15 @@ public class NetworkBroadcastEvent extends SkynetEventBase {
       return broadcastEventType;
    }
 
-   public NetworkBroadcastEvent(String broadcastEventType, String message, String[] userIds, int author) {
-      super(author);
+   public NetworkBroadcastEvent(String broadcastEventType, String message, String[] userIds, NetworkSender networkSender) {
+      super(networkSender);
       this.broadcastEventType = broadcastEventType;
       this.message = message;
       this.userIds = userIds;
    }
 
-   public NetworkBroadcastEvent(String broadcastEventType, String message, int author) {
-      this(broadcastEventType, message, new String[] {}, author);
+   public NetworkBroadcastEvent(String broadcastEventType, String message, NetworkSender networkSender) {
+      this(broadcastEventType, message, new String[] {}, networkSender);
    }
 
    /**

@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -23,8 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -145,8 +142,7 @@ public abstract class Attribute<T> {
 
       // Kick Local Event
       try {
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getAuthor());
-         OseeEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
       } catch (Exception ex) {
          // do nothing
       }

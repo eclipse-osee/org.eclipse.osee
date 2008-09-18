@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Jeff C. Phillips
@@ -148,7 +148,7 @@ class DeleteBranchJob extends Job {
          super.handleTxFinally();
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
-            OseeEventManager.kickBranchEvent(OseeEventManager.getSender(Source.Local, this), BranchModType.Deleted,
+            OseeEventManager.kickBranchEvent(this, BranchModType.Deleted,
                   branch.getBranchId());
          }
       }

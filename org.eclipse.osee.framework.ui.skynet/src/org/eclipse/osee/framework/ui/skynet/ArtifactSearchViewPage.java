@@ -49,12 +49,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -857,7 +857,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

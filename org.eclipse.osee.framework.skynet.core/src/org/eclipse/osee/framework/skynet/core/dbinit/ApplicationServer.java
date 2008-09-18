@@ -31,6 +31,15 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 public class ApplicationServer {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ApplicationServer.class);
 
+   private static final OseeSession oseeSession = new OseeSession();
+
+   /**
+    * @return the oseeSession
+    */
+   public static OseeSession getOseeSession() {
+      return oseeSession;
+   }
+
    protected static void initialize() throws SQLException {
       DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
       String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);

@@ -53,13 +53,12 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventLis
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -129,7 +128,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    }
 
    @Override
-   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

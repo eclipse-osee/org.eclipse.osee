@@ -42,8 +42,6 @@ import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Provides access control for OSEE.
@@ -703,9 +701,8 @@ public class AccessControlManager {
          objectToBranchLockCache.put(objectArtId, objectBranchId);
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
          try {
-            OseeEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsLocked,
+            OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlModType.ArtifactsLocked,
                   new LoadedArtifacts(object));
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -727,9 +724,8 @@ public class AccessControlManager {
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
             try {
-               OseeEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsUnlocked,
+               OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlModType.ArtifactsUnlocked,
                      new LoadedArtifacts(object));
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

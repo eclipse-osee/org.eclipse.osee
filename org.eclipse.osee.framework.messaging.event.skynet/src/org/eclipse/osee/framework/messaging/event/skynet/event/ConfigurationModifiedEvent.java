@@ -19,7 +19,7 @@ public class ConfigurationModifiedEvent extends SkynetEventBase {
    /**
     * @param author
     */
-   public ConfigurationModifiedEvent(int author) {
-      super(author);
+   public ConfigurationModifiedEvent(NetworkSender networkSender) {
+      super(networkSender);
    }
 }

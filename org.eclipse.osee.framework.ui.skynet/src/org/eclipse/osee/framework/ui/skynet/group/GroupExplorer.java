@@ -33,11 +33,11 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -674,7 +674,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       try {
          Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
          if (topArt == null) {

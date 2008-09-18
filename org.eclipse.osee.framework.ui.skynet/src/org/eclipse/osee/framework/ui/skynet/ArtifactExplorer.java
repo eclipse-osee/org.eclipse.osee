@@ -64,7 +64,9 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -72,9 +74,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -1309,7 +1309,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                      if (parentArtifact.equals(artifact)) {
                         return false;
                      }
-                        }
+                  }
                   return true;
                }
             } else {
@@ -1456,7 +1456,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

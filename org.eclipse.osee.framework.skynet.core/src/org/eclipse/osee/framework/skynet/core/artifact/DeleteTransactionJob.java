@@ -29,14 +29,11 @@ import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoin
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Ryan D. Brooks
@@ -118,8 +115,7 @@ public class DeleteTransactionJob extends Job {
          returnStatus = Status.OK_STATUS;
 
          // Kick Local and Remote Events
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         OseeEventManager.kickTransactionsDeletedEvent(sender, txIdsToDelete);
+         OseeEventManager.kickTransactionsDeletedEvent(this, txIdsToDelete);
       } catch (Exception ex) {
          returnStatus = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {

@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;

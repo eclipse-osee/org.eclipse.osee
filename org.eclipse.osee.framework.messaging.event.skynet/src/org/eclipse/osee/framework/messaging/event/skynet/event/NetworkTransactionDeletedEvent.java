@@ -25,8 +25,8 @@ public class NetworkTransactionDeletedEvent extends SkynetEventBase {
     * @param transactionId
     * @param author
     */
-   public NetworkTransactionDeletedEvent(int author, int[] transactionIds) {
-      super(author);
+   public NetworkTransactionDeletedEvent(NetworkSender networkSender, int[] transactionIds) {
+      super(networkSender);
       this.transactionIds = transactionIds;
    }
 

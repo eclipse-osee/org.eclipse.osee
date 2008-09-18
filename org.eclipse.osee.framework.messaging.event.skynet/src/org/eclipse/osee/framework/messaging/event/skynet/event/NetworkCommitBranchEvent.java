@@ -8,25 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.skynet;
+package org.eclipse.osee.framework.messaging.event.skynet.event;
+
 
 /**
  * Skynet messaging event; Should not be subscribed to by OSEE applications.
  * 
  * @author Donald G. Dunne
  */
-public class NetworkCommitBranchEvent implements ISkynetEvent {
+public class NetworkCommitBranchEvent extends SkynetEventBase {
    private static final long serialVersionUID = 8339596149601667894L;
-   private int branchId;
-   private int author;
+   private final int branchId;
 
    /**
     * @param branchId
     * @param author
     */
-   public NetworkCommitBranchEvent(int branchId, int author) {
+   public NetworkCommitBranchEvent(int branchId, NetworkSender networkSender) {
+      super(networkSender);
       this.branchId = branchId;
-      this.author = author;
    }
 
    public int getBranchId() {
@@ -37,20 +37,6 @@ public class NetworkCommitBranchEvent implements ISkynetEvent {
     * @see java.lang.Comparable#compareTo(T)
     */
    public int compareTo(Object o) {
-      return 0;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getAuthor()
-    */
-   public int getAuthor() {
-      return author;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getTransactionId()
-    */
-   public int getTransactionId() {
       return 0;
    }
 

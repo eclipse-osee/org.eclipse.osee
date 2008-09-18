@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Jeff C. Phillips
@@ -135,8 +134,8 @@ public class RelationLink {
          }
 
          try {
-            OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
-                  RelationModType.Deleted, this, getABranch(), relationType.getTypeName(), getASideName());
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
+                  getABranch(), relationType.getTypeName(), getASideName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -275,8 +274,8 @@ public class RelationLink {
 
       if (notify) {
          try {
-            OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
-                  RelationModType.RationaleMod, this, getABranch(), relationType.getTypeName(), getASideName());
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.RationaleMod, this,
+                  getABranch(), relationType.getTypeName(), getASideName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }

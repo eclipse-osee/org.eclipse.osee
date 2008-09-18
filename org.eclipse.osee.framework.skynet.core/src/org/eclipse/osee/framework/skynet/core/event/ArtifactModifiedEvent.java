@@ -9,7 +9,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**

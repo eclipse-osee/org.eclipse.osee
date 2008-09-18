@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
-   private Collection<SkynetAttributeChange> attributeValues;
+   private final Collection<SkynetAttributeChange> attributeValues;
 
    /**
     * @param branchId
@@ -26,8 +26,8 @@ public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
     * @param artTypeId
     * @param author TODO
     */
-   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, int author) {
-      super(branchId, transactionId, artId, artTypeId, factoryName, author);
+   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, NetworkSender networkSender) {
+      super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
 
       this.attributeValues = attributeValues;
    }

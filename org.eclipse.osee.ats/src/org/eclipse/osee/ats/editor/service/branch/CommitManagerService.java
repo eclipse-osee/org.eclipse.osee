@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.swt.SWT;

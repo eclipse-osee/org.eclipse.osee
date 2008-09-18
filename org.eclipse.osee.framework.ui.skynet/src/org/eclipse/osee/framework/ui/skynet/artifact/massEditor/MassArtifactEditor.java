@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;

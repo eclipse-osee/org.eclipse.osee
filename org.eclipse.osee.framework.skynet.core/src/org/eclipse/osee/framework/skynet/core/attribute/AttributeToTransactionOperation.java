@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -32,8 +31,6 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * This class is responsible for persisting an attribute for a particular artifact. Upon completion the attribute will
@@ -97,8 +94,7 @@ public class AttributeToTransactionOperation {
 
       // Kick Local Event
       try {
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         transaction.addArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+         transaction.addArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
       } catch (Exception ex) {
          // do nothing
       }
@@ -184,8 +180,7 @@ public class AttributeToTransactionOperation {
 
       // Kick Local Event
       try {
-         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         transaction.addArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+         transaction.addArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
       } catch (Exception ex) {
          // do nothing
       }

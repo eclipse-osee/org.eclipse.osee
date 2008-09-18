@@ -19,12 +19,12 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
@@ -133,7 +133,7 @@ public class AdminView extends ViewPart implements IActionable {
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                try {
-                  OseeEventManager.kickBroadcastEvent(OseeEventManager.getSender(Source.Local, this),
+                  OseeEventManager.kickBroadcastEvent(this,
                         BroadcastEventType.Message, new String[] {}, message);
                   AWorkbench.popup("Success", "Message sent.");
                } catch (Exception ex) {

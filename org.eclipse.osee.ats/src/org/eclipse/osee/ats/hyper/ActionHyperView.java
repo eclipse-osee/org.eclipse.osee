@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -294,8 +294,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
-      if (source == Source.Remote) return;
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+      if (sender.isRemote()) return;
       if (currentArtifact == null) return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {

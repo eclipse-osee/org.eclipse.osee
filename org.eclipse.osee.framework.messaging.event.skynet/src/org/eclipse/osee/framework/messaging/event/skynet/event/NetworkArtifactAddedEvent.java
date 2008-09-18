@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
-
 /**
  * @author Robert A. Fisher
  */
@@ -24,8 +23,8 @@ public class NetworkArtifactAddedEvent extends SkynetArtifactEventBase {
     * @param artTypeId
     * @param author TODO
     */
-   public NetworkArtifactAddedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
-      super(branchId, transactionId, artId, artTypeId, factoryName, author);
+   public NetworkArtifactAddedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
+      super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
    }
 
    @Override

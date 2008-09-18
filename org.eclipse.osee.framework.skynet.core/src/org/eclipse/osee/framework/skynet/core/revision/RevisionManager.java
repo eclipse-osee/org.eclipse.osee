@@ -60,14 +60,14 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Manages artifact versions in Skynet
@@ -185,7 +185,7 @@ public class RevisionManager {
                    * though cache has bee set to null, it will be re-created upon next call to get cached information
                    */
                   try {
-                     OseeEventManager.kickLocalBranchToArtifactCacheUpdateEvent(OseeEventManager.getSender(Source.Local, this));
+                     OseeEventManager.kickLocalBranchToArtifactCacheUpdateEvent(this);
                   } catch (Exception ex) {
                      SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }

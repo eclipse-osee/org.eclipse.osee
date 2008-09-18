@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -134,7 +134,7 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
       if (transData.isHasEvent(artifact)) {
          final GroupExplorerItem tai = this;
          Displays.ensureInDisplayThread(new Runnable() {

@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
@@ -72,8 +71,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -246,8 +243,7 @@ public class ArtifactPersistenceManager {
       notifyOnAttributeSave(artifact);
 
       // Kick Local Event
-      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-      transaction.addArtifactModifiedEvent(sender, artifactModType, artifact);
+      transaction.addArtifactModifiedEvent(this, artifactModType, artifact);
 
       workedOneUnit();
    }
@@ -577,8 +573,7 @@ public class ArtifactPersistenceManager {
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
 
       // Kick Local Event
-      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-      transaction.addArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact);
+      transaction.addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.deleteAttributes();
@@ -935,10 +930,7 @@ public class ArtifactPersistenceManager {
          }
 
          // Kick Local and Remote Events
-         Sender sender =
-               new Sender(Source.Local, ArtifactPersistenceManager.getInstance(),
-                     SkynetAuthentication.getUser().getArtId());
-         OseeEventManager.kickArtifactsPurgedEvent(sender, new LoadedArtifacts(artifactsToPurge));
+         OseeEventManager.kickArtifactsPurgedEvent(instance, new LoadedArtifacts(artifactsToPurge));
 
       } finally {
          ArtifactLoader.clearQuery(queryId);

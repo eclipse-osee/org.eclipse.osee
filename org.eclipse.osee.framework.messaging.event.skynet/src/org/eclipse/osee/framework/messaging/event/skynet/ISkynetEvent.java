@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.messaging.event.skynet;
 
 import java.io.Serializable;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 
 /**
  * All Skynet events implement this interface.
@@ -21,5 +22,5 @@ import java.io.Serializable;
 public interface ISkynetEvent extends Serializable, Comparable {
    public static final ISkynetEvent[] EMPTY_ARRAY = new ISkynetEvent[0];
 
-   public int getAuthor();
+   public NetworkSender getNetworkSender();
 }

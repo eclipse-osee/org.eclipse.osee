@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -27,8 +26,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -70,8 +67,7 @@ public class ChangeArtifactType extends AbstractBlam {
       }
 
       // Kick Local and Remote Events
-      Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-      OseeEventManager.kickArtifactsChangeTypeEvent(sender, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
+      OseeEventManager.kickArtifactsChangeTypeEvent(this, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
    }
 
    /**

@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
@@ -35,11 +34,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -433,7 +430,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.TransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (smaMgr.isInTransition()) return;
       if (transData.isDeleted(smaMgr.getSma())) {
          Displays.ensureInDisplayThread(new Runnable() {

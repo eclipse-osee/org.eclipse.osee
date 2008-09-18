@@ -24,10 +24,9 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventLis
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
@@ -108,7 +107,7 @@ public class SMATaskComposite extends Composite {
       OseeEventManager.addListener(this, new IFrameworkTransactionEventListener() {
 
          @Override
-         public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+         public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
 
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)

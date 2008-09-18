@@ -18,15 +18,22 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 public class SkynetEventBase implements ISkynetEvent {
    private static final long serialVersionUID = -5381855085551886510L;
 
-   private final int author;
+   private final NetworkSender networkSender;
+
+   /**
+    * @return the networkSender
+    */
+   public NetworkSender getNetworkSender() {
+      return networkSender;
+   }
 
    /**
     * @param branchId
     * @param transactionId
     * @param author
     */
-   public SkynetEventBase(int author) {
-      this.author = author;
+   public SkynetEventBase(NetworkSender networkSender) {
+      this.networkSender = networkSender;
    }
 
    public int compareTo(Object o) {
@@ -40,10 +47,4 @@ public class SkynetEventBase implements ISkynetEvent {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getAuthor()
-    */
-   public int getAuthor() {
-      return author;
-   }
 }

@@ -40,8 +40,8 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
     * @param author
     */
 
-   public NetworkNewRelationLinkEvent(int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, int author) {
-      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, author);
+   public NetworkNewRelationLinkEvent(int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, NetworkSender networkSender) {
+      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, networkSender);
 
       this.rationale = rationale;
       this.aOrder = aOrder;

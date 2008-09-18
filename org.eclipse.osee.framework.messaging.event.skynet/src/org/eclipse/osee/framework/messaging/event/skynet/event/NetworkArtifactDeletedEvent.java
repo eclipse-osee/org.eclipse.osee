@@ -23,8 +23,8 @@ public class NetworkArtifactDeletedEvent extends SkynetArtifactEventBase {
     * @param artTypeId
     * @param author TODO
     */
-   public NetworkArtifactDeletedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
-      super(branchId, transactionId, artId, artTypeId, factoryName, author);
+   public NetworkArtifactDeletedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
+      super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
    }
 
 }

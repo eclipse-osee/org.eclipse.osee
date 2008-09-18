@@ -31,8 +31,8 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
     * @param artTypeId
     * @param author TODO
     */
-   public SkynetArtifactEventBase(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
-      super(author);
+   public SkynetArtifactEventBase(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
+      super(networkSender);
       this.branchId = branchId;
 
       this.artId = artId;

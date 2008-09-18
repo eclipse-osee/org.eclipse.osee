@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventModType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventModType;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;

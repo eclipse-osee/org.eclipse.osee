@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -39,8 +38,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Ryan D. Brooks
@@ -438,9 +435,8 @@ public class RelationManager {
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
 
          try {
-            OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
-                  RelationModType.Added, relation, relation.getABranch(), relationType.getTypeName(),
-                  relation.getASideName());
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
+                  relation.getABranch(), relationType.getTypeName(), relation.getASideName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -559,9 +555,8 @@ public class RelationManager {
                artifactATarget, artifactB);
       }
 
-      Sender sender = new Sender(Source.Local, RelationManager.class, SkynetAuthentication.getAuthor());
-      OseeEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, relation, relation.getBranch(),
-            relation.getRelationType().getTypeName(), "");
+      OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
+            relation.getBranch(), relation.getRelationType().getTypeName(), "");
 
    }
 
@@ -633,9 +628,8 @@ public class RelationManager {
             artifactATarget, artifactB);
 
       try {
-         OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
-               RelationModType.ReOrdered, relation, relation.getABranch(), relationType.getTypeName(),
-               relation.getASideName());
+         OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
+               relation.getABranch(), relationType.getTypeName(), relation.getASideName());
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

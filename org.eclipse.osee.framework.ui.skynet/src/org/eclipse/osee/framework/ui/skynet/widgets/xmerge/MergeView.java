@@ -41,11 +41,10 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -844,7 +843,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(final Source source, final FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
       if (sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {
          return;
       }
@@ -864,7 +863,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
                         xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
                               "Source Artifact Changed");
-                        if (artifact.equals(conflict.getSourceArtifact()) & source == Source.Local) {
+                        if (artifact.equals(conflict.getSourceArtifact()) & sender.isLocal()) {
                            new MessageDialog(
                                  Display.getCurrent().getActiveShell().getShell(),
                                  "Modifying Source artifact while merging",
@@ -874,7 +873,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                         }
                         return;
                      }
-
                   }
                   if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
                      xMergeViewer.setInputData(

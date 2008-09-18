@@ -8,23 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.messaging.event.skynet;
+package org.eclipse.osee.framework.messaging.event.skynet.event;
 
 /**
  * Skynet messaging event; Should not be subscribed to by OSEE applications.
  * 
  * @author Donald G. Dunne
  */
-public class NetworkRenameBranchEvent implements ISkynetEvent {
+public class NetworkRenameBranchEvent extends SkynetEventBase {
    private static final long serialVersionUID = 8339596149601997894L;
    private int branchId;
    private String branchName;
    private String shortName;
-   private final int author;
 
-   public NetworkRenameBranchEvent(int branchId, int author, String branchName, String shortName) {
+   public NetworkRenameBranchEvent(int branchId, NetworkSender networkSender, String branchName, String shortName) {
+      super(networkSender);
       this.branchId = branchId;
-      this.author = author;
       this.branchName = branchName;
       this.shortName = shortName;
    }
@@ -40,15 +39,9 @@ public class NetworkRenameBranchEvent implements ISkynetEvent {
    /* (non-Javadoc)
     * @see java.lang.Comparable#compareTo(T)
     */
+   @Override
    public int compareTo(Object o) {
       return 0;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getAuthor()
-    */
-   public int getAuthor() {
-      return author;
    }
 
    /**

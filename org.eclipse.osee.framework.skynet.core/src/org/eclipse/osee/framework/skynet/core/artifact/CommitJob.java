@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
-import org.eclipse.osee.framework.ui.plugin.event.Sender;
-import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.
@@ -239,8 +237,7 @@ class CommitJob extends Job {
       protected void handleTxFinally() throws Exception {
          super.handleTxFinally();
          if (success) {
-            Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-            OseeEventManager.kickBranchEvent(sender, BranchModType.Committed, fromBranchId);
+            OseeEventManager.kickBranchEvent(this, BranchModType.Committed, fromBranchId);
          }
       }
 
