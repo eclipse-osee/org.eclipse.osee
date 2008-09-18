@@ -63,7 +63,7 @@ public class XActionableItemsDam extends XTextDam {
             ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
-   public void removeActionableItem(ActionableItemArtifact aia) throws SQLException {
+   public void removeActionableItem(ActionableItemArtifact aia) throws SQLException, OseeCoreException {
       sma.deleteAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
