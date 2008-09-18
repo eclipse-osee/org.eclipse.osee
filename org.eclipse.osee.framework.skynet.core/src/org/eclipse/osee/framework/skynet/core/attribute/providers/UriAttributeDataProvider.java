@@ -39,7 +39,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() {
+   public String getDisplayableString() throws OseeDataStoreException {
       return displayable;
    }
 
@@ -47,7 +47,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setDisplayableString(java.lang.String)
     */
    @Override
-   public void setDisplayableString(String toDisplay) {
+   public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
       this.displayable = toDisplay;
    }
 
@@ -59,7 +59,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(ByteBuffer)
     */
    @Override
-   public boolean setValue(ByteBuffer data) {
+   public boolean setValue(ByteBuffer data) throws OseeDataStoreException {
       boolean response = false;
       try {
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
@@ -70,7 +70,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
                   dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                   response = true;
                } catch (Exception ex) {
-                  throw new IllegalStateException("Error compressing data. - ", ex);
+                  throw new OseeDataStoreException("Error compressing data. - ", ex);
                }
             } else {
                String loc = dataStore.getLocator();
@@ -79,7 +79,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             }
          }
       } catch (Exception ex1) {
-         throw new IllegalStateException("Error committing data. ", ex1);
+         throw new OseeDataStoreException("Error committing data. ", ex1);
       }
       return response;
    }
@@ -88,7 +88,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getValueAsBytes()
     */
    @Override
-   public ByteBuffer getValueAsBytes() {
+   public ByteBuffer getValueAsBytes() throws OseeDataStoreException {
       ByteBuffer decompressed = null;
       try {
          byte[] rawData = dataStore.getContent();
@@ -96,7 +96,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          }
       } catch (Exception ex) {
-         throw new IllegalStateException("Error acquiring data. - ", ex);
+         throw new OseeDataStoreException("Error acquiring data. - ", ex);
       }
       return decompressed;
    }
@@ -105,14 +105,14 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#getValueAsString()
     */
    @Override
-   public String getValueAsString() {
+   public String getValueAsString() throws OseeDataStoreException {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            throw new IllegalStateException("Error encoding data.", ex);
+            throw new OseeDataStoreException("Error encoding data.", ex);
          }
       } else {
          toReturn = "";
@@ -124,13 +124,13 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public boolean setValue(String value) {
+   public boolean setValue(String value) throws OseeDataStoreException {
       ByteBuffer toSet = null;
       if (value != null) {
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            throw new IllegalStateException("Error encoding data.", ex);
+            throw new OseeDataStoreException("Error encoding data.", ex);
          }
       }
       setValue(toSet);

@@ -40,7 +40,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() {
+   public String getDisplayableString() throws OseeDataStoreException {
       return getValueAsString();
    }
 
@@ -48,7 +48,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#setDisplayableString(java.lang.String)
     */
    @Override
-   public void setDisplayableString(String toDisplay) {
+   public void setDisplayableString(String toDisplay) throws OseeDataStoreException {
       throw new UnsupportedOperationException();
    }
 
@@ -56,7 +56,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#getValueAsString()
     */
    @Override
-   public String getValueAsString() {
+   public String getValueAsString() throws OseeDataStoreException {
       String fromStorage = null;
       byte[] data = null;
       try {
@@ -66,7 +66,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
             fromStorage = new String(data, "UTF-8");
          }
       } catch (Exception ex) {
-         throw new IllegalStateException("Error retrieving data.", ex);
+         throw new OseeDataStoreException("Error retrieving data.", ex);
       }
       String toReturn = fromStorage != null ? fromStorage : rawStringValue;
       return toReturn != null ? toReturn : "";
@@ -76,7 +76,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public boolean setValue(String value) {
+   public boolean setValue(String value) throws OseeDataStoreException {
       boolean response = false;
       try {
          if (getValueAsString() == value || (getValueAsString() != null && getValueAsString().equals(value))) {
@@ -86,7 +86,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
             response = true;
          }
       } catch (Exception ex) {
-         throw new IllegalStateException("Error comitting data.", ex);
+         throw new OseeDataStoreException("Error comitting data.", ex);
       }
       return response;
    }

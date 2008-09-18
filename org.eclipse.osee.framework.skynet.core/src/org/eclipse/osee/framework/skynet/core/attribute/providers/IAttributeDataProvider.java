@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
  */
 public interface IAttributeDataProvider {
 
-   public String getDisplayableString();
+   public String getDisplayableString() throws OseeDataStoreException;
 
-   public void setDisplayableString(String toDisplay);
+   public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
 
    public void loadData(Object... objects) throws OseeDataStoreException;
 

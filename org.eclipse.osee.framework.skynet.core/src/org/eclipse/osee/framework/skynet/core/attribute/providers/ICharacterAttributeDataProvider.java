@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface ICharacterAttributeDataProvider extends IAttributeDataProvider {
 
-   public String getValueAsString();
+   public String getValueAsString() throws OseeDataStoreException;
 
-   public boolean setValue(String value);
+   public boolean setValue(String value) throws OseeDataStoreException;
 
 }

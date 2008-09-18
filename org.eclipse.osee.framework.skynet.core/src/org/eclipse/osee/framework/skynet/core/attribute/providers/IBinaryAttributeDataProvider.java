@@ -11,14 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.nio.ByteBuffer;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IBinaryAttributeDataProvider extends IAttributeDataProvider {
 
-   public ByteBuffer getValueAsBytes();
+   public ByteBuffer getValueAsBytes() throws OseeDataStoreException;
 
-   public boolean setValue(ByteBuffer data);
+   public boolean setValue(ByteBuffer data) throws OseeDataStoreException;
 
 }
