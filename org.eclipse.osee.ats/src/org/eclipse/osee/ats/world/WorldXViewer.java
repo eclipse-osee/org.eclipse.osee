@@ -110,7 +110,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             handleDoubleClick();
          };
       });
-      OseeEventManager.addListener(this, this);
    }
 
    @Override
@@ -154,6 +153,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       });
       createMenuActions();
+      OseeEventManager.addListener(this, this);
    }
 
    Action editChangeTypeAction;

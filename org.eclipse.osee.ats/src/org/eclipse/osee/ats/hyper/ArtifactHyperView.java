@@ -92,6 +92,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       }
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Action View");
+      OseeEventManager.addListener(this, this);
    }
 
    @Override
@@ -108,9 +109,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void display() {
       try {
-         OseeEventManager.removeListeners(this);
          if (currentArtifact == null) return;
-         OseeEventManager.addListener(this, this);
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
@@ -167,10 +166,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          center();
       } catch (SQLException ex) {
          clear();
-         OseeEventManager.removeListeners(this);
       } catch (ArtifactDoesNotExist ex) {
          clear();
-         OseeEventManager.removeListeners(this);
       }
    }
 

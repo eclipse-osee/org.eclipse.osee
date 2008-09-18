@@ -87,7 +87,15 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
    public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
       if (cacheArtifacts.size() == 0) return;
       // ContentProvider ensures in display thread
-      ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
+         }
+      });
    }
 
    @Override

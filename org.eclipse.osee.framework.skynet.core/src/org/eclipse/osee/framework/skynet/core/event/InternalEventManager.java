@@ -441,15 +441,18 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   static void kickTransactionEvent(final Sender sender, final Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
+   static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickTransactionEvent " + sender + " #ModEvents: " + xModifiedEvents.size());
+      final Collection<ArtifactTransactionModifiedEvent> xModifiedEventsCopy =
+            new ArrayList<ArtifactTransactionModifiedEvent>();
+      xModifiedEventsCopy.addAll(xModifiedEvents);
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Roll-up change information
             FrameworkTransactionData transData = new FrameworkTransactionData();
 
-            for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
+            for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEventsCopy) {
                if (xModifiedEvent instanceof ArtifactModifiedEvent) {
                   ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
                   if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
@@ -595,7 +598,7 @@ public class InternalEventManager {
             try {
                if (sender.isLocal()) {
                   List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
-                  for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
+                  for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEventsCopy) {
                      if (xModifiedEvent instanceof ArtifactModifiedEvent) {
                         ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
                         if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
@@ -718,6 +721,7 @@ public class InternalEventManager {
       for (IEventListner listener : listenersToRemove) {
          listenerMap.removeValue(key, listener);
       }
+      if (debug) System.out.println(listenerMap.size() + " Event Listeners Remaining");
    }
 
    private static String getKeyName(Object key) {

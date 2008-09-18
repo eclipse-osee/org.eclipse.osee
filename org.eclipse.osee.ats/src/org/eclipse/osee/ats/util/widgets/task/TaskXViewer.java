@@ -66,6 +66,7 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public String toString() {
+      if (xTaskViewer == null) return "TaskXViewer";
       try {
          if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() != null) {
             return "TaskXViewer: " + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma().toString();

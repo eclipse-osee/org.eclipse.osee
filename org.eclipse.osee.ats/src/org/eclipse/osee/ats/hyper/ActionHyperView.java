@@ -123,12 +123,10 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void display() {
       try {
-         OseeEventManager.removeListeners(this);
          getContainer().setCursor(new Cursor(null, SWT.NONE));
          if (currentArtifact == null || currentArtifact.isDeleted()) {
             return;
          }
-         OseeEventManager.addListener(this, this);
          reviewsCreated = false;
          tasksReviewsCreated = false;
          ATSArtifact topArt = getTopArtifact(currentArtifact);
@@ -165,7 +163,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          create(topAHI);
       } catch (Exception ex) {
          clear();
-         OseeEventManager.removeListeners(this);
       }
    }
 

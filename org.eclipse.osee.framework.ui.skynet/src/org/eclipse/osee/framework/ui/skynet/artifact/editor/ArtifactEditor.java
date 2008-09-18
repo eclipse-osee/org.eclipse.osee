@@ -87,7 +87,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IActionable {
+public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IArtifactsPurgedEventListener, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactEditor.class);
    private int previewPageIndex;
@@ -776,4 +776,5 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          // do nothing
       }
    }
+
 }
