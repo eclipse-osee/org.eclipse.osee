@@ -107,10 +107,10 @@ public class RelationPersistenceManager {
             Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
             Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
 
-            transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Changed, link,
+            transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
                   link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
 
-            OseeEventManager.kickRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Changed,
+            OseeEventManager.kickRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added,
                   link, link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
          }
       } else {

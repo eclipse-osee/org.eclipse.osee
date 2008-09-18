@@ -5,10 +5,9 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
-
 /**
- * Event that represents a collection of artifact and relation change events that are collected and persisted within a
- * single SkynetTransaction.
+ * Event that represents a collection of ArtifactModifiedEvent and RelationModifiedEvent events that are collected and
+ * persisted within a single SkynetTransaction.
  * 
  * @author Donald G. Dunne
  */

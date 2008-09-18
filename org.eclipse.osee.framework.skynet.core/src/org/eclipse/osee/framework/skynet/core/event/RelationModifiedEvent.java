@@ -45,6 +45,6 @@ public class RelationModifiedEvent extends ArtifactTransactionModifiedEvent {
 
    @Override
    public String toString() {
-      return sender.getSource() + " - " + relationModType + " - " + (link != null ? "Loaded - " + link : "Unloaded - " + unloadedRelation);
+      return relationModType + " - " + (link != null ? "Loaded - " + link : "Unloaded - " + unloadedRelation) + " - " + sender;
    }
 }

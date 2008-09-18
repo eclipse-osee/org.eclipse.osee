@@ -69,4 +69,9 @@ public class Sender {
       return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(),
             oseeSession.getUserId(), oseeSession.getMachineIp());
    }
+
+   @Override
+   public String toString() {
+      return "Session - " + oseeSession.toString() + "  [" + sourceObject + "]";
+   }
 }

@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;

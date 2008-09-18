@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  * @author Donald G. Dunne
  * @author Robert A. Fisher
  */
-public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBase {
+public class NetworkRelationLinkRationalModifiedEvent extends SkynetRelationLinkEventBase {
    private static final long serialVersionUID = 548299278567054333L;
 
    private final String rationale;
@@ -30,7 +30,7 @@ public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBas
     * @param author
     * @param relTypeId
     */
-   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, NetworkSender networkSender, int relTypeId) {
+   public NetworkRelationLinkRationalModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, NetworkSender networkSender, int relTypeId) {
       super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, networkSender);
 
       this.rationale = rationale;
@@ -61,8 +61,8 @@ public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBas
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof NetworkRelationLinkModifiedEvent) {
-         return (getRelId() == (((NetworkRelationLinkModifiedEvent) obj).getRelId()));
+      if (obj instanceof NetworkRelationLinkRationalModifiedEvent) {
+         return (getRelId() == (((NetworkRelationLinkRationalModifiedEvent) obj).getRelId()));
       }
       return super.equals(obj);
    }

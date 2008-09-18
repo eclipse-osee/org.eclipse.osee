@@ -43,6 +43,6 @@ public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
 
    @Override
    public String toString() {
-      return sender.getSource() + " - " + artifactModType + " - " + (artifact != null ? "Loaded" : "Unloaded") + " - " + dirtySkynetAttributeChanges;
+      return artifactModType + " - " + (artifact != null ? "Loaded" : "Unloaded") + " - " + sender + " - " + dirtySkynetAttributeChanges;
    }
 }

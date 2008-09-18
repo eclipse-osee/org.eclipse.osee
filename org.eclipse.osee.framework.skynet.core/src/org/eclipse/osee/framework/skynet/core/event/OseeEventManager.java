@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
-import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -27,8 +26,13 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  */
 public class OseeEventManager {
 
-   private static Sender getSender(Object source) {
-      return new Sender(SenderSource.Local, source, ApplicationServer.getOseeSession());
+   private static Sender getSender(Object sourceObject) {
+      // Sender came from Remote Event Manager if source == sender
+      if ((sourceObject instanceof Sender) && ((Sender) sourceObject).isRemote()) {
+         return (Sender) sourceObject;
+      }
+      // Else, create new sender based on sourceObject
+      return new Sender(sourceObject, ApplicationServer.getOseeSession());
    }
 
    /**

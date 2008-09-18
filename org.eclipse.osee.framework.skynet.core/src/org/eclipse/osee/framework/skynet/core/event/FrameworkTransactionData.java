@@ -48,16 +48,19 @@ public class FrameworkTransactionData {
    public Set<UnloadedArtifact> unloadedAddedArtifacts = new HashSet<UnloadedArtifact>();
 
    // cacheRelations are relations where one side artifact is already loaded in client's cache
+   // NOTE: Change relations are Rationale or Order changes only
    public Set<LoadedRelation> cacheChangedRelations = new HashSet<LoadedRelation>();
    public Set<LoadedRelation> cacheAddedRelations = new HashSet<LoadedRelation>();
    public Set<LoadedRelation> cacheDeletedRelations = new HashSet<LoadedRelation>();
 
    // unloadedRelations are relations where neither side artifact is loaded in client's cache; normally don't care about these
+   // NOTE: Change relations are Rationale or Order changes only
    public Set<UnloadedRelation> unloadedChangedRelations = new HashSet<UnloadedRelation>();
    public Set<UnloadedRelation> unloadedAddedRelations = new HashSet<UnloadedRelation>();
    public Set<UnloadedRelation> unloadedDeletedRelations = new HashSet<UnloadedRelation>();
 
    // artifact collection of artifacts on either side of a relation that are loaded in client's cache
+   // NOTE: Change relations are Rationale or Order changes only
    public Set<Artifact> cacheRelationChangedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheRelationDeletedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheRelationAddedArtifacts = new HashSet<Artifact>();
@@ -194,10 +197,20 @@ public class FrameworkTransactionData {
       return false;
    }
 
+   /**
+    * Relation rationale or order changed
+    * 
+    * @param artifact
+    */
    public boolean isRelChange(Artifact artifact) {
       return isRelChange(artifact.getArtId());
    }
 
+   /**
+    * Relation rationale or order changed
+    * 
+    * @param artifact
+    */
    public boolean isRelChange(int artId) {
       for (Artifact art : cacheRelationChangedArtifacts) {
          if (art.getArtId() == artId) return true;

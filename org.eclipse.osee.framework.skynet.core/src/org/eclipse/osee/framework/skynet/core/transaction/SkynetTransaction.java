@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedE
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -213,13 +212,13 @@ public class SkynetTransaction {
    }
 
    public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
-      xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(SenderSource.Local, sourceObject), artifactModType,
-            artifact, getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
+      xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
+            getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
    public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
-      xModifiedEvents.add(new RelationModifiedEvent(new Sender(SenderSource.Local, sourceObject), relationModType,
-            link, branch, relationType, relationSide));
+      xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
+            relationType, relationSide));
    }
 
    /**

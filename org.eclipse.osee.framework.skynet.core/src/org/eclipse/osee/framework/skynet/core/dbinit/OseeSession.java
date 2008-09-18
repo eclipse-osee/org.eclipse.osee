@@ -40,6 +40,11 @@ public class OseeSession implements Serializable {
       this.userId = userId;
    }
 
+   @Override
+   public String toString() {
+      return "OseeSession - id:" + id + " userId:" + userId + " machineName:" + machineName + " machineIp" + machineIp;
+   }
+
    /**
     * @return the id
     */

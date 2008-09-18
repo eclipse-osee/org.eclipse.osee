@@ -33,7 +33,8 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBra
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.Sender.SenderSource;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -154,7 +154,7 @@ public class InternalEventManager {
       }
       // Kick Remote (If source was Local and this was not a default branch changed event
       try {
-         if (sender.getSource() == SenderSource.Local && branchModType != BranchModType.DefaultBranchChanged) {
+         if (sender.isLocal() && branchModType != BranchModType.DefaultBranchChanged) {
             if (branchModType == BranchModType.Added) {
                RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
             } else if (branchModType == BranchModType.Deleted) {
@@ -202,7 +202,7 @@ public class InternalEventManager {
             }
             // Kick Remote (If source was Local and this was not a default branch changed event
             try {
-               if (sender.getSource() == SenderSource.Local) {
+               if (sender.isLocal()) {
                   RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlModType.name(),
                         loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
                         loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
@@ -249,7 +249,7 @@ public class InternalEventManager {
     */
    static void kickArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickArtifactModifiedEvent " + sender.getSource() + " - " + artifactModType + " - " + artifact.getHumanReadableId() + " - " + artifact.getDirtySkynetAttributeChanges());
+      if (debug) System.out.println("kickArtifactModifiedEvent " + sender + " - " + artifactModType + " - " + artifact.getHumanReadableId() + " - " + artifact.getDirtySkynetAttributeChanges());
       // Kick Local
       for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactModifiedEventListener) {
@@ -273,7 +273,7 @@ public class InternalEventManager {
     */
    static void kickRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickRelationModifiedEvent " + sender.getSource() + " - " + relationType + " - " + link.getRelationType());
+      if (debug) System.out.println("kickRelationModifiedEvent " + sender + " - " + relationType + " - " + link.getRelationType());
       // Kick Local
       for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IRelationModifiedEventListener) {
@@ -297,7 +297,7 @@ public class InternalEventManager {
     */
    static void kickArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickArtifactsPurgedEvent " + sender.getSource() + " - " + loadedArtifacts);
+      if (debug) System.out.println("kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
       // Kick Local
       for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsPurgedEventListener) {
@@ -312,7 +312,7 @@ public class InternalEventManager {
       }
       // Kick Remote (If source was Local)
       try {
-         if (sender.getSource() == SenderSource.Local) {
+         if (sender.isLocal()) {
             RemoteEventManager.kick(new NetworkArtifactPurgeEvent(
                   loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
                   loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
@@ -333,7 +333,7 @@ public class InternalEventManager {
     */
    static void kickArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickArtifactsChangeTypeEvent " + sender.getSource() + " - " + loadedArtifacts);
+      if (debug) System.out.println("kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
       // Kick Local
       for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsChangeTypeEventListener) {
@@ -348,7 +348,7 @@ public class InternalEventManager {
       }
       // Kick Remote (If source was Local)
       try {
-         if (sender.getSource() == SenderSource.Local) {
+         if (sender.isLocal()) {
             RemoteEventManager.kick(new NetworkArtifactChangeTypeEvent(
                   loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
                   loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId,
@@ -367,7 +367,7 @@ public class InternalEventManager {
     */
    static void kickTransactionsDeletedEvent(Sender sender, int[] transactionIds) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickTransactionsDeletedEvent " + sender.getSource() + " - " + transactionIds.length);
+      if (debug) System.out.println("kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
       // Kick Local
       for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsChangeTypeEventListener) {
@@ -381,7 +381,7 @@ public class InternalEventManager {
       }
       // Kick Remote (If source was Local)
       try {
-         if (sender.getSource() == SenderSource.Local) {
+         if (sender.isLocal()) {
             RemoteEventManager.kick(new NetworkTransactionDeletedEvent(sender.getNetworkSender(), transactionIds));
          }
       } catch (Exception ex) {
@@ -391,7 +391,7 @@ public class InternalEventManager {
 
    static void kickTransactionEvent(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickTransactionEvent " + sender.getSource() + " #ModEvents: " + xModifiedEvents.size());
+      if (debug) System.out.println("kickTransactionEvent " + sender + " #ModEvents: " + xModifiedEvents.size());
       // Roll-up change information
       FrameworkTransactionData transData = new FrameworkTransactionData();
 
@@ -500,7 +500,7 @@ public class InternalEventManager {
                   if (transData.branchId == null) transData.branchId = unloadedRelation.getBranchId();
                }
             }
-            if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
+            if (xRelationModifiedEvent.relationModType == RelationModType.ReOrdered || xRelationModifiedEvent.relationModType == RelationModType.RationaleMod) {
                if (loadedRelation != null) {
                   transData.cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
@@ -539,7 +539,7 @@ public class InternalEventManager {
       }
       // Kick Remote (If sender was Local)
       try {
-         if (sender.getSource() == SenderSource.Local) {
+         if (sender.isLocal()) {
             List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
             for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
                if (xModifiedEvent instanceof ArtifactModifiedEvent) {
@@ -569,18 +569,31 @@ public class InternalEventManager {
                   }
                } else if (xModifiedEvent instanceof RelationModifiedEvent) {
                   RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
-                  if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
+                  if (xRelationModifiedEvent.relationModType == RelationModType.ReOrdered) {
                      RelationLink link = xRelationModifiedEvent.link;
                      Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                      Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-                     NetworkRelationLinkModifiedEvent networkRelationLinkModifiedEvent =
-                           new NetworkRelationLinkModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
+                     NetworkRelationLinkOrderModifiedEvent networkRelationLinkModifiedEvent =
+                           new NetworkRelationLinkOrderModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
                                  link.getRelationId(), link.getAArtifactId(),
                                  (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
                                  (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
                                  link.getAOrder(), link.getBOrder(), sender.getNetworkSender(),
                                  link.getRelationType().getRelationTypeId());
                      events.add(networkRelationLinkModifiedEvent);
+                  }
+                  if (xRelationModifiedEvent.relationModType == RelationModType.RationaleMod) {
+                     RelationLink link = xRelationModifiedEvent.link;
+                     Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+                     Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+                     NetworkRelationLinkRationalModifiedEvent networkRelationLinkRationalModifiedEvent =
+                           new NetworkRelationLinkRationalModifiedEvent(link.getGammaId(),
+                                 link.getBranch().getBranchId(), link.getRelationId(), link.getAArtifactId(),
+                                 (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
+                                 (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(),
+                                 link.getAOrder(), link.getBOrder(), sender.getNetworkSender(),
+                                 link.getRelationType().getRelationTypeId());
+                     events.add(networkRelationLinkRationalModifiedEvent);
                   } else if (xRelationModifiedEvent.relationModType == RelationModType.Deleted) {
                      RelationLink link = xRelationModifiedEvent.link;
                      Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);

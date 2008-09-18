@@ -10,19 +10,13 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  */
 public class NetworkSender {
 
-   public NetworkSenderSource source;
    public Object sourceObject;
    public String sessionId;
    public String machineName;
    public String userId;
    public String machineIp;
 
-   public enum NetworkSenderSource {
-      Local, Remote
-   };
-
-   public NetworkSender(NetworkSenderSource source, Object sourceObject, String sessionId, String machineName, String userId, String machineIp) {
-      this.source = source;
+   public NetworkSender(Object sourceObject, String sessionId, String machineName, String userId, String machineIp) {
       this.sourceObject = sourceObject;
       this.machineName = machineName;
       this.userId = userId;
