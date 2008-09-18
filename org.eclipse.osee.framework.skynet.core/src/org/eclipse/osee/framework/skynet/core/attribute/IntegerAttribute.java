@@ -27,7 +27,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
    @Override
-   public Integer getValue() throws NumberFormatException {
+   public Integer getValue() throws NumberFormatException, OseeCoreException {
       String integerString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(integerString) ? Integer.valueOf(integerString) : null;
    }
@@ -36,7 +36,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public boolean subClassSetValue(Integer value) {
+   public boolean subClassSetValue(Integer value) throws OseeCoreException {
       return getAttributeDataProvider().setValue(Integer.toString(value));
    }
 

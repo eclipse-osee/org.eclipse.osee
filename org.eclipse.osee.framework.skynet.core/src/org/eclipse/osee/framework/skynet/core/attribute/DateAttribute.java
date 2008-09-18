@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Robert A. Fisher
@@ -43,8 +44,9 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * Return current date or null if not set
     * 
     * @return date or null if not set
+    * @throws OseeCoreException
     */
-   public Date getValue() {
+   public Date getValue() throws OseeCoreException {
       Date toReturn = null;
       String value = getAttributeDataProvider().getValueAsString();
       if (Strings.isValid(value) != false) {
@@ -75,9 +77,10 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * Sets date
     * 
     * @param value value or null to clear
+    * @throws OseeCoreException
     */
    @Override
-   public boolean subClassSetValue(Date value) {
+   public boolean subClassSetValue(Date value) throws OseeCoreException {
       String toSet = value != null ? Long.toString(value.getTime()) : "";
       return getAttributeDataProvider().setValue(toSet);
    }
@@ -86,7 +89,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() {
+   public String getDisplayableString() throws OseeCoreException {
       return getAsFormattedString(DateAttribute.MMDDYYHHMM);
    }
 
@@ -106,8 +109,9 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * 
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
+    * @throws OseeCoreException
     */
-   public String getAsFormattedString(DateFormat dateFormat) {
+   public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
       Date date = getValue();
       return date != null ? dateFormat.format(getValue()) : "";
    }

@@ -32,7 +32,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
    @Override
-   public Object getValue() {
+   public Object getValue() throws OseeCoreException {
       return getObjectFromBytes(getAttributeDataProvider().getValueAsBytes());
    }
 

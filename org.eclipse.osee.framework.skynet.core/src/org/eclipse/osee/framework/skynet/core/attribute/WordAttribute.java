@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -36,12 +38,12 @@ public class WordAttribute extends StringAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
     */
    @Override
-   public boolean subClassSetValue(String value) {
+   public boolean subClassSetValue(String value) throws OseeCoreException {
       value = WordUtil.removeWordMarkupSmartTags(value);
       return super.subClassSetValue(value);
    }
 
-   public boolean mergeMarkupPresent() {
+   public boolean mergeMarkupPresent() throws OseeDataStoreException {
       String temp = getValue();
       if (temp.contains("<w:delText>") || temp.contains("w:type=\"Word.Insertion\"")) return true;
       return false;

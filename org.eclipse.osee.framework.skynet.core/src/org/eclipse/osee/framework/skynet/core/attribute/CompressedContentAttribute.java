@@ -28,7 +28,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
    @Override
-   public InputStream getValue() {
+   public InputStream getValue() throws OseeCoreException {
       return Lib.byteBufferToInputStream(getAttributeDataProvider().getValueAsBytes());
    }
 
@@ -63,7 +63,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setAttributeDataProvider(org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider)
     */
    @Override
-   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
+   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) throws OseeCoreException {
       super.setAttributeDataProvider(attributeDataProvider);
       attributeDataProvider.setDisplayableString(getAttributeType().getName());
    }

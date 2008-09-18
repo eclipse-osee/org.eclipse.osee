@@ -103,9 +103,9 @@ public abstract class Attribute<T> {
     */
    protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
 
-   public abstract T getValue();
+   public abstract T getValue() throws OseeCoreException;
 
-   public String getDisplayableString() {
+   public String getDisplayableString() throws OseeCoreException {
       return getAttributeDataProvider().getDisplayableString();
    }
 
@@ -116,13 +116,20 @@ public abstract class Attribute<T> {
     */
    @Override
    public String toString() {
-      return getDisplayableString();
+      StringBuilder builder = new StringBuilder();
+      try {
+         builder.append(getDisplayableString());
+      } catch (OseeCoreException ex) {
+         builder.append(Lib.exceptionToString(ex));
+      }
+      return builder.toString();
    }
 
    /**
     * @param attributeDataProvider the attributeDataProvider to set
+    * @throws OseeCoreException
     */
-   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
+   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) throws OseeCoreException {
       this.attributeDataProvider = attributeDataProvider;
    }
 

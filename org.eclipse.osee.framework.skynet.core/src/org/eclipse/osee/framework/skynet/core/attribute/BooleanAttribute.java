@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -23,12 +25,12 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    }
 
    @Override
-   public Boolean getValue() {
+   public Boolean getValue() throws OseeCoreException {
       return getAttributeDataProvider().getValueAsString().equals(booleanChoices[0]);
    }
 
    @Override
-   public boolean subClassSetValue(Boolean value) {
+   public boolean subClassSetValue(Boolean value) throws OseeDataStoreException {
       return getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 

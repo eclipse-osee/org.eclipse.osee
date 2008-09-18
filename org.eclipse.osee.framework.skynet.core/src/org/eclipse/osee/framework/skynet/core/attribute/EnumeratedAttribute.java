@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,7 +60,7 @@ public class EnumeratedAttribute extends StringAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public String getDisplayableString() {
+   public String getDisplayableString() throws OseeDataStoreException {
       String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }

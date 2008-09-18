@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -26,7 +27,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
    @Override
-   public Double getValue() {
+   public Double getValue() throws OseeCoreException {
       String doubleString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(doubleString) ? Double.valueOf(doubleString) : null;
    }
@@ -35,7 +36,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public boolean subClassSetValue(Double value) {
+   public boolean subClassSetValue(Double value) throws OseeCoreException {
       return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
