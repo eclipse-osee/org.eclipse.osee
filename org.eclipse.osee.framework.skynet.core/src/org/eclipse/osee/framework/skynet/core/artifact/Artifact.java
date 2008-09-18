@@ -566,12 +566,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeTypeName
     * @return sole attribute value
-    * @throws AttributeDoesNotExist if no attribute instance exists for this artifact
-    * @throws MultipleAttributesExist if 2 or more attribute instances exist for this artifact
     * @throws IllegalStateException
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName) throws SQLException, OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
@@ -601,6 +600,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          return getSoleAttributeValue(attributeTypeName).toString();
       } catch (AttributeDoesNotExist ex) {
          return defaultReturnValue;
+      } catch (OseeCoreException ex) {
+         return defaultReturnValue;
       }
    }
 
@@ -629,6 +630,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          }
          return value;
       } catch (AttributeDoesNotExist ex) {
+         return defaultReturnValue;
+      } catch (OseeCoreException ex) {
          return defaultReturnValue;
       }
    }
@@ -670,7 +673,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void deleteAttribute(String attributeTypeName, Object value) throws IllegalStateException, SQLException {
+   public void deleteAttribute(String attributeTypeName, Object value) throws SQLException, OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
          if (attribute.getValue().equals(value)) attribute.delete();
       }
@@ -1328,7 +1331,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return newArtifact;
    }
 
-   private void copyAttributes(Artifact artifact) throws SQLException {
+   private void copyAttributes(Artifact artifact) throws SQLException, OseeCoreException {
       for (Attribute<?> attribute : getAttributes(false)) {
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
