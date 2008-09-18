@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -42,15 +43,14 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
     *      org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException {
-	   AttributeType attributeType = AttributeTypeManager.getTypeWithWordContentCheck(artifact,templateAttribute.getName());
-	   Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType.getName());
-       if (!attributes.isEmpty()) {
+   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException, OseeCoreException {
+      AttributeType attributeType =
+            AttributeTypeManager.getTypeWithWordContentCheck(artifact, templateAttribute.getName());
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType.getName());
+      if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
          attributeType = attribute.getAttributeType();
 
-         
-         
          // check if the attribute descriptor name is in the ignore list.
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
@@ -70,17 +70,17 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          //            }
          //    
          String valueList;
-         if(attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)){
-			wordMl.addWordMl((String)attribute.getValue());
+         if (attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+            wordMl.addWordMl((String) attribute.getValue());
          } else {
-        	 valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));
-        	 if (templateAttribute.hasFormatting()) {
-                 if (templateAttribute.getFormat().contains(">x<")) {
-                    wordMl.addWordMl(templateAttribute.getFormat().replace(">x<", ">" + valueList + "<"));
-                 }
-              } else {
-                 wordMl.addTextInsideParagraph(valueList);
-              }
+            valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));
+            if (templateAttribute.hasFormatting()) {
+               if (templateAttribute.getFormat().contains(">x<")) {
+                  wordMl.addWordMl(templateAttribute.getFormat().replace(">x<", ">" + valueList + "<"));
+               }
+            } else {
+               wordMl.addTextInsideParagraph(valueList);
+            }
          }
          if (templateAttribute.isParagrapthWrap()) {
             wordMl.endParagraph();

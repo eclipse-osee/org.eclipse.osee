@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -42,8 +43,12 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
       // This is for SRS Publishing. Do not publish unspecified attributes
       if ((attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality"))) {
          for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
-            if (partition.getValue().equals("Unspecified")) {
-               return true;
+            try {
+               if (partition.getValue().equals("Unspecified")) {
+                  return true;
+               }
+            } catch (OseeCoreException ex) {
+               throw new SQLException(ex);
             }
          }
       }

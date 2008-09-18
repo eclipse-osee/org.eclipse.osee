@@ -21,13 +21,13 @@ public interface IXViewerCustomizations {
 
    public void saveCustomization(CustomizeData custData) throws Exception;
 
-   public List<CustomizeData> getSavedCustDatas();
+   public List<CustomizeData> getSavedCustDatas() throws Exception;
 
-   public CustomizeData getUserDefaultCustData();
+   public CustomizeData getUserDefaultCustData() throws Exception;
 
    public boolean isCustomizationUserDefault(CustomizeData custData);
 
-   public void setUserDefaultCustData(CustomizeData newCustData, boolean set);
+   public void setUserDefaultCustData(CustomizeData newCustData, boolean set) throws Exception;
 
    public void deleteCustomization(CustomizeData custData) throws Exception;
 

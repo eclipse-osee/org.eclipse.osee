@@ -57,7 +57,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
     * 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations#getCustDatas()
     */
-   public List<CustomizeData> getSavedCustDatas() {
+   public List<CustomizeData> getSavedCustDatas() throws Exception {
       loadCustomizationData();
       return custDatas;
    }
@@ -86,7 +86,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          saveCustomization(custData, globalCustomizationsArtifact);
    }
 
-   public void loadCustomizationData() {
+   public void loadCustomizationData() throws OseeCoreException {
       custDatas.clear();
       User user = SkynetAuthentication.getUser();
       if (user != null) custDatas.addAll(getArtifactCustomizations(user));
@@ -113,7 +113,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       this.globalCustomizationsArtifact = defaultCustomizationsArtifact;
    }
 
-   public void deleteCustomization(CustomizeData custData) throws SQLException {
+   public void deleteCustomization(CustomizeData custData) throws SQLException, OseeCoreException {
       Artifact deleteArt = null;
       if (custData.isPersonal())
          deleteArt = SkynetAuthentication.getUser();
@@ -128,7 +128,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    }
 
-   public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws SQLException {
+   public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws SQLException, OseeCoreException {
       Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME)) {
          String str = attribute.getDisplayableString();
@@ -141,7 +141,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       }
    }
 
-   public CustomizeData getUserDefaultCustData() {
+   public CustomizeData getUserDefaultCustData() throws Exception {
       for (CustomizeData custData : getSavedCustDatas()) {
          if (userArtifactDefaults.isDefaultCustomization(custData)) {
             return custData;
@@ -151,10 +151,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    }
 
    public boolean isCustomizationUserDefault(CustomizeData custData) {
-      return (getUserDefaultCustData() != null && getUserDefaultCustData().getGuid().equals(custData.getGuid()));
+      try {
+         return (getUserDefaultCustData() != null && getUserDefaultCustData().getGuid().equals(custData.getGuid()));
+      } catch (Exception ex) {
+         return false;
+      }
    }
 
-   public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
+   public void setUserDefaultCustData(CustomizeData newCustData, boolean set) throws Exception {
       // Remove old defaults
       for (CustomizeData custData : getSavedCustDatas()) {
          if (userArtifactDefaults.isDefaultCustomization(custData)) {
@@ -167,7 +171,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       userArtifactDefaults.save();
    }
 
-   private List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) {
+   private List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) throws OseeCoreException {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       if (customizationArtifact != null) {
 

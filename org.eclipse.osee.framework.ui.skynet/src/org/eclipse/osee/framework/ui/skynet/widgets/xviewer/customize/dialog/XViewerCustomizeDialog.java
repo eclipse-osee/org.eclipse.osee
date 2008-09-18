@@ -424,7 +424,11 @@ public class XViewerCustomizeDialog extends MessageDialog {
          }
       });
 
-      loadCustomizeTable();
+      try {
+         loadCustomizeTable();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
       updateButtonEnablements();
 
       return comp;
@@ -547,25 +551,29 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    private void handleSaveButton() {
-      List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
-      for (CustomizeData custData : xViewer.getCustomizeMgr().getSavedCustDatas()) {
-         if (custData.isPersonal())
-            custDatas.add(custData);
-         else if (OseeAts.isAtsAdmin()) custDatas.add(custData);
-      }
-      CustomizationDataSelectionDialog diag = new CustomizationDataSelectionDialog(xViewer, custDatas);
-      if (diag.open() == 0) {
-         String name = diag.getEnteredName();
-         try {
-            CustomizeData custData = getConfigCustomizeCustData();
-            custData.setName(name);
-            custData.setPersonal(!diag.isSaveGlobal());
-            xViewer.getCustomizeMgr().saveCustomization(custData);
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      try {
+         List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
+         for (CustomizeData custData : xViewer.getCustomizeMgr().getSavedCustDatas()) {
+            if (custData.isPersonal())
+               custDatas.add(custData);
+            else if (OseeAts.isAtsAdmin()) custDatas.add(custData);
          }
+         CustomizationDataSelectionDialog diag = new CustomizationDataSelectionDialog(xViewer, custDatas);
+         if (diag.open() == 0) {
+            String name = diag.getEnteredName();
+            try {
+               CustomizeData custData = getConfigCustomizeCustData();
+               custData.setName(name);
+               custData.setPersonal(!diag.isSaveGlobal());
+               xViewer.getCustomizeMgr().saveCustomization(custData);
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
+         loadCustomizeTable();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      loadCustomizeTable();
    }
 
    private void handleRenameButton() {
@@ -602,25 +610,29 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    private void handleSetDefaultButton() {
-      CustomizeData custData = getCustTableSelection();
-      if (custData.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custData.getName().equals(
-            CustomizeManager.CURRENT_LABEL)) {
-         if (inWorkbench)
-            AWorkbench.popup("ERROR", "Can't set table default or current as default");
-         else
-            System.err.println("Can't set table default or current as default");
-         return;
-      }
-      if (xViewer.getCustomizeMgr().isCustomizationUserDefault(custData)) {
-         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove Default",
-               "Remove \"" + custData.getName() + "\" as default for this table?")) {
-            xViewer.getCustomizeMgr().setUserDefaultCustData(custData, false);
+      try {
+         CustomizeData custData = getCustTableSelection();
+         if (custData.getName().equals(CustomizeManager.TABLE_DEFAULT_LABEL) || custData.getName().equals(
+               CustomizeManager.CURRENT_LABEL)) {
+            if (inWorkbench)
+               AWorkbench.popup("ERROR", "Can't set table default or current as default");
+            else
+               System.err.println("Can't set table default or current as default");
+            return;
          }
-      } else if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set Default",
-            "Set \"" + custData.getName() + "\" as default for this table?")) {
-         xViewer.getCustomizeMgr().setUserDefaultCustData(custData, true);
+         if (xViewer.getCustomizeMgr().isCustomizationUserDefault(custData)) {
+            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove Default",
+                  "Remove \"" + custData.getName() + "\" as default for this table?")) {
+               xViewer.getCustomizeMgr().setUserDefaultCustData(custData, false);
+            }
+         } else if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Set Default",
+               "Set \"" + custData.getName() + "\" as default for this table?")) {
+            xViewer.getCustomizeMgr().setUserDefaultCustData(custData, true);
+         }
+         loadCustomizeTable();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      loadCustomizeTable();
    }
 
    private void handleDeleteButton() {
@@ -671,7 +683,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       saveButton.setEnabled(xViewer.getXViewerFactory().getXViewerCustomizations() != null && xViewer.getXViewerFactory().getXViewerCustomizations().isCustomizationPersistAvailable());
    }
 
-   private void loadCustomizeTable() {
+   private void loadCustomizeTable() throws Exception {
       // Add stored customization data
       List<CustomizeData> custDatas = xViewer.getCustomizeMgr().getSavedCustDatas();
 

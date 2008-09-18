@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -36,7 +37,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
 
    }
 
-   private synchronized void ensureTemplateCachePopulated() throws SQLException {
+   private synchronized void ensureTemplateCachePopulated() throws SQLException, OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =

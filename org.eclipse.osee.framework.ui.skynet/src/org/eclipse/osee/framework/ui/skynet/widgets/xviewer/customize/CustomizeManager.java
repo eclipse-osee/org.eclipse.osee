@@ -44,7 +44,7 @@ public class CustomizeManager {
    public boolean loading = true;
    public static List<String> REMOVED_COLUMNS_TO_IGNORE = Arrays.asList("Metrics from Tasks");
 
-   public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) {
+   public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) throws Exception {
       this.xViewer = xViewer;
       this.xViewerFactory = xViewerFactory;
       // Set customize to be user default, if selected, or table default
@@ -301,7 +301,7 @@ public class CustomizeManager {
       return loading;
    }
 
-   public List<CustomizeData> getSavedCustDatas() {
+   public List<CustomizeData> getSavedCustDatas() throws Exception {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       for (CustomizeData savedCustData : xViewerFactory.getXViewerCustomizations().getSavedCustDatas()) {
          custDatas.add(resolveLoadedCustomizeData(savedCustData));
@@ -332,7 +332,7 @@ public class CustomizeManager {
       }
    }
 
-   public void setUserDefaultCustData(CustomizeData newCustData, boolean set) {
+   public void setUserDefaultCustData(CustomizeData newCustData, boolean set) throws Exception {
       xViewerFactory.getXViewerCustomizations().setUserDefaultCustData(newCustData, set);
    }
 
