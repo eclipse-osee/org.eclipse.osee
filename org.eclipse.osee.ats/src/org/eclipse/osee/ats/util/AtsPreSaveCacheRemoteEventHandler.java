@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.util;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -35,11 +35,11 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
 
    private AtsPreSaveCacheRemoteEventHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Pre-Save Remote Event Handler", false);
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

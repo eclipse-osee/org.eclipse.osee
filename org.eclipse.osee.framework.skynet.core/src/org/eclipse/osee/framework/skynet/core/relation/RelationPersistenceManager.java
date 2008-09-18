@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -105,7 +105,7 @@ public class RelationPersistenceManager {
             transaction.addRelationModifiedEvent(sender, RelationModType.Deleted, link, link.getBranch(),
                   link.getRelationType().getTypeName(), link.getASideName());
 
-            XEventManager.kickRelationModifiedEvent(sender, RelationModType.Deleted, link, link.getBranch(),
+            OseeEventManager.kickRelationModifiedEvent(sender, RelationModType.Deleted, link, link.getBranch(),
                   link.getRelationType().getTypeName(), link.getASideName());
 
          } else {
@@ -121,7 +121,7 @@ public class RelationPersistenceManager {
             transaction.addRelationModifiedEvent(sender, RelationModType.Changed, link, link.getBranch(),
                   link.getRelationType().getTypeName(), link.getASideName());
 
-            XEventManager.kickRelationModifiedEvent(sender, RelationModType.Changed, link, link.getBranch(),
+            OseeEventManager.kickRelationModifiedEvent(sender, RelationModType.Changed, link, link.getBranch(),
                   link.getRelationType().getTypeName(), link.getASideName());
          }
       } else {
@@ -146,7 +146,7 @@ public class RelationPersistenceManager {
          transaction.addRelationModifiedEvent(sender, RelationModType.Added, link, link.getBranch(),
                link.getRelationType().getTypeName(), link.getASideName());
 
-         XEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, link, link.getBranch(),
+         OseeEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, link, link.getBranch(),
                link.getRelationType().getTypeName(), link.getASideName());
       }
 

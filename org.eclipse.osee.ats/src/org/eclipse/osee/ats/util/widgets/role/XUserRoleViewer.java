@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -70,7 +70,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    public XUserRoleViewer() {
       super("Roles");
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    /*
@@ -286,7 +286,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
 
       xViewer.dispose();
    }

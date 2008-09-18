@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -79,7 +79,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
     */
    public XDefectViewer() {
       super("Defects");
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    /*
@@ -353,7 +353,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       xViewer.dispose();
    }
 

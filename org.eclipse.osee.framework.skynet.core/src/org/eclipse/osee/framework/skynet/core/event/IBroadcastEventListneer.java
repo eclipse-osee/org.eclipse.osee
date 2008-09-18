@@ -3,14 +3,14 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.eventx;
+package org.eclipse.osee.framework.skynet.core.event;
 
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IBroadcastEventListneer extends IXEventListener {
+public interface IBroadcastEventListneer extends IEventListner {
    public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, String message);
 
 }

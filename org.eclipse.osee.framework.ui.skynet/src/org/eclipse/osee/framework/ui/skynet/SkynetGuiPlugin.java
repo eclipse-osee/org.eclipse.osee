@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.eventx.IBroadcastEventListneer;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
@@ -47,7 +47,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       super();
       pluginInstance = this;
       securityManager = OseeSecurityManager.getInstance();
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    /* (non-Javadoc)

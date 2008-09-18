@@ -62,13 +62,13 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType;
-import org.eclipse.osee.framework.skynet.core.eventx.XArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
-import org.eclipse.osee.framework.skynet.core.eventx.XModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.eventx.XRelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventModType;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -178,7 +178,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       try {
          logger.log(Level.INFO, "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
          skynetEventService.register(myReference);
-         XEventManager.kickRemoteEventManagerEvent(XEventManager.getSender(Source.Local, this),
+         OseeEventManager.kickRemoteEventManagerEvent(OseeEventManager.getSender(Source.Local, this),
                RemoteEventModType.Connected);
 
       } catch (OseeCoreException e) {
@@ -194,7 +194,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       logger.log(Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
       skynetEventService = null;
       try {
-         XEventManager.kickRemoteEventManagerEvent(XEventManager.getSender(Source.Local, this),
+         OseeEventManager.kickRemoteEventManagerEvent(OseeEventManager.getSender(Source.Local, this),
                RemoteEventModType.DisConnected);
 
       } catch (OseeCoreException ex) {
@@ -238,7 +238,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       @Override
       public void onEvent(final ISkynetEvent[] events) throws RemoteException {
 
-         final List<XModifiedEvent> xModifiedEvents = new LinkedList<XModifiedEvent>();
+         final List<ArtifactTransactionModifiedEvent> xModifiedEvents = new LinkedList<ArtifactTransactionModifiedEvent>();
          Job job = new Job("Receive Event") {
 
             @Override
@@ -257,7 +257,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                               new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getBranchId(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactIds(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactTypeIds());
-                        XEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType, loadedArtifacts);
+                        OseeEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType, loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -270,7 +270,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                         try {
                            Sender sender =
                                  new Sender(Source.Remote, null, ((NetworkRenameBranchEvent) event).getAuthor());
-                           XEventManager.kickBranchEvent(sender, BranchModType.Renamed, branchId);
+                           OseeEventManager.kickBranchEvent(sender, BranchModType.Renamed, branchId);
                         } catch (Exception ex) {
                            logger.log(Level.SEVERE, ex.toString(), ex);
                         }
@@ -281,7 +281,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      int branchId = ((NetworkNewBranchEvent) event).getBranchId();
                      try {
                         Sender sender = new Sender(Source.Remote, null, ((NetworkNewBranchEvent) event).getAuthor());
-                        XEventManager.kickBranchEvent(sender, BranchModType.Added, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchModType.Added, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -291,7 +291,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      try {
                         Sender sender =
                               new Sender(Source.Remote, null, ((NetworkDeletedBranchEvent) event).getAuthor());
-                        XEventManager.kickBranchEvent(sender, BranchModType.Deleted, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchModType.Deleted, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -300,7 +300,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
                         Sender sender = new Sender(Source.Remote, null, ((NetworkCommitBranchEvent) event).getAuthor());
-                        XEventManager.kickBranchEvent(sender, BranchModType.Committed, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchModType.Committed, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -315,7 +315,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                                  "Unknown broadcast event type \"" + ((NetworkBroadcastEvent) event).getBroadcastEventTypeName() + "\"",
                                  new IllegalArgumentException());
                         } else {
-                           XEventManager.kickBroadcastEvent(sender, broadcastEventType,
+                           OseeEventManager.kickBroadcastEvent(sender, broadcastEventType,
                                  ((NetworkBroadcastEvent) event).getUserIds(),
                                  ((NetworkBroadcastEvent) event).getMessage());
                         }
@@ -334,7 +334,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                               new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getBranchId(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
-                        XEventManager.kickArtifactsChangeTypeEvent(sender,
+                        OseeEventManager.kickArtifactsChangeTypeEvent(sender,
                               ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
@@ -347,7 +347,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                               new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getBranchId(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
-                        XEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
+                        OseeEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -355,7 +355,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      try {
                         Sender sender =
                               new Sender(Source.Remote, null, ((NetworkTransactionDeletedEvent) event).getAuthor());
-                        XEventManager.kickTransactionsDeletedEvent(sender,
+                        OseeEventManager.kickTransactionsDeletedEvent(sender,
                               ((NetworkTransactionDeletedEvent) event).getTransactionIds());
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
@@ -363,7 +363,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   }
                }
 
-               XEventManager.kickTransactionEvent(Source.Remote, xModifiedEvents);
+               OseeEventManager.kickTransactionEvent(Source.Remote, xModifiedEvents);
                return Status.OK_STATUS;
             }
          };
@@ -379,7 +379,7 @@ public class RemoteEventManager implements IServiceLookupListener {
     * 
     * @param event
     */
-   private static void updateArtifacts(ISkynetArtifactEvent event, Collection<XModifiedEvent> xModifiedEvents) {
+   private static void updateArtifacts(ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (event == null) return;
 
       try {
@@ -393,7 +393,7 @@ public class RemoteEventManager implements IServiceLookupListener {
             if (artifact == null) {
                Sender sender = new Sender(Source.Remote, instance, ((NetworkArtifactModifiedEvent) event).getAuthor());
                UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
-               xModifiedEvents.add(new XArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
+               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
             } else if (!artifact.isHistorical()) {
                for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
                   boolean attributeNeedsCreation = true;
@@ -425,7 +425,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                }
 
                Sender sender = new Sender(Source.Remote, instance, ((NetworkArtifactModifiedEvent) event).getAuthor());
-               xModifiedEvents.add(new XArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,
+               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact,
                      ((NetworkArtifactModifiedEvent) event).getTransactionId(),
                      ((NetworkArtifactModifiedEvent) event).getAttributeChanges()));
 
@@ -436,13 +436,13 @@ public class RemoteEventManager implements IServiceLookupListener {
             if (artifact == null) {
                Sender sender = new Sender(Source.Remote, instance, ((NetworkArtifactDeletedEvent) event).getAuthor());
                UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
-               xModifiedEvents.add(new XArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
+               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
             } else if (!artifact.isHistorical()) {
                artifact.setDeleted();
                artifact.setNotDirty();
 
                Sender sender = new Sender(Source.Remote, instance, ((NetworkArtifactDeletedEvent) event).getAuthor());
-               xModifiedEvents.add(new XArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
+               xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
                      ((NetworkArtifactDeletedEvent) event).getTransactionId(), new ArrayList<SkynetAttributeChange>()));
             }
          }
@@ -457,7 +457,7 @@ public class RemoteEventManager implements IServiceLookupListener {
     * @throws ArtifactDoesNotExist
     * @throws SQLException
     */
-   private static void updateRelations(ISkynetRelationLinkEvent event, Collection<XModifiedEvent> xModifiedEvents) {
+   private static void updateRelations(ISkynetRelationLinkEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (event == null) return;
 
       try {
@@ -475,20 +475,20 @@ public class RemoteEventManager implements IServiceLookupListener {
                UnloadedRelation unloadedRelation =
                      new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                            event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Deleted, unloadedRelation));
+               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, unloadedRelation));
             } else if (event instanceof NetworkRelationLinkModifiedEvent) {
                Sender sender =
                      new Sender(Source.Remote, instance, ((NetworkRelationLinkModifiedEvent) event).getAuthor());
                UnloadedRelation unloadedRelation =
                      new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                            event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Changed, unloadedRelation));
+               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Changed, unloadedRelation));
             } else if (event instanceof NetworkNewRelationLinkEvent) {
                Sender sender = new Sender(Source.Remote, instance, ((NetworkNewRelationLinkEvent) event).getAuthor());
                UnloadedRelation unloadedRelation =
                      new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                            event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
-               xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Added, unloadedRelation));
+               xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, unloadedRelation));
             }
          }
          if (aArtifactLoaded || bArtifactLoaded) {
@@ -532,7 +532,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 
                   Sender sender =
                         new Sender(Source.Remote, instance, ((NetworkRelationLinkModifiedEvent) event).getAuthor());
-                  xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Changed, relation,
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Changed, relation,
                         relation.getBranch(), relation.getRelationType().getTypeName(),
                         aOrderChanged ? relation.getASideName() : relation.getBSideName()));
                }
@@ -545,7 +545,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 
                   Sender sender =
                         new Sender(Source.Remote, instance, ((NetworkRelationLinkDeletedEvent) event).getAuthor());
-                  xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Deleted, relation,
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, relation,
                         relation.getBranch(), relation.getRelationType().getTypeName(), ""));
                }
             } else if (event instanceof NetworkNewRelationLinkEvent) {
@@ -573,7 +573,7 @@ public class RemoteEventManager implements IServiceLookupListener {
 
                   Sender sender =
                         new Sender(Source.Remote, instance, ((NetworkRelationLinkDeletedEvent) event).getAuthor());
-                  xModifiedEvents.add(new XRelationModifiedEvent(sender, RelationModType.Added, relation,
+                  xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, relation,
                         relation.getBranch(), relation.getRelationType().getTypeName(), ""));
                }
             }

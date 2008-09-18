@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -108,9 +108,9 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void display() {
       try {
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
          if (currentArtifact == null) return;
-         XEventManager.addListener(this, this);
+         OseeEventManager.addListener(this, this);
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
@@ -167,10 +167,10 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          center();
       } catch (SQLException ex) {
          clear();
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
       } catch (ArtifactDoesNotExist ex) {
          clear();
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
       }
    }
 
@@ -182,7 +182,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    public void handleWindowChange() {

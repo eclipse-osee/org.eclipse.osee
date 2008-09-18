@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.eventx;
+package org.eclipse.osee.framework.skynet.core.event;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 /**
  * @author Donald G. Dunne
  */
-public class XRelationModifiedEvent extends XModifiedEvent {
+public class RelationModifiedEvent extends ArtifactTransactionModifiedEvent {
 
    protected final Sender sender;
    protected final RelationModType relationModType;
@@ -24,7 +24,7 @@ public class XRelationModifiedEvent extends XModifiedEvent {
    protected final String relationSide;
    protected final UnloadedRelation unloadedRelation;
 
-   public XRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+   public RelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
       this.sender = sender;
       this.relationModType = relationModType;
       this.link = link;
@@ -34,7 +34,7 @@ public class XRelationModifiedEvent extends XModifiedEvent {
       this.unloadedRelation = null;
    }
 
-   public XRelationModifiedEvent(Sender sender, RelationModType relationModType, UnloadedRelation unloadedRelation) {
+   public RelationModifiedEvent(Sender sender, RelationModType relationModType, UnloadedRelation unloadedRelation) {
       this.sender = sender;
       this.relationModType = relationModType;
       this.unloadedRelation = unloadedRelation;

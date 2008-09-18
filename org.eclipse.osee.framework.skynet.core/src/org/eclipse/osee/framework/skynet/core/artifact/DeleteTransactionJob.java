@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -119,7 +119,7 @@ public class DeleteTransactionJob extends Job {
 
          // Kick Local and Remote Events
          Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         XEventManager.kickTransactionsDeletedEvent(sender, txIdsToDelete);
+         OseeEventManager.kickTransactionsDeletedEvent(sender, txIdsToDelete);
       } catch (Exception ex) {
          returnStatus = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
       } finally {

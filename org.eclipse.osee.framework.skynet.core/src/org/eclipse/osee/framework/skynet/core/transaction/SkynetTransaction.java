@@ -40,10 +40,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.eventx.XArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
-import org.eclipse.osee.framework.skynet.core.eventx.XModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.eventx.XRelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -64,7 +64,7 @@ public class SkynetTransaction {
    private String comment;
    private final TransactionId transactionId;
    private final Branch branch;
-   private final List<XModifiedEvent> xModifiedEvents = new ArrayList<XModifiedEvent>();
+   private final List<ArtifactTransactionModifiedEvent> xModifiedEvents = new ArrayList<ArtifactTransactionModifiedEvent>();
    private final Map<ITransactionData, ITransactionData> transactionItems =
          new HashMap<ITransactionData, ITransactionData>();
 
@@ -212,12 +212,12 @@ public class SkynetTransaction {
    }
 
    public void addArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
-      xModifiedEvents.add(new XArtifactModifiedEvent(sender, artifactModType, artifact, getTransactionNumber(),
+      xModifiedEvents.add(new ArtifactModifiedEvent(sender, artifactModType, artifact, getTransactionNumber(),
             artifact.getDirtySkynetAttributeChanges()));
    }
 
    public void addRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
-      xModifiedEvents.add(new XRelationModifiedEvent(sender, relationModType, link, branch, relationType, relationSide));
+      xModifiedEvents.add(new RelationModifiedEvent(sender, relationModType, link, branch, relationType, relationSide));
    }
 
    /**
@@ -225,7 +225,7 @@ public class SkynetTransaction {
     */
    public void kickEvents() {
       if (xModifiedEvents.size() > 0) {
-         XEventManager.kickTransactionEvent(Source.Local, xModifiedEvents);
+         OseeEventManager.kickTransactionEvent(Source.Local, xModifiedEvents);
          xModifiedEvents.clear();
       }
    }

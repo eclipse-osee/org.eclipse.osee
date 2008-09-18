@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -438,7 +438,7 @@ public class RelationManager {
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
 
          try {
-            XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+            OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
                   RelationModType.Added, relation, relation.getABranch(), relationType.getTypeName(),
                   relation.getASideName());
          } catch (Exception ex) {
@@ -560,7 +560,7 @@ public class RelationManager {
       }
 
       Sender sender = new Sender(Source.Local, RelationManager.class, SkynetAuthentication.getAuthor());
-      XEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, relation, relation.getBranch(),
+      OseeEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, relation, relation.getBranch(),
             relation.getRelationType().getTypeName(), "");
 
    }
@@ -633,7 +633,7 @@ public class RelationManager {
             artifactATarget, artifactB);
 
       try {
-         XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+         OseeEventManager.kickRelationModifiedEvent(OseeEventManager.getSender(Source.Local, RelationManager.class),
                RelationModType.ReOrdered, relation, relation.getABranch(), relationType.getTypeName(),
                relation.getASideName());
       } catch (Exception ex) {

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
@@ -240,7 +240,7 @@ class CommitJob extends Job {
          super.handleTxFinally();
          if (success) {
             Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-            XEventManager.kickBranchEvent(sender, BranchModType.Committed, fromBranchId);
+            OseeEventManager.kickBranchEvent(sender, BranchModType.Committed, fromBranchId);
          }
       }
 

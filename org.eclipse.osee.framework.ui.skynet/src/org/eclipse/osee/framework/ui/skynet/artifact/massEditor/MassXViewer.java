@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -74,7 +74,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             handleDoubleClick();
          };
       });
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    @Override
@@ -231,7 +231,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
     */
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }

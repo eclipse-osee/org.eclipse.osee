@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
@@ -156,7 +156,7 @@ public class SkynetAuthentication {
          public void run() {
             try {
                Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-               XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.UserAuthenticated, null);
+               OseeEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.UserAuthenticated, null);
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }

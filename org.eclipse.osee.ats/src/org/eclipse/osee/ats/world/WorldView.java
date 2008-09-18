@@ -53,9 +53,9 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -293,7 +293,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
       SkynetContributionItem.addTo(this, false);
       setupDragAndDropSupport();
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
 
    }
 
@@ -684,7 +684,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       if (xViewer != null) xViewer.dispose();
    }
 

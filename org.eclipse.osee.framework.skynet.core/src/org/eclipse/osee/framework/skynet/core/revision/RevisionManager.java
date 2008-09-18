@@ -58,8 +58,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -171,7 +171,7 @@ public class RevisionManager {
          } finally {
             DbUtil.close(chStmt);
          }
-         XEventManager.addListener(this, new BranchEventListener() {
+         OseeEventManager.addListener(this, new BranchEventListener() {
             /* (non-Javadoc)
              * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
              */
@@ -185,7 +185,7 @@ public class RevisionManager {
                    * though cache has bee set to null, it will be re-created upon next call to get cached information
                    */
                   try {
-                     XEventManager.kickLocalBranchToArtifactCacheUpdateEvent(XEventManager.getSender(Source.Local, this));
+                     OseeEventManager.kickLocalBranchToArtifactCacheUpdateEvent(OseeEventManager.getSender(Source.Local, this));
                   } catch (Exception ex) {
                      SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }

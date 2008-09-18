@@ -46,9 +46,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -141,7 +141,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       SkynetContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    private void createContextMenu(Control menuOnwer) {
@@ -805,7 +805,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 

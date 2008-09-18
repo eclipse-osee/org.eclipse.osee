@@ -35,16 +35,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactModifiedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -213,7 +213,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       setPartName(getEditorInput().getName());
       setTitleImage(artifact.getImage());
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
 
    }
 
@@ -530,7 +530,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
 
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
          super.dispose();
       } catch (SQLException ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

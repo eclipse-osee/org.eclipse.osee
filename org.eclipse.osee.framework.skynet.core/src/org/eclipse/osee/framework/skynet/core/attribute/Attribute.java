@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -146,7 +146,7 @@ public abstract class Attribute<T> {
       // Kick Local Event
       try {
          Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getAuthor());
-         XEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
+         OseeEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Changed, artifact);
       } catch (Exception ex) {
          // do nothing
       }

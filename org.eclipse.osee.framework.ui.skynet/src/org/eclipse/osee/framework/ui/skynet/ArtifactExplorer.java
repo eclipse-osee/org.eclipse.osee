@@ -54,17 +54,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactModifiedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -315,7 +315,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    /**
@@ -1246,7 +1246,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       if (treeViewer != null) {
          trees.remove(treeViewer.getTree());
       }

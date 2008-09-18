@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
-import org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
@@ -70,7 +70,7 @@ public class CommitManagerService extends WorkPageService {
                }
             });
 
-         XEventManager.addListener(this, new BranchEventListener() {
+         OseeEventManager.addListener(this, new BranchEventListener() {
             /* (non-Javadoc)
              * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
              */
@@ -139,6 +139,6 @@ public class CommitManagerService extends WorkPageService {
     */
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 }

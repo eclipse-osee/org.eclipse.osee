@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -108,7 +108,7 @@ public class HttpBranchCreation {
 
       // Kick events
       Sender sender = new Sender(Source.Local, HttpBranchCreation.class, SkynetAuthentication.getUser().getArtId());
-      XEventManager.kickBranchEvent(sender, BranchModType.Added, branch.getBranchId());
+      OseeEventManager.kickBranchEvent(sender, BranchModType.Added, branch.getBranchId());
 
       return branch;
    }

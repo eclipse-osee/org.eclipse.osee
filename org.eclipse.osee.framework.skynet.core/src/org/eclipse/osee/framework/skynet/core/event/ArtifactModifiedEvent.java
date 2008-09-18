@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.eventx;
+package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 /**
  * @author Donald G. Dunne
  */
-public class XArtifactModifiedEvent extends XModifiedEvent {
+public class ArtifactModifiedEvent extends ArtifactTransactionModifiedEvent {
 
    protected final Sender sender;
    protected final ArtifactModType artifactModType;
@@ -24,7 +24,7 @@ public class XArtifactModifiedEvent extends XModifiedEvent {
    protected final int transactionNumber;
    protected final Collection<SkynetAttributeChange> dirtySkynetAttributeChanges;
 
-   public XArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact, int transactionNumber, Collection<SkynetAttributeChange> dirtySkynetAttributeChanges) {
+   public ArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact, int transactionNumber, Collection<SkynetAttributeChange> dirtySkynetAttributeChanges) {
       this.sender = sender;
       this.artifactModType = artifactModType;
       this.artifact = artifact;
@@ -33,7 +33,7 @@ public class XArtifactModifiedEvent extends XModifiedEvent {
       this.unloadedArtifact = null;
    }
 
-   public XArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, UnloadedArtifact unloadedArtifact) {
+   public ArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, UnloadedArtifact unloadedArtifact) {
       this.sender = sender;
       this.artifactModType = artifactModType;
       this.unloadedArtifact = unloadedArtifact;

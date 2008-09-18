@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -69,7 +69,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       });
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
       refresh();
    }
 
@@ -86,7 +86,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       toolBarAction.setToolTipText(getName());
       toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_merge.gif"));
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
       refresh();
       return toolBarAction;
    }
@@ -141,7 +141,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
     */
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

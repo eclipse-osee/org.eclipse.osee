@@ -19,11 +19,11 @@ import org.eclipse.osee.ats.util.widgets.task.TaskContentProvider;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -77,7 +77,7 @@ public class SMATaskComposite extends Composite {
    @Override
    public void dispose() {
       xTaskViewer.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 
@@ -86,7 +86,7 @@ public class SMATaskComposite extends Composite {
    }
 
    private void registerEvents() {
-      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+      OseeEventManager.addListener(this, new IArtifactsPurgedEventListener() {
 
          @Override
          public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
@@ -95,7 +95,7 @@ public class SMATaskComposite extends Composite {
             ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
          }
       });
-      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
+      OseeEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
 
          @Override
          public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
@@ -105,7 +105,7 @@ public class SMATaskComposite extends Composite {
          }
 
       });
-      XEventManager.addListener(this, new IFrameworkTransactionEventListener() {
+      OseeEventManager.addListener(this, new IFrameworkTransactionEventListener() {
 
          @Override
          public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {

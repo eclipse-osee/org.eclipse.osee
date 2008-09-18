@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.eventx;
+package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,10 +61,10 @@ import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 /**
  * @author Donald G. Dunne
  */
-public class XEventManager {
+public class OseeEventManager {
 
-   private static final HashCollection<Object, IXEventListener> listenerMap =
-         new HashCollection<Object, IXEventListener>(false, HashSet.class, 100);
+   private static final HashCollection<Object, IEventListner> listenerMap =
+         new HashCollection<Object, IEventListner>(false, HashSet.class, 100);
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static final boolean debug = false;
    private static boolean disableEvents = false;
@@ -85,7 +85,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickRemoteEventManagerEvent " + sender.getAuthor() + " remoteEventModType: " + remoteEventModType);
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IRemoteEventManagerEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -111,7 +111,7 @@ public class XEventManager {
       if (debug) System.out.println("kickBroadcastEvent " + sender.getAuthor() + " message: " + message);
       // Kick Local
       if (broadcastEventType == BroadcastEventType.Message) {
-         for (IXEventListener listener : listenerMap.getValues()) {
+         for (IEventListner listener : listenerMap.getValues()) {
             if (listener instanceof IBroadcastEventListneer) {
                // Don't fail on any one listener's exception
                try {
@@ -149,7 +149,7 @@ public class XEventManager {
          // do nothing
       }
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IBranchEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -196,7 +196,7 @@ public class XEventManager {
          public void run() {
             if (debug) System.out.println("kickAccessControlEvent " + sender.getAuthor() + " accessControlEventType: " + accessControlModType + " loadedArtifacts: " + loadedArtifacts);
             // Kick Local
-            for (IXEventListener listener : listenerMap.getValues()) {
+            for (IEventListner listener : listenerMap.getValues()) {
                if (listener instanceof IAccessControlEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -235,7 +235,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickLocalBranchToArtifactCacheUpdateEvent " + sender.getAuthor());
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IBranchEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -258,7 +258,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickArtifactModifiedEvent " + sender.getSource() + " - " + artifactModType + " - " + artifact.getHumanReadableId() + " - " + artifact.getDirtySkynetAttributeChanges());
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactModifiedEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -282,7 +282,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickRelationModifiedEvent " + sender.getSource() + " - " + relationType + " - " + link.getRelationType());
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IRelationModifiedEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -306,7 +306,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickArtifactsPurgedEvent " + sender.getSource() + " - " + loadedArtifacts);
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsPurgedEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -342,7 +342,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickArtifactsChangeTypeEvent " + sender.getSource() + " - " + loadedArtifacts);
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsChangeTypeEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -376,7 +376,7 @@ public class XEventManager {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickTransactionsDeletedEvent " + sender.getSource() + " - " + transactionIds.length);
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IArtifactsChangeTypeEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -396,15 +396,15 @@ public class XEventManager {
       }
    }
 
-   public static void kickTransactionEvent(Source source, Collection<XModifiedEvent> xModifiedEvents) {
+   public static void kickTransactionEvent(Source source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) return;
       if (debug) System.out.println("kickTransactionEvent " + source + " #ModEvents: " + xModifiedEvents.size());
       // Roll-up change information
       FrameworkTransactionData transData = new FrameworkTransactionData();
 
-      for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
-         if (xModifiedEvent instanceof XArtifactModifiedEvent) {
-            XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
+      for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
+         if (xModifiedEvent instanceof ArtifactModifiedEvent) {
+            ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
             if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
@@ -439,8 +439,8 @@ public class XEventManager {
                }
             }
          }
-         if (xModifiedEvent instanceof XRelationModifiedEvent) {
-            XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
+         if (xModifiedEvent instanceof RelationModifiedEvent) {
+            RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
             UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
             LoadedRelation loadedRelation = null;
             if (xRelationModifiedEvent.link != null) {
@@ -534,7 +534,7 @@ public class XEventManager {
       transData.cacheAddedArtifacts.removeAll(transData.cacheDeletedArtifacts);
 
       // Kick Local
-      for (IXEventListener listener : listenerMap.getValues()) {
+      for (IEventListner listener : listenerMap.getValues()) {
          if (listener instanceof IFrameworkTransactionEventListener) {
             // Don't fail on any one listener's exception
             try {
@@ -548,9 +548,9 @@ public class XEventManager {
       try {
          if (source == Source.Local) {
             List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
-            for (XModifiedEvent xModifiedEvent : xModifiedEvents) {
-               if (xModifiedEvent instanceof XArtifactModifiedEvent) {
-                  XArtifactModifiedEvent xArtifactModifiedEvent = (XArtifactModifiedEvent) xModifiedEvent;
+            for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
+               if (xModifiedEvent instanceof ArtifactModifiedEvent) {
+                  ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
                   if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
                      Artifact artifact = xArtifactModifiedEvent.artifact;
                      events.add(new NetworkArtifactModifiedEvent(artifact.getBranch().getBranchId(),
@@ -574,8 +574,8 @@ public class XEventManager {
                      SkynetActivator.getLogger().log(Level.SEVERE,
                            "Unhandled xArtifactModifiedEvent event: " + xArtifactModifiedEvent);
                   }
-               } else if (xModifiedEvent instanceof XRelationModifiedEvent) {
-                  XRelationModifiedEvent xRelationModifiedEvent = (XRelationModifiedEvent) xModifiedEvent;
+               } else if (xModifiedEvent instanceof RelationModifiedEvent) {
+                  RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
                   if (xRelationModifiedEvent.relationModType == RelationModType.Changed) {
                      RelationLink link = xRelationModifiedEvent.link;
                      Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
@@ -631,24 +631,24 @@ public class XEventManager {
     * @param key unique object that will allow for removing all or specific listeners in removeListners
     * @param listener
     */
-   public static void addListener(Object key, IXEventListener listener) {
+   public static void addListener(Object key, IEventListner listener) {
       if (debug) System.out.println("addListener " + key + " - " + listener);
       listenerMap.put(key, listener);
    }
 
-   public static void removeListener(Object key, IXEventListener listener) {
+   public static void removeListener(Object key, IEventListner listener) {
       if (debug) System.out.println("removeListener " + key + " - " + listener);
       listenerMap.removeValue(key, listener);
    }
 
    public static void removeListeners(Object key) {
       if (debug) System.out.println("removeListeners ALL " + key);
-      Set<IXEventListener> listenersToRemove = new HashSet<IXEventListener>();
-      for (IXEventListener listener : listenerMap.getValues(key)) {
+      Set<IEventListner> listenersToRemove = new HashSet<IEventListner>();
+      for (IEventListner listener : listenerMap.getValues(key)) {
          listenersToRemove.add(listener);
       }
       // Done to avoid concurrent modification
-      for (IXEventListener listener : listenersToRemove) {
+      for (IEventListner listener : listenersToRemove) {
          listenerMap.removeValue(key, listener);
       }
    }
@@ -664,7 +664,7 @@ public class XEventManager {
     * @param disableEvents the disableEvents to set
     */
    public static void setDisableEvents(boolean disableEvents) {
-      XEventManager.disableEvents = disableEvents;
+      OseeEventManager.disableEvents = disableEvents;
    }
 
 }

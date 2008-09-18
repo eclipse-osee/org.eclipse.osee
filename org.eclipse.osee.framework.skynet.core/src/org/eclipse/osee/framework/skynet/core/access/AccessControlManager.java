@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -705,7 +705,7 @@ public class AccessControlManager {
 
          Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
          try {
-            XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsLocked,
+            OseeEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsLocked,
                   new LoadedArtifacts(object));
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -729,7 +729,7 @@ public class AccessControlManager {
 
             Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
             try {
-               XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsUnlocked,
+               OseeEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsUnlocked,
                      new LoadedArtifacts(object));
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

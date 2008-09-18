@@ -59,8 +59,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -174,7 +174,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
       this.toTransactionId = null;
       this.priorInput = null;
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public TreeViewer getChangeTableTreeViewer() {
@@ -1169,7 +1169,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
     */
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 

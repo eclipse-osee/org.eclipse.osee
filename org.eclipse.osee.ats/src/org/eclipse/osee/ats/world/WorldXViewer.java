@@ -48,11 +48,11 @@ import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -111,7 +111,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             handleDoubleClick();
          };
       });
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    @Override
@@ -551,7 +551,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources
       getLabelProvider().dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    public ArrayList<Artifact> getSelectedArtifacts() {

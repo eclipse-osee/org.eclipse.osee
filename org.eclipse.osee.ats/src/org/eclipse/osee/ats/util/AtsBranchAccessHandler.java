@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,11 +39,11 @@ public class AtsBranchAccessHandler implements IBranchEventListener {
 
    private AtsBranchAccessHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Branch Access Handler", false);
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

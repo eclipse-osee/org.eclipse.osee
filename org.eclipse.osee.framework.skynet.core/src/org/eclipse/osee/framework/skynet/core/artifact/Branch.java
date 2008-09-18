@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
@@ -140,7 +140,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void kickRenameEvents() throws OseeCoreException {
-      XEventManager.kickBranchEvent(XEventManager.getSender(Source.Local, this), BranchModType.Renamed, branchId);
+      OseeEventManager.kickBranchEvent(OseeEventManager.getSender(Source.Local, this), BranchModType.Renamed, branchId);
    }
 
    /**

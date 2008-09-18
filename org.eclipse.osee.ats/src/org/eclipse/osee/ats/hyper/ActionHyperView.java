@@ -23,9 +23,9 @@ import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -77,7 +77,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);
       AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID);
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public static ActionHyperView getArtifactHyperView() {
@@ -100,7 +100,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    @Override
@@ -123,12 +123,12 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void display() {
       try {
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
          getContainer().setCursor(new Cursor(null, SWT.NONE));
          if (currentArtifact == null || currentArtifact.isDeleted()) {
             return;
          }
-         XEventManager.addListener(this, this);
+         OseeEventManager.addListener(this, this);
          reviewsCreated = false;
          tasksReviewsCreated = false;
          ATSArtifact topArt = getTopArtifact(currentArtifact);
@@ -165,7 +165,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          create(topAHI);
       } catch (Exception ex) {
          clear();
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
       }
    }
 

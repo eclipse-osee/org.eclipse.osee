@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -185,7 +185,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       createActions();
 
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
       updateWidgetEnablements();
 
       Composite panel = new Composite(parent, SWT.NONE);
@@ -252,7 +252,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

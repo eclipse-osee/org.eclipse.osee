@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -71,7 +71,7 @@ public class ChangeArtifactType extends AbstractBlam {
 
       // Kick Local and Remote Events
       Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-      XEventManager.kickArtifactsChangeTypeEvent(sender, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
+      OseeEventManager.kickArtifactsChangeTypeEvent(sender, descriptor.getArtTypeId(), new LoadedArtifacts(artifacts));
    }
 
    /**

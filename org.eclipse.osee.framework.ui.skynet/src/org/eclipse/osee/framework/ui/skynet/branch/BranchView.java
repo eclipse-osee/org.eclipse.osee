@@ -67,8 +67,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -271,7 +271,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          myTreeEditor.minimumWidth = 50;
 
          forcePopulateView();
-         XEventManager.addListener(this, this);
+         OseeEventManager.addListener(this, this);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -1740,7 +1740,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          OSEELog.logException(BranchView.class, ex, true);
       }
 
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 

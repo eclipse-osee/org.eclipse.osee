@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.eventx.IRemoteEventManagerEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventModType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
@@ -39,7 +39,7 @@ public class SkynetServiceContributionItem extends SkynetContributionItem implem
    public SkynetServiceContributionItem() {
       super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       updateStatus(RemoteEventManager.isConnected());
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -56,7 +56,7 @@ public class SkynetServiceContributionItem extends SkynetContributionItem implem
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

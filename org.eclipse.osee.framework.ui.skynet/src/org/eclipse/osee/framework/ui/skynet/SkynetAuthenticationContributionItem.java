@@ -16,9 +16,9 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
-import org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
@@ -75,7 +75,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
             SkynetAuthentication.notifyListeners();
          }
       });
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -86,7 +86,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)

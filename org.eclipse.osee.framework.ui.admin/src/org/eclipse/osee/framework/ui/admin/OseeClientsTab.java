@@ -21,8 +21,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -152,7 +152,7 @@ public class OseeClientsTab {
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             try {
-               XEventManager.kickBroadcastEvent(XEventManager.getSender(Source.Local, this),
+               OseeEventManager.kickBroadcastEvent(OseeEventManager.getSender(Source.Local, this),
                      BroadcastEventType.Force_Shutdown, selectedUsers, reason);
                AWorkbench.popup("Success", "Shutdown request sent.");
             } catch (Exception ex) {

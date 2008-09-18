@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -65,7 +65,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       super.createPartControl(parent);
 
       sashForm.setWeights(new int[] {99, 1});
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    /*
@@ -94,7 +94,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    @Override
    public void dispose() {
       super.dispose();
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
    /*
@@ -104,7 +104,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
     */
    @Override
    public void explore(Artifact artifact) {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact))) clear();
       try {
          getOptions().setArtifact(artifact);
@@ -113,10 +113,10 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
             super.explore(artifact);
          else
             super.explore(getTopArtifact((ATSArtifact) artifact));
-         XEventManager.addListener(this, this);
+         OseeEventManager.addListener(this, this);
       } catch (SQLException ex) {
          clear();
-         XEventManager.removeListeners(this);
+         OseeEventManager.removeListeners(this);
       }
    }
 

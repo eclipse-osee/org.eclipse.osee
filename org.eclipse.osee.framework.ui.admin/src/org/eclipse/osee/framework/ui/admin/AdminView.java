@@ -17,8 +17,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
@@ -133,7 +133,7 @@ public class AdminView extends ViewPart implements IActionable {
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                try {
-                  XEventManager.kickBroadcastEvent(XEventManager.getSender(Source.Local, this),
+                  OseeEventManager.kickBroadcastEvent(OseeEventManager.getSender(Source.Local, this),
                         BroadcastEventType.Message, new String[] {}, message);
                   AWorkbench.popup("Success", "Message sent.");
                } catch (Exception ex) {

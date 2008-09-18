@@ -16,8 +16,8 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
@@ -59,7 +59,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    private void init() {
       updateStatus(true);
       updateInfo();
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    private void updateInfo() {
@@ -112,7 +112,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
 
    @Override
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
    }
 
 }

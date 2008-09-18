@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
@@ -929,7 +929,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       // Kick Local Event
       try {
          Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
-         XEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Reverted, this);
+         OseeEventManager.kickArtifactModifiedEvent(sender, ArtifactModType.Reverted, this);
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

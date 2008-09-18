@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -938,7 +938,7 @@ public class ArtifactPersistenceManager {
          Sender sender =
                new Sender(Source.Local, ArtifactPersistenceManager.getInstance(),
                      SkynetAuthentication.getUser().getArtId());
-         XEventManager.kickArtifactsPurgedEvent(sender, new LoadedArtifacts(artifactsToPurge));
+         OseeEventManager.kickArtifactsPurgedEvent(sender, new LoadedArtifacts(artifactsToPurge));
 
       } finally {
          ArtifactLoader.clearQuery(queryId);

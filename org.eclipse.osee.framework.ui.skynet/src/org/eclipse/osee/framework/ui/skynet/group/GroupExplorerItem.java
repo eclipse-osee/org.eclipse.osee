@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -40,7 +40,7 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
       this.artifact = artifact;
       this.parentItem = parentItem;
       this.groupExplorer = groupExplorer;
-      XEventManager.addListener(this, this);
+      OseeEventManager.addListener(this, this);
    }
 
    public boolean contains(Artifact artifact) {
@@ -64,7 +64,7 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
    }
 
    public void dispose() {
-      XEventManager.removeListeners(this);
+      OseeEventManager.removeListeners(this);
       if (groupItems != null) for (GroupExplorerItem item : groupItems)
          item.dispose();
    }
