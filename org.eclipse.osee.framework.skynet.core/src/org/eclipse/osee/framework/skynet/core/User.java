@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
@@ -117,7 +116,7 @@ public class User extends Artifact implements Serializable {
       setSoleAttributeValue(Attributes.Phone.toString(), phone);
    }
 
-   public Boolean isActive() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, MultipleAttributesExist {
+   public Boolean isActive() throws SQLException, OseeCoreException {
       return getSoleAttributeValue(Attributes.Active.toString());
    }
 
@@ -157,6 +156,8 @@ public class User extends Artifact implements Serializable {
          if (!found) {
             addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
          }
+      } catch (OseeCoreException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -170,6 +171,8 @@ public class User extends Artifact implements Serializable {
                return true;
             }
          }
+      } catch (OseeCoreException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

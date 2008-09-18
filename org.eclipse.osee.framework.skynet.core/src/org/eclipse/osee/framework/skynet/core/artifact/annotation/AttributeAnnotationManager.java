@@ -76,8 +76,9 @@ public class AttributeAnnotationManager {
     * 
     * @param annotation
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void removeAnnotation(ArtifactAnnotation annotation) throws SQLException {
+   public void removeAnnotation(ArtifactAnnotation annotation) throws SQLException, OseeCoreException {
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
          ArtifactAnnotation attrAnnotation = new ArtifactAnnotation(attr.getValue());
