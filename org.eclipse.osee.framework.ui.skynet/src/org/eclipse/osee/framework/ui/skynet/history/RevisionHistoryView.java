@@ -18,24 +18,18 @@ import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -62,11 +56,9 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class RevisionHistoryView extends ViewPart implements IActionable, IEventReceiver {
-   public static final String VIEW_ID =
-         "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
-   private static final String[] columnNames =
-         {"Revision", "Time Stamp", "Author", "Comment"};
+public class RevisionHistoryView extends ViewPart implements IActionable, IFrameworkTransactionEventListener, IBranchEventListener {
+   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
+   private static final String[] columnNames = {"Revision", "Time Stamp", "Author", "Comment"};
    private static final String ARTIFACT_GUID = "GUID";
    private TreeViewer treeViewer;
    private Artifact artifact;
@@ -77,24 +69,15 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
    public RevisionHistoryView() {
       super();
 
-      SkynetEventManager.getInstance().unRegisterAll(this);
-      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, this);
-      SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class,
-            this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-
+      XEventManager.addListener(this, this);
    }
 
    public static void open(Artifact artifact) {
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
          RevisionHistoryView revisionHistoryView =
-               (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID,
-                     artifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+               (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
          revisionHistoryView.explore(artifact);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -123,8 +106,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       Menu popupMenu = new Menu(parent);
       ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, treeViewer);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts",
-            null);
+      ArtifactDiffMenu.createDiffMenuItem(popupMenu, treeViewer, "Compare two Artifacts", null);
       treeViewer.getTree().setMenu(popupMenu);
       createActions();
 
@@ -141,8 +123,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
             treeViewer.expandAll();
          }
       };
-      expandAll.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor(
-            "expandAll.gif"));
+      expandAll.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("expandAll.gif"));
       expandAll.setToolTipText("Expand All");
 
       Action refreshAction = new Action("Refresh") {
@@ -152,16 +133,14 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
             explore(artifact);
          }
       };
-      refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor(
-            "refresh.gif"));
+      refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(expandAll);
       toolbarManager.add(refreshAction);
 
-      OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID,
-            "Revision History");
+      OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Revision History");
 
    }
 
@@ -242,8 +221,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(),
-            "revision_history_tree_viewer");
+      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "revision_history_tree_viewer");
    }
 
    /* (non-Javadoc)
@@ -257,9 +235,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
          if (memento != null) {
             String guid = memento.getString(ARTIFACT_GUID);
             if (guid != null) {
-               artifact =
-                     ArtifactQuery.getArtifactFromId(guid,
-                           BranchPersistenceManager.getDefaultBranch());
+               artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getDefaultBranch());
             }
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -280,45 +256,51 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       super.saveState(memento);
    }
 
-   public void onEvent(Event event) {
-      boolean closeView = false;
-
-      if (event instanceof TransactionEvent) {
-         ((TransactionEvent) event).fireSingleEvent(this);
-      }
-
-      if (event instanceof ArtifactModifiedEvent) {
-         ArtifactModifiedEvent artModEvent = (ArtifactModifiedEvent) event;
-         closeView =
-               artifact != null && artModEvent.getType() == ArtifactModType.Deleted && artModEvent.getArtifact().equals(
-                     artifact);
-      }
-
-      if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) || (event instanceof LocalDeletedBranchEvent) || (event instanceof RemoteDeletedBranchEvent)) {
-         closeView =
-               artifact != null && ((BranchEvent) event).getBranchId() == artifact.getBranch().getBranchId();
-      }
-
-      if (closeView) {
-         getViewSite().getPage().hideView(
-               getViewSite().getPage().findViewReference(VIEW_ID, artifact.getGuid()));
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
     */
    @Override
    public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
-
+      XEventManager.removeListeners(this);
       super.dispose();
+   }
+
+   private void closeView() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            getViewSite().getPage().hideView(getViewSite().getPage().findViewReference(VIEW_ID, artifact.getGuid()));
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (transData.isDeleted(artifact)) {
+         closeView();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (artifact.getBranch().isArchived() || artifact.getBranch().getBranchId() != branchId) {
+         closeView();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

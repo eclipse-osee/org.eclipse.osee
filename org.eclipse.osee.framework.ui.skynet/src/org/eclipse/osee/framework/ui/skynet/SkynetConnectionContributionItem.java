@@ -16,9 +16,6 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
-import org.eclipse.osee.framework.ui.plugin.event.ConnectionEvent;
-import org.eclipse.osee.framework.ui.plugin.event.CoreEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -38,10 +35,9 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
          new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
    private static final String ENABLED_TOOLTIP = "Database is connected to " + dbName + " as " + userName + ".";
    private static final String DISABLED_TOOLTIP = "Database is disconnected.";
-   private static final CoreEventManager eventManager = CoreEventManager.getInstance();
 
    public SkynetConnectionContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager);
+      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       init();
    }
 
@@ -60,14 +56,6 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem imp
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
 
       if (update) view.getViewSite().getActionBars().updateActionBars();
-   }
-
-   public void onEvent(Event event) {
-      if (event instanceof ConnectionEvent) updateStatus(ConnectionHandler.isOpen());
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /* (non-Javadoc)

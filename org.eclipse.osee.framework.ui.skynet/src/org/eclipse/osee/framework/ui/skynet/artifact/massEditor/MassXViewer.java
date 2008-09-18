@@ -19,24 +19,19 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.TransactionChangeType;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -60,7 +55,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class MassXViewer extends XViewer implements IEventReceiver {
+public class MassXViewer extends XViewer implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener {
 
    private String title;
    private final Set<Artifact> artifacts = new HashSet<Artifact>(50);
@@ -79,26 +74,7 @@ public class MassXViewer extends XViewer implements IEventReceiver {
             handleDoubleClick();
          };
       });
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-      registerEvents();
-   }
-
-   private void registerEvents() {
-      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
-
-         @Override
-         public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            remove(cacheArtifacts.toArray());
-         }
-      });
-      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
-
-         @Override
-         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            remove(cacheArtifacts.toArray());
-         }
-      });
+      XEventManager.addListener(this, this);
    }
 
    @Override
@@ -255,9 +231,8 @@ public class MassXViewer extends XViewer implements IEventReceiver {
     */
    @Override
    public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
       XEventManager.removeListeners(this);
-      // Tell the label provider to release its ressources
+      // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }
 
@@ -304,71 +279,51 @@ public class MassXViewer extends XViewer implements IEventReceiver {
       return artifacts;
    }
 
-   public void onEvent(final Event event) {
-      if (getTree() == null || getTree().isDisposed()) {
-         dispose();
-         return;
-      }
-      if (event instanceof TransactionEvent) {
-         TransactionEvent transEvent = (TransactionEvent) event;
-         Set<Integer> artIds = transEvent.getArtIds(TransactionChangeType.Modified);
-         Set<Artifact> modArts = new HashSet<Artifact>(20);
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, ((MassArtifactEditor) editor).getBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-               try {
-                  if (art instanceof IATSArtifact) {
-                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
-                     if (parentArt != null) {
-                        modArts.add(parentArt);
-                     }
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (getTree() == null || getTree().isDisposed()) {
+               dispose();
+               return;
             }
+            ((MassContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            update(transData.cacheChangedArtifacts, null);
+            refresh(transData.cacheRelationAddedArtifacts);
+            refresh(transData.cacheRelationChangedArtifacts);
+            refresh(transData.cacheRelationDeletedArtifacts);
          }
-         if (modArts.size() > 0) update(modArts.toArray(), null);
-
-         artIds = transEvent.getArtIds(TransactionChangeType.Deleted);
-         modArts.clear();
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, ((MassArtifactEditor) editor).getBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-            }
-         }
-         if (modArts.size() > 0) remove(modArts.toArray());
-
-         modArts.clear();
-         for (int artId : artIds) {
-            Artifact art = ArtifactCache.getActive(artId, ((MassArtifactEditor) editor).getBranch());
-            if (art != null && (art instanceof IATSArtifact)) {
-               modArts.add(art);
-               try {
-                  if (art instanceof IATSArtifact) {
-                     Artifact parentArt = ((IATSArtifact) art).getParentAtsArtifact();
-                     if (parentArt != null) {
-                        modArts.add(parentArt);
-                     }
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
-         }
-         if (modArts.size() > 0) {
-            for (Artifact art : modArts) {
-               refresh(art);
-            }
-         }
-      } else
-         OSEELog.logSevere(SkynetGuiPlugin.class, "Unexpected event => " + event, true);
+      });
    }
 
-   public boolean runOnEventInDisplayThread() {
-      return true;
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            remove(cacheArtifacts.toArray());
+         }
+      });
+   }
+
+   @Override
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            remove(cacheArtifacts.toArray());
+         }
+      });
    }
 
 }

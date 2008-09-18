@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -36,8 +35,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
  * @author b1528444
  */
 public class HttpBranchCreation {
-
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();

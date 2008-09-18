@@ -22,10 +22,13 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -43,10 +46,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @see ViewPart
+ * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
-public class ChangeView extends ViewPart implements IActionable {
+public class ChangeView extends ViewPart implements IActionable, IBranchEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
@@ -54,10 +57,6 @@ public class ChangeView extends ViewPart implements IActionable {
    private Branch branch;
    private TransactionId transactionId;
 
-   /**
-    * @author Donald G. Dunne
-    * @author Jeff C. Phillips
-    */
    public ChangeView() {
    }
 
@@ -104,12 +103,14 @@ public class ChangeView extends ViewPart implements IActionable {
       super.dispose();
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       /*
        * Create a grid layout object so the text and treeviewer are layed out the way I want.
@@ -207,5 +208,62 @@ public class ChangeView extends ViewPart implements IActionable {
       } catch (Exception ex) {
          OSEELog.logWarning(SkynetGuiPlugin.class, "Change report error on init", ex, false);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, final int branchId) {
+      if (branchModType == BranchModType.Deleted) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               closeView();
+            }
+         });
+         return;
+      } else if (branchModType == BranchModType.Committed) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               try {
+                  explore(branch, transactionId);
+               } catch (Exception ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               }
+            }
+         });
+         // refresh view with new branch and transaction id
+      } else if (branchModType == BranchModType.DefaultBranchChanged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               if (xChangeViewer == null || xChangeViewer.getXViewer().getTree() == null || xChangeViewer.getXViewer().getTree().isDisposed()) return;
+               xChangeViewer.getXViewer().getTree().setEnabled(branch.getBranchId() == branchId);
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   private void closeView() {
+      final ChangeView changeView = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            getViewSite().getPage().hideView(changeView);
+         }
+      });
    }
 }

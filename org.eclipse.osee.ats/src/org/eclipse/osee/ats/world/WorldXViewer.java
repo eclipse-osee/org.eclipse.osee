@@ -48,10 +48,10 @@ import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.TransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -85,7 +85,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer {
+public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -111,46 +111,36 @@ public class WorldXViewer extends XViewer {
             handleDoubleClick();
          };
       });
-      registerEvents();
+      XEventManager.addListener(this, this);
    }
 
-   private void registerEvents() {
-      XEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.size() == 0) return;
+      // ContentProvider ensures in display thread
+      ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
+   }
 
+   @Override
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.size() == 0) return;
+      // ContentProvider ensures in display thread
+      ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
+   }
+
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
          @Override
-         public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
-         }
-      });
-      XEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
-
-         @Override
-         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
-         }
-
-      });
-      XEventManager.addListener(this, new IFrameworkTransactionEventListener() {
-
-         @Override
-         public void handleFrameworkTransactionEvent(Source source, final TransactionData transData) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
-               @Override
-               public void run() {
-                  ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
-                  update(transData.cacheChangedArtifacts, null);
-                  refresh(transData.cacheRelationAddedArtifacts);
-                  refresh(transData.cacheRelationChangedArtifacts);
-                  refresh(transData.cacheRelationDeletedArtifacts);
-               }
-            });
+         public void run() {
+            ((WorldContentProvider) getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            update(transData.cacheChangedArtifacts, null);
+            refresh(transData.cacheRelationAddedArtifacts);
+            refresh(transData.cacheRelationChangedArtifacts);
+            refresh(transData.cacheRelationDeletedArtifacts);
          }
       });
    }

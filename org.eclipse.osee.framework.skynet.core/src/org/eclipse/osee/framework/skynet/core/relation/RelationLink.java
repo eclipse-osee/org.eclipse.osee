@@ -11,13 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Jeff C. Phillips
@@ -131,9 +133,13 @@ public class RelationLink {
          if (reorder) {
             RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
          }
-         SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                     RelationModType.Deleted.name(), this, getBranch()));
+
+         try {
+            XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+                  RelationModType.Deleted, this, getABranch(), relationType.getTypeName(), getASideName());
+         } catch (Exception ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
    }
 
@@ -268,9 +274,12 @@ public class RelationLink {
       setDirty();
 
       if (notify) {
-         SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                     RelationModType.RationaleMod.name(), this, getABranch()));
+         try {
+            XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+                  RelationModType.RationaleMod, this, getABranch(), relationType.getTypeName(), getASideName());
+         } catch (Exception ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
    }
 

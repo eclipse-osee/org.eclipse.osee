@@ -53,13 +53,11 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -102,7 +100,7 @@ import org.eclipse.ui.part.ViewPart;
  * @see ViewPart
  * @author Donald G. Dunne
  */
-public class WorldView extends ViewPart implements IEventReceiver, IPartListener, IActionable {
+public class WorldView extends ViewPart implements IFrameworkTransactionEventListener, IPartListener, IActionable {
    protected Browser browser;
    public static final String VIEW_ID = "org.eclipse.osee.ats.world.WorldView";
    public static final String HELP_CONTEXT_ID = "atsWorldView";
@@ -112,7 +110,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    private WorldSearchItem lastSearchItem;
    private WorldXViewer xViewer;
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(WorldView.class);
-   private final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
@@ -296,8 +293,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       SkynetContributionItem.addTo(this, false);
       setupDragAndDropSupport();
 
-      eventManager.register(LocalTransactionEvent.class, this);
-      eventManager.register(RemoteTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
 
    }
 
@@ -688,21 +684,22 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    @Override
    public void dispose() {
       super.dispose();
+      XEventManager.removeListeners(this);
       if (xViewer != null) xViewer.dispose();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   public void onEvent(final Event event) {
-      if (event instanceof TransactionEvent) {
-         updateExtraInfoLine();
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (transData.branchId == AtsPlugin.getAtsBranch().getBranchId()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               updateExtraInfoLine();
+            }
+         });
       }
    }
 }

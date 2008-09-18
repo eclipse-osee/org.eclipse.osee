@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.ATTRI
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,6 +24,9 @@ public class LoadedArtifacts {
 
    private Set<Artifact> artifacts;
    private final Collection<UnloadedArtifact> unloadedArtifacts;
+   private Set<Integer> allArtifactIds;
+   private Set<Integer> allUnloadedArtifactIds;
+   private Set<Integer> allArtifactTypeIds;
 
    /**
     * Called when network event passes artifactIds that may or may not be in current client's cache
@@ -54,21 +56,56 @@ public class LoadedArtifacts {
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
    }
 
+   /**
+    * Called when local event is kicked. Since local, all artifacts are, by definition, cached
+    * 
+    * @param artifacts
+    */
+   public LoadedArtifacts(Artifact artifact) {
+      this.artifacts = new HashSet<Artifact>();
+      this.artifacts.add(artifact);
+      unloadedArtifacts = new ArrayList<UnloadedArtifact>();
+   }
+
    @Override
    public String toString() {
       return "LoadedArtifacts - " + this.artifacts.size() + " arts - " + this.unloadedArtifacts.size() + " unlodaded";
    }
 
-   public List<Integer> getAllArtifactIds() {
-      return new ArrayList<Integer>();
+   public Collection<Integer> getAllArtifactIds() {
+      if (allArtifactIds == null) {
+         allArtifactIds = new HashSet<Integer>(artifacts.size() + unloadedArtifacts.size());
+         for (Artifact artifact : this.artifacts) {
+            allArtifactIds.add(artifact.getArtId());
+         }
+         for (UnloadedArtifact unloadedArtifact : unloadedArtifacts) {
+            allArtifactIds.add(unloadedArtifact.getArtifactId());
+         }
+      }
+      return allArtifactIds;
    }
 
-   public List<Integer> getAllArtifactTypeIds() {
-      return new ArrayList<Integer>();
+   public Collection<Integer> getAllArtifactTypeIds() {
+      if (allArtifactTypeIds == null) {
+         allArtifactTypeIds = new HashSet<Integer>();
+         for (Artifact artifact : this.artifacts) {
+            allArtifactTypeIds.add(artifact.getArtTypeId());
+         }
+         for (UnloadedArtifact unloadedArtifact : unloadedArtifacts) {
+            allArtifactTypeIds.add(unloadedArtifact.getArtifactTypeId());
+         }
+      }
+      return allArtifactTypeIds;
    }
 
-   public List<UnloadedArtifact> getUnloadedArtifactIds() {
-      return new ArrayList<UnloadedArtifact>();
+   public Collection<Integer> getUnloadedArtifactIds() {
+      if (allUnloadedArtifactIds == null) {
+         allUnloadedArtifactIds = new HashSet<Integer>(unloadedArtifacts.size());
+         for (UnloadedArtifact unloadedArtifact : unloadedArtifacts) {
+            allUnloadedArtifactIds.add(unloadedArtifact.getArtifactId());
+         }
+      }
+      return allUnloadedArtifactIds;
    }
 
    public synchronized Collection<Artifact> getLoadedArtifacts() throws BranchDoesNotExist, SQLException {

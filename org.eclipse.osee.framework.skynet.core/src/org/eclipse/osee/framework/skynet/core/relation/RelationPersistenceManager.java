@@ -17,9 +17,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -27,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -102,14 +98,6 @@ public class RelationPersistenceManager {
                link.setGammaId(gammaId);
             }
 
-            transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(link.getRelationType().getRelationTypeId(),
-                  link.getGammaId(), link.getBranch().getBranchId(), link.getRelationId(),
-                  link.getArtifactId(RelationSide.SIDE_A), (aArtifact != null ? aArtifact.getArtTypeId() : -1),
-                  link.getArtifactId(RelationSide.SIDE_B), (bArtifact != null ? bArtifact.getArtTypeId() : -1),
-                  SkynetAuthentication.getUser().getArtId()));
-            transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
-                  link.getRelationType().getTypeName(), link.getASideName(), RelationModType.Deleted, instance));
-
             Sender sender =
                   new Sender(Source.Local, RelationPersistenceManager.instance,
                         SkynetAuthentication.getUser().getArtId());
@@ -125,15 +113,6 @@ public class RelationPersistenceManager {
             modId = ModificationType.CHANGE;
             Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
             Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-
-            transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(link.getGammaId(),
-                  link.getBranch().getBranchId(), link.getRelationId(), link.getAArtifactId(),
-                  (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                  (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                  link.getBOrder(), SkynetAuthentication.getUser().getArtId(),
-                  link.getRelationType().getRelationTypeId()));
-            transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
-                  link.getRelationType().getTypeName(), link.getASideName(), RelationModType.Changed, instance));
 
             Sender sender =
                   new Sender(Source.Local, RelationPersistenceManager.instance,
@@ -160,15 +139,6 @@ public class RelationPersistenceManager {
          int relationId = SequenceManager.getNextRelationId();
          link.setPersistenceIds(relationId, gammaId);
          modId = ModificationType.NEW;
-
-         transaction.addRemoteEvent(new NetworkNewRelationLinkEvent(link.getGammaId(), link.getBranch().getBranchId(),
-               link.getRelationId(), link.getAArtifactId(), aArtifact.getArtTypeId(), link.getBArtifactId(),
-               bArtifact.getArtTypeId(), link.getRationale(), link.getAOrder(), link.getBOrder(),
-               link.getRelationType().getRelationTypeId(), link.getRelationType().getTypeName(),
-               SkynetAuthentication.getUser().getArtId()));
-
-         transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
-               link.getRelationType().getTypeName(), link.getASideName(), RelationModType.Added, instance));
 
          Sender sender =
                new Sender(Source.Local, RelationPersistenceManager.instance, SkynetAuthentication.getUser().getArtId());

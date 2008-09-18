@@ -25,8 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -95,7 +94,6 @@ public class AttributeToTransactionOperation {
       attribute.getAttributeDataProvider().persist();
       DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
       transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction, attrModType));
-      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Changed, artifact));
 
       // Kick Local Event
       try {
@@ -183,8 +181,6 @@ public class AttributeToTransactionOperation {
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
             attribute.getAttributeType().getAttrTypeId(), null, attrGammaId, transaction.getTransactionId(), null,
             modificationType, transaction.getBranch()));
-
-      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
 
       // Kick Local Event
       try {

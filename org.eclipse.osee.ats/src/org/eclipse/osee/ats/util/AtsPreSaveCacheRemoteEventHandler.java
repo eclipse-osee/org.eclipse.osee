@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -28,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * 
  * @author Donald G. Dunne
  */
-public class AtsPreSaveCacheRemoteEventHandler implements IEventReceiver {
+public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionEventListener {
 
    private static AtsPreSaveCacheRemoteEventHandler instance = new AtsPreSaveCacheRemoteEventHandler();
 
@@ -38,38 +35,23 @@ public class AtsPreSaveCacheRemoteEventHandler implements IEventReceiver {
 
    private AtsPreSaveCacheRemoteEventHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Pre-Save Remote Event Handler", false);
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      try {
-         if (event instanceof RemoteTransactionEvent) {
-            for (Event localEvent : ((RemoteTransactionEvent) event).getLocalEvents()) {
-               if (localEvent instanceof ArtifactModifiedEvent) {
-                  Artifact artifact = ((ArtifactModifiedEvent) localEvent).getArtifact();
-                  if (artifact instanceof StateMachineArtifact) {
-                     ((StateMachineArtifact) artifact).initalizePreSaveCache();
-                  }
-               }
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      XEventManager.addListener(this, this);
    }
 
    public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
-   public boolean runOnEventInDisplayThread() {
-      return true;
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      for (Artifact artifact : transData.cacheChangedArtifacts) {
+         if (artifact instanceof StateMachineArtifact) {
+            ((StateMachineArtifact) artifact).initalizePreSaveCache();
+         }
+      }
    }
 
 }

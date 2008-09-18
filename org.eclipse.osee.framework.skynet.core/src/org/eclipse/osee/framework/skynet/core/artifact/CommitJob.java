@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.messaging.event.skynet.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -31,11 +30,12 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.
@@ -86,8 +86,8 @@ class CommitJob extends Job {
          "SELECT av1.art_id, td1.branch_id from osee_define_txs tx1, osee_define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_artifact_version av1, osee_Define_artifact_version av2 WHERE td1.branch_id = ? AND td1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td1.transaction_id = tx1.transaction_id AND tx1.mod_type = " + ModificationType.NEW.getValue() + " AND tx1.gamma_id = av1.gamma_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND td2.transaction_id = tx2.transaction_id AND tx2.tx_current = " + TxChange.DELETED.getValue() + " AND tx2.gamma_id = av2.gamma_id AND av1.art_id = av2.art_id";
 
    private IProgressMonitor monitor;
-   private CommitDbTx commitDbTx;
-   private ConflictManagerExternal conflictManager;
+   private final CommitDbTx commitDbTx;
+   private final ConflictManagerExternal conflictManager;
 
    public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch, boolean forceCommit) throws OseeCoreException, SQLException {
       super("Committing Branch: " + fromBranch.getBranchName());
@@ -239,9 +239,8 @@ class CommitJob extends Job {
       protected void handleTxFinally() throws Exception {
          super.handleTxFinally();
          if (success) {
-            SkynetEventManager.getInstance().kick(new LocalCommitBranchEvent(this, fromBranchId));
-            RemoteEventManager.kick(new NetworkCommitBranchEvent(fromBranchId,
-                  SkynetAuthentication.getUser().getArtId()));
+            Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+            XEventManager.kickBranchEvent(sender, BranchModType.Committed, fromBranchId);
          }
       }
 

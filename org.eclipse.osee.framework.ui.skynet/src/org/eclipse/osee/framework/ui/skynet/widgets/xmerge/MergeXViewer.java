@@ -19,11 +19,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MergeChangesInArtifactException;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,7 +35,7 @@ import org.eclipse.swt.widgets.Widget;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class MergeXViewer extends XViewer implements IEventReceiver {
+public class MergeXViewer extends XViewer {
 
    private final XMergeViewer xMergeViewer;
    private Conflict[] conflicts;
@@ -52,7 +48,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
     */
    public MergeXViewer(Composite parent, int style, XMergeViewer xMergeViewer) {
       super(parent, style, new MergeXViewerFactory());
-      SkynetEventManager.getInstance().register(BranchEvent.class, this);
       this.xMergeViewer = xMergeViewer;
    }
 
@@ -111,6 +106,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       getLabelProvider().dispose();
    }
@@ -122,28 +118,9 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       return xMergeViewer;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (xMergeViewer != null && xMergeViewer.getXViewer().getTree().isDisposed() != true) {
-         xMergeViewer.refresh();
-      }
-   }
-
+   @Override
    public void resetDefaultSorter() {
       setSorter(new MergeXViewerSorter(this, labelProvider));
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /**
@@ -216,6 +193,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    }
 
    /* (non-Javadoc) Method declared on StructuredViewer. */
+   @Override
    protected void doUpdateItem(Widget widget, Object element, boolean fullMap) {
       super.doUpdateItem(widget, element, fullMap);
       if (conWizard != null) {

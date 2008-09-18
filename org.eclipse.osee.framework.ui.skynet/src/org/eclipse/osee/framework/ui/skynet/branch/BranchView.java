@@ -63,25 +63,22 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -141,7 +138,7 @@ import org.osgi.service.prefs.Preferences;
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
  */
-public class BranchView extends ViewPart implements IActionable, IEventReceiver {
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView";
    private static final String BRANCH_ID = "branchId";
    private static final IParameter[] BRANCH_PARAMETER_DEF = new IParameter[] {new BranchIdParameter()};
@@ -274,11 +271,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          myTreeEditor.minimumWidth = 50;
 
          forcePopulateView();
-
-         SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
-         SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
-         SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
-         SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
+         XEventManager.addListener(this, this);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -914,8 +907,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             selectedBranch.setBranchName(newLabel);
             try {
                selectedBranch.rename(newLabel);
-            } catch (SQLException mySQLException) {
-               mySQLException.printStackTrace();
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
             branchTable.refresh();
          }
@@ -968,12 +961,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             if (dialog.open() != Window.CANCEL) {
                try {
                   selectedBranch.setBranchShortName(dialog.getValue(), true);
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error Renaming Branch short name",
                         ex.getMessage());
                   logger.log(Level.SEVERE, ex.toString(), ex);
                }
-               SkynetEventManager.getInstance().kick(new DefaultBranchChangedEvent(this));
                refresh();
             }
             return null;
@@ -1591,23 +1583,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       }
    }
 
-   public void onEvent(Event event) {
-      if (event instanceof DefaultBranchChangedEvent) {
-         refresh();
-      } else if (event instanceof BranchEvent) {
-         try {
-            forcePopulateView();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -1765,7 +1740,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          OSEELog.logException(BranchView.class, ex, true);
       }
 
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
       super.dispose();
    }
 
@@ -1816,5 +1791,44 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       Branch oldDefaultBranch = BranchPersistenceManager.getDefaultBranch();
       BranchPersistenceManager.setDefaultBranch(newDefaultBranch);
       branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged || branchModType == BranchModType.Renamed) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               refresh();
+            }
+         });
+      } else if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               try {
+                  forcePopulateView();
+               } catch (Exception ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               }
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

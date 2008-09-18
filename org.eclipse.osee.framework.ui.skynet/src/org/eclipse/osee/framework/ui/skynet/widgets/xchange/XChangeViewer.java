@@ -24,21 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -66,7 +54,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XChangeViewer extends XWidget implements IEventReceiver, IActionable {
+public class XChangeViewer extends XWidget implements IActionable {
 
    private ChangeXViewer xChangeViewer;
    public final static String normalColor = "#EEEEEE";
@@ -81,12 +69,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
     */
    public XChangeViewer() {
       super("Change Report");
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
    }
 
    /*
@@ -235,28 +217,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
       return xChangeViewer;
    }
 
-   public void onEvent(final Event event) {
-      if (xChangeViewer == null || xChangeViewer.getTree() == null || xChangeViewer.getTree().isDisposed()) return;
-
-      if (event instanceof BranchEvent) {
-         if (branch != null && branch.getBranchId() == ((BranchEvent) event).getBranchId()) {
-            xChangeViewer.getTree().setEnabled(false);
-         }
-      }
-      if (event instanceof TransactionEvent) {
-         //TODO Add event 
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -284,8 +244,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
                if (hasBranch) {
                   changes = ChangeManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
                } else {
-                  changes =
-                        ChangeManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
+                  changes = ChangeManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
@@ -397,4 +356,5 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IActionabl
    public Branch getBranch() {
       return branch;
    }
+
 }

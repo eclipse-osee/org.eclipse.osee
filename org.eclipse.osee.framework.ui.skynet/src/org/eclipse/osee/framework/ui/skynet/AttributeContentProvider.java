@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

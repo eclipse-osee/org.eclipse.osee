@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.test;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

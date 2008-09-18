@@ -31,12 +31,10 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Jeff C. Phillips
@@ -63,8 +61,6 @@ class DeleteBranchJob extends Job {
          "delete from " + ARTIFACT_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ARTIFACT_VERSION_TABLE.column("gamma_id") + ")";
    private static final String DELETE_FROM_BRANCH_TABLE =
          "DELETE FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("branch_id") + " = ?";
-
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    private final Branch branch;
 
@@ -96,8 +92,8 @@ class DeleteBranchJob extends Job {
    }
 
    private final class DeleteBranchTx extends AbstractDbTxTemplate {
-      private Branch branch;
-      private IProgressMonitor monitor;
+      private final Branch branch;
+      private final IProgressMonitor monitor;
       private IStatus txResult;
 
       public DeleteBranchTx(Branch branch, IProgressMonitor monitor) {
@@ -152,9 +148,8 @@ class DeleteBranchJob extends Job {
          super.handleTxFinally();
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
-            eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));
-            RemoteEventManager.kick(new NetworkDeletedBranchEvent(branch.getBranchId(),
-                  SkynetAuthentication.getUser().getArtId()));
+            XEventManager.kickBranchEvent(XEventManager.getSender(Source.Local, this), BranchModType.Deleted,
+                  branch.getBranchId());
          }
       }
 

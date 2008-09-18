@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.util.Collection;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;

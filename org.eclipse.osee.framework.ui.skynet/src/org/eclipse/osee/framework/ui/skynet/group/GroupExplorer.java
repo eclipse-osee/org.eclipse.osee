@@ -26,23 +26,20 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -73,7 +70,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IEventReceiver, IActionable {
+public class GroupExplorer extends ViewPart implements IBranchEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private TreeViewer treeViewer;
    private Artifact rootArt;
@@ -126,11 +123,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
       SkynetContributionItem.addTo(this, true);
 
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
+      XEventManager.addListener(this, this);
 
       new GroupExplorerDragAndDrop(treeViewer.getTree(), VIEW_ID);
 
@@ -362,33 +355,6 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    public void setFocus() {
    }
 
-   public void onEvent(final Event event) {
-      try {
-         if (event instanceof TransactionEvent) {
-            Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
-            if (topArt == null) {
-               refresh();
-               return;
-            }
-            EventData ed = ((TransactionEvent) event).getEventData(topArt);
-            if (ed.isHasEvent()) {
-               refresh();
-            }
-         } else if (event instanceof DefaultBranchChangedEvent) {
-            refresh();
-         } else if (event instanceof BranchEvent) {
-            refresh();
-         } else
-            OSEELog.logInfo(SkynetGuiPlugin.class, "Unexpected event => " + event, true);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
          isCtrlPressed = (e.keyCode == SWT.CONTROL);
@@ -438,7 +404,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    @Override
    public void dispose() {
       super.dispose();
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    public String getActionDescription() {
@@ -678,6 +644,58 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
 
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               refresh();
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      try {
+         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
+         if (topArt == null) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  refresh();
+               }
+            });
+            return;
+         }
+         if (transData.isHasEvent(topArt)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  refresh();
+               }
+            });
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 

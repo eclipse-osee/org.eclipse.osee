@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -38,15 +37,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -61,7 +60,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, IEventReceiver, ISubscribableArtifact, IFavoriteableArtifact {
+public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, IFrameworkTransactionEventListener, ISubscribableArtifact, IFavoriteableArtifact {
 
    protected SMAManager smaMgr;
    private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
@@ -96,7 +95,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public void onInitializationComplete() {
       super.onInitializationComplete();
       initializeSMA();
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    /* (non-Javadoc)
@@ -205,7 +204,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     */
    @Override
    public void onAttributePersist() throws OseeCoreException {
-	      // Since multiple ways exist to change the assignees, notification is performed on the persist
+      // Since multiple ways exist to change the assignees, notification is performed on the persist
 	   if(isDeleted()){
 		   return;
 	   }
@@ -376,7 +375,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    /**
-    * @return
+    * @return WorkFlowDefinition
     */
    public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException, SQLException {
       if (workFlowDefinition == null) {
@@ -909,37 +908,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return String.valueOf(reWork);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (isDeleted()) return;
-      try {
-         // Check if LocalEvent and NOT RemoteEvent. Since EventService will handle moving access
-         // control changes across the OSEE instances, only handle local events
-         if (event instanceof LocalTransactionEvent) {
-            // Only update access control if THIS artifact is modified
-            if (((LocalTransactionEvent) event).getEventData(this).isModified()) {
-               // Update branch access control
-               smaMgr.getBranchMgr().updateBranchAccessControl();
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return false;
-   }
-
    public static Set<String> getAllSMATypeNames() {
       Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
       artTypeNames.add(TaskArtifact.ARTIFACT_NAME);
@@ -1010,7 +978,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     * 
     * @param stateName
-    * @return
+    * @return hours
     */
    public double getHoursSpentSMAState(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getHoursSpent(stateName);
@@ -1020,7 +988,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return hours spent working ONLY on tasks related to stateName
     * 
     * @param stateName
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException, SQLException {
@@ -1031,7 +999,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return hours spent working ONLY on reviews related to stateName
     * 
     * @param stateName
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getHoursSpentSMAStateReviews(String stateName) throws OseeCoreException, SQLException {
@@ -1042,7 +1010,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return hours spent working on all things (including children SMAs) related to stateName
     * 
     * @param stateName
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getHoursSpentSMAStateTotal(String stateName) throws OseeCoreException, SQLException {
@@ -1057,7 +1025,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    /**
     * Return hours spent working on all things (including children SMAs) for this SMA
     * 
-    * @return
+    * @return hours
     * @throws Exception
     */
    public double getHoursSpentSMATotal() throws OseeCoreException, SQLException {
@@ -1072,7 +1040,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     * 
     * @param stateName
-    * @return
+    * @return percent
     */
    public int getPercentCompleteSMAState(String stateName) throws OseeCoreException, SQLException {
       return smaMgr.getStateMgr().getPercentComplete(stateName);
@@ -1082,7 +1050,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     * 
     * @param stateName
-    * @return
+    * @return percent
     * @throws Exception
     */
    public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException, SQLException {
@@ -1093,7 +1061,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
     * 
     * @param stateName
-    * @return
+    * @return percent
     * @throws Exception
     */
    public int getPercentCompleteSMAStateReviews(String stateName) throws OseeCoreException, SQLException {
@@ -1105,7 +1073,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * tasks and reviews / 1 + # Tasks + # Reviews
     * 
     * @param stateName
-    * @return
+    * @return percent
     * @throws Exception
     */
    public int getPercentCompleteSMAStateTotal(String stateName) throws OseeCoreException, SQLException {
@@ -1117,7 +1085,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * <br>
     * percent = all state's percents / number of states (minus completed/cancelled)
     * 
-    * @return
+    * @return percent
     * @throws Exception
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException, SQLException {
@@ -1257,4 +1225,26 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
       return "";
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (isDeleted()) return;
+      try {
+         // Check if LocalEvent and NOT RemoteEvent. Since EventService will handle moving access
+         // control changes across the OSEE instances, only handle local events
+         if (source == Source.Local) {
+            // Only update access control if THIS artifact is modified
+            if (transData.isChanged(this)) {
+               // Update branch access control
+               smaMgr.getBranchMgr().updateBranchAccessControl();
+            }
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+   }
+
 }

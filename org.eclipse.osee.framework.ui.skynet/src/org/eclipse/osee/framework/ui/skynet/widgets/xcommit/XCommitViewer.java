@@ -20,12 +20,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -50,7 +44,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitViewer extends XWidget implements IEventReceiver {
+public class XCommitViewer extends XWidget {
 
    private CommitXViewer xCommitViewer;
    private IDirtiableEditor editor;
@@ -63,8 +57,6 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
     */
    public XCommitViewer() {
       super("Commit Manager");
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
    }
 
    /*
@@ -148,6 +140,7 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
       item.setToolTipText("Show Change Report");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (xCommitViewer.getWorkingBranch() != null)
                ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
@@ -160,6 +153,7 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             loadTable();
          }
@@ -169,6 +163,7 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             xCommitViewer.getCustomizeMgr().handleTableCustomization();
          }
@@ -218,6 +213,7 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       xCommitViewer.getTree().setFocus();
    }
 
+   @Override
    public void refresh() {
       xCommitViewer.refresh();
       setLabelError();
@@ -255,23 +251,6 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       return xCommitViewer;
    }
 
-   public void onEvent(final Event event) {
-      if (xCommitViewer == null || xCommitViewer.getTree() == null || xCommitViewer.getTree().isDisposed()) return;
-
-      if (event instanceof TransactionEvent) {
-         refresh();
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -290,10 +269,12 @@ public class XCommitViewer extends XWidget implements IEventReceiver {
       this.editor = editor;
    }
 
+   @Override
    public boolean isEditable() {
       return editable;
    }
 
+   @Override
    public void setEditable(boolean editable) {
       this.editable = editable;
    }

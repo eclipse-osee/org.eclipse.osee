@@ -30,13 +30,8 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -52,7 +47,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IEventReceiver, IXTaskViewer {
+public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int taskPageIndex;
    private SMATaskComposite taskComposite;
@@ -113,7 +108,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       super.dispose();
       for (TaskArtifact taskArt : tasks)
          if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
-      SkynetEventManager.getInstance().unRegisterAll(this);
       taskComposite.dispose();
    }
 
@@ -176,20 +170,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
             firePropertyChange(PROP_DIRTY);
          }
       });
-   }
-
-   public void onEvent(final Event event) {
-      if (getContainer() == null || getContainer().isDisposed()) return;
-      onDirtied();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /*
@@ -359,14 +339,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
          monitor.done();
          return Status.OK_STATUS;
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getRelationChangeAction(org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent)
-    */
-   @Override
-   public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException {
-      return null;
    }
 
 }

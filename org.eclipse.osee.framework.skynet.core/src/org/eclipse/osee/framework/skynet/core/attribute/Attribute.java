@@ -18,11 +18,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChecks;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
@@ -152,8 +150,6 @@ public abstract class Attribute<T> {
       } catch (Exception ex) {
          // do nothing
       }
-
-      SkynetEventManager.getInstance().kick(new ArtifactModifiedEvent(artifact, ArtifactModType.Changed, this));
    }
 
    public void setNotDirty() {

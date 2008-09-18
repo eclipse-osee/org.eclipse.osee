@@ -14,10 +14,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.BranchSelectionDialog;
 import org.eclipse.swt.graphics.Image;
@@ -27,16 +29,15 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Robert A. Fisher
  */
-public class SkynetDefaultBranchContributionItem extends SkynetContributionItem {
+public class SkynetDefaultBranchContributionItem extends SkynetContributionItem implements IBranchEventListener {
    private static final String ID = "skynet.defaultBranch";
    private static final Image ENABLED = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static final Image DISABLED = ENABLED;
    private static final String ENABLED_TOOLTIP = "The default branch that Skynet is working from.";
    private static final String DISABLED_TOOLTIP = ENABLED_TOOLTIP;
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public SkynetDefaultBranchContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager, 25);
+      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, 25);
       init();
       setActionHandler(new Action() {
          /*
@@ -58,7 +59,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    private void init() {
       updateStatus(true);
       updateInfo();
-      eventManager.register(DefaultBranchChangedEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    private void updateInfo() {
@@ -84,11 +85,34 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
       if (update) editorPart.getEditorSite().getActionBars().updateActionBars();
    }
 
-   public void onEvent(Event event) {
-      if (event instanceof DefaultBranchChangedEvent) updateInfo();
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               updateInfo();
+            }
+         });
+      }
    }
 
-   public boolean runOnEventInDisplayThread() {
-      return true;
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
+
+   @Override
+   public void dispose() {
+      XEventManager.removeListeners(this);
+   }
+
 }

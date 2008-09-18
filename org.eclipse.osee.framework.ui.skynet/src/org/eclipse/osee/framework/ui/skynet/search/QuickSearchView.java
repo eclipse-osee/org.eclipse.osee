@@ -17,10 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -44,7 +46,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class QuickSearchView extends ViewPart implements IActionable, Listener, IEventReceiver {
+public class QuickSearchView extends ViewPart implements IActionable, Listener, IBranchEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.QuickSearchView";
 
    private static final String ENTRY_SEPARATOR = "##";
@@ -61,9 +63,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;
-      private String helpContext;
-      private String toolTip;
-      private boolean isRadio;
+      private final String helpContext;
+      private final String toolTip;
+      private final boolean isRadio;
 
       SearchOption(String helpContext, String toolTip, boolean isRadio) {
          this.helpContext = "";
@@ -183,7 +185,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       createActions();
 
-      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
+      XEventManager.addListener(this, this);
       updateWidgetEnablements();
 
       Composite panel = new Composite(parent, SWT.NONE);
@@ -245,16 +247,33 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
+    * @see org.eclipse.ui.part.WorkbenchPart#dispose()
     */
-   public void onEvent(org.eclipse.osee.framework.ui.plugin.event.Event event) {
-      updateWidgetEnablements();
+   @Override
+   public void dispose() {
+      super.dispose();
+      XEventManager.removeListeners(this);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
-   public boolean runOnEventInDisplayThread() {
-      return true;
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               updateWidgetEnablements();
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

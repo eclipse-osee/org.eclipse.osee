@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
@@ -664,7 +663,6 @@ public class BranchPersistenceManager {
       if (branch != instance.defaultBranch.get()) {
          instance.defaultBranch.set(branch);
          preferenceStore.setValue(LAST_DEFAULT_BRANCH, getDefaultBranch().getBranchId());
-         SkynetEventManager.getInstance().kick(new DefaultBranchChangedEvent(instance));
       }
    }
 

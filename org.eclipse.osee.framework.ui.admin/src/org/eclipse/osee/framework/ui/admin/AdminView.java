@@ -11,23 +11,22 @@
 package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -44,9 +43,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Allows administration of access for OSEE environment
- * <li> Database tables
- * <li> OSEE user permissions
+ * Allows administration of access for OSEE environment <li>Database tables <li>OSEE user permissions
  * 
  * @author Jeff C. Phillips
  */
@@ -58,8 +55,8 @@ public class AdminView extends ViewPart implements IActionable {
    private static Action saveAction;
    public static User person = null;
    private TabFolder tabFolder;
-   private ArrayList<DbItem> dbItems;
-   private Cursor handCursor;
+   private final ArrayList<DbItem> dbItems;
+   private final Cursor handCursor;
 
    /**
     * The constructor.
@@ -82,12 +79,14 @@ public class AdminView extends ViewPart implements IActionable {
       handCursor.dispose();
    }
 
+   @Override
    public void setFocus() {
    }
 
    protected void createActions() {
 
       saveAction = new Action("Save") {
+         @Override
          public void run() {
             save();
          }
@@ -97,6 +96,7 @@ public class AdminView extends ViewPart implements IActionable {
 
       Action refreshAction = new Action("Refresh") {
 
+         @Override
          public void run() {
             DbTableTab.refresh();
          }
@@ -106,6 +106,7 @@ public class AdminView extends ViewPart implements IActionable {
 
       Action broadcastMessage = new Action("Broadcast Message") {
 
+         @Override
          public void run() {
             handleBroadcastMessage();
          }
@@ -131,10 +132,13 @@ public class AdminView extends ViewPart implements IActionable {
          if (!message.equals("")) {
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
-               List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
-               remoteEvents.add(new NetworkBroadcastEvent(0, 0, message, SkynetAuthentication.getUser().getArtId()));
-               RemoteEventManager.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
-               AWorkbench.popup("Success", "Message sent.");
+               try {
+                  XEventManager.kickBroadcastEvent(XEventManager.getSender(Source.Local, this),
+                        BroadcastEventType.Message, new String[] {}, message);
+                  AWorkbench.popup("Success", "Message sent.");
+               } catch (Exception ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+               }
             }
          }
       }
@@ -143,6 +147,7 @@ public class AdminView extends ViewPart implements IActionable {
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
 
       // IStatusLineManager slManager= getViewSite().getActionBars().getStatusLineManager();

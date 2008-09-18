@@ -19,11 +19,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -49,8 +50,8 @@ import org.eclipse.ui.PlatformUI;
 public class OseeClientsTab {
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
 
-   private User whoAmI;
-   private ArrayList<User> users;
+   private final User whoAmI;
+   private final ArrayList<User> users;
    private CheckboxTreeViewer peopleCheckboxTreeViewer;
    private Composite mainComposite;
    private Text text;
@@ -111,6 +112,7 @@ public class OseeClientsTab {
       button.setText("Send Shutdown Request");
       button.setToolTipText("By pressing the send button, a shutdown message will be sent to\n" + "all the selected OSEE clients causing their workbench to close.\n" + "NOTE: Users will be prompted to save their work.");
       button.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             processShutdownRequest(text.getText(), getSelectedUsers());
          }
@@ -149,9 +151,13 @@ public class OseeClientsTab {
                MessageDialog.openConfirm(mainComposite.getShell(), "Disconnect OSEE Clients",
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
-            RemoteEventManager.kick(new SkynetDisconnectClientsEvent(selectedUsers, 0, 0, reason,
-                  SkynetAuthentication.getUser().getArtId()));
-            AWorkbench.popup("Success", "Shutdown request sent.");
+            try {
+               XEventManager.kickBroadcastEvent(XEventManager.getSender(Source.Local, this),
+                     BroadcastEventType.Force_Shutdown, selectedUsers, reason);
+               AWorkbench.popup("Success", "Shutdown request sent.");
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
          }
       } else {
          StringBuilder error = new StringBuilder();
@@ -170,7 +176,6 @@ public class OseeClientsTab {
       return OseeProperties.isDeveloper();
    }
 
-   @SuppressWarnings("unchecked")
    private String[] getSelectedUsers() {
       List<String> toReturn = new ArrayList<String>();
       try {
@@ -204,6 +209,7 @@ public class OseeClientsTab {
       Button selectAll = new Button(composite, SWT.PUSH);
       selectAll.setText("Select All");
       selectAll.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectAll(true);
          }
@@ -212,6 +218,7 @@ public class OseeClientsTab {
       Button deselectAll = new Button(composite, SWT.PUSH);
       deselectAll.setText("Deselect All");
       deselectAll.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             selectAll(false);
          }
@@ -252,10 +259,12 @@ public class OseeClientsTab {
 
    private class PersonLabelProvider extends LabelProvider {
 
+      @Override
       public Image getImage(Object arg0) {
          return null;
       }
 
+      @Override
       public String getText(Object arg0) {
          return ((User) arg0).getName();
       }

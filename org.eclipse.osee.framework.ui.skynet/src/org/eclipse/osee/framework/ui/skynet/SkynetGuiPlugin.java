@@ -10,15 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.BroadcastEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.eventx.BroadcastEventType;
+import org.eclipse.osee.framework.skynet.core.eventx.IBroadcastEventListneer;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -26,7 +32,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver {
+public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListneer {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
@@ -41,7 +47,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver
       super();
       pluginInstance = this;
       securityManager = OseeSecurityManager.getInstance();
-      SkynetEventManager.getInstance().register(BroadcastEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    /* (non-Javadoc)
@@ -74,14 +80,6 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver
       return logger;
    }
 
-   public void onEvent(Event event) {
-      if (event instanceof BroadcastEvent) AWorkbench.popup("Broadcast Message", ((BroadcastEvent) event).getMessage());
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return false;
-   }
-
    /* (non-Javadoc)
     * @see osee.plugin.core.util.plugin.OseePlugin#getPluginName()
     */
@@ -91,9 +89,56 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver
    }
 
    /**
-    * @return
+    * @return PackageAdmin
     */
    public PackageAdmin getPackageAdmin() {
       return (PackageAdmin) this.packageAdminTracker.getService();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBroadcastEventListneer#handleBroadcastEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, java.lang.String)
+    */
+   @Override
+   public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, final String message) {
+      if (message != null && message.length() > 0) {
+         boolean isShutdownAllowed = false;
+
+         // Determine whether this is a shutdown event
+         // Prevent shutting down users without a valid message
+         if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
+            try {
+               User user = SkynetAuthentication.getUser();
+               if (user != null) {
+                  String userId = user.getUserId();
+                  for (String temp : userIds) {
+                     if (temp.equals(userId)) {
+                        isShutdownAllowed = true;
+                        break;
+                     }
+                  }
+               }
+            } catch (Exception ex) {
+               SkynetActivator.getLogger().log(Level.SEVERE, "Error processing shutdown", ex);
+            }
+            final boolean isShutdownRequest = isShutdownAllowed;
+            Display.getDefault().asyncExec(new Runnable() {
+               public void run() {
+                  if (isShutdownRequest) {
+                     MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Shutdown Requested", message);
+                     // Shutdown the bench when this event is received
+                     PlatformUI.getWorkbench().close();
+                  }
+               }
+            });
+         } else if (broadcastEventType == BroadcastEventType.Message) {
+            Display.getDefault().asyncExec(new Runnable() {
+               public void run() {
+                  MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Remote Message", message);
+               }
+            });
+         }
+      }
    }
 }

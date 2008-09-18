@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
@@ -73,7 +72,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -246,12 +244,6 @@ public class ArtifactPersistenceManager {
       operation.execute();
 
       notifyOnAttributeSave(artifact);
-
-      if (modType != ModificationType.NEW) {
-         transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactModifiedEvent(artifact,
-               transaction.getTransactionNumber()));
-         transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Added, this));
-      }
 
       // Kick Local Event
       Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
@@ -583,10 +575,6 @@ public class ArtifactPersistenceManager {
       if (!artifact.isInDb()) return;
 
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
-
-      transaction.addRemoteEvent(RemoteArtifactEventFactory.makeArtifactDeleteEvent(artifact,
-            transaction.getTransactionNumber()));
-      transaction.addLocalEvent(new ArtifactModifiedEvent(artifact, ArtifactModType.Deleted, this));
 
       // Kick Local Event
       Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());

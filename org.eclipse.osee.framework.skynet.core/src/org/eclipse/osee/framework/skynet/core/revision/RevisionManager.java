@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -57,9 +58,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
@@ -68,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Manages artifact versions in Skynet
@@ -171,20 +171,24 @@ public class RevisionManager {
          } finally {
             DbUtil.close(chStmt);
          }
-         XEventManager.addListener(this, new IBranchEventListener() {
+         XEventManager.addListener(this, new BranchEventListener() {
             /* (non-Javadoc)
              * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
              */
             @Override
-            public void handleBranchEvent(Sender sender, BranchModType branchModType, Branch branch, int branchId) {
-               if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted) {
+            public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+               if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
                   // Clear the cache so it gets reloaded
                   commitArtifactIdToTransactionId = null;
                   /**
                    * Need to kick event for classes that need to be notified only after the cache has been updated; Even
                    * though cache has bee set to null, it will be re-created upon next call to get cached information
                    */
-                  SkynetEventManager.getInstance().kick(new LocalBranchToArtifactCacheUpdateEvent(this));
+                  try {
+                     XEventManager.kickLocalBranchToArtifactCacheUpdateEvent(XEventManager.getSender(Source.Local, this));
+                  } catch (Exception ex) {
+                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  }
                }
             }
          });

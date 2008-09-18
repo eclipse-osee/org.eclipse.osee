@@ -25,17 +25,17 @@ import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * @author Robert A. Fisher
@@ -130,7 +130,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @param persist if persist, store the change to the data-store
     * @throws SQLException
     */
-   public void setBranchShortName(String branchShortName, boolean persist) throws SQLException {
+   public void setBranchShortName(String branchShortName, boolean persist) throws OseeCoreException, SQLException {
       if (persist) {
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, StringFormat.truncate(branchShortName, 25),
                branchId);
@@ -139,11 +139,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       kickRenameEvents();
    }
 
-   private void kickRenameEvents() {
-      SkynetEventManager.getInstance().kick(
-            new LocalRenameBranchEvent(this, branchId, branchName, getBranchShortName()));
-      RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, SkynetAuthentication.getUser().getArtId(),
-            branchName, getBranchShortName()));
+   private void kickRenameEvents() throws OseeCoreException {
+      XEventManager.kickBranchEvent(XEventManager.getSender(Source.Local, this), BranchModType.Renamed, branchId);
    }
 
    /**
@@ -151,7 +148,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * 
     * @param branchName The branchName to set.
     */
-   public void rename(String branchName) throws SQLException {
+   public void rename(String branchName) throws OseeCoreException, SQLException {
       setBranchName(branchName);
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET branch_name = ? WHERE branch_id = ?",
             branchName, branchId);

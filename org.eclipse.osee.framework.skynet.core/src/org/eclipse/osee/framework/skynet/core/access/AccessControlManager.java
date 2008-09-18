@@ -36,11 +36,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
 /**
  * Provides access control for OSEE.
@@ -78,21 +81,21 @@ public class AccessControlManager {
       ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
    }
 
-   private DoubleKeyHashMap<Integer, Object, PermissionEnum> accessControlListCache;
+   private final DoubleKeyHashMap<Integer, Object, PermissionEnum> accessControlListCache;
    // <objectId, branchId>
-   private DoubleKeyHashMap<Integer, Integer, AccessObject> accessObjectCache;
-   private Map<Integer, BranchAccessObject> branchAccessObjectCache;
-   private HashCollection<AccessObject, Integer> objectToSubjectCache;
+   private final DoubleKeyHashMap<Integer, Integer, AccessObject> accessObjectCache;
+   private final Map<Integer, BranchAccessObject> branchAccessObjectCache;
+   private final HashCollection<AccessObject, Integer> objectToSubjectCache;
    // <subjectId, groupId>
-   private HashCollection<Integer, Integer> subjectToGroupCache;
+   private final HashCollection<Integer, Integer> subjectToGroupCache;
    // <groupId, subjectId>
-   private HashCollection<Integer, Integer> groupToSubjectsCache;
+   private final HashCollection<Integer, Integer> groupToSubjectsCache;
    // <artId, branchId>
-   private Map<Integer, Integer> objectToBranchLockCache;
+   private final Map<Integer, Integer> objectToBranchLockCache;
    // object, subject
-   private Map<Integer, Integer> lockedObjectToSubject;
+   private final Map<Integer, Integer> lockedObjectToSubject;
    // subject, permission
-   private HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
+   private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
 
    private static final AccessControlManager instance = new AccessControlManager();
 
@@ -538,8 +541,7 @@ public class AccessControlManager {
       try {
          if (object instanceof Artifact) {
             Artifact artifact = (Artifact) object;
-            accessObject =
-                  (ArtifactAccessObject) accessObjectCache.get(artifact.getArtId(), artifact.getBranch().getBranchId());
+            accessObject = accessObjectCache.get(artifact.getArtId(), artifact.getBranch().getBranchId());
          } else if (object instanceof Branch) {
             Branch branch = (Branch) object;
             accessObject = branchAccessObjectCache.get(branch.getBranchId());
@@ -614,7 +616,7 @@ public class AccessControlManager {
    private void deCacheAccessControlData(AccessControlData data) {
       if (data == null) throw new IllegalArgumentException("Can not remove a null AccessControlData.");
 
-      AccessObject accessObject = (AccessObject) data.getObject();
+      AccessObject accessObject = data.getObject();
       Integer subjectId = data.getSubject().getArtId();
 
       accessControlListCache.remove(subjectId, accessObject);
@@ -701,7 +703,13 @@ public class AccessControlManager {
          objectToBranchLockCache.put(objectArtId, objectBranchId);
          lockedObjectToSubject.put(objectArtId, subjectArtId);
 
-         SkynetEventManager.getInstance().kick(new ArtifactLockStatusChanged(this, object));
+         Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+         try {
+            XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsLocked,
+                  new LoadedArtifacts(object));
+         } catch (Exception ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
    }
 
@@ -719,7 +727,13 @@ public class AccessControlManager {
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            SkynetEventManager.getInstance().kick(new ArtifactLockStatusChanged(this, object));
+            Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+            try {
+               XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.ArtifactsUnlocked,
+                     new LoadedArtifacts(object));
+            } catch (Exception ex) {
+               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
          }
       }
    }

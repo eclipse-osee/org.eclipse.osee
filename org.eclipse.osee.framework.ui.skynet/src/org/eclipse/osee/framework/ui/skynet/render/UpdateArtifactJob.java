@@ -39,8 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -56,7 +54,6 @@ import org.xml.sax.SAXException;
  * @author Ryan D. Brooks
  */
 public class UpdateArtifactJob extends UpdateJob {
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final Pattern guidPattern = Pattern.compile(".*\\(([^)]+)\\)[^()]*");
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
@@ -122,13 +119,11 @@ public class UpdateArtifactJob extends UpdateJob {
    private void updateNativeArtifact(NativeArtifact artifact) throws IllegalStateException, SQLException, IOException, MultipleAttributesExist {
       artifact.setNativeContent(workingFile);
       artifact.persistAttributes();
-      eventManager.kick(new VisitorEvent(artifact, this));
    }
 
    private void updateWholeDocumentArtifact(Artifact artifact) throws MultipleAttributesExist, FileNotFoundException, OseeCoreException, SQLException {
       artifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, new FileInputStream(workingFile));
       artifact.persistAttributes();
-      eventManager.kick(new VisitorEvent(artifact, this));
    }
 
    @SuppressWarnings( {"unchecked", "serial"})
@@ -157,9 +152,9 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private final class WordArtifactUpdateTx extends AbstractSkynetTxTemplate {
-      private List<String> deletedGuids;
-      private Collection<Element> artElements;
-      private Set<Artifact> changedArtifacts;
+      private final List<String> deletedGuids;
+      private final Collection<Element> artElements;
+      private final Set<Artifact> changedArtifacts;
 
       public WordArtifactUpdateTx(Branch branch, Collection<Element> artElements) {
          super(branch);
@@ -253,9 +248,6 @@ public class UpdateArtifactJob extends UpdateJob {
       @Override
       protected void handleTxFinally() throws OseeCoreException, SQLException {
          super.handleTxFinally();
-         for (Artifact artifact : changedArtifacts) {
-            eventManager.kick(new VisitorEvent(artifact, this));
-         }
          if (!deletedGuids.isEmpty()) {
             throw new IllegalArgumentException(
                   "The following deleted artifacts could not be saved: " + Collections.toString(",", deletedGuids));

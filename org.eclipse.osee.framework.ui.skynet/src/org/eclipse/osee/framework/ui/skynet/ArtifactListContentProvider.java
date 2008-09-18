@@ -13,12 +13,8 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
 import org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult;
-import org.eclipse.search.ui.text.Match;
 
 /**
  * @author Michael S. Rodgers
@@ -26,7 +22,7 @@ import org.eclipse.search.ui.text.Match;
 public class ArtifactListContentProvider implements IStructuredContentProvider {
    private final Object[] EMPTY_ARR = new Object[0];
 
-   private ArtifactSearchViewPage aPage;
+   private final ArtifactSearchViewPage aPage;
    private AbstractArtifactSearchResult aResult;
 
    public ArtifactListContentProvider(ArtifactSearchViewPage page) {
@@ -38,21 +34,9 @@ public class ArtifactListContentProvider implements IStructuredContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      SkynetEventManager.getInstance().unRegisterAll(aPage);
 
       if (inputElement instanceof ArtifactSearchResult) {
          Object[] objs = ((ArtifactSearchResult) inputElement).getElements();
-
-         for (Object obj : objs) {
-
-            if (obj instanceof Match) {
-               if (((Match) objs[0]).getElement() instanceof Artifact) {
-
-                  Artifact artifact = (Artifact) ((Match) objs[0]).getElement();
-                  SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, artifact, aPage);
-               }
-            }
-         }
          return objs;
       } else
          return EMPTY_ARR;
@@ -79,7 +63,7 @@ public class ArtifactListContentProvider implements IStructuredContentProvider {
    }
 
    public TableViewer getViewer() {
-      return (TableViewer) aPage.getViewer();
+      return aPage.getViewer();
    }
 
    public void clear() {

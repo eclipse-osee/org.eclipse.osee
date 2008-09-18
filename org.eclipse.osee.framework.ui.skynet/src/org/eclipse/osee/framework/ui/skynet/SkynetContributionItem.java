@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.ui.plugin.event.EventManager;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.swt.graphics.Image;
@@ -23,24 +21,22 @@ import org.eclipse.ui.texteditor.StatusLineContributionItem;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class SkynetContributionItem extends StatusLineContributionItem implements IEventReceiver {
-   private EventManager eventManager;
-   private Image enabled;
-   private Image disabled;
+public abstract class SkynetContributionItem extends StatusLineContributionItem {
+   private final Image enabled;
+   private final Image disabled;
    private String enabledToolTip;
    private String disabledToolTip;
 
-   public SkynetContributionItem(String id, Image enabled, Image disabled, String enabledToolTip, String disabledToolTip, EventManager eventManager) {
-      this(id, enabled, disabled, enabledToolTip, disabledToolTip, eventManager, 4);
+   public SkynetContributionItem(String id, Image enabled, Image disabled, String enabledToolTip, String disabledToolTip) {
+      this(id, enabled, disabled, enabledToolTip, disabledToolTip, 4);
    }
 
-   public SkynetContributionItem(String id, Image enabled, Image disabled, String enabledToolTip, String disabledToolTip, EventManager eventManager, int width) {
+   public SkynetContributionItem(String id, Image enabled, Image disabled, String enabledToolTip, String disabledToolTip, int width) {
       super(id, true, width);
       this.enabled = enabled;
       this.disabled = disabled;
       this.enabledToolTip = enabledToolTip;
       this.disabledToolTip = disabledToolTip;
-      this.eventManager = eventManager;
 
       if (enabled == null || enabledToolTip == null || disabled == null || disabledToolTip == null) throw new IllegalStateException(
             "Enabled and disabled images must be set.");
@@ -107,9 +103,4 @@ public abstract class SkynetContributionItem extends StatusLineContributionItem 
       if (update) editorPart.getEditorSite().getActionBars().updateActionBars();
    }
 
-   @Override
-   public void dispose() {
-      super.dispose();
-      eventManager.unRegisterAll(this);
-   }
 }

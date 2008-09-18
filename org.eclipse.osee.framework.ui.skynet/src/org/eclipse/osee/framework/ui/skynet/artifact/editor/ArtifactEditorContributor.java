@@ -40,11 +40,12 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       createActions();
    }
 
+   @Override
    public void setActiveEditor(IEditorPart part) {
       super.setActiveEditor(part);
       if (part instanceof ArtifactEditor) {
          ArtifactEditor artifactEditor = (ArtifactEditor) part;
-         Artifact artifact = artifactEditor.getEditorInput().getArtifact();
+         Artifact artifact = ((ArtifactEditorInput) artifactEditor.getEditorInput()).getArtifact();
          typeStatusItem.setText(artifact.getArtifactType().getName());
          typeStatusItem.setImage(artifact.getArtifactType().getImage());
          showInExplorerAction.setArtifact(artifact);
@@ -54,6 +55,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       }
    }
 
+   @Override
    public void setActivePage(IEditorPart part) {
    }
 

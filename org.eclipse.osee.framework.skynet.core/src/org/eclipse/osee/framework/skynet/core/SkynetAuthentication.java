@@ -28,13 +28,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
@@ -149,10 +151,15 @@ public class SkynetAuthentication {
       }
    }
 
-   private static void notifyListeners() {
+   public static void notifyListeners() {
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
-            SkynetEventManager.getInstance().kick(new AuthenticationEvent(this));
+            try {
+               Sender sender = new Sender(Source.Local, this, SkynetAuthentication.getUser().getArtId());
+               XEventManager.kickAccessControlArtifactsEvent(sender, AccessControlModType.UserAuthenticated, null);
+            } catch (Exception ex) {
+               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
          }
       });
    }

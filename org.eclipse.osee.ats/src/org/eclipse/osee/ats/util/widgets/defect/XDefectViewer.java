@@ -26,16 +26,14 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -67,7 +65,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XDefectViewer extends XWidget implements IArtifactWidget, IEventReceiver {
+public class XDefectViewer extends XWidget implements IArtifactWidget, IFrameworkTransactionEventListener {
 
    private DefectXViewer xViewer;
    private IDirtiableEditor editor;
@@ -81,8 +79,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
     */
    public XDefectViewer() {
       super("Defects");
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    /*
@@ -356,6 +353,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
 
    @Override
    public void dispose() {
+      XEventManager.removeListeners(this);
       xViewer.dispose();
    }
 
@@ -440,27 +438,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
       return xViewer;
    }
 
-   public void onEvent(final Event event) {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
-
-      if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(reviewArt.getArtifact());
-         if (ed.isHasEvent() && ed.isRelChange())
-            loadTable();
-         else
-            refresh();
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -531,6 +508,24 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
    @Override
    public void revert() throws OseeCoreException, SQLException {
       // Nothing to revert cause artifact will be reverted
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+      if (transData.getBranchId() != AtsPlugin.getAtsBranch().getBranchId()) return;
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
+            if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
+               loadTable();
+            } else
+               refresh();
+         }
+      });
    }
 
 }

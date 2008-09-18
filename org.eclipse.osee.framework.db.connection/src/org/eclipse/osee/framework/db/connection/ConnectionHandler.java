@@ -51,10 +51,6 @@ public final class ConnectionHandler {
 
    private static final Queue<Connection> pooledConnections = new LinkedList<Connection>();
 
-   private ConnectionHandler() {
-      throw new UnsupportedOperationException("why would you construct a class that only has static methods");
-   }
-
    public static void addListener(IDbConnectionListener listener) {
       listeners.add(listener);
    }

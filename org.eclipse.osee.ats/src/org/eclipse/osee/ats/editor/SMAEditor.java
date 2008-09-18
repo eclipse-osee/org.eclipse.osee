@@ -29,16 +29,14 @@ import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.TransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
@@ -403,25 +401,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getRelationChangeAction(org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent)
-    */
-   @Override
-   public RelationModType getRelationChangeAction(RelationModifiedEvent relEvent) throws OseeCoreException {
-      try {
-         if (relEvent.effectsArtifact(smaMgr.getSma()) && relEvent.isConcernedWith(AtsRelation.SmaToTask_Sma.getRelationType())) {
-            return relEvent.getModType();
-         }
-         return null;
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
-      }
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, Branch branch, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
       try {
          if (smaMgr.isInTransition()) return;
          if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
@@ -450,7 +433,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.TransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Source source, TransactionData transData) {
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
       if (smaMgr.isInTransition()) return;
       if (transData.isDeleted(smaMgr.getSma())) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -493,6 +476,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             // do nothings
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

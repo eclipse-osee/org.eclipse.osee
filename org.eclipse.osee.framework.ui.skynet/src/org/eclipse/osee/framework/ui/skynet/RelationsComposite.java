@@ -35,18 +35,23 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
@@ -81,7 +86,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationsComposite extends Composite implements IEventReceiver {
+public class RelationsComposite extends Composite implements IRelationModifiedEventListener, IFrameworkTransactionEventListener {
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -99,7 +104,6 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private MenuItem deleteArtifactMenuItem;
    private MenuItem massEditMenuItem;
    private final Artifact artifact;
-   private final SkynetEventManager eventManager;
    private final boolean readOnly;
    private final RelationLabelProvider relationLabelProvider;
    private final ToolBar toolBar;
@@ -126,9 +130,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       this.artifactToLinkMap = new HashMap<Integer, RelationLink>();
 
       createPartControl();
-      eventManager = SkynetEventManager.getInstance();
-      eventManager.register(RelationModifiedEvent.class, artifact, this);
-
+      XEventManager.addListener(this, this);
       this.toolBar = toolBar;
    }
 
@@ -503,7 +505,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    @Override
    public void dispose() {
       super.dispose();
-      eventManager.unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    private void expandAll(IStructuredSelection selection) {
@@ -623,34 +625,6 @@ public class RelationsComposite extends Composite implements IEventReceiver {
     */
    public Artifact getArtifact() {
       return artifact;
-   }
-
-   public void onEvent(org.eclipse.osee.framework.ui.plugin.event.Event event) {
-      if (treeViewer != null && treeViewer.getInput() instanceof Artifact) {
-         if (event instanceof ArtifactModifiedEvent) {
-            ArtifactModifiedEvent ev = (ArtifactModifiedEvent) event;
-            Artifact modifiedArtifact = ev.getArtifact();
-            if (artifact == modifiedArtifact) {
-               treeViewer.refresh(modifiedArtifact);
-            } else {
-               for (RelationLink rel : modifiedArtifact.getRelationsAll(false)) {
-                  try {
-                     if (rel.getArtifactOnOtherSide(modifiedArtifact) == artifact) {
-                        treeViewer.update(rel, null);
-                     }
-                  } catch (ArtifactDoesNotExist ex) {
-                  } catch (SQLException ex) {
-                  }
-               }
-            }
-         } else if (event instanceof RelationModifiedEvent) {
-            treeViewer.refresh(getArtifact());
-         }
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    public void refreshArtifact(Artifact newArtifact) {
@@ -795,5 +769,45 @@ public class RelationsComposite extends Composite implements IEventReceiver {
     */
    public ToolBar getToolBar() {
       return toolBar;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String, java.lang.String)
+    */
+   @Override
+   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+      try {
+         if (link.getArtifactA().equals(this.artifact) || link.getArtifactB().equals(this.artifact)) {
+            Displays.ensureInDisplayThread(new Runnable() {
+               /* (non-Javadoc)
+                * @see java.lang.Runnable#run()
+                */
+               @Override
+               public void run() {
+                  treeViewer.refresh();
+               }
+            });
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (transData.isRelAddedChangedDeleted(this.artifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               treeViewer.refresh();
+            }
+         });
+      }
    }
 }

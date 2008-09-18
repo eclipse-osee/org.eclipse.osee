@@ -53,17 +53,14 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -74,8 +71,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -136,7 +132,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Robert A. Fisher
  */
-public class ChangeReportView extends ViewPart implements IActionable, IEventReceiver {
+public class ChangeReportView extends ViewPart implements IActionable, IBranchEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView";
    private static final String INPUT = "input";
 
@@ -178,10 +174,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       this.toTransactionId = null;
       this.priorInput = null;
 
-      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    public TreeViewer getChangeTableTreeViewer() {
@@ -1172,44 +1165,11 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      int branchId = -1;
-      if (event instanceof BranchEvent) {
-         BranchEvent branchEvent = (BranchEvent) event;
-         branchId = branchEvent.getBranchId();
-      }
-      if (changeTable != null && changeTable.getTree().isDisposed() != true) {
-         ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();
-
-         if (changeReportInput != null) {
-            Branch branch = changeReportInput.getBranch();
-            if (branch != null && branch.getBranchId() == branchId) {
-               changeTable.getTree().setEnabled(false);
-            }
-         }
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.ui.part.WorkbenchPart#dispose()
     */
    @Override
    public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
-
+      XEventManager.removeListeners(this);
       super.dispose();
    }
 
@@ -1354,5 +1314,30 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          monitor.done();
       }
 
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
+         if (changeTable != null && changeTable.getTree().isDisposed() != true) {
+            ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();
+            if (changeReportInput != null) {
+               Branch branch = changeReportInput.getBranch();
+               if (branch != null && branch.getBranchId() == branchId) {
+                  changeTable.getTree().setEnabled(false);
+               }
+            }
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

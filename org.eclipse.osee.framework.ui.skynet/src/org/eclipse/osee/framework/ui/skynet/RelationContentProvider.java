@@ -19,11 +19,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -105,18 +101,9 @@ public class RelationContentProvider implements ITreeContentProvider {
          } else if (parentElement instanceof RelationTypeSide) {
             RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
             List<RelationLink> relations = artifact.getRelations(relationTypeSide);
-
-            for (RelationLink relationLink : relations) {
-               Artifact art = relationLink.getArtifactOnOtherSide(artifact);
-               SkynetEventManager.getInstance().register(RelationModifiedEvent.class, art, relComp);
-               SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, art, relComp);
-            }
-            SkynetEventManager.getInstance().register(RelationModifiedEvent.class, artifact, relComp);
             return relations.toArray();
          }
       } catch (SQLException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      } catch (ArtifactDoesNotExist ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 

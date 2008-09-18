@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -30,7 +28,7 @@ public class AdminContributionItem extends SkynetContributionItem {
    private static String DISABLED_TOOLTIP = "";
 
    public AdminContributionItem() {
-      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP, SkynetEventManager.getInstance());
+      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       init();
    }
 
@@ -42,23 +40,6 @@ public class AdminContributionItem extends SkynetContributionItem {
       for (IContributionItem item : manager.getItems())
          if (item instanceof AdminContributionItem) return;
       manager.add(new AdminContributionItem());
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
 }

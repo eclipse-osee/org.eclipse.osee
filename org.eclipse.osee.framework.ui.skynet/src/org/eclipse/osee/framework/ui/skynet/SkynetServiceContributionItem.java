@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.skynet.core.eventx.IRemoteEventManagerEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.ViewPart;
@@ -23,11 +25,10 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Jeff C. Phillips
  */
-public class SkynetServiceContributionItem extends SkynetContributionItem {
+public class SkynetServiceContributionItem extends SkynetContributionItem implements IRemoteEventManagerEventListener {
 
    public static final String ID = "skynet.service";
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final Image ENABLED =
          new OverlayImage(skynetGuiPlugin.getImage("gear.gif"), skynetGuiPlugin.getImageDescriptor("laser_8_8.gif")).createImage();
    private static final Image DISABLED =
@@ -36,24 +37,9 @@ public class SkynetServiceContributionItem extends SkynetContributionItem {
    private static final String DISABLED_TOOLTIP = "Remote event service is disconnected.";
 
    public SkynetServiceContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager);
-      init();
-   }
-
-   public void onEvent(Event event) {
-      if (event instanceof SkynetServiceEvent) {
-         SkynetServiceEvent skynetServiceEvent = (SkynetServiceEvent) event;
-         updateStatus(skynetServiceEvent.isActive());
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   private void init() {
+      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       updateStatus(RemoteEventManager.isConnected());
-      eventManager.register(SkynetServiceEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -66,5 +52,28 @@ public class SkynetServiceContributionItem extends SkynetContributionItem {
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
 
       if (update) view.getViewSite().getActionBars().updateActionBars();
+   }
+
+   @Override
+   public void dispose() {
+      XEventManager.removeListeners(this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IRemoteEventManagerEventListener#handleRemoteEventManagerEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType)
+    */
+   @Override
+   public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventModType remoteEventModType) {
+      if (remoteEventModType == RemoteEventModType.Connected || remoteEventModType == RemoteEventModType.DisConnected) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               updateStatus(remoteEventModType == RemoteEventModType.Connected);
+            }
+         });
+      }
    }
 }

@@ -17,15 +17,32 @@ public class NetworkBroadcastEvent extends SkynetEventBase {
 
    private static final long serialVersionUID = 4199206432501390599L;
    private String message;
+   private final String broadcastEventType;
+   private final String[] userIds;
 
    /**
-    * @param branchId
-    * @param transactionId
-    * @param author TODO
+    * @return the broadcastEventType
     */
-   public NetworkBroadcastEvent(int branchId, int transactionId, String message, int author) {
+   public String getBroadcastEventTypeName() {
+      return broadcastEventType;
+   }
+
+   public NetworkBroadcastEvent(String broadcastEventType, String message, String[] userIds, int author) {
       super(author);
+      this.broadcastEventType = broadcastEventType;
       this.message = message;
+      this.userIds = userIds;
+   }
+
+   public NetworkBroadcastEvent(String broadcastEventType, String message, int author) {
+      this(broadcastEventType, message, new String[] {}, author);
+   }
+
+   /**
+    * @return the userIds
+    */
+   public String[] getUserIds() {
+      return userIds;
    }
 
    public String getMessage() {

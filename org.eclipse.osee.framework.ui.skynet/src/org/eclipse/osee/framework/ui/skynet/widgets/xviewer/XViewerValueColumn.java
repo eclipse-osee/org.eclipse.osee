@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
 import java.sql.SQLException;
-
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;

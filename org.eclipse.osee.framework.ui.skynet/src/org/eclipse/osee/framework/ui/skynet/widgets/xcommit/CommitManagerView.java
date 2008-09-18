@@ -19,8 +19,15 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -41,7 +48,7 @@ import org.eclipse.ui.part.ViewPart;
  * @see ViewPart
  * @author Donald G. Dunne
  */
-public class CommitManagerView extends ViewPart implements IActionable {
+public class CommitManagerView extends ViewPart implements IActionable, IBranchEventListener, IFrameworkTransactionEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView";
    private static String HELP_CONTEXT_ID = "CommitManagerView";
@@ -87,14 +94,17 @@ public class CommitManagerView extends ViewPart implements IActionable {
    @Override
    public void dispose() {
       super.dispose();
+      XEventManager.removeListeners(this);
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       /*
        * Create a grid layout object so the text and treeviewer are layed out the way I want.
@@ -118,6 +128,7 @@ public class CommitManagerView extends ViewPart implements IActionable {
 
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 
+      XEventManager.addListener(this, this);
    }
 
    public void explore(IBranchArtifact branchArtifact) {
@@ -174,6 +185,50 @@ public class CommitManagerView extends ViewPart implements IActionable {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchArtifact.getArtifact().getBranch().getBranchId() == branchId) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               if (xCommitViewer.getXViewer() == null || xCommitViewer.getXViewer().getTree() == null || xCommitViewer.getXViewer().getTree().isDisposed()) return;
+               xCommitViewer.refresh();
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(final Source source, final FrameworkTransactionData transData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (xCommitViewer.getXViewer() == null || xCommitViewer.getXViewer().getTree() == null || xCommitViewer.getXViewer().getTree().isDisposed()) return;
+            xCommitViewer.refresh();
+         }
+      });
+
    }
 
 }

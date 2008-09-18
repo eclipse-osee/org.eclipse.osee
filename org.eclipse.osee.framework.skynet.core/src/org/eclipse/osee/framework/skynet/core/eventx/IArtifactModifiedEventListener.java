@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.skynet.core.eventx;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 
 /**

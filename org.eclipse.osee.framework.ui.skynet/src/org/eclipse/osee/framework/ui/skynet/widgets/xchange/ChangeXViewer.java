@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -23,10 +22,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -38,13 +33,12 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeXViewer extends XViewer implements IEventReceiver {
+public class ChangeXViewer extends XViewer {
 
    private final XChangeViewer xChangeViewer;
 
    public ChangeXViewer(Composite parent, int style, XChangeViewer xRoleViewer) {
       super(parent, style, new ChangeXViewerFactory());
-      SkynetEventManager.getInstance().register(BranchEvent.class, this);
       this.addDoubleClickListener(new IDoubleClickListener() {
          public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
             try {
@@ -59,12 +53,12 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
-      
+
       Change change = getSelectedChanges().iterator().next();
-      Artifact artifact = (Artifact)((IAdaptable) change).getAdapter(Artifact.class);
-      
-      if(artifact != null){
-    	  ArtifactEditor.editArtifact(artifact);
+      Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
+
+      if (artifact != null) {
+         ArtifactEditor.editArtifact(artifact);
       }
    }
 
@@ -126,6 +120,7 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       getLabelProvider().dispose();
    }
@@ -136,22 +131,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((Branch) item.getData());
       return arts;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (xChangeViewer != null && xChangeViewer.getXViewer().getTree().isDisposed() != true) {
-         xChangeViewer.refresh();
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /**

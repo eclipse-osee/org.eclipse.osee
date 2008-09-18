@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -54,7 +54,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IEventReceiver, IActionable {
+public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IBranchEventListener, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor";
    private int artifactsPageIndex;
    private Collection<? extends Artifact> artifacts = new HashSet<Artifact>();
@@ -196,6 +196,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    @Override
    public void dispose() {
       super.dispose();
+      XEventManager.removeListeners(this);
+
       for (Artifact taskArt : artifacts)
          try {
             if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadAttributesAndRelations();
@@ -274,7 +276,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
+      XEventManager.addListener(this, this);
 
       setActivePage(artifactsPageIndex);
       try {
@@ -297,15 +299,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
             firePropertyChange(PROP_DIRTY);
          }
       });
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.plugin.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /*
@@ -342,29 +335,43 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return artifacts;
    }
 
-   public void onEvent(final Event event) {
-
-      if (event instanceof DefaultBranchChangedEvent) {
-         if (artifacts.size() == 0) return;
-         Artifact artifact = artifacts.iterator().next();
-         try {
-            if (artifact.getBranch() != BranchPersistenceManager.getAtsBranch() && artifact.getBranch() != BranchPersistenceManager.getDefaultBranch()) {
-               AWorkbench.getActivePage().closeEditor(this, false);
-               return;
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
-      } else {
-         throw new IllegalStateException("Not registered for legal event.");
-      }
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
     */
    public String getActionDescription() {
       return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         final MassArtifactEditor editor = this;
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (artifacts.size() == 0) return;
+               Artifact artifact = artifacts.iterator().next();
+               try {
+                  if (artifact.getBranch() != BranchPersistenceManager.getAtsBranch() && artifact.getBranch() != BranchPersistenceManager.getDefaultBranch()) {
+                     AWorkbench.getActivePage().closeEditor(editor, false);
+                     return;
+                  }
+               } catch (Exception ex) {
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               }
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 
 }

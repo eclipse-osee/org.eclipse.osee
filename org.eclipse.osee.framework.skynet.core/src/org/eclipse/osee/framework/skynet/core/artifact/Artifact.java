@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
@@ -51,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
@@ -927,8 +925,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       prepareForReload();
 
       new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts(1);
-
-      SkynetEventManager.getInstance().kick(new ArtifactModifiedEvent(this, ArtifactModType.Reverted, this));
 
       // Kick Local Event
       try {

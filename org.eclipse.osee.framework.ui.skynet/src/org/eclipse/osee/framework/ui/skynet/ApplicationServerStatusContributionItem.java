@@ -15,9 +15,6 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
-import org.eclipse.osee.framework.ui.plugin.event.ConnectionEvent;
-import org.eclipse.osee.framework.ui.plugin.event.CoreEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -32,10 +29,9 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    private static final Image ENABLED = skynetGuiPlugin.getImage("appserver.gif");
    private static final Image DISABLED =
          new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
-   private static final CoreEventManager eventManager = CoreEventManager.getInstance();
 
    public ApplicationServerStatusContributionItem() {
-      super(ID, ENABLED, DISABLED, "", "", eventManager);
+      super(ID, ENABLED, DISABLED, "", "");
       init();
    }
 
@@ -53,14 +49,6 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
    public static void addTo(ViewPart view, boolean update) {
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
       if (update) view.getViewSite().getActionBars().updateActionBars();
-   }
-
-   public void onEvent(Event event) {
-      if (event instanceof ConnectionEvent) updateStatus(OseeApplicationServer.isApplicationServerAlive());
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /* (non-Javadoc)

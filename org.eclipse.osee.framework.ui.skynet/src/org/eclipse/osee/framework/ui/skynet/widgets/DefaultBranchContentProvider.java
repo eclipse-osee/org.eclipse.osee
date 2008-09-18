@@ -12,17 +12,17 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 /**
  * @author Robert A. Fisher
  */
-public class DefaultBranchContentProvider implements ITreeContentProvider, IEventReceiver {
-   private SkynetEventManager eventManager = SkynetEventManager.getInstance();
+public class DefaultBranchContentProvider implements ITreeContentProvider, IBranchEventListener {
    private final ITreeContentProvider provider;
    private Viewer viewer;
 
@@ -35,7 +35,6 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IEven
       this.provider = provider;
       this.viewer = null;
 
-      eventManager.register(DefaultBranchChangedEvent.class, this);
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -43,20 +42,7 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IEven
    }
 
    public void dispose() {
-      eventManager.unRegisterAll(this);
-   }
-
-   public void onEvent(Event event) {
-
-      if (event instanceof DefaultBranchChangedEvent) {
-         if (viewer != null) {
-            viewer.refresh();
-         }
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
+      XEventManager.removeListeners(this);
    }
 
    public Object[] getChildren(Object parentElement) {
@@ -73,5 +59,29 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IEven
 
    public Object[] getElements(Object inputElement) {
       return provider.getElements(BranchPersistenceManager.getDefaultBranch());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (viewer != null) {
+                  viewer.refresh();
+               }
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
    }
 }

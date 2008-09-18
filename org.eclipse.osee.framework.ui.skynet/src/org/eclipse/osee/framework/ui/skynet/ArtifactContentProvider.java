@@ -25,11 +25,8 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -87,10 +84,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                   PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
-                  for (Artifact art : children) {
-                     SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, art, artifactExplorer);
-                     SkynetEventManager.getInstance().register(RelationModifiedEvent.class, art, artifactExplorer);
-                  }
                   return children.toArray();
                }
             }

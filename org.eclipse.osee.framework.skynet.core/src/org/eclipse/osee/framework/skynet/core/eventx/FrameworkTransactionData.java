@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.eventx;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,45 +13,104 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
+ * Collection of all the data that makes up a single SkynetTransaction and helper methods that allow the applications to
+ * easily determine how the changes should be handled. Since events changing artifacts and relations can happen
+ * internally in a single client or externally through a server or another client, this class separates the events into
+ * cached and unloaded objects.<br>
+ * <br>
+ * In most cases, applications should only care about artifacts/relations that are loaded into their client's cache.
+ * This class provides easy access to this information. In cases where more information is necessary, the Unloaded
+ * objects are provided with the data needed to 1) determine if application cares about event prior to loading 2) data
+ * needed to load the objects.<br>
+ * <br>
+ * Care needs to be taken by applications to no load every unloaded artifact and relation to determine if the event
+ * needs to be handled. If unloaded objects need to be loaded, their artIds should be collected and bulk loaded through
+ * the ArtifactQuery methods such as ArtifactQuery.getArtifactsByIds.
+ * 
  * @author Donald G. Dunne
  */
-public class TransactionData {
+public class FrameworkTransactionData {
 
-   // artifact cache of artifacts based on artifactModType
+   // artifact collections of artifacts based on artifactModType that are currently loaded in the client's artifact cache
    public Set<Artifact> cacheChangedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheDeletedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheAddedArtifacts = new HashSet<Artifact>();
 
-   // collection of unloaded artifact changes where UnloadedArtifact contains artifact id, branch and artifact type id 
+   // collection of unloaded artifact changes that are NOT currently loaded in the client's artifact cache;  
+   // where UnloadedArtifact contains artifact id, branch and artifact type id 
    public Set<UnloadedArtifact> unloadedChangedArtifacts = new HashSet<UnloadedArtifact>();
    public Set<UnloadedArtifact> unloadedDeletedArtifacts = new HashSet<UnloadedArtifact>();
    public Set<UnloadedArtifact> unloadedAddedArtifacts = new HashSet<UnloadedArtifact>();
 
-   // cacheRelations are relations where one side artifact is already in cache
+   // cacheRelations are relations where one side artifact is already loaded in client's cache
    public Set<LoadedRelation> cacheChangedRelations = new HashSet<LoadedRelation>();
    public Set<LoadedRelation> cacheAddedRelations = new HashSet<LoadedRelation>();
    public Set<LoadedRelation> cacheDeletedRelations = new HashSet<LoadedRelation>();
 
-   // unloadedRelations are relations where neither side artifact is loaded; normally don't care about these
+   // unloadedRelations are relations where neither side artifact is loaded in client's cache; normally don't care about these
    public Set<UnloadedRelation> unloadedChangedRelations = new HashSet<UnloadedRelation>();
    public Set<UnloadedRelation> unloadedAddedRelations = new HashSet<UnloadedRelation>();
    public Set<UnloadedRelation> unloadedDeletedRelations = new HashSet<UnloadedRelation>();
 
-   // artifact cache of all loaded artifacts on either side of a relation mod
+   // artifact collection of artifacts on either side of a relation that are loaded in client's cache
    public Set<Artifact> cacheRelationChangedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheRelationDeletedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheRelationAddedArtifacts = new HashSet<Artifact>();
+
+   public Integer branchId = null;
+
+   public static enum ChangeType {
+      Changed, Deleted, Added, All
+   };
+
+   public Integer getBranchId() {
+      return branchId;
+   }
+
+   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, RelationType relationTypes) {
+      return getArtifactsInRelations(changeType, Arrays.asList(relationTypes));
+   }
+
+   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, Collection<RelationType> relationTypes) {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      if (changeType == ChangeType.Added || changeType == ChangeType.All) {
+         for (LoadedRelation loadedRelation : cacheAddedRelations) {
+            if (relationTypes.contains(loadedRelation.getRelationType())) {
+               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
+               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+            }
+         }
+      }
+      if (changeType == ChangeType.Deleted || changeType == ChangeType.All) {
+         for (LoadedRelation loadedRelation : cacheDeletedRelations) {
+            if (relationTypes.contains(loadedRelation.getRelationType())) {
+               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
+               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+            }
+         }
+      }
+      if (changeType == ChangeType.Changed || changeType == ChangeType.All) {
+         for (LoadedRelation loadedRelation : cacheChangedRelations) {
+            if (relationTypes.contains(loadedRelation.getRelationType())) {
+               if (loadedRelation.getArtifactA() != null) artifacts.add(loadedRelation.getArtifactA());
+               if (loadedRelation.getArtifactB() != null) artifacts.add(loadedRelation.getArtifactB());
+            }
+         }
+      }
+      return artifacts;
+   }
 
    /**
     * Return artifacts related to this artifact from event service loadedRelations collection. This will bulk load all
     * opposite-side artifacts if they are not already loaded.
     * 
     * @param cacheRelations
-    * @return
+    * @return collection of related artifacts
     * @throws OseeCoreException
     */
    public Collection<Artifact> getRelatedArtifacts(int artId, int relationTypeId, int branchId, Collection<LoadedRelation> loadedRelations) throws OseeCoreException {
@@ -87,6 +147,15 @@ public class TransactionData {
          throw new OseeCoreException(ex);
       }
       return artifacts;
+   }
+
+   public boolean isRelAddedChangedDeleted(Artifact artifact) {
+      return isRelAddedChangedDeleted(artifact.getArtId());
+   }
+
+   public boolean isRelAddedChangedDeleted(int artId) {
+      return isRelChange(artId) || isRelAdded(artId) || isRelDeleted(artId);
+
    }
 
    /**

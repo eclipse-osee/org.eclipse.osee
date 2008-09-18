@@ -16,12 +16,15 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
@@ -29,11 +32,10 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public class SkynetAuthenticationContributionItem extends SkynetContributionItem {
+public class SkynetAuthenticationContributionItem extends SkynetContributionItem implements IAccessControlEventListener {
 
    private static final String ID = "skynet.authentication";
 
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
 
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
@@ -42,15 +44,18 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
    private static String ENABLED_TOOLTIP = "Authenticated as: ";
    private static String DISABLED_TOOLTIP = "Not Authenticated.\n" + "Double-Click to Log On.";
+   final SkynetAuthenticationContributionItem contributionItem;
 
    public SkynetAuthenticationContributionItem() {
-      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager);
+      super(ID, ENABLED_IMAGE, DISABLED_IMAGE, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       init();
+      contributionItem = this;
    }
 
    private void init() {
       setActionHandler(new Action() {
 
+         @Override
          public void run() {
             if (oseeAuthentication.isAuthenticated()) {
                boolean result =
@@ -67,15 +72,10 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
                   oseeAuthentication.authenticate("", "", "", false);
                }
             }
-            notifyListeners();
+            SkynetAuthentication.notifyListeners();
          }
       });
-
-      eventManager.register(AuthenticationEvent.class, this);
-   }
-
-   private void notifyListeners() {
-      eventManager.kick(new AuthenticationEvent(this));
+      XEventManager.addListener(this, this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -84,26 +84,33 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
       manager.add(new SkynetAuthenticationContributionItem());
    }
 
-   public void onEvent(Event event) {
-      if (event instanceof AuthenticationEvent) {
+   @Override
+   public void dispose() {
+      XEventManager.removeListeners(this);
+   }
 
-         if (oseeAuthentication.isAuthenticated()) {
-            User skynetName = SkynetAuthentication.getUser();
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+    */
+   @Override
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlModType accessControlEventType, LoadedArtifacts loadedArtifactss) {
+      if (accessControlEventType == AccessControlModType.UserAuthenticated) {
 
-            this.setEnabledToolTip(String.format(ENABLED_TOOLTIP + "%s (%s)\nDouble-Click to Log Off.",
-                  (skynetName != null ? skynetName.getName() : skynetName),
-                  oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id)));
-         }
-         updateStatus(oseeAuthentication.isAuthenticated());
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (oseeAuthentication.isAuthenticated()) {
+                  User skynetName = SkynetAuthentication.getUser();
+
+                  contributionItem.setEnabledToolTip(String.format(
+                        ENABLED_TOOLTIP + "%s (%s)\nDouble-Click to Log Off.",
+                        (skynetName != null ? skynetName.getName() : skynetName),
+                        oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id)));
+               }
+               updateStatus(oseeAuthentication.isAuthenticated());
+            }
+         });
       }
    }
 
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   @Override
-   public void dispose() {
-      eventManager.unRegister(AuthenticationEvent.class, this);
-   }
 }

@@ -16,25 +16,22 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorerItem implements IEventReceiver {
+public class GroupExplorerItem implements IFrameworkTransactionEventListener {
 
-   private Artifact artifact;
+   private final Artifact artifact;
    private final TreeViewer treeViewer;
-   private SkynetEventManager eventManager;
-   private GroupExplorerItem parentItem;
+   private final GroupExplorerItem parentItem;
    private List<GroupExplorerItem> groupItems;
    private final GroupExplorer groupExplorer;
 
@@ -43,9 +40,7 @@ public class GroupExplorerItem implements IEventReceiver {
       this.artifact = artifact;
       this.parentItem = parentItem;
       this.groupExplorer = groupExplorer;
-      eventManager = SkynetEventManager.getInstance();
-      eventManager.register(RemoteTransactionEvent.class, this);
-      eventManager.register(LocalTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    public boolean contains(Artifact artifact) {
@@ -69,7 +64,7 @@ public class GroupExplorerItem implements IEventReceiver {
    }
 
    public void dispose() {
-      eventManager.unRegisterAll(this);
+      XEventManager.removeListeners(this);
       if (groupItems != null) for (GroupExplorerItem item : groupItems)
          item.dispose();
    }
@@ -131,35 +126,37 @@ public class GroupExplorerItem implements IEventReceiver {
       groupItems.remove(item);
    }
 
-   public void onEvent(final Event event) {
-      if (treeViewer == null || treeViewer.getTree().isDisposed() || (artifact != null && artifact.isDeleted())) {
-         dispose();
-         return;
-      }
-      final GroupExplorerItem tai = this;
-
-      if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(artifact);
-         if (ed.isRemoved()) {
-            treeViewer.refresh();
-            groupExplorer.restoreSelection();
-         } else if (ed.isModified()) {
-            treeViewer.update(tai, null);
-         } else if (ed.isRelChange()) {
-            populateUpdateCategory();
-            treeViewer.refresh(tai);
-            groupExplorer.restoreSelection();
-         }
-      } else
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, "Unexpected event => " + event);
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    public GroupExplorerItem getParentItem() {
       return parentItem;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
+      if (transData.isHasEvent(artifact)) {
+         final GroupExplorerItem tai = this;
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               if (treeViewer == null || treeViewer.getTree().isDisposed() || (artifact != null && artifact.isDeleted())) {
+                  dispose();
+                  return;
+               }
+
+               if (transData.isDeleted(artifact)) {
+                  treeViewer.refresh();
+                  groupExplorer.restoreSelection();
+               } else if (transData.isChanged(artifact)) {
+                  treeViewer.update(tai, null);
+               } else if (transData.isRelChange(artifact)) {
+                  populateUpdateCategory();
+                  treeViewer.refresh(tai);
+                  groupExplorer.restoreSelection();
+               }
+            }
+         });
+      }
+   }
 }

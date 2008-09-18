@@ -31,27 +31,22 @@ import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoin
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.eventx.XRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
@@ -69,8 +64,6 @@ public class SkynetTransaction {
    private String comment;
    private final TransactionId transactionId;
    private final Branch branch;
-   private List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
-   private List<Event> localEvents = new LinkedList<Event>();
    private final List<XModifiedEvent> xModifiedEvents = new ArrayList<XModifiedEvent>();
    private final Map<ITransactionData, ITransactionData> transactionItems =
          new HashMap<ITransactionData, ITransactionData>();
@@ -133,8 +126,7 @@ public class SkynetTransaction {
          throw ex;
       } finally {
          if (deleteTransactionDetail) {
-            localEvents = null;
-            remoteEvents = null;
+            xModifiedEvents.clear();
             ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_DETAIL, transactionId.getTransactionNumber());
          } else {
             for (ITransactionData transactionData : transactionItems.keySet()) {
@@ -219,14 +211,6 @@ public class SkynetTransaction {
       return preparedBatch.size() > 0;
    }
 
-   public void addRemoteEvent(ISkynetEvent event) {
-      if (event == null) throw new IllegalArgumentException("Remote event can not be null");
-
-      if (!remoteEvents.contains(event)) {
-         remoteEvents.add(event);
-      }
-   }
-
    public void addArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
       xModifiedEvents.add(new XArtifactModifiedEvent(sender, artifactModType, artifact, getTransactionNumber(),
             artifact.getDirtySkynetAttributeChanges()));
@@ -236,26 +220,10 @@ public class SkynetTransaction {
       xModifiedEvents.add(new XRelationModifiedEvent(sender, relationModType, link, branch, relationType, relationSide));
    }
 
-   public void addLocalEvent(Event event) {
-      if (event == null) throw new IllegalArgumentException("local event can not be null");
-
-      if (!localEvents.contains(event)) localEvents.add(event);
-   }
-
    /**
     * Kicks local and remote events
     */
    public void kickEvents() {
-      if (localEvents != null) {
-         SkynetEventManager.getInstance().kick(new LocalTransactionEvent(localEvents, this));
-         localEvents.clear();
-      }
-
-      if (remoteEvents != null) {
-         RemoteEventManager.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
-         remoteEvents.clear();
-      }
-
       if (xModifiedEvents.size() > 0) {
          XEventManager.kickTransactionEvent(Source.Local, xModifiedEvents);
          xModifiedEvents.clear();

@@ -35,12 +35,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 
@@ -439,10 +437,13 @@ public class RelationManager {
          RelationManager.manageRelation(relation, RelationSide.SIDE_A);
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
 
-         SkynetEventManager.getInstance().kick(
-               new CacheRelationModifiedEvent(relation, relation.getABranch(),
-                     relation.getRelationType().getTypeName(), relation.getASideName(), RelationModType.Added,
-                     RelationManager.class));
+         try {
+            XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+                  RelationModType.Added, relation, relation.getABranch(), relationType.getTypeName(),
+                  relation.getASideName());
+         } catch (Exception ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
    }
 
@@ -557,9 +558,6 @@ public class RelationManager {
          setRelationOrdering(RelationSide.SIDE_A, relation, artifactATarget, insertAfterATarget, artifactB,
                artifactATarget, artifactB);
       }
-      SkynetEventManager.getInstance().kick(
-            new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                  relation.getASideName(), RelationModType.Added, RelationManager.class));
 
       Sender sender = new Sender(Source.Local, RelationManager.class, SkynetAuthentication.getAuthor());
       XEventManager.kickRelationModifiedEvent(sender, RelationModType.Added, relation, relation.getBranch(),
@@ -633,9 +631,14 @@ public class RelationManager {
             artifactBTarget);
       setRelationOrdering(RelationSide.SIDE_A, relation, artifactATarget, insertAfterATarget, artifactB,
             artifactATarget, artifactB);
-      SkynetEventManager.getInstance().kick(
-            new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
-                  relation.getASideName(), RelationModType.Added, RelationManager.class));
+
+      try {
+         XEventManager.kickRelationModifiedEvent(XEventManager.getSender(Source.Local, RelationManager.class),
+               RelationModType.ReOrdered, relation, relation.getABranch(), relationType.getTypeName(),
+               relation.getASideName());
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
    }
 
    /**

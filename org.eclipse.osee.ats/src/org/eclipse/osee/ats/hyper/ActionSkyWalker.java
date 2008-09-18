@@ -22,13 +22,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions;
@@ -48,7 +46,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IEventReceiver, IPerspectiveListener2 {
+public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IFrameworkTransactionEventListener, IPerspectiveListener2 {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionSkyWalker";
 
@@ -67,6 +65,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       super.createPartControl(parent);
 
       sashForm.setWeights(new int[] {99, 1});
+      XEventManager.addListener(this, this);
    }
 
    /*
@@ -81,6 +80,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       IToolBarManager tbm = bars.getToolBarManager();
 
       Action action = new Action() {
+         @Override
          public void run() {
             redraw();
          }
@@ -94,7 +94,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    @Override
    public void dispose() {
       super.dispose();
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    /*
@@ -104,7 +104,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
     */
    @Override
    public void explore(Artifact artifact) {
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      XEventManager.removeListeners(this);
       if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact))) clear();
       try {
          getOptions().setArtifact(artifact);
@@ -113,11 +113,10 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
             super.explore(artifact);
          else
             super.explore(getTopArtifact((ATSArtifact) artifact));
-         SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-         SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+         XEventManager.addListener(this, this);
       } catch (SQLException ex) {
          clear();
-         SkynetEventManager.getInstance().unRegisterAll(this);
+         XEventManager.removeListeners(this);
       }
    }
 
@@ -153,7 +152,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor != null && (editor instanceof SMAEditor)) {
-            explore((ATSArtifact) ((SMAEditor) editor).getSmaMgr().getSma());
+            explore(((SMAEditor) editor).getSmaMgr().getSma());
          }
          clear();
       }
@@ -186,6 +185,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       processWindowActivated();
    }
 
+   @Override
    public String getActionDescription() {
       if (getOptions() != null && getOptions().getArtifact() != null && getOptions().getArtifact().isDeleted()) return String.format(
             "Current Artifact - %s - %s", getOptions().getArtifact().getGuid(),
@@ -197,23 +197,34 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       System.out.println("clear viewer here");
    }
 
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#onEvent(org.eclipse.osee.framework.jdk.core.event.Event)
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
-   public void onEvent(Event event) {
-      if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(getOptions().getArtifact());
-         if (ed.isRemoved()) {
-            clear();
-         } else if (ed.isModified() || ed.isRelChange()) {
-            explore(getOptions().getArtifact());
-         }
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (source == Source.Remote) return;
+      if (getOptions().getArtifact() == null) return;
+      if (transData.isDeleted(getOptions().getArtifact())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      if (transData.isChanged(getOptions().getArtifact()) || transData.isRelAddedChangedDeleted(getOptions().getArtifact())) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               explore(getOptions().getArtifact());
+            }
+         });
       }
    }
 

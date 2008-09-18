@@ -26,18 +26,26 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -67,7 +75,7 @@ import org.eclipse.ui.part.ViewPart;
  * @see ViewPart
  * @author Donald G. Dunne
  */
-public class MergeView extends ViewPart implements IActionable {
+public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IFrameworkTransactionEventListener {
    private static final RendererManager rendererManager = RendererManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
@@ -136,14 +144,17 @@ public class MergeView extends ViewPart implements IActionable {
    @Override
    public void dispose() {
       super.dispose();
+      XEventManager.removeListeners(this);
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       /*
        * Create a grid layout object so the text and treeviewer are layed out the way I want.
@@ -210,6 +221,8 @@ public class MergeView extends ViewPart implements IActionable {
 
       getSite().setSelectionProvider(xMergeViewer.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
+
+      XEventManager.addListener(this, this);
    }
 
    /**
@@ -585,7 +598,7 @@ public class MergeView extends ViewPart implements IActionable {
 
    private class PreviewHandler extends AbstractSelectionEnabledHandler {
       private static final String PREVIEW_ARTIFACT = "PREVIEW_ARTIFACT";
-      private int partToPreview;
+      private final int partToPreview;
       private List<Artifact> artifacts;
 
       public PreviewHandler(MenuManager menuManager, int partToPreview) {
@@ -635,7 +648,7 @@ public class MergeView extends ViewPart implements IActionable {
    }
 
    private class DiffHandler extends AbstractSelectionEnabledHandler {
-      private int diffToShow;
+      private final int diffToShow;
       private AttributeConflict attributeConflict;
       private ArtifactConflict artifactConflict;
       private List<Artifact> artifacts;
@@ -798,6 +811,86 @@ public class MergeView extends ViewPart implements IActionable {
          }
          return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (sourceBranch.getBranchId() == branchId || destBranch.getBranchId() == branchId) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               if (xMergeViewer != null && xMergeViewer.getXViewer().getTree().isDisposed() != true) {
+                  xMergeViewer.refresh();
+               }
+            }
+         });
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(final Source source, final FrameworkTransactionData transData) {
+      if (sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId()) {
+         return;
+      }
+      final MergeView mergeView = this;
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) return;
+
+            for (Artifact artifact : transData.cacheChangedArtifacts) {
+               try {
+                  Branch branch = artifact.getBranch();
+                  for (Conflict conflict : conflicts) {
+                     if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
+                        xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                              "Source Artifact Changed");
+                        if (artifact.equals(conflict.getSourceArtifact()) & source == Source.Local) {
+                           new MessageDialog(
+                                 Display.getCurrent().getActiveShell().getShell(),
+                                 "Modifying Source artifact while merging",
+                                 null,
+                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
+                                 2, new String[] {"OK"}, 1).open();
+                        }
+                        return;
+                     }
+
+                  }
+                  if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
+                     xMergeViewer.setInputData(
+                           sourceBranch,
+                           destBranch,
+                           transactionId,
+                           mergeView,
+                           commitTrans,
+                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed");
+                  }
+               } catch (Exception ex) {
+               }
+            }
+         }
+      });
+
    }
 
 }

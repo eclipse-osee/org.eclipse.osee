@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.util.widgets.task.TaskContentProvider;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.eventx.TransactionData;
 import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.event.Sender;
@@ -108,7 +108,7 @@ public class SMATaskComposite extends Composite {
       XEventManager.addListener(this, new IFrameworkTransactionEventListener() {
 
          @Override
-         public void handleFrameworkTransactionEvent(Source source, final TransactionData transData) {
+         public void handleFrameworkTransactionEvent(Source source, final FrameworkTransactionData transData) {
 
             Displays.ensureInDisplayThread(new Runnable() {
                /* (non-Javadoc)

@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -27,17 +26,10 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -58,7 +50,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -68,9 +59,9 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class XMergeViewer extends XWidget implements IEventReceiver, IActionable {
+public class XMergeViewer extends XWidget implements IActionable {
 
-   private MergeXViewer xCommitViewer;
+   private MergeXViewer mergeXViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
@@ -91,10 +82,6 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
     */
    public XMergeViewer() {
       super("Merge Manager");
-      SkynetEventManager.getInstance().unRegisterAll(this);
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
-
    }
 
    /*
@@ -121,14 +108,14 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
 
       createTaskActionBar(mainComp);
 
-      xCommitViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xCommitViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      XMergeLabelProvider labelProvider = new XMergeLabelProvider(xCommitViewer);
-      xCommitViewer.addLabelProvider(labelProvider);
-      xCommitViewer.setSorter(new MergeXViewerSorter(xCommitViewer, labelProvider));
-      xCommitViewer.setContentProvider(new XMergeContentProvider(xCommitViewer));
-      xCommitViewer.setLabelProvider(new XMergeLabelProvider(xCommitViewer));
-      xCommitViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      mergeXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      XMergeLabelProvider labelProvider = new XMergeLabelProvider(mergeXViewer);
+      mergeXViewer.addLabelProvider(labelProvider);
+      mergeXViewer.setSorter(new MergeXViewerSorter(mergeXViewer, labelProvider));
+      mergeXViewer.setContentProvider(new XMergeContentProvider(mergeXViewer));
+      mergeXViewer.setLabelProvider(new XMergeLabelProvider(mergeXViewer));
+      mergeXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
          /*
           * (non-Javadoc)
           * 
@@ -139,9 +126,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
          }
       });
 
-      if (toolkit != null) toolkit.adapt(xCommitViewer.getStatusLabel(), false, false);
+      if (toolkit != null) toolkit.adapt(mergeXViewer.getStatusLabel(), false, false);
 
-      Tree tree = xCommitViewer.getTree();
+      Tree tree = mergeXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 100;
       tree.setLayout(ALayout.getZeroMarginLayout());
@@ -191,6 +178,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       openAssociatedArtifactItem.setEnabled(false);
       openAssociatedArtifactItem.setDisabledImage(null);
       openAssociatedArtifactItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             try {
                Branch sourceBranch = conflicts[0].getSourceBranch();
@@ -213,6 +201,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change_source.gif"));
       item.setToolTipText("Show Source Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (conflicts.length != 0) {
                if (conflicts[0].getSourceBranch() != null) {
@@ -238,6 +227,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       item.setToolTipText("Show Source Branch Change Report");
       item.setToolTipText("Show Destination Branch Change Report");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             if (conflicts.length != 0) {
                try {
@@ -253,6 +243,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans);
          }
@@ -262,8 +253,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       item.setImage(SkynetGuiPlugin.getInstance().getImage("customize.gif"));
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
-            xCommitViewer.getCustomizeMgr().handleTableCustomization();
+            mergeXViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
@@ -299,9 +291,9 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
    @SuppressWarnings("unchecked")
    public ArrayList<Conflict> getSelectedConflicts() {
       ArrayList<Conflict> items = new ArrayList<Conflict>();
-      if (xCommitViewer == null) return items;
-      if (xCommitViewer.getSelection().isEmpty()) return items;
-      Iterator i = ((IStructuredSelection) xCommitViewer.getSelection()).iterator();
+      if (mergeXViewer == null) return items;
+      if (mergeXViewer.getSelection().isEmpty()) return items;
+      Iterator i = ((IStructuredSelection) mergeXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((Conflict) obj);
@@ -311,22 +303,22 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
 
    @Override
    public Control getControl() {
-      return xCommitViewer.getTree();
+      return mergeXViewer.getTree();
    }
 
    @Override
    public void dispose() {
-      xCommitViewer.dispose();
-      SkynetEventManager.getInstance().unRegisterAll(this);
+      mergeXViewer.dispose();
    }
 
    @Override
    public void setFocus() {
-      xCommitViewer.getTree().setFocus();
+      mergeXViewer.getTree().setFocus();
    }
 
+   @Override
    public void refresh() {
-      xCommitViewer.refresh();
+      mergeXViewer.refresh();
       setLabelError();
       refreshActionEnablement();
       int resolved = 0;
@@ -377,57 +369,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
     * @return Returns the xViewer.
     */
    public MergeXViewer getXViewer() {
-      return xCommitViewer;
-   }
-
-   public void onEvent(final Event eventArg) {
-      if (xCommitViewer == null || xCommitViewer.getTree() == null || xCommitViewer.getTree().isDisposed()) return;
-
-      if (eventArg instanceof TransactionEvent) {
-         for (Event event : ((TransactionEvent) eventArg).getLocalEvents()) {
-            try {
-            if (event instanceof ArtifactModifiedEvent) {
-               Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
-               Branch branch = artifact.getBranch();
-               for (Conflict conflict : conflicts) {
-                     if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
-                        setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans,
-                              "Source Artifact Changed");
-                        if (artifact.equals(conflict.getSourceArtifact()) & eventArg instanceof LocalTransactionEvent) {
-                                 new MessageDialog(
-                                       Display.getCurrent().getActiveShell().getShell(),
-                                       "Modifying Source artifact while merging",
-                                       null,
-                                       "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
-                                 2, new String[] {"OK"}, 1).open();
-                           }
-                        return;
-                        }
-
-                     }
-                  if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                     setInputData(
-                           sourceBranch,
-                           destBranch,
-                           tranId,
-                           mergeView,
-                           commitTrans,
-                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed");
-                  }
-               }
-            } catch (Exception ex) {
-            }
-         }
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
+      return mergeXViewer;
    }
 
    /*
@@ -437,7 +379,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
     */
    @Override
    public Object getData() {
-      return xCommitViewer.getInput();
+      return mergeXViewer.getInput();
    }
 
    public IDirtiableEditor getEditor() {
@@ -448,10 +390,12 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
       this.editor = editor;
    }
 
+   @Override
    public boolean isEditable() {
       return editable;
    }
 
+   @Override
    public void setEditable(boolean editable) {
       this.editable = editable;
    }
@@ -463,7 +407,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   private void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText) {
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
@@ -476,7 +420,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             try {
                if (commitTrans == null) {
                   conflicts =
-                	  ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
+                        ConflictManagerInternal.getInstance().getConflictsPerBranch(sourceBranch, destBranch, tranId).toArray(
                               new Conflict[0]);
                } else {
                   conflicts =
@@ -524,7 +468,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver, IActionable
             informational++;
          }
       }
-      xCommitViewer.setConflicts(conflicts);
+      mergeXViewer.setConflicts(conflicts);
       if (conflicts != null && conflicts.length != 0) {
          if (sourceBranch != null) {
             displayLabelText =

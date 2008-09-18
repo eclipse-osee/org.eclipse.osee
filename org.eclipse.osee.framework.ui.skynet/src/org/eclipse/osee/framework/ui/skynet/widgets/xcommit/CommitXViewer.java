@@ -20,10 +20,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -32,14 +28,13 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class CommitXViewer extends XViewer implements IEventReceiver {
+public class CommitXViewer extends XViewer {
 
    private final XCommitViewer xCommitViewer;
    private Branch workingBranch;
 
    public CommitXViewer(Composite parent, int style, XCommitViewer xRoleViewer) {
       super(parent, style, new CommitXViewerFactory());
-      SkynetEventManager.getInstance().register(BranchEvent.class, this);
       this.xCommitViewer = xRoleViewer;
    }
 
@@ -96,6 +91,7 @@ public class CommitXViewer extends XViewer implements IEventReceiver {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       getLabelProvider().dispose();
    }
@@ -120,22 +116,6 @@ public class CommitXViewer extends XViewer implements IEventReceiver {
     */
    public Branch getWorkingBranch() {
       return workingBranch;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (xCommitViewer != null && xCommitViewer.getXViewer().getTree().isDisposed() != true) {
-         xCommitViewer.refresh();
-      }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
 }

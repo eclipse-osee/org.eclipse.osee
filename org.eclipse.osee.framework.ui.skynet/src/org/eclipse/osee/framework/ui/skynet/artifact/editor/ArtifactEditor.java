@@ -29,28 +29,29 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
+import org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.ui.plugin.event.Sender;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -80,20 +81,22 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IEventReceiver, IActionable {
+public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEditor, IBranchEventListener, IAccessControlEventListener, IArtifactModifiedEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactEditor.class);
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private int previewPageIndex;
    private int attributesPageIndex;
    private int newAttributesPageIndex;
    private int relationsPageIndex;
+   private Artifact artifact;
+   private final MultiPageEditorPart editor;
    private BrowserComposite previewComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributeComposite;
@@ -107,6 +110,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    public ArtifactEditor() {
       super();
+      editor = this;
    }
 
    public RelationsComposite getRelationsComposite() {
@@ -154,8 +158,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    @Override
    public boolean isDirty() {
-      Artifact artifact = getEditorInput().getArtifact();
-
       if (artifact.isDeleted()) return false;
 
       try {
@@ -209,25 +211,14 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       relationsPageIndex = createRelationsPage();
       setPageText(relationsPageIndex, "Relations");
       setPartName(getEditorInput().getName());
-      setTitleImage(getEditorInput().getArtifact().getImage());
+      setTitleImage(artifact.getImage());
 
-      String guid = getEditorInput().getArtifact().getGuid();
-      eventManager.register(ArtifactModifiedEvent.class, guid, this);
-      eventManager.register(CacheRelationModifiedEvent.class, this);
-      eventManager.register(RemoteTransactionEvent.class, this);
-      eventManager.register(TransactionRelationModifiedEvent.class, this);
-      eventManager.register(DefaultBranchChangedEvent.class, this);
-      eventManager.register(VisitorEvent.class, this);
-      eventManager.register(LocalCommitBranchEvent.class, this);
-      eventManager.register(RemoteCommitBranchEvent.class, this);
-      eventManager.register(ArtifactLockStatusChanged.class, this);
-      eventManager.register(LocalTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
 
    }
 
    @Override
    public void doSave(IProgressMonitor monitor) {
-      Artifact artifact = getEditorInput().getArtifact();
       try {
          artifact.persistAttributesAndRelations();
          firePropertyChange(PROP_DIRTY);
@@ -271,28 +262,25 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       if (previewComposite == null) {
          Composite composite = createCommonPageComposite();
          previewComposite = new BrowserComposite(composite, SWT.BORDER, createToolBar(composite));
-         if (getEditorInput().getArtifact().getAnnotations().size() > 0) {
-            new AnnotationComposite(previewComposite, SWT.BORDER, getEditorInput().getArtifact());
+         if (artifact.getAnnotations().size() > 0) {
+            new AnnotationComposite(previewComposite, SWT.BORDER, artifact);
          }
          previewComposite.addProgressListener(new BrowserProgressListener(previewComposite, back, forward));
       }
 
-      RendererManager.getInstance().previewInComposite(previewComposite, getEditorInput().getArtifact());
+      RendererManager.getInstance().previewInComposite(previewComposite, artifact);
    }
 
    private int createAttributesPage() {
       Composite composite = createCommonPageComposite();
-      attributeComposite =
-            new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(), createToolBar(composite));
+      attributeComposite = new AttributesComposite(this, composite, SWT.NONE, artifact, createToolBar(composite));
 
       return addPage(composite);
    }
 
    private int createNewAttributesPage() {
       Composite composite = createCommonPageComposite();
-      newAttributeComposite =
-            new NewAttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(),
-                  createToolBar(composite));
+      newAttributeComposite = new NewAttributesComposite(this, composite, SWT.NONE, artifact, createToolBar(composite));
 
       return addPage(composite);
    }
@@ -310,8 +298,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private int createRelationsPage() {
       Composite composite = createCommonPageComposite();
-      relationsComposite =
-            new RelationsComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(), createToolBar(composite));
+      relationsComposite = new RelationsComposite(this, composite, SWT.NONE, artifact, createToolBar(composite));
 
       return addPage(composite);
    }
@@ -340,7 +327,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RevisionHistoryView.open(getEditorInput().getArtifact());
+            RevisionHistoryView.open(artifact);
          }
       });
 
@@ -350,7 +337,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Artifact artifact = getEditorInput().getArtifact();
             try {
                ArtifactExplorer.revealArtifact(artifact);
             } catch (Exception ex) {
@@ -358,7 +344,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(getEditorInput().getArtifact().getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -368,11 +354,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RendererManager.getInstance().editInJob(getEditorInput().getArtifact());
+            RendererManager.getInstance().editInJob(artifact);
          }
       });
-      item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
-            BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
@@ -380,7 +365,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            RendererManager.getInstance().previewInJob(getEditorInput().getArtifact());
+            RendererManager.getInstance().previewInJob(artifact);
          }
       });
 
@@ -394,8 +379,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             deleteAction.run();
          }
       });
-      item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
-            BranchPersistenceManager.getDefaultBranch()));
+      item.setEnabled(!artifact.isReadOnly() && artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -405,7 +389,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            BranchView.revealBranch(getEditorInput().getArtifact().getBranch());
+            BranchView.revealBranch(artifact.getBranch());
          }
       });
 
@@ -417,7 +401,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), getEditorInput().getArtifact());
+            PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), artifact);
             pd.open();
          }
       });
@@ -482,7 +466,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
 
-      Artifact artifact = getEditorInput().getArtifact();
       artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"  Guid: " + artifact.getGuid() + "  HRID: " + artifact.getHumanReadableId() + "  Art Id: " + artifact.getArtId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
@@ -503,7 +486,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == Window.OK) {
-               ArtifactPersistenceManager.deleteArtifact(getEditorInput().getArtifact());
+               ArtifactPersistenceManager.deleteArtifact(artifact);
             }
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -513,9 +496,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private void checkEnabledTooltems() {
       if (!attributeComposite.isDisposed()) {
-         boolean areBranchesEqual =
-               getEditorInput().getArtifact().getBranch().equals(BranchPersistenceManager.getDefaultBranch());
-         boolean isEditAllowed = getEditorInput().getArtifact().isReadOnly() != true;
+         boolean areBranchesEqual = artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch());
+         boolean isEditAllowed = artifact.isReadOnly() != true;
 
          previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
          previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
@@ -536,15 +518,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    }
 
    @Override
-   public ArtifactEditorInput getEditorInput() {
-      return (ArtifactEditorInput) super.getEditorInput();
-   }
-
-   @Override
    public void dispose() {
       try {
          // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
-         Artifact artifact = getEditorInput().getArtifact();
 
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {
             try {
@@ -554,104 +530,22 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
 
-         eventManager.unRegisterAll(this);
+         XEventManager.removeListeners(this);
          super.dispose();
       } catch (SQLException ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
-   public void onEvent(final Event event) {
-      final ArtifactEditor editor = this;
-      Artifact artifact = getEditorInput().getArtifact();
-
-      if (event instanceof ArtifactEvent) {
-         ArtifactEvent artifactEvent = (ArtifactEvent) event;
-         Artifact eventArtifact = artifactEvent.getArtifact();
-
-         if (eventArtifact != null && eventArtifact.equals(artifact)) {
-            if (event instanceof ArtifactModifiedEvent) {
-               ArtifactModType artifactModType = ((ArtifactModifiedEvent) event).getType();
-
-               if (artifactModType == ArtifactModType.Deleted) {
-                  AWorkbench.getActivePage().closeEditor(editor, false);
-               } else if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
-
-                  setPartName(getEditorInput().getName());
-                  setTitleImage(artifact.getImage());
-                  attributeComposite.refreshArtifact(artifact);
-
-                  if (event instanceof ArtifactModifiedEvent) {
-                     ArtifactModifiedEvent cachedEvent = (ArtifactModifiedEvent) event;
-                     if (cachedEvent.getSender() instanceof WordAttribute) {
-                        renderPreviewPage();
-                     }
-                  }
-
-                  onDirtied();
-               } else if (event instanceof VisitorEvent) {
-                  firePropertyChange(PROP_DIRTY);
-                  renderPreviewPage();
-               } else if (event instanceof ArtifactLockStatusChanged) {
-                  setTitleImage(getEditorInput().getArtifact().getImage());
-               }
-            }
-         }
-      } else if (event instanceof TransactionEvent) {
-         ((TransactionEvent) event).fireSingleEvent(this);
-      } else if (event instanceof RelationModifiedEvent) {
-         onDirtied();
-
-         if (!relationsComposite.isDisposed()) {
-            Display.getDefault().asyncExec(new Runnable() {
-               public void run() {
-                  relationsComposite.refresh();
-               }
-            });
-         }
-      } else if (event instanceof RemoteTransactionEvent) {
-         ((RemoteTransactionEvent) event).fireSingleEvent(editor);
-      } else if (event instanceof DefaultBranchChangedEvent) {
-         try {
-            if (artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
-               try {
-                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                        BranchPersistenceManager.getDefaultBranch()));
-               } catch (ArtifactDoesNotExist ex) {
-                  System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
-                  AWorkbench.getActivePage().closeEditor(this, false);
-               }
-            }
-            checkEnabledTooltems();
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         }
-      } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
-         try {
-            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
-                  BranchPersistenceManager.getDefaultBranch()));
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-            AWorkbench.getActivePage().closeEditor(this, false);
-         }
-      } else {
-         throw new IllegalStateException("Not registered for legal event.");
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    private void changeToArtifact(final Artifact artifact) {
-      if (artifact == null || getEditorInput().getArtifact() == null) {
-         AWorkbench.getActivePage().closeEditor(this, false);
+      if (artifact == null || artifact == null) {
+         closeEditor();
          return;
       }
 
       // The events coming to this editor are based on guid, so it is important that this case is
       // always true.
-      if (!artifact.getGuid().equals(getEditorInput().getArtifact().getGuid())) throw new IllegalArgumentException(
+      if (!artifact.getGuid().equals(artifact.getGuid())) throw new IllegalArgumentException(
             "Can only change the editor to a different version of the Artifact being editted");
 
       Display.getDefault().asyncExec(new Runnable() {
@@ -660,13 +554,22 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             ArtifactEditorInput input = new ArtifactEditorInput(artifact);
             setInput(input);
             setPartName(artifact.getDescriptiveName());
-            setTitleImage(getEditorInput().getArtifact().getImage());
+            setTitleImage(artifact.getImage());
 
             attributeComposite.refreshArtifact(artifact);
             relationsComposite.refreshArtifact(artifact);
             renderPreviewPage();
          }
       });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
+    */
+   @Override
+   protected void setInput(IEditorInput input) {
+      super.setInput(input);
+      this.artifact = ((ArtifactEditorInput) input).getArtifact();
    }
 
    private final class BrowserProgressListener implements ProgressListener {
@@ -704,6 +607,174 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
        */
       public void completed(ProgressEvent event) {
          updateBackNextBusy();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+      if (branchModType == BranchModType.Committed) {
+         try {
+            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
+                  BranchPersistenceManager.getDefaultBranch()));
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+            AWorkbench.getActivePage().closeEditor(this, false);
+         }
+      }
+      if (branchModType == BranchModType.DefaultBranchChanged) {
+         try {
+            if (artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
+               try {
+                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
+                        BranchPersistenceManager.getDefaultBranch()));
+               } catch (ArtifactDoesNotExist ex) {
+                  System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
+                  AWorkbench.getActivePage().closeEditor(this, false);
+               }
+            }
+            checkEnabledTooltems();
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (!transData.isHasEvent(artifact)) {
+         return;
+      }
+      if (transData.isDeleted(artifact)) {
+         closeEditor();
+      }
+      if (transData.isRelAddedChangedDeleted(artifact)) {
+         refreshRelationsComposite();
+      }
+      if (transData.isChanged(artifact)) {
+         refreshDirtyArtifact();
+      }
+      onDirtied();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactModifiedEventListener#handleArtifactModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ArtifactModType, org.eclipse.osee.framework.skynet.core.artifact.Artifact)
+    */
+   @Override
+   public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact) {
+      if (!this.artifact.equals(artifact)) return;
+      if (artifactModType == ArtifactModType.Added || artifactModType == ArtifactModType.Changed || artifactModType == ArtifactModType.Reverted) {
+         refreshDirtyArtifact();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, java.util.Collection, java.util.Collection)
+    */
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.contains(artifact)) {
+         closeEditor();
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, int, java.util.Collection, java.util.Collection)
+    */
+   @Override
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.contains(artifact)) {
+         closeEditor();
+      }
+   }
+
+   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+      try {
+         if (link.getArtifactA().equals(artifact) || link.getArtifactB().equals(artifact)) {
+            refreshRelationsComposite();
+            onDirtied();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+   }
+
+   private void refreshDirtyArtifact() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            setPartName(getEditorInput().getName());
+            setTitleImage(artifact.getImage());
+            attributeComposite.refreshArtifact(artifact);
+            onDirtied();
+         }
+      });
+      renderPreviewPage();
+   }
+
+   private void refreshRelationsComposite() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (!relationsComposite.isDisposed()) {
+               relationsComposite.refresh();
+               onDirtied();
+            }
+         }
+      });
+   }
+
+   public void closeEditor() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            AWorkbench.getActivePage().closeEditor(editor, false);
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
+    */
+   @Override
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlModType accessControlEventType, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (accessControlEventType == AccessControlModType.ArtifactsLocked || accessControlEventType == AccessControlModType.ArtifactsLocked) {
+            if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
+               Displays.ensureInDisplayThread(new Runnable() {
+                  /* (non-Javadoc)
+                   * @see java.lang.Runnable#run()
+                   */
+                  @Override
+                  public void run() {
+                     setTitleImage(artifact.getImage());
+                  }
+               });
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 }

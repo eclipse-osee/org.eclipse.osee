@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
@@ -24,15 +23,13 @@ import org.eclipse.osee.ats.config.BulkLoadAtsCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -52,13 +49,12 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ActionHyperView extends HyperView implements IPartListener, IActionable, IEventReceiver, IPerspectiveListener2 {
+public class ActionHyperView extends HyperView implements IPartListener, IActionable, IFrameworkTransactionEventListener, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
    private static String HELP_CONTEXT_ID = "atsActionView";
    private static ActionHyperItem topAHI;
    private static ATSArtifact currentArtifact;
-   private SkynetEventManager eventManager;
 
    public ActionHyperView() {
       super();
@@ -67,7 +63,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       setNodeColor(whiteColor);
       setCenterColor(whiteColor);
       setVerticalSelection(45);
-      eventManager = SkynetEventManager.getInstance();
    }
 
    @Override
@@ -82,8 +77,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);
       AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID);
-      eventManager.register(RemoteTransactionEvent.class, this);
-      eventManager.register(LocalTransactionEvent.class, this);
+      XEventManager.addListener(this, this);
    }
 
    public static ActionHyperView getArtifactHyperView() {
@@ -106,7 +100,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void dispose() {
       super.dispose();
-      eventManager.unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    @Override
@@ -129,11 +123,12 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void display() {
       try {
+         XEventManager.removeListeners(this);
          getContainer().setCursor(new Cursor(null, SWT.NONE));
          if (currentArtifact == null || currentArtifact.isDeleted()) {
-            eventManager.unRegisterAll(this);
             return;
          }
+         XEventManager.addListener(this, this);
          reviewsCreated = false;
          tasksReviewsCreated = false;
          ATSArtifact topArt = getTopArtifact(currentArtifact);
@@ -170,6 +165,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          create(topAHI);
       } catch (Exception ex) {
          clear();
+         XEventManager.removeListeners(this);
       }
    }
 
@@ -213,7 +209,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor != null && (editor instanceof SMAEditor)) {
-            currentArtifact = (ATSArtifact) ((SMAEditor) editor).getSmaMgr().getSma();
+            currentArtifact = ((SMAEditor) editor).getSmaMgr().getSma();
             display();
          } else
             super.clear();
@@ -224,14 +220,17 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       processWindowActivated();
    }
 
+   @Override
    public void partActivated(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partBroughtToTop(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partClosed(IWorkbenchPart part) {
       if (part.equals(this))
          dispose();
@@ -239,10 +238,12 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          processWindowActivated();
    }
 
+   @Override
    public void partDeactivated(IWorkbenchPart part) {
       processWindowActivated();
    }
 
+   @Override
    public void partOpened(IWorkbenchPart part) {
       processWindowActivated();
    }
@@ -256,28 +257,6 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    protected void clear() {
       super.clear();
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#onEvent(org.eclipse.osee.framework.jdk.core.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (currentArtifact == null) return;
-      if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(currentArtifact);
-         if (ed.isRemoved()) {
-            clear();
-         } else if (ed.isModified() || ed.isRelChange()) {
-            display();
-         }
-      } else
-         logger.log(Level.SEVERE, "Unexpected event => " + event);
    }
 
    /*
@@ -311,4 +290,34 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       processWindowActivated();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (source == Source.Remote) return;
+      if (currentArtifact == null) return;
+      if (transData.isDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      if (transData.isRelAddedChangedDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               display();
+            }
+         });
+      }
+   }
 }

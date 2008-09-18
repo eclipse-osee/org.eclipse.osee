@@ -23,20 +23,17 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
-import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -52,13 +49,12 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ArtifactHyperView extends HyperView implements IEventReceiver, IPartListener, IActionable, IPerspectiveListener2 {
+public class ArtifactHyperView extends HyperView implements IFrameworkTransactionEventListener, IPartListener, IActionable, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public static ArtifactHyperItem topAHI;
    public static Artifact currentArtifact;
    public ActionDebug debug = new ActionDebug(false, "ArtifactHyperView");
-   private SkynetEventManager eventManager;
    private Action pinAction;
 
    public ArtifactHyperView() {
@@ -67,7 +63,6 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
       setNodeColor(whiteColor);
       setCenterColor(whiteColor);
-      eventManager = SkynetEventManager.getInstance();
       defaultZoom.pcRadius += defaultZoom.pcRadiusFactor * 2;
       defaultZoom.uuRadius += defaultZoom.uuRadiusFactor * 2;
       defaultZoom.xSeparation += defaultZoom.xSeparationFactor;
@@ -113,10 +108,9 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
    @Override
    public void display() {
       try {
-         eventManager.unRegisterAll(this);
+         XEventManager.removeListeners(this);
          if (currentArtifact == null) return;
-         eventManager.register(RemoteTransactionEvent.class, this);
-         eventManager.register(LocalTransactionEvent.class, this);
+         XEventManager.addListener(this, this);
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
@@ -173,8 +167,10 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          center();
       } catch (SQLException ex) {
          clear();
+         XEventManager.removeListeners(this);
       } catch (ArtifactDoesNotExist ex) {
          clear();
+         XEventManager.removeListeners(this);
       }
    }
 
@@ -186,7 +182,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
    @Override
    public void dispose() {
       super.dispose();
-      eventManager.unRegisterAll(this);
+      XEventManager.removeListeners(this);
    }
 
    public void handleWindowChange() {
@@ -196,20 +192,23 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor != null && (editor instanceof SMAEditor)) {
-            currentArtifact = (ATSArtifact) ((SMAEditor) editor).getSmaMgr().getSma();
+            currentArtifact = ((SMAEditor) editor).getSmaMgr().getSma();
             load(currentArtifact);
          }
       }
    }
 
+   @Override
    public void partActivated(IWorkbenchPart part) {
       handleWindowChange();
    }
 
+   @Override
    public void partBroughtToTop(IWorkbenchPart part) {
       handleWindowChange();
    }
 
+   @Override
    public void partClosed(IWorkbenchPart part) {
       if (part.equals(this))
          dispose();
@@ -217,10 +216,12 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          handleWindowChange();
    }
 
+   @Override
    public void partDeactivated(IWorkbenchPart part) {
       handleWindowChange();
    }
 
+   @Override
    public void partOpened(IWorkbenchPart part) {
       handleWindowChange();
    }
@@ -231,6 +232,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
 
       pinAction = new Action("Pin Viewer", Action.AS_CHECK_BOX) {
 
+         @Override
          public void run() {
          }
       };
@@ -239,6 +241,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
 
       Action openArtAction = new Action("Open Artifact") {
 
+         @Override
          public void run() {
             handleOpenArtifact();
          }
@@ -248,6 +251,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
 
       Action openByIdAction = new Action("Open by Id", IAction.AS_PUSH_BUTTON) {
 
+         @Override
          public void run() {
             MultipleHridSearchItem gsi = new MultipleHridSearchItem();
             try {
@@ -293,23 +297,6 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
       return "";
    }
 
-   public void onEvent(Event event) {
-
-      if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(currentArtifact);
-         if (ed.isRemoved()) {
-            clear();
-         } else if (ed.isModified() || ed.isRelChange()) {
-            display();
-         }
-      } else
-         logger.log(Level.SEVERE, "Unexpected event => " + event);
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
-   }
-
    /*
     * (non-Javadoc)
     * 
@@ -339,6 +326,37 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
     */
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       handleWindowChange();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      if (source == Source.Remote) return;
+      if (currentArtifact == null) return;
+      if (transData.isDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               clear();
+            }
+         });
+      }
+      if (transData.isRelAddedChangedDeleted(currentArtifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               display();
+            }
+         });
+      }
    }
 
 }

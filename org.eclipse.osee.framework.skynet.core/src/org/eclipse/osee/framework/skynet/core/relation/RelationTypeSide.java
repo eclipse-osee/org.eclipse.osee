@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

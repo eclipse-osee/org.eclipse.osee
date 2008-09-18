@@ -43,23 +43,22 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.eventx.XEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.event.Sender.Source;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -85,9 +84,8 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.osgi.framework.Bundle;
 
-public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IEventReceiver {
+public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IFrameworkTransactionEventListener {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
    private IHandlerService handlerService;
@@ -143,6 +141,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       SkynetContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
+      XEventManager.addListener(this, this);
    }
 
    private void createContextMenu(Control menuOnwer) {
@@ -774,14 +773,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
    }
 
-   private void registerForEvents() {
-      eventManager.unRegisterAll(this);
-
-      eventManager.register(ArtifactModifiedEvent.class, this);
-      eventManager.register(CacheRelationModifiedEvent.class, this);
-      eventManager.register(TransactionRelationModifiedEvent.class, this);
-   }
-
    @Override
    protected void elementsChanged(Object[] objects) {
       if (aContentProvider != null) {
@@ -814,18 +805,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    @Override
    public void dispose() {
-      eventManager.unRegisterAll(this);
+      XEventManager.removeListeners(this);
       super.dispose();
-   }
-
-   public void onEvent(Event event) {
-      if (viewer != null) {
-         viewer.refresh();
-      }
-   }
-
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    private class SearchDragAndDrop extends SkynetDragAndDrop {
@@ -861,7 +842,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     * @see org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper#getSelectedArtifacts()
     */
    public Collection<Artifact> getSelectedArtifacts() {
-      registerForEvents();
       return getSelectedArtifacts(viewer);
    }
 
@@ -871,5 +851,23 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    @Override
    public TableViewer getViewer() {
       return viewer;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
+    */
+   @Override
+   public void handleFrameworkTransactionEvent(Source source, FrameworkTransactionData transData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (viewer != null) {
+               viewer.refresh();
+            }
+         }
+      });
    }
 }

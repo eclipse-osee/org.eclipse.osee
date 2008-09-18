@@ -14,8 +14,10 @@ package org.eclipse.osee.framework.skynet.core.change;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.*;
-
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
