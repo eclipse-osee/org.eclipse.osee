@@ -17,6 +17,7 @@ public class NetworkSender {
    public String machineIp;
 
    public NetworkSender(Object sourceObject, String sessionId, String machineName, String userId, String machineIp) {
+      this.sessionId = sessionId;
       this.sourceObject = sourceObject;
       this.machineName = machineName;
       this.userId = userId;

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -190,7 +190,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (branchArtifact.getArtifact().getBranch().getBranchId() == branchId) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)

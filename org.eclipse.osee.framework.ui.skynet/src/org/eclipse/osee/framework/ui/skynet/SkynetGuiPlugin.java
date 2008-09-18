@@ -47,7 +47,6 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       super();
       pluginInstance = this;
       securityManager = OseeSecurityManager.getInstance();
-      OseeEventManager.addListener(this, this);
    }
 
    /* (non-Javadoc)
@@ -67,6 +66,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       super.start(context);
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
+      OseeEventManager.addListener(this, this);
    }
 
    /**

@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -175,8 +175,8 @@ public class RevisionManager {
              * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
              */
             @Override
-            public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-               if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
+            public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+               if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Committed) {
                   // Clear the cache so it gets reloaded
                   commitArtifactIdToTransactionId = null;
                   /**

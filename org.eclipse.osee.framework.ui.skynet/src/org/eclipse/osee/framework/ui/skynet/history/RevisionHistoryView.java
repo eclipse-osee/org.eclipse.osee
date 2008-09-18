@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -290,7 +290,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       if (artifact.getBranch().isArchived() || artifact.getBranch().getBranchId() != branchId) {
          closeView();
       }

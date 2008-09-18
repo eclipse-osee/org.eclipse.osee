@@ -297,6 +297,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (sender.isRemote()) return;
       if (currentArtifact == null) return;
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)

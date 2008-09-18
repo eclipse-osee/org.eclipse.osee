@@ -5,13 +5,13 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IBranchEventListener extends IEventListner {
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId);
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId);
 
    public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender);
 

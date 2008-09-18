@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
@@ -401,10 +401,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
          if (smaMgr.isInTransition()) return;
-         if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
+         if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Committed) {
             if (smaMgr.getBranchMgr().getBranchId() == null || smaMgr.getBranchMgr().getBranchId() != branchId) {
                return;
             }
@@ -432,6 +432,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (smaMgr.isInTransition()) return;
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (transData.isDeleted(smaMgr.getSma())) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override

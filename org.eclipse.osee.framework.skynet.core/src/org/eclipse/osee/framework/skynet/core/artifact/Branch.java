@@ -139,7 +139,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void kickRenameEvents() throws OseeCoreException {
-      OseeEventManager.kickBranchEvent(this, BranchModType.Renamed, branchId);
+      OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branchId);
    }
 
    /**

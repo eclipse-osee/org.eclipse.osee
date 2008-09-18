@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
@@ -613,8 +613,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-      if (branchModType == BranchModType.Committed) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.Committed) {
          try {
             changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
                   BranchPersistenceManager.getDefaultBranch()));
@@ -623,7 +623,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             AWorkbench.getActivePage().closeEditor(this, false);
          }
       }
-      if (branchModType == BranchModType.DefaultBranchChanged) {
+      if (branchModType == BranchEventType.DefaultBranchChanged) {
          try {
             if (artifact.getBranch().equals(BranchPersistenceManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                try {

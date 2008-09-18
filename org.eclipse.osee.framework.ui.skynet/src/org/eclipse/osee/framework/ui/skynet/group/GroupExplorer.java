@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -650,8 +650,8 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-      if (branchModType == BranchModType.DefaultBranchChanged) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.DefaultBranchChanged) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -674,9 +674,10 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+      if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) return;
       try {
          Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getDefaultBranch());
-         if (topArt == null) {
+         if (topArt != null) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

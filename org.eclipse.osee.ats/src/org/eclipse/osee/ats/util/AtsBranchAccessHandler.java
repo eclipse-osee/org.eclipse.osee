@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -50,9 +50,9 @@ public class AtsBranchAccessHandler implements IBranchEventListener {
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
-         if (branchModType == BranchModType.Added) {
+         if (branchModType == BranchEventType.Added) {
             Branch branch = BranchPersistenceManager.getBranch(branchId);
             Artifact artifact = branch.getAssociatedArtifact();
             if (artifact instanceof StateMachineArtifact) {

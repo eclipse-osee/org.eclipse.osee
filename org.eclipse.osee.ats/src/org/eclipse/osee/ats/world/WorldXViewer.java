@@ -129,6 +129,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()

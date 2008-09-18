@@ -147,7 +147,7 @@ class DeleteBranchJob extends Job {
          super.handleTxFinally();
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
-            OseeEventManager.kickBranchEvent(this, BranchModType.Deleted,
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted,
                   branch.getBranchId());
          }
       }

@@ -31,12 +31,15 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 public class ApplicationServer {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ApplicationServer.class);
 
-   private static final OseeSession oseeSession = new OseeSession();
+   private static OseeSession oseeSession;
 
    /**
     * @return the oseeSession
     */
    public static OseeSession getOseeSession() {
+      if (oseeSession == null) {
+         oseeSession = new OseeSession();
+      }
       return oseeSession;
    }
 

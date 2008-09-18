@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -1539,8 +1539,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-      if (branchModType == BranchModType.DefaultBranchChanged) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.DefaultBranchChanged) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
@@ -1567,7 +1567,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             }
          });
       }
-      if (branchModType == BranchModType.Committed) {
+      if (branchModType == BranchEventType.Committed) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()

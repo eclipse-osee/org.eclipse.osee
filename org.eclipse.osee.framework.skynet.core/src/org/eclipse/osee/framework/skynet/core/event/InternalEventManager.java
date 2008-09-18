@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -62,7 +62,7 @@ public class InternalEventManager {
    private static final HashCollection<Object, IEventListner> listenerMap =
          new HashCollection<Object, IEventListner>(false, HashSet.class, 100);
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
-   private static final boolean debug = false;
+   private static final boolean debug = true;
    private static boolean disableEvents = false;
    private static ExecutorService executorService = Executors.newFixedThreadPool(4);
 
@@ -98,30 +98,35 @@ public class InternalEventManager {
     * @param message
     * @throws OseeCoreException
     */
-   static void kickBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, String message) throws OseeCoreException {
+   static void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) throws OseeCoreException {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickBroadcastEvent " + sender.getNetworkSender() + " message: " + message);
-      // Kick Local
-      if (broadcastEventType == BroadcastEventType.Message) {
-         for (IEventListner listener : listenerMap.getValues()) {
-            if (listener instanceof IBroadcastEventListneer) {
-               // Don't fail on any one listener's exception
-               try {
-                  ((IBroadcastEventListneer) listener).handleBroadcastEvent(sender, broadcastEventType, userIds,
-                        message);
-               } catch (Exception ex) {
-                  SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      if (debug) System.out.println("kickBroadcastEvent " + sender + " message: " + message);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            // Kick Local
+            if (broadcastEventType == BroadcastEventType.Message) {
+               for (IEventListner listener : listenerMap.getValues()) {
+                  if (listener instanceof IBroadcastEventListneer) {
+                     // Don't fail on any one listener's exception
+                     try {
+                        ((IBroadcastEventListneer) listener).handleBroadcastEvent(sender, broadcastEventType, userIds,
+                              message);
+                     } catch (Exception ex) {
+                        SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     }
+                  }
                }
             }
+            // Kick Remote (If source was Local and this was not a default branch changed event
+            try {
+               RemoteEventManager.kick(new NetworkBroadcastEvent(message, broadcastEventType.name(),
+                     sender.getNetworkSender()));
+            } catch (Exception ex) {
+               throw new OseeCoreException(ex);
+            }
          }
-      }
-      // Kick Remote (If source was Local and this was not a default branch changed event
-      try {
-         RemoteEventManager.kick(new NetworkBroadcastEvent(message, broadcastEventType.name(),
-               sender.getNetworkSender()));
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      };
+      execute(runnable);
    }
 
    /**
@@ -132,43 +137,48 @@ public class InternalEventManager {
     * @param branchId
     * @throws OseeCoreException
     */
-   static void kickBranchEvent(Sender sender, BranchModType branchModType, int branchId) throws OseeCoreException {
+   static void kickBranchEvent(final Sender sender, final BranchEventType branchModType, final int branchId) {
       if (isDisableEvents()) return;
-      if (debug) System.out.println("kickBranchEvent " + sender.getNetworkSender() + " branchModType: " + branchModType + " id: " + branchId);
-      Branch branch = null;
-      try {
-         branch = BranchPersistenceManager.getBranch(branchId);
-      } catch (Exception ex) {
-         // do nothing
-      }
-      // Kick Local
-      for (IEventListner listener : listenerMap.getValues()) {
-         if (listener instanceof IBranchEventListener) {
-            // Don't fail on any one listener's exception
+      if (debug) System.out.println("kickBranchEvent - type: " + branchModType + " id: " + branchId);
+      Runnable runnable = new Runnable() {
+         public void run() {
+            Branch branch = null;
             try {
-               ((IBranchEventListener) listener).handleBranchEvent(sender, branchModType, branchId);
+               branch = BranchPersistenceManager.getBranch(branchId);
+            } catch (Exception ex) {
+               // do nothing
+            }
+            // Kick Local
+            for (IEventListner listener : listenerMap.getValues()) {
+               if (listener instanceof IBranchEventListener) {
+                  // Don't fail on any one listener's exception
+                  try {
+                     ((IBranchEventListener) listener).handleBranchEvent(sender, branchModType, branchId);
+                  } catch (Exception ex) {
+                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  }
+               }
+            }
+            // Kick Remote (If source was Local and this was not a default branch changed event
+            try {
+               if (sender.isLocal() && branchModType != BranchEventType.DefaultBranchChanged) {
+                  if (branchModType == BranchEventType.Added) {
+                     RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
+                  } else if (branchModType == BranchEventType.Deleted) {
+                     RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
+                  } else if (branchModType == BranchEventType.Committed) {
+                     RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
+                  } else if (branchModType == BranchEventType.Renamed) {
+                     RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
+                           branch.getBranchName(), branch.getBranchShortName()));
+                  }
+               }
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
-      }
-      // Kick Remote (If source was Local and this was not a default branch changed event
-      try {
-         if (sender.isLocal() && branchModType != BranchModType.DefaultBranchChanged) {
-            if (branchModType == BranchModType.Added) {
-               RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
-            } else if (branchModType == BranchModType.Deleted) {
-               RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
-            } else if (branchModType == BranchModType.Committed) {
-               RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
-            } else if (branchModType == BranchModType.Renamed) {
-               RemoteEventManager.kick(new NetworkRenameBranchEvent(branchId, sender.getNetworkSender(),
-                     branch.getBranchName(), branch.getBranchShortName()));
-            }
-         }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
-      }
+      };
+      execute(runnable);
    }
 
    private static void execute(Runnable runnable) {
@@ -184,36 +194,37 @@ public class InternalEventManager {
     * @throws OseeCoreException
     */
    static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlModType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+      if (sender == null) throw new IllegalArgumentException("sender can not be null");
+      if (accessControlModType == null) throw new IllegalArgumentException("accessControlModType can not be null");
+      if (loadedArtifacts == null) throw new IllegalArgumentException("loadedArtifacts can not be null");
       if (isDisableEvents()) return;
-      Runnable runnable = new Runnable() {
-         public void run() {
-            if (debug) System.out.println("kickAccessControlEvent " + sender.getNetworkSender() + " accessControlEventType: " + accessControlModType + " loadedArtifacts: " + loadedArtifacts);
-            // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
-               if (listener instanceof IAccessControlEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender,
-                           accessControlModType, loadedArtifacts);
-                  } catch (Exception ex) {
-                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                  }
-               }
-            }
-            // Kick Remote (If source was Local and this was not a default branch changed event
+      if (debug) System.out.println("kickAccessControlEvent - type: " + accessControlModType + " sender: " + sender + " loadedArtifacts: " + loadedArtifacts);
+      // Kick Local
+      for (IEventListner listener : listenerMap.getValues()) {
+         if (listener instanceof IAccessControlEventListener) {
+            // Don't fail on any one listener's exception
             try {
-               if (sender.isLocal()) {
-                  RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlModType.name(),
-                        loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
-                        loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
-                        sender.getNetworkSender()));
-               }
+               ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlModType,
+                     loadedArtifacts);
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
-      };
-      execute(runnable);
+      }
+      // Kick Remote (If source was Local and this was not a default branch changed event
+      try {
+         if (sender.isLocal()) {
+            Integer branchId = null;
+            if (loadedArtifacts != null && loadedArtifacts.getLoadedArtifacts().size() > 0) {
+               branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId();
+            }
+            RemoteEventManager.kick(new NetworkAccessControlArtifactsEvent(accessControlModType.name(),
+                  branchId == null ? 0 : branchId, loadedArtifacts.getAllArtifactIds(),
+                  loadedArtifacts.getAllArtifactTypeIds(), sender.getNetworkSender()));
+         }
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
    }
 
    /**
@@ -637,16 +648,21 @@ public class InternalEventManager {
     * @param listener
     */
    static void addListener(Object key, IEventListner listener) {
+      if (key == null) throw new IllegalArgumentException("key can not be null");
+      if (listener == null) throw new IllegalArgumentException("listener can not be null");
       if (debug) System.out.println("addListener " + key + " - " + listener);
       listenerMap.put(key, listener);
    }
 
    static void removeListener(Object key, IEventListner listener) {
+      if (key == null) throw new IllegalArgumentException("key can not be null");
+      if (listener == null) throw new IllegalArgumentException("listener can not be null");
       if (debug) System.out.println("removeListener " + key + " - " + listener);
       listenerMap.removeValue(key, listener);
    }
 
    static void removeListeners(Object key) {
+      if (key == null) throw new IllegalArgumentException("key can not be null");
       if (debug) System.out.println("removeListeners ALL " + key);
       Set<IEventListner> listenersToRemove = new HashSet<IEventListner>();
       for (IEventListner listener : listenerMap.getValues(key)) {

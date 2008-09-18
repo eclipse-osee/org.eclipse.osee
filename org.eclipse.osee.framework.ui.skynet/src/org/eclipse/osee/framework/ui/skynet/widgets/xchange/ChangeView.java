@@ -22,7 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -214,15 +214,15 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, final int branchId) {
-      if (branchModType == BranchModType.Deleted) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+      if (branchModType == BranchEventType.Deleted) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                closeView();
             }
          });
          return;
-      } else if (branchModType == BranchModType.Committed) {
+      } else if (branchModType == BranchEventType.Committed) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                try {
@@ -233,7 +233,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
             }
          });
          // refresh view with new branch and transaction id
-      } else if (branchModType == BranchModType.DefaultBranchChanged) {
+      } else if (branchModType == BranchEventType.DefaultBranchChanged) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()

@@ -105,7 +105,7 @@ public class HttpBranchCreation {
       }
 
       // Kick events
-      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchModType.Added, branch.getBranchId());
+      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getBranchId());
 
       return branch;
    }

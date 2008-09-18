@@ -334,6 +334,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
       if (sender.isRemote()) return;
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       if (currentArtifact == null) return;
       if (transData.isDeleted(currentArtifact)) {
          Displays.ensureInDisplayThread(new Runnable() {

@@ -14,7 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -89,8 +89,8 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-      if (branchModType == BranchModType.DefaultBranchChanged) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.DefaultBranchChanged) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()

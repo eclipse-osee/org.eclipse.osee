@@ -63,7 +63,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -1797,8 +1797,8 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
     */
    @Override
-   public void handleBranchEvent(Sender sender, BranchModType branchModType, int branchId) {
-      if (branchModType == BranchModType.DefaultBranchChanged || branchModType == BranchModType.Renamed) {
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      if (branchModType == BranchEventType.DefaultBranchChanged || branchModType == BranchEventType.Renamed) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
@@ -1808,7 +1808,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                refresh();
             }
          });
-      } else if (branchModType == BranchModType.Added || branchModType == BranchModType.Deleted || branchModType == BranchModType.Committed) {
+      } else if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Committed) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()

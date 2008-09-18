@@ -237,7 +237,7 @@ class CommitJob extends Job {
       protected void handleTxFinally() throws Exception {
          super.handleTxFinally();
          if (success) {
-            OseeEventManager.kickBranchEvent(this, BranchModType.Committed, fromBranchId);
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, fromBranchId);
          }
       }
 

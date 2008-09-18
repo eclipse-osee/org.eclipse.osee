@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class SMATaskComposite extends Composite {
+public class SMATaskComposite extends Composite implements IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
 
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final XTaskViewer xTaskViewer;
@@ -57,8 +57,7 @@ public class SMATaskComposite extends Composite {
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
 
       xTaskViewer.loadTable();
-
-      registerEvents();
+      OseeEventManager.addListener(this, this);
    }
 
    @Override
@@ -84,67 +83,57 @@ public class SMATaskComposite extends Composite {
       return xTaskViewer.toHTML(AHTML.LABEL_FONT);
    }
 
-   private void registerEvents() {
-      OseeEventManager.addListener(this, new IArtifactsPurgedEventListener() {
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.size() == 0) return;
+      // ContentProvider ensures in display thread
+      ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
+   }
 
+   @Override
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      if (cacheArtifacts.size() == 0) return;
+      // ContentProvider ensures in display thread
+      ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
+   }
+
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
          @Override
-         public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
-         }
-      });
-      OseeEventManager.addListener(this, new IArtifactsChangeTypeEventListener() {
+         public void run() {
 
-         @Override
-         public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-            if (cacheArtifacts.size() == 0) return;
-            // ContentProvider ensures in display thread
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(cacheArtifacts);
-         }
+            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
 
-      });
-      OseeEventManager.addListener(this, new IFrameworkTransactionEventListener() {
+            try {
+               Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
+               if (parentSma != null) {
+                  // Add any new tasks related to parent sma
+                  Collection<Artifact> artifacts =
+                        transData.getRelatedArtifacts(parentSma.getArtId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
+                  if (artifacts.size() > 0) {
+                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
+                  }
 
-         @Override
-         public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-
-            Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
-               @Override
-               public void run() {
-
-                  ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
-                  xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
-
-                  try {
-                     Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
-                     if (parentSma != null) {
-                        // Add any new tasks related to parent sma
-                        Collection<Artifact> artifacts =
-                              transData.getRelatedArtifacts(parentSma.getArtId(),
-                                    AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                                    AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
-                        if (artifacts.size() > 0) {
-                           ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
-                        }
-
-                        // Remove any tasks related to parent sma
-                        artifacts =
-                              transData.getRelatedArtifacts(parentSma.getArtId(),
-                                    AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                                    AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
-                        if (artifacts.size() > 0) {
-                           ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
-                        }
-                     }
-                  } catch (Exception ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, false);
+                  // Remove any tasks related to parent sma
+                  artifacts =
+                        transData.getRelatedArtifacts(parentSma.getArtId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
+                  if (artifacts.size() > 0) {
+                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
                   }
                }
-            });
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
          }
       });
    }

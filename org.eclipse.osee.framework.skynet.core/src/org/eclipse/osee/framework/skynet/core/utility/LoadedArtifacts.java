@@ -63,8 +63,12 @@ public class LoadedArtifacts {
     */
    public LoadedArtifacts(Artifact artifact) {
       this.artifacts = new HashSet<Artifact>();
-      this.artifacts.add(artifact);
+      if (artifact != null) this.artifacts.add(artifact);
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
+   }
+
+   public static LoadedArtifacts EmptyLoadedArtifacts() {
+      return new LoadedArtifacts((Artifact) null);
    }
 
    @Override

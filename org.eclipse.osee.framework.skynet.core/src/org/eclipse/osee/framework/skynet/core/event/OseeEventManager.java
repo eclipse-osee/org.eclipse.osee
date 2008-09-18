@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -69,7 +69,7 @@ public class OseeEventManager {
     * @param branchId
     * @throws OseeCoreException
     */
-   public static void kickBranchEvent(Object source, BranchModType branchModType, int branchId) throws OseeCoreException {
+   public static void kickBranchEvent(Object source, BranchEventType branchModType, int branchId) throws OseeCoreException {
       if (isDisableEvents()) return;
       InternalEventManager.kickBranchEvent(getSender(source), branchModType, branchId);
    }

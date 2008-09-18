@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
@@ -153,7 +154,8 @@ public class SkynetAuthentication {
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
             try {
-               OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlModType.UserAuthenticated, null);
+               OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlModType.UserAuthenticated,
+                     LoadedArtifacts.EmptyLoadedArtifacts());
             } catch (Exception ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }

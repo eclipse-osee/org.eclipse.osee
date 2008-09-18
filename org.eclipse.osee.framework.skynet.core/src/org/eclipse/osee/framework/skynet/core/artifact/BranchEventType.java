@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 /**
  * @author Donald G. Dunne
  */
-public enum BranchModType {
+public enum BranchEventType {
 
    // Local and Remote events
    Deleted,

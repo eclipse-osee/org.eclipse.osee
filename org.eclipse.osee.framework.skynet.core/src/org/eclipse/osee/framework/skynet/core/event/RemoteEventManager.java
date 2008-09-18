@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchModType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
@@ -271,7 +271,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         try {
-                           OseeEventManager.kickBranchEvent(sender, BranchModType.Renamed, branchId);
+                           OseeEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
                         } catch (Exception ex) {
                            logger.log(Level.SEVERE, ex.toString(), ex);
                         }
@@ -281,7 +281,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   } else if (event instanceof NetworkNewBranchEvent) {
                      int branchId = ((NetworkNewBranchEvent) event).getBranchId();
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchModType.Added, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -289,7 +289,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchModType.Deleted, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -297,7 +297,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchModType.Committed, branchId);
+                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
