@@ -55,6 +55,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Donald G. Dunne
@@ -66,11 +67,17 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
+   private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
    };
    private PriviledgedEditMode priviledgedEditMode = PriviledgedEditMode.Off;
    private Action printAction;
+
+   public SMAEditor() {
+      super();
+      editor = this;
+   }
 
    /*
     * (non-Javadoc)
@@ -275,11 +282,22 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          IEditorReference editor = editors[j];
          if (editor.getPart(false) instanceof SMAEditor) {
             if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
-               System.out.println("Closing editor \"" + (artifact.isDeleted() ? "" : artifact.getDescriptiveName()) + "\"");
-               page.closeEditor(editor.getEditor(false), save);
+               ((SMAEditor) editor).closeEditor();
             }
          }
       }
+   }
+
+   public void closeEditor() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            AWorkbench.getActivePage().closeEditor(editor, false);
+         }
+      });
    }
 
    /**
@@ -439,7 +457,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               smaMgr.closeEditors(false);
+               closeEditor();
             }
          });
       } else if (transData.isHasEvent(smaMgr.getSma())) {
@@ -494,7 +512,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               smaMgr.closeEditors(false);
+               closeEditor();
             }
          });
       }
