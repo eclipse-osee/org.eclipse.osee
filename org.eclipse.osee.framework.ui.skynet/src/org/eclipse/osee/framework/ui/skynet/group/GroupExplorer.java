@@ -402,8 +402,8 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
     */
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    public String getActionDescription() {

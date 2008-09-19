@@ -94,8 +94,8 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    /* (non-Javadoc)

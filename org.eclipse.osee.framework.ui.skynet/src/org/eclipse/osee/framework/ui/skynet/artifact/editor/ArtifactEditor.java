@@ -558,9 +558,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    @Override
    public void dispose() {
+      OseeEventManager.removeListeners(this);
       try {
          // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
-
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {
             try {
                artifact.reloadAttributesAndRelations();
@@ -568,8 +568,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
-
-         OseeEventManager.removeListeners(this);
          super.dispose();
       } catch (SQLException ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

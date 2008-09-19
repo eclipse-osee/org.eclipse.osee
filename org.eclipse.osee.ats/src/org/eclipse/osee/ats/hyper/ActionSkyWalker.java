@@ -93,8 +93,8 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    /*
@@ -104,7 +104,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
     */
    @Override
    public void explore(Artifact artifact) {
-      OseeEventManager.removeListeners(this);
       if (artifact == null || artifact.isDeleted() || (!(artifact instanceof ATSArtifact))) clear();
       try {
          getOptions().setArtifact(artifact);
@@ -113,10 +112,8 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
             super.explore(artifact);
          else
             super.explore(getTopArtifact((ATSArtifact) artifact));
-         OseeEventManager.addListener(this, this);
       } catch (SQLException ex) {
          clear();
-         OseeEventManager.removeListeners(this);
       }
    }
 

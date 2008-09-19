@@ -1733,6 +1733,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void dispose() {
       disposed = true;
+      OseeEventManager.removeListeners(this);
 
       try {
          getViewPreference().flush();
@@ -1740,7 +1741,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          OSEELog.logException(BranchView.class, ex, true);
       }
 
-      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 

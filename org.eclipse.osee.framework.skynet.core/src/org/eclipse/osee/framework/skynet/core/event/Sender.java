@@ -72,6 +72,6 @@ public class Sender {
 
    @Override
    public String toString() {
-      return "Session - " + oseeSession.toString() + "  [" + sourceObject + "]";
+      return "Session: [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }
 }

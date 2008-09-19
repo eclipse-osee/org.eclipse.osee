@@ -99,8 +99,8 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    @Override

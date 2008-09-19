@@ -1244,8 +1244,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     */
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
       if (treeViewer != null) {
          trees.remove(treeViewer.getTree());
       }

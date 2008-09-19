@@ -683,8 +683,8 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
     */
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
       if (xViewer != null) xViewer.dispose();
    }
 

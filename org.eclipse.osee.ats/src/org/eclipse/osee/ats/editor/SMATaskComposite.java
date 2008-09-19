@@ -74,8 +74,8 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
     */
    @Override
    public void dispose() {
-      xTaskViewer.dispose();
       OseeEventManager.removeListeners(this);
+      xTaskViewer.dispose();
       super.dispose();
    }
 

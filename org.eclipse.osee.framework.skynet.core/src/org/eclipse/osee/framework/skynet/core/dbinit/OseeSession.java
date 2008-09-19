@@ -42,7 +42,7 @@ public class OseeSession implements Serializable {
 
    @Override
    public String toString() {
-      return "OseeSession - id:" + id + " userId:" + userId + " machineName:" + machineName + " machineIp" + machineIp;
+      return "sessionId:" + id + " userId:" + userId + " machineName:" + machineName + " machineIp" + machineIp;
    }
 
    /**

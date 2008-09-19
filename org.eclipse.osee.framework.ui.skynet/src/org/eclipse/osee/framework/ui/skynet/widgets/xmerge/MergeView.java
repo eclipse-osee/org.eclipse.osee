@@ -147,8 +147,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    @Override

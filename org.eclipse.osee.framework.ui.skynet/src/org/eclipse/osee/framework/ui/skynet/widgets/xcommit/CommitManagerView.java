@@ -92,8 +92,8 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    @Override

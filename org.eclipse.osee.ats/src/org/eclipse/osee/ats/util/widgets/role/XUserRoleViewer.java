@@ -287,7 +287,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    @Override
    public void dispose() {
       OseeEventManager.removeListeners(this);
-
       xViewer.dispose();
    }
 

@@ -178,8 +178,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    public void handleWindowChange() {

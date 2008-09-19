@@ -251,8 +251,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
     */
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
    }
 
    /* (non-Javadoc)

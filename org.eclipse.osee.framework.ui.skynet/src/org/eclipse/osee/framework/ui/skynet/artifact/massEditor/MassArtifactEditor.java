@@ -195,8 +195,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListeners(this);
+      super.dispose();
 
       for (Artifact taskArt : artifacts)
          try {

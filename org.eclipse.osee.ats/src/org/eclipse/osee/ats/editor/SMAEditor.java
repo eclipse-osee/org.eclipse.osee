@@ -129,10 +129,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public void dispose() {
+      OseeEventManager.removeListeners(this);
       if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) smaMgr.getSma().revertSMA();
       workFlowTab.dispose();
       if (taskComposite != null) taskComposite.dispose();
-      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 
