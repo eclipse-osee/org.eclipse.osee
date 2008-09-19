@@ -900,7 +900,7 @@
        name="Relation Database Integrity Check"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationDatabaseIntegrityCheck">
+          className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
     </Operation>
  </extension>
  <extension
