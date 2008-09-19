@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -92,6 +93,9 @@ public class BranchPersistenceManager {
    //This hash is keyed in the source branch id and destination branch id
    private final DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache;
    private final Map<Integer, Branch> transactionIdBranchCache;
+
+   private static final boolean MERGE_DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
 
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
@@ -239,12 +243,27 @@ public class BranchPersistenceManager {
     * the source branch.
     */
    public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException, SQLException {
+      long time = 0;
       Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
 
       if (mergeBranch == null) {
+         if (MERGE_DEBUG) {
+            System.out.println("Creating a new Merge Branch");
+            time = System.currentTimeMillis();
+         }
          mergeBranch = BranchCreator.getInstance().createMergeBranch(sourceBranch, destBranch, expectedArtIds);
+         if (MERGE_DEBUG) {
+            System.out.println(String.format("     Branch created in %s", Lib.getElapseString(time)));
+         }
       } else {
+         if (MERGE_DEBUG) {
+            System.out.println("Updating Existing Merge Branch");
+            time = System.currentTimeMillis();
+         }
          MergeBranchManager.updateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
+         if (MERGE_DEBUG) {
+            System.out.println(String.format("     Branch updated in %s", Lib.getElapseString(time)));
+         }
       }
       return mergeBranch;
    }

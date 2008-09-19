@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,6 +57,8 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> destAttribute = null;
    private AttributeType dynamicAttributeDescriptor;
    private final boolean isWordAttribute;
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
    /**
     * @param sourceGamma
@@ -247,22 +250,6 @@ public class AttributeConflict extends Conflict {
       return (getSourceObject().equals(getDestObject()));
    }
 
-   public boolean setStringAttributeValue(String value) throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge()) return false;
-      markStatusToReflectEdit();
-      getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), value);
-      getArtifact().persistAttributes();
-      return true;
-   }
-
-   public boolean setAttributeValue(Object value) throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge()) return false;
-      markStatusToReflectEdit();
-      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), value);
-      getArtifact().persistAttributes();
-      return true;
-   }
-
    public Object getMergeObject() throws OseeCoreException, SQLException {
       return getAttribute().getValue();
    }
@@ -277,9 +264,53 @@ public class AttributeConflict extends Conflict {
       return getDynamicAttributeDescriptor().getBaseAttributeClass();
    }
 
+   public boolean setStringAttributeValue(String value) throws OseeCoreException, SQLException {
+      if (!okToOverwriteMerge()) {
+         if (DEBUG) {
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
+                  getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
+      }
+      markStatusToReflectEdit();
+      getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().persistAttributes();
+      return true;
+   }
+
+   public boolean setAttributeValue(Object value) throws OseeCoreException, SQLException {
+      if (!okToOverwriteMerge()) {
+         if (DEBUG) {
+            System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
+                  getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
+      }
+      markStatusToReflectEdit();
+      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().persistAttributes();
+      return true;
+   }
+
    @Override
    public boolean setToSource() throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge() || getSourceObject() == null) return false;
+      if (!okToOverwriteMerge() || getSourceObject() == null) {
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d",
+               getAttrId()));
+      }
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
       getArtifact().persistAttributes();
@@ -288,7 +319,17 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean setToDest() throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge() || getDestObject() == null) return false;
+      if (!okToOverwriteMerge() || getDestObject() == null) {
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d",
+               getAttrId()));
+      }
       markStatusToReflectEdit();
       getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
       getArtifact().persistAttributes();
@@ -297,7 +338,16 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean clearValue() throws OseeCoreException, SQLException {
-      if (!okToOverwriteMerge()) return false;
+      if (!okToOverwriteMerge()) {
+         if (DEBUG) {
+            System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d",
+                  getAttrId()));
+         }
+         return false;
+      }
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Cleared the Merge Value for attr_id %d", getAttrId()));
+      }
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
@@ -325,7 +375,12 @@ public class AttributeConflict extends Conflict {
       } catch (AttributeDoesNotExist ex) {
          passedStatus = Status.NOT_RESOLVABLE;
       }
-      return super.computeStatus(attrId, passedStatus);
+      Status status = super.computeStatus(attrId, passedStatus);
+      //      if (DEBUG) {
+      //         System.out.println(String.format("Attribute Conflict: Computed Status Value for AttrId %d to %s", getAttrId(),
+      //               status));
+      //      }
+      return status;
    }
 
    @Override
@@ -347,20 +402,6 @@ public class AttributeConflict extends Conflict {
    @Override
    public ConflictType getConflictType() {
       return ConflictType.ATTRIBUTE;
-   }
-
-   /**
-    * @return the sourceDestDiffFile
-    */
-   public String getSourceDestDiffFile() {
-      return sourceDestDiffFile;
-   }
-
-   /**
-    * @param sourceDestDiffFile the sourceDestDiffFile to set
-    */
-   public void setSourceDestDiffFile(String sourceDestDiffFile) {
-      this.sourceDestDiffFile = sourceDestDiffFile;
    }
 
    public int getMergeGammaId() throws OseeCoreException, SQLException {
@@ -386,6 +427,9 @@ public class AttributeConflict extends Conflict {
    }
 
    public void revertSourceAttribute() throws OseeCoreException, SQLException {
+      if (DEBUG) {
+         System.out.println(String.format("AttributeConflict: Reverting Attribute %d", getAttrId()));
+      }
       ArtifactPersistenceManager.getInstance().revertAttribute(getSourceArtifact(), getSourceAttribute());
    }
 

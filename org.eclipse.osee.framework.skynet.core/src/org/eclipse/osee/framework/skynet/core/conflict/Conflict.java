@@ -343,6 +343,10 @@ public abstract class Conflict implements IAdaptable {
       this.destDiffFile = destDiffFile;
    }
 
+   public Status getStatus() {
+      return status;
+   }
+
    public abstract Image getImage() throws SQLException;
 
    public abstract String getSourceDisplayData() throws OseeCoreException, SQLException;

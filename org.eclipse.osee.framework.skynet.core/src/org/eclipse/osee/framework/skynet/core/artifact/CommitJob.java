@@ -17,10 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -87,11 +89,25 @@ class CommitJob extends Job {
    private final CommitDbTx commitDbTx;
    private final ConflictManagerExternal conflictManager;
 
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Commit"));
+   private static final boolean MERGE_DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
+
    public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch, boolean forceCommit) throws OseeCoreException, SQLException {
-      super("Committing Branch: " + fromBranch.getBranchName());
+      super("\nCommitting Branch: " + fromBranch.getBranchName());
       conflictManager = new ConflictManagerExternal(toBranch, fromBranch);
 
+      if (DEBUG) {
+         System.out.println(String.format("Commiting Branch %s into Branch %s", fromBranch.getBranchId(),
+               toBranch.getBranchId()));
+      }
+
       if (conflictManager.remainingConflictsExist() && !forceCommit) {
+         if (DEBUG) {
+            System.out.println(String.format("  FAILED: Found %d unresolved conflicts",
+                  conflictManager.getRemainingConflicts().size()));
+         }
          throw new ConflictDetectionException(
                "Trying to commit " + fromBranch.getBranchName() + " into " + toBranch.getBranchName() + " when " + conflictManager.getRemainingConflicts().size() + " conflicts still exist");
       }
@@ -144,18 +160,25 @@ class CommitJob extends Job {
          monitor.beginTask("Acquire from branch transactions", 100);
 
          User userToBlame = SkynetAuthentication.getUser();
-         //TODO Load new and deleted artifact so that they can be compressed out of the commit transaction
-         //select av1.art_id from osee_define_txs tx1, osee_define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_artifact_version av1, osee_Define_artifact_version av2 where td1.branch_id = 874 AND td1.tx_type = 0 AND td1.transaction_id = tx1.transaction_id AND tx1.mod_type = 1 AND tx1.gamma_id = av1.gamma_id AND td2.branch_id = 874 AND td2.tx_type = 0 AND td2.transaction_id = tx2.transaction_id AND tx2.mod_type = 3 AND tx2.tx_current = 2 AND tx2.gamma_id = av2.gamma_id AND av1.art_id = av2.art_id;
 
+         long time = System.currentTimeMillis();
+         long totalTime = time;
+         int count = 0;
+         //Load new and deleted artifact so that they can be compressed out of the commit transaction
          ResultSet resultSet =
                ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(),
                      fromBranch.getBranchId()).getRset();
-
          while (resultSet.next()) {
             ArtifactPersistenceManager.getInstance().revertArtifact(resultSet.getInt("branch_id"),
                   resultSet.getInt("art_id"));
          }
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Reverted %d Artifacts in %s to avoid commiting new and deleted artifacts", count,
+                  Lib.getElapseString(time)));
+         }
 
+         time = System.currentTimeMillis();
          if (fromBranch != null) {
             newTransactionNumber =
                   BranchPersistenceManager.addCommitTransactionToDatabase(toBranch, fromBranch, userToBlame);
@@ -164,53 +187,117 @@ class CommitJob extends Job {
          } else {
             //Commit transaction instead of a branch
          }
+         if (DEBUG) {
+            System.out.println(String.format("   Added commit transaction [%d] into the DB in %s",
+                  newTransactionNumber, Lib.getElapseString(time)));
+         }
 
          monitor.worked(25);
          monitor.setTaskName("Commit transactions");
 
+         time = System.currentTimeMillis();
          int insertCount =
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ATTRIBUTES, toBranch.getBranchId(),
                      fromBranchId);
+         if (DEBUG) {
+            count = insertCount;
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Attributes in %s", count,
+                  Lib.getElapseString(time)));
+         }
 
+         time = System.currentTimeMillis();
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Attributes in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
 
+         time = System.currentTimeMillis();
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
                      fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Artifacts in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
 
+         time = System.currentTimeMillis();
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Artifacts in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
 
+         time = System.currentTimeMillis();
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
                      fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format(
+                  "   Updated %d TX_Current values on Destination Branch for Relations in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
 
+         time = System.currentTimeMillis();
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Commited %d Relations in %s", insertCount - count,
+                  Lib.getElapseString(time)));
+            count = insertCount;
+         }
 
          //Change all modifications on artifacts/relation/attributes that are modified but should be new, because both new'd 
          //and modified on the same branch.
-
+         time = System.currentTimeMillis();
          ConnectionHandler.runPreparedUpdate(UPDATE_MODIFICATION_ID, newTransactionNumber, fromBranchId,
                newTransactionNumber, fromBranchId, newTransactionNumber, fromBranchId);
+         if (DEBUG) {
+            System.out.println(String.format("   Updated modification types for new and modified to modified in %s",
+                  Lib.getElapseString(time)));
+         }
 
          //add in all merge branch changes over any other source branch changes.
+         time = System.currentTimeMillis();
          if (conflictManager.originalConflictsExist()) {
+            count = 0;
             for (Conflict conflict : conflictManager.getOriginalConflicts()) {
-               if (!conflict.statusInformational()) {
+               if (conflict.statusResolved()) {
+                  count++;
+                  if (MERGE_DEBUG) {
+                     System.out.println(String.format(
+                           "     Using Merge value for Artifact %d item %s, setting gamma id to %d where it was %d",
+                           conflict.getArtifact().getArtId(), conflict.getChangeItem(), conflict.getMergeGammaId(),
+                           conflict.getSourceGamma()));
+                  }
                   ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, conflict.getMergeGammaId(),
                         newTransactionNumber, conflict.getSourceGamma());
                   conflict.setStatus(Conflict.Status.COMMITTED);
                }
-               //TODO add source, destination values for merge branch history
             }
+            if (DEBUG) {
+               System.out.println(String.format("    Added %d Merge Values in %s", count, Lib.getElapseString(time)));
+            }
+
+            time = System.currentTimeMillis();
             //insert transaction id into the branch table
             ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
                   fromBranch.getBranchId(), toBranch.getBranchId());
-
+            if (DEBUG) {
+               System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",
+                     Lib.getElapseString(time)));
+            }
          }
 
+         time = System.currentTimeMillis();
          if (insertCount > 0) {
             Object[] dataList =
                   new Object[] {toBranch.getBranchId(), newTransactionNumber, toBranch.getBranchId(),
@@ -218,6 +305,10 @@ class CommitJob extends Job {
             // reload the committed artifacts since the commit changed them on the destination branch
             ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
             tagArtifacts(toBranch, fromBranchId, monitor);
+            if (DEBUG) {
+               System.out.println(String.format("   Reloaded the Artifacts after the commit in %s",
+                     Lib.getElapseString(time)));
+            }
 
             if (archiveBranch) {
                fromBranch.archive();
@@ -225,6 +316,10 @@ class CommitJob extends Job {
 
          } else {
             throw new IllegalStateException(" A branch can not be commited without any changes made.");
+         }
+
+         if (DEBUG) {
+            System.out.println(String.format("Commit Completed in %s", Lib.getElapseString(totalTime)));
          }
          success = true;
          monitor.done();

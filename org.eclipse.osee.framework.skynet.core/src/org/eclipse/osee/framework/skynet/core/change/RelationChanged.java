@@ -12,6 +12,9 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -34,6 +37,7 @@ public class RelationChanged extends Change {
    private int aLinkOrder;
    private int bLinkOrder;
    private RelationType relationType;
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationChanged.class);
 
    /**
     * @param aArtTypeId
@@ -51,7 +55,8 @@ public class RelationChanged extends Change {
     * @param relationType
     */
    public RelationChanged(Branch branch, int aArtTypeId, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) {
-      super(branch, aArtTypeId, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
+      super(branch, aArtTypeId, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
+            isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -74,6 +79,18 @@ public class RelationChanged extends Change {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      try {
+         // this is a temporary fix until the old change report goes away.
+         if (adapter.isInstance(getArtifact())) {
+            return getArtifact();
+         }
+      } catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (ArtifactDoesNotExist ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
       return null;
    }
 
@@ -91,11 +108,11 @@ public class RelationChanged extends Change {
     */
    public Artifact getBArtifact() throws ArtifactDoesNotExist {
       if (bArtifact == null) {
-    	  if(isHistorical()){
-	         bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getTransactionNumber());
-    	  }else{
-	         bArtifact = ArtifactCache.getActive(bArtId, getBranch()); 
-    	  }
+         if (isHistorical()) {
+            bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getTransactionNumber());
+         } else {
+            bArtifact = ArtifactCache.getActive(bArtId, getBranch());
+         }
       }
 
       if (bArtifact == null) {

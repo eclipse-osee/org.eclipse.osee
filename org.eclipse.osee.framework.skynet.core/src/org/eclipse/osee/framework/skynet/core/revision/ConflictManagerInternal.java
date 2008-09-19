@@ -9,10 +9,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -49,6 +51,9 @@ public class ConflictManagerInternal {
 
    private static ConflictManagerInternal instance = new ConflictManagerInternal();
 
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
+
    private ConflictManagerInternal() {
       super();
    }
@@ -58,13 +63,25 @@ public class ConflictManagerInternal {
    }
 
    public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction) throws SQLException, OseeCoreException {
+      long time = System.currentTimeMillis();
+      long totalTime = time;
+      if (DEBUG) {
+         System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d", commitTransaction));
+         totalTime = System.currentTimeMillis();
+      }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
+      if (DEBUG) {
+         System.out.println("Running Query to find conflicts stored in the DataBase");
+         time = System.currentTimeMillis();
+      }
       try {
          connectionHandlerStatement =
                ConnectionHandler.runPreparedQuery(HISTORICAL_ATTRIBUTE_CONFLICTS,
                      commitTransaction.getTransactionNumber());
-
+         if (DEBUG) {
+            System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
+         }
          ResultSet resultSet = connectionHandlerStatement.getRset();
          while (resultSet.next()) {
             AttributeConflict attributeConflict =
@@ -81,18 +98,28 @@ public class ConflictManagerInternal {
       } finally {
          DbUtil.close(connectionHandlerStatement);
       }
+      if (DEBUG) {
+         debugDump(conflicts, totalTime);
+      }
       return conflicts;
    }
 
    public List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction) throws SQLException, OseeCoreException {
+      long totalTime = 0;
+      if (DEBUG) {
+         System.out.println(String.format("\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
+               sourceBranch.getBranchId(), destinationBranch.getBranchId()));
+         totalTime = System.currentTimeMillis();
+      }
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       Set<Integer> artIdSet = new HashSet<Integer>();
       Set<Integer> artIdSetDontShow = new HashSet<Integer>();
       Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
       if ((sourceBranch == null) || (destinationBranch == null)) {
-         throw new IllegalArgumentException(
-               "Source Barnch = " + sourceBranch + " Destination Branch = " + destinationBranch);
+         throw new IllegalArgumentException(String.format("Source Branch = %s Destination Branch = %s",
+               sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
+               destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
 
       loadArtifactVersionConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
@@ -121,11 +148,18 @@ public class ConflictManagerInternal {
             conflict.computeStatus();
          }
       }
-
+      if (DEBUG) {
+         debugDump(conflicts, totalTime);
+      }
       return conflicts;
    }
 
    private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws SQLException {
+      long time = 0;
+      if (DEBUG) {
+         System.out.println("Prelodaing Conflict Artifacts");
+         time = System.currentTimeMillis();
+      }
       if (artIdSet != null && !artIdSet.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -141,6 +175,9 @@ public class ConflictManagerInternal {
          }
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
+      if (DEBUG) {
+         System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));
+      }
    }
 
    /**
@@ -152,6 +189,12 @@ public class ConflictManagerInternal {
     */
 
    private void loadArtifactVersionConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd) throws SQLException {
+      long time = 0;
+      if (DEBUG) {
+         System.out.println("Finding Artifact Version Conflicts");
+         System.out.println("    Running the Artifact Conflict Query");
+         time = System.currentTimeMillis();
+      }
       ConnectionHandlerStatement connectionHandlerStatement = null;
 
       try {
@@ -160,6 +203,9 @@ public class ConflictManagerInternal {
                      baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
                      baselineTransaction.getTransactionNumber());
 
+         if (DEBUG) {
+            System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
+         }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          if (!resultSet.next()) return;
@@ -208,6 +254,12 @@ public class ConflictManagerInternal {
     * @throws SQLException
     */
    private void loadAttributeConflicts(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) throws SQLException, OseeCoreException {
+      long time = 0;
+      if (DEBUG) {
+         System.out.println("Finding Attribute Version Conflicts");
+         System.out.println("    Running the First Attribute Conflict Query");
+         time = System.currentTimeMillis();
+      }
       ConnectionHandlerStatement connectionHandlerStatement = null;
       AttributeConflictBuilder attributeConflictBuilder;
       try {
@@ -215,6 +267,9 @@ public class ConflictManagerInternal {
                ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS_NEW, sourceBranch.getBranchId(),
                      baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId());
 
+         if (DEBUG) {
+            System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
+         }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          int attrId = 0;
@@ -247,11 +302,19 @@ public class ConflictManagerInternal {
          DbUtil.close(connectionHandlerStatement);
       }
 
+      if (DEBUG) {
+         System.out.println("    Running the Second Attribute Conflict Query");
+         time = System.currentTimeMillis();
+      }
       try {
          connectionHandlerStatement =
                ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, sourceBranch.getBranchId(),
                      baselineTransaction.getTransactionNumber(), destinationBranch.getBranchId(),
                      baselineTransaction.getTransactionNumber());
+
+         if (DEBUG) {
+            System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
+         }
 
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
@@ -280,6 +343,17 @@ public class ConflictManagerInternal {
          } while (resultSet.next());
       } finally {
          DbUtil.close(connectionHandlerStatement);
+      }
+   }
+
+   private void debugDump(Collection<Conflict> conflicts, long time) throws SQLException, OseeCoreException {
+      int displayCount = 1;
+      System.out.println(String.format("Found %d conflicts in %s", conflicts.size(), Lib.getElapseString(time)));
+      for (Conflict conflict : conflicts) {
+         System.out.println(String.format(
+               "    %d. ArtId = %d, ChangeItem = %s, SourceGamma = %d, DestGamma = %d, Status = %s", displayCount++,
+               conflict.getArtId(), conflict.getChangeItem(), conflict.getSourceGamma(), conflict.getDestGamma(),
+               conflict.getStatus()));
       }
    }
 
