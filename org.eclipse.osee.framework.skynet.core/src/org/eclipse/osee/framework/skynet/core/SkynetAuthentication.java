@@ -276,7 +276,7 @@ public class SkynetAuthentication {
       return user;
    }
 
-   public static int getAuthor() {
+   public static int getSafeUserId() {
       if (duringUserCreation()) return -1;
       if (getUser() == null) return -1;
       return getUser().getArtId();

@@ -25,7 +25,7 @@ public class OseeSession implements Serializable {
 
    public OseeSession() {
       try {
-         this.userId = SkynetAuthentication.getUser().getUserId();
+         this.userId = String.valueOf(SkynetAuthentication.getSafeUserId());
          this.machineIp = InetAddress.getLocalHost().getHostAddress();
          this.machineName = InetAddress.getLocalHost().getHostName();
       } catch (Exception ex) {
