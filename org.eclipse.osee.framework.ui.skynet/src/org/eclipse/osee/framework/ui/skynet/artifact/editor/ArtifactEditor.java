@@ -23,6 +23,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -94,12 +95,14 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    private int attributesPageIndex;
    private int newAttributesPageIndex;
    private int relationsPageIndex;
+   private int detailsCompositeIndex;
    private Artifact artifact;
    private final MultiPageEditorPart editor;
    private BrowserComposite previewComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributeComposite;
    private NewAttributesComposite newAttributeComposite;
+   private BrowserComposite detailsComposite;
    private ToolItem forward;
    private ToolItem back;
 
@@ -209,6 +212,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       relationsPageIndex = createRelationsPage();
       setPageText(relationsPageIndex, "Relations");
+
+      detailsCompositeIndex = createDetailsPage();
+      setPageText(detailsCompositeIndex, "Details");
+
       setPartName(getEditorInput().getName());
       setTitleImage(artifact.getImage());
 
@@ -246,6 +253,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          attributeComposite.setFocus();
       } else if (activePage == relationsPageIndex) {
          relationsComposite.setFocus();
+      } else if (activePage == detailsCompositeIndex) {
+         detailsComposite.setFocus();
       } else {
          super.setFocus();
       }
@@ -255,6 +264,38 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       renderPreviewPage();
       return addPage(previewComposite.getParent());
+   }
+
+   private int createDetailsPage() {
+
+      renderDetailsPage();
+      return addPage(detailsComposite.getParent());
+   }
+
+   private void renderDetailsPage() {
+      if (detailsComposite == null) {
+         Composite composite = createCommonPageComposite();
+         detailsComposite = new BrowserComposite(composite, SWT.BORDER, createToolBar(composite));
+         detailsComposite.addProgressListener(new BrowserProgressListener(detailsComposite, back, forward));
+      }
+      StringBuffer sb =
+            new StringBuffer(AHTML.getLabelValueStr("Name", artifact.getDescriptiveName()) + AHTML.newline());
+      try {
+         sb.append(AHTML.getLabelValueStr("GUID", artifact.getGuid()) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Branch", artifact.getBranch().toString()) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Branch Id", String.valueOf(artifact.getBranch().getBranchId())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Artifact Id", String.valueOf(artifact.getArtId())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Artifact Type Name", artifact.getArtifactTypeName()) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Artifact Type Id", String.valueOf(artifact.getArtTypeId())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Gamma Id", String.valueOf(artifact.getGammaId())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Historical", String.valueOf(artifact.isHistorical())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Revision", String.valueOf(artifact.getTransactionNumber())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Last Modified", String.valueOf(artifact.getLastModified())) + AHTML.newline());
+         sb.append(AHTML.getLabelValueStr("Last Modified By", String.valueOf(artifact.getLastModifiedBy())) + AHTML.newline());
+      } catch (Exception ex) {
+         sb.append(AHTML.getLabelStr("Exception in rendering details: ", ex.getLocalizedMessage()));
+      }
+      detailsComposite.setHtml(AHTML.simplePage(sb.toString()));
    }
 
    private void renderPreviewPage() {
@@ -465,12 +506,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
 
-      artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"  Guid: " + artifact.getGuid() + "  HRID: " + artifact.getHumanReadableId() + "  Art Id: " + artifact.getArtId());
+      artifactInfoLabel.setText("Type: \"" + artifact.getArtifactTypeName() + "\"   HRID: " + artifact.getHumanReadableId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
    }
-
    private final class DeleteArtifactAction extends Action {
 
       public DeleteArtifactAction() {
@@ -620,7 +660,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                   BranchPersistenceManager.getDefaultBranch()));
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
-            AWorkbench.getActivePage().closeEditor(this, false);
+            closeEditor();
          }
       }
       if (branchModType == BranchEventType.DefaultBranchChanged) {
@@ -631,7 +671,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                         BranchPersistenceManager.getDefaultBranch()));
                } catch (ArtifactDoesNotExist ex) {
                   System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
-                  AWorkbench.getActivePage().closeEditor(this, false);
+                  closeEditor();
                }
             }
             checkEnabledTooltems();
