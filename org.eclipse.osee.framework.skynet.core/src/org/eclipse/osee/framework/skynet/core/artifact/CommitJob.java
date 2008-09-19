@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -23,7 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -43,38 +40,32 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType
  * @author Jeff C. Phillips
  */
 class CommitJob extends Job {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(CommitJob.class);
-
-   private static final String DELETE_TO_BRANCH_TAG_DATA =
-         "DELETE FROM osee_tag_art_map tam1 WHERE tam1.branch_id = ? AND EXISTS (SELECT 'x' FROM osee_tag_art_map tam2 WHERE tam1.art_id = tam2.art_id AND tam1.tag_id = tam2.tag_id AND branch_id = ?)";
-   private static final String MOVE_TAG_DATA = "UPDATE osee_tag_art_map SET branch_id = ? WHERE branch_id = ?";
-
    //destination branch id, source branch id
    private static final String UPDATE_CURRENT_COMMIT_ATTRIBUTES =
-         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_attribute at3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_attribute at6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = at6.gamma_id AND at6.attr_id = at3.attr_id)";
+         "UPDATE osee_define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_attribute at3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_attribute at6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = at6.gamma_id AND at6.attr_id = at3.attr_id)";
 
    private static final String COMMIT_ATTRIBUTES =
-         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_attribute at3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = at3.gamma_id";
+         "INSERT INTO osee_define_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_attribute at3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = at3.gamma_id";
 
    //destination branch id, source branch id
    private static final String UPDATE_CURRENT_COMMIT_RELATIONS =
-         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_rel_link rl3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_rel_link rl6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = rl3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = rl6.gamma_id AND rl6.rel_link_id = rl3.rel_link_id)";
+         "UPDATE osee_define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_rel_link rl3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_rel_link rl6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = rl3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = rl6.gamma_id AND rl6.rel_link_id = rl3.rel_link_id)";
 
    private static final String COMMIT_RELATIONS =
-         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = rl3.gamma_id";
+         "INSERT INTO osee_define_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = rl3.gamma_id";
 
    //destination branch id, source branch id
    private static final String UPDATE_CURRENT_COMMIT_ARTIFACTS =
-         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_artifact_version av3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_artifact_version av6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = av3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = av6.gamma_id AND av6.art_id = av3.art_id)";
+         "UPDATE osee_define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) in (SELECT tx1.transaction_id, tx1.gamma_id from osee_Define_txs tx1, osee_define_tx_details td2, osee_Define_artifact_version av3, osee_define_txs tx4, osee_Define_tx_details td5, osee_define_artifact_version av6 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = av3.gamma_id AND tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND td5.branch_id = ? AND tx4.transaction_id = td5.transaction_id AND td5.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx4.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx4.gamma_id = av6.gamma_id AND av6.art_id = av3.art_id)";
 
    private static final String COMMIT_ARTIFACTS =
-         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_artifact_version av3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = av3.gamma_id";
+         "INSERT INTO osee_define_txs(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_artifact_version av3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = av3.gamma_id";
 
    private static final String UPDATE_MERGE_TRANSACTIONS =
-         "UPDATE osee_Define_txs set gamma_id = ?, mod_type = " + ModificationType.MERGED.getValue() + " Where transaction_id = ? and gamma_id = ?";
+         "UPDATE osee_define_txs set gamma_id = ?, mod_type = " + ModificationType.MERGED.getValue() + " Where transaction_id = ? and gamma_id = ?";
 
    private static final String UPDATE_MERGE_TRANSACTION_ID =
-         "UPDATE osee_Define_merge set transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
+         "UPDATE osee_define_merge set transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
 
    private static final String ARTIFACT_CHANGES =
          "SELECT av1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
@@ -128,7 +119,6 @@ class CommitJob extends Job {
          commitDbTx.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
       }
       return toReturn;
@@ -304,7 +294,6 @@ class CommitJob extends Job {
                         newTransactionNumber};
             // reload the committed artifacts since the commit changed them on the destination branch
             ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true, null, null, true);
-            tagArtifacts(toBranch, fromBranchId, monitor);
             if (DEBUG) {
                System.out.println(String.format("   Reloaded the Artifacts after the commit in %s",
                      Lib.getElapseString(time)));
@@ -345,16 +334,6 @@ class CommitJob extends Job {
       protected void handleTxException(Exception ex) throws Exception {
          super.handleTxException(ex);
          success = false;
-      }
-
-      private void tagArtifacts(Branch toBranch, int fromBranchId, IProgressMonitor progressMonitor) throws SQLException {
-         progressMonitor.worked(15);
-         progressMonitor.setTaskName("Tagging artifacts");
-
-         //Delete toBranch artifact tags
-         ConnectionHandler.runPreparedUpdate(DELETE_TO_BRANCH_TAG_DATA, toBranch.getBranchId(), fromBranchId);
-         //move artifact tags from fromBranch to toBranch
-         ConnectionHandler.runPreparedUpdate(MOVE_TAG_DATA, toBranch.getBranchId(), fromBranchId);
       }
    }
 }
