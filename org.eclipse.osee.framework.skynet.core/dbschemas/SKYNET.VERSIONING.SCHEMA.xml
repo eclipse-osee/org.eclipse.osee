@@ -197,7 +197,7 @@
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Constraint schema="OSEE" id="REL_TYPE_ID1_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
+			<References schema="OSEE" table="OSEE_DEFINE_REL_LINK_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Index id="OSEE_REL_LINK_RL_IDX" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
@@ -279,7 +279,7 @@
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Constraint schema="OSEE" id="REL_TYPE_ID2_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
+			<References schema="OSEE" table="OSEE_DEFINE_REL_LINK_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
 	

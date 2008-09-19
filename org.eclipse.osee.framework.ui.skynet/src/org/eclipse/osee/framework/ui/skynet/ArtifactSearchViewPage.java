@@ -597,28 +597,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
    }
 
-   // private void createHistoryMenuItem(Menu parentMenu, final TableViewer
-   // viewer) {
-   // revisionMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-   // revisionMenuItem.setText("&Show Resource History ");
-   // revisionMenuItem.addSelectionListener(new SelectionAdapter() {
-   //
-   // public void widgetSelected(SelectionEvent e) {
-   // Artifact selectedArtifact = getSelectedArtifact(viewer);
-   // IWorkbenchPage page = AWorkbench.getActivePage();
-   // try {
-   // RevisionHistoryView revisionHistoryView =
-   // (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID,
-   // selectedArtifact.getGuid(),
-   // IWorkbenchPage.VIEW_ACTIVATE);
-   // revisionHistoryView.explore(selectedArtifact);
-   // } catch (Exception ex) {
-   // logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-   // }
-   // }
-   // });
-   // }
-
    private String addShowInExplorerHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem showInArtifactExplorerCommand =
             Commands.getLocalCommandContribution(
