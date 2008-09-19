@@ -21,7 +21,6 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -289,7 +288,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
       };
 
       public Collection<GlobalMenuItem> getValidMenuItems() {
-         return Arrays.asList(GlobalMenuItem.TagArtifacts);
+         return java.util.Collections.emptyList();
       }
 
    };

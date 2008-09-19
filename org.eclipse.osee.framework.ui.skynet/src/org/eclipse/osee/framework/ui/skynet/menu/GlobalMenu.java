@@ -60,7 +60,7 @@ public class GlobalMenu {
    private MenuItem tagMenuItem;
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GlobalMenu.class);
    public static enum GlobalMenuItem {
-      DeleteArtifacts, PurgeArtifacts, TagArtifacts;
+      DeleteArtifacts, PurgeArtifacts;
 
       public static List<GlobalMenuItem> ALL = Arrays.asList(GlobalMenuItem.values());
    };
@@ -253,5 +253,4 @@ public class GlobalMenu {
    public ArrayList<GlobalMenuListener> getGlobalMenuListeners() {
       return listeners;
    }
-
 }

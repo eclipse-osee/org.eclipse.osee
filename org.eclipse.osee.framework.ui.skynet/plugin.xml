@@ -102,8 +102,6 @@
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
          </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command" name="Tag Artifact(s)">
-         </command>
 	</extension>
 	<extension name="Put commands of ATSWorldView here (for now)" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.ats.worldXView.editChangeType.command" name="Edit Change Type">
@@ -637,9 +635,14 @@
    	<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer"/>
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
-		<Template presentationType="ALL" templateFile="support/templates/PREVIEW default.xml" templateName="default"/>
-		<Template presentationType="ALL" templateFile="support/templates/Word Edit Template.xml" templateName="Software Requirement"/>
-		<Template presentationType="ALL" templateFile="support/templates/PREVIEW Subsystem Requirement.xml" templateName="Subsystem Requirement"/>
+		<Template presentationType="ALL" templateFile="support/templates/PREVIEW_ALL.xml" templateName="PREVIEW_ALL"/>
+		<Template presentationType="ALL" templateFile="support/templates/Word Edit Template.xml" templateName="Word Edit Template"/>
+		<Template presentationType="ALL" templateFile="support/templates/PREVIEW Software Requirement with Recursion.xml" templateName="PREVIEW Software Requirement with Recursion"/>
+  <Template
+        presentationType="org.eclipse.osee.framework.ui.skynet.Template1"
+        templateFile="support/templates/PREVIEW_ALL_RECURSE.xml"
+        templateName="Preview Recurse">
+  </Template>
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler">
 		<Handler class="org.eclipse.osee.framework.ui.skynet.handler.GeneralWordOutlineHandler" id="org.eclipse.osee.framework.ui.skynet.GeneralWordOutlineHandler" name="General Outline Documents"/>
@@ -711,9 +714,6 @@
          </command>
 			<separator name="artifactSearchViewCopySeparator" visible="true">
          </separator>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
-   </command>
 			<command commandId="org.eclipse.ui.edit.copy">
          </command>
    <separator
