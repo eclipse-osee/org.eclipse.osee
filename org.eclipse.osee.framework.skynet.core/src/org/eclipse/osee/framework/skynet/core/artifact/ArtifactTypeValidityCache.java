@@ -35,19 +35,24 @@ public class ArtifactTypeValidityCache {
 
    private void populateCache() throws SQLException, OseeCoreException {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-
       for (Branch branch : BranchPersistenceManager.getRootBranches()) {
          branchToartifactTypeMap.put(branch, artifactTypes);
       }
    }
 
    public Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException, OseeCoreException {
-      ensurePopulated();
-      Branch rootBranch = branch.getRootBranch();
-      Collection<ArtifactType> artifactTypes = branchToartifactTypeMap.getValues(rootBranch);
-      if (artifactTypes == null) {
-         throw new IllegalArgumentException("There are no valid artifact types available for the branch " + rootBranch);
+      if (false) {
+         // TODO: Filter Types By Branch
+         ensurePopulated();
+         Branch rootBranch = branch.getRootBranch();
+         Collection<ArtifactType> artifactTypes = branchToartifactTypeMap.getValues(rootBranch);
+         if (artifactTypes == null) {
+            throw new IllegalArgumentException(
+                  "There are no valid artifact types available for the branch " + rootBranch);
+         }
+         return artifactTypes;
+      } else {
+         return ArtifactTypeManager.getAllTypes();
       }
-      return artifactTypes;
    }
 }
