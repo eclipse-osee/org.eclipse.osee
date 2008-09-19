@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -765,6 +766,16 @@ public class InternalEventManager {
     */
    static void setDisableEvents(boolean disableEvents) {
       InternalEventManager.disableEvents = disableEvents;
+   }
+
+   static String getListenerReport() {
+      List<String> listeners = new ArrayList<String>();
+      for (Object key : listenerMap.keySet()) {
+         listeners.add(getKeyName(key));
+      }
+      String[] listArr = listeners.toArray(new String[listeners.size()]);
+      Arrays.sort(listArr);
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
    }
 
 }

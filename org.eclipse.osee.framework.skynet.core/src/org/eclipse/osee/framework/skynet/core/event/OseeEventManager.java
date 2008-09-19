@@ -198,4 +198,7 @@ public class OseeEventManager {
       InternalEventManager.setDisableEvents(disableEvents);
    }
 
+   public static String getListenerReport() {
+      return InternalEventManager.getListenerReport();
+   }
 }

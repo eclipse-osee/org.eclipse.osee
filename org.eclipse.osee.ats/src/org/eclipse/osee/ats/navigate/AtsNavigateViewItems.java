@@ -243,6 +243,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          new UpdateAtsWorkItemDefinitions(adminItems);
          new UpdateAssigneesRelations(adminItems);
+         new DisplayCurrentOseeEventListeners(adminItems);
 
          LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
