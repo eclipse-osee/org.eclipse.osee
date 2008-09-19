@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation;
@@ -63,27 +64,31 @@ public class DatabaseHealth extends AbstractBlam {
    }
 
    private void runTasks(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
       monitor.beginTask("Database Health", dbFix.size() + dbVerify.size());
-      StringBuilder builder = new StringBuilder();
-      boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
-      for (String taskName : dbFix.keySet()) {
-         if (variableMap.getBoolean(taskName)) {
-            monitor.setTaskName(taskName);
-            DatabaseHealthTask task = dbFix.get(taskName);
-            task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Fix, builder, showDetails);
-            monitor.worked(1);
+      if (OseeProperties.isDeveloper()) {
+         StringBuilder builder = new StringBuilder();
+         boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);
+         for (String taskName : dbFix.keySet()) {
+            if (variableMap.getBoolean(taskName)) {
+               monitor.setTaskName(taskName);
+               DatabaseHealthTask task = dbFix.get(taskName);
+               task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Fix, builder, showDetails);
+               monitor.worked(1);
+            }
          }
-      }
-      for (String taskName : dbVerify.keySet()) {
-         if (variableMap.getBoolean(taskName)) {
-            monitor.setTaskName(taskName);
-            DatabaseHealthTask task = dbVerify.get(taskName);
-            task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Verify, builder, showDetails);
-            monitor.worked(1);
+         for (String taskName : dbVerify.keySet()) {
+            if (variableMap.getBoolean(taskName)) {
+               monitor.setTaskName(taskName);
+               DatabaseHealthTask task = dbVerify.get(taskName);
+               task.run(variableMap, new SubProgressMonitor(monitor, 1), Operation.Verify, builder, showDetails);
+               monitor.worked(1);
+            }
          }
+         appendResultLine(builder.toString());
+      } else {
+         appendResultLine("Must be a Developer to run this BLAM\n");
       }
-      appendResultLine(builder.toString());
+
    }
 
    public String getXWidgetsXml() {

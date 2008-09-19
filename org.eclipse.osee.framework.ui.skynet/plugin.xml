@@ -896,14 +896,6 @@
     </Operation>
  </extension>
  <extension
-       id="Relation Database Integrity Check"
-       name="Relation Database Integrity Check"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
-    </Operation>
- </extension>
- <extension
        id="Database Health"
        name="Database Health"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
@@ -973,6 +965,14 @@
        point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
     <Task
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAddressingData">
+    </Task>
+ </extension>
+ <extension
+       id="RelationIntegrityData"
+       name="RelationIntegrityData"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
     </Task>
  </extension>
 </plugin>

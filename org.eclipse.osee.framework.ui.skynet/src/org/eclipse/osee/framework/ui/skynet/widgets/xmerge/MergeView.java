@@ -20,6 +20,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
@@ -81,12 +82,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    public static String HELP_CONTEXT_ID = "Merge_Manager_View";
    private XMergeViewer xMergeViewer;
    private Conflict[] conflicts;
-
-   /*
-    *   Code development
-    *   BranchView.getBranchView().
-    */
-
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
    private IHandlerService handlerService;
    private Branch sourceBranch;
    private Branch destBranch;
@@ -102,11 +99,19 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
       if (sourceBranch == null && destBranch == null && tranId == null) throw new IllegalArgumentException(
             "Branch's and Transaction ID can't be null");
+      if (DEBUG) {
+         System.out.println(String.format("Openeing Merge View with Source Branch: %s and Destination Branch: %s",
+               sourceBranch.getBranchName(), destBranch.getBranchName()));
+      }
       openViewUpon(sourceBranch, destBranch, tranId, null);
    }
 
    public static void openView(final TransactionId commitTrans) {
       if (commitTrans == null) throw new IllegalArgumentException("Commit Transaction ID can't be null");
+      if (DEBUG) {
+         System.out.println(String.format("Openeing Merge View with Transaction ID: %d ",
+               commitTrans.getTransactionNumber()));
+      }
       openViewUpon(null, null, null, commitTrans);
    }
 
@@ -777,7 +782,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
 
          } else if (conflicts.get(0) instanceof ArtifactConflict) {
-
             attributeConflict = null;
             artifactConflict = (ArtifactConflict) conflicts.get(0);
             try {

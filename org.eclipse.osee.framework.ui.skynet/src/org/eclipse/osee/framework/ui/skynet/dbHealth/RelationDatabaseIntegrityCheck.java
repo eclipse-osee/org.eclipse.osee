@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 /**
  * @author Jeff C. Phillips
  */
-public class RelationDatabaseIntegrityCheck extends AbstractBlam {
+public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
    private static final String NO_ADDRESSING_ARTIFACTS =
          "select * from osee_Define_rel_link t1 where (a_art_id not in (select art_id from osee_Define_artifact_version t2, osee_Define_txs t3 where t2.gamma_id = t3.gamma_id) OR b_art_id not in (select art_id from osee_Define_artifact_version t4, osee_Define_txs t5 where t4.gamma_id = t5.gamma_id)) order by rel_link_id";
@@ -32,6 +31,103 @@ public class RelationDatabaseIntegrityCheck extends AbstractBlam {
 
    private static final String DELETED_B_ARTIFACTS =
          "select rl1.* from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 where tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.b_art_id order by rel_link_id";
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
+    */
+   @Override
+   public String getFixTaskName() {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getVerifyTaskName()
+    */
+   @Override
+   public String getVerifyTaskName() {
+      return "Check for Relation Integrity Errors";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#run(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask.Operation, java.lang.StringBuilder, boolean)
+    */
+   @Override
+   public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
+      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      String[] columnHeaders = new String[] {"Rel id", "Rel gamma id", "A art id", "B art id"};
+      if (showDetails) {
+         sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      }
+      ConnectionHandlerStatement chStmt = null;
+
+      try {
+         if (showDetails) {
+            sbFull.append(AHTML.addRowSpanMultiColumnTable("Relation links with artifacts that have no addressing",
+                  columnHeaders.length));
+         }
+         chStmt = ConnectionHandler.runPreparedQuery(NO_ADDRESSING_ARTIFACTS);
+         ResultSet rSet = chStmt.getRset();
+
+         int count = 0;
+         while (rSet.next()) {
+            count++;
+            if (showDetails) {
+               String str =
+                     AHTML.addRowMultiColumnTable(new String[] {rSet.getString("rel_link_id"),
+                           rSet.getString("gamma_id"), rSet.getString("a_art_id"), rSet.getString("b_art_id")});
+               sbFull.append(str);
+            }
+         }
+         if (showDetails) {
+            sbFull.append(AHTML.addRowSpanMultiColumnTable("Relation links that have deleted artifacts",
+                  columnHeaders.length));
+         }
+         builder.append("\n" + getVerifyTaskName());
+         builder.append(count > 0 ? "\nFailed: " : "\nPassed: ");
+         builder.append(count);
+         builder.append(" Relation links with artifacts that have no addressing found");
+
+         count = 0;
+         chStmt = ConnectionHandler.runPreparedQuery(DELETED_A_ARTIFACTS);
+         rSet = chStmt.getRset();
+         while (rSet.next()) {
+            count++;
+            if (showDetails) {
+               String str =
+                     AHTML.addRowMultiColumnTable(new String[] {rSet.getString("rel_link_id"),
+                           rSet.getString("gamma_id"), rSet.getString("a_art_id"), rSet.getString("b_art_id")});
+               sbFull.append(str);
+            }
+         }
+
+         chStmt = ConnectionHandler.runPreparedQuery(DELETED_B_ARTIFACTS);
+         rSet = chStmt.getRset();
+
+         while (rSet.next()) {
+            count++;
+            if (showDetails) {
+               String str =
+                     AHTML.addRowMultiColumnTable(new String[] {rSet.getString("rel_link_id"),
+                           rSet.getString("gamma_id"), rSet.getString("a_art_id"), rSet.getString("b_art_id")});
+               sbFull.append(str);
+            }
+         }
+
+         builder.append(count > 0 ? "\nFailed: " : "\nPassed: ");
+         builder.append(count);
+         builder.append(" Relation links that have deleted artifacts found\n");
+
+      } finally {
+         DbUtil.close(chStmt);
+         if (showDetails) {
+            sbFull.append(AHTML.endMultiColumnTable());
+            XResultData rd = new XResultData(SkynetActivator.getLogger());
+            rd.addRaw(sbFull.toString());
+            rd.report("Relation Database Integrity Check", Manipulations.RAW_HTML);
+         }
+      }
+   }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
@@ -103,4 +199,5 @@ public class RelationDatabaseIntegrityCheck extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets></xWidgets>";
    }
+
 }

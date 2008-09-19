@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -34,6 +35,8 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  */
 public class ChangeXViewer extends XViewer {
+   private static final boolean CHANGE_DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Change"));
 
    private final XChangeViewer xChangeViewer;
 
@@ -53,8 +56,12 @@ public class ChangeXViewer extends XViewer {
 
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
-
       Change change = getSelectedChanges().iterator().next();
+      if (CHANGE_DEBUG) {
+         System.out.println(String.format(
+               "Handling a Double Click in the Change Report Table for a %s Change on Artifact %s ",
+               change.getItemKind(), change.getArtId()));
+      }
       Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
 
       if (artifact != null) {

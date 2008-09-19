@@ -11,7 +11,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
@@ -57,151 +61,188 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
    @Override
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       monitor.beginTask("Verify TX_Current Artifact Errors", 100);
+      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       ConnectionHandlerStatement connection = null;
       ConnectionHandlerStatement connection2 = null;
       ResultSet resultSet;
       int count = 0;
       if (operation.equals(Operation.Verify)) {
          try {
-            connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
-            monitor.worked(35);
-            if (monitor.isCanceled()) return;
-            resultSet = connection.getRset();
-            while (resultSet.next()) {
-               if (count == 0 && showDetails) {
-                  builder.append("FAILED: Found the following TX_Current Artifact Errors with no tx_current set:\n");
-               }
-               count++;
+            String[] columnHeaders = new String[] {"Count", "Art id", "Branch id"};
+            try {
                if (showDetails) {
-                  builder.append(String.format("%-4d Art_ID = %-8d Branch_ID = %-8d No tx_current set.\n", count,
-                        resultSet.getInt("art_id"), resultSet.getInt("branch_id")));
+                  sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+                  sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+                  sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with no tx_current set",
+                        columnHeaders.length));
                }
+               connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
+               monitor.worked(35);
+               if (monitor.isCanceled()) return;
+               resultSet = connection.getRset();
+               while (resultSet.next()) {
+                  count++;
+                  if (showDetails) {
+                     String str =
+                           AHTML.addRowMultiColumnTable(new String[] {String.valueOf(count),
+                                 resultSet.getString("art_id"), resultSet.getString("branch_id")});
+                     sbFull.append(str);
+                  }
+               }
+            } finally {
+               DbUtil.close(connection);
             }
-         } finally {
-            DbUtil.close(connection);
-         }
-         monitor.worked(15);
-         if (monitor.isCanceled()) return;
-         if (count > 0) {
-            builder.append("FAILED: Found ");
-            builder.append(count);
-            builder.append(" Artifacts that have no tx_current value set to either 1 or 2\n");
-         } else {
-            builder.append("PASSED: Found no Artifacts with no tx_current values set.");
-         }
-         try {
-            count = 0;
-            monitor.worked(5);
-            connection = ConnectionHandler.runPreparedQuery(MULTIPLE_TX_CURRENT_SET);
-            monitor.worked(30);
+            monitor.worked(15);
             if (monitor.isCanceled()) return;
-            resultSet = connection.getRset();
-            while (resultSet.next()) {
-               if (count == 0 && showDetails) {
-                  builder.append("Found the following TX_Current Artifact Errors with multiple tx_currents set:\n");
-               }
-               count++;
-               if (showDetails) {
-                  builder.append(String.format("%-4d Art_ID = %-8d , Branch_ID = %-8d With %-2d tx_currents set.\n",
-                        count, resultSet.getInt("art_id"), resultSet.getInt("branch_id"),
-                        resultSet.getInt("numoccurrences")));
-               }
-            }
-         } finally {
-            DbUtil.close(connection);
-         }
-         monitor.worked(15);
-         if (monitor.isCanceled()) return;
-         if (count > 0) {
-            builder.append("FAILED: Found ");
+            builder.append(count > 0 ? "Failed: " : "Passed: ");
+            builder.append("Found ");
             builder.append(count);
-            builder.append(" Artifacts that have multiple tx_current values set to either 1 or 2\n");
-         } else {
-            builder.append("PASSED: Found no Artifacts with multiple tx_current values set.");
+            builder.append(" Artifacts that have no tx_current value set\n");
+            try {
+               if (showDetails) {
+                  columnHeaders = new String[] {"Count", "Art id", "Branch id", "Num TX_Currents"};
+                  sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+                  sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with multiple tx_currents set",
+                        columnHeaders.length));
+               }
+               count = 0;
+               monitor.worked(5);
+               connection = ConnectionHandler.runPreparedQuery(MULTIPLE_TX_CURRENT_SET);
+               monitor.worked(30);
+               if (monitor.isCanceled()) return;
+               resultSet = connection.getRset();
+               while (resultSet.next()) {
+                  count++;
+                  if (showDetails) {
+                     String str =
+                           AHTML.addRowMultiColumnTable(new String[] {String.valueOf(count),
+                                 resultSet.getString("art_id"), resultSet.getString("branch_id"),
+                                 resultSet.getString("numoccurrences")});
+                     sbFull.append(str);
+                  }
+               }
+            } finally {
+               DbUtil.close(connection);
+
+            }
+            monitor.worked(15);
+            builder.append(count > 0 ? "Failed: " : "Passed: ");
+            builder.append("Found ");
+            builder.append(count);
+            builder.append(" Artifacts that have multiple tx_current values set\n");
+         } finally {
+            if (showDetails) {
+               sbFull.append(AHTML.endMultiColumnTable());
+               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               rd.addRaw(sbFull.toString());
+               rd.report("Artifact TX_Current Check", Manipulations.RAW_HTML);
+            }
+
          }
 
       } else {
          /** Duplicate TX_current Cleanup **/
+         String[] columnHeaders =
+               new String[] {"Art ID", "Gamma Id 1", "Gamma Id 2", "TX_Current 1", "TX_Current 2", "Trans Id 1",
+                     "Trans Id 2", "Trans ID Fixed", "Branch id"};
+         if (showDetails) {
+            sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+            sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+            sbFull.append(AHTML.addRowSpanMultiColumnTable("Fixed Artifacts with multiple tx_currents set",
+                  columnHeaders.length));
+         }
          monitor.worked(1);
          monitor.subTask("Querying for multiple Tx_currents");
          try {
-            connection = ConnectionHandler.runPreparedQuery(DUPLICATE_ARTIFACTS_TX_CURRENT);
-            resultSet = connection.getRset();
-            monitor.worked(9);
-            monitor.subTask("Processing Results");
-            if (monitor.isCanceled()) return;
+            try {
+               connection = ConnectionHandler.runPreparedQuery(DUPLICATE_ARTIFACTS_TX_CURRENT);
+               resultSet = connection.getRset();
+               monitor.worked(9);
+               monitor.subTask("Processing Results");
+               if (monitor.isCanceled()) return;
 
-            int total = 0;
-            while (resultSet.next()) {
-               if (total == 0 && showDetails) {
-                  builder.append("Cleaning up the following tx_current duplications\n");
-               }
-               total++;
-               if (showDetails) {
-                  showTxCurrentText(resultSet, total, builder);
-               }
-               int transaction_id =
-                     resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("tran_id_1") : resultSet.getInt("tran_id_2");
-               int gamma_id =
-                     resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("gamma_id_1") : resultSet.getInt("gamma_id_2");
-               ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, gamma_id, transaction_id);
-               if (showDetails) {
-                  builder.append("Set Transaction ");
-                  builder.append(transaction_id);
-                  builder.append(" to 0\n");
-               }
-               if (monitor.isCanceled()) {
-                  builder.append("Cleaned up " + total + "Tx_Current duplication errors");
-                  return;
-               }
-            }
-            builder.append("Cleaned up " + total + "Tx_Current duplication errors");
-
-         } finally {
-            DbUtil.close(connection);
-         }
-         try {
-            connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
-            monitor.worked(35);
-            if (monitor.isCanceled()) return;
-            resultSet = connection.getRset();
-            while (resultSet.next()) {
-               if (count == 0 && showDetails) {
-                  builder.append("Cleaning up the following TX_Current Artifact Errors with no tx_current set:\n");
-               }
-               count++;
-               ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, resultSet.getInt("art_id"),
-                     resultSet.getInt("branch_id"), resultSet.getInt("art_id"));
-               if (showDetails) {
-                  connection2 =
-                        ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, resultSet.getInt("branch_id"),
-                              resultSet.getInt("art_id"));
-                  ResultSet resultSet2 = connection2.getRset();
-                  int trans_id = 0, gamma_id = 0;
-                  if (resultSet2.next()) {
-                     trans_id = resultSet2.getInt("transaction_id");
-                     gamma_id = resultSet2.getInt("gamma_id");
+               int total = 0;
+               while (resultSet.next()) {
+                  total++;
+                  int transaction_id =
+                        resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("tran_id_1") : resultSet.getInt("tran_id_2");
+                  int gamma_id =
+                        resultSet.getInt("tran_id_1") < resultSet.getInt("tran_id_2") ? resultSet.getInt("gamma_id_1") : resultSet.getInt("gamma_id_2");
+                  ConnectionHandler.runPreparedUpdateReturnCount(DUPLICATE_TX_CURRENT_CLEANUP, gamma_id, transaction_id);
+                  if (showDetails) {
+                     showTxCurrentText(resultSet, total, sbFull, transaction_id);
                   }
-                  builder.append(String.format(
-                        "%-4d Art_ID = %-8d Branch_ID = %-8d Set Transaction: %-8d Gamma: %-8d current.\n", count,
-                        resultSet.getInt("art_id"), resultSet.getInt("branch_id"), trans_id, gamma_id));
-                  DbUtil.close(connection2);
+                  if (monitor.isCanceled()) {
+                     builder.append("Cleaned up " + total + " Tx_Current duplication errors\n");
+                     return;
+                  }
                }
+               builder.append("Cleaned up " + total + " Tx_Current duplication errors\n");
+
+            } finally {
+               DbUtil.close(connection);
             }
-            builder.append("Cleaned up " + count + " no Tx_Current set errors");
+            try {
+               connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
+               monitor.worked(35);
+               if (monitor.isCanceled()) return;
+               resultSet = connection.getRset();
+               if (showDetails) {
+                  columnHeaders = new String[] {"Art ID", "Gamma Id", "Transaction Id", "Branch id"};
+                  sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+                  sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+                  sbFull.append(AHTML.addRowSpanMultiColumnTable("Fixed Artifacts with no tx_currents set",
+                        columnHeaders.length));
+               }
+               while (resultSet.next()) {
+                  count++;
+                  ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, resultSet.getInt("art_id"),
+                        resultSet.getInt("branch_id"), resultSet.getInt("art_id"));
+                  if (showDetails) {
+                     connection2 =
+                           ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, resultSet.getInt("branch_id"),
+                                 resultSet.getInt("art_id"));
+                     ResultSet resultSet2 = connection2.getRset();
+                     String trans_id = "Not Found", gamma_id = "Not Found";
+                     if (resultSet2.next()) {
+                        trans_id = resultSet2.getString("transaction_id");
+                        gamma_id = resultSet2.getString("gamma_id");
+                     }
+                     String str =
+                           AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("art_id"), gamma_id,
+                                 trans_id, resultSet.getString("branch_id")});
+                     builder.append(str);
+                     DbUtil.close(connection2);
+                  }
+                  if (monitor.isCanceled()) {
+                     builder.append("Canceled: Cleaned up " + count + " no Tx_Current set errors\n");
+                     return;
+                  }
+               }
+               builder.append("Cleaned up " + count + " no Tx_Current set errors\n");
+            } finally {
+               DbUtil.close(connection2);
+               DbUtil.close(connection);
+            }
          } finally {
-            DbUtil.close(connection2);
-            DbUtil.close(connection);
+            if (showDetails) {
+               sbFull.append(AHTML.endMultiColumnTable());
+               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               rd.addRaw(sbFull.toString());
+               rd.report("Artifact TX_Current Fix", Manipulations.RAW_HTML);
+            }
          }
       }
 
    }
 
-   protected void showTxCurrentText(ResultSet resultSet, int x, StringBuilder builder) throws SQLException {
-      builder.append(String.format(
-            "%-4d Art ID = %-8d GAMMA_1 = %-8d  GAMMA_2 = %-8d Tx_Current_1 = %-2d Tx_Current_2 = %-2d Transaction_ID_1 = %-8d Transaction_ID_2 = %-8d\n Branch_Id = %-5d ",
-            x, resultSet.getInt("art_id"), resultSet.getInt("gamma_id_1"), resultSet.getInt("gamma_id_2"),
-            resultSet.getInt("tx_current_1"), resultSet.getInt("tx_current_2"), resultSet.getInt("tran_id_1"),
-            resultSet.getInt("tran_id_2"), resultSet.getInt("branch_id")));
+   protected void showTxCurrentText(ResultSet resultSet, int x, StringBuffer builder, int transaction_id) throws SQLException {
+      String str =
+            AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("art_id"),
+                  resultSet.getString("gamma_id_1"), resultSet.getString("gamma_id_2"),
+                  resultSet.getString("tx_current_1"), resultSet.getString("tx_current_2"),
+                  resultSet.getString("tran_id_1"), resultSet.getString("tran_id_2"), String.valueOf(transaction_id),
+                  resultSet.getString("branch_id")});
+      builder.append(str);
    }
 }

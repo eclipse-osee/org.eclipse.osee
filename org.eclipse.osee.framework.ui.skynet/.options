@@ -1,0 +1,5 @@
+org.eclipse.osee.framework.ui.skynet/debug = false
+
+org.eclipse.osee.framework.ui.skynet/debug/Merge = false
+
+org.eclipse.osee.framework.ui.skynet/debug/Change = false\ No newline at end of file

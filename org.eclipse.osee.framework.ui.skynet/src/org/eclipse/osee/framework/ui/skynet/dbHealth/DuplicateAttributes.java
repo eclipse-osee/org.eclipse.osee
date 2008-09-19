@@ -12,7 +12,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
 /**
  * @author Theron Virgin
@@ -136,36 +140,47 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       if (sameValues.isEmpty() && diffValues.isEmpty()) {
          builder.append("PASSED: No Duplicate Attributes Found\n");
       } else {
-         if (showDetails) builder.append("FAILED: Found the following Duplicate Attributes\n");
-         builder.append("ATTRIBUTES WITH THE SAME VALUES\n");
-         if (sameValues.isEmpty()) {
-            builder.append("  None Found\n");
+         StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+         try {
+            String[] columnHeaders =
+                  new String[] {"Art Id", "Attr id 1", "Attr id 2", "Name", "Value 1", "Value 2", "URI 1", "URI 2",
+                        "Gamma ID 1", "Gamma Id 2", "ID to Delete"};
+            sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+            sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+            sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
+            int count = showAttributeCleanUpDecisions(sameValues, fixErrors, sbFull, showDetails);
+            sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with different values", columnHeaders.length));
+            count += showAttributeCleanUpDecisions(diffValues, false, sbFull, showDetails);
+            builder.append(String.format("Failed: Found %d duplicate attributes", count));
+         } finally {
+            if (showDetails) {
+               sbFull.append(AHTML.endMultiColumnTable());
+               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               rd.addRaw(sbFull.toString());
+               rd.report("Artifact TX_Current Fix", Manipulations.RAW_HTML);
+            }
+
          }
-         showAttributeCleanUpDecisions(sameValues, true && fixErrors, builder, showDetails);
-         builder.append("ATTRIBUTES WITH DIFFERENT VALUES\n");
-         if (diffValues.isEmpty()) {
-            builder.append("  None Found\n");
-         }
-         showAttributeCleanUpDecisions(diffValues, false, builder, showDetails);
       }
 
    }
 
-   protected void showText(DuplicateAttribute duplicate, int x, boolean removeAttribute, StringBuilder builder) {
-      if (!removeAttribute) {
-         if (fixErrors) {
-            builder.append("ATTRIBUTE REQUIRES HAND ANALYSIS TO DETERMINE HOW TO REMOVE <->");
-         }
-      }
-      builder.append(String.format(
-            "%-4d Art ID = %-8d Attr_id_1 = %-8d Attr_id_2 = %-8d Name = %s   Value_1 = %s   Value_2 = %s    URI_1 = %s   URI_2 = %s  GAMMA_1 = %-8d  GAMMA_2 = %-8d  Delete = %-8d\n",
-            x, duplicate.artId, duplicate.attrId1, duplicate.attrId2, duplicate.name, duplicate.value1,
-            duplicate.value2, duplicate.uri1, duplicate.uri2, duplicate.gamma1, duplicate.gamma2,
-            duplicate.attrIDToDelete));
+   protected void showText(DuplicateAttribute duplicate, int x, boolean removeAttribute, StringBuffer builder) {
+      String str =
+            AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.artId),
+                  String.valueOf(duplicate.attrId1), String.valueOf(duplicate.attrId2), duplicate.name,
+                  duplicate.value1, duplicate.value2, duplicate.uri1, duplicate.uri2, String.valueOf(duplicate.gamma1),
+                  String.valueOf(duplicate.gamma2),
+                  removeAttribute ? String.valueOf(duplicate.attrIDToDelete) : "Requires Hand Analysis"});
+      builder.append(str);
    }
 
-   private void showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuilder builder, boolean showDetails) throws SQLException {
+   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder, boolean showDetails) throws SQLException {
       int x = 0;
+      if (showDetails) {
+
+      }
+
       for (DuplicateAttribute loopDuplicate : values) {
          findProminentAttribute(loopDuplicate.attrId1, loopDuplicate.attrId2, loopDuplicate.branches1);
          findProminentAttribute(loopDuplicate.attrId2, loopDuplicate.attrId1, loopDuplicate.branches2);
@@ -183,11 +198,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
             showText(loopDuplicate, x++, removeAttribute, builder);
          }
       }
-      if (!showDetails) {
-         builder.append("     ");
-         builder.append(x);
-         builder.append(" instances found");
-      }
+      return x;
    }
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
