@@ -79,7 +79,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
     */
    public XDefectViewer() {
       super("Defects");
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    /*
@@ -353,7 +353,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       xViewer.dispose();
    }
 

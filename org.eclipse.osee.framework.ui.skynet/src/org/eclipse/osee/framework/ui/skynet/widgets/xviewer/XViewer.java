@@ -206,7 +206,7 @@ public class XViewer extends TreeViewer {
     * 
     * @param treeColumn
     * @param treeItem
-    * @return
+    * @return true if handled
     */
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       return false;
@@ -218,7 +218,7 @@ public class XViewer extends TreeViewer {
     * 
     * @param treeColumn
     * @param treeItem
-    * @return
+    * @return true if handled
     */
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       return false;
@@ -230,7 +230,7 @@ public class XViewer extends TreeViewer {
     * 
     * @param treeColumn
     * @param treeItem
-    * @return
+    * @return true if handled
     */
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       return false;

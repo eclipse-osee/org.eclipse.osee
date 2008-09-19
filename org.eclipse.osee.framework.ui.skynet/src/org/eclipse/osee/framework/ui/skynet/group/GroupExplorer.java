@@ -122,7 +122,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
 
       SkynetContributionItem.addTo(this, true);
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
 
       new GroupExplorerDragAndDrop(treeViewer.getTree(), VIEW_ID);
 
@@ -402,7 +402,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

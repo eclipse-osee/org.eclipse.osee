@@ -71,7 +71,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IBran
             }
          });
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -151,6 +151,6 @@ public class CreateWorkingBranchService extends WorkPageService implements IBran
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 }

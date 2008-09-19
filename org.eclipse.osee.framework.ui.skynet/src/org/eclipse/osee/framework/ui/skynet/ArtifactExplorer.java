@@ -314,7 +314,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    /**
@@ -1244,7 +1244,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
       if (treeViewer != null) {
          trees.remove(treeViewer.getTree());

@@ -129,7 +129,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) {
          smaMgr.getSma().revertSMA();
       }
@@ -207,7 +207,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          smaMgr = new SMAManager(sma, this);
          smaMgr.setEditor(this);
 
-         OseeEventManager.addListener(this, this);
+         OseeEventManager.addListener(this);
 
          setPartName(smaMgr.getSma().getEditorTitle());
          setContentDescription(priviledgedEditMode != PriviledgedEditMode.Off ? " PRIVILEGED EDIT MODE ENABLED - " + priviledgedEditMode.name() : "");

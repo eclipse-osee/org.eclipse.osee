@@ -39,11 +39,11 @@ public class AtsBranchAccessHandler implements IBranchEventListener {
 
    private AtsBranchAccessHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Branch Access Handler", false);
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

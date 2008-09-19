@@ -185,7 +185,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       createActions();
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       updateWidgetEnablements();
 
       Composite panel = new Composite(parent, SWT.NONE);
@@ -251,7 +251,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

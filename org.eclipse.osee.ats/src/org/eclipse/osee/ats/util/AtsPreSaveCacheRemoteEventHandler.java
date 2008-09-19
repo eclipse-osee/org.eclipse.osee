@@ -35,11 +35,11 @@ public class AtsPreSaveCacheRemoteEventHandler implements IFrameworkTransactionE
 
    private AtsPreSaveCacheRemoteEventHandler() {
       OSEELog.logInfo(AtsPlugin.class, "Starting ATS Pre-Save Remote Event Handler", false);
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

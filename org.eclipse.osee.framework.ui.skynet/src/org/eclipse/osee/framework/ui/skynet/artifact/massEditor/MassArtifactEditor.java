@@ -195,7 +195,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
 
       for (Artifact taskArt : artifacts)
@@ -276,7 +276,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
 
       setActivePage(artifactsPageIndex);
       try {

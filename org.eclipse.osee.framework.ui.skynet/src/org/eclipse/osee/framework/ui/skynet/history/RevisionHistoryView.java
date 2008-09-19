@@ -68,7 +68,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
    public RevisionHistoryView() {
       super();
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public static void open(Artifact artifact) {
@@ -260,7 +260,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

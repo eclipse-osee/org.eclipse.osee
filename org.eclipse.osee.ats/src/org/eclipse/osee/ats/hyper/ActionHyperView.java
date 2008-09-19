@@ -77,7 +77,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);
       AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID);
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public static ActionHyperView getArtifactHyperView() {
@@ -99,7 +99,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

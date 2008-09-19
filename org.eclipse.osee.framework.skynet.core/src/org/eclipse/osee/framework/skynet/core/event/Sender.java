@@ -14,11 +14,11 @@ import org.eclipse.osee.framework.skynet.core.dbinit.OseeSession;
  */
 public class Sender {
 
-   Object sourceObject;
+   String sourceObject;
    private final OseeSession oseeSession;
 
    public Sender(Object sourceObject, OseeSession oseeSession) {
-      this.sourceObject = sourceObject;
+      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
       this.oseeSession = oseeSession;
    }
 
@@ -28,7 +28,7 @@ public class Sender {
    }
 
    public Sender(Object sourceObject) {
-      this.sourceObject = sourceObject;
+      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
       this.oseeSession = ApplicationServer.getOseeSession();
    }
 
@@ -62,7 +62,7 @@ public class Sender {
     * @param sender the sender to set
     */
    public void setSourceObject(Object sourceObject) {
-      this.sourceObject = sourceObject;
+      this.sourceObject = InternalEventManager.getObjectSafeName(sourceObject);
    }
 
    public NetworkSender getNetworkSender() {
@@ -74,4 +74,5 @@ public class Sender {
    public String toString() {
       return "Session: [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }
+
 }

@@ -42,7 +42,7 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    }
 
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    public Object[] getChildren(Object parentElement) {

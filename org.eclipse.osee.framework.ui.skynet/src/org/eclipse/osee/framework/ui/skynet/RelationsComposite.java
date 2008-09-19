@@ -129,7 +129,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       this.artifactToLinkMap = new HashMap<Integer, RelationLink>();
 
       createPartControl();
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       this.toolBar = toolBar;
    }
 
@@ -503,7 +503,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

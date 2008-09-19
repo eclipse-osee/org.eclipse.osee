@@ -73,7 +73,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             handleDoubleClick();
          };
       });
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -230,7 +230,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       // Tell the label provider to release its resources
       getLabelProvider().dispose();
    }

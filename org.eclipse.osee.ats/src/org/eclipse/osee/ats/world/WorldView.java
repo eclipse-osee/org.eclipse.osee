@@ -293,7 +293,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
       SkynetContributionItem.addTo(this, false);
       setupDragAndDropSupport();
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
 
    }
 
@@ -683,7 +683,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
       if (xViewer != null) xViewer.dispose();
    }

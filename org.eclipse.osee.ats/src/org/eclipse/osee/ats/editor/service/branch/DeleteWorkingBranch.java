@@ -68,7 +68,7 @@ public class DeleteWorkingBranch extends WorkPageService implements IBranchEvent
                smaMgr.getBranchMgr().deleteEmptyWorkingBranch();
             }
          });
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -143,6 +143,6 @@ public class DeleteWorkingBranch extends WorkPageService implements IBranchEvent
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 }

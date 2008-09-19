@@ -170,7 +170,7 @@ public class RevisionManager {
          } finally {
             DbUtil.close(chStmt);
          }
-         OseeEventManager.addListener(this, new BranchEventListener() {
+         OseeEventManager.addListener(new BranchEventListener() {
             /* (non-Javadoc)
              * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
              */

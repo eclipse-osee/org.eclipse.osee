@@ -59,7 +59,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    private void init() {
       updateStatus(true);
       updateInfo();
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    private void updateInfo() {
@@ -112,7 +112,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
 }

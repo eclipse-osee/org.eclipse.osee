@@ -70,7 +70,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    public XUserRoleViewer() {
       super("Roles");
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    /*
@@ -286,7 +286,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       xViewer.dispose();
    }
 

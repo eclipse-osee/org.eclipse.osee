@@ -82,7 +82,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
                }
             });
       }
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -128,7 +128,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IBran
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

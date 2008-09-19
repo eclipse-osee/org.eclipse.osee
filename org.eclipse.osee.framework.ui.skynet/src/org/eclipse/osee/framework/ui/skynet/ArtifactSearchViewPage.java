@@ -141,7 +141,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       SkynetContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    private void createContextMenu(Control menuOnwer) {
@@ -783,7 +783,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

@@ -14,13 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkAccessControlArtifactsEvent;
@@ -61,8 +58,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class InternalEventManager {
 
-   private static final HashCollection<Object, IEventListner> listenerMap =
-         new HashCollection<Object, IEventListner>(false, HashSet.class, 100);
+   private static final List<IEventListner> listeners = Collections.synchronizedList(new ArrayList<IEventListner>());
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
    private static ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -80,7 +76,7 @@ public class InternalEventManager {
             "OEM: kickRemoteEventManagerEvent: type: " + remoteEventModType + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IRemoteEventManagerEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -112,7 +108,7 @@ public class InternalEventManager {
          public void run() {
             // Kick Local
             if (broadcastEventType == BroadcastEventType.Message) {
-               for (IEventListner listener : listenerMap.getValues()) {
+               for (IEventListner listener : listeners) {
                   if (listener instanceof IBroadcastEventListneer) {
                      // Don't fail on any one listener's exception
                      try {
@@ -157,7 +153,7 @@ public class InternalEventManager {
                // do nothing
             }
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IBranchEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -213,7 +209,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IAccessControlEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -257,7 +253,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IBranchEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -288,7 +284,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IArtifactModifiedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -318,7 +314,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IRelationModifiedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -347,7 +343,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IArtifactsPurgedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -389,7 +385,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IArtifactsChangeTypeEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -429,7 +425,7 @@ public class InternalEventManager {
       Runnable runnable = new Runnable() {
          public void run() { // Kick Local
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IArtifactsChangeTypeEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -597,7 +593,7 @@ public class InternalEventManager {
             transData.cacheAddedArtifacts.removeAll(transData.cacheDeletedArtifacts);
 
             // Kick Local
-            for (IEventListner listener : listenerMap.getValues()) {
+            for (IEventListner listener : listeners) {
                if (listener instanceof IFrameworkTransactionEventListener) {
                   // Don't fail on any one listener's exception
                   try {
@@ -709,48 +705,23 @@ public class InternalEventManager {
     * @param key unique object that will allow for removing all or specific listeners in removeListners
     * @param listener
     */
-   static void addListener(Object key, IEventListner listener) {
-      if (key == null) throw new IllegalArgumentException("key can not be null");
+   static void addListener(IEventListner listener) {
       if (listener == null) throw new IllegalArgumentException("listener can not be null");
-      listenerMap.put(key, listener);
-      SkynetActivator.getLogger().log(Level.INFO,
-            "OEM: addListener (" + listenerMap.size() + ") " + getKeyName(key) + " - " + listener);
+      listeners.add(listener);
+      SkynetActivator.getLogger().log(Level.INFO, "OEM: addListener (" + listeners.size() + ") " + listener);
    }
 
-   static void removeListener(Object key, IEventListner listener) {
-      if (key == null) throw new IllegalArgumentException("key can not be null");
-      if (listener == null) throw new IllegalArgumentException("listener can not be null");
-      listenerMap.removeValue(key, listener);
-      SkynetActivator.getLogger().log(Level.INFO,
-            "OEM: removeListener (" + listenerMap.size() + ") " + getKeyName(key) + " - " + listener);
+   static void removeListeners(IEventListner listener) {
+      listeners.remove(listener);
+      SkynetActivator.getLogger().log(Level.INFO, "OEM: removeListener: (" + listeners.size() + ") " + listener);
    }
 
-   static void removeListeners(Object key) {
-      if (key == null) throw new IllegalArgumentException("key can not be null");
-      Set<IEventListner> listenersToRemove = new HashSet<IEventListner>();
-      for (IEventListner listener : listenerMap.getValues(key)) {
-         listenersToRemove.add(listener);
-      }
-      // Done to avoid concurrent modification
-      for (IEventListner listener : listenersToRemove) {
-         listenerMap.removeValue(key, listener);
-      }
-      SkynetActivator.getLogger().log(Level.INFO,
-            "OEM: removeALListeners: (" + listenerMap.size() + ") " + getKeyName(key));
-   }
-
-   private static String getKeyName(Object key) {
+   public static String getObjectSafeName(Object object) {
       try {
-         return key.toString();
+         return object.toString();
       } catch (Exception ex) {
-         try {
-            if (key instanceof Class) {
-               return ((Class) key).getSimpleName();
-            }
-         } catch (Exception ex2) {
-         }
+         return object.getClass().getSimpleName() + " - exception on toString: " + ex.getLocalizedMessage();
       }
-      return "??";
    }
 
    /**
@@ -768,13 +739,12 @@ public class InternalEventManager {
    }
 
    static String getListenerReport() {
-      List<String> listeners = new ArrayList<String>();
-      for (Object key : listenerMap.keySet()) {
-         listeners.add(getKeyName(key));
+      List<String> listenerStrs = new ArrayList<String>();
+      for (IEventListner listener : listeners) {
+         listenerStrs.add(getObjectSafeName(listener));
       }
-      String[] listArr = listeners.toArray(new String[listeners.size()]);
+      String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
       Arrays.sort(listArr);
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", (Object[]) listArr);
    }
-
 }

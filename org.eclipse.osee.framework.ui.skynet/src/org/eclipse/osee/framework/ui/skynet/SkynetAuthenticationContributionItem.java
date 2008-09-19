@@ -75,7 +75,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
             SkynetAuthentication.notifyListeners();
          }
       });
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -86,7 +86,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

@@ -271,7 +271,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          myTreeEditor.minimumWidth = 50;
 
          forcePopulateView();
-         OseeEventManager.addListener(this, this);
+         OseeEventManager.addListener(this);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -1733,7 +1733,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void dispose() {
       disposed = true;
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
 
       try {
          getViewPreference().flush();

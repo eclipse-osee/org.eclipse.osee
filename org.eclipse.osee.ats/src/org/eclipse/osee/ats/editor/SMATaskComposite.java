@@ -57,7 +57,7 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
 
       xTaskViewer.loadTable();
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -74,7 +74,7 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       xTaskViewer.dispose();
       super.dispose();
    }

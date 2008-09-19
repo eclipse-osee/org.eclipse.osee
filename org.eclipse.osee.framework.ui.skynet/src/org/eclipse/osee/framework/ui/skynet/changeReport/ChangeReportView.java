@@ -174,7 +174,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
       this.toTransactionId = null;
       this.priorInput = null;
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public TreeViewer getChangeTableTreeViewer() {
@@ -1169,7 +1169,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

@@ -147,7 +147,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 
@@ -226,7 +226,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       getSite().setSelectionProvider(xMergeViewer.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    /**

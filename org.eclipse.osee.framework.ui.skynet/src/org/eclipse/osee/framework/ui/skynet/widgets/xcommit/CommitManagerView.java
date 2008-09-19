@@ -92,7 +92,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 
@@ -127,7 +127,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
 
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public void explore(IBranchArtifact branchArtifact) {

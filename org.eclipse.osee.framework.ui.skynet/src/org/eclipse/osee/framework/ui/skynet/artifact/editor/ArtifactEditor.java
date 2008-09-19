@@ -219,7 +219,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       setPartName(getEditorInput().getName());
       setTitleImage(artifact.getImage());
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
 
    }
 
@@ -558,7 +558,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       try {
          // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {

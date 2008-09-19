@@ -92,7 +92,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       }
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Action View");
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -178,7 +178,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

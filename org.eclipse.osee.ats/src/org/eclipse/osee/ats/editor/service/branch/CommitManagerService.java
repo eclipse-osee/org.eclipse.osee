@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -31,7 +31,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class CommitManagerService extends WorkPageService {
+public class CommitManagerService extends WorkPageService implements IBranchEventListener {
 
    private Hyperlink link;
 
@@ -70,25 +70,24 @@ public class CommitManagerService extends WorkPageService {
                }
             });
 
-         OseeEventManager.addListener(this, new BranchEventListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
-             */
-            @Override
-            public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-               refresh();
-            }
-
-            /* (non-Javadoc)
-             * @see org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
-             */
-            @Override
-            public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
-               refresh();
-            }
-
-         });
       }
+      refresh();
+      OseeEventManager.addListener(this);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.IBranchEventListener#handleBranchEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.artifact.BranchModType, org.eclipse.osee.framework.skynet.core.artifact.Branch, int)
+    */
+   @Override
+   public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
+      refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.eventx.BranchEventListener#handleLocalBranchToArtifactCacheUpdateEvent(org.eclipse.osee.framework.ui.plugin.event.Sender)
+    */
+   @Override
+   public void handleLocalBranchToArtifactCacheUpdateEvent(Sender sender) {
       refresh();
    }
 
@@ -139,6 +138,6 @@ public class CommitManagerService extends WorkPageService {
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 }

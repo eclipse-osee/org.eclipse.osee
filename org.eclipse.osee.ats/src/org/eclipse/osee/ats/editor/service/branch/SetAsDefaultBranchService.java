@@ -67,7 +67,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IBranc
          }
       });
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -122,7 +122,7 @@ public class SetAsDefaultBranchService extends WorkPageService implements IBranc
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

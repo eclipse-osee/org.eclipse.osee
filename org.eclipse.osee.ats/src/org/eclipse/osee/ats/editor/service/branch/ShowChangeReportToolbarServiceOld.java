@@ -50,7 +50,7 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
       toolBarAction.setToolTipText(getName());
       toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
       return toolBarAction;
    }
@@ -99,7 +99,7 @@ public class ShowChangeReportToolbarServiceOld extends WorkPageService implement
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

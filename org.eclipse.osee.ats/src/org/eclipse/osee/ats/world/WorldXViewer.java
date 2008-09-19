@@ -153,7 +153,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       });
       createMenuActions();
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    Action editChangeTypeAction;
@@ -547,7 +547,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources

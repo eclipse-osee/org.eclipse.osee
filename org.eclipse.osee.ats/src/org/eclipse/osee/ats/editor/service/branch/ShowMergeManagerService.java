@@ -69,7 +69,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
          }
       });
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -86,7 +86,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
       toolBarAction.setToolTipText(getName());
       toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_merge.gif"));
 
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
       return toolBarAction;
    }
@@ -141,7 +141,7 @@ public class ShowMergeManagerService extends WorkPageService implements IBranchE
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

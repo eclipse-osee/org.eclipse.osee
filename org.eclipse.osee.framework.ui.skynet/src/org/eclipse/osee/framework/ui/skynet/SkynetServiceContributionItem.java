@@ -39,7 +39,7 @@ public class SkynetServiceContributionItem extends SkynetContributionItem implem
    public SkynetServiceContributionItem() {
       super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP);
       updateStatus(RemoteEventManager.isConnected());
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -56,7 +56,7 @@ public class SkynetServiceContributionItem extends SkynetContributionItem implem
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
    }
 
    /* (non-Javadoc)

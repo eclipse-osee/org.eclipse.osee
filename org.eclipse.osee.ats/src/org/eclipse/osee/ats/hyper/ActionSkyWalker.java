@@ -65,7 +65,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       super.createPartControl(parent);
 
       sashForm.setWeights(new int[] {99, 1});
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
    }
 
    /*
@@ -93,7 +93,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

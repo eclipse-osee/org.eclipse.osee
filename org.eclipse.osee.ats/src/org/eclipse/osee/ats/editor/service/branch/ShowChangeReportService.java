@@ -68,7 +68,7 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
             performService();
          }
       });
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
    }
 
@@ -87,14 +87,14 @@ public class ShowChangeReportService extends WorkPageService implements IBranchE
       };
       toolBarAction.setToolTipText(getName());
       toolBarAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
-      OseeEventManager.addListener(this, this);
+      OseeEventManager.addListener(this);
       refresh();
       return toolBarAction;
    }
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListeners(this);
+      OseeEventManager.removeListener(this);
       super.dispose();
    }
 

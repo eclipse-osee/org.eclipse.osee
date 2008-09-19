@@ -169,19 +169,14 @@ public class OseeEventManager {
    /**
     * Add listeners
     * 
-    * @param key unique object that will allow for removing all or specific listeners in removeListners
     * @param listener
     */
-   public static void addListener(Object key, IEventListner listener) {
-      InternalEventManager.addListener(key, listener);
+   public static void addListener(IEventListner listener) {
+      InternalEventManager.addListener(listener);
    }
 
-   public static void removeListener(Object key, IEventListner listener) {
-      InternalEventManager.removeListener(key, listener);
-   }
-
-   public static void removeListeners(Object key) {
-      InternalEventManager.removeListeners(key);
+   public static void removeListener(IEventListner listener) {
+      InternalEventManager.removeListeners(listener);
    }
 
    /**
