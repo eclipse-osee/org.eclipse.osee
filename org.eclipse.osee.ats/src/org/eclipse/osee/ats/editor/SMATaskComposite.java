@@ -63,7 +63,7 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
    @Override
    public String toString() {
       try {
-         return "SMATaskComposite: " + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
+         return "SMATaskComposite for SMA \"" + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma() + "\"";
       } catch (Exception ex) {
          return "SMATaskComposite " + ex.getLocalizedMessage();
       }

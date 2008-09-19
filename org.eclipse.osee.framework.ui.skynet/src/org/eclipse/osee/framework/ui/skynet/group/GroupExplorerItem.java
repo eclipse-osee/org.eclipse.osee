@@ -16,18 +16,13 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorerItem implements IFrameworkTransactionEventListener {
+public class GroupExplorerItem {
 
    private final Artifact artifact;
    private final TreeViewer treeViewer;
@@ -40,7 +35,6 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
       this.artifact = artifact;
       this.parentItem = parentItem;
       this.groupExplorer = groupExplorer;
-      OseeEventManager.addListener(this, this);
    }
 
    public boolean contains(Artifact artifact) {
@@ -64,7 +58,6 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
    }
 
    public void dispose() {
-      OseeEventManager.removeListeners(this);
       if (groupItems != null) for (GroupExplorerItem item : groupItems)
          item.dispose();
    }
@@ -130,33 +123,4 @@ public class GroupExplorerItem implements IFrameworkTransactionEventListener {
       return parentItem;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-      if (transData.isHasEvent(artifact)) {
-         final GroupExplorerItem tai = this;
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (treeViewer == null || treeViewer.getTree().isDisposed() || (artifact != null && artifact.isDeleted())) {
-                  dispose();
-                  return;
-               }
-
-               if (transData.isDeleted(artifact)) {
-                  treeViewer.refresh();
-                  groupExplorer.restoreSelection();
-               } else if (transData.isChanged(artifact)) {
-                  treeViewer.update(tai, null);
-               } else if (transData.isRelChange(artifact)) {
-                  populateUpdateCategory();
-                  treeViewer.refresh(tai);
-                  groupExplorer.restoreSelection();
-               }
-            }
-         });
-      }
-   }
 }

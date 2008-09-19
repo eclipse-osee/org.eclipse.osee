@@ -37,10 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -60,7 +56,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, IFrameworkTransactionEventListener, ISubscribableArtifact, IFavoriteableArtifact {
+public abstract class StateMachineArtifact extends ATSArtifact implements IWorldViewArtifact, ISubscribableArtifact, IFavoriteableArtifact {
 
    protected SMAManager smaMgr;
    private final Set<IRelationEnumeration> smaEditorRelations = new HashSet<IRelationEnumeration>();
@@ -95,7 +91,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public void onInitializationComplete() {
       super.onInitializationComplete();
       initializeSMA();
-      OseeEventManager.addListener(this, this);
    }
 
    /* (non-Javadoc)
@@ -1224,27 +1219,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
       return "";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
-    */
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
-      if (isDeleted()) return;
-      try {
-         // Check if LocalEvent and NOT RemoteEvent. Since EventService will handle moving access
-         // control changes across the OSEE instances, only handle local events
-         if (sender.isLocal()) {
-            // Only update access control if THIS artifact is modified
-            if (transData.isChanged(this)) {
-               // Update branch access control
-               smaMgr.getBranchMgr().updateBranchAccessControl();
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
    }
 
 }

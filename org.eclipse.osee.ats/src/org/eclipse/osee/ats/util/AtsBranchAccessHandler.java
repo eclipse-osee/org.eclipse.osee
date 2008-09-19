@@ -59,6 +59,7 @@ public class AtsBranchAccessHandler implements IBranchEventListener {
                ((StateMachineArtifact) artifact).getSmaMgr().getBranchMgr().updateBranchAccessControl();
             }
          }
+         // TODO Need to remove branch access control if branch deleted, archived, etc
       } catch (BranchDoesNotExist ex) {
          OseeLog.log(AtsPlugin.class, Level.INFO, ex);
       } catch (Exception ex) {

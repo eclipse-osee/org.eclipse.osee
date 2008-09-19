@@ -132,6 +132,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMAEditorDirty().isTrue()) smaMgr.getSma().revertSMA();
       workFlowTab.dispose();
       if (taskComposite != null) taskComposite.dispose();
+      OseeEventManager.removeListeners(this);
       super.dispose();
    }
 
@@ -163,7 +164,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public String toString() {
-      return "SMAEditor " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " - " + smaMgr.getSma().getDescriptiveName();
+      return "SMAEditor - " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " named \"" + smaMgr.getSma().getDescriptiveName() + "\"";
    }
 
    @Override
