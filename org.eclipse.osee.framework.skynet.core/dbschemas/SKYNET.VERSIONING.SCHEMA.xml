@@ -3,7 +3,7 @@
 
 	<!-- _____________________________________________________ -->
 	<!--                                                       -->
-	<!--              MAIN SKYNET TABLES                       -->
+	<!--              MAIN ARTIFACT TABLES                     -->
 	<!--                                                       -->
 	<!-- _____________________________________________________ -->
 
@@ -185,8 +185,8 @@
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="A_ORDER" type="INTEGER" /> <!-- NEED TO SET TO NOT NULL -->
-		<Column id="B_ORDER" type="INTEGER" /> <!-- NEED TO SET TO NOT NULL -->
+		<Column id="A_ORDER" defaultValue="not null" type="INTEGER" />
+		<Column id="B_ORDER" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
@@ -195,6 +195,9 @@
 		</Constraint>
 		<Constraint schema="OSEE" id="OSEE_DEFINE_FOREIGN_A_ART" type="FOREIGN KEY" appliesTo="A_ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="REL_TYPE_ID1_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Index id="OSEE_REL_LINK_RL_IDX" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
@@ -271,6 +274,12 @@
 		<Constraint schema="OSEE" id="OSEE_VALID_REL_AT_RT_G_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, REL_LINK_TYPE_ID, BRANCH_ID" />
 		<Constraint schema="OSEE" id="BRANCH_ID_FK4" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="ART_TYPE_ID3_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="REL_TYPE_ID2_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT_TYPE" column="REL_LINK_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
 	
