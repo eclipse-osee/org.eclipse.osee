@@ -27,7 +27,7 @@ public class AHTML {
    private static final String HTTP_CHARSET_ENCODING =
          "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
    private static final String begin = "<table ";
-   public final static String LABEL_FONT = "<font color=\"darkcyan\" face=\"Arial\" size=\"-1\">";
+   public final static String LABEL_FONT = "<font color=\"black\" face=\"Arial\" size=\"-1\">";
 
    public static String getHyperlink(String url, String name) {
       return String.format("<a href=\"%s\">%s</a>", url, name);
@@ -91,6 +91,10 @@ public class AHTML {
 
    public static String getLabelValueStr(String labelFont, String label, String value) {
       return getLabelStr(labelFont, label) + value;
+   }
+
+   public static String getLabelValueStr(String label, String value) {
+      return getLabelStr(LABEL_FONT, label + ":") + "&nbsp;&nbsp;" + value;
    }
 
    public static String color(String color, String str) {

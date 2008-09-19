@@ -36,6 +36,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
@@ -1585,5 +1587,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public Date getLastModified() throws OseeCoreException, SQLException {
       return transactionId.getTime();
+   }
+
+   public User getLastModifiedBy() throws OseeCoreException, SQLException {
+      return SkynetAuthentication.getUserByArtId(transactionId.getAuthorArtId());
    }
 }
