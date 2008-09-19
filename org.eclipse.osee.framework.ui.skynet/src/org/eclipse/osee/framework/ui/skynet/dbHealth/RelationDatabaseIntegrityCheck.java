@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.blam.operation;
+package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
