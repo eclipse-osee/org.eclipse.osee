@@ -283,7 +283,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          IEditorReference editor = editors[j];
          if (editor.getPart(false) instanceof SMAEditor) {
             if (((SMAEditor) editor.getPart(false)).getSmaMgr().getSma().equals(artifact)) {
-               ((SMAEditor) editor).closeEditor();
+               ((SMAEditor) editor.getPart(false)).closeEditor();
             }
          }
       }
@@ -495,6 +495,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             // do nothings
          }
       }
+      onDirtied();
    }
 
    /* (non-Javadoc)
