@@ -1527,7 +1527,11 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   treeViewer.remove(artifact);
                else if (artifactModType == ArtifactModType.Added) {
                   if (artifact.getParent() != null) treeViewer.refresh(artifact.getParent());
-               } else if (artifactModType == ArtifactModType.Changed) treeViewer.update(artifact, null);
+               } else if (artifactModType == ArtifactModType.Changed) {
+                  treeViewer.update(artifact, null);
+               } else if (artifactModType == ArtifactModType.Reverted) {
+                  if (artifact.getParent() != null) treeViewer.refresh(artifact.getParent());
+               }
             } catch (Exception ex) {
                // do nothing
             }
