@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
@@ -69,7 +68,7 @@ public class XViewer extends TreeViewer {
       this.filterDataUI = new FilterDataUI(this);
       try {
          customizeMgr = new CustomizeManager(this, xViewerFactory);
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       createSupportWidgets(parent);

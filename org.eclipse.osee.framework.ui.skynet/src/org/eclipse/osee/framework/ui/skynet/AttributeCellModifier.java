@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -84,9 +85,8 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public Object getValue(Object element, String property) {
       try {
-
-         Attribute<?> attribute = (Attribute<?>) element;
-         Object object = attribute.getValue();
+      Attribute<?> attribute = (Attribute<?>) element;
+      Object object = attribute.getValue();
          if (attribute instanceof EnumeratedAttribute) {
             enumeratedValue.setValue(attribute.getDisplayableString());
             enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
@@ -103,7 +103,7 @@ public class AttributeCellModifier implements ICellModifier {
             return stringValue;
          }
       } catch (OseeCoreException ex) {
-         return ex;
+         return Lib.exceptionToString(ex);
       }
    }
 
