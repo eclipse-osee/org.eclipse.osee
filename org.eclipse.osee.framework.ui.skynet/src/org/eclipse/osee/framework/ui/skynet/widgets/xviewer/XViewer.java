@@ -20,7 +20,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -53,7 +55,7 @@ public class XViewer extends TreeViewer {
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private boolean columnMultiEditEnabled = false;
-   private final CustomizeManager customizeMgr;
+   private CustomizeManager customizeMgr;
    private TreeColumn rightClickSelectedColumn = null;
    private Integer rightClickSelectedColumnNum = null;
    private TreeItem rightClickSelectedItem = null;
@@ -65,7 +67,11 @@ public class XViewer extends TreeViewer {
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(parent);
       this.filterDataUI = new FilterDataUI(this);
-      customizeMgr = new CustomizeManager(this, xViewerFactory);
+      try {
+         customizeMgr = new CustomizeManager(this, xViewerFactory);
+      } catch (OseeCoreException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
       createSupportWidgets(parent);
 
       Tree tree = getTree();

@@ -41,8 +41,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -391,7 +391,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
       if (outlining) {
          String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -417,7 +417,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -439,7 +439,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes

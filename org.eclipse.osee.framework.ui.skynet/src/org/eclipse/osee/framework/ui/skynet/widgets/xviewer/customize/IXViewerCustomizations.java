@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * Methods to implement if this XViewer allows the user to save local/global customizations
@@ -23,7 +24,7 @@ public interface IXViewerCustomizations {
 
    public List<CustomizeData> getSavedCustDatas() throws Exception;
 
-   public CustomizeData getUserDefaultCustData() throws Exception;
+   public CustomizeData getUserDefaultCustData() throws OseeCoreException;
 
    public boolean isCustomizationUserDefault(CustomizeData custData);
 

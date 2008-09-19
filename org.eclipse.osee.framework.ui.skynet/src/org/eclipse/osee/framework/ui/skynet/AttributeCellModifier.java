@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
@@ -82,22 +83,27 @@ public class AttributeCellModifier implements ICellModifier {
     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
     */
    public Object getValue(Object element, String property) {
-      Attribute<?> attribute = (Attribute<?>) element;
-      Object object = attribute.getValue();
-      if (attribute instanceof EnumeratedAttribute) {
-         enumeratedValue.setValue(attribute.getDisplayableString());
-         enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
-         return enumeratedValue;
-      } else if (attribute instanceof BooleanAttribute) {
-         enumeratedValue.setValue(attribute.getDisplayableString());
-         enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
-         return enumeratedValue;
-      } else if (object instanceof Date) {
-         dateValue.setValue((Date) object);
-         return dateValue;
-      } else {
-         stringValue.setValue(attribute.getDisplayableString());
-         return stringValue;
+      try {
+
+         Attribute<?> attribute = (Attribute<?>) element;
+         Object object = attribute.getValue();
+         if (attribute instanceof EnumeratedAttribute) {
+            enumeratedValue.setValue(attribute.getDisplayableString());
+            enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
+            return enumeratedValue;
+         } else if (attribute instanceof BooleanAttribute) {
+            enumeratedValue.setValue(attribute.getDisplayableString());
+            enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
+            return enumeratedValue;
+         } else if (object instanceof Date) {
+            dateValue.setValue((Date) object);
+            return dateValue;
+         } else {
+            stringValue.setValue(attribute.getDisplayableString());
+            return stringValue;
+         }
+      } catch (OseeCoreException ex) {
+         return ex;
       }
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -46,7 +47,11 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       if (columnIndex == 0) {
          return attribute.getAttributeType().getName();
       }
-      return attribute.getDisplayableString();
+      try {
+         return attribute.getDisplayableString();
+      } catch (OseeCoreException ex) {
+         return ex.getLocalizedMessage();
+      }
    }
 
    /*

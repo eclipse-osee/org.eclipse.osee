@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -44,7 +45,7 @@ public class CustomizeManager {
    public boolean loading = true;
    public static List<String> REMOVED_COLUMNS_TO_IGNORE = Arrays.asList("Metrics from Tasks");
 
-   public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) throws Exception {
+   public CustomizeManager(XViewer xViewer, IXViewerFactory xViewerFactory) throws OseeCoreException {
       this.xViewer = xViewer;
       this.xViewerFactory = xViewerFactory;
       // Set customize to be user default, if selected, or table default
