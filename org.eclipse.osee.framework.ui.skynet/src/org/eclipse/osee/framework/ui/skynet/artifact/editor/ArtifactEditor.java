@@ -33,10 +33,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactModifiedEventListener;
@@ -795,9 +795,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
     * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
     */
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlModType accessControlEventType, LoadedArtifacts loadedArtifacts) {
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifacts) {
       try {
-         if (accessControlEventType == AccessControlModType.ArtifactsLocked || accessControlEventType == AccessControlModType.ArtifactsLocked) {
+         if (accessControlEventType == AccessControlEventType.ArtifactsLocked || accessControlEventType == AccessControlEventType.ArtifactsLocked) {
             if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
                Displays.ensureInDisplayThread(new Runnable() {
                   /* (non-Javadoc)

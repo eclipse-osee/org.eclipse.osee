@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -39,12 +38,12 @@ public class OseeEventManager {
     * Kick local remote event manager event
     * 
     * @param sender
-    * @param remoteEventModType
+    * @param remoteEventServiceEventType
     * @throws OseeCoreException
     */
-   public static void kickRemoteEventManagerEvent(Object source, RemoteEventModType remoteEventModType) throws OseeCoreException {
+   public static void kickRemoteEventManagerEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (InternalEventManager.isDisableEvents()) return;
-      InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventModType);
+      InternalEventManager.kickRemoteEventManagerEvent(getSender(source), remoteEventServiceEventType);
    }
 
    /**
@@ -65,13 +64,13 @@ public class OseeEventManager {
     * Kick local and remote branch events
     * 
     * @param sender
-    * @param branchModType
+    * @param branchEventType
     * @param branchId
     * @throws OseeCoreException
     */
-   public static void kickBranchEvent(Object source, BranchEventType branchModType, int branchId) throws OseeCoreException {
+   public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId) throws OseeCoreException {
       if (isDisableEvents()) return;
-      InternalEventManager.kickBranchEvent(getSender(source), branchModType, branchId);
+      InternalEventManager.kickBranchEvent(getSender(source), branchEventType, branchId);
    }
 
    /**
@@ -82,7 +81,7 @@ public class OseeEventManager {
     * @param branchId
     * @throws OseeCoreException
     */
-   public static void kickAccessControlArtifactsEvent(Object source, final AccessControlModType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+   public static void kickAccessControlArtifactsEvent(Object source, final AccessControlEventType accessControlModType, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) return;
       InternalEventManager.kickAccessControlArtifactsEvent(getSender(source), accessControlModType, loadedArtifacts);
    }

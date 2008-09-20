@@ -16,7 +16,7 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlModType;
+import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -93,8 +93,8 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
     * @see org.eclipse.osee.framework.skynet.core.eventx.IAccessControlEventListener#handleAccessControlArtifactsEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.AccessControlModType, org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts)
     */
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlModType accessControlEventType, LoadedArtifacts loadedArtifactss) {
-      if (accessControlEventType == AccessControlModType.UserAuthenticated) {
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlEventType, LoadedArtifacts loadedArtifactss) {
+      if (accessControlEventType == AccessControlEventType.UserAuthenticated) {
 
          Displays.ensureInDisplayThread(new Runnable() {
             @Override

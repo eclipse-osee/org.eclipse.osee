@@ -15,7 +15,7 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.event.RemoteEventModType;
+import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
@@ -63,15 +63,15 @@ public class SkynetServiceContributionItem extends SkynetContributionItem implem
     * @see org.eclipse.osee.framework.skynet.core.eventx.IRemoteEventManagerEventListener#handleRemoteEventManagerEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.eventx.RemoteEventModType)
     */
    @Override
-   public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventModType remoteEventModType) {
-      if (remoteEventModType == RemoteEventModType.Connected || remoteEventModType == RemoteEventModType.DisConnected) {
+   public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
+      if (remoteEventServiceEventType == RemoteEventServiceEventType.Connected || remoteEventServiceEventType == RemoteEventServiceEventType.DisConnected) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
              */
             @Override
             public void run() {
-               updateStatus(remoteEventModType == RemoteEventModType.Connected);
+               updateStatus(remoteEventServiceEventType == RemoteEventServiceEventType.Connected);
             }
          });
       }

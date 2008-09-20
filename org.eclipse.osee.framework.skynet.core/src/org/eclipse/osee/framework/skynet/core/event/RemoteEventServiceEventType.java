@@ -8,8 +8,8 @@ package org.eclipse.osee.framework.skynet.core.event;
 /**
  * @author Donald G. Dunne
  */
-public enum BroadcastEventType {
-   Message(EventType.LocalAndRemote), Force_Shutdown(EventType.RemoteOnly);
+public enum RemoteEventServiceEventType {
+   Connected(EventType.LocalOnly), DisConnected(EventType.LocalOnly);
 
    private final EventType eventType;
 
@@ -24,7 +24,8 @@ public enum BroadcastEventType {
    /**
     * @param localOnly true if this event type is to be thrown only locally and not to other clients
     */
-   private BroadcastEventType(EventType eventType) {
+   private RemoteEventServiceEventType(EventType eventType) {
       this.eventType = eventType;
    }
+
 }

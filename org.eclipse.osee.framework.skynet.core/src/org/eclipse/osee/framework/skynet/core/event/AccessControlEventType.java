@@ -8,8 +8,10 @@ package org.eclipse.osee.framework.skynet.core.event;
 /**
  * @author Donald G. Dunne
  */
-public enum BroadcastEventType {
-   Message(EventType.LocalAndRemote), Force_Shutdown(EventType.RemoteOnly);
+public enum AccessControlEventType {
+   ArtifactsLocked(EventType.LocalAndRemote),
+   ArtifactsUnlocked(EventType.LocalAndRemote),
+   UserAuthenticated(EventType.LocalOnly);
 
    private final EventType eventType;
 
@@ -24,7 +26,7 @@ public enum BroadcastEventType {
    /**
     * @param localOnly true if this event type is to be thrown only locally and not to other clients
     */
-   private BroadcastEventType(EventType eventType) {
+   private AccessControlEventType(EventType eventType) {
       this.eventType = eventType;
    }
 }

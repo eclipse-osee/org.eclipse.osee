@@ -11,6 +11,6 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  * @author Donald G. Dunne
  */
 public interface IAccessControlEventListener extends IEventListner {
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlModType accessControlModType, LoadedArtifacts loadedArtifactss);
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEventType accessControlModType, LoadedArtifacts loadedArtifactss);
 
 }

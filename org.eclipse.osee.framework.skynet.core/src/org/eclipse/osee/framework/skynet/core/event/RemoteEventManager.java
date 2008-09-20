@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
@@ -64,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
@@ -139,6 +139,35 @@ public class RemoteEventManager implements IServiceLookupListener {
 
          job.schedule();
       }
+      /*
+       * This will enable a testing loopback that will take the kicked remote events and
+       * loop them back as if they came from an external client.  It will allow for the testing
+       * of the OEM -> REM -> OEM processing.  In addition, this onEvent is put in a non-display
+       * thread which will test that all handling by applications is properly handled by doing
+       * all processing and then kicking off display-thread when need to update ui.  SessionId needs
+       * to be modified so this client doesn't think the events came from itself.
+       */
+      if (InternalEventManager.enableRemoteEventLoopback) {
+         SkynetActivator.getLogger().log(Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
+         Thread thread = new Thread() {
+            /* (non-Javadoc)
+             * @see java.lang.Thread#run()
+             */
+            @Override
+            public void run() {
+               try {
+                  String newSessionId = GUID.generateGuidStr();
+                  for (ISkynetEvent event : events) {
+                     event.getNetworkSender().sessionId = newSessionId;
+                  }
+                  instance.listener.onEvent(events);
+               } catch (RemoteException ex) {
+                  logger.log(Level.SEVERE, ex.toString(), ex);
+               }
+            }
+         };
+         thread.start();
+      }
    }
 
    private void addListenerForEventService() {
@@ -176,7 +205,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       try {
          logger.log(Level.INFO, "Skynet Event Service connection established " + ACCEPTABLE_SERVICE);
          skynetEventService.register(myReference);
-         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventModType.Connected);
+         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.Connected);
 
       } catch (OseeCoreException e) {
          logger.log(Level.SEVERE, e.toString(), e);
@@ -191,7 +220,7 @@ public class RemoteEventManager implements IServiceLookupListener {
       logger.log(Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
       skynetEventService = null;
       try {
-         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventModType.DisConnected);
+         OseeEventManager.kickRemoteEventManagerEvent(this, RemoteEventServiceEventType.DisConnected);
 
       } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
@@ -254,8 +283,8 @@ public class RemoteEventManager implements IServiceLookupListener {
                   if (event instanceof NetworkAccessControlArtifactsEvent) {
                      try {
 
-                        AccessControlModType accessControlModType =
-                              AccessControlModType.valueOf(((NetworkAccessControlArtifactsEvent) event).getAccessControlModTypeName());
+                        AccessControlEventType accessControlModType =
+                              AccessControlEventType.valueOf(((NetworkAccessControlArtifactsEvent) event).getAccessControlModTypeName());
                         LoadedArtifacts loadedArtifacts =
                               new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getBranchId(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactIds(),

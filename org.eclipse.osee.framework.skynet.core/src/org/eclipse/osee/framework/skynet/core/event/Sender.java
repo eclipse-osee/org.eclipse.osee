@@ -72,7 +72,7 @@ public class Sender {
 
    @Override
    public String toString() {
-      return "Session: [" + oseeSession.toString() + "  [" + sourceObject + "]]";
+      return "Sender: " + (isRemote() ? "Remote" : "Local") + " [" + oseeSession.toString() + "  [" + sourceObject + "]]";
    }
 
 }

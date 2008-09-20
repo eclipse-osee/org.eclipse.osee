@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
-import org.eclipse.osee.framework.skynet.core.artifact.BranchEventType;
 
 /**
  * @author Donald G. Dunne

@@ -10,5 +10,12 @@ package org.eclipse.osee.framework.skynet.core.event;
  */
 public enum EventType {
 
-   Local, Remote
+   // Event is only sent locally and not sent remotely
+   LocalOnly,
+
+   // Event is not send locally, but is sent remotely
+   RemoteOnly,
+
+   // Event is sent both locally and remotely
+   LocalAndRemote
 }
