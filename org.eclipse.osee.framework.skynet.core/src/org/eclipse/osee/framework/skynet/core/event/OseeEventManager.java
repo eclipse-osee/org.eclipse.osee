@@ -160,6 +160,12 @@ public class OseeEventManager {
       InternalEventManager.kickTransactionsDeletedEvent(getSender(source), transactionIds);
    }
 
+   /**
+    * Kick local and remote transaction event
+    * 
+    * @param source
+    * @param xModifiedEvents
+    */
    public static void kickTransactionEvent(Object source, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) return;
       InternalEventManager.kickTransactionEvent(getSender(source), xModifiedEvents);

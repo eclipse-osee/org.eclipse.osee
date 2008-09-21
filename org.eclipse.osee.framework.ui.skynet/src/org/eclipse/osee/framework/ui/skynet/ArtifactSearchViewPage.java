@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -55,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
@@ -84,7 +86,7 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.osgi.framework.Bundle;
 
-public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IFrameworkTransactionEventListener {
+public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
@@ -835,7 +837,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
     * @see org.eclipse.osee.framework.skynet.core.eventx.IFrameworkTransactionEventListener#handleFrameworkTransactionEvent(org.eclipse.osee.framework.ui.plugin.event.Sender.Source, org.eclipse.osee.framework.skynet.core.eventx.FrameworkTransactionData)
     */
    @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -843,6 +845,26 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          @Override
          public void run() {
             if (viewer != null) {
+               viewer.remove(transData.cacheDeletedArtifacts);
+               viewer.refresh();
+            }
+         }
+      });
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, java.util.Collection, java.util.Collection)
+    */
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+            if (viewer != null) {
+               viewer.remove(cacheArtifacts);
                viewer.refresh();
             }
          }
