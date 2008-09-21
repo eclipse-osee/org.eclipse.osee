@@ -11,24 +11,11 @@
 package org.eclipse.osee.ats.editor;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
-import org.eclipse.osee.ats.util.widgets.task.TaskContentProvider;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class SMATaskComposite extends Composite implements IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
+public class SMATaskComposite extends Composite {
 
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final XTaskViewer xTaskViewer;
@@ -57,7 +44,6 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
       AtsPlugin.getInstance().setHelp(this, HELP_CONTEXT_ID);
 
       xTaskViewer.loadTable();
-      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -74,88 +60,12 @@ public class SMATaskComposite extends Composite implements IArtifactsPurgedEvent
     */
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       xTaskViewer.dispose();
       super.dispose();
    }
 
    public String getHtml() {
       return xTaskViewer.toHTML(AHTML.LABEL_FONT);
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
-         // ContentProvider ensures in display thread
-         Displays.ensureInDisplayThread(new Runnable() {
-            /* (non-Javadoc)
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-               try {
-                  ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
-               } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, false);
-               }
-            }
-         });
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
-         // ContentProvider ensures in display thread
-         ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-
-      Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
-         @Override
-         public void run() {
-
-            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
-            xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
-
-            try {
-               Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
-               if (parentSma != null) {
-                  // Add any new tasks related to parent sma
-                  Collection<Artifact> artifacts =
-                        transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
-                  if (artifacts.size() > 0) {
-                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
-                  }
-
-                  // Remove any tasks related to parent sma
-                  artifacts =
-                        transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
-                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
-                  if (artifacts.size() > 0) {
-                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
-                  }
-               }
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
-            }
-         }
-      });
    }
 
    /**

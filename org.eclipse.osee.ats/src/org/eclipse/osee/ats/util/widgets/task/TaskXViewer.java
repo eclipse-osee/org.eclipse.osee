@@ -28,12 +28,17 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -384,6 +389,81 @@ public class TaskXViewer extends WorldXViewer {
          }
       }
       return nameToResOptionDef.get(optionName);
+   }
+
+   @Override
+   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
+         // ContentProvider ensures in display thread
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            @Override
+            public void run() {
+               try {
+                  ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, false);
+               }
+            }
+         });
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+   }
+
+   @Override
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
+         // ContentProvider ensures in display thread
+         ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+   }
+
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         @Override
+         public void run() {
+
+            ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(transData.cacheDeletedArtifacts);
+            xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
+
+            try {
+               Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
+               if (parentSma != null) {
+                  // Add any new tasks related to parent sma
+                  Collection<Artifact> artifacts =
+                        transData.getRelatedArtifacts(parentSma.getArtId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
+                  if (artifacts.size() > 0) {
+                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).add(artifacts);
+                  }
+
+                  // Remove any tasks related to parent sma
+                  artifacts =
+                        transData.getRelatedArtifacts(parentSma.getArtId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsPlugin.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
+                  if (artifacts.size() > 0) {
+                     ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(artifacts);
+                  }
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
+         }
+      });
    }
 
 }
