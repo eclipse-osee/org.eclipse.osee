@@ -52,6 +52,9 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**
+ * Internal implementation of OSEE Event Manager that should only be accessed from RemoteEventManager and
+ * OseeEventManager classes.
+ * 
  * @author Donald G. Dunne
  */
 public class InternalEventManager {

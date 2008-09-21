@@ -831,7 +831,7 @@ public class ArtifactPersistenceManager {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public static void purgeArtifacts(Collection<Artifact> artifactsToPurge) throws SQLException, OseeCoreException {
+   public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws SQLException, OseeCoreException {
       //first determine if the purge is legal.
       List<Object[]> batchParameters = new ArrayList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -899,6 +899,7 @@ public class ArtifactPersistenceManager {
          int artifactVersions = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT_VERSIONS, transactionJoinId);
          int artifact = ConnectionHandler.runPreparedUpdate(DELETE_FROM_ARTIFACT, queryId);
 
+         // Delete tags for purged artifacts
          try {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("queryId", Integer.toString(transactionJoinId));

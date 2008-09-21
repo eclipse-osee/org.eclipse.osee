@@ -120,10 +120,10 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       String[] columnHeaders = new String[] {"Team", "Working", "Mod", "New", "Del", "Notes"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-//            for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+      //            for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
 
-            	           for (String artifactTypeName : new String[] {"Lba V11 REU Req Team Workflow"}) {
-//      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
+      for (String artifactTypeName : new String[] {"Lba V11 REU Req Team Workflow"}) {
+         //      for (String artifactTypeName : new String[] {"Lba B3 Req Team Workflow"}) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          StringBuffer sbByType = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          sbByType.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
@@ -305,8 +305,10 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
          }
       }
       sbFull.append(AHTML.endMultiColumnTable());
-      System.err.println(String.format("%d SevereLogs during test.\n", monitorLog.getSevereLogs().size()));
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
+      if (monitorLog.getSevereLogs().size() > 0) {
+         xResultData.logError(String.format("%d SevereLogs during test.\n", monitorLog.getSevereLogs().size()));
+      }
    }
 
    /**

@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
+ * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
+ * framework events.
+ * 
  * @author Donald G. Dunne
  */
 public class OseeEventManager {

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -98,17 +99,8 @@ public final class Artifacts {
       newActionTx.execute();
    }
 
-   public static void purge(final Collection<? extends Artifact> artifacts) throws Exception {
-      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
-
-         @Override
-         protected void handleTxWork() throws OseeCoreException, SQLException {
-            for (Artifact art : artifacts)
-               art.purgeFromBranch();
-         }
-
-      };
-      newActionTx.execute();
+   public static void purgeArtifacts(final Collection<? extends Artifact> artifacts) throws Exception {
+      ArtifactPersistenceManager.purgeArtifacts(artifacts);
    }
 
    /**
