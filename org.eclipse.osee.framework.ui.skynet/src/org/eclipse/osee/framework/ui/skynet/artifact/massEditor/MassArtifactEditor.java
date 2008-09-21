@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -59,6 +60,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    private int artifactsPageIndex;
    private Collection<? extends Artifact> artifacts = new HashSet<Artifact>();
    private MassXViewer xViewer;
+   private Label branchLabel;
 
    /**
     * @return the xViewer
@@ -67,8 +69,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       return xViewer;
    }
 
-   private Label branchLabel;
-
    /*
     * (non-Javadoc)
     * 
@@ -76,12 +76,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
-      for (Artifact art : artifacts)
-         try {
-            art.persistAttributesAndRelations();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
+      try {
+         Artifacts.persistInTransaction(artifacts);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
       onDirtied();
    }
 

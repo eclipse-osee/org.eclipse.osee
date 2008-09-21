@@ -73,7 +73,7 @@ public final class Artifacts {
       return names;
    }
 
-   public static void persist(final Collection<? extends Artifact> artifacts, final boolean recurse) throws Exception {
+   public static void persistInTransaction(final Collection<? extends Artifact> artifacts) throws Exception {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override

@@ -226,7 +226,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             try {
                Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
                if (SMAManager.promptChangeAssignees(artifacts)) {
-                  Artifacts.persist(artifacts, false);
+                  Artifacts.persistInTransaction(artifacts);
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
