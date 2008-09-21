@@ -425,30 +425,32 @@ public class RemoteEventManager implements IServiceLookupListener {
                xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Changed, unloadedArtifact));
             } else if (!artifact.isHistorical()) {
                for (SkynetAttributeChange skynetAttributeChange : ((NetworkArtifactModifiedEvent) event).getAttributeChanges()) {
-                  boolean attributeNeedsCreation = true;
-                  for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
-                     if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-                        if (attribute.isDirty()) {
-                           dirtyAttributeName.add(attribute.getNameValueDescription());
-                           OseeLog.log(SkynetActivator.class, Level.INFO, String.format(
-                                 "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
-                                 attribute.getAttrId(), attribute.toString()));
+                  if (!InternalEventManager.enableRemoteEventLoopback) {
+                     boolean attributeNeedsCreation = true;
+                     for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
+                        if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+                           if (attribute.isDirty()) {
+                              dirtyAttributeName.add(attribute.getNameValueDescription());
+                              OseeLog.log(SkynetActivator.class, Level.INFO, String.format(
+                                    "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
+                                    attribute.getAttrId(), attribute.toString()));
+                           }
+                           attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                           attribute.setGammaId(skynetAttributeChange.getGammaId());
+                           attributeNeedsCreation = false;
+                           attribute.setNotDirty();
+                           break;
                         }
-                        attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
-                        attribute.setGammaId(skynetAttributeChange.getGammaId());
-                        attributeNeedsCreation = false;
-                        attribute.setNotDirty();
-                        break;
                      }
-                  }
-                  if (attributeNeedsCreation) {
-                     Attribute<?> attribute =
-                           AttributeToTransactionOperation.initializeAttribute(artifact, AttributeTypeManager.getType(
-                                 skynetAttributeChange.getName()).getAttrTypeId(),
-                                 skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
-                                 skynetAttributeChange.getData());
-                     if (attribute != null) {
-                        attribute.setNotDirty();
+                     if (attributeNeedsCreation) {
+                        Attribute<?> attribute =
+                              AttributeToTransactionOperation.initializeAttribute(artifact,
+                                    AttributeTypeManager.getType(skynetAttributeChange.getName()).getAttrTypeId(),
+                                    skynetAttributeChange.getAttributeId(), skynetAttributeChange.getGammaId(),
+                                    skynetAttributeChange.getData());
+                        if (attribute != null) {
+                           attribute.setNotDirty();
+                        }
                      }
                   }
                }
@@ -465,8 +467,10 @@ public class RemoteEventManager implements IServiceLookupListener {
                UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
                xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, unloadedArtifact));
             } else if (!artifact.isHistorical()) {
-               artifact.setDeleted();
-               artifact.setNotDirty();
+               if (!InternalEventManager.enableRemoteEventLoopback) {
+                  artifact.setDeleted();
+                  artifact.setNotDirty();
+               }
 
                xModifiedEvents.add(new ArtifactModifiedEvent(sender, ArtifactModType.Deleted, artifact,
                      ((NetworkArtifactDeletedEvent) event).getTransactionId(), new ArrayList<SkynetAttributeChange>()));

@@ -159,15 +159,24 @@ public class InternalEventManager {
             } catch (Exception ex) {
                // do nothing
             }
+            // Log if this is a loopback and what is happening
+            if (enableRemoteEventLoopback) {
+               SkynetActivator.getLogger().log(
+                     Level.WARNING,
+                     "OEM: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+            }
+
             // Kick LOCAL
-            if (branchEventType.isLocalEventType()) {
-               for (IEventListner listener : listeners) {
-                  if (listener instanceof IBranchEventListener) {
-                     // Don't fail on any one listener's exception
-                     try {
-                        ((IBranchEventListener) listener).handleBranchEvent(sender, branchEventType, branchId);
-                     } catch (Exception ex) {
-                        SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            if (!enableRemoteEventLoopback || (enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote())) {
+               if (branchEventType.isLocalEventType()) {
+                  for (IEventListner listener : listeners) {
+                     if (listener instanceof IBranchEventListener) {
+                        // Don't fail on any one listener's exception
+                        try {
+                           ((IBranchEventListener) listener).handleBranchEvent(sender, branchEventType, branchId);
+                        } catch (Exception ex) {
+                           SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                        }
                      }
                   }
                }
@@ -480,8 +489,8 @@ public class InternalEventManager {
             // Log if this is a loopback and what is happening
             if (enableRemoteEventLoopback) {
                SkynetActivator.getLogger().log(
-                     Level.INFO,
-                     "OEM: Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                     Level.WARNING,
+                     "OEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
             }
 
             // Kick LOCAL
