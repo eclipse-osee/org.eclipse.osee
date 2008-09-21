@@ -114,17 +114,19 @@ public class LoadedArtifacts {
 
    public synchronized Collection<Artifact> getLoadedArtifacts() throws BranchDoesNotExist, SQLException {
       // If artifacts have not been set, resolve any unloaded artifactIds that exist in current cache
-      if (artifacts == null && unloadedArtifacts.size() > 0) {
+      if (artifacts == null) {
          artifacts = new HashSet<Artifact>();
-         for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
-            Artifact art =
-                  ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                        BranchPersistenceManager.getBranch(unloadedArtifact.getBranchId()));
-            if (art != null) {
-               unloadedArtifacts.remove(unloadedArtifact);
-               artifacts.add(art);
-            }
+         if (unloadedArtifacts.size() > 0) {
+            for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
+               Artifact art =
+                     ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
+                           BranchPersistenceManager.getBranch(unloadedArtifact.getBranchId()));
+               if (art != null) {
+                  unloadedArtifacts.remove(unloadedArtifact);
+                  artifacts.add(art);
+               }
 
+            }
          }
       }
       return artifacts;

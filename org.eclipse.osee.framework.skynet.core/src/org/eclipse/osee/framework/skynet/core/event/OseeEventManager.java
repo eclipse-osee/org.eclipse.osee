@@ -47,7 +47,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick Local and Remote broadcast event
+    * Kick LOCAL and REMOTE broadcast event
     * 
     * @param sender
     * @param broadcastEventType
@@ -61,7 +61,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local and remote branch events
+    * Kick LOCAL and REMOTE branch events
     * 
     * @param sender
     * @param branchEventType
@@ -74,7 +74,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local and remote access control events
+    * Kick LOCAL and REMOTE access control events
     * 
     * @param sender
     * @param branchModType
@@ -100,7 +100,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local artifact modified event; This event does NOT go external
+    * Kick LOCAL artifact modified event; This event does NOT go external
     * 
     * @param sender local if kicked from internal; remote if from external
     * @param loadedArtifacts
@@ -112,7 +112,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local relation modified event; This event does NOT go external
+    * Kick LOCAL relation modified event; This event does NOT go external
     * 
     * @param sender local if kicked from internal; remote if from external
     * @param loadedArtifacts
@@ -125,7 +125,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local and remote purged event depending on sender
+    * Kick LOCAL and REMOTE purged event depending on sender
     * 
     * @param sender local if kicked from internal; remote if from external
     * @param loadedArtifacts
@@ -137,7 +137,7 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local and remote artifact change type depending on sender
+    * Kick LOCAL and REMOTE artifact change type depending on sender
     * 
     * @param sender local if kicked from internal; remote if from external
     * @param toArtifactTypeId
@@ -150,18 +150,19 @@ public class OseeEventManager {
    }
 
    /**
-    * Kick local and remote transaction deleted event
+    * Kick LOCAL and REMOTE transaction deleted event
     * 
     * @param sender local if kicked from internal; remote if from external
     * @throws OseeCoreException
     */
    public static void kickTransactionsDeletedEvent(Object source, int[] transactionIds) throws OseeCoreException {
       if (isDisableEvents()) return;
+      //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       InternalEventManager.kickTransactionsDeletedEvent(getSender(source), transactionIds);
    }
 
    /**
-    * Kick local and remote transaction event
+    * Kick LOCAL and REMOTE transaction event
     * 
     * @param source
     * @param xModifiedEvents
@@ -180,6 +181,11 @@ public class OseeEventManager {
       InternalEventManager.addListener(listener);
    }
 
+   /**
+    * Remove listeners
+    * 
+    * @param listener
+    */
    public static void removeListener(IEventListner listener) {
       InternalEventManager.removeListeners(listener);
    }
@@ -192,12 +198,19 @@ public class OseeEventManager {
    }
 
    /**
+    * Turn off all event processing including LOCAL and REMOTE
+    * 
     * @param disableEvents the disableEvents to set
     */
    public static void setDisableEvents(boolean disableEvents) {
       InternalEventManager.setDisableEvents(disableEvents);
    }
 
+   /**
+    * Return report showing all listeners registered
+    * 
+    * @return string report
+    */
    public static String getListenerReport() {
       return InternalEventManager.getListenerReport();
    }

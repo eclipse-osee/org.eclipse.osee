@@ -5,14 +5,12 @@
  */
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IArtifactsChangeTypeEventListener extends IEventListner {
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts);
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts);
 
 }

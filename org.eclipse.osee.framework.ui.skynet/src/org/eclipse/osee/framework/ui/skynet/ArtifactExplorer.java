@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -1416,7 +1415,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1429,7 +1428,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
    }
 
    @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -1438,7 +1437,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          public void run() {
             try {
                Set<Artifact> parents = new HashSet<Artifact>();
-               for (Artifact art : cacheArtifacts) {
+               for (Artifact art : loadedArtifacts.getLoadedArtifacts()) {
                   if (art.getParent() != null) {
                      parents.add(art.getParent());
                   }

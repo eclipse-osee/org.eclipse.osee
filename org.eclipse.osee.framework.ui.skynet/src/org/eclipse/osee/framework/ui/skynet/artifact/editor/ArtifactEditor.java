@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -721,9 +720,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
     * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactsPurgedEventListener#handleArtifactsPurgedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, java.util.Collection, java.util.Collection)
     */
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-      if (cacheArtifacts.contains(artifact)) {
-         closeEditor();
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
+            closeEditor();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 
@@ -731,9 +734,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
     * @see org.eclipse.osee.framework.skynet.core.eventx.IArtifactsChangeTypeEventListener#handleArtifactsChangeTypeEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, int, java.util.Collection, java.util.Collection)
     */
    @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-      if (cacheArtifacts.contains(artifact)) {
-         closeEditor();
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
+            closeEditor();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 

@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
@@ -58,7 +59,7 @@ import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -113,17 +114,25 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-      if (cacheArtifacts.size() == 0) return;
-      // ContentProvider ensures in display thread
-      ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
+   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
+         // ContentProvider ensures in display thread
+         ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
    }
 
    @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final Collection<? extends Artifact> cacheArtifacts, Collection<UnloadedArtifact> unloadedArtifacts) {
-      if (cacheArtifacts.size() == 0) return;
-      // ContentProvider ensures in display thread
-      ((WorldContentProvider) getContentProvider()).remove(cacheArtifacts);
+   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
+      try {
+         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
+         // ContentProvider ensures in display thread
+         ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
    @Override
@@ -725,12 +734,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
                         @Override
                         protected void handleTxWork() throws OseeCoreException, SQLException {
-                           for (Artifact loopArt : deleteArts) {
-                              if (purge)
-                                 loopArt.purgeFromBranch();
-                              else {
-                                 loopArt.delete();
-                              }
+                           if (purge) {
+                              ArtifactPersistenceManager.purgeArtifacts(deleteArts);
+                           } else {
+                              ArtifactPersistenceManager.deleteArtifact(deleteArts.toArray(new Artifact[deleteArts.size()]));
                            }
                         }
                      };

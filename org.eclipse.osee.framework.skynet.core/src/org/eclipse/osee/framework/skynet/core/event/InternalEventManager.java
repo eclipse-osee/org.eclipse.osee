@@ -366,8 +366,7 @@ public class InternalEventManager {
                if (listener instanceof IArtifactsPurgedEventListener) {
                   // Don't fail on any one listener's exception
                   try {
-                     ((IArtifactsPurgedEventListener) listener).handleArtifactsPurgedEvent(sender,
-                           loadedArtifacts.getLoadedArtifacts(), EMPTY_UNLOADED_ARTIFACTS);
+                     ((IArtifactsPurgedEventListener) listener).handleArtifactsPurgedEvent(sender, loadedArtifacts);
                   } catch (Exception ex) {
                      SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }
@@ -409,7 +408,7 @@ public class InternalEventManager {
                   // Don't fail on any one listener's exception
                   try {
                      ((IArtifactsChangeTypeEventListener) listener).handleArtifactsChangeTypeEvent(sender,
-                           toArtifactTypeId, loadedArtifacts.getLoadedArtifacts(), EMPTY_UNLOADED_ARTIFACTS);
+                           toArtifactTypeId, loadedArtifacts);
                   } catch (Exception ex) {
                      SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }
@@ -438,6 +437,7 @@ public class InternalEventManager {
     * @throws OseeCoreException
     */
    static void kickTransactionsDeletedEvent(final Sender sender, final int[] transactionIds) throws OseeCoreException {
+      //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (isDisableEvents()) return;
       SkynetActivator.getLogger().log(Level.INFO,
             "OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
@@ -524,7 +524,6 @@ public class InternalEventManager {
    /**
     * Add listeners
     * 
-    * @param key unique object that will allow for removing all or specific listeners in removeListners
     * @param listener
     */
    static void addListener(IEventListner listener) {
