@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -23,28 +24,26 @@ import org.eclipse.ui.PlatformUI;
 public class OSEELog {
 
    public static void logException(Class<?> clazz, String str, Exception ex, boolean popup) {
-      Logger logger = ConfigUtil.getConfigFactory().getLogger(clazz);
       if (popup && PlatformUI.isWorkbenchRunning()) {
          if (ex == null) {
             AWorkbench.popup("ERROR", str);
          } else
-            AWorkbench.popup("ERROR",
-                  (str == null ? "" : str + "\n\n") + ex.getLocalizedMessage());
+            AWorkbench.popup("ERROR", (str == null ? "" : str + "\n\n") + ex.getLocalizedMessage());
       }
       if (ex != null)
          if (str == null || str.equals(""))
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(clazz, Level.SEVERE, ex.getLocalizedMessage(), ex);
          else
-            logger.log(Level.SEVERE, str, ex);
+            OseeLog.log(clazz, Level.SEVERE, str, ex);
       else {
          // Throw an exception so we get a stack trace
          try {
             throw new OseeCoreException(str);
          } catch (Exception ex2) {
             if (str == null || str.equals(""))
-               logger.log(Level.SEVERE, ex2.getLocalizedMessage(), ex2);
+               OseeLog.log(clazz, Level.SEVERE, ex2.getLocalizedMessage(), ex2);
             else
-               logger.log(Level.SEVERE, str, ex2);
+               OseeLog.log(clazz, Level.SEVERE, str, ex2);
          }
       }
    }
@@ -68,15 +67,14 @@ public class OSEELog {
    }
 
    public static void logWarning(Class<?> clazz, String str, Exception ex, boolean popup) {
-      Logger logger = ConfigUtil.getConfigFactory().getLogger(clazz);
       if (popup) AWorkbench.popup("Warning", str);
       if (ex != null)
          if (str == null || str.equals(""))
-            logger.log(Level.WARNING, ex.getLocalizedMessage(), ex);
+            OseeLog.log(clazz, Level.WARNING, ex.getLocalizedMessage(), ex);
          else
-            logger.log(Level.WARNING, str, ex);
+            OseeLog.log(clazz, Level.WARNING, str, ex);
       else
-         logger.log(Level.WARNING, str);
+         OseeLog.log(clazz, Level.WARNING, str);
    }
 
    public static void logException(Class<?> clazz, Exception ex, boolean popup) {
