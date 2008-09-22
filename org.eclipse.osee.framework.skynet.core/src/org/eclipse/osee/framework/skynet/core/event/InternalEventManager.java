@@ -332,7 +332,7 @@ public class InternalEventManager {
    static void kickRelationModifiedEvent(final Sender sender, final RelationModType relationModType, final RelationLink link, final Branch branch, final String relationType, final String relationSide) throws OseeCoreException {
       if (isDisableEvents()) return;
       SkynetActivator.getLogger().log(Level.INFO,
-            "OEM: kickRelationModifiedEvent - " + relationType + " - " + link.getRelationType() + " - " + sender);
+            "OEM: kickRelationModifiedEvent - " + relationModType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
