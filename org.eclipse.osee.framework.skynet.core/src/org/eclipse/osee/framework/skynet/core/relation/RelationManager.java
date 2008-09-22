@@ -307,7 +307,7 @@ public class RelationManager {
     * @deprecated
     */
    @Deprecated
-   public static void revertRelationsFor(Artifact artifact) {
+   public static void prepareRelationsForReload(Artifact artifact) {
       //This is inappropriate to use as references held to links by other applications will continue to exist.
       artifactToRelations.remove(artifact);
       for (RelationType type : RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch())) {

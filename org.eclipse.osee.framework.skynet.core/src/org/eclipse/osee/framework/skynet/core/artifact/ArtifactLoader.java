@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
@@ -155,16 +156,12 @@ public final class ArtifactLoader {
             while (chStmt.next()) {
                int artId = rSet.getInt("art_id");
                int branchId = rSet.getInt("branch_id");
-               if (historical) {
-                  if (previousArtId != artId || previousBranchId != branchId) {
-                     artifacts.add(retrieveShallowArtifact(rSet, reload, historical));
-                  }
-               } else {
+               if (!historical || (previousArtId != artId || previousBranchId != branchId)) {
                   artifacts.add(retrieveShallowArtifact(rSet, reload, historical));
                }
                previousArtId = artId;
                previousBranchId = branchId;
-            }            
+            }
          } finally {
             DbUtil.close(chStmt);
          }
@@ -363,6 +360,9 @@ public final class ArtifactLoader {
 
       for (Artifact artifact : artifacts) {
          artifact.onInitializationComplete();
+         if (reload) {
+            OseeEventManager.kickArtifactModifiedEvent(ArtifactLoader.class, ArtifactModType.Reverted, artifact);
+         }
       }
    }
 
@@ -448,7 +448,8 @@ public final class ArtifactLoader {
                }
                if (artifact == null) {
                   //TODO just masking a DB issue, we should probably really have an error here - throw new ArtifactDoesNotExist("Can not find aritfactId: " + artifactId + " on branch " + branchId);
-            	  OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format("Orphaned attribute for artifact id[%d] branch[%d]", artifactId, branchId));
+                  OseeLog.log(ArtifactLoader.class, Level.WARNING, String.format(
+                        "Orphaned attribute for artifact id[%d] branch[%d]", artifactId, branchId));
                } else if (artifact.isAttributesLoaded()) {
                   artifact = null;
                }

@@ -365,8 +365,8 @@ public class RelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(), aArtifactId, aOrder,
-            bArtifactId, bOrder);
+      return String.format("%s: A id[%d] order(%d) <--> B id[%s] order(%d) - %s", relationType.getTypeName(),
+            aArtifactId, aOrder, bArtifactId, bOrder, isDirty() ? "dirty" : "not dirty");
    }
 
    public boolean isExplorable() {

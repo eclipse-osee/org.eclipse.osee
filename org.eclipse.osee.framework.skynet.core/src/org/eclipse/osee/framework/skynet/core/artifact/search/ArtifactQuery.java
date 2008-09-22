@@ -320,4 +320,15 @@ public class ArtifactQuery {
       return new HttpArtifactQuery(queryString, nameOnly, allowDeleted, branch).getArtifacts(FULL, null, false, false,
             allowDeleted);
    }
+
+   /**
+    * @param artId
+    * @return reloaded artifacts
+    * @throws SQLException
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
+    */
+   public static Artifact reloadArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
+   }
 }

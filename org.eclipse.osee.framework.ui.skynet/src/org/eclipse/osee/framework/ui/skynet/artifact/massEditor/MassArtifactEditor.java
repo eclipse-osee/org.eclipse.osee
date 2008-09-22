@@ -200,7 +200,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       for (Artifact taskArt : artifacts)
          try {
             if (taskArt != null && !taskArt.isDeleted() && taskArt.isDirty()) taskArt.reloadAttributesAndRelations();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
    }

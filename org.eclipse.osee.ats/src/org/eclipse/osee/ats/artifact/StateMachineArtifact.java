@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -97,7 +99,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#reloadAttributesAndRelations()
     */
    @Override
-   public void reloadAttributesAndRelations() throws SQLException {
+   public void reloadAttributesAndRelations() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       super.reloadAttributesAndRelations();
       initializeSMA();
    }

@@ -44,11 +44,11 @@ public class ArtifactQueryBuilder {
    private List<String> guids;
    private List<String> hrids;
    private String guidOrHrid;
-   private AbstractArtifactSearchCriteria[] criteria;
+   private final AbstractArtifactSearchCriteria[] criteria;
    private final Branch branch;
    private int artifactId;
    private Collection<Integer> artifactIds;
-   private Collection<ArtifactType> artifactTypes;
+   private final Collection<ArtifactType> artifactTypes;
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
    private boolean count = false;
@@ -340,6 +340,21 @@ public class ArtifactQueryBuilder {
 
    public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws SQLException {
       return internalGetArtifacts(artifactCountEstimate, null, true);
+   }
+
+   public Artifact reloadArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      if (emptyCriteria) {
+         throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
+      }
+      Collection<Artifact> artifacts = internalGetArtifacts(1, null, true);
+
+      if (artifacts.size() == 0) {
+         throw new ArtifactDoesNotExist(getSoleExceptionMessage(artifacts.size()));
+      }
+      if (artifacts.size() > 1) {
+         throw new MultipleArtifactsExist(getSoleExceptionMessage(artifacts.size()));
+      }
+      return artifacts.iterator().next();
    }
 
    private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {

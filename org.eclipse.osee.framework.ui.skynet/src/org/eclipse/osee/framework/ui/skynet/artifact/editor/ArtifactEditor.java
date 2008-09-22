@@ -567,8 +567,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
+         relationsComposite.disposeRelationsComposite();
          super.dispose();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }

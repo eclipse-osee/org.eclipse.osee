@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -43,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -51,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
@@ -937,28 +935,23 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * artifact has never been saved.
     * 
     * @throws SQLException
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
+    * @throws SQLException
     * @throws IllegalStateException if the artifact is deleted
     */
-   public void reloadAttributesAndRelations() throws SQLException {
+   public void reloadAttributesAndRelations() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (!isInDb()) return;
 
-      prepareForReload();
-
-      new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts(1);
-
-      // Kick Local Event
-      try {
-         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Reverted, this);
-      } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+      ArtifactQuery.reloadArtifactFromId(getArtId(), getBranch());
    }
 
-   void prepareForReload() {
+   void prepareForReload() throws OseeCoreException {
       attributes.clear();
       dirty = false;
       linksLoaded = false;
-      RelationManager.revertRelationsFor(this);
+
+      RelationManager.prepareRelationsForReload(this);
    }
 
    public final void persistAttributes() throws SQLException {
