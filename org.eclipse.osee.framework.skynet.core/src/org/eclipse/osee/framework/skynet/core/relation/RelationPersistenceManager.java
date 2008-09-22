@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -98,9 +97,6 @@ public class RelationPersistenceManager {
             transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Deleted, link,
                   link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
 
-            OseeEventManager.kickRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Deleted,
-                  link, link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
-
          } else {
             link.setGammaId(gammaId);
             modId = ModificationType.CHANGE;
@@ -110,8 +106,6 @@ public class RelationPersistenceManager {
             transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
                   link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
 
-            OseeEventManager.kickRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added,
-                  link, link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
          }
       } else {
          if (link.isDeleted()) return;
@@ -132,8 +126,6 @@ public class RelationPersistenceManager {
          transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
                link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
 
-         OseeEventManager.kickRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
-               link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
       }
 
       transaction.addTransactionDataItem(new RelationTransactionData(link, link.getGammaId(),
