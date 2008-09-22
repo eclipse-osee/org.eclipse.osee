@@ -1466,17 +1466,19 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
                      CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()), null);
             } catch (Exception ex) {
-               // do nothing
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
             }
             try {
                Set<Artifact> parents = new HashSet<Artifact>();
                for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
                      CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
-                  if (art.getParent() != null) parents.add(art.getParent());
+                  if (!art.isDeleted() && art.getParent() != null) {
+                     parents.add(art.getParent());
+                  }
                }
                treeViewer.refresh(parents);
             } catch (Exception ex) {
-               // do nothing
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
             }
          }
       });
@@ -1625,7 +1627,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
             });
          }
       } catch (Exception ex) {
-         // do nothing
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 
