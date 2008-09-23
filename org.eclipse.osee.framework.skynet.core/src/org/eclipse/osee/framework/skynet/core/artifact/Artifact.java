@@ -793,6 +793,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * adds a new attribute of the type named attributeTypeName and assigns it the given value
+    * 
+    * @param attributeTypeName
+    * @param value
+    * @throws SQLException
+    */
+   public <T> void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException, SQLException {
+      try {
+         createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setFromString(value);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
+   }
+
+   /**
     * @param attributeTypeName
     * @return string collection representation of all the attributes of the type attributeName
     * @throws SQLException
