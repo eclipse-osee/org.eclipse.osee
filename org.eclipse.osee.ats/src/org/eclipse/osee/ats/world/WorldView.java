@@ -377,7 +377,9 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
 
       if (searchItem == null) return;
 
-      if (!options.contains(TableLoadOption.NoUI)) searchItem.performUI(searchType);
+      if (!options.contains(TableLoadOption.NoUI)) {
+         searchItem.performUI(searchType);
+      }
       if (searchItem.isCancelled()) return;
 
       LoadTableJob job = null;

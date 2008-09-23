@@ -89,10 +89,12 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void clear() {
+      rootSet.clear();
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.clear();
+            if (xViewer.getInput() == null) {
+               xViewer.setInput(rootSet);
+            }
             xViewer.refresh();
          };
       });

@@ -541,8 +541,12 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    public ArrayList<Artifact> getLoadedArtifacts() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Object artifact : (Collection<?>) getRoot()) {
-         if (artifact instanceof Artifact) arts.add((Artifact) artifact);
+      if (getRoot() != null) {
+         for (Object artifact : (Collection<?>) getRoot()) {
+            if (artifact instanceof Artifact) {
+               arts.add((Artifact) artifact);
+            }
+         }
       }
       return arts;
    }

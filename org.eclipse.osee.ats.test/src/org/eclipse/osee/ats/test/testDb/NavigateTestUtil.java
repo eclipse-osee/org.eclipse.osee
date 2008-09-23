@@ -53,7 +53,7 @@ public class NavigateTestUtil {
          OSEELog.logException(AtsPlugin.class, expectedStr, null, false);
       else
          OSEELog.logInfo(AtsPlugin.class, expectedStr, false);
-      TestCase.assertTrue(actualNumOfType == expectedNumOfType);
+      TestCase.assertTrue(expectedStr, actualNumOfType == expectedNumOfType);
    }
 
    public static int numOfType(Collection<? extends Artifact> arts, Class<?> clazz) {
