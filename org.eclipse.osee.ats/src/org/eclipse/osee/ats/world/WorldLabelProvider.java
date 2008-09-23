@@ -83,10 +83,10 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             if (result.isFalse()) return result.getText();
             return AtsLib.doubleToStrString(wva.getWorldViewRemainHours());
          }
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteState());
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Task_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteStateTask());
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Review_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteStateReview());
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteTotal());
+         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col)) return String.valueOf(wva.getWorldViewPercentCompleteState());
+         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Task_Col)) return String.valueOf(wva.getWorldViewPercentCompleteStateTask());
+         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Review_Col)) return String.valueOf(wva.getWorldViewPercentCompleteStateReview());
+         if (xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) return String.valueOf(wva.getWorldViewPercentCompleteTotal());
          if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentState());
          if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Task_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTask());
          if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Review_Col)) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateReview());

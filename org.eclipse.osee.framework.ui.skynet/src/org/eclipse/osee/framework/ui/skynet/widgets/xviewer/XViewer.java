@@ -50,7 +50,7 @@ public class XViewer extends TreeViewer {
    public static final String MENU_GROUP_POST = "XVIEWER MENU GROUP POST";
    private Label statusLabel;
    private final MenuManager menuManager;
-   private boolean ctrlKeyDown = false;
+   private static Boolean ctrlKeyDown = null;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
    private boolean columnMultiEditEnabled = false;
@@ -77,6 +77,7 @@ public class XViewer extends TreeViewer {
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
       setUseHashlookup(true);
+      setupCtrlKeyListener();
    }
 
    public void dispose() {
@@ -115,8 +116,6 @@ public class XViewer extends TreeViewer {
       statusLabel = new Label(comp, SWT.NONE);
       statusLabel.setText(" ");
       statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
-      Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
 
       getTree().addListener(SWT.MouseDown, new Listener() {
          public void handleEvent(Event event) {
@@ -132,6 +131,7 @@ public class XViewer extends TreeViewer {
                   if (rect.contains(pt)) {
                      rightClickSelectedColumnNum = colNum;
                      rightClickSelectedColumn = getTree().getColumn(colNum);
+                     break;
                   }
                }
             }
@@ -249,12 +249,22 @@ public class XViewer extends TreeViewer {
       return (XViewerColumn) getTree().getColumn(columnIndex).getData();
    }
 
+   // Only create one listener for all XViewers
+   private void setupCtrlKeyListener() {
+      if (ctrlKeyDown == null) {
+         ctrlKeyDown = false;
+         Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
+         Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
+      }
+   }
    Listener displayKeysListener = new Listener() {
       public void handleEvent(org.eclipse.swt.widgets.Event event) {
          if (event.keyCode == SWT.CTRL) {
-            if (event.type == SWT.KeyDown)
+            if (event.type == SWT.KeyDown) {
                ctrlKeyDown = true;
-            else if (event.type == SWT.KeyUp) ctrlKeyDown = false;
+            } else if (event.type == SWT.KeyUp) {
+               ctrlKeyDown = false;
+            }
          }
       }
    };
@@ -418,7 +428,7 @@ public class XViewer extends TreeViewer {
    }
 
    public boolean isCtrlKeyDown() {
-      return ctrlKeyDown;
+      return ctrlKeyDown != null && ctrlKeyDown;
    }
 
 }

@@ -169,11 +169,11 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                "Hours spent in performing the changes for the reveiws related to the current state.");
    public static final XViewerColumn Hours_Spent_Total_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".stateTotalHoursSpent", "State Total Hours Spent", 40, SWT.CENTER,
-               false, SortDataType.Percent, false, "Hours spent for all work related to the current state.");
+               false, SortDataType.Float, false, "Hours spent for all work related to the current state.");
 
    public static final XViewerColumn Total_Hours_Spent_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".totalHoursSpent", "Total Hours Spent", 40, SWT.CENTER, false,
-               SortDataType.Percent, false, "Hours spent for all work related to all states.");
+               SortDataType.Float, false, "Hours spent for all work related to all states.");
 
    public static final XViewerColumn Originator_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".originator", "Originator", 80, SWT.LEFT, false, SortDataType.String,
@@ -204,13 +204,13 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                SortDataType.Float, false, null);
    public static final XViewerColumn Percent_Rework_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".percentRework", "Percent Rework", 40, SWT.CENTER, false,
-               SortDataType.Integer, false, null);
+               SortDataType.Percent, false, null);
    public static final XViewerColumn Branch_Status_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".branchStatus", "Branch Status", 40, SWT.CENTER, false,
                SortDataType.String, false, null);
    public static final XViewerColumn Number_of_Tasks_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".numberOfTasks", "Number of Tasks", 40, SWT.CENTER, false,
-               SortDataType.String, false, null);
+               SortDataType.Integer, false, null);
    public static final XViewerColumn Last_Modified_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".lastModified", "Last Modified", 40, SWT.CENTER, false,
                SortDataType.Date, false, "Retrieves timestamp of last database update of this artifact.");
