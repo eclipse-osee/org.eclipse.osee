@@ -31,17 +31,21 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public class CleanUpAddressingData extends DatabaseHealthTask {
+public class CleanUpBackingData extends DatabaseHealthTask {
 
    private static final String CLEAN_UP_JOIN_TABLE = "DELETE FROM osee_join_cleanup WHERE query_id = ?";
    private static final String NOT_ADDRESSESED_GAMMAS =
-         "INSERT INTO osee_join_cleanup (query_id, gamma_id, transaction_id, insert_time) (SELECT DISTINCT ?, gamma_id, 0, ? from osee_define_txs minus (select ?, gamma_id, 0, ? from osee_Define_artifact_version union select ?, gamma_id, 0, ? from osee_Define_attribute union select ?, gamma_id, 0, ? from osee_Define_rel_link))";
+         "INSERT INTO osee_join_cleanup (query_id, gamma_id, transaction_id, insert_time) ((SELECT ?, gamma_id, 0, ? FROM osee_Define_artifact_version UNION SELECT ?, gamma_id, 0, ? FROM osee_Define_attribute UNION SELECT ?, gamma_id, 0, ? FROM osee_Define_rel_link) MINUS SELECT DISTINCT ?, gamma_id, 0, ? FROM osee_define_txs)";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "INSERT INTO osee_join_cleanup (query_id, gamma_id, transaction_id, insert_time) (SELECT ?, 0, transaction_id, ? from osee_Define_txs MINUS SELECT DISTINCT ?, 0, transaction_id, ? from osee_Define_tx_details)";
-   private static final String REMOVE_NOT_ADDRESSED_GAMMAS =
-         "Delete From osee_define_txs Where gamma_id in (Select gamma_id FROM osee_join_cleanup WHERE query_id = ?)";
+         "INSERT INTO osee_join_cleanup (query_id, gamma_id, transaction_id, insert_time) (SELECT DISTINCT ?, 0, transaction_id, ? FROM osee_Define_tx_details MINUS SELECT ?, 0, transaction_id, ? FROM osee_Define_txs)";
+   private static final String REMOVE_GAMMAS_ARTIFACT =
+         "DELETE FROM osee_define_artifact_version WHERE gamma_id IN (SELECT gamma_id FROM osee_join_cleanup WHERE query_id = ?)";
+   private static final String REMOVE_GAMMAS_ATTRIBUTE =
+         "DELETE FROM osee_define_attribute WHERE gamma_id IN (SELECT gamma_id FROM osee_join_cleanup WHERE query_id = ?)";
+   private static final String REMOVE_GAMMAS_RELATIONS =
+         "DELETE FROM osee_define_rel_link WHERE gamma_id IN (SELECT gamma_id FROM osee_join_cleanup WHERE query_id = ?)";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
-         "Delete From osee_define_txs Where transaction_id in (Select transaction_id FROM osee_join_cleanup WHERE query_id = ?)";
+         "DELETE FROM osee_define_tx_details WHERE transaction_id IN (SELECT transaction_id FROM osee_join_cleanup WHERE query_id = ?)";
    private static final String[] GET_NOT_ADDRESSED_DATA =
          {"SELECT gamma_id FROM osee_join_cleanup WHERE query_id = ? AND gamma_id > 0",
                "SELECT transaction_id FROM osee_join_cleanup WHERE query_id = ? AND transaction_id > 0"};
@@ -57,20 +61,19 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 
    @Override
    public String getFixTaskName() {
-      return "Fix TXS Entries with no Backing Data";
+      return "Fix Data with no TXS Addressing";
    }
 
    @Override
    public String getVerifyTaskName() {
-      return "Check for TXS Entries with no Backing Data";
+      return "Check for Data with no TXS Addressing";
    }
 
    @Override
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
-      monitor.beginTask(
-            fix ? "Deleting TXS Entries with No Backing Data" : "Checking For TXS Entries with No Backing Data", 100);
+      monitor.beginTask(fix ? "Deleting Data with no TXS addressing" : "Checking For Data with no TXS addressing", 100);
       if (verify) {
          if (joinId != 0) {
             ConnectionHandler.runPreparedUpdate(CLEAN_UP_JOIN_TABLE, joinId);
@@ -101,7 +104,11 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
       if (monitor.isCanceled()) return;
 
       if (fix) {
-         ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_GAMMAS, joinId);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ARTIFACT, joinId);
+         monitor.worked(5);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_ATTRIBUTE, joinId);
+         monitor.worked(5);
+         ConnectionHandler.runPreparedUpdate(REMOVE_GAMMAS_RELATIONS, joinId);
          monitor.worked(5);
          ConnectionHandler.runPreparedUpdate(REMOVE_NOT_ADDRESSED_TRANSACTIONS, joinId);
          monitor.worked(5);
@@ -122,7 +129,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
       ConnectionHandlerStatement chStmt = null;
       ResultSet resultSet = null;
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {COLUMN_HEADER[x]}));
-      sbFull.append(AHTML.addRowSpanMultiColumnTable(COLUMN_HEADER[x] + "'s with no backing data", 1));
+      sbFull.append(AHTML.addRowSpanMultiColumnTable(COLUMN_HEADER[x] + "'s with no TXS addressing", 1));
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_NOT_ADDRESSED_DATA[x], joinId);
          resultSet = chStmt.getRset();
@@ -137,7 +144,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
       builder.append(count);
       builder.append(" ");
       builder.append(COLUMN_HEADER[x]);
-      builder.append("'s with no Backing Data\n");
+      builder.append("'s with no TXS addressing\n");
    }
 
    protected void finalize() throws Throwable {

@@ -983,4 +983,12 @@
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.RelationDatabaseIntegrityCheck">
     </Task>
  </extension>
+ <extension
+       id="CleanUpBackingData"
+       name="CleanUpBackingData"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
+    </Task>
+ </extension>
 </plugin>
