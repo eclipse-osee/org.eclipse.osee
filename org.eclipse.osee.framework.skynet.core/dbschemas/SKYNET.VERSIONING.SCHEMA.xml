@@ -250,6 +250,7 @@
 		<Column id="AB_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
+		<Column id="ORDERED" defaultValue="not null" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
 	</Table>
 	

@@ -348,6 +348,7 @@
     <Cell ss:StyleID="s31"><Data ss:Type="String">Side B Name</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">B to A Phrase</Data></Cell>
     <Cell ss:StyleID="s31"><Data ss:Type="String">Short Name</Data></Cell>
+    <Cell ss:StyleID="s31"><Data ss:Type="String">Ordered</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s32"><Data ss:Type="String">Functional decomposition </Data></Cell>
@@ -356,6 +357,7 @@
     <Cell ss:StyleID="s32"><Data ss:Type="String">lower-level component</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">is a component of</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">FD</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
    <Row ss:Index="29" ss:AutoFitHeight="0" ss:Height="13.5">
@@ -418,8 +420,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>11</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>26</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

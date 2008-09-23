@@ -22,8 +22,9 @@ public class RelationType implements Comparable<RelationType> {
    private String aToBPhrasing;
    private String bToAPhrasing;
    private String shortName;
+   private String ordered;
 
-   public RelationType(int linkTypeId, String namespace, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName) {
+   public RelationType(int linkTypeId, String namespace, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName, String ordered) {
       super();
       this.relationTypeId = linkTypeId;
       this.namespace = namespace == null ? "" : namespace;
@@ -33,6 +34,7 @@ public class RelationType implements Comparable<RelationType> {
       this.aToBPhrasing = aToBPhrasing;
       this.bToAPhrasing = bToAPhrasing;
       this.shortName = shortName;
+      this.ordered = ordered;
    }
 
    /**
@@ -130,5 +132,9 @@ public class RelationType implements Comparable<RelationType> {
     */
    public int getRelationTypeId() {
       return relationTypeId;
+   }
+
+   public boolean isOrdered() {
+      return ordered.equalsIgnoreCase("Yes");
    }
 }

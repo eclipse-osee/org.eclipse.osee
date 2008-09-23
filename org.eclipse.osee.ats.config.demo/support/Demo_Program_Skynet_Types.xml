@@ -789,6 +789,7 @@
     <Cell ss:StyleID="s28"><Data ss:Type="String">Side B Name</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">B to A Phrase</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Short Name</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Ordered</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s25"><Data ss:Type="String">Allocation</Data></Cell>
@@ -797,6 +798,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">component</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">receives from</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Alloc</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s35"><Data ss:Type="String">Code-Requirement</Data></Cell>
@@ -805,6 +807,7 @@
     <Cell ss:StyleID="s30"><Data ss:Type="String">requirement</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="String">is satisfied by</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">C-Req</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s25"><Data ss:Type="String">Component-Requirement</Data></Cell>
@@ -813,6 +816,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">is a requirement of</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">CR</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s25"><Data ss:Type="String">Design</Data></Cell>
@@ -821,6 +825,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">design</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">designs</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Dsgn</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s25"><Data ss:Type="String">Qualification</Data></Cell>
@@ -829,6 +834,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">test</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">qualifies</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Qual</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s25"><Data ss:Type="String">Requirement Trace</Data></Cell>
@@ -837,6 +843,7 @@
     <Cell ss:StyleID="s25"><Data ss:Type="String">lower-level requirement</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">traces to</Data></Cell>
     <Cell ss:StyleID="s25"><Data ss:Type="String">Trace</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s32"><Data ss:Type="String">Validation</Data></Cell>
@@ -845,6 +852,7 @@
     <Cell ss:StyleID="s32"><Data ss:Type="String">validator</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">validates</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">Val</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s36"/>
@@ -1549,12 +1557,12 @@
    </Print>
    <Zoom>75</Zoom>
    <Selected/>
-   <TopRowVisible>3</TopRowVisible>
+   <TopRowVisible>30</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>53</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>89</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

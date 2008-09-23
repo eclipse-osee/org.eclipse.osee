@@ -43,8 +43,10 @@ public class RelationLink {
       this.relationId = relationId;
       this.gammaId = gammaId;
       this.rationale = rationale == null ? "" : rationale;
-      this.aOrder = aOrder;
-      this.bOrder = bOrder;
+      if (relationType.isOrdered()) {
+         this.aOrder = aOrder;
+         this.bOrder = bOrder;
+      }
       this.deleted = false;
       this.dirty = false;
       this.aArtifactId = aArtifactId;
@@ -64,17 +66,6 @@ public class RelationLink {
       }
       if (bArtifactId == artifact.getArtId()) {
          return RelationSide.SIDE_B;
-      }
-      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
-   }
-
-   @Deprecated
-   public boolean isOnSideA(Artifact artifact) {
-      if (aArtifactId == artifact.getArtId()) {
-         return true;
-      }
-      if (bArtifactId == artifact.getArtId()) {
-         return false;
       }
       throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
@@ -135,7 +126,7 @@ public class RelationLink {
 
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
-                  getABranch(), relationType.getTypeName(), getASideName());
+                  getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -222,36 +213,6 @@ public class RelationLink {
       setDirty();
    }
 
-   @Deprecated
-   public void swapAOrder(RelationLink link) {
-      swapOrder(link, true);
-   }
-
-   @Deprecated
-   public void swapBOrder(RelationLink link) {
-      swapOrder(link, false);
-   }
-
-   private void swapOrder(RelationLink link, boolean sideA) {
-      if (link == null) throw new IllegalArgumentException("link can not be null.");
-
-      // Swapping a link with itself has no effect.
-      if (link == this) return;
-
-      if (sideA) {
-         int tmp = aOrder;
-         if (link.getAOrder() == aOrder)
-            setAOrder(link.getAOrder() + 1);
-         else
-            setAOrder(link.getAOrder());
-         link.setAOrder(tmp);
-      } else {
-         int tmp = bOrder;
-         setBOrder(link.getBOrder());
-         link.setBOrder(tmp);
-      }
-   }
-
    /**
     * @return Returns the rationale.
     */
@@ -275,7 +236,7 @@ public class RelationLink {
       if (notify) {
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.RationaleMod, this,
-                  getABranch(), relationType.getTypeName(), getASideName());
+                  getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -353,16 +314,6 @@ public class RelationLink {
       return sideName;
    }
 
-   @Deprecated
-   public String getASideName() {
-      return relationType.getSideAName();
-   }
-
-   @Deprecated
-   public String getBSideName() {
-      return relationType.getSideBName();
-   }
-
    @Override
    public String toString() {
       return String.format("%s: A id[%d] order(%d) <--> B id[%s] order(%d) - %s", relationType.getTypeName(),
@@ -422,7 +373,7 @@ public class RelationLink {
 
    /**
     * @param side
-    * @param i
+    * @param order
     */
    public void setOrder(RelationSide side, int order) {
       if (RelationSide.SIDE_A == side) {
@@ -431,5 +382,4 @@ public class RelationLink {
          setBOrder(order);
       }
    }
-
 }

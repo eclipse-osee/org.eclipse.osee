@@ -20,16 +20,14 @@ public class RelationModifiedEvent extends ArtifactTransactionModifiedEvent {
    protected final RelationLink link;
    protected final Branch branch;
    protected final String relationType;
-   protected final String relationSide;
    protected final UnloadedRelation unloadedRelation;
 
-   public RelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+   public RelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
       this.sender = sender;
       this.relationModType = relationModType;
       this.link = link;
       this.branch = branch;
       this.relationType = relationType;
-      this.relationSide = relationSide;
       this.unloadedRelation = null;
    }
 
@@ -40,7 +38,6 @@ public class RelationModifiedEvent extends ArtifactTransactionModifiedEvent {
       this.link = null;
       this.branch = null;
       this.relationType = null;
-      this.relationSide = null;
    }
 
    @Override

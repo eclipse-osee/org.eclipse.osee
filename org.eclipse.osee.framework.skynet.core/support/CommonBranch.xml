@@ -858,6 +858,7 @@
     <Cell ss:StyleID="s34"><Data ss:Type="String">Side B Name</Data></Cell>
     <Cell ss:StyleID="s34"><Data ss:Type="String">B to A Phrase</Data></Cell>
     <Cell ss:StyleID="s34"><Data ss:Type="String">Short Name</Data></Cell>
+    <Cell ss:StyleID="s34"><Data ss:Type="String">Ordered</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"><Data ss:Type="String">Work Item</Data></Cell>
@@ -866,6 +867,7 @@
     <Cell ss:StyleID="s40"><Data ss:Type="String">Child</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">belong to</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">WrkItem</Data></Cell>
+    <Cell><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12.75" ss:StyleID="Default">
     <Cell ss:StyleID="s40"><Data ss:Type="String">User Grouping</Data></Cell>
@@ -874,6 +876,7 @@
     <Cell ss:StyleID="s40"><Data ss:Type="String">users</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">belong to</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">Group</Data></Cell>
+    <Cell ss:StyleID="s40"><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"><Data ss:Type="String">Users</Data></Cell>
@@ -882,6 +885,7 @@
     <Cell ss:StyleID="s40"><Data ss:Type="String">User</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">is user of</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">Usr</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"><Data ss:Type="String">Supercedes</Data></Cell>
@@ -890,6 +894,7 @@
     <Cell ss:StyleID="s40"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">is superceeded by</Data></Cell>
     <Cell ss:StyleID="s40"><Data ss:Type="String">Sprcds</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
    <Row ss:Index="100" ss:AutoFitHeight="0" ss:Height="13.5">
@@ -995,12 +1000,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>36</TopRowVisible>
+   <TopRowVisible>54</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>66</ActiveRow>
-     <RangeSelection>R67C1:R68C1</RangeSelection>
+     <ActiveRow>97</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

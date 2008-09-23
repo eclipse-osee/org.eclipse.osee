@@ -216,9 +216,9 @@ public class SkynetTransaction {
             getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }
 
-   public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+   public void addRelationModifiedEvent(Object sourceObject, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
       xModifiedEvents.add(new RelationModifiedEvent(new Sender(sourceObject), relationModType, link, branch,
-            relationType, relationSide));
+            relationType));
    }
 
    /**

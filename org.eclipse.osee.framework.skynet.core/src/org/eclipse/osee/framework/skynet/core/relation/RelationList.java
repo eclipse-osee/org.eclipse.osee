@@ -100,17 +100,11 @@ public class RelationList {
          return false;
       }
 
-      /**
-       * @return
-       */
       public List<RelationLink> getRelations() {
          return sorted;
       }
    }
 
-   /**
-    * @return
-    */
    public List<RelationLink> getList() {
       if (modified) {
          relations.clear();

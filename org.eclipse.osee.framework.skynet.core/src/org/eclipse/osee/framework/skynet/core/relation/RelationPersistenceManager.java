@@ -95,16 +95,14 @@ public class RelationPersistenceManager {
             }
 
             transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Deleted, link,
-                  link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
+                  link.getBranch(), link.getRelationType().getTypeName());
 
          } else {
             link.setGammaId(gammaId);
             modId = ModificationType.CHANGE;
-            Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-            Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
 
             transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
-                  link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
+                  link.getBranch(), link.getRelationType().getTypeName());
 
          }
       } else {
@@ -124,7 +122,7 @@ public class RelationPersistenceManager {
          modId = ModificationType.NEW;
 
          transaction.addRelationModifiedEvent(RelationPersistenceManager.instance, RelationModType.Added, link,
-               link.getBranch(), link.getRelationType().getTypeName(), link.getASideName());
+               link.getBranch(), link.getRelationType().getTypeName());
 
       }
 

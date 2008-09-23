@@ -436,7 +436,7 @@ public class RelationManager {
 
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
-                  relation.getABranch(), relationType.getTypeName(), relation.getASideName());
+                  relation.getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -561,29 +561,32 @@ public class RelationManager {
       }
 
       OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
-            relation.getBranch(), relation.getRelationType().getTypeName(), "");
+            relation.getBranch(), relation.getRelationType().getTypeName());
 
    }
 
    private static void setDefaultRelationOrder(RelationLink relation, Artifact artifactA, Artifact artifactB) {
-      List<RelationLink> selectedRelations = getRelations(artifactA, relation.getRelationType(), RelationSide.SIDE_B);
-      if (selectedRelations != null && selectedRelations.size() > 0) {
-         relation.setOrder(RelationSide.SIDE_B, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
-               RelationSide.SIDE_B));
-      } else {
-         relation.setOrder(RelationSide.SIDE_B, -1);
-      }
-      selectedRelations = getRelations(artifactB, relation.getRelationType(), RelationSide.SIDE_A);
-      if (selectedRelations != null && selectedRelations.size() > 0) {
-         relation.setOrder(RelationSide.SIDE_A, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
-               RelationSide.SIDE_A));
-      } else {
-         relation.setOrder(RelationSide.SIDE_A, -1);
+      if (relation.getRelationType().isOrdered()) {
+         List<RelationLink> selectedRelations =
+               getRelations(artifactA, relation.getRelationType(), RelationSide.SIDE_B);
+         if (selectedRelations != null && selectedRelations.size() > 0) {
+            relation.setOrder(RelationSide.SIDE_B, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
+                  RelationSide.SIDE_B));
+         } else {
+            relation.setOrder(RelationSide.SIDE_B, -1);
+         }
+         selectedRelations = getRelations(artifactB, relation.getRelationType(), RelationSide.SIDE_A);
+         if (selectedRelations != null && selectedRelations.size() > 0) {
+            relation.setOrder(RelationSide.SIDE_A, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
+                  RelationSide.SIDE_A));
+         } else {
+            relation.setOrder(RelationSide.SIDE_A, -1);
+         }
       }
    }
 
    private static void setRelationOrdering(RelationSide side, RelationLink relation, Artifact targetArtifact, boolean insertAfterTarget, Artifact sourceArtifact, Artifact artA, Artifact artB) throws OseeCoreException {
-      if (targetArtifact != null) {
+      if (relation.getRelationType().isOrdered() && targetArtifact != null) {
 
          RelationLink targetRelation =
                getLoadedRelation(sourceArtifact, artA.getArtId(), artB.getArtId(), relation.getRelationType());
@@ -634,7 +637,7 @@ public class RelationManager {
 
       try {
          OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
-               relation.getABranch(), relationType.getTypeName(), relation.getASideName());
+               relation.getABranch(), relationType.getTypeName());
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -652,69 +655,71 @@ public class RelationManager {
    }
 
    public static void sortRelations(Artifact artifact, RelationType type, Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) {
-      List<RelationLink> relations = relationsByType.get(artifact, type);
-      if (relations != null) {
-         sideA.clear();
-         sideB.clear();
-         boolean badValues = false;
-         for (RelationLink relation : relations) {
-            if (!relation.isDeleted()) {
-               if (relation.getSide(artifact) == RelationSide.SIDE_A) {
-                  if (sideB.put(relation.getOrder(RelationSide.SIDE_B), relation) != null) {
-                     badValues = true;
-                  }
-               } else {
-                  if (sideA.put(relation.getOrder(RelationSide.SIDE_A), relation) != null) {
-                     badValues = true;
+      if (type.isOrdered()) {
+         List<RelationLink> relations = relationsByType.get(artifact, type);
+         if (relations != null) {
+            sideA.clear();
+            sideB.clear();
+            boolean badValues = false;
+            for (RelationLink relation : relations) {
+               if (!relation.isDeleted()) {
+                  if (relation.getSide(artifact) == RelationSide.SIDE_A) {
+                     if (sideB.put(relation.getOrder(RelationSide.SIDE_B), relation) != null) {
+                        badValues = true;
+                     }
+                  } else {
+                     if (sideA.put(relation.getOrder(RelationSide.SIDE_A), relation) != null) {
+                        badValues = true;
+                     }
                   }
                }
             }
-         }
-         if (!badValues) {
-            relations.clear();
+            if (!badValues) {
+               relations.clear();
 
-            //do side b first
-            RelationLink relation = sideB.remove(LINKED_LIST_KEY);
-            while (relation != null) {
-               relations.add(relation);
-               RelationLink newRelation = sideB.get(relation.getArtifactId(RelationSide.SIDE_B));
-               sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
-               relation = newRelation;
-            }
-            if (sideB.values().size() > 0) {
-               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
-                     "Artifact - %d - %s - is unsorted for relations type - %d - %s - . (missing a relation)",
-                     artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               //do side b first
+               RelationLink relation = sideB.remove(LINKED_LIST_KEY);
+               while (relation != null) {
+                  relations.add(relation);
+                  RelationLink newRelation = sideB.get(relation.getArtifactId(RelationSide.SIDE_B));
+                  sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
+                  relation = newRelation;
+               }
+               if (sideB.values().size() > 0) {
+                  OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                        "Artifact - %d - %s - is unsorted for relations type - %d - %s - . (missing a relation)",
+                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               } else {
+                  //               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                  //                     "Artifact [%d][%s] is sorted!!! relations type [%d][%s].", artifact.getArtId(),
+                  //                     artifact.toString(), type.getRelationTypeId(), type.toString()));
+               }
+               relations.addAll(sideB.values());
+               //now side a
+               relation = sideA.remove(LINKED_LIST_KEY);
+               while (relation != null) {
+                  relations.add(relation);
+                  relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
+               }
+               if (sideA.values().size() > 0) {
+                  OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                        "Artifact - %d - %s - is unsorted for relations type  - %d - %s - . (missing a relation)",
+                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               } else {
+                  //               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
+                  //                     "Artifact [%d][%s] is sorted!! for relations type [%d][%s].", artifact.getArtId(),
+                  //                     artifact.toString(), type.getRelationTypeId(), type.toString()));
+               }
+               relations.addAll(sideA.values());
             } else {
-               //               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
-               //                     "Artifact [%d][%s] is sorted!!! relations type [%d][%s].", artifact.getArtId(),
-               //                     artifact.toString(), type.getRelationTypeId(), type.toString()));
+               OseeLog.log(
+                     SkynetActivator.class,
+                     Level.FINE,
+                     String.format(
+                           "Artifact - %d - %s - is unsorted for relations type  - %d - %s - # of relations in mem - %d - . (duplicate relation)",
+                           artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString(),
+                           relations.size()));
             }
-            relations.addAll(sideB.values());
-            //now side a
-            relation = sideA.remove(LINKED_LIST_KEY);
-            while (relation != null) {
-               relations.add(relation);
-               relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
-            }
-            if (sideA.values().size() > 0) {
-               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
-                     "Artifact - %d - %s - is unsorted for relations type  - %d - %s - . (missing a relation)",
-                     artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
-            } else {
-               //               OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
-               //                     "Artifact [%d][%s] is sorted!! for relations type [%d][%s].", artifact.getArtId(),
-               //                     artifact.toString(), type.getRelationTypeId(), type.toString()));
-            }
-            relations.addAll(sideA.values());
-         } else {
-            OseeLog.log(
-                  SkynetActivator.class,
-                  Level.FINE,
-                  String.format(
-                        "Artifact - %d - %s - is unsorted for relations type  - %d - %s - # of relations in mem - %d - . (duplicate relation)",
-                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString(),
-                        relations.size()));
          }
       }
    }
@@ -740,21 +745,23 @@ public class RelationManager {
       }
    }
 
-   private static void setOrderValues(Artifact sourceArtifact, RelationType type, RelationSide side, boolean markAsNotDirty) {
-      List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, type);
-      if (selectedRelations == null) {
-         return;
-      }
-      int lastArtId = LINKED_LIST_KEY;
-      for (RelationLink link : selectedRelations) {
-         if (!link.isDeleted() && link.getSide(sourceArtifact) == side.oppositeSide()) {
-            if (link.getOrder(side) != lastArtId) {
-               link.setOrder(side, lastArtId);
-               if (markAsNotDirty) {
-                  link.setNotDirty();
+   private static void setOrderValues(Artifact sourceArtifact, RelationType relationType, RelationSide side, boolean markAsNotDirty) {
+      if (relationType.isOrdered()) {
+         List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relationType);
+         if (selectedRelations == null) {
+            return;
+         }
+         int lastArtId = LINKED_LIST_KEY;
+         for (RelationLink link : selectedRelations) {
+            if (!link.isDeleted() && link.getSide(sourceArtifact) == side.oppositeSide()) {
+               if (link.getOrder(side) != lastArtId) {
+                  link.setOrder(side, lastArtId);
+                  if (markAsNotDirty) {
+                     link.setNotDirty();
+                  }
                }
+               lastArtId = link.getArtifactId(side);
             }
-            lastArtId = link.getArtifactId(side);
          }
       }
    }

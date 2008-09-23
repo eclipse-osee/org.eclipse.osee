@@ -121,10 +121,9 @@ public class OseeEventManager {
     * @param loadedArtifacts
     * @throws OseeCoreException
     */
-   public static void kickRelationModifiedEvent(Object source, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) throws OseeCoreException {
+   public static void kickRelationModifiedEvent(Object source, RelationModType relationModType, RelationLink link, Branch branch, String relationType) throws OseeCoreException {
       if (isDisableEvents()) return;
-      InternalEventManager.kickRelationModifiedEvent(getSender(source), relationModType, link, branch, relationType,
-            relationSide);
+      InternalEventManager.kickRelationModifiedEvent(getSender(source), relationModType, link, branch, relationType);
    }
 
    /**

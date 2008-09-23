@@ -191,11 +191,12 @@ public class SkynetTypesImporter implements RowProcessor {
       String sideBName = row[3];
       String baPhrasing = row[4];
       String shortName = row[5];
+      String ordered = row[6];
       generateRelationSideEnum(relationTypeName, sideAName, sideBName);
       generateNormalRelationSideEnum(relationTypeName, sideAName, sideBName);
 
       RelationTypeManager.createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-            shortName);
+            shortName, ordered);
    }
 
    private void generateRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {

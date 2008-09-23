@@ -1123,6 +1123,7 @@
     <Cell ss:StyleID="s23"><Data ss:Type="String">Side B Name</Data></Cell>
     <Cell ss:StyleID="s23"><Data ss:Type="String">B to A Phrase</Data></Cell>
     <Cell ss:StyleID="s23"><Data ss:Type="String">Short Name</Data></Cell>
+    <Cell ss:StyleID="s23"><Data ss:Type="String">Ordered</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell><Data ss:Type="String">TeamLead</Data></Cell>
@@ -1131,6 +1132,7 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">leads</Data></Cell>
     <Cell><Data ss:Type="String">LEAD</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamMember</Data></Cell>
@@ -1139,6 +1141,7 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">is member of </Data></Cell>
     <Cell><Data ss:Type="String">MEMB</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamActionableItem</Data></Cell>
@@ -1147,6 +1150,7 @@
     <Cell><Data ss:Type="String">Actionable Item</Data></Cell>
     <Cell><Data ss:Type="String">is supported by</Data></Cell>
     <Cell><Data ss:Type="String">TAI</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">ActionToWorkflow</Data></Cell>
@@ -1155,6 +1159,7 @@
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">supports</Data></Cell>
     <Cell><Data ss:Type="String">AtW</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">SmaToTask</Data></Cell>
@@ -1163,6 +1168,7 @@
     <Cell><Data ss:Type="String">Task</Data></Cell>
     <Cell><Data ss:Type="String">belongs to</Data></Cell>
     <Cell><Data ss:Type="String">TSKS</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamWorkflowTargetedForVersion</Data></Cell>
@@ -1171,6 +1177,7 @@
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">implements</Data></Cell>
     <Cell><Data ss:Type="String">TSKS</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamDefinitionToVersion</Data></Cell>
@@ -1179,6 +1186,7 @@
     <Cell><Data ss:Type="String">Version</Data></Cell>
     <Cell><Data ss:Type="String">is version of</Data></Cell>
     <Cell><Data ss:Type="String">TSKS</Data></Cell>
+    <Cell><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamDefinitionToWorkflowDiagram</Data></Cell>
@@ -1187,6 +1195,7 @@
     <Cell><Data ss:Type="String">General Document</Data></Cell>
     <Cell><Data ss:Type="String">is team workflow of</Data></Cell>
     <Cell><Data ss:Type="String">TDtWFD</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamDefinitionToTaskWorkflowDiagram</Data></Cell>
@@ -1195,6 +1204,7 @@
     <Cell><Data ss:Type="String">General Document</Data></Cell>
     <Cell><Data ss:Type="String">is task workflow of</Data></Cell>
     <Cell><Data ss:Type="String">TDtWFD</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamDefinitionToDecisionReviewWorkflowDiagram</Data></Cell>
@@ -1203,6 +1213,7 @@
     <Cell><Data ss:Type="String">General Document</Data></Cell>
     <Cell><Data ss:Type="String">is decision workflow of</Data></Cell>
     <Cell><Data ss:Type="String">TDtWFD</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamDefinitionToPeerToPeerReviewWorkflowDiagram</Data></Cell>
@@ -1211,6 +1222,7 @@
     <Cell><Data ss:Type="String">General Document</Data></Cell>
     <Cell><Data ss:Type="String">is peerToPeer workflow of</Data></Cell>
     <Cell><Data ss:Type="String">TDtWFD</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">TeamWorkflowToReview</Data></Cell>
@@ -1219,6 +1231,7 @@
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
     <Cell><Data ss:Type="String">is review of</Data></Cell>
     <Cell><Data ss:Type="String">TWtDR</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">SubscribedUser</Data></Cell>
@@ -1227,6 +1240,7 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">is subscribed to</Data></Cell>
     <Cell><Data ss:Type="String">Sub</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">FavoriteUser</Data></Cell>
@@ -1235,6 +1249,7 @@
     <Cell><Data ss:Type="String">User</Data></Cell>
     <Cell><Data ss:Type="String">has favorite</Data></Cell>
     <Cell><Data ss:Type="String">Fav</Data></Cell>
+    <Cell><Data ss:Type="String">No</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22"/>
    <Row ss:AutoFitHeight="0" ss:Height="12" ss:StyleID="s22">
@@ -1580,12 +1595,12 @@
    </Print>
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>24</TopRowVisible>
+   <TopRowVisible>178</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>53</ActiveRow>
-     <ActiveCol>4</ActiveCol>
+     <ActiveRow>186</ActiveRow>
+     <ActiveCol>6</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

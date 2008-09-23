@@ -1531,10 +1531,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * return a list of relations from a specific relation type
-    * 
     * @param relationType
-    * @return
+    * @return a list of relations from a specific relation type
     */
    public List<RelationLink> getRelations(RelationType relationType) {
       return RelationManager.getRelations(this, relationType, null);

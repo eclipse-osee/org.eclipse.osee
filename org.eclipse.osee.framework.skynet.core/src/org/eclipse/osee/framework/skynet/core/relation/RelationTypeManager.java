@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 public class RelationTypeManager {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_define_rel_link_type";
    private static final String INSERT_RELATION_LINK_TYPE =
-         "INSERT INTO osee_define_rel_link_type (rel_link_type_id, namespace, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_define_rel_link_type (rel_link_type_id, namespace, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, ordered) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
    private static final String INSERT_VALID_RELATION =
          "INSERT INTO osee_define_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?, ?, ?, ?, ?)";
@@ -143,7 +143,8 @@ public class RelationTypeManager {
             RelationType relationType =
                   new RelationType(rset.getInt("rel_link_type_id"), rset.getString("namespace"),
                         rset.getString("type_name"), rset.getString("a_name"), rset.getString("b_name"),
-                        rset.getString("ab_phrasing"), rset.getString("ba_phrasing"), rset.getString("short_name"));
+                        rset.getString("ab_phrasing"), rset.getString("ba_phrasing"), rset.getString("short_name"),
+                        rset.getString("ordered"));
             cache(relationType);
          }
          loadLinkValidities();
@@ -190,7 +191,7 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws SQLException
     */
-   public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws OseeCoreException {
+   public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
       if (typeExists(namespace, relationTypeName)) {
          return getType(namespace, relationTypeName);
       }
@@ -211,11 +212,11 @@ public class RelationTypeManager {
          int relationTypeId = SequenceManager.getNextRelationTypeId();
 
          ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
-               sideAName, sideBName, abPhrasing, baPhrasing, shortName);
+               sideAName, sideBName, abPhrasing, baPhrasing, shortName, ordered);
 
          RelationType relationType =
                new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing,
-                     baPhrasing, shortName);
+                     baPhrasing, shortName, ordered);
          instance.cache(relationType);
          return relationType;
       } catch (SQLException ex) {

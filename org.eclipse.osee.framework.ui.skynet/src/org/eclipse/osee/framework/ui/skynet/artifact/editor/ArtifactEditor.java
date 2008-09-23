@@ -745,7 +745,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       }
    }
 
-   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType, String relationSide) {
+   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
       try {
          if (link.getArtifactA().equals(artifact) || link.getArtifactB().equals(artifact)) {
             refreshRelationsComposite();

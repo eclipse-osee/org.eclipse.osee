@@ -1488,7 +1488,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
     * @see org.eclipse.osee.framework.skynet.core.eventx.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.ui.plugin.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String, java.lang.String)
     */
    @Override
-   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, final RelationLink link, Branch branch, String relationType, String relationSide) {
+   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, final RelationLink link, Branch branch, String relationType) {
       try {
          if (!BranchPersistenceManager.getDefaultBranch().equals(branch)) return;
          if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {

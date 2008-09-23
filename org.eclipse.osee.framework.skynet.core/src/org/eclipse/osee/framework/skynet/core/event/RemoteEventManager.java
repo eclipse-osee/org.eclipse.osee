@@ -571,8 +571,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      relation.setNotDirty();
 
                      xModifiedEvents.add(new RelationModifiedEvent(sender, relationModType, relation,
-                           relation.getBranch(), relation.getRelationType().getTypeName(),
-                           aOrderChanged ? relation.getASideName() : relation.getBSideName()));
+                           relation.getBranch(), relation.getRelationType().getTypeName()));
                   }
                }
             } else if (event instanceof NetworkRelationLinkDeletedEvent) {
@@ -583,7 +582,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   relation.deleteWithoutDirtyAndEvent();
 
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Deleted, relation,
-                        relation.getBranch(), relation.getRelationType().getTypeName(), ""));
+                        relation.getBranch(), relation.getRelationType().getTypeName()));
                }
             } else if (event instanceof NetworkNewRelationLinkEvent) {
                RelationLink relation =
@@ -609,7 +608,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   }
 
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationModType.Added, relation,
-                        relation.getBranch(), relation.getRelationType().getTypeName(), ""));
+                        relation.getBranch(), relation.getRelationType().getTypeName()));
                }
             }
          }

@@ -329,7 +329,7 @@ public class InternalEventManager {
     * @param loadedArtifacts
     * @throws OseeCoreException
     */
-   static void kickRelationModifiedEvent(final Sender sender, final RelationModType relationModType, final RelationLink link, final Branch branch, final String relationType, final String relationSide) throws OseeCoreException {
+   static void kickRelationModifiedEvent(final Sender sender, final RelationModType relationModType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
       if (isDisableEvents()) return;
       SkynetActivator.getLogger().log(Level.FINE,
             "OEM: kickRelationModifiedEvent - " + relationModType + " - " + link + " - " + sender);
@@ -341,7 +341,7 @@ public class InternalEventManager {
                   // Don't fail on any one listener's exception
                   try {
                      ((IRelationModifiedEventListener) listener).handleRelationModifiedEvent(sender, relationModType,
-                           link, branch, relationType, relationSide);
+                           link, branch, relationType);
                   } catch (Exception ex) {
                      SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }

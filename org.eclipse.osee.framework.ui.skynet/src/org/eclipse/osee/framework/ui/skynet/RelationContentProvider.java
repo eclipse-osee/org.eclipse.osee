@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -34,10 +35,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    private Artifact artifact;
-   private final RelationsComposite relComp;
 
    public RelationContentProvider(RelationsComposite relComp) {
-      this.relComp = relComp;
    }
 
    /*
@@ -76,10 +75,6 @@ public class RelationContentProvider implements ITreeContentProvider {
             Artifact artifact = (Artifact) parentElement;
             List<RelationType> relationTypes =
                   RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
-            //            Set<RelationType> relationTypes = new HashSet<RelationType>();
-            //            for (RelationLink relation : artifact.getRelationsAll()) {
-            //               relationTypes.add(relation.getRelationType());
-            //            }
             return relationTypes.toArray();
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
@@ -101,6 +96,9 @@ public class RelationContentProvider implements ITreeContentProvider {
          } else if (parentElement instanceof RelationTypeSide) {
             RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
             List<RelationLink> relations = artifact.getRelations(relationTypeSide);
+            if (!relationTypeSide.getRelationType().isOrdered()) {
+               Collections.sort(relations, new AlphabeticalRelationComparator(relationTypeSide.getSide()));
+            }
             return relations.toArray();
          }
       } catch (SQLException ex) {
