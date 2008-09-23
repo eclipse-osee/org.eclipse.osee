@@ -10,7 +10,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  */
 public class NetworkTransactionDeletedEvent extends SkynetEventBase {
 
-   private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = -2467438797592036593L;
    private final int[] transactionIds;
 
    /**

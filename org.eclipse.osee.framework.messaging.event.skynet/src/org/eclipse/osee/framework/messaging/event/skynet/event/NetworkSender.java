@@ -5,11 +5,14 @@
  */
 package org.eclipse.osee.framework.messaging.event.skynet.event;
 
+import java.io.Serializable;
+
 /**
  * @author Donald G. Dunne
  */
-public class NetworkSender {
+public class NetworkSender implements Serializable {
 
+   private static final long serialVersionUID = 1908598443523663604L;
    public Object sourceObject;
    public String sessionId;
    public String machineName;

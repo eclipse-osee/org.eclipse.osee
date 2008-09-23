@@ -16,9 +16,6 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  */
 public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -519877422249674503L;
 
    private final String rationale;
