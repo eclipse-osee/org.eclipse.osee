@@ -57,6 +57,9 @@ public class DemoDbUtil {
       sleep(2000L);
       Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Current Default == \"" + defaultBranch + "\".", false);
+      if (!branch.equals(defaultBranch)) {
+         throw new IllegalStateException("Default Branch did not change on setDefaultBranch.");
+      }
    }
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
