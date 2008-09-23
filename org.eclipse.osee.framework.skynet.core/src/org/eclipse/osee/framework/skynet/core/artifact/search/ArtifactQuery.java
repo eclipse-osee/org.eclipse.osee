@@ -276,6 +276,19 @@ public class ArtifactQuery {
             300, null);
    }
 
+   /**
+    * Return all artifacts that have one or more attributes of given type regardless of the value
+    * 
+    * @param attributeTypeName
+    * @param branch
+    * @return artifacts
+    * @throws SQLException
+    */
+   public static List<Artifact> getArtifactsFromAttributeType(String attributeTypeName, Branch branch) throws SQLException {
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName)).getArtifacts(300,
+            null);
+   }
+
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
             new AttributeCriteria(attributeTypeName, attributeValue));

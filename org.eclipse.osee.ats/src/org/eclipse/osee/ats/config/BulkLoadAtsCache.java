@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
  * @author Donald G. Dunne
@@ -54,6 +55,7 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
                CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version)) {
             AtsCache.cache(artifact);
          }
+         WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

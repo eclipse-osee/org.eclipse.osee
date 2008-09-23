@@ -16,6 +16,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 /**
@@ -31,8 +33,9 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact = null;
    }
 
-   private synchronized static void loadDefinitions() throws OseeCoreException, SQLException {
+   public synchronized static void loadDefinitions() throws OseeCoreException, SQLException {
       if (itemIdToDefinition == null) {
+         OSEELog.logInfo(SkynetGuiPlugin.class, "Loading Work Item Definitions", false);
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
 
@@ -43,21 +46,18 @@ public class WorkItemDefinitionFactory {
             }
          }
 
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkRuleDefinition.ARTIFACT_NAME,
-               BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
-         }
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkWidgetDefinition.ARTIFACT_NAME,
-               BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
-         }
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
-               BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
-         }
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
-               BranchPersistenceManager.getCommonBranch())) {
-            addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
+         // This load is faster than loading each by artifact type
+         for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType(
+               WorkItemAttributes.WORK_ID.getAttributeTypeName(), BranchPersistenceManager.getCommonBranch())) {
+            if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+               addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
+            } else if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+               addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
+            } else if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+               addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
+            } else if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+               addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
+            }
          }
       }
    }
