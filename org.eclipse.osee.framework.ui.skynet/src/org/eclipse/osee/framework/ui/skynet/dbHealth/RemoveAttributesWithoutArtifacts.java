@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  */
 public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
 
-   private static final String SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS = "select tx1.transaction_id, tx1.gamma_id from osee_define_txs tx1, osee_Define_tx_Details td1, osee_Define_attribute att1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = att1.gamma_id AND not exists (select 'x' from osee_Define_txs tx2, osee_Define_tx_details td2, osee_Define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id AND av1.art_id = att1.art_id))";
+   private static final String SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS = "select tx1.transaction_id, tx1.gamma_id, td1.branch_id, att1.art_id, att1.attr_id from osee_define_txs tx1, osee_Define_tx_Details td1, osee_Define_attribute att1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = att1.gamma_id AND not exists (select 'x' from osee_Define_txs tx2, osee_Define_tx_details td2, osee_Define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id AND av1.art_id = att1.art_id) ";
    
    private static final String DELETE_ATTRIBUTES = "delete from osee_Define_txs where transaction_id = ? and gamma_id = ?";
    
@@ -98,7 +98,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
 	 
 	 while(rSet.next()){
 		 datas.add(new Integer[]{rSet.getInt("transaction_id"), rSet.getInt("gamma_id"), rSet.getInt("branch_id"),
-				 rSet.getInt("artifact_id"), rSet.getInt("attribute_id")});
+				 rSet.getInt("art_id"), rSet.getInt("attr_id")});
 	 }
    }
 

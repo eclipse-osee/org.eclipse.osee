@@ -991,4 +991,12 @@
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
     </Task>
  </extension>
+ <extension
+       id="RemoveAttributesWithoutArtifacts"
+       name="RemoveAttributesWithoutArtifacts"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.RemoveAttributesWithoutArtifacts">
+    </Task>
+ </extension>
 </plugin>
