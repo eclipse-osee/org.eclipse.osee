@@ -62,12 +62,8 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
       boolean verify = !fix;
       monitor.beginTask(
             fix ? "Deleting TXS Entries with No Backing Data" : "Checking For TXS Entries with No Backing Data", 100);
-      if (verify) {
-         gammas = null;
-         transactions = null;
-      }
 
-      if (gammas == null || transactions == null) {
+      if (verify || gammas == null || transactions == null) {
          gammas = new HashSet<Integer>();
          transactions = new HashSet<Integer>();
          ConnectionHandlerStatement chStmt = null;

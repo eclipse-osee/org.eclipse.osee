@@ -63,13 +63,9 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
       monitor.beginTask(fix ? "Deleting Data with no TXS addressing" : "Checking For Data with no TXS addressing", 100);
-      if (verify) {
-         gammas = null;
-         transactions = null;
-      }
       monitor.worked(5);
 
-      if (gammas == null || transactions == null) {
+      if (verify || gammas == null || transactions == null) {
          gammas = new HashSet<Integer>();
          transactions = new HashSet<Integer>();
          ConnectionHandlerStatement chStmt = null;

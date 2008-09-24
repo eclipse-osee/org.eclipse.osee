@@ -113,17 +113,15 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
 
-      if (verify) {
-         if (deleteMap == null) {
-            deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-            loadData(NO_ADDRESSING_ARTIFACTS_A, true);
-            loadData(NO_ADDRESSING_ARTIFACTS_B, true);
-         }
-         if (updateMap == null) {
-            updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-            loadData(DELETED_A_ARTIFACTS, false);
-            loadData(DELETED_B_ARTIFACTS, false);
-         }
+      if (verify || deleteMap == null) {
+         deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+         loadData(NO_ADDRESSING_ARTIFACTS_A, true);
+         loadData(NO_ADDRESSING_ARTIFACTS_B, true);
+      }
+      if (verify || updateMap == null) {
+         updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+         loadData(DELETED_A_ARTIFACTS, false);
+         loadData(DELETED_B_ARTIFACTS, false);
       }
 
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
@@ -139,7 +137,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
          ConnectionHandler.runPreparedUpdateBatch(DELETE_FROM_TXS, insertParameters);
          deleteMap = null;
 
-         insertParameters = new HashSet<Object[]>();
+         insertParameters.clear();
          Set<Object[]> insertParameters2 = new HashSet<Object[]>();
          for (LocalRelationLink relLink : updateMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
