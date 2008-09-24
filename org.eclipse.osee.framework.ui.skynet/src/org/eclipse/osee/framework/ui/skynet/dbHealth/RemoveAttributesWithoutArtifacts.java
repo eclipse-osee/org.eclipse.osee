@@ -31,14 +31,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
 
    private static final String SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS = "select tx1.transaction_id, tx1.gamma_id, td1.branch_id, att1.art_id, att1.attr_id from osee_define_txs tx1, osee_Define_tx_Details td1, osee_Define_attribute att1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = att1.gamma_id AND not exists (select 'x' from osee_Define_txs tx2, osee_Define_tx_details td2, osee_Define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id AND av1.art_id = att1.art_id) ";
-   
    private static final String DELETE_ATTRIBUTES = "delete from osee_Define_txs where transaction_id = ? and gamma_id = ?";
-   
    private static final String[] columnHeaders =
          new String[] {"Transaction id", "Gamma Id", "Branch_id", "Art Id", "Attribute Id"};
-   
    private static ArrayList<Integer[]> datas = new ArrayList<Integer[]>();
-
    private static final String DESCRIPTION = "Attributes the do not have artifacts on the branch where they exist.";
    
    /* (non-Javadoc)
@@ -85,7 +81,8 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
          if (showDetails) {
             sbFull.append(AHTML.endMultiColumnTable());
             XResultData rd = new XResultData(SkynetActivator.getLogger());
-            rd.addRaw(sbFull.toString());
+            String string = sbFull.toString();
+            rd.addRaw(string);
             rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
          }
       }
@@ -95,16 +92,19 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
 	 datas.clear();
 	 ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS); 
 	 ResultSet rSet = chStmt.getRset();
+	 int transactionNumber;
+	 int gammaIdNumber;
 	 
 	 while(rSet.next()){
-		 datas.add(new Integer[]{rSet.getInt("transaction_id"), rSet.getInt("gamma_id"), rSet.getInt("branch_id"),
+		 transactionNumber = rSet.getInt("transaction_id");
+		 gammaIdNumber = rSet.getInt("gamma_id");
+		 datas.add(new Integer[]{transactionNumber, gammaIdNumber, rSet.getInt("branch_id"),
 				 rSet.getInt("art_id"), rSet.getInt("attr_id")});
 	 }
    }
 
    private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) throws SQLException {
       sbFull.append(AHTML.addRowSpanMultiColumnTable(DESCRIPTION, columnHeaders.length));
-      
       for(Integer[] data : datas){
           sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(data[0]),
         		  String.valueOf(data[1]), String.valueOf(data[2]), String.valueOf(data[3]),
