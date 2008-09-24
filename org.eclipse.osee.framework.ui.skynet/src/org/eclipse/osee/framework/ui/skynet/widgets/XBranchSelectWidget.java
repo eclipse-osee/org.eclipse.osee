@@ -11,6 +11,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -35,6 +38,8 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    private BranchSelectComposite selectComposite;
    private Composite composite;
    private int defaultBranch;
+
+   private List<Listener> listeners = new ArrayList<Listener>();
 
    public XBranchSelectWidget(String label) {
       super(label);
@@ -202,6 +207,7 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    @Override
    public void handleEvent(Event event) {
       super.setLabelError();
+      notifyListeners(event);
    }
 
    public void setDefaultBranch(String branchName) {
@@ -214,4 +220,20 @@ public class XBranchSelectWidget extends XWidget implements Listener {
          }
       }
    }
+   
+   public void addListener(Listener listener){
+	   listeners .add(listener);
+   }
+   
+   public void removeListener(Listener listener){
+	   listeners.remove(listener);
+   }
+   
+   private void notifyListeners(Event event){
+	   for(Listener listener:listeners){
+		   listener.handleEvent(event);
+	   }
+   }
+   
+   
 }
