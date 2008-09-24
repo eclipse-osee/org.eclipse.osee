@@ -189,7 +189,6 @@
 		<Column id="B_ORDER" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ORDERED" defaultValue="not null" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
 		<Constraint schema="OSEE" id="OSEE_FOREIGN_B_ART" type="FOREIGN KEY" appliesTo="B_ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
