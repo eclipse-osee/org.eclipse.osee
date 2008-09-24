@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -12,7 +13,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -21,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Ryan D. Brooks
  */
 public class SetRequirementCategory extends AbstractBlam {
+   private HashMap<String, String> reqPriorities;
+   private final HashMap<String, Artifact> reqs = new HashMap<String, Artifact>();
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
@@ -30,17 +35,48 @@ public class SetRequirementCategory extends AbstractBlam {
 
       Branch branch = variableMap.getBranch("Branch");
       String excelMlPath = variableMap.getString("ExcelML Priority File");
+      boolean bulkLoad = variableMap.getValue(Boolean.class, "Bulk Load");
 
       ExtractReqPriority extractor = new ExtractReqPriority(excelMlPath);
-      HashMap<String, String> reqPriorities = extractor.getReqPriorities();
+      reqPriorities = extractor.getReqPriorities();
+
+      if (bulkLoad) {
+         for (Artifact req : ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, branch)) {
+            reqs.put(req.getDescriptiveName(), req);
+         }
+      }
+
       for (String requirementName : reqPriorities.keySet()) {
-         try {
-            Artifact requirement =
+         updateCategory(bulkLoad, branch, requirementName);
+      }
+   }
+
+   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws SQLException, MultipleAttributesExist {
+      try {
+         Artifact requirement;
+         if (bulkLoad) {
+            requirement = reqs.get(requirementName);
+            if (requirement == null) {
+               throw new ArtifactDoesNotExist("cant' find " + requirementName);
+            }
+         } else {
+            requirement =
                   ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
+         }
+
+         if (requirement.isOrphan()) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
+         } else {
             requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
             requirement.persistAttributes();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      } catch (MultipleArtifactsExist ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
+      } catch (ArtifactDoesNotExist ex) {
+         if (requirementName.endsWith(" ")) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
+         } else {
+            updateCategory(bulkLoad, branch, requirementName + " ");
          }
       }
    }
@@ -51,7 +87,7 @@ public class SetRequirementCategory extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"ExcelML Priority File\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Bulk Load\" /><XWidget xwidgetType=\"XText\" displayName=\"ExcelML Priority File\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 
    /* (non-Javadoc)
