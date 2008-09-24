@@ -479,7 +479,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       if (OseeProperties.isDeveloper()) {
          ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
-         snapshotSave.setImage(skynetGuiPlugin.getImage("snashotSave.gif"));
+         snapshotSave.setImage(skynetGuiPlugin.getImage("snapshotSave.gif"));
          snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
          snapshotSave.addSelectionListener(new SelectionAdapter() {
             @Override
