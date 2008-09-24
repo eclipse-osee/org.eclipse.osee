@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
 /**
- * @author Jeff C. Phillips
  * @author Theron Virgin
  */
 public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
