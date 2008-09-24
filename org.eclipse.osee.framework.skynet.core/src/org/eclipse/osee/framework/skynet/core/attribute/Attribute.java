@@ -180,7 +180,7 @@ public abstract class Attribute<T> {
    /**
     * Deletes the attribute
     */
-   public void delete() {
+   public final void delete() {
       deleted = true;
       dirty = true;
    }
@@ -206,7 +206,7 @@ public abstract class Attribute<T> {
    }
 
    /**
-    * @return
+    * @return true if in datastore
     */
    public boolean isInDatastore() {
       return gammaId > 0;
@@ -237,5 +237,13 @@ public abstract class Attribute<T> {
     */
    public boolean isDeleted() {
       return deleted;
+   }
+
+   /**
+    * Called from remote events to mark this attribute as deleted
+    */
+   public void internalSetDeleted() {
+      this.deleted = true;
+      this.dirty = false;
    }
 }

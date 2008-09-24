@@ -9,7 +9,10 @@ package org.eclipse.osee.framework.skynet.core.event;
  * @author Donald G. Dunne
  */
 public enum BroadcastEventType {
-   Message(EventType.LocalAndRemote), Force_Shutdown(EventType.RemoteOnly);
+   Message(EventType.RemoteOnly),
+   Ping(EventType.RemoteOnly),
+   Pong(EventType.RemoteOnly),
+   Force_Shutdown(EventType.RemoteOnly);
 
    private final EventType eventType;
 

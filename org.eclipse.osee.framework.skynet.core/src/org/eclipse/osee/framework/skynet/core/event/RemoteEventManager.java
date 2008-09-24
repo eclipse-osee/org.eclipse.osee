@@ -289,7 +289,8 @@ public class RemoteEventManager implements IServiceLookupListener {
                               new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getBranchId(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactIds(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactTypeIds());
-                        OseeEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType, loadedArtifacts);
+                        InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType,
+                              loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -300,7 +301,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                         branch.setBranchName(((NetworkRenameBranchEvent) event).getBranchName());
                         branch.setBranchShortName(((NetworkRenameBranchEvent) event).getShortName(), false);
                         try {
-                           OseeEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
+                           InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
                         } catch (Exception ex) {
                            logger.log(Level.SEVERE, ex.toString(), ex);
                         }
@@ -310,7 +311,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                   } else if (event instanceof NetworkNewBranchEvent) {
                      int branchId = ((NetworkNewBranchEvent) event).getBranchId();
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
+                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -318,7 +319,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
+                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -326,7 +327,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                      int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
                      BranchPersistenceManager.removeBranchFromCache(branchId);
                      try {
-                        OseeEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
+                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Committed, branchId);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
@@ -340,7 +341,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                                  "Unknown broadcast event type \"" + ((NetworkBroadcastEvent) event).getBroadcastEventTypeName() + "\"",
                                  new IllegalArgumentException());
                         } else {
-                           OseeEventManager.kickBroadcastEvent(this, broadcastEventType,
+                           InternalEventManager.kickBroadcastEvent(sender, broadcastEventType,
                                  ((NetworkBroadcastEvent) event).getUserIds(),
                                  ((NetworkBroadcastEvent) event).getMessage());
                         }
@@ -359,7 +360,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                               new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getBranchId(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
-                        OseeEventManager.kickArtifactsChangeTypeEvent(sender,
+                        InternalEventManager.kickArtifactsChangeTypeEvent(sender,
                               ((NetworkArtifactChangeTypeEvent) event).getToArtifactTypeId(), loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
@@ -369,14 +370,14 @@ public class RemoteEventManager implements IServiceLookupListener {
                         LoadedArtifacts loadedArtifacts =
                               new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getBranchId(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
-                                    ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
-                        OseeEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
+                                    ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
+                        InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
                   } else if (event instanceof NetworkTransactionDeletedEvent) {
                      try {
-                        OseeEventManager.kickTransactionsDeletedEvent(sender,
+                        InternalEventManager.kickTransactionsDeletedEvent(sender,
                               ((NetworkTransactionDeletedEvent) event).getTransactionIds());
                      } catch (Exception ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
@@ -391,7 +392,7 @@ public class RemoteEventManager implements IServiceLookupListener {
                    */
                   Sender transactionSender =
                         new Sender("RemoteEventManager", lastArtifactRelationModChangeSender.getOseeSession());
-                  OseeEventManager.kickTransactionEvent(transactionSender, xModifiedEvents);
+                  InternalEventManager.kickTransactionEvent(transactionSender, xModifiedEvents);
                }
 
                return Status.OK_STATUS;
@@ -435,7 +436,11 @@ public class RemoteEventManager implements IServiceLookupListener {
                                     "%s's attribute %d [/n%s/n] has been overwritten.", artifact.getSafeName(),
                                     attribute.getAttrId(), attribute.toString()));
                            }
-                           attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                           if (skynetAttributeChange.isDeleted()) {
+                              attribute.internalSetDeleted();
+                           } else {
+                              attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
+                           }
                            attribute.setGammaId(skynetAttributeChange.getGammaId());
                            attributeNeedsCreation = false;
                            attribute.setNotDirty();
