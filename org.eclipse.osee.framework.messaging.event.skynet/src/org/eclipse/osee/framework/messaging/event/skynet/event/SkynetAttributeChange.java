@@ -16,18 +16,27 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 public class SkynetAttributeChange implements SkynetChange {
    private static final long serialVersionUID = 7269483275150734396L;
    private final String name;
+   private final boolean deleted;
    private final int attributeId;
    private final int gammaId;
    private final Object[] value;
 
    /**
+    * @return the deleted
+    */
+   public boolean isDeleted() {
+      return deleted;
+   }
+
+   /**
     * @param name
     * @param value
     */
-   public SkynetAttributeChange(String name, Object[] value, int attributeId, int gammaId) {
+   public SkynetAttributeChange(String name, Object[] value, boolean deleted, int attributeId, int gammaId) {
       super();
       this.name = name;
       this.value = value;
+      this.deleted = deleted;
       this.attributeId = attributeId;
       this.gammaId = gammaId;
    }

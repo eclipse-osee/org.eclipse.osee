@@ -1389,7 +1389,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
-                  attribute.getAttributeDataProvider().getData(), attribute.getAttrId(), attribute.getGammaId()));
+                  attribute.getAttributeDataProvider().getData(), attribute.isDeleted(), attribute.getAttrId(),
+                  attribute.getGammaId()));
          }
       }
       return dirtyAttributes;
