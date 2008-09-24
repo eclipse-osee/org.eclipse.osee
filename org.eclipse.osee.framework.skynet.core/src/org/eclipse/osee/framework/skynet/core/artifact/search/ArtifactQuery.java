@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -194,6 +196,10 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
    }
 
+   public static List<Artifact> reloadArtifactsFromBranch(Branch branch, boolean allowDeleted) throws SQLException {
+	      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).reloadArtifacts(10000);
+   }
+   
    public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(1000,
             null);
