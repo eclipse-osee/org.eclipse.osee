@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
 /**
@@ -50,8 +48,7 @@ public class PublishSrs extends AbstractBlam {
       boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
       processor.setSaveParagraphNumOnArtifact(updateParagraphNumber);
-      variableMap.setValue("MasterFileName", "SRS");
-      processor.applyTemplate(FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW), variableMap);
+      processor.publishSRS(variableMap);
    }
 
    /*
