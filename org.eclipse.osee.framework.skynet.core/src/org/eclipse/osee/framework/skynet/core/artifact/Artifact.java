@@ -341,6 +341,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       throw new IllegalArgumentException("No child with the name \"" + descriptiveName + "\" exists");
    }
 
+   public boolean hasChild(String descriptiveName) {
+      boolean result = false;
+      try {
+         if (getChild(descriptiveName) != null) {
+            result = true;
+         }
+      } catch (Exception ex) {
+
+      }
+      return result;
+   }
+
    /**
     * @return set of the direct children of this artifact
     * @throws SQLException
