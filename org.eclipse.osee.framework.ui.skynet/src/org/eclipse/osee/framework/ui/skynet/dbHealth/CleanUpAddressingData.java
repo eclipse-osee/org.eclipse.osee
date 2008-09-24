@@ -34,7 +34,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
    private static final String NOT_ADDRESSESED_GAMMAS =
          "SELECT gamma_id from osee_define_txs MINUS (SELECT gamma_id FROM osee_Define_artifact_version UNION SELECT gamma_id FROM osee_Define_attribute UNION SELECT gamma_id FROM osee_Define_rel_link)";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT transaction_id from osee_Define_txs MINUS SELECT transaction_id from osee_Define_tx_details)";
+         "SELECT transaction_id from osee_Define_txs MINUS SELECT transaction_id from osee_Define_tx_details";
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_define_txs WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
          "DELETE FROM osee_define_txs WHERE transaction_id = ?";
