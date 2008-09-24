@@ -59,10 +59,9 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
    @Override
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
-      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       
       try {
          if (verify) {
@@ -81,8 +80,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
          if (showDetails) {
             sbFull.append(AHTML.endMultiColumnTable());
             XResultData rd = new XResultData(SkynetActivator.getLogger());
-            String string = sbFull.toString();
-            rd.addRaw(string);
+            rd.addRaw(sbFull.toString());
             rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
          }
       }
