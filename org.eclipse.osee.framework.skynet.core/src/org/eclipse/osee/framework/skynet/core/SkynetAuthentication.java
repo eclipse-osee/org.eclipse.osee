@@ -85,7 +85,8 @@ public class SkynetAuthentication {
             userIdToUserCache = new HashMap<String, User>(800);
             activeUserCache = new ArrayList<User>(700);
             Collection<Artifact> dbUsers =
-                  ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
+                  ArtifactQuery.getArtifactsFromAttributeType(User.userIdAttributeName,
+                        BranchPersistenceManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                cacheUser(user, null);
