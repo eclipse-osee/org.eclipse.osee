@@ -265,6 +265,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
    }
 
    private void closeView() {
+      if (artifact == null) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -281,7 +282,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
     */
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
-      if (transData.isDeleted(artifact)) {
+      if (artifact != null && transData.isDeleted(artifact)) {
          closeView();
       }
    }
@@ -291,7 +292,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IFrame
     */
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (artifact.getBranch().isArchived() || artifact.getBranch().getBranchId() != branchId) {
+      if (artifact != null && (artifact.getBranch().isArchived() || artifact.getBranch().getBranchId() != branchId)) {
          closeView();
       }
    }
