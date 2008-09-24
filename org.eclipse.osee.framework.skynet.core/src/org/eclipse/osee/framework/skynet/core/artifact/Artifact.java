@@ -341,14 +341,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       throw new IllegalArgumentException("No child with the name \"" + descriptiveName + "\" exists");
    }
 
-   public boolean hasChild(String descriptiveName) {
+   public boolean hasChild(String descriptiveName) throws SQLException {
       boolean result = false;
       try {
          if (getChild(descriptiveName) != null) {
             result = true;
          }
-      } catch (Exception ex) {
-
+      } catch (IllegalArgumentException ex) {
       }
       return result;
    }
