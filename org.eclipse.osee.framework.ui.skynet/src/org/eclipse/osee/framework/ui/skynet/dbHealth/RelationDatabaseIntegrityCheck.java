@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -32,52 +32,62 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  * @author Theron Virgin
  */
 public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
+   private class LocalRelationLink {
+      public int relLinkId;
+      public int gammaId;
+      public int transactionId;
+      public int branchId;
+      public int aArtId;
+      public int bArtId;
+      public int transIdForArtifactDeletion;
+
+      public LocalRelationLink(int relLinkId, int gammaId, int transactionId, int branchId, int aArtId, int bArtId, int transIdForArtifactDeletion) {
+         super();
+         this.aArtId = aArtId;
+         this.bArtId = bArtId;
+         this.branchId = branchId;
+         this.gammaId = gammaId;
+         this.relLinkId = relLinkId;
+         this.transactionId = transactionId;
+         this.transIdForArtifactDeletion = transIdForArtifactDeletion;
+      }
+   }
 
    private static final String NO_ADDRESSING_ARTIFACTS_A =
-         "SELECT ?, tx1.gamma_id, tx1.transaction_id, Current_Timestamp, 0 FROM osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 WHERE td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.a_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran FROM osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 WHERE td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.a_art_id)";
 
    private static final String NO_ADDRESSING_ARTIFACTS_B =
-         "SELECT ?, tx1.gamma_id, tx1.transaction_id, Current_Timestamp, 0 from osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.b_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran from osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.b_art_id)";
 
    private static final String DELETED_A_ARTIFACTS =
-         "SELECT ?, tx1.gamma_id, tx1.transaction_id, Current_Timestamp, tx2.transaction_id from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.a_art_id";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rel1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.a_art_id";
 
    private static final String DELETED_B_ARTIFACTS =
-         "SELECT ?, tx1.gamma_id, tx1.transaction_id, Current_Timestamp, tx2.transaction_id from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rl1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rl1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rl1.b_art_id";
-
-   private static final String SHOW_RESULTS =
-         "SELECT rel.rel_link_id, txs.gamma_id, txs.transaction_id, det.branch_id, rel.a_art_id, rel.b_art_id, jc.argument_3 FROM osee_define_tx_details det, osee_define_txs txs, osee_define_rel_link rel, osee_join_cleanup jc WHERE jc.query_id = ? AND jc.transaction_id = txs.transaction_id AND jc.gamma_id = txs.gamma_id AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id";
-
-   private static final String INSERT_JOIN =
-         "INSERT INTO osee_join_cleanup (query_id, gamma_id, transaction_id, insert_time, argument_3) VALUES (?, ?, ?, ?, ?)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rel1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.b_art_id";
 
    private static final String DELETE_FROM_TXS =
-         "DELETE FROM osee_define_txs where (gamma_id, transaction_id) in (SELECT gamma_id, transaction_id FROM osee_join_cleanup WHERE query_id = ?)";
+         "DELETE FROM osee_define_txs where gamma_id = ? AND  transaction_id = ?";
+
    private static final String UPDATE_TXS =
-         "UPDATE osee_define_txs SET tx_current = 0 WHERE (gamma_id, transaction_id) in (SELECT gamma_id, transaction_id FROM osee_join_cleanup WHERE query_id = ?)";
+         "UPDATE osee_define_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
+
    private static final String INSERT_TXS =
-         "INSERT INTO osee_define_txs (gamma_id, transaction_id, tx_current, mod_type) SELECT join.gamma_id, join.argument_3, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + " FROM osee_join_cleanup WHERE query_id = ?)";
-
-   private static final String CLEAN_UP_JOIN_TABLE = "DELETE FROM osee_join_cleanup WHERE query_id = ?";
-
-   private int joinIdToDelete1 = 0;
-   private int joinIdToDelete2 = 0;
-   private int joinIdToUpdate1 = 0;
-   private int joinIdToUpdate2 = 0;
-   private long time;
-   private static final long TWO_HOURS = 7200000;
+         "INSERT INTO osee_define_txs (gamma_id, transaction_id, tx_current, mod_type) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ")";
 
    private static final String[] columnHeaders =
          new String[] {"Rel Link ID", "Gamma Id", "Transaction Id", "Branch_id", "A Art Id", "B Art Id",
                "Transaction ID of Deleted Artifact"};
 
    private static final String[] DESCRIPTION =
-         {" Relation Links with non existant Artifacts on the Branch",
-               " Relation Links with deleted Artifacts on the Branch"};
+         {" Relation Links with non existant Artifacts on the Branch\n",
+               " Relation Links with deleted Artifacts on the Branch\n"};
 
    private static final String[] HEADER =
          {"Relation Links that have artifacts that don't exist on the branch",
                "Relation Links that have artifacts that are deleted on the branch"};
+
+   private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap = null;
+   private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> updateMap = null;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
@@ -104,130 +114,85 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
 
-      try {
-         if (verify) {
-            if (joinIdToDelete1 != 0 || joinIdToUpdate1 != 0 || joinIdToDelete2 != 0 || joinIdToUpdate2 != 0) {
-               cleanupTables();
-            }
-            joinIdToDelete1 = 0;
-            joinIdToDelete2 = 0;
-            joinIdToUpdate1 = 0;
-            joinIdToUpdate2 = 0;
-            time = System.currentTimeMillis();
+      if (verify) {
+         if (deleteMap == null) {
+            deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+            loadData(NO_ADDRESSING_ARTIFACTS_A, true);
+            loadData(NO_ADDRESSING_ARTIFACTS_B, true);
          }
-
-         if (joinIdToDelete1 == 0 || joinIdToDelete1 == 0 || joinIdToUpdate1 == 0 || (System.currentTimeMillis() - time) > TWO_HOURS) {
-            joinIdToDelete1 = ArtifactLoader.getNewQueryId();
-            joinIdToDelete2 = ArtifactLoader.getNewQueryId();
-            joinIdToUpdate1 = ArtifactLoader.getNewQueryId();
-            loadJoinTable(NO_ADDRESSING_ARTIFACTS_A, joinIdToDelete1);
-            monitor.worked(10);
-            if (monitor.isCanceled()) return;
-            loadJoinTable(NO_ADDRESSING_ARTIFACTS_B, joinIdToDelete2);
-            monitor.worked(10);
-            if (monitor.isCanceled()) return;
-            loadJoinTable(DELETED_A_ARTIFACTS, joinIdToUpdate1);
-            monitor.worked(10);
+         if (updateMap == null) {
+            updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+            loadData(DELETED_A_ARTIFACTS, false);
+            loadData(DELETED_B_ARTIFACTS, false);
          }
+      }
 
-         sbFull.append(AHTML.beginMultiColumnTable(100, 1));
-         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         displayData(0, sbFull, builder, verify, joinIdToDelete1, " : A side");
-         displayData(0, sbFull, builder, verify, joinIdToDelete2, " : B side");
-         displayData(1, sbFull, builder, verify, joinIdToUpdate1, " : A side");
+      sbFull.append(AHTML.beginMultiColumnTable(100, 1));
+      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+      displayData(0, sbFull, builder, verify, deleteMap);
+      displayData(1, sbFull, builder, verify, updateMap);
 
-         if (fix) {
-            //Delete the guys that aren't there and update the currents for the others.
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS, joinIdToDelete1);
-            ConnectionHandler.runPreparedUpdate(DELETE_FROM_TXS, joinIdToDelete2);
-
-            ConnectionHandler.runPreparedUpdate(UPDATE_TXS, joinIdToUpdate1);
-            ConnectionHandler.runPreparedUpdate(INSERT_TXS, joinIdToUpdate1);
+      if (fix) {
+         Set<Object[]> insertParameters = new HashSet<Object[]>();
+         for (LocalRelationLink relLink : deleteMap.allValues()) {
+            insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
          }
+         ConnectionHandler.runPreparedUpdateBatch(DELETE_FROM_TXS, insertParameters);
+         deleteMap = null;
 
-         if (joinIdToUpdate2 == 0 || (System.currentTimeMillis() - time) > TWO_HOURS) {
-            joinIdToUpdate2 = ArtifactLoader.getNewQueryId();
-            if (monitor.isCanceled()) return;
-            loadJoinTable(DELETED_B_ARTIFACTS, joinIdToUpdate2);
-            monitor.worked(10);
-            displayData(1, sbFull, builder, verify, joinIdToUpdate2, " : B side");
-            if (fix) {
-               ConnectionHandler.runPreparedUpdate(UPDATE_TXS, joinIdToUpdate2);
-               ConnectionHandler.runPreparedUpdate(INSERT_TXS, joinIdToUpdate2);
-            }
+         insertParameters = new HashSet<Object[]>();
+         Set<Object[]> insertParameters2 = new HashSet<Object[]>();
+         for (LocalRelationLink relLink : updateMap.allValues()) {
+            insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
+            insertParameters2.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
          }
+         ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS, insertParameters);
+         ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParameters2);
+         updateMap = null;
 
-         if (fix) {
-            cleanupTables();
-         }
+      }
 
-      } finally {
-         if (showDetails) {
-            sbFull.append(AHTML.endMultiColumnTable());
-            XResultData rd = new XResultData(SkynetActivator.getLogger());
-            rd.addRaw(sbFull.toString());
-            rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
-         }
+      if (showDetails) {
+         sbFull.append(AHTML.endMultiColumnTable());
+         XResultData rd = new XResultData(SkynetActivator.getLogger());
+         rd.addRaw(sbFull.toString());
+         rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }
    }
 
-   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, int joinId, String text) throws SQLException {
+   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws SQLException {
       int count = 0;
-      ConnectionHandlerStatement chStmt = null;
-      ResultSet resultSet = null;
-      sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER[x] + text, columnHeaders.length));
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(SHOW_RESULTS, joinId);
-         resultSet = chStmt.getRset();
-         while (resultSet.next()) {
-            count++;
-            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("rel_link_id"),
-                  resultSet.getString("gamma_id"), resultSet.getString("transaction_id"),
-                  resultSet.getString("branch_id"), resultSet.getString("a_art_id"), resultSet.getString("b_art_id"),
-                  resultSet.getString("argument_3")}));
-         }
-
-      } finally {
-         DbUtil.close(chStmt);
+      sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER[x], columnHeaders.length));
+      for (LocalRelationLink relLink : map.allValues()) {
+         count++;
+         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId),
+               Integer.toString(relLink.gammaId), Integer.toString(relLink.transactionId),
+               Integer.toString(relLink.branchId), Integer.toString(relLink.aArtId), Integer.toString(relLink.bArtId),
+               Integer.toString(relLink.transIdForArtifactDeletion)}));
       }
+
       builder.append(verify ? "Found " : "Fixed ");
       builder.append(count);
       builder.append(" ");
       builder.append(DESCRIPTION[x]);
-      builder.append(text);
-      builder.append("\n");
    }
 
-   protected void finalize() throws Throwable {
-      try {
-         if (joinIdToDelete1 != 0 || joinIdToUpdate1 != 0 || joinIdToDelete2 != 0 || joinIdToUpdate2 != 0) {
-            cleanupTables();
-         }
-      } finally {
-         super.finalize();
-
-      }
-   }
-
-   private void cleanupTables() throws SQLException {
-      ConnectionHandler.runPreparedUpdate(CLEAN_UP_JOIN_TABLE, joinIdToDelete1);
-      ConnectionHandler.runPreparedUpdate(CLEAN_UP_JOIN_TABLE, joinIdToDelete2);
-      ConnectionHandler.runPreparedUpdate(CLEAN_UP_JOIN_TABLE, joinIdToUpdate1);
-      ConnectionHandler.runPreparedUpdate(CLEAN_UP_JOIN_TABLE, joinIdToUpdate2);
-   }
-
-   private void loadJoinTable(String sql, int queryId) throws SQLException {
+   private void loadData(String sql, boolean forDelete) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       ResultSet resultSet = null;
-      Set<Object[]> insertParameters = new HashSet<Object[]>();
+      DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql, queryId);
+         chStmt = ConnectionHandler.runPreparedQuery(sql);
          resultSet = chStmt.getRset();
          while (resultSet.next()) {
-            insertParameters.add(new Object[] {resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                  resultSet.getTimestamp(4), resultSet.getInt(5)});
+            if (!map.containsKey(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id")) && (forDelete || !deleteMap.containsKey(
+                  resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id")))) {
+               map.put(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"), new LocalRelationLink(
+                     resultSet.getInt("rel_link_id"), resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"),
+                     resultSet.getInt("branch_id"), resultSet.getInt("a_art_id"), resultSet.getInt("b_art_id"),
+                     resultSet.getInt("deleted_tran")));
+            }
          }
-         ConnectionHandler.runPreparedUpdateBatch(INSERT_JOIN, insertParameters);
       } finally {
          DbUtil.close(chStmt);
       }
