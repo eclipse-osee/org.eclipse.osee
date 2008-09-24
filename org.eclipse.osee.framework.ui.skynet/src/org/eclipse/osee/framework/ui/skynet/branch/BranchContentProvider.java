@@ -72,8 +72,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private static final Object[] EMPTY_ARRAY = new Object[0];
    private static final String EMPTY_REPORT = "No changes";
    private static final Object[] EMPTY_REPORT_CHILDREN = new Object[] {EMPTY_REPORT};
-   private static final String NAMESPACE = "Branch Change Reports";
-
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
    private JobbedNode root;
    private IContentProviderRunnable providerRunnable;
@@ -81,8 +79,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private boolean showChildBranchesUnderParents;
    private boolean showTransactions;
    private boolean showMergeBranches;
-
-   //   private boolean myHideTransactions = false;
 
    public BranchContentProvider() {
       this.providerRunnable = new ChildrenRunnable();
