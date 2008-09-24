@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +33,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 
@@ -117,6 +118,13 @@ public class WordTemplateProcessor {
       this(null, null);
    }
 
+   /**
+    * only used for SRS publishing
+    * 
+    * @param masterTemplate
+    * @param slaveTemplate
+    * @throws CoreException
+    */
    public WordTemplateProcessor(String masterTemplate, String slaveTemplate) throws CoreException {
       this.masterTemplate = masterTemplate;
       this.slaveTemplate = slaveTemplate;
@@ -129,13 +137,10 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
-      String fileName = variableMap.getString("MasterFileName");
-      if (fileName == null) {
-         fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
-      }
-      AIFile.writeToFile(folder.getFile(fileName + ".xml"), applyTemplate(variableMap, masterTemplate, folder, null,
-            null));
+   public void publishSRS(BlamVariableMap variableMap) throws Exception {
+      IFolder folder = FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW);
+      String fileName = "SRS_" + Lib.getDateTimeString() + ".xml";
+      AIFile.writeToFile(folder.getFile(fileName), applySRSTemplate(variableMap, masterTemplate, folder, null, null));
    }
 
    /**
@@ -144,11 +149,11 @@ public class WordTemplateProcessor {
     * 
     * @throws IOException
     */
-   private InputStream applyTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
+   private InputStream applySRSTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
 
-      template = handleSettingParagraphNumbers(variableMap, template, outlineType, nextParagraphNumber, wordMl);
+      template = handleSettingParagraphNumbersForSRS(template, outlineType, nextParagraphNumber, wordMl);
       template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);
@@ -163,8 +168,11 @@ public class WordTemplateProcessor {
 
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
-            processArtifactSet(elementValue, variableMap.getArtifacts(WordRenderer.DEFAULT_SET_NAME), wordMl,
-                  outlineType, PresentationType.PREVIEW);
+            Matcher setNameMatcher = setNamePattern.matcher(elementValue);
+            setNameMatcher.find();
+            String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
+            processArtifactSet(elementValue, variableMap.getArtifacts(artifactSetName), wordMl, outlineType,
+                  PresentationType.PREVIEW);
          } else if (elementType.equals(EXTENSION_PROCESSOR)) {
             processExtensionTemplate(elementValue, variableMap, folder, wordMl);
          } else {
@@ -226,7 +234,7 @@ public class WordTemplateProcessor {
       previousTemplateCopyIndex = matcher.end();
    }
 
-   private String handleSettingParagraphNumbers(BlamVariableMap variableMap, String template, String outlineType, String nextParagraphNumber, WordMLProducer wordMl) throws CharacterCodingException {
+   private String handleSettingParagraphNumbersForSRS(String template, String outlineType, String nextParagraphNumber, WordMLProducer wordMl) throws CharacterCodingException {
       boolean appendixOutlineType = outlineType != null && outlineType.equalsIgnoreCase("APPENDIX");
 
       if (appendixOutlineType) {
@@ -350,8 +358,8 @@ public class WordTemplateProcessor {
                newVariableMap.setValue("Branch", variableMap.getBranch("Branch"));
                String subDocFileName = subdocumentName + ".xml";
                producer.process(newVariableMap);
-               AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, slaveTemplate, folder,
-                     nextParagraphNumber, outlineType));
+               AIFile.writeToFile(folder.getFile(subDocFileName), applySRSTemplate(newVariableMap, slaveTemplate,
+                     folder, nextParagraphNumber, outlineType));
 
                wordMl.createHyperLinkDoc(subDocFileName);
                // wordMl.createSubDoc(subDocFileName);
