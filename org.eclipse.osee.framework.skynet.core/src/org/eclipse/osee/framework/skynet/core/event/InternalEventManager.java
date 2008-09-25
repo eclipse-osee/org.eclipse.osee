@@ -726,33 +726,33 @@ public class InternalEventManager {
             if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.artifact.getBranch().getBranchId();
                } else {
                   transData.unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                }
             }
             if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.artifact.getBranch().getBranchId();
                } else {
                   transData.unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                }
             }
             if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.artifact.getBranch().getBranchId();
                } else {
                   transData.unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
-                  if (transData.branchId == null) transData.branchId =
+                  if (transData.branchId == -1) transData.branchId =
                         xArtifactModifiedEvent.unloadedArtifact.getBranchId();
                }
             }
@@ -793,12 +793,12 @@ public class InternalEventManager {
                   transData.cacheAddedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactA().getBranch().getBranchId();
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactB().getBranch().getBranchId();
                   }
                }
@@ -811,18 +811,18 @@ public class InternalEventManager {
                   transData.cacheDeletedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactA().getBranch().getBranchId();
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactB().getBranch().getBranchId();
                   }
                }
                if (unloadedRelation != null) {
                   transData.unloadedDeletedRelations.add(unloadedRelation);
-                  if (transData.branchId == null) transData.branchId = unloadedRelation.getBranchId();
+                  if (transData.branchId == -1) transData.branchId = unloadedRelation.getBranchId();
                }
             }
             if (xRelationModifiedEvent.relationModType == RelationModType.ReOrdered || xRelationModifiedEvent.relationModType == RelationModType.RationaleMod) {
@@ -830,18 +830,18 @@ public class InternalEventManager {
                   transData.cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactA().getBranch().getBranchId();
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
-                     if (transData.branchId == null) transData.branchId =
+                     if (transData.branchId == -1) transData.branchId =
                            loadedRelation.getArtifactB().getBranch().getBranchId();
                   }
                }
                if (unloadedRelation != null) {
                   transData.unloadedChangedRelations.add(unloadedRelation);
-                  if (transData.branchId == null) transData.branchId = unloadedRelation.getBranchId();
+                  if (transData.branchId == -1) transData.branchId = unloadedRelation.getBranchId();
                }
             }
          }

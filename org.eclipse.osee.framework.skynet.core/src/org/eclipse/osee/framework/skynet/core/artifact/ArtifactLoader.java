@@ -206,7 +206,7 @@ public final class ArtifactLoader {
          } finally {
             OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
-                  new Exception());
+                  new Exception("Artifact Load Time"));
             try {
                clearQuery(queryId);
             } catch (OseeDataStoreException ex) {
@@ -287,7 +287,7 @@ public final class ArtifactLoader {
       }
       OseeLog.log(SkynetActivator.class, Level.FINE,
             String.format("Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time),
-                  insertParameters.size()), new Exception());
+                  insertParameters.size()), new Exception("Artifact Selection Time"));
    }
 
    private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload, boolean historical) throws OseeCoreException, SQLException {

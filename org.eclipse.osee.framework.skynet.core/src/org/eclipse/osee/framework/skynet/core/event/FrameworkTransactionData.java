@@ -65,12 +65,17 @@ public class FrameworkTransactionData {
    public Set<Artifact> cacheRelationDeletedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheRelationAddedArtifacts = new HashSet<Artifact>();
 
-   public Integer branchId = null;
+   public int branchId = -1;
 
    public static enum ChangeType {
       Changed, Deleted, Added, All
    };
 
+   /**
+    * Return branchId of loaded artifacts or -1 if no loaded artifacts
+    * 
+    * @return branchId
+    */
    public Integer getBranchId() {
       return branchId;
    }
