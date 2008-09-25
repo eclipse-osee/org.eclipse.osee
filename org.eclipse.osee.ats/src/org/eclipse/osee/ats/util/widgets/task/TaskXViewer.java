@@ -427,7 +427,7 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-
+      if (transData.branchId != AtsPlugin.getAtsBranch().getBranchId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -439,6 +439,9 @@ public class TaskXViewer extends WorldXViewer {
             xTaskViewer.getXViewer().update(transData.cacheChangedArtifacts, null);
 
             try {
+               if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() == null) {
+                  return;
+               }
                Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
                if (parentSma != null) {
                   // Add any new tasks related to parent sma
