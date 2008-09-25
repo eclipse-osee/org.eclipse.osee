@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -140,7 +139,6 @@ public class EditTasks extends AbstractBlam {
             Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
             List<Artifact> workflows = new ArrayList<Artifact>();
 
-            System.err.println("initial workflow load " + XDate.getDateNow(XDate.HHMMSS));
             if (verArt != null) {
                workflows.addAll(verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow));
             } else if (teamDef != null && teamDef.getTeamDefinitionHoldingVersions() != null) {
@@ -149,7 +147,6 @@ public class EditTasks extends AbstractBlam {
                }
             }
 
-            System.err.println("filter out team defs " + XDate.getDateNow(XDate.HHMMSS));
             List<Artifact> teamDefWorkflows = new ArrayList<Artifact>();
             for (Artifact workflow : workflows) {
                if (teamDef.equals((((TeamWorkFlowArtifact) workflow).getTeamDefinition()))) {
@@ -157,13 +154,11 @@ public class EditTasks extends AbstractBlam {
                }
             }
 
-            System.err.println("bulk load tasks " + XDate.getDateNow(XDate.HHMMSS));
             // Bulk load tasks related to workflows
             Collection<Artifact> artifacts =
                   RelationManager.getRelatedArtifacts(teamDefWorkflows, 1, AtsRelation.SmaToTask_Task);
 
             // Apply the remaining criteria
-            System.err.println("apply remaining criteria " + XDate.getDateNow(XDate.HHMMSS));
             for (Artifact art : artifacts) {
                TaskArtifact taskArt = (TaskArtifact) art;
                // If include completed and canceled and task is such, check implementer list
@@ -183,7 +178,6 @@ public class EditTasks extends AbstractBlam {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Tasks Match Search Criteria", null);
             }
 
-            System.err.println("kickoff editor " + XDate.getDateNow(XDate.HHMMSS));
             // kickoff task editor
             TeamWorkFlowArtifact team = tasks.iterator().next().getParentTeamWorkflow();
             SMAManager teamSmaMgr = new SMAManager(team);
