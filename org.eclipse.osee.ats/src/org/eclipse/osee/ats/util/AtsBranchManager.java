@@ -156,7 +156,7 @@ public class AtsBranchManager {
          AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
 
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't delete change report.", ex, true);
+         OSEELog.logException(AtsPlugin.class, "Problem deleting branch.", ex, true);
       }
    }
 
