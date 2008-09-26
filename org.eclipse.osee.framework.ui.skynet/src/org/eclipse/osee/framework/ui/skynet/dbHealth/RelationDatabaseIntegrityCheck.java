@@ -156,28 +156,30 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
          monitor.worked(10);
 
          insertParameters.clear();
-         Set<Object[]> insertParameters2 = new HashSet<Object[]>();
-         Set<Object[]> insertParameters3 = new HashSet<Object[]>();
+         Set<Object[]> insertParametersInsert = new HashSet<Object[]>();
+         Set<Object[]> insertParametersTransaction = new HashSet<Object[]>();
          for (LocalRelationLink relLink : updateMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            if (!(relLink.transactionId == relLink.transIdForArtifactDeletion)) {
-               insertParameters2.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            if (relLink.transactionId == relLink.transIdForArtifactDeletion) {
+               insertParametersTransaction.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            } else if (relLink.transactionId > relLink.transIdForArtifactDeletion) {
+               insertParametersTransaction.add(new Object[] {relLink.gammaId, relLink.transactionId});
             } else {
-               insertParameters3.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+               insertParametersInsert.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
             }
          }
 
          monitor.subTask("Inserting Addressing for Deleted Artifacts");
-         if (insertParameters2.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParameters2);
+         if (insertParametersInsert.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParametersInsert);
          }
          monitor.worked(5);
          monitor.subTask("Updating Addressing for Deleted Artifacts");
          if (insertParameters.size() != 0) {
             ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS, insertParameters);
          }
-         if (insertParameters3.size() != 0) {
-            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS_SAME, insertParameters3);
+         if (insertParametersTransaction.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS_SAME, insertParametersTransaction);
          }
          monitor.worked(5);
          updateMap = null;
