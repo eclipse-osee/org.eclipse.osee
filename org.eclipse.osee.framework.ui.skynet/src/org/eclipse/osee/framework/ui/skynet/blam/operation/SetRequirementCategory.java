@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -15,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -42,16 +43,16 @@ public class SetRequirementCategory extends AbstractBlam {
 
       if (bulkLoad) {
          for (Artifact req : ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, branch)) {
-            reqs.put(req.getDescriptiveName(), req);
+            reqs.put(req.getDescriptiveName().trim(), req);
          }
       }
 
       for (String requirementName : reqPriorities.keySet()) {
-         updateCategory(bulkLoad, branch, requirementName);
+         updateCategory(bulkLoad, branch, requirementName.trim());
       }
    }
 
-   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws SQLException, MultipleAttributesExist {
+   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws SQLException, OseeCoreException {
       try {
          Artifact requirement;
          if (bulkLoad) {
@@ -65,19 +66,24 @@ public class SetRequirementCategory extends AbstractBlam {
          }
 
          if (requirement.isOrphan()) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
+            throw new MultipleArtifactsExist(requirement.getDescriptiveName());
          } else {
             requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
             requirement.persistAttributes();
          }
       } catch (MultipleArtifactsExist ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
-      } catch (ArtifactDoesNotExist ex) {
-         if (requirementName.endsWith(" ")) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
-         } else {
-            updateCategory(bulkLoad, branch, requirementName + " ");
+         List<Artifact> artiafcts =
+               ArtifactQuery.getArtifactsFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
+         for (Artifact requirement : artiafcts) {
+            if (requirement.isOrphan()) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
+            } else {
+               requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
+               requirement.persistAttributes();
+            }
          }
+      } catch (ArtifactDoesNotExist ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex.getLocalizedMessage());
       }
    }
 

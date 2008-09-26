@@ -77,7 +77,7 @@ public class ExtractReqPriority implements RowProcessor {
       if (row[1] != null) {
          String priority = reqPriorities.get(row[1]);
          if (priority != null) {
-            if (Integer.parseInt(priority) <= Integer.parseInt(row[0])) {
+a             if (priority.compareTo(row[0]) > 0) {
                return;
             }
          }
