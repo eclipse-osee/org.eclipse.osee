@@ -55,7 +55,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.swing.ImageIcon;
+
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -291,6 +293,8 @@ public final class Lib {
       }
    }
 
+   
+   
    public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
       byte[] buf = new byte[2024];
       int count = -1;
@@ -1187,7 +1191,7 @@ public final class Lib {
    }
 
    public static final URL getUrlFromString(String path) throws MalformedURLException {
-      if (!path.matches("(file://|http://|C:).*")) {
+      if (!path.matches("(file:/|file://|http://|C:).*")) {
          return new URL("file://" + path);
       }
       return new URL(path);
