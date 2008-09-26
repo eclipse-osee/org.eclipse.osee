@@ -112,6 +112,7 @@ public class DefectXViewer extends XViewer {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources
@@ -154,13 +155,14 @@ public class DefectXViewer extends XViewer {
             defectItem.setClosed(!defectItem.isClosed());
          }
          if (aCol.equals(DefectXViewerFactory.Severity_Col)) {
-            return handleAltLeftClick(treeColumn, treeItem);
+            modified = handleAltLeftClick(treeColumn, treeItem);
          }
          if (aCol.equals(DefectXViewerFactory.Disposition_Col)) {
-            return handleAltLeftClick(treeColumn, treeItem);
+            modified = handleAltLeftClick(treeColumn, treeItem);
          }
          if (modified) {
             xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
+            xDefectViewer.refresh();
             xDefectViewer.notifyXModifiedListeners();
             update(defectItem, null);
             return true;
@@ -222,7 +224,7 @@ public class DefectXViewer extends XViewer {
             UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
             int result = ld.open();
             if (result == 0) {
-               User selectedUser = (User) ld.getSelection();
+               User selectedUser = ld.getSelection();
                if (selectedUser != null && defectItem.getUser() != selectedUser) {
                   modified = true;
                   defectItem.setUser(selectedUser);

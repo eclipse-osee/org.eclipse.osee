@@ -102,6 +102,7 @@ public class UserRoleXViewer extends XViewer {
    /**
     * Release resources
     */
+   @Override
    public void dispose() {
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its ressources
@@ -159,7 +160,7 @@ public class UserRoleXViewer extends XViewer {
             UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
             int result = ld.open();
             if (result == 0) {
-               User selectedUser = (User) ld.getSelection();
+               User selectedUser = ld.getSelection();
                if (selectedUser != null && userRole.getUser() != selectedUser) {
                   modified = true;
                   userRole.setUser(selectedUser);
@@ -180,6 +181,7 @@ public class UserRoleXViewer extends XViewer {
 
          if (modified) {
             xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false);
+            xUserRoleViewer.refresh();
             xUserRoleViewer.notifyXModifiedListeners();
             update(userRole, null);
             return true;

@@ -140,36 +140,23 @@ public class XViewer extends TreeViewer {
       });
       getTree().addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event event) {
-            if (event.button == 1 && ((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT)) {
-               Point pt = new Point(event.x, event.y);
-               TreeItem item = getTree().getItem(pt);
-               if (item == null) return;
-               for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
-                  Rectangle rect = item.getBounds(colNum);
-                  if (rect.contains(pt)) {
-                     // System.out.println("Column " + colNum);
-                     handleAltLeftClick(getTree().getColumns()[colNum], item);
-                  }
-               }
-            }
-            updateStatusLabel();
-         }
-      });
-      getTree().addListener(SWT.MouseUp, new Listener() {
-         public void handleEvent(Event event) {
             Point pt = new Point(event.x, event.y);
             TreeItem item = getTree().getItem(pt);
             if (item == null) return;
             for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
                Rectangle rect = item.getBounds(colNum);
                if (rect.contains(pt)) {
-                  // System.out.println("Column " + colNum);
-                  handleLeftClick(getTree().getColumns()[colNum], item);
-                  if (event.x <= (rect.x + 18)) {
+                  if (event.button == 1 && ((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT)) {
+                     // System.out.println("Column " + colNum);
+                     handleAltLeftClick(getTree().getColumns()[colNum], item);
+                  } else if (event.x <= (rect.x + 18)) {
                      handleLeftClickInIconArea(getTree().getColumns()[colNum], item);
                   }
+                  // System.out.println("Column " + colNum);
+                  handleLeftClick(getTree().getColumns()[colNum], item);
                }
             }
+            updateStatusLabel();
          }
       });
       getTree().addSelectionListener(new SelectionAdapter() {

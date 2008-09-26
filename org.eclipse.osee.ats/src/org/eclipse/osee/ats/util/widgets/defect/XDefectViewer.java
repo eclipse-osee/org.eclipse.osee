@@ -152,6 +152,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       extraInfoLabel = new Label(leftComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
+      extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -379,11 +380,12 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-               if (item.getSeverity() == Severity.None || item.getDisposition() == Disposition.None || item.isClosed() == false) {
+               if (item.isClosed() == false || item.getDisposition() == Disposition.None || (item.getSeverity() == Severity.None && (item.getDisposition() != Disposition.Duplicate && item.getDisposition() != Disposition.Reject))) {
                   extraInfoLabel.setText("Review not complete till all items are marked for severity, disposition and closed");
                   return new Result(
                         "Review not complete till all items are marked for severity, disposition and closed");
                }
+
             }
          }
          extraInfoLabel.setText("");
