@@ -70,6 +70,9 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
    private static final String UPDATE_TXS =
          "UPDATE osee_define_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
 
+   private static final String UPDATE_TXS_SAME =
+         "UPDATE osee_define_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
+
    private static final String INSERT_TXS =
          "INSERT INTO osee_define_txs (gamma_id, transaction_id, tx_current, mod_type) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ")";
 
@@ -112,41 +115,72 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       boolean fix = operation == Operation.Fix;
       boolean verify = !fix;
+      monitor.beginTask(fix ? getFixTaskName() : getVerifyTaskName(), 100);
 
       if (verify || deleteMap == null) {
          deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+         monitor.subTask("Loading Relations with non existant artifacts on the A side");
          loadData(NO_ADDRESSING_ARTIFACTS_A, true);
+         monitor.worked(15);
+         monitor.subTask("Loading Relations with non existant artifacts on the B side");
          loadData(NO_ADDRESSING_ARTIFACTS_B, true);
+         monitor.worked(15);
       }
       if (verify || updateMap == null) {
          updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+         monitor.subTask("Loading Relations with Deleted artifacts on the A side");
          loadData(DELETED_A_ARTIFACTS, false);
+         monitor.worked(15);
+         monitor.subTask("Loading Relations with Deleted artifacts on the B side");
          loadData(DELETED_B_ARTIFACTS, false);
+         monitor.worked(15);
       }
 
       sbFull.append(AHTML.beginMultiColumnTable(100, 1));
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       displayData(0, sbFull, builder, verify, deleteMap);
+      monitor.worked(10);
       displayData(1, sbFull, builder, verify, updateMap);
+      monitor.worked(10);
 
       if (fix) {
          Set<Object[]> insertParameters = new HashSet<Object[]>();
          for (LocalRelationLink relLink : deleteMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
          }
-         ConnectionHandler.runPreparedUpdateBatch(DELETE_FROM_TXS, insertParameters);
+         monitor.subTask("Deleting Relation Addressing with non existant Artifacts");
+         if (insertParameters.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(DELETE_FROM_TXS, insertParameters);
+         }
          deleteMap = null;
+         monitor.worked(10);
 
          insertParameters.clear();
          Set<Object[]> insertParameters2 = new HashSet<Object[]>();
+         Set<Object[]> insertParameters3 = new HashSet<Object[]>();
          for (LocalRelationLink relLink : updateMap.allValues()) {
             insertParameters.add(new Object[] {relLink.gammaId, relLink.transactionId});
-            insertParameters2.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            if (!(relLink.transactionId == relLink.transIdForArtifactDeletion)) {
+               insertParameters2.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            } else {
+               insertParameters3.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion});
+            }
          }
-         ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS, insertParameters);
-         ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParameters2);
-         updateMap = null;
 
+         monitor.subTask("Inserting Addressing for Deleted Artifacts");
+         if (insertParameters2.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(INSERT_TXS, insertParameters2);
+         }
+         monitor.worked(5);
+         monitor.subTask("Updating Addressing for Deleted Artifacts");
+         if (insertParameters.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS, insertParameters);
+         }
+         if (insertParameters3.size() != 0) {
+            ConnectionHandler.runPreparedUpdateBatch(UPDATE_TXS_SAME, insertParameters3);
+         }
+         monitor.worked(5);
+         updateMap = null;
       }
 
       if (showDetails) {

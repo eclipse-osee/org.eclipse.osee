@@ -85,7 +85,7 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
                   if (showDetails) {
                      String str =
                            AHTML.addRowMultiColumnTable(new String[] {String.valueOf(count),
-                                 resultSet.getString("rel_link_id_id"), resultSet.getString("branch_id")});
+                                 resultSet.getString("rel_link_id"), resultSet.getString("branch_id")});
                      sbFull.append(str);
                   }
                }
@@ -207,10 +207,8 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
                         trans_id = resultSet2.getString("transaction_id");
                         gamma_id = resultSet2.getString("gamma_id");
                      }
-                     String str =
-                           AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("rel_link_id"), gamma_id,
-                                 trans_id, resultSet.getString("branch_id")});
-                     builder.append(str);
+                     sbFull.append(AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("rel_link_id"),
+                           gamma_id, trans_id, resultSet.getString("branch_id")}));
                      DbUtil.close(connection2);
                   }
                   if (monitor.isCanceled()) {
@@ -236,12 +234,9 @@ public class RelLinkTxCurrent extends DatabaseHealthTask {
    }
 
    protected void showTxCurrentText(ResultSet resultSet, int x, StringBuffer builder, int transaction_id) throws SQLException {
-      String str =
-            AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("rel_link_id"),
-                  resultSet.getString("gamma_id_1"), resultSet.getString("gamma_id_2"),
-                  resultSet.getString("tx_current_1"), resultSet.getString("tx_current_2"),
-                  resultSet.getString("tran_id_1"), resultSet.getString("tran_id_2"), String.valueOf(transaction_id),
-                  resultSet.getString("branch_id")});
-      builder.append(str);
+      builder.append(AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("rel_link_id"),
+            resultSet.getString("gamma_id_1"), resultSet.getString("gamma_id_2"), resultSet.getString("tx_current_1"),
+            resultSet.getString("tx_current_2"), resultSet.getString("tran_id_1"), resultSet.getString("tran_id_2"),
+            String.valueOf(transaction_id), resultSet.getString("branch_id")}));
    }
 }
