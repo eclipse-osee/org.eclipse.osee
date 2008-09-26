@@ -133,6 +133,9 @@ public class UserRoleXViewer extends XViewer {
     */
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      if (!xUserRoleViewer.isEditable()) {
+         return false;
+      }
       try {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);

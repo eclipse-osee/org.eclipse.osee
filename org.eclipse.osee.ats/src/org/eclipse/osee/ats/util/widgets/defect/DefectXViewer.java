@@ -146,6 +146,9 @@ public class DefectXViewer extends XViewer {
     */
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      if (!xDefectViewer.isEditable()) {
+         return false;
+      }
       try {
          XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
          DefectItem defectItem = (DefectItem) treeItem.getData();
@@ -181,6 +184,9 @@ public class DefectXViewer extends XViewer {
     */
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      if (!xDefectViewer.isEditable()) {
+         return false;
+      }
       try {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
