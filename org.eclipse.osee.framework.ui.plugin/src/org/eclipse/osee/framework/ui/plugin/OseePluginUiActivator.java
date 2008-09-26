@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.plugin;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
@@ -25,7 +26,7 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 
-/**
+/**a
  * The activator class controls the plug-in life cycle
  */
 public class OseePluginUiActivator extends OseeUiActivator {
@@ -76,6 +77,8 @@ public class OseePluginUiActivator extends OseeUiActivator {
                         for (File toDelete : files) {
                            toDelete.delete();
                         }
+                        
+                        Lib.deleteContents(new File(new File(file, "configuration"), "org.eclipse.osgi"));
                      }
                   }
                } catch (Throwable th) {
