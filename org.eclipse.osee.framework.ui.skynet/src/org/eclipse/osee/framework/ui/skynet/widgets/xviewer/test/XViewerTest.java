@@ -17,13 +17,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Donald G. Dunne
  */
 public class XViewerTest extends XViewer {
-   private Set<IXViewerTestTask> runList = new HashSet<IXViewerTestTask>();
+   private final Set<IXViewerTestTask> runList = new HashSet<IXViewerTestTask>();
 
    /**
     * @param parent
@@ -50,6 +53,8 @@ public class XViewerTest extends XViewer {
          runList.remove(autoRunTask);
    }
 
+   private static XViewerTest xViewerTest = null;
+
    /**
     * @param args
     */
@@ -61,7 +66,24 @@ public class XViewerTest extends XViewer {
       Shell_1.setLayout(new GridLayout());
       Shell_1.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      XViewerTest xViewerTest = new XViewerTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+      Label label = new Label(Shell_1, SWT.None);
+      label.setText("Refresh");
+      label.addListener(SWT.MouseUp, new Listener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+          */
+         @Override
+         public void handleEvent(Event event) {
+            List<Object> tasks = new ArrayList<Object>();
+            for (int x = 0; x < 1; x++) {
+               tasks.addAll(getTestTasks());
+            }
+            System.err.println("Refreshing Input...");
+            xViewerTest.setInput(tasks);
+         }
+      });
+
+      xViewerTest = new XViewerTest(Shell_1, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
       xViewerTest.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       xViewerTest.setContentProvider(new XViewerTestContentProvider());
       xViewerTest.setLabelProvider(new XViewerTestLabelProvider(xViewerTest));

@@ -46,7 +46,7 @@ public class XViewerTextFilter extends ViewerFilter {
     * Find if item or item's children match
     * 
     * @param item
-    * @return
+    * @return true if match
     */
    public boolean findRecursively(TreeItem item) {
       /* determine if found and return true so parent knows to add themselves to matched items if found */
