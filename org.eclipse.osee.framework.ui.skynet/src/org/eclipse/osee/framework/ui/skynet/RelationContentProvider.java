@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,6 +19,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -95,13 +95,14 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSide) {
             RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
+            artifact.getRelatedArtifacts(relationTypeSide); // ensure the artifacts are bulk loaded; otherwise the sort will be slower
             List<RelationLink> relations = artifact.getRelations(relationTypeSide);
             if (!relationTypeSide.getRelationType().isOrdered()) {
                Collections.sort(relations, new AlphabeticalRelationComparator(relationTypeSide.getSide()));
             }
             return relations.toArray();
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
@@ -123,6 +124,14 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#hasChildren(Object)
     */
    public boolean hasChildren(Object element) {
+      if (element instanceof RelationTypeSide) {
+         try {
+            return artifact.getRelatedArtifactsCount((RelationTypeSide) element) > 0;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            return false;
+         }
+      }
       return getChildren(element).length > 0;
    }
 
