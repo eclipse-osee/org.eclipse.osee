@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -39,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -64,7 +62,7 @@ public class TaskMetrics extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       try {
          monitor.beginTask("TaskMetrics", 5);
          metrics.clear();
@@ -93,7 +91,7 @@ public class TaskMetrics extends AbstractBlam {
       }
    }
 
-   private void tallyState(TaskArtifact task) throws SQLException, MultipleAttributesExist {
+   private void tallyState(TaskArtifact task) throws OseeCoreException {
       XStateDam stateDam = new XStateDam(task);
 
       SMAState state = stateDam.getState(TaskStates.InWork.name(), false);

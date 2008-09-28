@@ -12,13 +12,13 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
@@ -31,7 +31,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException {
+   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException, IOException {
       Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
 
       if (!attributes.isEmpty()) {
@@ -58,7 +58,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeNameHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       return artifact.isAttributeTypeValid(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
             WordAttribute.CONTENT_NAME).getName());
    }

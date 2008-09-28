@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
@@ -117,21 +118,17 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       @SuppressWarnings("unchecked")
       public Object[] run(Object parentElement) throws Exception {
          if (parentElement instanceof BranchPersistenceManager) {
-            try {
-               Collection<Branch> branches = BranchPersistenceManager.getBranches();
-               Iterator<Branch> iter = branches.iterator();
+            Collection<Branch> branches = BranchPersistenceManager.getBranches();
+            Iterator<Branch> iter = branches.iterator();
 
-               while (iter.hasNext()) {
-                  Branch branch = iter.next();
+            while (iter.hasNext()) {
+               Branch branch = iter.next();
 
-                  if ((!showChildBranchesAtMainLevel && branch.getParentBranch() != null) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
-                     iter.remove();
-                  }
+               if ((!showChildBranchesAtMainLevel && branch.hasParentBranch()) || ((!OseeProperties.isDeveloper() || !showMergeBranches) && branch.isMergeBranch())) {
+                  iter.remove();
                }
-               return branches.toArray();
-            } catch (SQLException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
+            return branches.toArray();
          } else if (parentElement instanceof Branch) {
             Branch branch = (Branch) parentElement;
             if (showChildBranchesUnderParents) {
@@ -362,7 +359,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          boolean readable = AccessControlManager.checkObjectPermission(branch, PermissionEnum.READ);
          try {
             return readable && (showTransactions || (!branch.getChildBranches().isEmpty() && showChildBranchesUnderParents));
-         } catch (SQLException ex) {
+         } catch (OseeDataStoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;
          }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
@@ -60,15 +59,15 @@ public class ActionableItemArtifact extends Artifact {
       return "Action can not be written against Actionable Item \"" + aia + "\" (" + aia.getHumanReadableId() + ").\n\nChoose another item.";
    }
 
-   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException, OseeCoreException {
+   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws OseeCoreException {
       ActionableItemArtifact topAi = getTopActionableItem();
       if (topAi == null) return EMPTY_SET;
       return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,
             ActionableItemArtifact.class);
    }
 
-   public Collection<User> getLeads() throws SQLException {
-      return getArtifacts(AtsRelation.TeamLead_Lead, User.class);
+   public Collection<User> getLeads() throws OseeCoreException {
+      return getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class);
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
@@ -80,11 +79,11 @@ public class ActionableItemArtifact extends Artifact {
       return AtsCache.getArtifactsByActive(Active.Both, ActionableItemArtifact.class);
    }
 
-   public boolean isActionable() throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public boolean isActionable() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException, SQLException {
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          aias.addAll(AtsCache.getArtifactsByName(actionableItemName, ActionableItemArtifact.class));
@@ -92,25 +91,25 @@ public class ActionableItemArtifact extends Artifact {
       return aias;
    }
 
-   public static Collection<TeamDefinitionArtifact> getImpactedTeamDefs(Collection<ActionableItemArtifact> aias) throws OseeCoreException, SQLException {
+   public static Collection<TeamDefinitionArtifact> getImpactedTeamDefs(Collection<ActionableItemArtifact> aias) throws OseeCoreException {
       return TeamDefinitionArtifact.getImpactedTeamDefs(aias);
    }
 
-   public Collection<TeamDefinitionArtifact> getImpactedTeamDefs() throws OseeCoreException, SQLException {
+   public Collection<TeamDefinitionArtifact> getImpactedTeamDefs() throws OseeCoreException {
       return TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(this));
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(ActionableItemArtifact aia) throws SQLException {
+   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(ActionableItemArtifact aia) throws OseeCoreException {
       return TeamDefinitionArtifact.getTeamsFromItemAndChildren(aia);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItemsFromItemAndChildren(ActionableItemArtifact aia) throws SQLException {
+   public static Set<ActionableItemArtifact> getActionableItemsFromItemAndChildren(ActionableItemArtifact aia) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       getActionableItemsFromItemAndChildren(aia, aias);
       return aias;
    }
 
-   public static void getActionableItemsFromItemAndChildren(ActionableItemArtifact aia, Set<ActionableItemArtifact> aiaTeams) throws SQLException {
+   public static void getActionableItemsFromItemAndChildren(ActionableItemArtifact aia, Set<ActionableItemArtifact> aiaTeams) throws OseeCoreException {
       for (Artifact art : aia.getChildren()) {
          if (art instanceof ActionableItemArtifact) {
             aiaTeams.add((ActionableItemArtifact) art);

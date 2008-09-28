@@ -76,7 +76,7 @@ public class SkynetAuthentication {
    private boolean isLoadingUsersCache = false;
    private boolean userCacheIsLoaded = false;
 
-   private synchronized void loadUsersCache() throws OseeCoreException, SQLException {
+   private synchronized void loadUsersCache() throws OseeCoreException {
       try {
          if (!userCacheIsLoaded) {
             isLoadingUsersCache = true;
@@ -101,16 +101,10 @@ public class SkynetAuthentication {
          nameToUserCache.clear();
          enumeratedUserCache.clear();
          throw ex;
-      } catch (SQLException ex) {
-         // If exception, want to return to the state where cache is not loaded
-         userCacheIsLoaded = false;
-         userIdToUserCache.clear();
-         nameToUserCache.clear();
-         enumeratedUserCache.clear();
       }
    }
 
-   private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException, SQLException {
+   private void cacheUser(User user, OseeUser userEnum) throws OseeCoreException {
       // System.out.println("caching User " + user.getUserId());
       // If cacheUser is called outside of the main loadUserCache, then load cache first
       if (!isLoadingUsersCache) loadUsersCache();
@@ -213,14 +207,13 @@ public class SkynetAuthentication {
       return currentUser;
    }
 
-   private static void persistUser(User user) throws OseeCoreException, SQLException {
+   private static void persistUser(User user) throws OseeCoreException {
       instance.duringUserCreation = true;
       try {
          user.persistAttributesAndRelations();
          instance.cacheUser(user, null);
-      } catch (SQLException ex) {
+      } finally {
          instance.duringUserCreation = false;
-         logger.log(Level.SEVERE, ex.toString(), ex);
       }
    }
 
@@ -287,7 +280,7 @@ public class SkynetAuthentication {
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
    @SuppressWarnings("unchecked")
-   public static ArrayList<User> getUsers() throws OseeCoreException, SQLException {
+   public static ArrayList<User> getUsers() throws OseeCoreException {
       instance.loadUsersCache();
       return (ArrayList<User>) instance.activeUserCache.clone();
    }

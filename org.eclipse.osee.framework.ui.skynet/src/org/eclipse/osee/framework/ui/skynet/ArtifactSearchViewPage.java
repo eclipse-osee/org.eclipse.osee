@@ -39,6 +39,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -514,8 +515,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             addReportJobCommand(menuManager, matrixManager, reportJob);
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       reportManager.add(matrixManager);
    }
@@ -523,13 +524,12 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private void createRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       try {
-
          for (RelationType descriptor : RelationTypeManager.getValidTypes(BranchPersistenceManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             createReportJobCommand(menuManager, matrixManager, reportJob);
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       reportManager.add(matrixManager);
    }
@@ -869,7 +869,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                   viewer.refresh();
                }
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });

@@ -11,12 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
-
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -25,6 +23,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
@@ -39,10 +39,9 @@ public class ArtifactQuery {
     * @param artId the id of the desired artifact
     * @param branch
     * @return exactly one artifact by one its id - otherwise throw an exception
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
-   public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist {
+   public static Artifact getArtifactFromId(int artId, Branch branch) throws OseeCoreException {
       return getArtifactFromId(artId, branch, false);
    }
 
@@ -53,10 +52,9 @@ public class ArtifactQuery {
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its id - otherwise throw an exception
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
-   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist {
+   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws OseeCoreException {
       try {
          Artifact artifact = ArtifactCache.getActive(artId, branch.getBranchId());
          if (artifact != null) {
@@ -65,7 +63,7 @@ public class ArtifactQuery {
          return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
       } catch (MultipleArtifactsExist ex) {
          // it is not possible to have two artifacts with the same artifact id
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return null;
       }
    }
@@ -76,11 +74,10 @@ public class ArtifactQuery {
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(String guidOrHrid, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromId(String guidOrHrid, Branch branch) throws OseeCoreException {
       return getArtifactFromId(guidOrHrid, branch, false);
    }
 
@@ -91,11 +88,10 @@ public class ArtifactQuery {
     * @param branch
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getBranchId());
       if (artifact != null) {
          return artifact;
@@ -110,11 +106,10 @@ public class ArtifactQuery {
     * @param artifactName
     * @param branch
     * @return exactly one artifact based on its type and name - otherwise throw an exception
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getArtifact();
    }
 
@@ -124,9 +119,8 @@ public class ArtifactQuery {
     * @param artifactIds
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
+   public static List<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted, FULL).getArtifacts(50, null);
    }
 
@@ -136,22 +130,21 @@ public class ArtifactQuery {
     * @param artifactIds
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws SQLException {
+   public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria("Name", artifactName)).getArtifacts(
             30, null);
    }
 
-   public static List<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
       return getArtifactsFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch);
    }
 
@@ -164,11 +157,10 @@ public class ArtifactQuery {
     * @param attributeValue
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifact();
    }
 
@@ -180,32 +172,31 @@ public class ArtifactQuery {
     * @param attributeValue
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifact();
    }
 
-   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(1000, null);
    }
 
-   public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws SQLException {
+   public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
    }
 
-   public static List<Artifact> reloadArtifactsFromBranch(Branch branch, boolean allowDeleted) throws SQLException {
-	      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).reloadArtifacts(10000);
+   public static List<Artifact> reloadArtifactsFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).reloadArtifacts(10000);
    }
-   
-   public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
+
+   public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(1000,
             null);
    }
 
-   public static List<Artifact> getArtifactsFromTypes(Collection<String> artifactTypeNames, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromTypes(Collection<String> artifactTypeNames, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artifactTypeNames), branch, FULL).getArtifacts(1000,
             null);
    }
@@ -217,9 +208,8 @@ public class ArtifactQuery {
     * @param branch
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+   public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, criteria).getArtifacts(
             artifactCountEstimate, null);
    }
@@ -230,9 +220,8 @@ public class ArtifactQuery {
     * @param branch
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
@@ -242,9 +231,8 @@ public class ArtifactQuery {
     * @param branch
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
@@ -255,9 +243,8 @@ public class ArtifactQuery {
     * @param branch
     * @param criteria
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws SQLException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifact.getBranch(), FULL, false, new RelationCriteria(artifact.getArtId(),
             relationType, relationSide)).getArtifacts(1000, null);
    }
@@ -270,14 +257,13 @@ public class ArtifactQuery {
     * @param attributeValue
     * @param branch
     * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifacts(100,
             null);
    }
 
-   public static List<Artifact> getArtifactsFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getArtifacts(
             300, null);
    }
@@ -288,24 +274,23 @@ public class ArtifactQuery {
     * @param attributeTypeName
     * @param branch
     * @return artifacts
-    * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromAttributeType(String attributeTypeName, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromAttributeType(String attributeTypeName, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName)).getArtifacts(300,
             null);
    }
 
-   private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
+   private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
             new AttributeCriteria(attributeTypeName, attributeValue));
    }
 
-   public static List<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, true, new AttributeCriteria(null, attributeValue, true)).getArtifacts(
             30, null);
    }
 
-   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, Branch branch, int artifactCountEstimate) throws SQLException {
+   public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, Collection<String> attributeValues, Branch branch, int artifactCountEstimate) throws OseeCoreException {
       return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
             new AttributeCriteria(attributeTypeName, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
@@ -343,11 +328,11 @@ public class ArtifactQuery {
    /**
     * @param artId
     * @return reloaded artifacts
-    * @throws SQLException
+    * @throws OseeDataStoreException
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     */
-   public static Artifact reloadArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact reloadArtifactFromId(int artId, Branch branch) throws OseeDataStoreException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
    }
 }

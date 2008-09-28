@@ -22,11 +22,14 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -55,13 +58,13 @@ public class AttributeTypeManager {
       this.idToTypeMap = new HashMap<Integer, AttributeType>();
    }
 
-   private static synchronized void ensurePopulated() throws SQLException {
+   private static synchronized void ensurePopulated() throws OseeDataStoreException {
       if (instance.idToTypeMap.size() == 0) {
          instance.populateCache();
       }
    }
 
-   private void populateCache() throws SQLException {
+   private void populateCache() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -72,12 +75,10 @@ public class AttributeTypeManager {
             String baseClassString = rSet.getString("attribute_class");
             String baseProviderClassString = rSet.getString("attribute_provider_class");
             try {
-               AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
-
                Class<? extends Attribute<?>> baseAttributeClass =
-                     extensionManager.getAttributeClassFor(baseClassString);
+                     AttributeExtensionManager.getAttributeClassFor(baseClassString);
                Class<? extends IAttributeDataProvider> providerAttributeClass =
-                     extensionManager.getAttributeProviderClassFor(baseProviderClassString);
+                     AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
                AttributeType type =
                      new AttributeType(rSet.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
                            rSet.getString("file_type_extension"), rSet.getString("namespace"), rSet.getString("name"),
@@ -85,13 +86,12 @@ public class AttributeTypeManager {
                            rSet.getInt("min_occurence"), rSet.getInt("max_occurence"), rSet.getString("tip_text"),
                            rSet.getString("tagger_id"));
                cache(type);
-
-            } catch (IllegalStateException ex) {
-               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
             } catch (ClassNotFoundException ex) {
-               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -104,11 +104,11 @@ public class AttributeTypeManager {
     * @throws Exception
     */
    @Deprecated
-   public static Collection<AttributeType> getTypes(Branch branch) throws SQLException {
+   public static Collection<AttributeType> getTypes(Branch branch) throws OseeDataStoreException {
       return getTypes();
    }
 
-   public static Collection<AttributeType> getTypes() throws SQLException {
+   public static Collection<AttributeType> getTypes() throws OseeDataStoreException {
       ensurePopulated();
       return instance.idToTypeMap.values();
    }
@@ -119,19 +119,18 @@ public class AttributeTypeManager {
    }
 
    /**
-    * Returns the attribute type with the given name and namespace or throws an IllegalArgumentException if it does not
-    * exist.
-    * 
-    * @param attrTypeId
-    * @return
-    * @throws SQLException
-    * @throws IllegalArgumentException
+    * @param namespace
+    * @param name
+    * @return the attribute type with the given name and namespace or throws an IllegalArgumentException if it does not
+    *         exist.
+    * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     */
-   public static AttributeType getType(String namespace, String name) throws SQLException {
+   public static AttributeType getType(String namespace, String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
       AttributeType attributeType = instance.nameToTypeMap.get(namespace + name);
       if (attributeType == null) {
-         throw new IllegalArgumentException(
+         throw new OseeTypeDoesNotExist(
                "Attribute Type with namespace \"" + namespace + "\" and name \"" + name + "\" does not exist.");
       }
       return attributeType;
@@ -141,23 +140,21 @@ public class AttributeTypeManager {
     * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
     * 
     * @param attrTypeId
-    * @return
-    * @throws SQLException
-    * @throws IllegalArgumentException
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public static AttributeType getType(int attrTypeId) throws SQLException, IllegalArgumentException {
+   public static AttributeType getType(int attrTypeId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
       AttributeType attributeType = instance.idToTypeMap.get(attrTypeId);
       if (attributeType == null) {
-
-         throw new IllegalArgumentException("Attribute type: " + attrTypeId + " is not available.");
+         throw new OseeTypeDoesNotExist("Attribute type: " + attrTypeId + " is not available.");
       }
 
       return attributeType;
    }
 
    //TODO
-   public static AttributeType getTypeWithWordContentCheck(Artifact artifact, String attributeTypeName) throws SQLException {
+   public static AttributeType getTypeWithWordContentCheck(Artifact artifact, String attributeTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
       if (attributeTypeName.equals(WordAttribute.CONTENT_NAME) && artifact instanceof WordArtifact) {
          if (((WordArtifact) artifact).isWholeWordArtifact()) {
             attributeTypeName = WordAttribute.WHOLE_WORD_CONTENT;
@@ -169,14 +166,13 @@ public class AttributeTypeManager {
    }
 
    /**
-    * Returns the attribute type with the given name or throws an IllegalArgumentException if it does not exist.
-    * 
     * @param attrTypeId
-    * @return
+    * @return the attribute type with the given name or throws an IllegalArgumentException if it does not exist.
+    * @throws OseeTypeDoesNotExist
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public static AttributeType getType(String name) throws SQLException {
+   public static AttributeType getType(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return getType("", name);
    }
 
@@ -198,11 +194,10 @@ public class AttributeTypeManager {
          return getType(namespace, name);
       }
 
-      AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
-
-      Class<? extends Attribute<?>> baseAttributeClass = extensionManager.getAttributeClassFor(attributeBaseType);
+      Class<? extends Attribute<?>> baseAttributeClass =
+            AttributeExtensionManager.getAttributeClassFor(attributeBaseType);
       Class<? extends IAttributeDataProvider> providerAttributeClass =
-            extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
+            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
 
       int attrTypeId = SequenceManager.getNextAttributeTypeId();
       int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);

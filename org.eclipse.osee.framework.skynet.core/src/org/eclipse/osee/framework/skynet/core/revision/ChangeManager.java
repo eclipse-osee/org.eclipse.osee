@@ -166,8 +166,9 @@ public class ChangeManager {
     * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
+    * @throws OseeDataStoreException
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
       boolean hasBranch = sourceBranch != null;

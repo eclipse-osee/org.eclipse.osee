@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -82,8 +83,8 @@ public class XLabelDam extends XWidget implements IArtifactWidget {
       if (artifact != null && valueTextWidget != null && !valueTextWidget.isDisposed()) {
          try {
             valueTextWidget.setText(artifact.getAttributesToString(attributeTypeName));
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

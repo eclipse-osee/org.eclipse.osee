@@ -33,7 +33,7 @@ public class AttributeAnnotationManager {
       this.artifact = artifact;
    }
 
-   private Collection<Attribute<String>> getAttributes() throws SQLException {
+   private Collection<Attribute<String>> getAttributes() throws OseeCoreException {
       return artifact.getAttributes(ANNOTATION_ATTRIBUTE);
    }
 
@@ -42,7 +42,7 @@ public class AttributeAnnotationManager {
     *         annotation for this artifact as annotations can be added via extension point.
     * @throws SQLException
     */
-   public List<ArtifactAnnotation> getAnnotations() throws SQLException {
+   public List<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
       for (String value : artifact.getAttributesToStringList(ANNOTATION_ATTRIBUTE)) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(value);

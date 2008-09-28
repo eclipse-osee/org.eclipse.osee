@@ -46,7 +46,7 @@ public final class Artifacts {
       return toTextList(artifacts, separator);
    }
 
-   public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws OseeCoreException, SQLException {
+   public static Artifact getOrCreateArtifact(Branch branch, String artifactTypeName, String name) throws OseeCoreException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, branch);
       } catch (ArtifactDoesNotExist ex) {
@@ -77,7 +77,7 @@ public final class Artifacts {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override
-         protected void handleTxWork() throws OseeCoreException, SQLException {
+         protected void handleTxWork() throws OseeCoreException {
             for (Artifact art : artifacts)
                art.persistAttributesAndRelations();
          }
@@ -90,7 +90,7 @@ public final class Artifacts {
       AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
 
          @Override
-         protected void handleTxWork() throws OseeCoreException, SQLException {
+         protected void handleTxWork() throws OseeCoreException {
             for (Artifact art : artifacts)
                art.delete();
          }
@@ -114,7 +114,7 @@ public final class Artifacts {
     * @throws SQLException
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws SQLException {
+   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
@@ -124,7 +124,7 @@ public final class Artifacts {
    }
 
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) throws SQLException {
+   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) throws OseeCoreException {
       Set<A> children = new HashSet<A>();
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {

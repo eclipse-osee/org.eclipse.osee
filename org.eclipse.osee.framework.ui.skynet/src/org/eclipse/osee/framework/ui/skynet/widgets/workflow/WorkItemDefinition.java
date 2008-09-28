@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,7 +80,7 @@ public abstract class WorkItemDefinition {
     * @return
     * @throws OseeCoreException TODO
     */
-   public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException, SQLException {
+   public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException {
       // Collect all ids already visited
       Set<String> visitedIds = new HashSet<String>();
       for (String visitedId : visitedPageIds)
@@ -107,7 +106,7 @@ public abstract class WorkItemDefinition {
       return (getParentId() != null);
    }
 
-   public WorkItemDefinition getParent() throws OseeCoreException, SQLException {
+   public WorkItemDefinition getParent() throws OseeCoreException {
       if (!hasParent()) return null;
       return WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
    }
@@ -163,7 +162,7 @@ public abstract class WorkItemDefinition {
       this.data = data;
    }
 
-   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       if (writeType == WriteType.New) {
          // Double-check that doesn't already exist in db.  If so, exception cause duplicates

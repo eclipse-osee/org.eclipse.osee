@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -77,8 +78,9 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifact
     * @param descriptor
     * @throws SQLException
+    * @throws SQLException
     */
-   private void processAttributes(Artifact artifact, ArtifactType descriptor) throws SQLException {
+   private void processAttributes(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<AttributeType> attributeTypes =
@@ -159,8 +161,9 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifact
     * @param descriptor
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws Exception {
+   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws OseeCoreException, SQLException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }

@@ -20,10 +20,13 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * Caches the mapping of valid attribute types to artifact types for which they are valid
@@ -42,7 +45,7 @@ public class AttributeTypeValidityCache {
       attributeToartifactMap = new HashCollection<AttributeType, ArtifactType>(false, TreeSet.class);
    }
 
-   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException {
       ensurePopulated();
 
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
@@ -72,13 +75,13 @@ public class AttributeTypeValidityCache {
       return attributeTypes;
    }
 
-   private synchronized void ensurePopulated() throws SQLException {
+   private synchronized void ensurePopulated() throws OseeDataStoreException {
       if (artifactToAttributeMap.size() == 0) {
          populateCache();
       }
    }
 
-   private void populateCache() throws SQLException {
+   private void populateCache() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql);
@@ -91,28 +94,30 @@ public class AttributeTypeValidityCache {
 
                artifactToAttributeMap.put(artifactType, attributeType);
                attributeToartifactMap.put(attributeType, artifactType);
-            } catch (IllegalArgumentException ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } catch (OseeTypeDoesNotExist ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
    }
 
-   public Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType) throws SQLException {
+   public Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
 
       Collection<ArtifactType> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
       if (artifactTypes == null) {
-         throw new IllegalArgumentException(
+         throw new OseeTypeDoesNotExist(
                "There are no valid artifact types available for the attribute type " + requestedAttributeType);
       }
 
       return artifactTypes;
    }
 
-   public boolean isValid(ArtifactType artifactType, AttributeType attributeType) throws Exception {
+   public boolean isValid(ArtifactType artifactType, AttributeType attributeType) throws OseeDataStoreException {
       ensurePopulated();
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes != null) {
@@ -130,7 +135,7 @@ public class AttributeTypeValidityCache {
     * @param artifactType
     * @throws Exception
     */
-   public void add(ArtifactType artifactType, AttributeType attributeType) throws Exception {
+   public void add(ArtifactType artifactType, AttributeType attributeType) throws OseeDataStoreException {
       ensurePopulated();
       artifactToAttributeMap.put(artifactType, attributeType);
       attributeToartifactMap.put(attributeType, artifactType);

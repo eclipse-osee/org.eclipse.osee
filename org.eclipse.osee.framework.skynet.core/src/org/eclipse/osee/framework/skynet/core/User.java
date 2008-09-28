@@ -12,17 +12,16 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
@@ -46,11 +45,7 @@ public class User extends Artifact implements Serializable {
    @Override
    public void onBirth() throws OseeCoreException {
       super.onBirth();
-      try {
-         EveryoneGroup.addGroupMember(this);
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex.getMessage(), ex);
-      }
+      EveryoneGroup.addGroupMember(this);
    }
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
@@ -73,7 +68,7 @@ public class User extends Artifact implements Serializable {
       }
    }
 
-   public boolean isMe() throws SQLException, MultipleAttributesExist {
+   public boolean isMe() throws OseeCoreException {
       try {
          return (getUserId().equals(SkynetAuthentication.getUser().getUserId()));
       } catch (Exception ex) {
@@ -88,19 +83,19 @@ public class User extends Artifact implements Serializable {
       return false;
    }
 
-   public String getUserId() throws SQLException, MultipleAttributesExist {
+   public String getUserId() throws OseeCoreException {
       return getSoleAttributeValue(userIdAttributeName, "");
    }
 
-   public void setUserID(String userId) throws SQLException, MultipleAttributesExist {
+   public void setUserID(String userId) throws OseeCoreException {
       setSoleAttributeValue(userIdAttributeName, userId);
    }
 
-   public String getEmail() throws SQLException, MultipleAttributesExist {
+   public String getEmail() throws OseeCoreException {
       return getSoleAttributeValue(Attributes.Email.toString(), "");
    }
 
-   public void setEmail(String email) throws SQLException, MultipleAttributesExist {
+   public void setEmail(String email) throws OseeCoreException {
       setSoleAttributeValue(Attributes.Email.toString(), email);
    }
 
@@ -108,19 +103,19 @@ public class User extends Artifact implements Serializable {
       return getDescriptiveName();
    }
 
-   public String getPhone() throws SQLException, MultipleAttributesExist {
+   public String getPhone() throws OseeCoreException {
       return getSoleAttributeValue(Attributes.Phone.toString(), "");
    }
 
-   public void setPhone(String phone) throws SQLException, MultipleAttributesExist {
+   public void setPhone(String phone) throws OseeCoreException {
       setSoleAttributeValue(Attributes.Phone.toString(), phone);
    }
 
-   public Boolean isActive() throws SQLException, OseeCoreException {
+   public Boolean isActive() throws OseeCoreException {
       return getSoleAttributeValue(Attributes.Active.toString());
    }
 
-   public void setActive(boolean required) throws SQLException, MultipleAttributesExist {
+   public void setActive(boolean required) throws OseeCoreException {
       setSoleAttributeValue(Attributes.Active.toString(), required);
    }
 
@@ -157,9 +152,7 @@ public class User extends Artifact implements Serializable {
             addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
          }
       } catch (OseeCoreException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -172,9 +165,7 @@ public class User extends Artifact implements Serializable {
             }
          }
       } catch (OseeCoreException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
 
       return false;

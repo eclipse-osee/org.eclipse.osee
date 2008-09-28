@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_DEFINITIONS;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -23,47 +22,43 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public class KeyedBranchCache {
-
    private Map<String, Branch> keynameBranchMap = null;
    private static final KeyedBranchCache instance = new KeyedBranchCache();
-   private static final String GET_BRANCH_NAMES_FROM_CONFIG = "SELECT * FROM " + BRANCH_DEFINITIONS;
+   private static final String GET_BRANCH_NAMES_FROM_CONFIG = "SELECT * FROM osee_branch_definitions";
 
    private KeyedBranchCache() {
    }
 
-   public static KeyedBranchCache getInstance() {
-      return instance;
+   public static void createKeyedBranch(String keyname, Branch branch) throws OseeDataStoreException {
+      instance.ensurePopulated();
+      instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
    }
 
-   public void createKeyedBranch(String keyname, Branch branch) throws SQLException {
-      ensurePopulated();
-      keynameBranchMap.put(keyname.toLowerCase(), branch);
-   }
-
-   public Branch getKeyedBranch(String keyname) throws SQLException, IllegalArgumentException {
+   public static Branch getKeyedBranch(String keyname) throws OseeDataStoreException, BranchDoesNotExist {
       if (keyname == null) throw new IllegalArgumentException("keyname can not be null");
 
-      ensurePopulated();
+      instance.ensurePopulated();
       String lowerKeyname = keyname.toLowerCase();
-      if (keynameBranchMap.containsKey(lowerKeyname)) {
-         return keynameBranchMap.get(lowerKeyname);
+      if (instance.keynameBranchMap.containsKey(lowerKeyname)) {
+         return instance.keynameBranchMap.get(lowerKeyname);
       } else {
-         throw new IllegalArgumentException("The key \"" + keyname + "\" does not refer to any branch");
+         throw new BranchDoesNotExist("The key \"" + keyname + "\" does not refer to any branch");
       }
    }
 
-   private synchronized void ensurePopulated() throws SQLException {
+   private synchronized void ensurePopulated() throws OseeDataStoreException {
       if (keynameBranchMap == null) {
          populateCache();
       }
    }
 
-   private void populateCache() throws SQLException {
+   private void populateCache() throws OseeDataStoreException {
       keynameBranchMap = new HashMap<String, Branch>();
 
       ConnectionHandlerStatement chStmt = null;
@@ -80,9 +75,10 @@ public class KeyedBranchCache {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
    }
-
 }

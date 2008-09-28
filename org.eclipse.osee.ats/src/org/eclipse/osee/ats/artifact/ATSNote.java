@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.w3c.dom.Document;
@@ -109,8 +111,8 @@ public class ATSNote {
          if (!artifact.isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) {
             return "";
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return "";
       }
 

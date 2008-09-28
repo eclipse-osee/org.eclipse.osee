@@ -48,10 +48,6 @@ public class UpdateFromParentBranch extends AbstractBlam {
       List<Artifact> artifacts = variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch");
       Branch childBranch = variableMap.getBranch("Child Branch Name");
 
-      if (childBranch == null || artifacts == null || artifacts.isEmpty()) {
-         return;
-      }
-
       Branch parentBranch = childBranch.getParentBranch();
       int baselineTransactionNumber =
             TransactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();

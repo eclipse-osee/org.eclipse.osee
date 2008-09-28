@@ -119,7 +119,7 @@ public class RelationManager {
       }
    }
 
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
          selectedRelations = artifactToRelations.get(artifact);
@@ -206,7 +206,7 @@ public class RelationManager {
       }
    }
 
-   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws SQLException {
+   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws OseeCoreException {
       int queryId = ArtifactLoader.getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
@@ -245,19 +245,19 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   public static List<Artifact> getRelatedArtifactsAll(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+   public static List<Artifact> getRelatedArtifactsAll(Artifact artifact) throws OseeCoreException {
       return getRelatedArtifacts(artifact, null, null);
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationType, null);
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, SQLException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
-   private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
+   private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationSide);
 
       if (artifacts.size() == 0) {
@@ -274,7 +274,7 @@ public class RelationManager {
       return artifacts.get(0);
    }
 
-   public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
+   public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
       return getRelatedArtifact(artifact, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
@@ -303,7 +303,6 @@ public class RelationManager {
 
    /**
     * @param artifact
-    * @throws SQLException
     * @deprecated
     */
    @Deprecated
@@ -331,9 +330,8 @@ public class RelationManager {
    /**
     * @param artifact
     * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
-    * @throws SQLException
     */
-   public static void persistRelationsFor(Artifact artifact, RelationType relationType) throws SQLException {
+   public static void persistRelationsFor(Artifact artifact, RelationType relationType) throws OseeCoreException {
       List<RelationLink> selectedRelations;
       if (relationType == null) {
          selectedRelations = artifactToRelations.get(artifact);
@@ -419,9 +417,9 @@ public class RelationManager {
     * @param artifactA
     * @param artifactB
     * @param rationale
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws SQLException {
+   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
 
       if (relation == null) {
@@ -443,7 +441,7 @@ public class RelationManager {
       }
    }
 
-   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws SQLException {
+   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       // TODO Fix this when fix cross branching (not writing or reading from db correctly)
       if (!artifactA.getBranch().equals(artifactB.getBranch())) {
@@ -463,7 +461,7 @@ public class RelationManager {
     * @param artifactCount
     * @throws SQLException
     */
-   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) throws SQLException {
+   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) {
       int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
       int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide.oppositeSide());
 
@@ -481,12 +479,12 @@ public class RelationManager {
       }
    }
 
-   public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist, SQLException {
+   public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
       relation.delete(true);
    }
 
-   public static void deleteRelationsAll(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+   public static void deleteRelationsAll(Artifact artifact) throws ArtifactDoesNotExist {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -495,7 +493,7 @@ public class RelationManager {
       }
    }
 
-   public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+   public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist {
       List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -539,10 +537,8 @@ public class RelationManager {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws SQLException, OseeCoreException {
-
+   public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
 
       if (relation == null) {
@@ -686,10 +682,13 @@ public class RelationManager {
                   relation = newRelation;
                }
                if (sideB.values().size() > 0) {
-                  OseeLog.log(RelationManager.class, Level.FINE, String.format(
-                        "Artifact artId[%d] - %s - is unsorted for relations type - relTypeId[%d] - %s - . (missing a relation)",
-                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
-               } 
+                  OseeLog.log(
+                        RelationManager.class,
+                        Level.FINE,
+                        String.format(
+                              "Artifact artId[%d] - %s - is unsorted for relations type - relTypeId[%d] - %s - . (missing a relation)",
+                              artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               }
                relations.addAll(sideB.values());
                //now side a
                relation = sideA.remove(LINKED_LIST_KEY);
@@ -698,10 +697,13 @@ public class RelationManager {
                   relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
                }
                if (sideA.values().size() > 0) {
-                  OseeLog.log(RelationManager.class, Level.FINE, String.format(
-                        "Artifact artId[%d] - %s - is unsorted for relations type  - relTypeId[%d] - %s - . (missing a relation)",
-                        artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
-               } 
+                  OseeLog.log(
+                        RelationManager.class,
+                        Level.FINE,
+                        String.format(
+                              "Artifact artId[%d] - %s - is unsorted for relations type  - relTypeId[%d] - %s - . (missing a relation)",
+                              artifact.getArtId(), artifact.toString(), type.getRelationTypeId(), type.toString()));
+               }
                relations.addAll(sideA.values());
             } else {
                OseeLog.log(
@@ -722,7 +724,7 @@ public class RelationManager {
     * @throws SQLException
     * @throws ArtifactDoesNotExist
     */
-   static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist, SQLException {
+   static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist {
       Artifact aArt =
             ArtifactCache.getActive(relationLink.getArtifactId(RelationSide.SIDE_A),
                   relationLink.getBranch(RelationSide.SIDE_A));

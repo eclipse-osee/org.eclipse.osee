@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
@@ -58,11 +60,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     */
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
-         try {
-            return ((RelationTypeSide) element).getSideName();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
+         return ((RelationTypeSide) element).getSideName();
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) return ((RelationType) element).getTypeName();
       } else if (element instanceof RelationLink) {
@@ -70,8 +68,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          if (columnIndex == 0) {
             try {
                return link.getArtifactOnOtherSide(artifact).getDescriptiveName();
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          } else if (columnIndex == 1) {
             return link.getRationale();

@@ -31,7 +31,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
       super(branch);
    }
 
-   private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws SQLException {
+   private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact otherArtifact : artifacts) {
          artifact.addRelation(relationSide, otherArtifact);
       }

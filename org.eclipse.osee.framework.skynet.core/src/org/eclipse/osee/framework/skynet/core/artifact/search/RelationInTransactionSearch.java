@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -58,7 +58,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       return sql;
    }
 
@@ -89,7 +89,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
          return "Transactions: " + fromTransactionNumber + " to " + toTransactionNumber;
    }
 
-   public static RelationInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static RelationInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
 

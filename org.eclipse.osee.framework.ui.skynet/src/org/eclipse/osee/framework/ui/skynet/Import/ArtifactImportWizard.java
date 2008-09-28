@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -22,12 +21,14 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -95,7 +96,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       return true;
    }
 
-   public ArtifactExtractor getNewArtifactExtractor(ArtifactType primaryDescriptor, Branch branch, boolean reuseArtifacts) throws SQLException {
+   public ArtifactExtractor getNewArtifactExtractor(ArtifactType primaryDescriptor, Branch branch, boolean reuseArtifacts) throws OseeCoreException {
       if (mainPage.isWordOutlineExtractor()) {
          return new WordOutlineExtractor(primaryDescriptor, branch, 0, handlerPage.getSelectedOutlineContentHandler());
       } else if (mainPage.isExcelExtractor()) {
@@ -105,7 +106,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       } else if (mainPage.isGeneralDocumentExtractor()) {
          return new NativeDocumentExtractor(primaryDescriptor, branch);
       } else {
-         throw new IllegalStateException("None of the expected extractor buttons are selected");
+         throw new OseeCoreException("None of the expected extractor buttons are selected");
       }
    }
 
@@ -164,8 +165,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                importAttributes.addAll(rootAttributes);
                attributeTypePage.setDescriptors(importAttributes);
             }
-         } catch (SQLException ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return attributeTypePage;
       } else if (mainPage.isWordOutlineExtractor() && page != handlerPage) {

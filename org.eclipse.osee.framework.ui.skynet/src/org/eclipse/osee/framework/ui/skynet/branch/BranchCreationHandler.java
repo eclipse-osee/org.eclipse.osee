@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -81,9 +80,6 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
             throw new IllegalStateException(
                   "Backing data for the jobbed node in the branchview was not of the expected type");
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(getClass(), ex, true);
-         return null;
       } catch (OseeCoreException ex) {
          OSEELog.logException(getClass(), ex, true);
          return null;
@@ -133,8 +129,6 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && AccessControlManager.checkObjectPermission(
                ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
                PermissionEnum.READ)));
-      } catch (SQLException ex) {
-         return false;
       } catch (OseeCoreException ex) {
          return false;
       }

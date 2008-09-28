@@ -91,7 +91,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getTeamDefs() throws OseeCoreException, SQLException {
+   public void getTeamDefs() throws OseeCoreException {
       if (teamDefNames == null) return;
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
@@ -106,7 +106,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException, SQLException {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException {
       getTeamDefs();
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
@@ -120,7 +120,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getTeamDefs();
 
       Set<TeamDefinitionArtifact> items = getSearchTeamDefs();
@@ -162,7 +162,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (teamDefNames != null) return;
       if (teamDefs != null) return;

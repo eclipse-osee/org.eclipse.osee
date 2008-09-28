@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
@@ -21,8 +20,9 @@ public interface ISearchPrimitive {
     * 
     * @param branch TODO
     * @return Return SQL string
+    * @throws Exception TODO
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws SQLException;
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception;
 
    /**
     * The name of the column to use as the art_id column.

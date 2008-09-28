@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -23,7 +22,7 @@ public interface IWorkDefinitionProvider {
     * @return
     * @throws Exception TODO
     */
-   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException, SQLException;
+   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException;
 
    /**
     * Return WorkFlowDefinition to use for the given state machine artifact.
@@ -32,7 +31,7 @@ public interface IWorkDefinitionProvider {
     * @return
     * @throws Exception TODO
     */
-   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException, SQLException;
+   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException;
 
    /**
     * Dynamic Work Item Definitions will be collected only when widgets are being drawn for the given workflow and
@@ -44,6 +43,6 @@ public interface IWorkDefinitionProvider {
     * @return
     * @throws Exception TODO
     */
-   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException, SQLException;
+   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException;
 
 }

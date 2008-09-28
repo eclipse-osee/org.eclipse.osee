@@ -207,13 +207,10 @@ public class BranchSelectComposite extends Composite implements Listener {
    }
 
    private boolean isBranchAllowed(Branch branch) throws Exception {
-      boolean toReturn = true;
-      if (areOnlyWorkingBranchesAllowed() != false) {
-         if (branch.getParentBranch() == null) {
-            toReturn = false;
-         }
+      if (areOnlyWorkingBranchesAllowed() && !branch.hasParentBranch()) {
+         return false;
       }
-      return toReturn;
+      return true;
    }
 
    public String[] getBranchIds() {

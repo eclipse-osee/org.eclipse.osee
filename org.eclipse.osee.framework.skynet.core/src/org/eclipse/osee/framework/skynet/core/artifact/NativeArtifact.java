@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Image;
 
@@ -50,16 +51,16 @@ public class NativeArtifact extends Artifact {
          }
          return image;
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Can't access file extension.", ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }
 
-   public String getFileName() throws SQLException, MultipleAttributesExist {
+   public String getFileName() throws OseeCoreException {
       return getDescriptiveName() + "." + getFileExtension();
    }
 
-   public String getFileExtension() throws SQLException, MultipleAttributesExist {
+   public String getFileExtension() throws OseeCoreException {
       return getSoleAttributeValue("Extension", "");
    }
 
@@ -67,11 +68,11 @@ public class NativeArtifact extends Artifact {
       return getSoleAttributeValue(CONTENT_NAME);
    }
 
-   public void setNativeContent(File importFile) throws IOException, SQLException, MultipleAttributesExist {
+   public void setNativeContent(File importFile) throws OseeCoreException, FileNotFoundException {
       setNativeContent(new FileInputStream(importFile));
    }
 
-   public void setNativeContent(InputStream inputStream) throws IOException, SQLException, MultipleAttributesExist {
+   public void setNativeContent(InputStream inputStream) throws OseeCoreException {
       setSoleAttributeValue(CONTENT_NAME, inputStream);
    }
 }

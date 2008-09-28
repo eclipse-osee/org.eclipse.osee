@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -38,42 +37,37 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws SQLException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public StateMachineArtifact getParentSMA() throws SQLException {
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws SQLException {
+   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public Set<User> getPrivilegedUsers() throws SQLException {
+   public Set<User> getPrivilegedUsers() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws SQLException {
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
+   public Date getWorldViewReleaseDate() throws OseeCoreException {
       return null;
    }
 
    @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
-      return null;
-   }
-
-   @Override
-   public String getWorldViewVersion() throws OseeCoreException, SQLException {
+   public String getWorldViewVersion() throws OseeCoreException {
       return null;
    }
 
@@ -83,17 +77,16 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException, SQLException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
          taskArt.atsDelete(deleteArts, allRelated);
    }
 
    @Override
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws OseeCoreException, SQLException {
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws OseeCoreException {
       super.transitioned(fromPage, toPage, toAssignees, persist);
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
    }
-
 }

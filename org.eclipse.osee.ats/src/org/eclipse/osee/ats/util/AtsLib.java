@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -58,18 +57,16 @@ public class AtsLib implements IAtsLib {
    }
 
    /**
-    * Return set of Artifacts of type clazz that match the given active state of the "Active" attribute value. If no
-    * attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
-    * 
     * @param <A>
     * @param artifacts to iterate through
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider
-    * @return
+    * @return set of Artifacts of type clazz that match the given active state of the "Active" attribute value. If no
+    *         attribute exists, Active == true; If does exist then attribute value "yes" == true, "no" == false.
     * @throws SQLException
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws SQLException, MultipleAttributesExist {
+   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
       Set<A> results = new HashSet<A>();
       for (Artifact art : artifacts) {
          if ((art.getClass().equals(clazz)) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
@@ -213,12 +210,14 @@ public class AtsLib implements IAtsLib {
                   SMAEditor.editArtifact(art);
             } catch (SQLException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
+            } catch (OseeCoreException ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       });
    }
 
-   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws SQLException {
+   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException, SQLException {
       ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TeamWorkflowLabelProvider());

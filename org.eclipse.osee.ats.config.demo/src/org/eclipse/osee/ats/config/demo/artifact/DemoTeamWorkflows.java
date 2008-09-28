@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +38,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#getTeamWorkflowArtifactName(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
     *      java.util.Collection, java.util.Collection)
     */
-   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException {
+   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       if (teamDef.getDescriptiveName().contains("Code"))
          return DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME;
       else if (teamDef.getDescriptiveName().contains("Test"))
@@ -58,7 +57,7 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     * @see org.eclipse.osee.ats.actions.wizard.IAtsTeamWorflow#isResponsibleForTeamWorkflowCreation(org.eclipse.osee.ats.artifact.TeamDefinitionArtifact,
     *      java.util.Collection, java.util.Collection)
     */
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException {
+   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       return (teamDef.getDescriptiveName().contains("SAW") || teamDef.getDescriptiveName().contains("CIS"));
    }
 

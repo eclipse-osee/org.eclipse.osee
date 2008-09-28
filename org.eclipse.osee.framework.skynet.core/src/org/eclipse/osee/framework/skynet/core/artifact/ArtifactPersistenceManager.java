@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -44,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -56,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -78,8 +75,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactPersistenceManager.class);
-
    private static final String INSERT_ARTIFACT =
          "INSERT INTO " + ARTIFACT_TABLE + " (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
 
@@ -208,7 +203,7 @@ public class ArtifactPersistenceManager {
             listener.notifyOnAttributeSave(artifact);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
@@ -318,11 +313,11 @@ public class ArtifactPersistenceManager {
       return artifact;
    }
 
-   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) throws SQLException {
+   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) throws OseeDataStoreException {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
    }
 
-   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, Branch branch) throws SQLException {
+   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, Branch branch) throws OseeDataStoreException {
       StringBuilder sql = new StringBuilder();
 
       sql.append("SELECT ");
@@ -335,7 +330,12 @@ public class ArtifactPersistenceManager {
       sql.append(" FROM ");
       sql.append(searchCriteria.getTableSql(dataList, branch));
 
-      String criteriaSql = searchCriteria.getCriteriaSql(dataList, branch);
+      String criteriaSql;
+      try {
+         criteriaSql = searchCriteria.getCriteriaSql(dataList, branch);
+      } catch (Exception ex) {
+         throw new OseeDataStoreException(ex);
+      }
       if (criteriaSql.trim().length() != 0) {
          sql.append(" WHERE (");
          sql.append(criteriaSql);
@@ -345,35 +345,11 @@ public class ArtifactPersistenceManager {
       return sql;
    }
 
-   public int getArtifactCount(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
-      List<Object> dataList = new LinkedList<Object>();
-      return getArtifactCount(getSql(searchCriteria, ARTIFACT_COUNT_SELECT, dataList, branch), dataList);
-   }
-
-   public int getArtifactCount(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
-      List<Object> dataList = new LinkedList<Object>();
-      return getArtifactCount(getSql(searchCriteria, all, ARTIFACT_COUNT_SELECT, dataList, branch), dataList);
-   }
-
-   private int getArtifactCount(String sql, List<Object> dataList) throws SQLException {
-      int toReturn = -1;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql, dataList.toArray());
-         if (chStmt.next()) {
-            toReturn = chStmt.getRset().getInt(1);
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-      return toReturn;
-   }
-
-   public static String getIdSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, Branch branch) throws SQLException {
+   public static String getIdSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, Branch branch) throws OseeDataStoreException {
       return getSql(searchCriteria, all, ARTIFACT_ID_SELECT, dataList, branch);
    }
 
-   private static String getSql(ISearchPrimitive searchCriteria, String header, List<Object> dataList, Branch branch) throws SQLException {
+   private static String getSql(ISearchPrimitive searchCriteria, String header, List<Object> dataList, Branch branch) throws OseeDataStoreException {
       StringBuilder sql = new StringBuilder(header);
 
       sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
@@ -383,7 +359,7 @@ public class ArtifactPersistenceManager {
       return sql.toString();
    }
 
-   private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) throws SQLException {
+   private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) throws OseeDataStoreException {
       StringBuilder sql = new StringBuilder(header);
 
       if (all) {
@@ -421,7 +397,7 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
+   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws OseeDataStoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, queryParameters, branch),
@@ -429,7 +405,7 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
+   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws OseeCoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
@@ -437,7 +413,7 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
+   public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws OseeCoreException {
       return instance.getArtifacts(searchCriteria, all, branch, null);
    }
 
@@ -445,7 +421,7 @@ public class ArtifactPersistenceManager {
     * This is method only exists to support the old change reports
     */
    @Deprecated
-   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
+   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws OseeDataStoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(transactionId.getBranch().getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
@@ -463,7 +439,7 @@ public class ArtifactPersistenceManager {
     * @throws OseeDataStoreException
     * @throws OseeCoreException
     */
-   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeDataStoreException {
+   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          // Acquire previously stored attributes
@@ -502,7 +478,7 @@ public class ArtifactPersistenceManager {
       return artIdList.toString();
    }
 
-   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException, SQLException {
+   public static void deleteArtifact(final Artifact... artifacts) throws OseeCoreException {
       deleteArtifact(false, artifacts);
    }
 
@@ -510,7 +486,7 @@ public class ArtifactPersistenceManager {
     * @param artifacts The artifacts to delete.
     * @throws SQLException
     */
-   public static void deleteArtifact(boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException, SQLException {
+   public static void deleteArtifact(boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
       if (artifacts.length == 0) return;
 
       if (overrideDeleteCheck != true) {
@@ -546,7 +522,7 @@ public class ArtifactPersistenceManager {
     * @param builder
     * @throws Exception
     */
-   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
+   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws OseeCoreException {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
@@ -581,7 +557,7 @@ public class ArtifactPersistenceManager {
       artifact.persistAttributesAndRelations();
    }
 
-   public void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException, SQLException {
+   public static void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException {
       if (artifact == null) throw new IllegalArgumentException("Artifact = null in purgeArtifactFromBranch");
       purgeArtifacts(Collections.getAggregate(artifact));
    }
@@ -743,7 +719,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws OseeCoreException {
       try {
          Artifact root = ArtifactCache.getByTextId(DEFAULT_HIERARCHY_ROOT_NAME, branch);
          if (root == null) {
@@ -754,7 +730,8 @@ public class ArtifactPersistenceManager {
          return root;
       } catch (ArtifactDoesNotExist ex) {
          if (createIfNecessary) {
-            logger.log(Level.INFO, "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
+            OseeLog.log(SkynetActivator.class, Level.INFO,
+                  "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " because no root was found.");
             Artifact root =
                   ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
             root.persistAttributes();
@@ -765,11 +742,11 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
       return getDefaultHierarchyRootArtifact(branch, false);
    }
 
-   public void bulkLoadArtifacts(Collection<? extends Artifact> arts, Branch branch) throws SQLException, IllegalArgumentException {
+   public void bulkLoadArtifacts(Collection<? extends Artifact> arts, Branch branch) throws OseeCoreException {
       if (arts.size() == 0) return;
 
       List<ISearchPrimitive> bulkLoad = new LinkedList<ISearchPrimitive>();
@@ -831,7 +808,7 @@ public class ArtifactPersistenceManager {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws SQLException, OseeCoreException {
+   public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
       //first determine if the purge is legal.
       List<Object[]> batchParameters = new ArrayList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -933,6 +910,8 @@ public class ArtifactPersistenceManager {
          // Kick Local and Remote Events
          OseeEventManager.kickArtifactsPurgedEvent(instance, new LoadedArtifacts(artifactsToPurge));
 
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          ArtifactLoader.clearQuery(queryId);
       }

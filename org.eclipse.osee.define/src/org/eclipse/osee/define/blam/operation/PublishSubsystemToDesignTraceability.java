@@ -11,7 +11,6 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -77,7 +76,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void writeSubsystemDesignTraceability(Artifact subsystem) throws IOException, SQLException, MultipleAttributesExist {
+   private void writeSubsystemDesignTraceability(Artifact subsystem) throws IOException, OseeCoreException {
       excelWriter.startSheet(subsystem.getDescriptiveName(), 200);
       excelWriter.writeRow(subsystem.getDescriptiveName() + " Subsystem To Design Traceability");
 

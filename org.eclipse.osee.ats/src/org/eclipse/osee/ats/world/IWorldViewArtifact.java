@@ -39,7 +39,7 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewCategory3() throws OseeCoreException, SQLException;
 
-   public ChangeType getWorldViewChangeType() throws OseeCoreException, SQLException;
+   public ChangeType getWorldViewChangeType() throws OseeCoreException;
 
    public String getWorldViewChangeTypeStr() throws OseeCoreException, SQLException;
 

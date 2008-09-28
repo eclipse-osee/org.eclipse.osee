@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
@@ -46,6 +47,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -55,8 +57,8 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -119,7 +121,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
          ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
@@ -130,7 +132,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
          ((WorldContentProvider) getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
@@ -368,7 +370,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             } else {
                rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getDescriptiveName());
             }
-         } catch (SQLException ex) {
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             rData.logError(ex.getLocalizedMessage());
          }
       }
@@ -418,8 +421,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             if (!((Artifact) item.getData()).isAttributeTypeValid(attrName)) {
                return false;
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return false;
          }
       }
@@ -431,7 +434,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       return true;
    }
 
-   public void handleEmailSelectedAtsObject() throws MultipleAttributesExist {
+   public void handleEmailSelectedAtsObject() throws OseeCoreException {
       try {
          Artifact art = getSelectedArtifacts().iterator().next();
          if (art instanceof ActionArtifact) {
@@ -584,7 +587,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (item.getData() instanceof ActionArtifact) {
             try {
                if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() != 1) return false;
-            } catch (SQLException ex) {
+            } catch (OseeCoreException ex) {
                // Do Nothing
             }
          } else if (!(item.getData() instanceof TeamWorkFlowArtifact)) return false;
@@ -603,7 +606,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          if (item.getData() instanceof ActionArtifact) {
             try {
                if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() == 1) teamArts.addAll(((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts());
-            } catch (SQLException ex) {
+            } catch (OseeCoreException ex) {
                // Do Nothing
             }
          }
@@ -624,7 +627,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                smaArts.add((StateMachineArtifact) obj);
             else if (obj instanceof ActionArtifact) smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return smaArts;
@@ -796,7 +799,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return true;
             }
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.config;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -47,7 +46,7 @@ public class AtsConfig {
       return instance;
    }
 
-   public Artifact getOrCreateWorkRulesFolderArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateWorkRulesFolderArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
       if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
          art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
@@ -56,7 +55,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkPagesFolderArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateWorkPagesFolderArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
       if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
          art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
@@ -65,7 +64,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkWidgetsFolderArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateWorkWidgetsFolderArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
       if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
          art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
@@ -74,7 +73,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateWorkFlowsFolderArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateWorkFlowsFolderArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
       if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
          art.addAttribute(StaticIdQuery.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
@@ -83,7 +82,7 @@ public class AtsConfig {
       return art;
    }
 
-   public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws OseeCoreException, SQLException {
+   public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws OseeCoreException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), ActionableItemArtifact.ARTIFACT_NAME,
                   ACTIONABLE_ITEMS_HEADING);
@@ -95,7 +94,7 @@ public class AtsConfig {
       return (ActionableItemArtifact) art;
    }
 
-   public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws OseeCoreException, SQLException {
+   public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws OseeCoreException {
       Artifact art =
             Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
       if (!art.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE).contains(
@@ -119,7 +118,7 @@ public class AtsConfig {
       }
    }
 
-   public Artifact getOrCreateAtsHeadingArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateAtsHeadingArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, ATS_HEADING);
       if (art.getParent() == null) {
          try {
@@ -134,7 +133,7 @@ public class AtsConfig {
       return art;
    }
 
-   public Artifact getOrCreateMsaToolsHeadingArtifact() throws OseeCoreException, SQLException {
+   public Artifact getOrCreateMsaToolsHeadingArtifact() throws OseeCoreException {
       Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
       if (art.getParent() == null) {
          try {

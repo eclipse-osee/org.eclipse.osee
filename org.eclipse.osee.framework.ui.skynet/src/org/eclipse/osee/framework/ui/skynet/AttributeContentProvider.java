@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -36,7 +36,7 @@ public class AttributeContentProvider implements IStructuredContentProvider {
       if (inputElement instanceof Artifact) {
          try {
             return ((Artifact) inputElement).getAttributes(false).toArray();
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -116,7 +118,7 @@ public class RelationLink {
       return dirty;
    }
 
-   public void delete(boolean reorder) throws ArtifactDoesNotExist, SQLException {
+   public void delete(boolean reorder) throws ArtifactDoesNotExist {
       if (!deleted) {
          markAsDeleted();
          setDirty();
@@ -128,12 +130,12 @@ public class RelationLink {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,
                   getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
    }
 
-   public void deleteWithoutDirtyAndEvent() throws ArtifactDoesNotExist, SQLException {
+   public void deleteWithoutDirtyAndEvent() throws ArtifactDoesNotExist {
       if (!deleted) {
          markAsDeleted();
          RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, true);
@@ -149,7 +151,7 @@ public class RelationLink {
       setNotDirty();
    }
 
-   public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+   public Artifact getArtifact(RelationSide relationSide) throws OseeCoreException {
       Artifact relatedArtifact = getArtifactIfLoaded(relationSide);
       if (relatedArtifact == null) {
          return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
@@ -161,7 +163,7 @@ public class RelationLink {
       return ArtifactCache.getActive(getArtifactId(relationSide), getBranch(relationSide));
    }
 
-   public Artifact getArtifactOnOtherSide(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+   public Artifact getArtifactOnOtherSide(Artifact artifact) throws OseeCoreException {
       return getArtifact(getSide(artifact).oppositeSide());
    }
 
@@ -170,12 +172,12 @@ public class RelationLink {
    }
 
    @Deprecated
-   public Artifact getArtifactA() throws ArtifactDoesNotExist, SQLException {
+   public Artifact getArtifactA() throws OseeCoreException {
       return getArtifact(RelationSide.SIDE_A);
    }
 
    @Deprecated
-   public Artifact getArtifactB() throws ArtifactDoesNotExist, SQLException {
+   public Artifact getArtifactB() throws OseeCoreException {
       return getArtifact(RelationSide.SIDE_B);
    }
 
@@ -248,52 +250,25 @@ public class RelationLink {
    }
 
    public String getSideNameFor(Artifact artifact) {
-      return processArtifactSideName(artifact, false);
-   }
-
-   public String getSideNameForOtherArtifact(Artifact artifact) {
-      return processArtifactSideName(artifact, true);
-   }
-
-   @Deprecated
-   private String processArtifactSideName(Artifact artifact, boolean otherArtifact) {
-      for (RelationSide side : RelationSide.getSides()) {
-         try {
-            Artifact linkArt = getArtifact(side);
-            if (linkArt == artifact) {
-               if (otherArtifact) {
-                  return relationType.getSideName(side.oppositeSide());
-               } else {
-                  return relationType.getSideName(side);
-               }
-            }
-         } catch (ArtifactDoesNotExist ex) {
-
-         } catch (SQLException ex) {
-
-         }
-      }
-      throw new IllegalArgumentException("Link does not contain the artifact.");
+      return relationType.getSideName(getSide(artifact));
    }
 
    @Deprecated
    public String getSidePhrasingFor(Artifact artifact) {
       try {
          return processArtifactSidePhrasing(artifact, false);
-      } catch (ArtifactDoesNotExist ex) {
-         return "Unknown - " + ex.getMessage();
-      } catch (SQLException ex) {
-         return "Unknown - " + ex.getMessage();
+      } catch (OseeCoreException ex) {
+         return "Unknown - " + ex.getLocalizedMessage();
       }
    }
 
    @Deprecated
-   public String getSidePhrasingForOtherArtifact(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+   public String getSidePhrasingForOtherArtifact(Artifact artifact) throws OseeCoreException {
       return processArtifactSidePhrasing(artifact, true);
    }
 
    @Deprecated
-   private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) throws ArtifactDoesNotExist, SQLException {
+   private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) throws OseeCoreException {
       String sideName = "";
 
       if (artifact == getArtifact(RelationSide.SIDE_A)) {

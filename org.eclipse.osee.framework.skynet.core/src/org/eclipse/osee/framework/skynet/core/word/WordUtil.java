@@ -41,6 +41,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -96,9 +98,11 @@ public class WordUtil {
     * 
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     * @throws Exception
     */
-   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException {
+   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException, OseeDataStoreException, OseeTypeDoesNotExist {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
       AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.CONTENT_NAME);

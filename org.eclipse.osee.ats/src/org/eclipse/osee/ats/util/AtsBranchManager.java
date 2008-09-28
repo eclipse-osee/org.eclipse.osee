@@ -70,8 +70,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Donald G. Dunne
  */
 public class AtsBranchManager {
-
-   private boolean commitPopup;
    private final SMAManager smaMgr;
    private final ATSBranchMetrics atsBranchMetrics;
    public static String BRANCH_CATEGORY = "Branch Changes";
@@ -131,7 +129,7 @@ public class AtsBranchManager {
       }
    }
 
-   public Integer getBranchId() throws SQLException, MultipleBranchesExist {
+   public Integer getBranchId() throws OseeCoreException {
       if (getWorkingBranch() == null) return null;
       return getWorkingBranch().getBranchId();
    }
@@ -239,7 +237,7 @@ public class AtsBranchManager {
     * @return
     * @throws SQLException
     */
-   public Branch getWorkingBranch() throws SQLException, MultipleBranchesExist {
+   public Branch getWorkingBranch() throws OseeCoreException {
       Set<Branch> branches = BranchPersistenceManager.getAssociatedArtifactBranches(smaMgr.getSma());
       if (branches.size() == 0) {
          return null;
@@ -255,7 +253,7 @@ public class AtsBranchManager {
     * @return true if there is a current working branch
     * @throws SQLException
     */
-   public boolean isWorkingBranch() throws SQLException, MultipleBranchesExist {
+   public boolean isWorkingBranch() throws OseeCoreException {
       return getWorkingBranch() != null;
    }
 
@@ -273,7 +271,7 @@ public class AtsBranchManager {
     * @throws SQLException
     * @throws MultipleAttributesExist
     */
-   public void setParentBranchId(int branchId) throws SQLException, MultipleAttributesExist {
+   public void setParentBranchId(int branchId) throws OseeCoreException {
       smaMgr.getSma().setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
             String.valueOf(branchId));
    }
@@ -316,7 +314,7 @@ public class AtsBranchManager {
     * @return Branch that is the configured branch to create working branch from.
     * @throws SQLException
     */
-   private Branch getParentBranchForWorkingBranchCreation() throws SQLException, MultipleAttributesExist {
+   private Branch getParentBranchForWorkingBranchCreation() throws SQLException, OseeCoreException {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
@@ -418,19 +416,17 @@ public class AtsBranchManager {
    }
 
    /**
-    * @param popup if true, popup errors associated with results
+    * @param commitPopup if true, popup errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
     * @return Result
     */
-   public Result commitWorkingBranch(boolean popup, boolean overrideStateValidation) throws OseeCoreException, SQLException {
-      commitPopup = popup;
-
+   public Result commitWorkingBranch(boolean commitPopup, boolean overrideStateValidation) throws OseeCoreException, SQLException {
       Branch branch = getWorkingBranch();
       if (branch == null) {
          OSEELog.logSevere(AtsPlugin.class,
                "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId(),
-               popup);
+               commitPopup);
          return new Result("Commit Branch Failed: Can not locate branch.");
       }
 
@@ -471,7 +467,7 @@ public class AtsBranchManager {
          }
       }
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(branch.getParentBranch(), branch);
-      if (!popup) {
+      if (!commitPopup) {
          BranchPersistenceManager.commitBranch(branch, true, true);
       } else if (conflictManager.getRemainingConflicts().size() > 0) {
 
@@ -480,17 +476,17 @@ public class AtsBranchManager {
             dialog =
                   new MessageDialog(
                         Display.getCurrent().getActiveShell(),
-                        "Commit Failed",
+                        "Unresolved Conflicts",
                         null,
-                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
+                        "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts\n  Force the commit",
                         MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager", "Force Commit"}, 0);
          } else {
             dialog =
                   new MessageDialog(
                         Display.getCurrent().getActiveShell(),
-                        "Commit Failed",
+                        "Unresolved Conflicts",
                         null,
-                        "Commit Failed Due To Unresolved Conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
+                        "Commit stopped due to unresolved conflicts\n\nPossible Resolutions:\n  Cancel commit and resolve at a later time\n  Launch the Merge Manager to resolve conflicts",
                         MessageDialog.QUESTION, new String[] {"Cancel", "Launch Merge Manager"}, 0);
 
          }
@@ -523,6 +519,10 @@ public class AtsBranchManager {
       }
 
       return Result.TrueResult;
+   }
+
+   public void commit() {
+
    }
 
    public List<ArtifactChange> getArtifactChange(String artifactName) throws OseeCoreException, SQLException {
@@ -626,7 +626,7 @@ public class AtsBranchManager {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public Boolean isChangesOnWorkingBranch() throws SQLException, MultipleBranchesExist, BranchDoesNotExist, TransactionDoesNotExist {
+   public Boolean isChangesOnWorkingBranch() throws OseeCoreException {
       if (isWorkingBranch()) {
          Pair<TransactionId, TransactionId> transactionToFrom =
                TransactionIdManager.getStartEndPoint(getWorkingBranch());

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * Class exists to mark ATS Artifacts so the EventManager in core can report the artifact type
@@ -19,5 +19,5 @@ import java.sql.SQLException;
  */
 public interface IATSArtifact {
 
-   public Artifact getParentAtsArtifact() throws SQLException;
+   public Artifact getParentAtsArtifact() throws OseeCoreException;
 }

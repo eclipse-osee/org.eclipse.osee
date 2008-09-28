@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -33,7 +32,7 @@ public class RelationTypeSide implements IRelationEnumeration {
     * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getRelationType()
     */
    @Override
-   public RelationType getRelationType() throws SQLException {
+   public RelationType getRelationType() {
       return type;
    }
 
@@ -49,7 +48,7 @@ public class RelationTypeSide implements IRelationEnumeration {
     * @see org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration#getSideName(org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    @Override
-   public String getSideName() throws SQLException {
+   public String getSideName() {
       return type.getSideName(side);
    }
 
@@ -84,28 +83,27 @@ public class RelationTypeSide implements IRelationEnumeration {
       return artifact;
    }
 
-/* (non-Javadoc)
- * @see java.lang.Object#equals(java.lang.Object)
- */
-@Override
-public boolean equals(Object arg0) {
-	if(arg0 instanceof RelationTypeSide){
-		RelationTypeSide arg = (RelationTypeSide)arg0;
-		return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
-	}
-	return false;
-}
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object arg0) {
+      if (arg0 instanceof RelationTypeSide) {
+         RelationTypeSide arg = (RelationTypeSide) arg0;
+         return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
+      }
+      return false;
+   }
 
-/* (non-Javadoc)
- * @see java.lang.Object#hashCode()
- */
-@Override
-public int hashCode() {
-	int hashCode = 11;
-    hashCode = hashCode * 31 + type.hashCode();
-    hashCode = hashCode * 31 + side.hashCode();
-    hashCode = hashCode * 31 + artifact.hashCode();
-    return hashCode;
-}
-   
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      int hashCode = 11;
+      hashCode = hashCode * 31 + type.hashCode();
+      hashCode = hashCode * 31 + side.hashCode();
+      hashCode = hashCode * 31 + artifact.hashCode();
+      return hashCode;
+   }
 }

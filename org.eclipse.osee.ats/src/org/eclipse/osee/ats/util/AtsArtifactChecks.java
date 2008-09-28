@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +40,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
     * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactOperation#isDeleteable(java.util.Collection)
     */
    @Override
-   public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public Result isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
       // Check Actionable Items
       Result result = checkActionableItems(artifacts);
       if (result.isFalse()) return result;
@@ -58,7 +57,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Result.TrueResult;
    }
 
-   public Result checkActionableItems(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public Result checkActionableItems(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (Artifact art : artifacts) {
          if (art instanceof ActionableItemArtifact) aias.add((ActionableItemArtifact) art);
@@ -73,7 +72,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Result.TrueResult;
    }
 
-   public Result checkTeamDefinitions(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public Result checkTeamDefinitions(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<TeamDefinitionArtifact> aias = new HashSet<TeamDefinitionArtifact>();
       for (Artifact art : artifacts) {
          if (art instanceof TeamDefinitionArtifact) aias.add((TeamDefinitionArtifact) art);
@@ -89,7 +88,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Result.TrueResult;
    }
 
-   public Result checkAtsVueWorkflows(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public Result checkAtsVueWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
          if (art.getArtifactTypeName().equals("General Document")) {
             String ext = art.getSoleAttributeValue("Extension", "");
@@ -102,7 +101,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Result.TrueResult;
    }
 
-   public Result checkUsers(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public Result checkUsers(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<User> users = new HashSet<User>();
       for (Artifact art : artifacts) {
          if (art instanceof User) users.add((User) art);

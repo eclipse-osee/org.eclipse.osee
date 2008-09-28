@@ -52,7 +52,8 @@ public class AttributeChanged extends Change {
     * @param attrTypeId
     */
    public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
+      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
+            isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -137,8 +138,7 @@ public class AttributeChanged extends Change {
    private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, OseeCoreException {
       if (artifactChange == null) {
          artifactChange =
-               new ArtifactChange(getChangeType(), getArtModType(), 
-            		    getArtifact(), null, null, getFromTransactionId(),
+               new ArtifactChange(getChangeType(), getArtModType(), getArtifact(), null, null, getFromTransactionId(),
                      getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
@@ -168,8 +168,8 @@ public class AttributeChanged extends Change {
       } catch (MultipleArtifactsExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (OseeCoreException ex) {
-          logger.log(Level.SEVERE, ex.toString(), ex);
-	}
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
       return null;
    }
 
@@ -177,7 +177,7 @@ public class AttributeChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getObjectImage()
     */
    @Override
-   public Image getItemKindImage() throws IllegalArgumentException, SQLException {
+   public Image getItemKindImage() throws OseeCoreException {
       return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 

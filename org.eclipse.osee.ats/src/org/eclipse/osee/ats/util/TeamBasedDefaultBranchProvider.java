@@ -28,7 +28,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
       User user = SkynetAuthentication.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
-               user.getArtifacts(AtsRelation.TeamMember_Team, TeamDefinitionArtifact.class);
+               user.getRelatedArtifacts(AtsRelation.TeamMember_Team, TeamDefinitionArtifact.class);
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;

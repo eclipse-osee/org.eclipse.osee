@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -56,6 +55,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -71,7 +71,8 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -140,7 +141,7 @@ import org.osgi.service.prefs.Preferences;
  */
 public class BranchView extends ViewPart implements IActionable, IBranchEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.branch.BranchView";
-   private static final String BRANCH_ID = "branchId";
+   static final String BRANCH_ID = "branchId";
    private static final IParameter[] BRANCH_PARAMETER_DEF = new IParameter[] {new BranchIdParameter()};
    private static final String FAVORITE_KEY = "favorites_first";
    private static final String SHOW_TRANSACTIONS = "show_transactions";
@@ -272,7 +273,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
          forcePopulateView();
          OseeEventManager.addListener(this);
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
@@ -285,7 +286,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          public void run() {
             try {
                forcePopulateView();
-            } catch (SQLException ex) {
+            } catch (OseeDataStoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
@@ -435,7 +436,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
        */
-      public Branch getWorkingBranch() throws IllegalStateException, SQLException, MultipleBranchesExist {
+      public Branch getWorkingBranch() throws OseeCoreException {
          return branch;
       }
 
@@ -459,7 +460,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
             try {
-               if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null) {
+               if (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch()) {
                   MergeView.openView(selectedBranch, selectedBranch.getParentBranch(),
                         TransactionIdManager.getStartEndPoint(selectedBranch).getKey());
                }
@@ -478,7 +479,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                   Object obj = ((JobbedNode) selection.getFirstElement()).getBackingData();
                   if (obj instanceof Branch) {
                      Branch selectedBranch = (Branch) obj;
-                     return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.getParentBranch() != null);
+                     return (selectedBranch != null && (!(selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)) && selectedBranch.hasParentBranch());
                   }
                   return false;
                }
@@ -689,7 +690,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                            public void run() {
                               try {
                                  forcePopulateView();
-                              } catch (SQLException ex) {
+                              } catch (OseeDataStoreException ex) {
                                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                               }
                            }
@@ -741,8 +742,8 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
                         BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
             menuManager.add(branchCommand);
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -1132,8 +1133,8 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
          try {
             SkynetAuthentication.getUser().persistAttributes();
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }
@@ -1300,13 +1301,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       @Override
       public boolean isEnabled() {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         boolean validBranchSelected;
-         try {
-            validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-            validBranchSelected = false;
-         }
+         boolean validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
 
          if (validBranchSelected) {
             validBranchSelected &=
@@ -1325,12 +1320,11 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
             try {
                if (SkynetSelections.oneDescendantBranchSelected(selection)) {
-                  Branch parent =
-                        ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch();
-                  parentBranchName = parent.getBranchName();
+                  parentBranchName =
+                        ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch().getBranchName();
                }
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             IContributionItem[] myIContributionItems =
                   new IContributionItem[] {Commands.getLocalCommandContribution(getSite(), "commitIntoParentCommand",
@@ -1576,7 +1570,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   public void forcePopulateView() throws SQLException {
+   public void forcePopulateView() throws OseeDataStoreException {
       if (branchTable != null && !branchTable.getTree().isDisposed()) {
          BranchPersistenceManager.refreshBranches();
          branchTable.setInput(BranchPersistenceManager.getInstance());
@@ -1611,21 +1605,21 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       private boolean descendantBranchContains(Branch branch) {
          if (branch.getBranchName().toLowerCase().contains(contains.toLowerCase())) {
             return true;
-
          }
-         // Recurse for hierarchical display
-         else if (!flat) {
+         if (!flat) {
+            // Recurse for hierarchical display
             try {
                for (Branch childBranch : branch.getChildBranches()) {
                   if (descendantBranchContains(childBranch)) {
                      return true;
                   }
                }
-            } catch (SQLException ex) {
-               OSEELog.logException(BranchView.class, ex, false);
-               return true; // Don't limit displayed data over an exception
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               return true;
             }
          }
+
          return false;
       }
 
@@ -1817,7 +1811,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             public void run() {
                try {
                   forcePopulateView();
-               } catch (Exception ex) {
+               } catch (OseeDataStoreException ex) {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, false);
                }
             }

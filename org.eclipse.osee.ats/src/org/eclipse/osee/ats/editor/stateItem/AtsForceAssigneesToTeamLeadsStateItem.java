@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -42,7 +41,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
       if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(smaMgr.getWorkPageDefinitionByName(toState)))) {
          // Set Assignees to all user roles users
@@ -59,7 +58,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws OseeCoreException, SQLException {
+   public String getDescription() throws OseeCoreException {
       return "AtsForceAssigneesToTeamLeadsStateItem";
    }
 

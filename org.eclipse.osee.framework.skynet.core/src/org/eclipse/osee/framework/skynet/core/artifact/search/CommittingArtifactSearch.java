@@ -36,7 +36,7 @@ public class CommittingArtifactSearch implements ISearchPrimitive {
       return "commit_art_id";
    }
 
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       String whereConditions =
             TRANSACTION_DETAIL_TABLE.join(TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(
                   ARTIFACT_VERSION_TABLE, "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?";

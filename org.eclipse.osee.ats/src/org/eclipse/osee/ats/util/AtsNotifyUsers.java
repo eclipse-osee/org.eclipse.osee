@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -40,11 +40,11 @@ public class AtsNotifyUsers {
       Subscribed, Cancelled, Completed, Assigned, Originator
    };
 
-   public static void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws IllegalArgumentException, SQLException {
+   public static void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
       notify(sma, null, notifyTypes);
    }
 
-   public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws IllegalArgumentException, SQLException {
+   public static void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
       if (testing) {
          OSEELog.logSevere(SkynetGuiPlugin.class, "AtsNotifyUsers: testing is enabled....turn off for production.",
                false);

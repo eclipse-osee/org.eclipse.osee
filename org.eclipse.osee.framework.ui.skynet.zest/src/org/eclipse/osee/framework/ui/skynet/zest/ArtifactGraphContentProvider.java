@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.zest;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
  * @author Robert A. Fisher
  */
 public class ArtifactGraphContentProvider implements IGraphEntityContentProvider {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactGraphContentProvider.class);
-   //   private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
    private Artifact input;
    int levels;
 
@@ -59,10 +56,8 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       if (entity == input) {
          try {
             return input.getRelatedArtifactsAll().toArray();
-         } catch (ArtifactDoesNotExist ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return new Object[] {input};
@@ -91,10 +86,8 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                artifacts.add(child);
                getDescendants(artifacts, artifact, level - 1);
             }
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         } catch (ArtifactDoesNotExist ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }
@@ -122,5 +115,4 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
          throw new IllegalArgumentException("newInput must be instance of Artifact");
       }
    }
-
 }

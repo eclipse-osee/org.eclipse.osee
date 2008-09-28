@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -22,7 +21,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -253,19 +252,19 @@ public class EmailWizardPage extends WizardPage {
       return previewMenu;
    }
 
-   public String[] getToAddresses() throws SQLException, MultipleAttributesExist {
+   public String[] getToAddresses() throws OseeCoreException {
       return getEmails(toList);
    }
 
-   public String[] getCcAddresses() throws SQLException, MultipleAttributesExist {
+   public String[] getCcAddresses() throws OseeCoreException {
       return getEmails(ccList);
    }
 
-   public String[] getBccAddresses() throws SQLException, MultipleAttributesExist {
+   public String[] getBccAddresses() throws OseeCoreException {
       return getEmails(bccList);
    }
 
-   public String[] getEmails(ListViewer list) throws SQLException, MultipleAttributesExist {
+   public String[] getEmails(ListViewer list) throws OseeCoreException {
 
       ArrayList<String> emails = new ArrayList<String>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {

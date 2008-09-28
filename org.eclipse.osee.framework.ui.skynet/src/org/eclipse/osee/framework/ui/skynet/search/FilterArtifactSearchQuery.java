@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 
@@ -43,7 +43,7 @@ public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
     * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#getArtifacts()
     */
    @Override
-   public Collection<Artifact> getArtifacts() throws SQLException {
+   public Collection<Artifact> getArtifacts() throws OseeCoreException {
       boolean firstTime = true;
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
 

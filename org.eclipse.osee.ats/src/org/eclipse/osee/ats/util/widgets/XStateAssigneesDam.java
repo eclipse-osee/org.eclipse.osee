@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return null;
    }
 
-   public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+   public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       SMAState currState = getState(stateName, false);
       currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
       currState.setPercentComplete(percentComplete);
@@ -66,7 +65,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       }
    }
 
-   public void setMetrics(String stateName, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+   public void setMetrics(String stateName, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       SMAState currState = getState(stateName, false);
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
@@ -92,7 +91,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return states;
    }
 
-   public void setState(SMAState state) throws OseeCoreException, SQLException {
+   public void setState(SMAState state) throws OseeCoreException {
       // Update attribute if it already exists
       try {
          Collection<Attribute<String>> attrs = sma.getAttributes(attributeTypeName);

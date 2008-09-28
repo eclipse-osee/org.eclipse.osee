@@ -73,7 +73,7 @@ public class SMARelationsComposite extends Composite {
       }
    }
 
-   public static boolean relationExists(StateMachineArtifact smaArt) throws SQLException {
+   public static boolean relationExists(StateMachineArtifact smaArt) throws OseeCoreException {
       for (AtsRelation side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) return true;
          if (smaArt.getParentActionArtifact() != null && smaArt.getParentActionArtifact().getRelatedArtifacts(side).size() > 0) return true;
@@ -82,7 +82,7 @@ public class SMARelationsComposite extends Composite {
       return false;
    }
 
-   private void processArtifact(String name, Artifact thisArt) throws SQLException {
+   private void processArtifact(String name, Artifact thisArt) throws OseeCoreException {
       for (AtsRelation side : sides) {
          for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
             RelationLink rel = thisArt.getRelations(side, art).iterator().next();

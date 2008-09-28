@@ -57,9 +57,11 @@ public class BulkLoadAtsCache extends org.eclipse.core.runtime.jobs.Job {
          }
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+      } finally {
+         monitor.done();
       }
-      monitor.done();
+
       return Status.OK_STATUS;
    }
 }

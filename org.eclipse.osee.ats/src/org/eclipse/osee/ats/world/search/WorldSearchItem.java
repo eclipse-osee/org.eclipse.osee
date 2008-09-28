@@ -73,25 +73,25 @@ public abstract class WorldSearchItem {
       return getName();
    }
 
-   public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException;
+   public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
 
    public Collection<Artifact> performReSearch() throws SQLException, IllegalArgumentException {
       return EMPTY_SET;
    }
 
-   public Collection<Artifact> performSearchGetResults() throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearchGetResults() throws OseeCoreException {
       return performSearchGetResults(false, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       return performSearchGetResults(false, searchType);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException {
       return performSearchGetResults(performUi, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws OseeCoreException {
       cancelled = false;
       if (performUi) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -112,7 +112,7 @@ public abstract class WorldSearchItem {
       return performSearch(searchType);
    }
 
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       cancelled = false;
    }
 

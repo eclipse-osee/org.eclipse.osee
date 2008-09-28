@@ -21,8 +21,7 @@ import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
@@ -66,9 +65,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                }
             }
          }
-      } catch (ArtifactDoesNotExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return otherItems.toArray();
@@ -109,9 +106,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                   }
                }
             }
-         } catch (ArtifactDoesNotExist ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
       }

@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -113,7 +112,7 @@ public class InRelationSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws SQLException {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       StringBuffer sql = new StringBuffer();
 
       boolean first = true;

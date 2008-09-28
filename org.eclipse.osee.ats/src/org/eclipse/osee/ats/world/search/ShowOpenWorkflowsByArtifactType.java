@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,7 +42,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
       List<Artifact> artifacts = null;
       if (!showFinished) {

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -93,12 +92,8 @@ public class PolicyDialog extends Dialog {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
-      try {
-         subjectList.addAll(SkynetAuthentication.getUsers());
-         subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      subjectList.addAll(SkynetAuthentication.getUsers());
+      subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
 
       Collections.sort(subjectList);
 

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -27,20 +29,16 @@ public class OpenParent extends WorkPageService {
       super(smaMgr);
    }
 
-   private void performOpen() {
-      try {
-         AtsLib.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
-      } catch (SQLException ex) {
-         // Do Nothing
-      }
-   }
-
    @Override
    public Action createToolbarService() {
       if (!isParent()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
-            performOpen();
+            try {
+               AtsLib.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       };
       action.setToolTipText(getName());

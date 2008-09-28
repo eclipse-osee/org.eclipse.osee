@@ -13,12 +13,11 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
@@ -110,13 +109,12 @@ public class TransactionId implements Serializable {
    }
 
    /**
-    * @return The TransactionId associated with the transactionNumber from this dumb object
-    * @throws ObjectStreamException
-    * @throws SQLException
-    * @throws BranchDoesNotExist
+    * @return The TransactionId associated with the transactionNumber
+    * @throws OseeDataStoreException
     * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
     */
-   private Object readResolve() throws ObjectStreamException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private Object readResolve() throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       return TransactionIdManager.getTransactionId(transactionNumber);
    }
 

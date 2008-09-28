@@ -84,9 +84,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    transient private ImageRegistry imageRegistry;
    transient private ImageDescriptor imageDescriptor;
 
-   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) throws OseeCoreException {
-      if (factory == null) throw new OseeCoreException(
-            "Artifact factory can not be null for artifact type \"" + name + "\"");
+   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, ImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
@@ -103,12 +101,11 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     * branch.
     * 
     * @return Return artifact reference
-    * @throws SQLException
     * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public Artifact makeNewArtifact(Branch branch) throws SQLException, OseeCoreException {
+   public Artifact makeNewArtifact(Branch branch) throws OseeCoreException {
       return factory.makeNewArtifact(branch, this, null, null, null);
    }
 
@@ -124,7 +121,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
+   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws OseeCoreException {
       return factory.makeNewArtifact(branch, this, guid, humandReadableId, null);
    }
 
@@ -315,7 +312,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private Object readResolve() throws ObjectStreamException {
       try {
          return ArtifactTypeManager.getType(name);
-      } catch (SQLException e) {
+      } catch (OseeCoreException e) {
          throw new RuntimeException("Error while resolving descriptor", e);
       }
    }

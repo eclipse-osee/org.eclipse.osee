@@ -10,21 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.httpRequests;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -109,8 +111,8 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
                element.appendChild(childElement);
                buildArtifactTree(doc, childElement, child, level - 1);
             }
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "Error sending error string", ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -70,7 +70,7 @@ public class RelationTableViewer {
                new ArrayList<ArtifactType>(
                      ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getDefaultBranch()));
          defaultArtifactType = ArtifactTypeManager.getType(Requirements.TEST_SCRIPT);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -22,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
@@ -92,7 +92,7 @@ public class BranchSelectionDialog extends MessageDialog {
       });
       try {
          oseeFilteredTree.getViewer().setInput(BranchPersistenceManager.getBranches());
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       return container;

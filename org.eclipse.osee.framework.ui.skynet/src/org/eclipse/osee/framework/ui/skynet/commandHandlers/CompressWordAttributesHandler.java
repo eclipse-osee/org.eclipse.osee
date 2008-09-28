@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -77,7 +76,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 
                monitor.done();
                return Status.OK_STATUS;
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
          }

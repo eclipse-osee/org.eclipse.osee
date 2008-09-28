@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -60,10 +61,10 @@ public abstract class Change implements IAdaptable {
    }
 
    public boolean isHistorical() {
-	return isHistorical;
-}
+      return isHistorical;
+   }
 
-/**
+   /**
     * @param modType the modType to set
     */
    public void setModType(ModificationType modType) {
@@ -94,11 +95,11 @@ public abstract class Change implements IAdaptable {
     */
    public Artifact getArtifact() throws ArtifactDoesNotExist {
       if (artifact == null) {
-    	  if(isHistorical()){
-    		  artifact = ArtifactCache.getHistorical(artId, getToTransactionId().getTransactionNumber());
-    	  }else{
-    		  artifact = ArtifactCache.getActive(artId, branch);
-    	  }
+         if (isHistorical()) {
+            artifact = ArtifactCache.getHistorical(artId, getToTransactionId().getTransactionNumber());
+         } else {
+            artifact = ArtifactCache.getActive(artId, branch);
+         }
       }
 
       if (artifact == null) {
@@ -161,7 +162,7 @@ public abstract class Change implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
    }
 
-   public abstract Image getItemKindImage() throws IllegalArgumentException, SQLException;
+   public abstract Image getItemKindImage() throws OseeCoreException;
 
    public abstract Image getItemTypeImage();
 

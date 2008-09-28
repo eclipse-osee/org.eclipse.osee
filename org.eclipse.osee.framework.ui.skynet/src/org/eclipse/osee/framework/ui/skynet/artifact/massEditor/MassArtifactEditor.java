@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -216,15 +215,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
     */
    @Override
    public boolean isDirty() {
-      for (Artifact taskArt : artifacts)
-         if (taskArt.isDeleted())
-            continue;
-         else
-            try {
-               if (taskArt.isDirty()) return true;
-            } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-            }
+      for (Artifact taskArt : artifacts) {
+         if (!taskArt.isDeleted() && taskArt.isDirty()) {
+            return true;
+         }
+      }
       return false;
    }
 

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -68,6 +69,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
@@ -546,8 +548,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
          attributesAction.addToView(this);
          attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
                SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, BranchPersistenceManager.getDefaultBranch()));
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -596,8 +598,8 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                item.addSelectionListener(listener);
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -1042,7 +1044,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       if (upAction != null) {
          try {
             upAction.setEnabled(exploreRoot != null && exploreRoot.getParent() != null);
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             upAction.setEnabled(false);
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
@@ -1444,7 +1446,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                }
                treeViewer.refresh(parents);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -1586,11 +1588,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                      try {
                         explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
                               BranchPersistenceManager.getDefaultBranch()));
-                     } catch (IllegalArgumentException ex) {
-                        logger.log(Level.SEVERE, ex.toString(), ex);
                      } catch (CoreException ex) {
-                        logger.log(Level.SEVERE, ex.toString(), ex);
-                     } catch (SQLException ex) {
                         logger.log(Level.SEVERE, ex.toString(), ex);
                      }
                   }

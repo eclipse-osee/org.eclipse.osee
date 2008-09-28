@@ -11,23 +11,22 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,7 +50,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    };
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactImportPage.class);
    private final Artifact destinationArtifact;
    private List typeList;
    private List branchList;
@@ -139,8 +137,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -278,8 +276,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                defaultBranchIndex++;
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
       populateTypeList(defaultBranch);
@@ -308,8 +306,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             typeList.select(0);
          }
          typeList.showSelection();
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          typeList.add("error loading artifact types");
       }
    }
@@ -393,7 +391,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   public Artifact getImportRoot() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public Artifact getImportRoot() throws OseeCoreException {
       Artifact importRoot;
 
       if (radImportUnderDhRoot.getSelection()) {

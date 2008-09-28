@@ -16,7 +16,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -70,7 +70,7 @@ public class WordOutlineExtractor extends WordExtractor {
 
    private final IWordOutlineContentHandler handler;
 
-   public WordOutlineExtractor(ArtifactType mainDescriptor, Branch branch, int maxExtractionDepth, IWordOutlineContentHandler handler) throws SQLException {
+   public WordOutlineExtractor(ArtifactType mainDescriptor, Branch branch, int maxExtractionDepth, IWordOutlineContentHandler handler) throws OseeCoreException {
 
       super(branch);
 

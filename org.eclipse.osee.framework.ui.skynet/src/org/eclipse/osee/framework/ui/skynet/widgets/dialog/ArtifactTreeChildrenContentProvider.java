@@ -11,17 +11,18 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * Shows artifacts and children of given class
@@ -75,8 +76,8 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
       if (parentElement.getClass().equals(clazz)) {
          try {
             return Artifacts.getChildrenOfTypeSet((Artifact) parentElement, clazz, true).toArray();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return EMPTY_ARRAY;

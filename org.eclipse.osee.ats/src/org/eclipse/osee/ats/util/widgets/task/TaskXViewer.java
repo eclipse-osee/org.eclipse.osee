@@ -409,7 +409,7 @@ public class TaskXViewer extends WorldXViewer {
                }
             }
          });
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
@@ -420,7 +420,7 @@ public class TaskXViewer extends WorldXViewer {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
          // ContentProvider ensures in display thread
          ((TaskContentProvider) xTaskViewer.getXViewer().getContentProvider()).remove(loadedArtifacts.getLoadedArtifacts());
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }

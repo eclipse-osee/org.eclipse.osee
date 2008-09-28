@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +24,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -227,9 +228,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       try {
          artifact.persistAttributesAndRelations();
          firePropertyChange(PROP_DIRTY);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          onDirtied();
-         OSEELog.logException(getClass(), ex, true);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -563,14 +564,14 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {
             try {
                artifact.reloadAttributesAndRelations();
-            } catch (SQLException ex) {
-               SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
          relationsComposite.disposeRelationsComposite();
          super.dispose();
       } catch (Exception ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -726,8 +727,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
             closeEditor();
          }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
@@ -740,8 +741,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          if (loadedArtifacts.getLoadedArtifacts().contains(artifact)) {
             closeEditor();
          }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

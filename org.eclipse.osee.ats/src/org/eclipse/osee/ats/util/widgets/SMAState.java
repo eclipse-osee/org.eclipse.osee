@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -20,7 +19,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -125,7 +123,7 @@ public class SMAState {
       this.name = name;
    }
 
-   public String toXml() throws SQLException, MultipleAttributesExist {
+   public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
       sb.append(getAssigneesStorageString(assignees));
@@ -136,7 +134,7 @@ public class SMAState {
       return sb.toString();
    }
 
-   public static String getAssigneesStorageString(Collection<User> users) throws SQLException, MultipleAttributesExist {
+   public static String getAssigneesStorageString(Collection<User> users) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (User u : users)
          sb.append("<" + u.getUserId() + ">");
@@ -146,7 +144,7 @@ public class SMAState {
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public void setFromXml(String xml) throws OseeCoreException, SQLException {
+   public void setFromXml(String xml) throws OseeCoreException {
       if (xml == null || xml.equals("")) {
          name = "Unknown";
          return;

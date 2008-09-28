@@ -55,6 +55,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -238,8 +241,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             parameters.put("branchId", Integer.toString(branch.getBranchId()));
             parameters.put("wait", "true");
             String url =
-                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT,
-                        parameters);
+                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
+                        OseeApplicationServerContext.SEARCH_TAGGING_CONTEXT, parameters);
             response.append(HttpProcessor.post(new URL(url)));
             OseeLog.log(SkynetActivator.class, Level.INFO, response.toString());
             OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Tagging Completed in [%d ms]",
@@ -290,7 +293,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processArtifact(String guid, String artifactTypeName, String hrid, String modType, int txCurrent) throws SQLException {
+   protected void processArtifact(String guid, String artifactTypeName, String hrid, String modType, int txCurrent) throws SQLException, OseeCoreException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -300,36 +303,32 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          return;
       }
 
-      try {
-         monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
-         currentArtifactId = artifactGuidCache.getId(guid);
+      monitor.subTask("Transaction " + transactionOnBranchCount + " Artifact " + ++artifactOnTransactionCount);
+      currentArtifactId = artifactGuidCache.getId(guid);
 
-         ModificationType modificationType = null;
-         if (Strings.isValid(modType)) {
-            modificationType = ModificationType.valueOf(modType);
-         }
-
-         // New artifact
-         if (currentArtifactId == null) {
-            if (modificationType != null && modificationType.equals(ModificationType.DELETED)) {
-               OseeLog.log(SkynetActivator.class, Level.WARNING,
-                     "Initial creation of artifact " + hrid + " was a delete version");
-            }
-            currentArtifactId = SequenceManager.getNextArtifactId();
-
-            ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
-            int artTypeId = artifactType.getArtTypeId();
-            artifactGuidCache.map(currentArtifactId, guid);
-            ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, currentArtifactId, hrid, artTypeId, guid);
-         }
-
-         int gammaId = SequenceManager.getNextGammaId();
-         int modificationInt = modificationType != null ? modificationType.getValue() : -1;
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, currentArtifactId, gammaId, modificationInt);
-         insertTxAddress(gammaId, modificationInt, txCurrent);
-      } catch (IllegalArgumentException ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      ModificationType modificationType = null;
+      if (Strings.isValid(modType)) {
+         modificationType = ModificationType.valueOf(modType);
       }
+
+      // New artifact
+      if (currentArtifactId == null) {
+         if (modificationType != null && modificationType.equals(ModificationType.DELETED)) {
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
+                  "Initial creation of artifact " + hrid + " was a delete version");
+         }
+         currentArtifactId = SequenceManager.getNextArtifactId();
+
+         ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
+         int artTypeId = artifactType.getArtTypeId();
+         artifactGuidCache.map(currentArtifactId, guid);
+         ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, currentArtifactId, hrid, artTypeId, guid);
+      }
+
+      int gammaId = SequenceManager.getNextGammaId();
+      int modificationInt = modificationType != null ? modificationType.getValue() : -1;
+      ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, currentArtifactId, gammaId, modificationInt);
+      insertTxAddress(gammaId, modificationInt, txCurrent);
    }
 
    @Override
@@ -387,7 +386,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processLink(String guid, String type, String aguid, String bguid, String aOrder, String bOrder, String rationale, String modType, int txCurrent) throws SQLException {
+   protected void processLink(String guid, String type, String aguid, String bguid, String aOrder, String bOrder, String rationale, String modType, int txCurrent) throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
       // Skip this link if the transaction is not being included
       if (currentTransactionId == null || monitor.isCanceled()) {
          return;

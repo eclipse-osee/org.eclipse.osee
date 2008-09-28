@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -41,7 +40,7 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
       super(artifacts);
    }
 
-   public UserCheckTreeDialog(Shell parent) throws OseeCoreException, SQLException {
+   public UserCheckTreeDialog(Shell parent) throws OseeCoreException {
       this(parent, SkynetAuthentication.getUsers());
    }
 

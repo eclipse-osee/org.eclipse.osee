@@ -19,15 +19,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -40,11 +37,10 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
-import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
@@ -62,16 +58,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
 public class BranchPersistenceManager {
-   static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
-
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM osee_define_branch br1, osee_define_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type=" + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
          "select * from osee_define_branch b1, osee_define_merge m2, osee_define_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
-   private static final String CHANGED_RELATIONS =
-         "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order, t2.b_order, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
-   private static final String CHANGED_ARTIFACTS =
-         "SELECT t1.gamma_id, t2.art_id, t2.modification_id FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
    private static final String COMMIT_TRANSACTION =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
                TXD_COMMENT, "time", "author", "commit_art_id");
@@ -79,8 +69,6 @@ public class BranchPersistenceManager {
    private static final String UPDATE_TRANSACTION_BRANCH =
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
 
-   private static final String SELECT_BRANCH_FOR_TRANSACTION =
-         "SELECT branch_id FROM osee_define_tx_details WHERE transaction_id = ?";
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
    private static final String ARCHIVE_BRANCH = "UPDATE osee_define_branch set archived = 1 WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
@@ -90,10 +78,10 @@ public class BranchPersistenceManager {
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
 
    // This hash is keyed on the branchId
-   private final TreeMap<Integer, Branch> branchCache;
+   private final TreeMap<Integer, Branch> branchCache = new TreeMap<Integer, Branch>();
    //This hash is keyed in the source branch id and destination branch id
-   private final DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache;
-   private final Map<Integer, Branch> transactionIdBranchCache;
+   private final DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache =
+         new DoubleKeyHashMap<Integer, Integer, Branch>();
 
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
@@ -101,16 +89,13 @@ public class BranchPersistenceManager {
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
    private BranchPersistenceManager() {
-      this.branchCache = new TreeMap<Integer, Branch>();
-      this.transactionIdBranchCache = new HashMap<Integer, Branch>();
-      this.mergeBranchCache = new DoubleKeyHashMap<Integer, Integer, Branch>();
    }
 
    public static BranchPersistenceManager getInstance() {
       return instance;
    }
 
-   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws SQLException {
+   public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws OseeDataStoreException {
       instance.ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : getBranches())
@@ -120,35 +105,35 @@ public class BranchPersistenceManager {
       return branches;
    }
 
-   public static Branch getCommonBranch() throws SQLException {
-      return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
-   }
-
-   public static Branch getKeyedBranch(String keyname) throws SQLException {
-      return KeyedBranchCache.getInstance().getKeyedBranch(keyname);
-   }
-
-   public static Branch getAtsBranch() throws OseeCoreException {
+   public static Branch getCommonBranch() throws OseeDataStoreException {
       try {
-         return getCommonBranch();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
+      } catch (BranchDoesNotExist ex) {
+         throw new OseeDataStoreException("The common branch is required to exist but: " + ex);
       }
    }
 
-   public static List<Branch> getBranches() throws SQLException {
+   public static Branch getKeyedBranch(String keyname) throws OseeDataStoreException, BranchDoesNotExist {
+      return KeyedBranchCache.getKeyedBranch(keyname);
+   }
+
+   public static Branch getAtsBranch() throws OseeDataStoreException {
+      return getCommonBranch();
+   }
+
+   public static List<Branch> getBranches() throws OseeDataStoreException {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = new ArrayList<Branch>(instance.branchCache.values());
       Collections.sort(branches);
       return branches;
    }
 
-   public static Collection<Branch> refreshBranches() throws SQLException {
+   public static Collection<Branch> refreshBranches() throws OseeDataStoreException {
       instance.ensurePopulatedCache(true);
       return getBranches();
    }
 
-   public static Branch getBranch(String branchName) throws SQLException, BranchDoesNotExist {
+   public static Branch getBranch(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
       instance.ensurePopulatedCache(false);
       for (Branch branch : instance.branchCache.values()) {
          if (branch.getBranchName().equals(branchName)) {
@@ -158,10 +143,9 @@ public class BranchPersistenceManager {
       throw new BranchDoesNotExist("No branch exists with the name: " + branchName);
    }
 
-   private synchronized void ensurePopulatedCache(boolean forceRead) throws SQLException {
+   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {
       if (forceRead || branchCache.size() == 0) {
-         // The branch cache can not be cleared here because applications may contain branch
-         // references.
+         // The branch cache can not be cleared here because applications may contain branch references.
 
          ConnectionHandlerStatement chStmt = null;
          try {
@@ -185,6 +169,8 @@ public class BranchPersistenceManager {
                   }
                }
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
             DbUtil.close(chStmt);
          }
@@ -317,14 +303,14 @@ public class BranchPersistenceManager {
       }
    }
 
-   public static Branch getBranch(Integer branchId) throws SQLException, BranchDoesNotExist {
+   public static Branch getBranch(Integer branchId) throws BranchDoesNotExist, OseeDataStoreException {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
       if (branchId == null) throw new BranchDoesNotExist("Branch Id is null");
       if (branchId < 1) throw new BranchDoesNotExist("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
-      // so rehit the database for ids we don't have in cache.
+      // so refresh the cache.
       if (!instance.branchCache.containsKey(branchId)) {
          instance.ensurePopulatedCache(true);
       }
@@ -332,31 +318,6 @@ public class BranchPersistenceManager {
 
       if (branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
-      }
-
-      return branch;
-   }
-
-   @Deprecated
-   public Branch getBranchForTransactionNumber(Integer transactionNumber) throws SQLException, BranchDoesNotExist {
-      Branch branch;
-      if (transactionIdBranchCache.containsKey(transactionNumber)) {
-         branch = transactionIdBranchCache.get(transactionNumber);
-      } else {
-         ConnectionHandlerStatement chStmt = null;
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_FOR_TRANSACTION, transactionNumber);
-
-            if (chStmt.next()) {
-               branch = getBranch(chStmt.getRset().getInt("branch_id"));
-            } else {
-               throw new BranchDoesNotExist(
-                     "There is no branch in the database associated with transaction: " + transactionNumber);
-            }
-         } finally {
-            DbUtil.close(chStmt);
-         }
-         transactionIdBranchCache.put(transactionNumber, branch);
       }
 
       return branch;
@@ -424,9 +385,6 @@ public class BranchPersistenceManager {
    public static Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws SQLException, OseeCoreException {
       Branch parentBranch = childBranch.getParentBranch();
 
-      if (parentBranch == null) {
-         throw new IllegalArgumentException("This branch does not have a parent branch.");
-      }
       return commitBranch(childBranch, parentBranch, archiveChildBranch, forceCommit);
    }
 
@@ -515,19 +473,17 @@ public class BranchPersistenceManager {
    /**
     * Archives a branch in the database by changing its archived value from 0 to 1.
     */
-   public static void archive(Branch branch) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
+   public static void archive(Branch branch) throws OseeDataStoreException {
+      try {
+         ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
 
       branch.setArchived();
       instance.branchCache.remove(branch.getBranchId());
 
-      Branch defaultBranch = branch.getParentBranch();
-
-      if (defaultBranch == null) {
-         defaultBranch = getCommonBranch();
-      }
-
-      setDefaultBranch(defaultBranch);
+      setDefaultBranch(branch.getParentBranchOrAlternative(getCommonBranch()));
    }
 
    /**
@@ -623,7 +579,6 @@ public class BranchPersistenceManager {
     * @param staticBranchName will allow programatic access to branch from getKeyedBranch
     * @param skynetTypesImportExtensionsIds skynetDbTypes extensionIds to import onto new branch
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
-    * @return
     * @throws Exception
     * @see BranchPersistenceManager#intializeBranch
     * @see MasterSkynetTypesImport#importSkynetDbTypes
@@ -634,7 +589,7 @@ public class BranchPersistenceManager {
       Branch branch = BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName);
       // Add name to cached keyname if static branch name is desired
       if (staticBranchName != null) {
-         KeyedBranchCache.getInstance().createKeyedBranch(staticBranchName, branch);
+         KeyedBranchCache.createKeyedBranch(staticBranchName, branch);
       }
       // Re-init factory cache
       ArtifactFactoryManager.refreshCache();
@@ -651,7 +606,7 @@ public class BranchPersistenceManager {
       return branch;
    }
 
-   public static List<Branch> getRootBranches() throws SQLException {
+   public static List<Branch> getRootBranches() throws OseeDataStoreException {
       List<Branch> branches = new ArrayList<Branch>();
       for (Branch branch : getBranches()) {
          if (!branch.hasParentBranch()) {
@@ -661,7 +616,7 @@ public class BranchPersistenceManager {
       return branches;
    }
 
-   public static List<Branch> getChangeManagedBranches() throws SQLException {
+   public static List<Branch> getChangeManagedBranches() throws OseeDataStoreException {
       List<Branch> branches = new ArrayList<Branch>();
       for (Branch branch : getBranches()) {
          if (branch.isChangeManaged()) {
@@ -706,23 +661,23 @@ public class BranchPersistenceManager {
             // branch to the common branch.
             catch (BranchDoesNotExist ex) {
                try {
-                  logger.log(Level.WARNING,
-                        "Could not use default branch id from the preference store: " + ex.toString());
+                  OseeLog.log(SkynetActivator.class, Level.WARNING,
+                        "Could not use default branch id from the preference store: " + ex);
                   initialBranch = getCommonBranch();
                   preferenceStore.setValue(LAST_DEFAULT_BRANCH, initialBranch.getBranchId());
-               } catch (SQLException ex1) {
-                  logger.log(Level.SEVERE, ex1.toString(), ex1);
+               } catch (OseeDataStoreException ex1) {
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex1);
                }
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
 
          if (initialBranch == null) {
             try {
                initialBranch = getDefaultInitialBranch();
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
 
@@ -730,7 +685,7 @@ public class BranchPersistenceManager {
       }
    };
 
-   private Branch getDefaultInitialBranch() throws SQLException {
+   private Branch getDefaultInitialBranch() throws OseeDataStoreException {
       List<IDefaultInitialBranchesProvider> defaultBranchProviders = new LinkedList<IDefaultInitialBranchesProvider>();
 
       IExtensionPoint point =
@@ -744,7 +699,7 @@ public class BranchPersistenceManager {
                try {
                   defaultBranchProviders.add((IDefaultInitialBranchesProvider) element.createExecutableExtension("class"));
                } catch (Exception ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
                }
             }
          }
@@ -764,7 +719,8 @@ public class BranchPersistenceManager {
                }
             }
          } catch (Exception ex) {
-            logger.log(Level.WARNING, "Exception occurred while trying to determine initial default branch", ex);
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
+                  "Exception occurred while trying to determine initial default branch", ex);
          }
       }
 

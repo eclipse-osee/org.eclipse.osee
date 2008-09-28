@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +38,7 @@ public class MyOrigSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
       Collection<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),

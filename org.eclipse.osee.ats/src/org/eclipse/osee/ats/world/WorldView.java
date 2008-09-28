@@ -626,7 +626,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
             }
          }
          load(searchNameLabel.getText(), arts);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
@@ -645,7 +645,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
             }
          }
          load(searchNameLabel.getText(), arts);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

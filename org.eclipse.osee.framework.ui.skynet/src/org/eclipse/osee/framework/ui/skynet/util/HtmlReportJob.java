@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -28,11 +27,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -96,14 +97,14 @@ public class HtmlReportJob extends Job {
                }
             });
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.toString(), ex);
       }
       monitor.done();
       return Status.OK_STATUS;
    }
 
-   public String generateHtml(String title) throws SQLException {
+   public String generateHtml(String title) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginSimpleTable(0, 100));
@@ -117,7 +118,7 @@ public class HtmlReportJob extends Job {
       return AHTML.titledPage(title, sb.toString());
    }
 
-   public String processArtifact(Artifact art, String paraNum, CoreRelationEnumeration side, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) throws SQLException {
+   public String processArtifact(Artifact art, String paraNum, CoreRelationEnumeration side, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return "";
       }
@@ -173,8 +174,8 @@ public class HtmlReportJob extends Job {
             if (wordHtml != null) {
                sb.append(AHTML.addRowSpanMultiColumnTable(wordHtml, 2));
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       sb.append(AHTML.endMultiColumnTable());

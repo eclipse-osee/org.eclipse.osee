@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -85,7 +85,7 @@ public class ExtractTestRelations {
       }
    }
 
-   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, MultipleAttributesExist {
+   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws OseeCoreException {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
@@ -119,7 +119,7 @@ public class ExtractTestRelations {
       //      link.persist();
    }
 
-   private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException, MultipleAttributesExist {
+   private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws OseeCoreException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {

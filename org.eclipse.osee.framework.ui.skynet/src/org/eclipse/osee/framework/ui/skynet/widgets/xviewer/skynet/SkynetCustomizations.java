@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomMenu;
@@ -175,21 +173,16 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
       if (customizationArtifact != null) {
 
-         try {
-            Collection<Attribute<String>> attributes =
-                  customizationArtifact.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
-            for (Attribute<String> attr : attributes) {
-               String str = attr.getValue();
-               Matcher m =
-                     Pattern.compile("name=\"(.*?)\".*?namespace=\"" + skynetXViewerFactory.getNamespace() + "\"").matcher(
-                           str);
-               if (m.find()) {
-                  CustomizeData custData = new CustomizeData(str);
-                  custDatas.add(custData);
-               }
+         Collection<Attribute<String>> attributes = customizationArtifact.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
+         for (Attribute<String> attr : attributes) {
+            String str = attr.getValue();
+            Matcher m =
+                  Pattern.compile("name=\"(.*?)\".*?namespace=\"" + skynetXViewerFactory.getNamespace() + "\"").matcher(
+                        str);
+            if (m.find()) {
+               CustomizeData custData = new CustomizeData(str);
+               custDatas.add(custData);
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
       }
       return custDatas;

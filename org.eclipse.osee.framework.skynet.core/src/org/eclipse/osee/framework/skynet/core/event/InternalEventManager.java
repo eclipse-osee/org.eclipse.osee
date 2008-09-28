@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkAccessControlArtifactsEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactAddedEvent;
@@ -274,7 +275,7 @@ public class InternalEventManager {
                         branchId == null ? 0 : branchId, loadedArtifacts.getAllArtifactIds(),
                         loadedArtifacts.getAllArtifactTypeIds(), sender.getNetworkSender()));
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
@@ -421,7 +422,7 @@ public class InternalEventManager {
                         loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
                         sender.getNetworkSender()));
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
@@ -467,7 +468,7 @@ public class InternalEventManager {
                         loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId,
                         sender.getNetworkSender()));
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
@@ -783,8 +784,8 @@ public class InternalEventManager {
                            new LoadedRelation(artA, artB,
                                  RelationTypeManager.getType(unloadedRelation.getRelationTypeId()),
                                  artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
-                  } catch (Exception ex) {
-                     SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
                   }
                }
             }

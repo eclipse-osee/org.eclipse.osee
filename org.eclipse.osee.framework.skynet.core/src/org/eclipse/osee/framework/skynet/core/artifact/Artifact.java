@@ -52,12 +52,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -117,7 +116,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * A historical artifact always corresponds to a fixed revision of an artifact
     * 
-    * @return
+    * @return whether this artifact represents a fixed revision
     */
    public boolean isHistorical() {
       return historical;
@@ -158,8 +157,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             boolean released = getSoleAttributeValue("ats.Released", false);
             return artifactType.getImage(next, released);
          }
-      } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return artifactType.getAnnotationImage(getMainAnnotationType());
    }
@@ -174,32 +173,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * based on the stored relation order
     * 
     * @param relationTypeName
-    * @return
+    * @return the artifacts related to this artifact by relations of type relationTypeName
     * @throws ArtifactDoesNotExist
     * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     */
-   public List<Artifact> getRelatedArtifacts(String relationTypeName) throws ArtifactDoesNotExist, OseeDataStoreException {
-      try {
-         return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationTypeName));
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+   public List<Artifact> getRelatedArtifacts(String relationTypeName) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationTypeName));
    }
 
-   public List<Artifact> getRelatedArtifacts(RelationType relationType) throws ArtifactDoesNotExist, OseeDataStoreException {
-      try {
-         return RelationManager.getRelatedArtifacts(this, relationType);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+   public List<Artifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, relationType);
    }
 
-   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
-      try {
-         return RelationManager.getRelatedArtifacts(this, relationEnum);
-      } catch (ArtifactDoesNotExist ex) {
-         throw new SQLException(ex);
-      }
+   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, relationEnum);
    }
 
    /**
@@ -212,29 +200,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeDataStoreException
     * @throws MultipleArtifactsExist
     */
-   public Artifact getRelatedArtifact(IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, OseeDataStoreException, MultipleArtifactsExist {
-      try {
-         return RelationManager.getRelatedArtifact(this, relationEnum);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+   public Artifact getRelatedArtifact(IRelationEnumeration relationEnum) throws OseeCoreException {
+      return RelationManager.getRelatedArtifact(this, relationEnum);
    }
 
-   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeDataStoreException {
-      try {
-         return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
    /**
     * @param <A>
     * @param side
     * @param clazz
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <A extends Artifact> List<A> getArtifacts(IRelationEnumeration side, Class<A> clazz) throws SQLException {
+   public <A extends Artifact> List<A> getRelatedArtifacts(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
       return Collections.castAll(getRelatedArtifacts(side));
    }
 
@@ -294,9 +274,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * @param artifactType
     * @return whether this artifact's type or any of its super-types are the specified type
-    * @throws SQLException
     */
-   public boolean isOfType(String artifactType) throws SQLException {
+   public boolean isOfType(String artifactType) {
       if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals(
             Requirements.SOFTWARE_REQUIREMENT) || getArtifactTypeName().equals(
             Requirements.INDIRECT_SOFTWARE_REQUIREMENT))) {
@@ -311,18 +290,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    //TODO should not return null but currently application code expects it to
-   public Artifact getParent() throws SQLException {
+   public Artifact getParent() throws OseeCoreException {
       try {
          return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (MultipleArtifactsExist ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }
 
-   public boolean isOrphan() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public boolean isOrphan() throws OseeCoreException {
       Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(getBranch());
       for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
          if (parent.equals(root)) {
@@ -332,45 +311,46 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return true;
    }
 
-   public Artifact getChild(String descriptiveName) throws SQLException {
+   public Artifact getChild(String descriptiveName) throws OseeCoreException {
       for (Artifact artifact : getChildren()) {
          if (artifact.getDescriptiveName().equals(descriptiveName)) {
             return artifact;
          }
       }
-      throw new IllegalArgumentException("No child with the name \"" + descriptiveName + "\" exists");
+      throw new ArtifactDoesNotExist("No child with the name \"" + descriptiveName + "\" exists");
    }
 
-   public boolean hasChild(String descriptiveName) throws SQLException {
+   public boolean hasChild(String descriptiveName) throws OseeCoreException {
       boolean result = false;
       try {
          if (getChild(descriptiveName) != null) {
             result = true;
          }
-      } catch (IllegalArgumentException ex) {
+      } catch (ArtifactDoesNotExist ex) {
+         // no action required because false will be returned
       }
       return result;
    }
 
    /**
     * @return set of the direct children of this artifact
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public List<Artifact> getChildren() throws SQLException {
+   public List<Artifact> getChildren() throws OseeCoreException {
       return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD);
    }
 
    /**
     * @return a list of artifacts ordered by a depth first traversal of this artifact's descendants
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public List<Artifact> getDescendants() throws SQLException {
+   public List<Artifact> getDescendants() throws OseeCoreException {
       List<Artifact> descendants = new LinkedList<Artifact>();
       getDescendants(descendants);
       return descendants;
    }
 
-   private void getDescendants(Collection<Artifact> descendants) throws SQLException {
+   private void getDescendants(Collection<Artifact> descendants) throws OseeCoreException {
       for (Artifact child : getChildren()) {
          descendants.add(child);
          child.getDescendants(descendants);
@@ -379,9 +359,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * @param artifact
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void addChild(Artifact artifact) throws SQLException {
+   public void addChild(Artifact artifact) throws OseeCoreException {
       addRelation(DEFAULT_HIERARCHICAL__CHILD, artifact);
    }
 
@@ -390,10 +370,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param artifactType
     * @param name
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public Artifact addNewChild(ArtifactType artifactType, String name) throws SQLException, OseeCoreException {
+   public Artifact addNewChild(ArtifactType artifactType, String name) throws OseeCoreException {
       Artifact child = artifactType.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
@@ -401,7 +380,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return child;
    }
 
-   public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
+   public void addChildren(List<? extends Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          addChild(artifact);
       }
@@ -441,7 +420,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          return attribute;
       } catch (Exception ex) {
          // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return null;
    }
@@ -449,11 +428,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * @param attributeName
     * @return true if attributeName is valid for the artifact type of this artifact
-    * @throws SQLException
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public boolean isAttributeTypeValid(String attributeName) throws SQLException {
+   public boolean isAttributeTypeValid(String attributeName) throws OseeDataStoreException {
       Collection<AttributeType> attributeTypes =
-            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
+            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
       for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
@@ -467,10 +448,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param <T>
     * @param attributeTypeName
-    * @return
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws SQLException {
+   public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
       Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
@@ -489,9 +469,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * The use of this method is discouraged since it directly returns Attributes.
     * 
     * @return
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public List<Attribute<?>> getAttributes(boolean includeDeleted) throws SQLException {
+   public List<Attribute<?>> getAttributes(boolean includeDeleted) throws OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<?>> notDeltedAttributes = new ArrayList<Attribute<?>>();
       for (String attributeTypeName : attributes.keySet()) {
@@ -506,9 +486,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * This returns all attributes including deleted ones
-    * 
-    * @return
+    * @return all attributes including deleted ones
     */
    public List<Attribute<?>> internalGetAttributes() {
       return attributes.getValues();
@@ -520,13 +498,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   private void ensureAttributesLoaded() throws SQLException {
+   private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
-         try {
-            ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
-         } catch (OseeCoreException ex) {
-            throw new SQLException(ex);
-         }
+         ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
       }
    }
 
@@ -534,20 +508,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return !attributes.isEmpty();
    }
 
-   public Collection<AttributeType> getAttributeTypes() throws SQLException {
-      return ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
+   public Collection<AttributeType> getAttributeTypes() throws OseeDataStoreException {
+      return ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
    }
 
-   public AttributeType getAttributeType(String attributeTypeName) throws SQLException {
-      for (AttributeType attributeType : getAttributeTypes()) {
-         if (attributeType.getName().equals(attributeTypeName)) {
-            return attributeType;
-         }
-      }
-      return null;
-   }
-
-   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
+   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
@@ -560,7 +525,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return (soleAttributes.iterator().next());
    }
 
-   private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
+   private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws OseeCoreException {
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
          attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
@@ -577,11 +542,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeTypeName
     * @return sole attribute value
-    * @throws IllegalStateException
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName) throws SQLException, OseeCoreException {
+   public <T> T getSoleAttributeValue(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       List<Attribute<T>> soleAttributes = getAttributes(attributeTypeName);
       if (soleAttributes.size() == 0) {
@@ -602,16 +565,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param attributeTypeName
     * @param defaultReturnValue return value if attribute instance does not exist
-    * @return
+    * @return attribute value
     * @throws MultipleAttributesExist if multiple attribute instances exist
-    * @throws SQLException
     */
-   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws MultipleAttributesExist, SQLException {
+   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
       try {
          return getSoleAttributeValue(attributeTypeName).toString();
       } catch (AttributeDoesNotExist ex) {
-         return defaultReturnValue;
-      } catch (OseeCoreException ex) {
          return defaultReturnValue;
       }
    }
@@ -625,11 +585,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeTypeName
     * @param defaultReturnValue
-    * @return
+    * @return attribute value
     * @throws MultipleAttributesExist if multiple attribute instances exist
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws MultipleAttributesExist, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws OseeCoreException {
       try {
          T value = getSoleAttributeValue(attributeTypeName);
          if (value == null) {
@@ -661,11 +621,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param attributeTypeName
     * @param defaultReturnValue
     * @param clazz class to be returned
-    * @return
+    * @return attribute value
     * @throws MultipleAttributesExist if multiple attribute instances exist
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws MultipleAttributesExist, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws OseeCoreException {
       return getSoleAttributeValue(attributeTypeName, defaultReturnValue);
    }
 
@@ -674,17 +634,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * is more than one instance of the attribute type exsits for this artifact
     * 
     * @param attributeTypeName
-    * @throws SQLException
-    * @throws MultipleAttributesExist
+    * @throws OseeCoreException
     */
-   public void deleteSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
+   public void deleteSoleAttribute(String attributeTypeName) throws OseeCoreException {
       Attribute<?> attribute = getSoleAttribute(attributeTypeName);
       if (attribute != null) {
          attribute.delete();
       }
    }
 
-   public void deleteAttribute(String attributeTypeName, Object value) throws SQLException, OseeCoreException {
+   public void deleteAttribute(String attributeTypeName, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
          if (attribute.getValue().equals(value)) attribute.delete();
       }
@@ -697,31 +656,27 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeTypeName
     * @param value
-    * @throws SQLException
+    * @throws OseeCoreException
     * @throws MultipleAttributesExist
     */
-   public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws SQLException, MultipleAttributesExist {
-      try {
-         getOrCreateSoleAttribute(attributeTypeName).setValue(value);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
+   public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws OseeCoreException {
+      getOrCreateSoleAttribute(attributeTypeName).setValue(value);
    }
 
-   public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException, SQLException {
+   public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeTypeName).setFromString(value);
    }
 
-   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws OseeCoreException, MultipleAttributesExist, SQLException {
+   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeTypeName).setValueFromInputStream(stream);
    }
 
    /**
     * @param attributeTypeName
     * @return comma delimited representation of all the attributes of the type attributeName
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public String getAttributesToString(String attributeTypeName) throws SQLException {
+   public String getAttributesToString(String attributeTypeName) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (Attribute<?> attr : getAttributes(attributeTypeName)) {
          sb.append(attr);
@@ -737,9 +692,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param attributeTypeName
     * @param dataStrs
     * @throws OseeCoreException
-    * @throws SQLException
     */
-   public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws OseeCoreException, SQLException {
+   public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws OseeCoreException {
       ensureAttributesLoaded();
 
       ArrayList<String> storedNames = new ArrayList<String>();
@@ -793,14 +747,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeTypeName
     * @param value
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> void addAttribute(String attributeTypeName, T value) throws SQLException {
-      try {
-         createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setValue(value);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
+   public <T> void addAttribute(String attributeTypeName, T value) throws OseeCoreException {
+      createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setValue(value);
    }
 
    /**
@@ -808,22 +758,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param attributeTypeName
     * @param value
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public <T> void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException, SQLException {
-      try {
-         createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setFromString(value);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
+   public <T> void addAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
+      createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setFromString(value);
    }
 
    /**
     * @param attributeTypeName
     * @return string collection representation of all the attributes of the type attributeName
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public List<String> getAttributesToStringList(String attributeTypeName) throws SQLException {
+   public List<String> getAttributesToStringList(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
 
       List<String> items = new ArrayList<String>();
@@ -843,7 +789,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Return the String value of the first found attributeTypeName attribute whether deleted or not.
     * 
     * @param attributeTypeName
-    * @return
+    * @return attribute value
     */
    public String getInternalAttributeValue(String attributeTypeName) {
       try {
@@ -858,7 +804,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             }
          }
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
       return "";
@@ -874,17 +820,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          String name = getSoleAttributeValue("Name");
          return name == null ? UNNAMED : name;
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
    }
 
-   public void setDescriptiveName(String name) throws SQLException {
-      try {
-         setSoleAttributeValue("Name", name);
-      } catch (MultipleAttributesExist ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+   public void setDescriptiveName(String name) throws OseeCoreException {
+      setSoleAttributeValue("Name", name);
    }
 
    public ArtifactFactory getFactory() {
@@ -894,10 +836,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * This is used to mark that the artifact has been persisted. This should only be called by the
     * ArtifactPersistenceManager.
-    * 
-    * @throws SQLException
     */
-   public void setNotDirty() throws SQLException {
+   public void setNotDirty() {
       dirty = false;
 
       for (Attribute<?> attribute : internalGetAttributes()) {
@@ -907,8 +847,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * This is used to mark that the artifact deleted. This should only be called by the RemoteEventManager.
-    * 
-    * @throws SQLException
     */
    public void setDeleted() {
       this.deleted = true;
@@ -916,8 +854,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * This is used to mark that the artifact not deleted. This should only be called by the RemoteEventManager.
-    * 
-    * @throws SQLException
     */
    public void setNotDeleted() {
       this.deleted = false;
@@ -925,17 +861,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * @return Returns the dirty.
-    * @throws SQLException
     */
-   public boolean isDirty() throws SQLException {
+   public boolean isDirty() {
       return isDirty(false);
    }
 
    /**
     * @return Returns the dirty.
-    * @throws SQLException
     */
-   public boolean isDirty(boolean includeLinks) throws SQLException {
+   public boolean isDirty(boolean includeLinks) {
       boolean dirtyVal = dirty || anAttributeIsDirty();
       if (includeLinks) {
          dirtyVal |= RelationManager.hasDirtyLinks(this);
@@ -947,7 +881,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return deleted || isHistorical() || !AccessControlManager.checkObjectPermission(this, PermissionEnum.WRITE);
    }
 
-   private boolean anAttributeIsDirty() throws SQLException {
+   private boolean anAttributeIsDirty() {
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
             return true;
@@ -960,13 +894,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Reverts this artifact's attributes and relations back to the last state saved. This will have no effect if the
     * artifact has never been saved.
     * 
-    * @throws SQLException
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
-    * @throws SQLException
     * @throws IllegalStateException if the artifact is deleted
     */
-   public void reloadAttributesAndRelations() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public void reloadAttributesAndRelations() throws OseeCoreException {
       if (!isInDb()) return;
 
       ArtifactQuery.reloadArtifactFromId(getArtId(), getBranch());
@@ -980,9 +912,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.prepareRelationsForReload(this);
    }
 
-   public final void persistAttributes() throws SQLException {
-      if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
-            "No write permissions for the branch that this artifact belongs to:" + getBranch());
+   public final void persistAttributes() throws OseeCoreException {
+      if (!AccessControlManager.checkObjectPermission(getBranch(), PermissionEnum.WRITE)) {
+         throw new IllegalArgumentException(
+               "No write permissions for the branch that this artifact belongs to:" + getBranch());
+      }
       if (isHistorical()) {
          throw new IllegalArgumentException(
                "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
@@ -997,24 +931,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             }
          }
       };
-      try {
-         artifactPersistTx.execute();
-      } catch (Exception ex) {
-         throw new SQLException(ex);
-      }
+      artifactPersistTx.execute();
    }
 
-   public final void persistRelations() throws SQLException {
+   public final void persistRelations() throws OseeCoreException {
       RelationManager.persistRelationsFor(this, null);
    }
 
-   public final void persistRelations(Collection<RelationType> relationTypes) throws SQLException {
+   public final void persistRelations(Collection<RelationType> relationTypes) throws OseeCoreException {
       for (RelationType relationType : relationTypes) {
          RelationManager.persistRelationsFor(this, relationType);
       }
    }
 
-   public final void persistAttributesAndRelations() throws SQLException {
+   public final void persistAttributesAndRelations() throws OseeCoreException {
       persistAttributes();
       persistRelations();
    }
@@ -1026,20 +956,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param humanReadableId The human readable id text to match against.
     * @param caseSensitive Whether to use case sensitive matching.
     * @return <code>Collection</code> of <code>Artifact</code>'s that match.
+    * @throws OseeCoreException
     */
-   public Collection<Artifact> getDescendants(String humanReadableId, boolean caseSensitive) {
+   public Collection<Artifact> getDescendants(String humanReadableId, boolean caseSensitive) throws OseeCoreException {
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
-      try {
-         for (Artifact child : getChildren()) {
-            if ((caseSensitive && child.getDescriptiveName().equals(humanReadableId)) || (!caseSensitive && child.getDescriptiveName().equalsIgnoreCase(
-                  humanReadableId))) {
-               descendants.add(child);
-            }
-            descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
+      for (Artifact child : getChildren()) {
+         if ((caseSensitive && child.getDescriptiveName().equals(humanReadableId)) || (!caseSensitive && child.getDescriptiveName().equalsIgnoreCase(
+               humanReadableId))) {
+            descendants.add(child);
          }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
       }
 
       return descendants;
@@ -1048,11 +975,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * Return relations that exist between artifacts
     * 
-    * @throws SQLException
     * @throws ArtifactDoesNotExist
     */
    @Deprecated
-   public ArrayList<RelationLink> getRelations(Artifact artifact) throws SQLException {
+   public ArrayList<RelationLink> getRelations(Artifact artifact) throws OseeCoreException {
       ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
       for (RelationLink relation : getRelationsAll(false)) {
          try {
@@ -1069,10 +995,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * Return relations that exist between artifacts of type side
     * 
-    * @throws SQLException
+    * @throws OseeCoreException
     */
    @Deprecated
-   public ArrayList<RelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws SQLException {
+   public ArrayList<RelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws OseeCoreException {
       ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
       for (RelationLink relation : getRelations(side)) {
          try {
@@ -1080,7 +1006,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                relations.add(relation);
             }
          } catch (ArtifactDoesNotExist ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          }
       }
       return relations;
@@ -1088,10 +1014,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * Removes artifact from a specific branch
-    * 
-    * @throws SQLException
     */
-   public void delete() throws OseeCoreException, SQLException {
+   public void delete() throws OseeCoreException {
       ArtifactPersistenceManager.deleteArtifact(this);
    }
 
@@ -1099,19 +1023,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Removes artifact from a specific branch
     * 
     * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void delete(boolean overrideDeleteCheck) throws OseeCoreException, SQLException {
+   public void delete(boolean overrideDeleteCheck) throws OseeCoreException {
       ArtifactPersistenceManager.deleteArtifact(overrideDeleteCheck, this);
    }
 
    /**
     * Remove artifact from a specific branch in the database
     * 
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void purgeFromBranch() throws OseeCoreException, SQLException {
-      ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
+   public void purgeFromBranch() throws OseeCoreException {
+      ArtifactPersistenceManager.purgeArtifactFromBranch(this);
    }
 
    public boolean isDeleted() {
@@ -1126,14 +1050,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       linksLoaded = true;
    }
 
-   public void addRelation(IRelationEnumeration relationSide, Artifact artifact, String rationale) throws SQLException {
+   public void addRelation(IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
       RelationManager.addRelation(relationSide.getRelationType(), artifactA, artifactB, rationale);
    }
 
-   public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+   public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
       addRelation(relationSide, artifact, null);
    }
 
@@ -1150,9 +1074,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             relationSide.getRelationType(), artifactA, artifactB, rationale);
    }
 
-   public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws SQLException, OseeCoreException {
+   public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
       if (artifactsInNewOrder.size() == 0) return;
-      List<Artifact> currentOrder = getArtifacts(relationSide, Artifact.class);
+      List<Artifact> currentOrder = getRelatedArtifacts(relationSide, Artifact.class);
       // Insert first artifact before first artifact in list
       Artifact previousArtifact = currentOrder.iterator().next();
       boolean firstArtifact = true;
@@ -1165,7 +1089,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws SQLException, OseeCoreException {
+   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
@@ -1184,23 +1108,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param artifact
     * @param persist
     * @see #addRelation
-    * @throws SQLException
+    * @throws OseeCoreException
     */
    @Deprecated
-   public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
+   public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws OseeCoreException {
       addRelation(relationSide, artifact);
       persistRelations();
    }
 
-   public void deleteRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+   public void deleteRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
-      try {
-         RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
-      } catch (ArtifactDoesNotExist ex) {
-         throw new SQLException(ex);
-      }
+      RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
    }
 
    /**
@@ -1208,11 +1128,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param relationSide
     * @param artifact
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist
-    * @throws ArtifactDoesNotExist
+    * @throws OseeCoreException
     */
-   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException, ArtifactDoesNotExist {
+   public void setSoleRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
       // Delete all existing relations
       for (RelationLink relationLink : getRelations(relationSide)) {
          relationLink.delete(true);
@@ -1225,11 +1143,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param relationSide
     * @param artifacts
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist
+    * @throws OseeCoreException
     */
-   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws SQLException, ArtifactDoesNotExist {
-      Collection<Artifact> currentlyRelated = getArtifacts(relationSide, Artifact.class);
+   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
          if (!currentlyRelated.contains(artifact)) {
@@ -1307,6 +1224,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @param links
     */
+   @Deprecated
    public Result isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
       try {
          if (isDirty()) {
@@ -1332,8 +1250,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   }
             }
          }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return Result.FalseResult;
    }
@@ -1342,9 +1260,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Creates a new artifact and duplicates all of its attribute data.
     * 
     * @throws OseeCoreException
-    * @throws Exception
     */
-   public Artifact duplicate(Branch branch) throws SQLException, OseeCoreException {
+   public Artifact duplicate(Branch branch) throws OseeCoreException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
       //we do this because attributes were added on creation to meet the minimium attribute requirements      
       newArtifact.attributes.clear();
@@ -1352,7 +1269,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return newArtifact;
    }
 
-   private void copyAttributes(Artifact artifact) throws SQLException, OseeCoreException {
+   private void copyAttributes(Artifact artifact) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(false)) {
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
@@ -1544,11 +1461,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return false;
    }
 
-   public int getRemainingAttributeCount(AttributeType attributeType) throws SQLException {
+   public int getRemainingAttributeCount(AttributeType attributeType) throws OseeCoreException {
       return attributeType.getMaxOccurrences() - getAttributeCount(attributeType.getName());
    }
 
-   public int getAttributeCount(String attributeTypeName) throws SQLException {
+   public int getAttributeCount(String attributeTypeName) throws OseeCoreException {
       ensureAttributesLoaded();
       return getAttributes(attributeTypeName).size();
    }
@@ -1565,7 +1482,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return RelationManager.getRelations(this, relationType, null);
    }
 
-   public List<RelationLink> getRelations(IRelationEnumeration relationEnum) throws SQLException {
+   public List<RelationLink> getRelations(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelations(this, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
@@ -1574,13 +1491,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Returns all artifacts related to this artifact.
-    * 
-    * @return
-    * @throws SQLException
+    * @return all artifacts related to this artifact.
     * @throws ArtifactDoesNotExist
     */
-   public List<Artifact> getRelatedArtifactsAll() throws ArtifactDoesNotExist, SQLException {
+   public List<Artifact> getRelatedArtifactsAll() throws OseeCoreException {
       return RelationManager.getRelatedArtifactsAll(this);
    }
 
@@ -1592,9 +1506,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param modType
     * @param lastModified
     * @param historical
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
-    * @throws SQLException
     */
    public void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
       this.deleted = modType == ModificationType.DELETED;
@@ -1603,7 +1514,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.historical = historical;
    }
 
-   public Date getLastModified() throws OseeCoreException, SQLException {
+   public Date getLastModified() throws OseeCoreException {
       return transactionId.getTime();
    }
 

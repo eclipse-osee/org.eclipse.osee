@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       super(name, id, parentId);
    }
 
-   public WorkFlowDefinition(Artifact artifact) throws OseeCoreException, SQLException {
+   public WorkFlowDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
@@ -66,7 +65,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    }
 
    @Override
-   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
       // Make sure start page is defined in this or parent's definition
       if (getResolvedStartPageId() == null) {
@@ -93,12 +92,12 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return art;
    }
 
-   public Collection<String> getPageNames() throws OseeCoreException, SQLException {
+   public Collection<String> getPageNames() throws OseeCoreException {
       loadPageData();
       return pageNameToPageId.keySet();
    }
 
-   public static void loadInheritedData(WorkFlowDefinition workFlowDefinition, String workflowId, Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType) throws OseeCoreException, SQLException {
+   public static void loadInheritedData(WorkFlowDefinition workFlowDefinition, String workflowId, Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType) throws OseeCoreException {
       addTransitionsFromArtifact(WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workFlowDefinition.getId()),
             inheritedPageIdToPageIdsViaTransitionType, workflowId);
       if (workFlowDefinition.hasParent()) {
@@ -107,7 +106,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       }
    }
 
-   public synchronized void loadPageData() throws OseeCoreException, SQLException {
+   public synchronized void loadPageData() throws OseeCoreException {
       if (inheritedPageIdToPageIdsViaTransitionType == null) {
          inheritedPageIdToPageIdsViaTransitionType = new HashMap<String, Map<TransitionType, Set<String>>>();
          WorkFlowDefinition.loadInheritedData(this, getId(), inheritedPageIdToPageIdsViaTransitionType);
@@ -143,12 +142,12 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return (pageId.contains(".")) ? pageId : getId() + "." + pageId;
    }
 
-   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException, SQLException {
+   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException {
       loadPageData();
       return getWorkPageDefinitionById(pageNameToPageId.get(name));
    }
 
-   public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException, SQLException {
+   public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException {
       loadPageData();
       return (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id);
    }
@@ -156,7 +155,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    /**
     * @return Returns the defaultToPage.
     */
-   public WorkPageDefinition getDefaultToPage(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
+   public WorkPageDefinition getDefaultToPage(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       if (getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPageAsDefault).size() > 0) return getPageDefinitions(
             workPageDefinition.getId(), TransitionType.ToPageAsDefault).iterator().next();
       return null;
@@ -177,7 +176,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       addPageTransition(pageIdToPageIdsViaTransitionType, toPageId, fromPageId, TransitionType.ToPageAsReturn);
    }
 
-   public static void addTransitionsFromArtifact(Artifact artifact, Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String workflowId) throws OseeCoreException, SQLException {
+   public static void addTransitionsFromArtifact(Artifact artifact, Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String workflowId) throws OseeCoreException {
       if (artifact == null) return;
       // Read in this workflow's transition information
       for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
@@ -251,21 +250,21 @@ public class WorkFlowDefinition extends WorkItemDefinition {
     * @return
     * @throws Exception
     */
-   public List<WorkPageDefinition> getPageDefinitions(String fromPageId, TransitionType... transitionType) throws OseeCoreException, SQLException {
+   public List<WorkPageDefinition> getPageDefinitions(String fromPageId, TransitionType... transitionType) throws OseeCoreException {
       return getPageDefinitions(this, fromPageId, true, transitionType);
    }
 
-   public Map<TransitionType, Set<String>> getTransitionTypeToPageIds(String fromPageId) throws OseeCoreException, SQLException {
+   public Map<TransitionType, Set<String>> getTransitionTypeToPageIds(String fromPageId) throws OseeCoreException {
       loadPageData();
       return pageIdToPageIdsViaTransitionType.get(fromPageId);
    }
 
-   public Map<TransitionType, Set<String>> getInheritedTransitionTypeToPageIds(String fromPageId) throws OseeCoreException, SQLException {
+   public Map<TransitionType, Set<String>> getInheritedTransitionTypeToPageIds(String fromPageId) throws OseeCoreException {
       loadPageData();
       return inheritedPageIdToPageIdsViaTransitionType.get(fromPageId);
    }
 
-   public static List<WorkPageDefinition> getPageDefinitions(WorkFlowDefinition workFlowDefinition, String fromPageId, boolean includeInherited, TransitionType... transitionType) throws OseeCoreException, SQLException {
+   public static List<WorkPageDefinition> getPageDefinitions(WorkFlowDefinition workFlowDefinition, String fromPageId, boolean includeInherited, TransitionType... transitionType) throws OseeCoreException {
       Map<TransitionType, Set<String>> transitionTypeToPageIds = null;
       if (includeInherited) {
          transitionTypeToPageIds = workFlowDefinition.getInheritedTransitionTypeToPageIds(fromPageId);
@@ -287,7 +286,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return workPageDefs;
    }
 
-   public List<WorkPageDefinition> getPagesOrdered() throws OseeCoreException, SQLException {
+   public List<WorkPageDefinition> getPagesOrdered() throws OseeCoreException {
       WorkPageDefinition startWorkPageDefinition = getStartPage();
       if (startWorkPageDefinition == null) throw new IllegalArgumentException(
             "Can't locate Start WorkPageDefinition for workflow " + getName());
@@ -309,7 +308,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return orderedPages;
    }
 
-   private void getOrderedPages(WorkPageDefinition workPageDefinition, List<WorkPageDefinition> pages) throws OseeCoreException, SQLException {
+   private void getOrderedPages(WorkPageDefinition workPageDefinition, List<WorkPageDefinition> pages) throws OseeCoreException {
       // Add this page first
       if (!pages.contains(workPageDefinition)) pages.add(workPageDefinition);
       // Add default page
@@ -323,7 +322,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    /**
     * @return Returns the toPages for given workPageDefinition including default and return toPages.
     */
-   public List<WorkPageDefinition> getToPages(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
+   public List<WorkPageDefinition> getToPages(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       return getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage, TransitionType.ToPageAsDefault,
             TransitionType.ToPageAsReturn);
    }
@@ -331,11 +330,11 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    /**
     * @return Returns the returnPages for given workPageDefinition.
     */
-   public List<WorkPageDefinition> getReturnPages(WorkPageDefinition workPageDefinition) throws OseeCoreException, SQLException {
+   public List<WorkPageDefinition> getReturnPages(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       return getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPageAsReturn);
    }
 
-   public boolean isReturnPage(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition) throws OseeCoreException, SQLException {
+   public boolean isReturnPage(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition) throws OseeCoreException {
       return getReturnPages(fromWorkPageDefinition).contains(toWorkPageDefinition);
    }
 
@@ -356,7 +355,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return ARTIFACT_NAME;
    }
 
-   public WorkPageDefinition getStartPage() throws OseeCoreException, SQLException {
+   public WorkPageDefinition getStartPage() throws OseeCoreException {
       loadPageData();
       if (resolvedStartPageId != null) {
          return (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(resolvedStartPageId);
@@ -368,17 +367,17 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       this.startPageId = startPageId;
    }
 
-   public String getStartPageId() throws OseeCoreException, SQLException {
+   public String getStartPageId() throws OseeCoreException {
       loadPageData();
       return startPageId;
    }
 
-   public String getResolvedStartPageId() throws OseeCoreException, SQLException {
+   public String getResolvedStartPageId() throws OseeCoreException {
       loadPageData();
       return resolvedStartPageId;
    }
 
-   private static String getResolvedStartPageId(WorkFlowDefinition workFlowDefinition, String workflowId) throws OseeCoreException, SQLException {
+   private static String getResolvedStartPageId(WorkFlowDefinition workFlowDefinition, String workflowId) throws OseeCoreException {
       if (workFlowDefinition.startPageId != null) {
          return workFlowDefinition.startPageId.contains(".") ? workFlowDefinition.startPageId : workflowId + "." + workFlowDefinition.startPageId;
       }

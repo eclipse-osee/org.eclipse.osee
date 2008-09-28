@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -53,7 +52,7 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
       if (user != null)
          return searchIt(user);
@@ -61,18 +60,18 @@ public abstract class UserSearchItem extends WorldSearchItem {
          return searchIt();
    }
 
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       return EMPTY_SET;
    }
 
-   private Collection<Artifact> searchIt() throws OseeCoreException, SQLException {
+   private Collection<Artifact> searchIt() throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
       if (selectedUser != null) return searchIt(selectedUser);
       return EMPTY_SET;
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (user != null) return;
       if (searchType == SearchType.ReSearch && selectedUser != null) return;

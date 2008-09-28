@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,7 +64,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
 
       // Find all Team Workflows artifact types
@@ -92,7 +91,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (userCommName != null) return;
       if (userComm != null) return;

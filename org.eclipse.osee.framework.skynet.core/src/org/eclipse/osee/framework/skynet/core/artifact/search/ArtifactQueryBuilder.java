@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
@@ -334,15 +335,15 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws SQLException {
+   public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws OseeDataStoreException {
       return internalGetArtifacts(artifactCountEstimate, confirmer, false);
    }
 
-   public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws SQLException {
+   public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws OseeDataStoreException {
       return internalGetArtifacts(artifactCountEstimate, null, true);
    }
 
-   public Artifact reloadArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact reloadArtifact() throws OseeDataStoreException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
@@ -357,15 +358,19 @@ public class ArtifactQueryBuilder {
       return artifacts.iterator().next();
    }
 
-   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
+   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws OseeDataStoreException {
       if (emptyCriteria) {
          return java.util.Collections.emptyList();
       }
-      List<Artifact> artifacts =
-            ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
-                  loadLevel, reload, confirmer, null, allowDeleted);
-      clearCriteria();
-      return artifacts;
+      try {
+         List<Artifact> artifacts =
+               ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
+                     loadLevel, reload, confirmer, null, allowDeleted);
+         clearCriteria();
+         return artifacts;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    private void clearCriteria() throws SQLException {
@@ -376,13 +381,17 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionId transactionId) throws SQLException {
-      ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
-            artifactCountEstimate, transactionId);
-      clearCriteria();
+   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionId transactionId) throws OseeDataStoreException {
+      try {
+         ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
+               artifactCountEstimate, transactionId);
+         clearCriteria();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
-   public int countArtifacts() throws SQLException {
+   public int countArtifacts() throws OseeDataStoreException {
       int artifactCount = 0;
       if (emptyCriteria) {
          return 0;
@@ -396,14 +405,18 @@ public class ArtifactQueryBuilder {
          if (rSet.next()) {
             artifactCount = rSet.getInt("count");
          }
+
+         clearCriteria();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
-      clearCriteria();
+
       return artifactCount;
    }
 
-   public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact getArtifact() throws OseeDataStoreException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }

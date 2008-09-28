@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
-import java.sql.SQLException;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -35,7 +35,7 @@ public class AttributeAnnotationHandler implements IArtifactAnnotation {
             AttributeAnnotationManager mgr = new AttributeAnnotationManager(artifact);
             annotations.addAll(mgr.getAnnotations());
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }

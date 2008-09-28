@@ -30,8 +30,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -71,7 +69,7 @@ public class VersionReportJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static String getReleaseReportHtml(String title, VersionArtifact verArt, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public static String getReleaseReportHtml(String title, VersionArtifact verArt, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       if (verArt == null) {
          AWorkbench.popup("ERROR", "Must select product, config and version.");
          return null;
@@ -82,7 +80,7 @@ public class VersionReportJob extends Job {
       return sb.toString();
    }
 
-   public static String getFullReleaseReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public static String getFullReleaseReport(TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       // Sort by release date and estimated release date
       Map<String, VersionArtifact> dateToVerArt = new HashMap<String, VersionArtifact>();
       for (VersionArtifact verArt : teamDef.getVersionsArtifacts()) {
@@ -129,7 +127,7 @@ public class VersionReportJob extends Job {
       return null;
    }
 
-   public static String getReleasedString(VersionArtifact verArt) throws IllegalStateException, SQLException, AttributeDoesNotExist, MultipleAttributesExist {
+   public static String getReleasedString(VersionArtifact verArt) throws OseeCoreException {
       String released = "";
       if (verArt.getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null) != null) {
          released =
@@ -139,7 +137,7 @@ public class VersionReportJob extends Job {
       return released;
    }
 
-   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor)throws OseeCoreException, SQLException{
+   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) throws OseeCoreException, SQLException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "HRID"}));

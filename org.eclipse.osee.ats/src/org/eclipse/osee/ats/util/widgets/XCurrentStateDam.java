@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -20,7 +19,6 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
@@ -40,11 +38,11 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    }
 
    @Override
-   public void setState(SMAState state) throws OseeCoreException, SQLException {
+   public void setState(SMAState state) throws OseeCoreException {
       sma.setSoleAttributeValue(attributeTypeName, state.toXml());
    }
 
-   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+   public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       SMAState currState = getState();
       currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
       currState.setPercentComplete(percentComplete);
@@ -52,7 +50,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       if (logMetrics) logMetrics();
    }
 
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException, SQLException {
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       SMAState currState = getState();
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
@@ -60,15 +58,14 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       if (logMetrics) logMetrics();
    }
 
-   public void logMetrics() throws OseeCoreException, SQLException {
+   public void logMetrics() throws OseeCoreException {
       logMetrics(sma, sma.getPercentCompleteSMATotal() + "", AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()), "",
             SkynetAuthentication.getUser(), new Date());
    }
 
-   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws SQLException, MultipleAttributesExist {
+   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
       LogItem logItem =
             new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours));
       sma.getSmaMgr().getLog().addLogItem(logItem);
    }
-
 }

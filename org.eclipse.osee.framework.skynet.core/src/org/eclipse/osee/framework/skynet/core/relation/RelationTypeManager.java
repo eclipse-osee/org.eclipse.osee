@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -51,20 +52,20 @@ public class RelationTypeManager {
    }
 
    /**
-    * return all the relation types that are valid for the given branch
-    * 
     * @param branch
-    * @return
+    * @return all the relation types that are valid for the given branch
+    * @throws OseeDataStoreException
     */
-   public static List<RelationType> getValidTypes(Branch branch) throws SQLException {
+   public static List<RelationType> getValidTypes(Branch branch) throws OseeDataStoreException {
       return instance.getAllTypes();
    }
 
    /**
     * @return all Relation types in the datastore
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private List<RelationType> getAllTypes() throws SQLException {
+   private List<RelationType> getAllTypes() throws OseeDataStoreException {
+      ensurePopulated();
       return new ArrayList<RelationType>(idToTypeMap.values());
    }
 
@@ -83,21 +84,21 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static RelationType getType(int relationTypeId) throws OseeCoreException {
+   public static RelationType getType(int relationTypeId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
 
       RelationType relationType = instance.idToTypeMap.get(relationTypeId);
       if (relationType == null) {
-         throw new OseeCoreException("The relation with type id: " + relationTypeId + " does not exist");
+         throw new OseeTypeDoesNotExist("The relation with type id: " + relationTypeId + " does not exist");
       }
       return relationType;
    }
 
-   public static RelationType getType(String namespace, String typeName) throws OseeCoreException {
+   public static RelationType getType(String namespace, String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
       RelationType relationType = instance.nameToTypeMap.get(namespace + typeName);
       if (relationType == null) {
-         throw new OseeCoreException("The relation type: \"" + namespace + typeName + "\" does not exist");
+         throw new OseeTypeDoesNotExist("The relation type: \"" + namespace + typeName + "\" does not exist");
       }
       return relationType;
    }
@@ -107,12 +108,8 @@ public class RelationTypeManager {
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
 
-   public static RelationType getType(String typeName) throws SQLException {
-      try {
-         return getType("", typeName);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
+   public static RelationType getType(String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
+      return getType("", typeName);
    }
 
    private void cache(RelationType relationType) {
@@ -189,7 +186,7 @@ public class RelationTypeManager {
     * @param abPhrasing The phrasing appropriate from the 'a' side to the 'b' side.
     * @param baPhrasing The phrasing appropriate from the 'b' side to the 'a' side.
     * @param shortName An abbreviated name to display for the link type.
-    * @throws SQLException
+    * @throws OseeCoreException
     */
    public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered) throws OseeCoreException {
       if (typeExists(namespace, relationTypeName)) {

@@ -42,17 +42,22 @@ public class ArtifactFactoryManager {
    private ArtifactFactoryManager() {
    }
 
-   public static ArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException, OseeDataStoreException {
+   public static ArtifactFactory getFactoryFromName(String factoryName) throws OseeDataStoreException {
       ensurePopulated();
       ArtifactFactory factory = instance.factoryNameMap.get(factoryName);
       if (factory == null) {
-         throw new IllegalStateException("Failed to retrieve factory: " + factoryName + " from artifact factory cache");
+         throw new OseeDataStoreException("Failed to retrieve factory: " + factoryName + " from artifact factory cache");
       }
       return factory;
    }
 
    public static ArtifactFactory getFactoryFromId(int factoryId) throws OseeDataStoreException {
       ensurePopulated();
+      ArtifactFactory factory = instance.factoryIdMap.get(factoryId);
+      if (factory == null) {
+         throw new OseeDataStoreException(
+               "Failed to retrieve factory id: " + factoryId + " from artifact factory cache");
+      }
       return instance.factoryIdMap.get(factoryId);
    }
 

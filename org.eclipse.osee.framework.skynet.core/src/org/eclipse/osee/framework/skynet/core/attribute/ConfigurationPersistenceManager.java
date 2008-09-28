@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +24,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
@@ -57,25 +58,21 @@ public class ConfigurationPersistenceManager {
       }
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType) throws SQLException {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return instance.cacheAttributeTypeValidity.getArtifactTypesFromAttributeType(attributeType);
    }
 
-   public static Collection<AttributeType> getAttributeTypesFromArtifactType(String artifactTypeName, Branch branch) throws SQLException {
+   public static Collection<AttributeType> getAttributeTypesFromArtifactType(String artifactTypeName, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return instance.cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(
             ArtifactTypeManager.getType(artifactTypeName), branch);
    }
 
-   public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType descriptor, Branch branch) throws SQLException {
-      return instance.cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(descriptor, branch);
+   public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException {
+      return instance.cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(artifactType, branch);
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException {
-      try {
-         return instance.artifactTypeValidityCache.getValidArtifactTypes(branch);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex.getLocalizedMessage());
-      }
+   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
+      return instance.artifactTypeValidityCache.getValidArtifactTypes(branch);
    }
 
    public static Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {

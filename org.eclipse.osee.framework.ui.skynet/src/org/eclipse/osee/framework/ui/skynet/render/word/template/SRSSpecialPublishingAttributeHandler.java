@@ -39,16 +39,12 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
       if ((attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality"))) {
          for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
-            try {
-               if (partition.getValue().equals("Unspecified")) {
-                  return true;
-               }
-            } catch (OseeCoreException ex) {
-               throw new SQLException(ex);
+            if (partition.getValue().equals("Unspecified")) {
+               return true;
             }
          }
       }

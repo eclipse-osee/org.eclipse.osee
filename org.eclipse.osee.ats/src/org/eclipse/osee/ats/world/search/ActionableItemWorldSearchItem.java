@@ -83,7 +83,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getActionableItems() throws OseeCoreException, SQLException {
+   public void getActionableItems() throws OseeCoreException {
       if (actionItemNames != null && actionItems == null) {
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia = AtsCache.getSoleArtifactByName(actionItemName, ActionableItemArtifact.class);
@@ -98,7 +98,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   private Set<ActionableItemArtifact> getSearchActionableItems() throws OseeCoreException, SQLException {
+   private Set<ActionableItemArtifact> getSearchActionableItems() throws OseeCoreException {
       getActionableItems();
       Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
       for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems))
@@ -112,7 +112,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<ActionableItemArtifact> items = getSearchActionableItems();
       List<String> actionItemGuids = new ArrayList<String>(items.size());
       for (ActionableItemArtifact ai : items) {
@@ -141,7 +141,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (actionItemNames != null) return;
       if (actionItems != null) return;

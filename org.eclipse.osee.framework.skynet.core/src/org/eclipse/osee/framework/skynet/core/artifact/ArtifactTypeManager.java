@@ -30,10 +30,12 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -59,23 +61,19 @@ public class ArtifactTypeManager {
    private ArtifactTypeManager() {
    }
 
-   public void refreshCache() throws OseeCoreException {
+   public void refreshCache() throws OseeDataStoreException {
       nameToTypeMap.clear();
       idToTypeMap.clear();
       populateCache();
    }
 
-   private static synchronized void ensurePopulated() throws SQLException {
+   private static synchronized void ensurePopulated() throws OseeDataStoreException {
       if (instance.idToTypeMap.size() == 0) {
-         try {
-            instance.populateCache();
-         } catch (OseeCoreException ex) {
-            throw new SQLException(ex);
-         }
+         instance.populateCache();
       }
    }
 
-   private void populateCache() throws OseeCoreException {
+   private void populateCache() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -88,8 +86,8 @@ public class ArtifactTypeManager {
                new ArtifactType(rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
                      rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
                            rSet.getBinaryStream("image")));
-            } catch (IllegalStateException ex) {
-               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
       } catch (SQLException ex) {
@@ -101,16 +99,15 @@ public class ArtifactTypeManager {
 
    /**
     * @return Returns all of the descriptors.
+    * @throws OseeCoreException
     * @throws SQLException
     */
-   @Deprecated
-   // should use ArtifactTypeValidityCache
-   public static Collection<ArtifactType> getAllTypes() throws SQLException {
+   static Collection<ArtifactType> getAllTypes() throws OseeDataStoreException {
       ensurePopulated();
       return instance.idToTypeMap.values();
    }
 
-   public static boolean typeExists(String namespace, String name) throws SQLException {
+   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException {
       ensurePopulated();
       return instance.nameToTypeMap.get(namespace + name) != null;
    }
@@ -128,32 +125,37 @@ public class ArtifactTypeManager {
 
    /**
     * @return Returns the descriptor with a particular namespace and name
+    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     * @throws SQLException
     */
-   public static ArtifactType getType(String namespace, String name) throws SQLException {
+   public static ArtifactType getType(String namespace, String name) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
       ArtifactType artifactType = instance.nameToTypeMap.get(namespace + name);
 
       if (artifactType == null) {
-         throw new IllegalArgumentException(
+         throw new OseeTypeDoesNotExist(
                "Artifact type with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
       }
       return artifactType;
    }
 
    /**
+    * @param artifactTypeName
     * @return Returns the type with a particular name (uses null for namespace), null if it does not exist.
-    * @throws SQLException
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public static ArtifactType getType(String artifactTypeName) throws SQLException {
+   public static ArtifactType getType(String artifactTypeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
       return getType("", artifactTypeName);
    }
 
    /**
     * @return Returns the types with a particular name (uses null for namespace), null if it does not exist.
-    * @throws SQLException
+    * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     */
-   public static List<ArtifactType> getTypes(Collection<String> artifactTypeNames) throws SQLException {
+   public static List<ArtifactType> getTypes(Collection<String> artifactTypeNames) throws OseeTypeDoesNotExist, OseeDataStoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>(artifactTypeNames.size());
       for (String artifactTypeName : artifactTypeNames) {
          artifactTypes.add(getType("", artifactTypeName));
@@ -163,15 +165,16 @@ public class ArtifactTypeManager {
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
+    * @throws OseeTypeDoesNotExist
     * @throws SQLException
     */
-   public static ArtifactType getType(int artTypeId) throws SQLException {
+   public static ArtifactType getType(int artTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
 
       ArtifactType artifactType = instance.idToTypeMap.get(artTypeId);
 
       if (artifactType == null) {
-         throw new IllegalArgumentException("Atrifact type: " + artTypeId + " is not available.");
+         throw new OseeTypeDoesNotExist("Atrifact type: " + artTypeId + " is not available.");
       }
       return artifactType;
    }
@@ -181,11 +184,10 @@ public class ArtifactTypeManager {
     * 
     * @param artifactTypeName
     * @param branch
-    * @return
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch) throws SQLException, OseeCoreException {
+   public static Artifact addArtifact(String artifactTypeName, Branch branch) throws OseeCoreException {
       return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch);
    }
 
@@ -195,16 +197,11 @@ public class ArtifactTypeManager {
     * @param artifactTypeName
     * @param branch
     * @param name
-    * @return
     * @throws SQLException
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws SQLException {
+   public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws OseeCoreException {
       Artifact artifact;
-      try {
-         artifact = addArtifact(artifactTypeName, branch);
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
+      artifact = addArtifact(artifactTypeName, branch);
       artifact.setDescriptiveName(name);
       return artifact;
    }
@@ -215,11 +212,10 @@ public class ArtifactTypeManager {
     * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
-    * @throws SQLException
     * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
+   public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
       return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
@@ -231,26 +227,31 @@ public class ArtifactTypeManager {
       descriptor.setImageDescriptor(imageDescriptor);
    }
 
-   public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException, IllegalStateException, OseeCoreException {
-      ArtifactType artifactType;
-      if (!typeExists(namespace, artifactTypeName)) {
-         int artTypeId = SequenceManager.getNextArtifactTypeId();
-         InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
-         ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
+   public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      try {
+         ArtifactType artifactType;
+         if (!typeExists(namespace, artifactTypeName)) {
+            int artTypeId = SequenceManager.getNextArtifactTypeId();
+            InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
+            ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
-               artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
+            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
+                  artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
 
-         artifactType = new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
-      } else {
-         // Check if anything valuable is different
-         artifactType = getType(namespace, artifactTypeName);
-         if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
-               factoryName)) {
-            // update factory information
+            artifactType =
+                  new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
+         } else {
+            // Check if anything valuable is different
+            artifactType = getType(namespace, artifactTypeName);
+            if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
+                  factoryName)) {
+               // update factory information
+            }
          }
+         return artifactType;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
-      return artifactType;
    }
 
    private InputStreamImageDescriptor getDefaultImageDescriptor(String typeName) {

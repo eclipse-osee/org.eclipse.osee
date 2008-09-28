@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -57,7 +58,7 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       String whereConditions =
             (fromTransactionNumber.equals(toTransactionNumber) ? TRANSACTIONS_TABLE.column("transaction_id") + " = ? " : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_TABLE.column("gamma_id");
 
@@ -85,7 +86,7 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
       return fromTransactionNumber + TOKEN + toTransactionNumber;
    }
 
-   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, TransactionDoesNotExist, BranchDoesNotExist, OseeDataStoreException, SQLException {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) {
          throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);

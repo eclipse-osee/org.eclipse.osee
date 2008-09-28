@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -42,17 +40,17 @@ public class TaskManager {
       this.smaMgr = smaMgr;
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException, SQLException {
-      return smaMgr.getSma().getArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class);
+   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
+      return smaMgr.getSma().getRelatedArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class);
    }
 
-   public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException, SQLException {
+   public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {
       return getTaskArtifacts(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException, SQLException {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
-      for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class)) {
+      for (TaskArtifact taskArt : smaMgr.getSma().getRelatedArtifacts(AtsRelation.SmaToTask_Task, TaskArtifact.class)) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) arts.add(taskArt);
       }
@@ -62,21 +60,21 @@ public class TaskManager {
    public boolean hasTaskArtifacts() {
       try {
          return smaMgr.getSma().getRelatedArtifactsCount(AtsRelation.SmaToTask_Task) > 0;
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
       }
    }
 
-   public TaskArtifact createNewTask(String title, boolean persist) throws OseeCoreException, SQLException {
+   public TaskArtifact createNewTask(String title, boolean persist) throws OseeCoreException {
       return createNewTask(Arrays.asList(SkynetAuthentication.getUser()), title, persist);
    }
 
-   public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws OseeCoreException, SQLException {
+   public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws OseeCoreException {
       return createNewTask(Arrays.asList(assignee), title, persist);
    }
 
-   public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws OseeCoreException, SQLException {
+   public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME,
@@ -121,7 +119,7 @@ public class TaskManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
-   public double getEstimatedHours(String relatedToStateName) throws OseeCoreException, SQLException {
+   public double getEstimatedHours(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
          hours += taskArt.getEstimatedHoursTotal();
@@ -134,7 +132,7 @@ public class TaskManager {
     * @return
     * @throws Exception
     */
-   public double getEstimatedHours() throws OseeCoreException, SQLException {
+   public double getEstimatedHours() throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts())
          hours += taskArt.getEstimatedHoursFromArtifact();
@@ -148,7 +146,7 @@ public class TaskManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Remain Hours
     */
-   public double getRemainHours(String relatedToStateName) throws OseeCoreException, SQLException {
+   public double getRemainHours(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
          hours += taskArt.getRemainHoursFromArtifact();
@@ -161,7 +159,7 @@ public class TaskManager {
     * @return
     * @throws Exception
     */
-   public double getRemainHours() throws OseeCoreException, SQLException {
+   public double getRemainHours() throws OseeCoreException {
       double hours = 0;
       for (TaskArtifact taskArt : getTaskArtifacts())
          hours += taskArt.getRemainHoursFromArtifact();
@@ -175,7 +173,7 @@ public class TaskManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Hours Spent
     */
-   public double getHoursSpent(String relatedToStateName) throws OseeCoreException, SQLException {
+   public double getHoursSpent(String relatedToStateName) throws OseeCoreException {
       double spent = 0;
       for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
          spent += taskArt.getHoursSpentSMATotal();
@@ -188,7 +186,7 @@ public class TaskManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
-   public int getPercentComplete(String relatedToStateName) throws OseeCoreException, SQLException {
+   public int getPercentComplete(String relatedToStateName) throws OseeCoreException {
       int spent = 0;
       Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToStateName);
       for (TaskArtifact taskArt : taskArts)

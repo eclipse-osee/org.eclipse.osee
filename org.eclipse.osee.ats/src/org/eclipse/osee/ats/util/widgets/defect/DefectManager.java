@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -21,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -44,7 +43,7 @@ public class DefectManager {
       this.artifact = artifact;
    }
 
-   public String getHtml() throws SQLException, MultipleAttributesExist {
+   public String getHtml() throws OseeCoreException {
       if (getDefectItems().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
@@ -52,7 +51,7 @@ public class DefectManager {
       return sb.toString();
    }
 
-   public Set<DefectItem> getDefectItems() throws SQLException, MultipleAttributesExist {
+   public Set<DefectItem> getDefectItems() throws OseeCoreException {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
       String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       defectMatcher.reset(xml);
@@ -63,21 +62,21 @@ public class DefectManager {
       return defectItems;
    }
 
-   public int getNumMajor() throws SQLException, MultipleAttributesExist {
+   public int getNumMajor() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
          if (dItem.getSeverity() == Severity.Major) x++;
       return x;
    }
 
-   public int getNumMinor() throws SQLException, MultipleAttributesExist {
+   public int getNumMinor() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
          if (dItem.getSeverity() == Severity.Minor) x++;
       return x;
    }
 
-   public int getNumIssues() throws SQLException, MultipleAttributesExist {
+   public int getNumIssues() throws OseeCoreException {
       int x = 0;
       for (DefectItem dItem : getDefectItems())
          if (dItem.getSeverity() == Severity.Issue) x++;
@@ -97,7 +96,7 @@ public class DefectManager {
       }
    }
 
-   public void addOrUpdateDefectItem(DefectItem defectItem, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void addOrUpdateDefectItem(DefectItem defectItem, boolean persist) throws OseeCoreException {
       Set<DefectItem> defectItems = getDefectItems();
       boolean found = false;
       for (DefectItem dItem : defectItems) {
@@ -110,13 +109,13 @@ public class DefectManager {
       saveDefectItems(defectItems, persist);
    }
 
-   public void removeDefectItem(DefectItem defectItem, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void removeDefectItem(DefectItem defectItem, boolean persist) throws OseeCoreException {
       Set<DefectItem> defectItems = getDefectItems();
       defectItems.remove(defectItem);
       saveDefectItems(defectItems, persist);
    }
 
-   public void addDefectItem(String description, boolean persist) throws SQLException, MultipleAttributesExist {
+   public void addDefectItem(String description, boolean persist) throws OseeCoreException {
       DefectItem item = new DefectItem();
       item.setDescription(description);
       addOrUpdateDefectItem(item, persist);
@@ -126,7 +125,7 @@ public class DefectManager {
       saveDefectItems(new HashSet<DefectItem>(), persist);
    }
 
-   public String getTable() throws SQLException, MultipleAttributesExist {
+   public String getTable() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");
       for (DefectItem item : getDefectItems()) {

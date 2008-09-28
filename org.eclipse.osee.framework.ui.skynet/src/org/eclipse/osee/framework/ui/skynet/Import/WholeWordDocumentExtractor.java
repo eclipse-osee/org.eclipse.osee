@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -22,7 +21,7 @@ public class WholeWordDocumentExtractor extends WordExtractor {
    private static final String description = "Extract all the content of each Word XML document as one artifact";
    private final ArtifactType primaryDescriptor;
 
-   public WholeWordDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) throws SQLException {
+   public WholeWordDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) {
       super(branch);
       this.primaryDescriptor = primaryDescriptor;
    }

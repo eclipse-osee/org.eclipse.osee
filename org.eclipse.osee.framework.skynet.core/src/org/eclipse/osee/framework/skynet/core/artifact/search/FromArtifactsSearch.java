@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,7 +57,7 @@ public class FromArtifactsSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws SQLException {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       return "art_id in (" + ArtifactPersistenceManager.getIdSql(criteria, all, dataList, branch) + ")";
    }
 

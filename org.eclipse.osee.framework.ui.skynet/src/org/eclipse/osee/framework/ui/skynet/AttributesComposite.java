@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -20,9 +20,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -218,8 +221,8 @@ public class AttributesComposite extends Composite {
             for (MenuItem attrItem : addItem.getMenu().getItems()) {
                try {
                   attrItem.setEnabled(artifact.getRemainingAttributeCount((AttributeType) attrItem.getData()) > 0);
-               } catch (SQLException ex) {
-
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          }
@@ -235,7 +238,7 @@ public class AttributesComposite extends Composite {
             item.setData(attributeType);
             item.addSelectionListener(listener);
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       addItem.setMenu(attributesMenu);

@@ -40,7 +40,7 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#canHandle(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       return attribute.getName().equals("TIS Traceability");
    }
 

@@ -18,6 +18,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -29,7 +30,7 @@ public class SkynetViews {
     * @return Returns a collection of <code>DynamicAttributeDescriptor</code> stored in a memento.
     * @throws SQLException
     */
-   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws SQLException {
+   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws OseeDataStoreException {
       List<AttributeType> attributeDescriptors = new LinkedList<AttributeType>();
       Collection<AttributeType> descriptors = AttributeTypeManager.getTypes(branch);
 

@@ -81,7 +81,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return userRoleManager;
    }
 
-   public Result isUserRoleValid() throws OseeCoreException, SQLException {
+   public Result isUserRoleValid() throws OseeCoreException {
       return Result.TrueResult;
    }
 
@@ -102,7 +102,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws SQLException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (getParentSMA() != null) {
          return ((TeamWorkFlowArtifact) getParentSMA()).getParentActionArtifact();
       }

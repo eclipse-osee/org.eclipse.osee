@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -59,7 +60,7 @@ public class RelationPersistenceManager {
     * 
     * @param relationLink The relationLink to persist.
     */
-   public static void makePersistent(final RelationLink relationLink) throws SQLException {
+   public static void makePersistent(final RelationLink relationLink) throws OseeDataStoreException {
       AbstractSkynetTxTemplate relationPersistTx = new AbstractSkynetTxTemplate(relationLink.getBranch()) {
 
          @Override
@@ -70,7 +71,7 @@ public class RelationPersistenceManager {
       try {
          relationPersistTx.execute();
       } catch (Exception ex) {
-         throw new SQLException(ex);
+         throw new OseeDataStoreException(ex);
       }
    }
 

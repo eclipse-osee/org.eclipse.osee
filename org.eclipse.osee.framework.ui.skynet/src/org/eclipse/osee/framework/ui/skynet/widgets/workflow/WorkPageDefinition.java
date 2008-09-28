@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,7 +30,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
       this.pageName = pageName;
    }
 
-   public WorkPageDefinition(Artifact artifact) throws OseeCoreException, SQLException {
+   public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
@@ -45,12 +44,12 @@ public class WorkPageDefinition extends WorkItemDefinition {
       }
    }
 
-   public boolean hasWorkRule(String ruleId) throws OseeCoreException, SQLException {
+   public boolean hasWorkRule(String ruleId) throws OseeCoreException {
       return getWorkItemDefinition(ruleId) != null;
    }
 
    @Override
-   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
       List<Artifact> children = new ArrayList<Artifact>();
       for (WorkItemDefinition wid : getWorkItems(false)) {
@@ -81,18 +80,17 @@ public class WorkPageDefinition extends WorkItemDefinition {
 
    /**
     * @return the workItems
-    * @throws OseeCoreException TODO
-    * @throws SQLException TODO
+    * @throws OseeCoreException
     */
 
-   public List<WorkItemDefinition> getWorkItems(boolean includeInherited) throws OseeCoreException, SQLException {
+   public List<WorkItemDefinition> getWorkItems(boolean includeInherited) throws OseeCoreException {
       List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
       getWorkItemsInherited(wids, includeInherited);
       return wids;
 
    }
 
-   private void getWorkItemsInherited(List<WorkItemDefinition> workItemDefinitions, boolean includeInherited) throws OseeCoreException, SQLException {
+   private void getWorkItemsInherited(List<WorkItemDefinition> workItemDefinitions, boolean includeInherited) throws OseeCoreException {
       workItemDefinitions.addAll(WorkItemDefinitionFactory.getWorkItemDefinition(workItemIds));
       if (includeInherited && getParentId() != null) {
          WorkPageDefinition widParent =
@@ -101,12 +99,14 @@ public class WorkPageDefinition extends WorkItemDefinition {
       }
    }
 
-   public WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException, SQLException {
-      if (workItemIds.contains(id)) return WorkItemDefinitionFactory.getWorkItemDefinition(id);
+   public WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException {
+      if (workItemIds.contains(id)) {
+         return WorkItemDefinitionFactory.getWorkItemDefinition(id);
+      }
       return null;
    }
 
-   public List<WorkItemDefinition> getWorkItemDefinitionsByType(String workType) throws OseeCoreException, SQLException {
+   public List<WorkItemDefinition> getWorkItemDefinitionsByType(String workType) throws OseeCoreException {
       List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
       for (WorkItemDefinition workItemDefinition : getWorkItems(true)) {
          if (workItemDefinition.getType() != null && workItemDefinition.getType().equals(workType)) {

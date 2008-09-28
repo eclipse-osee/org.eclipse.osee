@@ -11,16 +11,18 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -119,8 +121,8 @@ public class BranchImportPage extends WizardDataTransferPage {
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -214,8 +216,8 @@ public class BranchImportPage extends WizardDataTransferPage {
                defaultBranchIndex++;
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

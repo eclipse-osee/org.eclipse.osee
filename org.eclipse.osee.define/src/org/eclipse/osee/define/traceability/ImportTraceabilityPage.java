@@ -11,14 +11,16 @@
 package org.eclipse.osee.define.traceability;
 
 import java.io.File;
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -80,8 +82,8 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    }
 
    /**
-    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all
-    * events and enablements for controls on this page. Subclasses may extend.
+    * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
+    * and enablements for controls on this page. Subclasses may extend.
     * 
     * @param event Event
     */
@@ -124,9 +126,9 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
                defaultBranchIndex++;
             }
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          branchList.add(ex.getLocalizedMessage());
-         OSEELog.logException(getClass(), ex, false);
+         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
       }
 
       setPageComplete(determinePageCompletion());

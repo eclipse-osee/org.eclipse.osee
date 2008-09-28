@@ -96,7 +96,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
     *      org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) {
+   public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       return true;
    }
 

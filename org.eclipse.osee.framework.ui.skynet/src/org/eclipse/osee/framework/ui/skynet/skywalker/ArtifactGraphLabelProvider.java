@@ -11,18 +11,18 @@
 
 package org.eclipse.osee.framework.ui.skynet.skywalker;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
@@ -88,6 +88,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                      linkNames.add(link.getRelationType().toString());
                   else if (options.getLinkName() == LinkName.Other_Side_Name) {
                      if (link.getArtifactA().equals(source)) {
+
                         linkNames.add(source + " (" + link.getSideNameFor(source) + ")" + " <--> " + dest + " (" + link.getSideNameFor(dest) + ")");
                      } else {
                         linkNames.add(dest + " (" + link.getSideNameFor(dest) + ")" + " <--> " + source + " (" + link.getSideNameFor(source) + ")");
@@ -98,11 +99,9 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                return Collections.toString("\n", linkNames);
             }
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
-      } catch (ArtifactDoesNotExist ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return null;
    }

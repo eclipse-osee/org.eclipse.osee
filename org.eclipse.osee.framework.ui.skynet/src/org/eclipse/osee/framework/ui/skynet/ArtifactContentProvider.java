@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,13 +18,14 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -87,8 +87,8 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                   return children.toArray();
                }
             }
-         } catch (SQLException ex) {
-            SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
@@ -104,7 +104,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          try {
             return ((Artifact) element).getParent();
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
@@ -131,7 +131,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
 
             try {
                return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
                // Assume it has children if an error happens
                return true;

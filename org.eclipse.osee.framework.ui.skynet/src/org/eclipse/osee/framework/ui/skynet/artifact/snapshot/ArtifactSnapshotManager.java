@@ -18,15 +18,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.osgi.framework.Bundle;
 
 /**
@@ -36,7 +35,6 @@ import org.osgi.framework.Bundle;
  * @author Roberto E. Escobar
  */
 public class ArtifactSnapshotManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSnapshotManager.class);
    private static ArtifactSnapshotManager instance = null;
 
    private ArtifactSnapshotFactory snapshotFactory;
@@ -73,7 +71,7 @@ public class ArtifactSnapshotManager {
          try {
             snapshot = doSave(artifact);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else {
          snapshot = getSnapshotForRenderRetrieval(artifact);
@@ -169,7 +167,7 @@ public class ArtifactSnapshotManager {
          try {
             currentSnapshot = doSave(artifact);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return currentSnapshot;
@@ -184,13 +182,12 @@ public class ArtifactSnapshotManager {
    private ArtifactSnapshot getRemoteSnapshotFromParentBranch(Artifact artifact) {
       ArtifactSnapshot toReturn = null;
       try {
-         Branch parentBranch = artifact.getBranch().getParentBranch();
-         if (parentBranch != null) {
-            Pair<String, String> parentKey = keyGenerator.getKeyPair(artifact, parentBranch);
+         if (artifact.getBranch().hasParentBranch()) {
+            Pair<String, String> parentKey = keyGenerator.getKeyPair(artifact, artifact.getBranch().getParentBranch());
             toReturn = getSnapshotFromRemoteStorage(parentKey);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return toReturn;
    }
@@ -242,7 +239,7 @@ public class ArtifactSnapshotManager {
       try {
          data = getRemoteSnapshotAndUpdateIfNeeded(artifact);
       } catch (UnsupportedEncodingException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       if (data == null || data.isValidFor(artifact) != true) {
          data = getSnapshotFromLocalCacheAndUpdateIfNeeded(artifact);

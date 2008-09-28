@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,7 +58,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                   getSearchStateClass() + ";%", BranchPersistenceManager.getAtsBranch());
@@ -69,7 +68,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       if (stateClass != null) return;
       if (searchType == SearchType.ReSearch && selectedStateClass != null) return;
       EntryDialog ed = new EntryDialog("Enter State", "Enter state name.");

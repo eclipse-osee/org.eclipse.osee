@@ -10,22 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.httpRequests;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -36,7 +36,6 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 public class BranchRequest implements IHttpServerRequest {
 
    private static final BranchRequest instance = new BranchRequest();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchRequest.class);
 
    private BranchRequest() {
    }
@@ -100,8 +99,8 @@ public class BranchRequest implements IHttpServerRequest {
                branchEl.appendChild(createBranchElement(doc, childBranch));
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Error obtaining branch information.", ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return branchEl;
    }

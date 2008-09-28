@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
@@ -200,7 +201,7 @@ public class RelationChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getArtifactImage()
     */
    @Override
-   public Image getItemKindImage() throws IllegalArgumentException, SQLException {
+   public Image getItemKindImage() throws OseeCoreException {
       return getItemTypeImage();
    }
 

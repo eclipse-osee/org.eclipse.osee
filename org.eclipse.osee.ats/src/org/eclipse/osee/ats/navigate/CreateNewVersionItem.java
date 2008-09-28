@@ -55,7 +55,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       try {
          teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();

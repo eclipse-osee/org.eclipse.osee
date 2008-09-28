@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,8 +22,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -243,10 +241,10 @@ public class WordMLProducer {
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
     * 
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws IOException
+    * @throws OseeCoreException
     */
-   public void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public void setPageLayout(Artifact artifact) throws OseeCoreException, IOException {
       String pageTypeValue = null;
       if (artifact.isAttributeTypeValid("Page Type")) {
          pageTypeValue = artifact.getSoleAttributeValue("Page Type", "Portrait");

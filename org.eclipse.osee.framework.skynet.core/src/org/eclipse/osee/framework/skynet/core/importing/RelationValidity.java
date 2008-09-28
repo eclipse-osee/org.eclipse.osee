@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
@@ -38,7 +40,7 @@ public class RelationValidity {
             SkynetTypesImporter.getQuantity(row[3])));
    }
 
-   public void persist() throws SQLException {
+   public void persist() throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);

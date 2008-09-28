@@ -12,8 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +33,7 @@ public class GlobalPreferences extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static GlobalPreferences get() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static GlobalPreferences get() throws OseeCoreException {
       if (instance == null) {
          instance =
                (GlobalPreferences) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, ARTIFACT_NAME,
@@ -43,7 +42,7 @@ public class GlobalPreferences extends Artifact {
       return instance;
    }
 
-   public static void createGlobalPreferencesArtifact() throws SQLException {
+   public static void createGlobalPreferencesArtifact() throws OseeCoreException {
       Artifact art =
             ArtifactTypeManager.addArtifact(GlobalPreferences.ARTIFACT_NAME,
                   BranchPersistenceManager.getCommonBranch(), GlobalPreferences.ARTIFACT_NAME);

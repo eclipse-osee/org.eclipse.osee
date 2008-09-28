@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -44,7 +43,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
-   private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws SQLException {
+   private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
 
       Collection<NameAndVal> roughAttributeCollection = roughArtifact.getAttributes();
       HashCollection<String, String> roughAttributeMap = new HashCollection<String, String>();

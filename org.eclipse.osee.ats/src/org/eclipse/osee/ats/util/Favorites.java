@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -50,7 +50,7 @@ public class Favorites {
                         "Favorite", "Are you sure you wish add this as a Favorite?");
             if (result) ((IFavoriteableArtifact) sma).addFavorite(SkynetAuthentication.getUser());
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -154,7 +155,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws SQLException {
+   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws OseeDataStoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Prelodaing Conflict Artifacts");

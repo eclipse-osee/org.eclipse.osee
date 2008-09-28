@@ -24,5 +24,5 @@ public interface ITemplateAttributeHandler {
 
    void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws SQLException, IllegalStateException, IOException, OseeCoreException;
 
-   boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException;
+   boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException;
 }

@@ -10,22 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IFavoriteableArtifact {
 
-   public void addFavorite(User u) throws SQLException;
+   public void addFavorite(User u) throws OseeCoreException;
 
-   public void removeFavorite(User u) throws SQLException;
+   public void removeFavorite(User u) throws OseeCoreException;
 
-   public boolean isFavorite(User u) throws SQLException;
+   public boolean isFavorite(User u) throws OseeCoreException;
 
-   public ArrayList<User> getFavorites() throws SQLException;
+   public ArrayList<User> getFavorites() throws OseeCoreException;
 
    public boolean amIFavorite();
 

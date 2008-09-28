@@ -56,7 +56,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws SQLException {
+   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) {
       RelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
@@ -65,7 +65,7 @@ public class ArtifactDragDropSupport {
       RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
    }
 
-   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws SQLException {
+   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) {
       RelationTypeSide group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
       RelationType relationType = group.getRelationType();

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -47,6 +48,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTem
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -311,9 +314,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                   refreshContentDescription();
                   changeTable.refresh();
                } catch (OseeCoreException ex) {
-                  OSEELog.logException(getClass(), ex, true);
-               } catch (SQLException ex) {
-                  OSEELog.logException(getClass(), ex, true);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
             }
          }
@@ -335,7 +336,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                            toTransId, false)) {
                         attributeModifiedArtifactIds.add(artifact.getArtId());
                      }
-                  } catch (SQLException ex) {
+                  } catch (OseeDataStoreException ex) {
                      OSEELog.logSevere(SkynetGuiPlugin.class, "Error getting modified artifacts", true);
                   }
                }
@@ -810,7 +811,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
 
                monitor.done();
                return Status.OK_STATUS;
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
          }
@@ -850,8 +851,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                      }
                   }
                });
-            } catch (SQLException ex) {
-               OSEELog.logException(ChangeReportView.class, ex, true);
             } catch (OseeCoreException ex) {
                OSEELog.logException(ChangeReportView.class, ex, true);
             }
@@ -891,8 +890,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
             try {
                attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
                      SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF, baseTransactionId.getBranch()));
-            } catch (SQLException ex) {
-               OSEELog.logException(getClass(), ex, false);
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             int baseNum = baseTransactionId.getTransactionNumber();
             int toNum = toTransactionId.getTransactionNumber();
@@ -1007,13 +1006,12 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                ArtifactChange change = (ArtifactChange) obj1;
                Artifact changedArtifact = change.getArtifact();
                Branch reportBranch = changedArtifact.getBranch();
-               Branch parentBranch = reportBranch.getParentBranch();
 
                boolean wordArtifactSelected = artifactSelected && changedArtifact instanceof WordArtifact;
                boolean modifiedWordArtifactSelected = wordArtifactSelected && change.getModType() == CHANGE;
                boolean conflictedWordArtifactSelected =
                      modifiedWordArtifactSelected && change.getChangeType() == ChangeType.CONFLICTING;
-               boolean validDiffParent = wordArtifactSelected && parentBranch != null;
+               boolean validDiffParent = wordArtifactSelected && reportBranch.hasParentBranch();
 
                showInExplorer.setEnabled(artifactSelected && reportBranch == BranchPersistenceManager.getDefaultBranch());
 
@@ -1025,7 +1023,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
 
                diffConflictsMenuItem.setEnabled(conflictedWordArtifactSelected && readPermission);
                if (conflictedWordArtifactSelected) {
-                  diffConflictsMenuItem.setText("Word differences between \"" + reportBranch.getBranchShortName() + "\" and \"" + parentBranch.getBranchShortName() + "\"");
+                  diffConflictsMenuItem.setText("Word differences between \"" + reportBranch.getBranchShortName() + "\" and \"" + reportBranch.getParentBranch().getBranchShortName() + "\"");
                }
 
                revertMenuItem.setEnabled(artifactSelected && writePermission);
@@ -1034,7 +1032,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                diffOnParentBranchMenuItem.setEnabled(validDiffParent && modifiedWordArtifactSelected && readPermission);
 
                if (diffOnParentBranchMenuItem.getEnabled()) {
-                  diffOnParentBranchMenuItem.setText("Word changes made to \"" + parentBranch.getBranchShortName() + "\" since creating \"" + reportBranch.getBranchShortName() + "\"");
+                  diffOnParentBranchMenuItem.setText("Word changes made to \"" + reportBranch.getParentBranch().getBranchShortName() + "\" since creating \"" + reportBranch.getBranchShortName() + "\"");
                }
 
                if (showFinalVersionMenuItem.getEnabled()) {

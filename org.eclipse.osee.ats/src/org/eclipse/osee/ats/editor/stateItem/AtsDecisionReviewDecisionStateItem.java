@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +51,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
     *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       if (xWidget.getLabel().equals(ATSAttributes.DECISION_ATTRIBUTE.getDisplayName())) {
          if (xWidget == null) throw new IllegalStateException("Can't retrieve decision review combo widget to set.");
          XComboDam decisionComboDam = (XComboDam) xWidget;
@@ -65,7 +64,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return Result.TrueResult;
    }
 
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException, SQLException {
+   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;
       boolean followUpRequired = decisionOption.isFollowupRequired();
@@ -81,13 +80,13 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToAssignees(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException, SQLException {
+   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;
       return decisionOption.getAssignees();
    }
 
-   private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws OseeCoreException, SQLException {
+   private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws OseeCoreException {
       XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getStoreName()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
@@ -100,7 +99,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws OseeCoreException, SQLException {
+   public String getDescription() throws OseeCoreException {
       return "AtsDecisionReviewDecisionStateItem - Add decision options to review state based on prepare state's entries.";
    }
 

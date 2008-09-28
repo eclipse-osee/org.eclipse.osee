@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -26,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class SrsProducer implements IWordMlProducer {
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws SQLException, IllegalStateException, IOException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public BlamVariableMap process(BlamVariableMap variableMap) throws IOException, OseeCoreException {
       if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
 
       String name = variableMap.getString("Name");
@@ -47,13 +45,8 @@ public class SrsProducer implements IWordMlProducer {
       return variableMap;
    }
 
-   private void process(Artifact parent, ArrayList<Artifact> artifacts, String name) throws IllegalStateException, IOException, SQLException {
-      try {
-         Artifact child = parent.getChild(name);
-         artifacts.add(child);
-
-      } catch (IllegalArgumentException ex) {
-         //We expect there to be times where the child does not exists and will throw an exception.
-      }
+   private void process(Artifact parent, ArrayList<Artifact> artifacts, String name) throws OseeCoreException {
+      Artifact child = parent.getChild(name);
+      artifacts.add(child);
    }
 }

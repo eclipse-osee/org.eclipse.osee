@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -92,7 +91,7 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void processNonWholeDocumentUpdates(Branch myBranch) throws Exception {
+   private void processNonWholeDocumentUpdates(Branch myBranch) throws OseeCoreException, SQLException, ParserConfigurationException, SAXException, IOException {
       Artifact artifact;
 
       Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
@@ -116,12 +115,12 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void updateNativeArtifact(NativeArtifact artifact) throws IllegalStateException, SQLException, IOException, MultipleAttributesExist {
+   private void updateNativeArtifact(NativeArtifact artifact) throws OseeCoreException, FileNotFoundException {
       artifact.setNativeContent(workingFile);
       artifact.persistAttributes();
    }
 
-   private void updateWholeDocumentArtifact(Artifact artifact) throws MultipleAttributesExist, FileNotFoundException, OseeCoreException, SQLException {
+   private void updateWholeDocumentArtifact(Artifact artifact) throws FileNotFoundException, OseeCoreException, SQLException {
       artifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, new FileInputStream(workingFile));
       artifact.persistAttributes();
    }
@@ -246,7 +245,7 @@ public class UpdateArtifactJob extends UpdateJob {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws OseeCoreException, SQLException {
+      protected void handleTxFinally() throws OseeCoreException {
          super.handleTxFinally();
          if (!deletedGuids.isEmpty()) {
             throw new IllegalArgumentException(

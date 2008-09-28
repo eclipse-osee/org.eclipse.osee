@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
@@ -206,7 +206,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             relationTypeList.add(linkDescriptor.getTypeName());
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -83,7 +82,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       }
    }
 
-   public String getSelectedStringValue() throws SQLException, MultipleAttributesExist {
+   public String getSelectedStringValue() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (User user : getSelectedUsers()) {
          sb.append(AXml.addTagData("userId", user.getUserId()));

@@ -40,7 +40,7 @@ public class ArtifactImportJob extends Job {
    private final Branch branch;
    private final Artifact importRoot;
 
-   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws IllegalArgumentException, SQLException {
+   public ArtifactImportJob(File file, Artifact importRoot, ArtifactExtractor extractor, Branch branch, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       super("Importing");
 
       this.file = file;

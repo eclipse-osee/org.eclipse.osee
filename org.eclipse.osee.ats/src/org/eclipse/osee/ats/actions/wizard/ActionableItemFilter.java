@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 
 public class ActionableItemFilter extends ViewerFilter {
@@ -41,8 +42,8 @@ public class ActionableItemFilter extends ViewerFilter {
             show = checkItemAndChildren((ActionableItemArtifact) child);
             if (show) return true;
          }
-      } catch (SQLException ex) {
-         AtsPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }

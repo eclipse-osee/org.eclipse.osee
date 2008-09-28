@@ -11,28 +11,24 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactChecks {
-
    public static List<IArtifactCheck> tasks;
-   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChecks.class);
    public static String EXTENSION_POINT = "org.eclipse.osee.framework.skynet.core.ArtifactCheck";
 
-   public static List<IArtifactCheck> getArtifactChecks() throws OseeCoreException, SQLException {
+   public static List<IArtifactCheck> getArtifactChecks() {
       if (tasks == null) {
          tasks = new ArrayList<IArtifactCheck>();
          List<IConfigurationElement> iExtensions =
@@ -48,12 +44,11 @@ public class ArtifactChecks {
                   tasks.add(check);
                }
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, "Problem loading ArtifactCheck extension \"" + className + "\".  Ignorning.",
-                     ex);
+               OseeLog.log(SkynetActivator.class, Level.SEVERE,
+                     "Problem loading ArtifactCheck extension \"" + className + "\".  Ignorning.", ex);
             }
          }
       }
       return tasks;
    }
-
 }

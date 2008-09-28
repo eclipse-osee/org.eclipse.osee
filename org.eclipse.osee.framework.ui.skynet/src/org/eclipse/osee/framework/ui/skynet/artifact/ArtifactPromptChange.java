@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
@@ -197,11 +197,11 @@ public class ArtifactPromptChange {
       return false;
    }
 
-   public static boolean promptChangeBoolean(String attributeName, String displayName, final Artifact artifact, String toggleMessage, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeBoolean(String attributeName, String displayName, final Artifact artifact, String toggleMessage, boolean persist) throws SQLException, OseeCoreException {
       return promptChangeBoolean(attributeName, displayName, Arrays.asList(artifact), toggleMessage, persist);
    }
 
-   public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException, OseeCoreException {
       boolean set = false;
       if (smas.size() == 1) set = smas.iterator().next().getSoleAttributeValue(attributeName, false);
       MessageDialogWithToggle md =

@@ -95,7 +95,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
                   }
                }
             } else if (artifact.getArtifactTypeName().equals("User Group")) {
-               for (User user : artifact.getArtifacts(CoreRelationEnumeration.Users_User, User.class)) {
+               for (User user : artifact.getRelatedArtifacts(CoreRelationEnumeration.Users_User, User.class)) {
                   emails.add(user.getEmail());
                }
             }

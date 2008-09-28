@@ -43,7 +43,7 @@ public class XListDam extends XList implements IArtifactWidget {
       artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
    }
 
-   public Collection<String> getStoredStrs() throws SQLException {
+   public Collection<String> getStoredStrs() throws OseeCoreException {
       return artifact.getAttributesToStringList(attributeTypeName);
    }
 

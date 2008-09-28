@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
@@ -64,7 +63,7 @@ public class SkynetUserArtifactCustomizeDefaults {
       return defaultGuids.contains(custData.getGuid());
    }
 
-   private void loadCustomizeDefaults() throws MultipleAttributesExist, SQLException {
+   private void loadCustomizeDefaults() throws OseeCoreException {
       String xml = "";
       if (user != null) {
          xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");

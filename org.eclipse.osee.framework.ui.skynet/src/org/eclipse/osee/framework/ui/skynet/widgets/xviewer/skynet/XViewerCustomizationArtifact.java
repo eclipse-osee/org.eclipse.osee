@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -64,8 +66,8 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
                xViewerCustomizationArtifact.persistAttributes();
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");
-         } catch (SQLException ex) {
-            SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
       return xViewerCustomizationArtifact;

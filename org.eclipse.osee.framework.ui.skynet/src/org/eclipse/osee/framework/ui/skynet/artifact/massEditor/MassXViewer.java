@@ -17,7 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -311,8 +314,8 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
                if (getTree() != null && !getTree().isDisposed()) {
                   remove(loadedArtifacts.getLoadedArtifacts().toArray());
                }
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -328,8 +331,8 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
          public void run() {
             try {
                remove(loadedArtifacts.getLoadedArtifacts().toArray());
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });

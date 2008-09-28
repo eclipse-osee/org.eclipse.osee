@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -36,7 +35,7 @@ public class MySubscribedSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       return user.getRelatedArtifacts(AtsRelation.SubscribedUser_Artifact);
    }
 }

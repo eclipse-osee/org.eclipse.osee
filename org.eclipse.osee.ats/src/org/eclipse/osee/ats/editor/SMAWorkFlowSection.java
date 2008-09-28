@@ -107,21 +107,18 @@ public class SMAWorkFlowSection extends SectionPart {
 
    protected Section createPage(Composite parent) throws OseeCoreException, SQLException {
 
-      Section section =
-            toolkit.createSection(parent, Section.TWISTIE | Section.TITLE_BAR);
+      Section section = toolkit.createSection(parent, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(getCurrentStateTitle());
       if (smaMgr.isCurrentState(atsWorkPage.getName())) section.setBackground(AtsPlugin.ACTIVE_COLOR);
       section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
       mainComp = toolkit.createClientContainer(section, 2);
-      mainComp.setLayoutData(new GridData(
-            GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2,
-            atsWorkPage.getName());
+      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, atsWorkPage.getName());
 
       Composite rightComp = toolkit.createContainer(mainComp, 1);
       rightComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -129,8 +126,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
 
-      GridData gridData =
-            new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
       gridData.widthHint = 400;
       workComp.setLayoutData(gridData);
 
@@ -146,20 +142,16 @@ public class SMAWorkFlowSection extends SectionPart {
    protected Composite createWorkArea(Composite comp, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException, SQLException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
-      workComp.setLayoutData(new GridData(
-            GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
+      workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       // workComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 
       if (isEditable) createCurrentPageHeader(workComp, atsWorkPage, toolkit);
 
       // Add static layoutDatas to atsWorkPage
-      List<DynamicXWidgetLayoutData> staticDatas =
-            new ArrayList<DynamicXWidgetLayoutData>();
-      for (WorkItemDefinition workItemDefinition : atsWorkPage.getWorkPageDefinition().getWorkItems(
-            true)) {
+      List<DynamicXWidgetLayoutData> staticDatas = new ArrayList<DynamicXWidgetLayoutData>();
+      for (WorkItemDefinition workItemDefinition : atsWorkPage.getWorkPageDefinition().getWorkItems(true)) {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
-            DynamicXWidgetLayoutData data =
-                  ((WorkWidgetDefinition) workItemDefinition).get();
+            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
             data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
             staticDatas.add(data);
          }
@@ -167,13 +159,11 @@ public class SMAWorkFlowSection extends SectionPart {
       atsWorkPage.addLayoutDatas(staticDatas);
 
       // Add dynamic WorkItemDefinitions to atsWorkPage
-      List<DynamicXWidgetLayoutData> dynamicDatas =
-            new ArrayList<DynamicXWidgetLayoutData>();
+      List<DynamicXWidgetLayoutData> dynamicDatas = new ArrayList<DynamicXWidgetLayoutData>();
       for (WorkItemDefinition workItemDefinition : WorkItemDefinitionFactory.getDynamicWorkItemDefintions(
             smaMgr.getWorkFlowDefinition(), atsWorkPage.getWorkPageDefinition(), smaMgr)) {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
-            DynamicXWidgetLayoutData data =
-                  ((WorkWidgetDefinition) workItemDefinition).get();
+            DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
             data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
             dynamicDatas.add(data);
          }
@@ -184,18 +174,14 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Create main body
       dynamicXWidgetLayout =
-            atsWorkPage.createBody(toolkit, workComp, smaMgr.getSma(), xModListener,
-                  isEditable || isGlobalEditable);
+            atsWorkPage.createBody(toolkit, workComp, smaMgr.getSma(), xModListener, isEditable || isGlobalEditable);
 
       // Check extenstion points for page creation
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
-         Result result =
-               item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener,
-                     isEditable || isGlobalEditable);
+         Result result = item.pageCreated(toolkit, atsWorkPage, smaMgr, xModListener, isEditable || isGlobalEditable);
          if (result.isFalse()) {
             result.popup();
-            OSEELog.logSevere(AtsPlugin.class,
-                  "Error in page creation => " + result.getText(), true);
+            OSEELog.logSevere(AtsPlugin.class, "Error in page creation => " + result.getText(), true);
          }
       }
 
@@ -253,16 +239,12 @@ public class SMAWorkFlowSection extends SectionPart {
          if (smaMgr.isCompleted()) {
             sb.append(" - ");
             sb.append(smaMgr.getSma().getWorldViewCompletedDateStr());
-            LogItem item =
-                  smaMgr.getLog().getStateEvent(LogType.StateEntered,
-                        atsWorkPage.getName());
+            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
          } else if (smaMgr.isCancelled()) {
             sb.append(" - ");
             sb.append(smaMgr.getSma().getWorldViewCancelledDateStr());
-            LogItem item =
-                  smaMgr.getLog().getStateEvent(LogType.StateEntered,
-                        atsWorkPage.getName());
+            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by " + item.getUser().getName());
          }
          if (smaMgr.getStateMgr().getAssignees().size() > 0) {
@@ -270,8 +252,7 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          }
       } else {
-         LogItem item =
-               smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
          if (item != null) {
             sb.append(" - State Completed " + item.getDate(XDate.MMDDYYHHMM));
             sb.append(" by " + item.getUser().getName());
@@ -298,8 +279,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (smaMgr.getSma().isDeleted()) return;
          // Notify extensions of widget modified
          try {
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(
-                  atsWorkPage.getId())) {
+            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
                try {
                   item.widgetModified(fSection, xWidget);
                } catch (Exception ex) {
@@ -320,13 +300,11 @@ public class SMAWorkFlowSection extends SectionPart {
       super.refresh();
       if (isEditable) {
          if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-            currentAssigneesLabel.setText(Artifacts.toString("; ",
-                  smaMgr.getStateMgr().getAssignees()));
+            currentAssigneesLabel.setText(Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
             currentAssigneesLabel.getParent().layout();
          }
          if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
-            WorkPageDefinition toWorkPage =
-                  (WorkPageDefinition) transitionToStateCombo.getSelected();
+            WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
             if (toWorkPage == null)
                transitionAssigneesLabel.setText("");
             else
@@ -362,8 +340,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
          });
          currentAssigneesLabel =
-               toolkit.createLabel(comp, Artifacts.toString("; ",
-                     smaMgr.getStateMgr().getAssignees()));
+               toolkit.createLabel(comp, Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees()));
          currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          if (smaMgr.getStateMgr().getAssignees().size() == 0) {
             Label errorLabel = toolkit.createLabel(comp, "Error: State has no assignees");
@@ -371,10 +348,9 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       } else if (smaMgr.getStateMgr().getAssignees().size() > 0) {
          Label errorLabel =
-               toolkit.createLabel(
-                     comp,
-                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.toString(
-                           "; ", smaMgr.getStateMgr().getAssignees()));
+               toolkit.createLabel(comp,
+                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.toString("; ",
+                           smaMgr.getStateMgr().getAssignees()));
          errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }
@@ -387,8 +363,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleChangeTransitionAssignees() throws OseeCoreException, SQLException {
-      WorkPageDefinition toWorkPage =
-            (WorkPageDefinition) transitionToStateCombo.getSelected();
+      WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
          OSEELog.logException(AtsPlugin.class, "No Transition State Selected", null, true);
          return;
@@ -397,8 +372,7 @@ public class SMAWorkFlowSection extends SectionPart {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
-      UserCheckTreeDialog uld =
-            new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+      UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(smaMgr.getTransitionAssignees());
       if (uld.open() != 0) return;
@@ -489,8 +463,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
       });
-      transitionAssigneesLabel =
-            toolkit.createLabel(comp, smaMgr.getTransitionAssigneesStr());
+      transitionAssigneesLabel = toolkit.createLabel(comp, smaMgr.getTransitionAssigneesStr());
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
    }
@@ -519,8 +492,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       if (transitionStateOverride != null) {
          // Return if override state is same as selected
-         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(
-               transitionStateOverride)) return;
+         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) return;
          // Find page corresponding to override state name
          for (WorkPageDefinition toWorkPageDefinition : smaMgr.getToWorkPages()) {
             if (toWorkPageDefinition.getPageName().equals(transitionStateOverride)) {
@@ -555,17 +527,14 @@ public class SMAWorkFlowSection extends SectionPart {
          smaMgr.getEditor().doSave(null);
 
          // Get transition to state
-         WorkPageDefinition toWorkPageDefinition =
-               (WorkPageDefinition) transitionToStateCombo.getSelected();
+         WorkPageDefinition toWorkPageDefinition = (WorkPageDefinition) transitionToStateCombo.getSelected();
 
          if (toWorkPageDefinition == null) {
-            OSEELog.logException(AtsPlugin.class, "No Transition State Selected", null,
-                  true);
+            OSEELog.logException(AtsPlugin.class, "No Transition State Selected", null, true);
             return;
          }
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
-            EntryDialog cancelDialog =
-                  new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+            EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
             if (cancelDialog.open() != 0) return;
             Result result = smaMgr.transitionToCancelled(cancelDialog.getEntry(), true);
             if (result.isFalse()) {
@@ -610,8 +579,7 @@ public class SMAWorkFlowSection extends SectionPart {
             if (smaMgr.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || smaMgr.getWorkPageDefinition().hasWorkRule(
                   AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
                if (smaMgr.getSma().getTargetedForVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
-                  AWorkbench.popup(
-                        "Error",
+                  AWorkbench.popup("Error",
                         "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
                   return;
                }
@@ -629,12 +597,10 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             // Check extension points for valid transition
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(
-                  atsWorkPage.getId())) {
+            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
                try {
                   result =
-                        item.transitioning(smaMgr,
-                              smaMgr.getStateMgr().getCurrentStateName(),
+                        item.transitioning(smaMgr, smaMgr.getStateMgr().getCurrentStateName(),
                               toWorkPageDefinition.getPageName(), toAssignees);
                   if (result.isFalse()) {
                      result.popup();
@@ -649,15 +615,9 @@ public class SMAWorkFlowSection extends SectionPart {
             if (!handlePopulateStateMetrics()) return;
          }
 
-         try {
-            smaMgr.getSma().persistAttributes();
-         } catch (SQLException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
+         smaMgr.getSma().persistAttributes();
 
-         Result result =
-               smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true,
-                     false);
+         Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false);
          if (result.isFalse()) {
             result.popup();
             return;
@@ -691,8 +651,7 @@ public class SMAWorkFlowSection extends SectionPart {
          int minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
          float hoursSinceCreation = minSinceCreation / 60;
-         if (hoursSinceCreation < 0.02) hoursSinceCreation =
-               (new Float(0.02)).floatValue();
+         if (hoursSinceCreation < 0.02) hoursSinceCreation = (new Float(0.02)).floatValue();
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
             smaMgr.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
@@ -704,9 +663,8 @@ public class SMAWorkFlowSection extends SectionPart {
       String msg =
             smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsLib.doubleToStrString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
       SMAStatusDialog tsd =
-            new SMAStatusDialog(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Enter Hours Spent", msg, false, Arrays.asList(smaMgr.getSma()));
+            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
+                  msg, false, Arrays.asList(smaMgr.getSma()));
       int result = tsd.open();
       if (result == 0) {
          smaMgr.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
@@ -716,8 +674,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public int getCreationToNowDateDeltaMinutes() {
-      Date createDate =
-            smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
+      Date createDate = smaMgr.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName()).getDate();
       long createDateLong = createDate.getTime();
       Date date = new Date();
       float diff = (date.getTime() - createDateLong);

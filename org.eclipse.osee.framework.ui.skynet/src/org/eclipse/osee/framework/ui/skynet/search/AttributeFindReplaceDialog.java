@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,7 +29,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -61,7 +61,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Robert A. Fisher
  */
 public class AttributeFindReplaceDialog extends Dialog {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeFindReplaceDialog.class);
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
    private Text txtReplaceStr;
@@ -99,12 +98,12 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(
-               BranchPersistenceManager.getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
+         cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(BranchPersistenceManager.getDefaultBranch()).toArray(
+               AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 

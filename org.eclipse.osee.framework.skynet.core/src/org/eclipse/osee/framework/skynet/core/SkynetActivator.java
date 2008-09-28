@@ -48,6 +48,8 @@ public class SkynetActivator extends OseeUiActivator {
       if (job != null && job.getThread().isAlive()) job.getThread().interrupt();
    }
 
+   @Deprecated
+   // usee OseeLog instead
    public static Logger getLogger() {
       return logger;
    }

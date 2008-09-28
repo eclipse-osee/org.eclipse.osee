@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,7 +45,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       List<String> hridGuids = new ArrayList<String>();
       Set<String> nonHridGuids = new HashSet<String>();
       for (String str : enteredIds.split(",")) {
@@ -86,7 +85,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,

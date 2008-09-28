@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,34 +68,26 @@ public class AtsCache {
    }
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
-      try {
-         BulkLoadAtsCache.run(true);
-         ActionableItemArtifact aia = instance.guidToActionableItem.get(guid);
-         if (aia != null) return aia;
-         Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
-         if (art != null) {
-            cache(art);
-            return (ActionableItemArtifact) art;
-         }
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
+      BulkLoadAtsCache.run(true);
+      ActionableItemArtifact aia = instance.guidToActionableItem.get(guid);
+      if (aia != null) return aia;
+      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
+      if (art != null) {
+         cache(art);
+         return (ActionableItemArtifact) art;
       }
       return null;
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
       BulkLoadAtsCache.run(true);
-      try {
-         BulkLoadAtsCache.run(true);
-         TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
-         if (teamDef != null) return teamDef;
-         Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
-         if (art != null) {
-            cache(art);
-            return (TeamDefinitionArtifact) art;
-         }
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
+      BulkLoadAtsCache.run(true);
+      TeamDefinitionArtifact teamDef = instance.guidToTeamDefinition.get(guid);
+      if (teamDef != null) return teamDef;
+      Artifact art = ArtifactQuery.getArtifactFromId(guid, AtsPlugin.getAtsBranch(), false);
+      if (art != null) {
+         cache(art);
+         return (TeamDefinitionArtifact) art;
       }
       return null;
    }

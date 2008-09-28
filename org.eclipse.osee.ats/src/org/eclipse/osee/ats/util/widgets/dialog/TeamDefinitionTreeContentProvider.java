@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,6 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -52,7 +52,7 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
          if (element instanceof TeamDefinitionArtifact) {
             return ((TeamDefinitionArtifact) element).getParent();
          }
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return null;

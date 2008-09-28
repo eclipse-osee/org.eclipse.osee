@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +37,7 @@ public class XActionableItemsDam extends XTextDam {
       this.sma = sma;
    }
 
-   public Set<ActionableItemArtifact> getActionableItems() throws SQLException, OseeCoreException {
+   public Set<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (String guid : getActionableItemGuids()) {
          ActionableItemArtifact aia = AtsCache.getActionableItemByGuid(guid);
@@ -50,24 +49,24 @@ public class XActionableItemsDam extends XTextDam {
       return ais;
    }
 
-   public String getActionableItemsStr() throws OseeCoreException, SQLException {
+   public String getActionableItemsStr() throws OseeCoreException {
       return Artifacts.toString("; ", getActionableItems());
    }
 
-   public List<String> getActionableItemGuids() throws SQLException {
+   public List<String> getActionableItemGuids() throws OseeCoreException {
       return sma.getAttributesToStringList(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
-   public void addActionableItem(ActionableItemArtifact aia) throws SQLException {
+   public void addActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
       if (!getActionableItemGuids().contains(aia.getGuid())) sma.addAttribute(
             ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
-   public void removeActionableItem(ActionableItemArtifact aia) throws SQLException, OseeCoreException {
+   public void removeActionableItem(ActionableItemArtifact aia) throws OseeCoreException {
       sma.deleteAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
-   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException, OseeCoreException {
+   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws OseeCoreException {
       Set<ActionableItemArtifact> existingAias = getActionableItems();
 
       // Remove non-selected items

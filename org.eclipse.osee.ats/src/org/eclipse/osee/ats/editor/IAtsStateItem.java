@@ -28,29 +28,29 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IAtsStateItem {
 
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException;
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException;
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException, SQLException;
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
    public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException, SQLException;
 
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException, SQLException;
+   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException;
 
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException, SQLException;
+   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException;
 
-   public String getDescription() throws OseeCoreException, SQLException;
+   public String getDescription() throws OseeCoreException;
 
-   public String getBranchShortName(SMAManager smaMgr) throws OseeCoreException, SQLException;
+   public String getBranchShortName(SMAManager smaMgr) throws OseeCoreException;
 
-   public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException, SQLException;
+   public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException;
 
-   public Collection<String> getIds() throws OseeCoreException, OseeCoreException, SQLException;
+   public Collection<String> getIds() throws OseeCoreException;
 
-   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws OseeCoreException, SQLException;
+   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws OseeCoreException;
 
-   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws OseeCoreException, SQLException;
+   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws OseeCoreException;
 
    /**
     * @param smaMgr
@@ -60,15 +60,15 @@ public interface IAtsStateItem {
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
     * @throws Exception TODO
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException;
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
 
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException;
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
 
    /**
     * @param smaMgr TODO
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     * @throws Exception TODO
     */
-   public Result committing(SMAManager smaMgr) throws OseeCoreException, SQLException;
+   public Result committing(SMAManager smaMgr) throws OseeCoreException;
 
 }

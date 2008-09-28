@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,16 +41,12 @@ public abstract class Attribute<T> {
    }
 
    public void setValue(T value) throws OseeCoreException {
-      try {
-         if (attributeType.getName().equals("Name")) {
-            // Confirm artifact is fit to rename
-            for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-               Result result = check.isRenamable(Arrays.asList(artifact));
-               if (result.isFalse()) throw new OseeCoreException(result.getText());
-            }
+      if (attributeType.getName().equals("Name")) {
+         // Confirm artifact is fit to rename
+         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+            Result result = check.isRenamable(Arrays.asList(artifact));
+            if (result.isFalse()) throw new OseeCoreException(result.getText());
          }
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
       }
 
       if (subClassSetValue(value)) {
@@ -60,16 +55,12 @@ public abstract class Attribute<T> {
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
-      try {
-         if (attributeType.getName().equals("Name")) {
-            // Confirm artifact is fit to rename
-            for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
-               Result result = check.isRenamable(Arrays.asList(artifact));
-               if (result.isFalse()) throw new OseeCoreException(result.getText());
-            }
+      if (attributeType.getName().equals("Name")) {
+         // Confirm artifact is fit to rename
+         for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+            Result result = check.isRenamable(Arrays.asList(artifact));
+            if (result.isFalse()) throw new OseeCoreException(result.getText());
          }
-      } catch (SQLException ex) {
-         throw new OseeCoreException(ex);
       }
 
       boolean response = subClassSetValue(convertStringToValue(value));
@@ -188,7 +179,7 @@ public abstract class Attribute<T> {
    public boolean canDelete() {
       try {
          return artifact.getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          return false;
       }
    }
@@ -196,7 +187,7 @@ public abstract class Attribute<T> {
    /**
     * Purges the attribute from the database.
     */
-   public void purge() throws OseeCoreException, SQLException {
+   public void purge() throws OseeCoreException {
       getAttributeDataProvider().purge();
    }
 

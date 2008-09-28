@@ -237,7 +237,7 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
                xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
             }
             if (art instanceof StateMachineArtifact) {
-               List<Artifact> assigned = art.getArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
+               List<Artifact> assigned = art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
                if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && assigned.size() > 0) {
                   xResultData.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with related assignees");
                   if (fixAssignees) {

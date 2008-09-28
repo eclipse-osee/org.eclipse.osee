@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
@@ -32,7 +31,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       setData(xWidgetLayoutData);
    }
 
-   public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException, SQLException {
+   public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getDescriptiveName()));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
@@ -43,7 +42,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    }
 
    @Override
-   public Artifact toArtifact(WriteType writeType) throws OseeCoreException, SQLException {
+   public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
       try {
          art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), XWidgetParser.toXml(get()));
@@ -82,12 +81,12 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
     * @return
     * @throws Exception
     */
-   public static WorkWidgetDefinition createFromXml(String xml) throws OseeCoreException, SQLException {
+   public static WorkWidgetDefinition createFromXml(String xml) throws OseeCoreException {
       DynamicXWidgetLayoutData data = getFromXml(xml);
       return new WorkWidgetDefinition(data);
    }
 
-   public static DynamicXWidgetLayoutData getFromXml(String xml) throws OseeCoreException, SQLException {
+   public static DynamicXWidgetLayoutData getFromXml(String xml) throws OseeCoreException {
       try {
          DynamicXWidgetLayoutData data = XWidgetParser.extractlayoutData(null, xml);
          if (data == null) throw new IllegalArgumentException(

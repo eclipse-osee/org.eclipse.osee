@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,6 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -96,7 +98,7 @@ public class ExportArtifacts extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws SQLException {
+   private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws OseeCoreException {
       HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
 
       for (Artifact artifact : artifacts) {
@@ -110,7 +112,7 @@ public class ExportArtifacts extends AbstractBlam {
       Arrays.sort(attributeColumns);
    }
 
-   private void init() throws IOException, SQLException {
+   private void init() throws IOException, OseeDataStoreException, OseeTypeDoesNotExist {
       nameAttributeType = AttributeTypeManager.getType("Name");
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -94,7 +92,7 @@ public class ATSLog {
       return logItems;
    }
 
-   public Date getLastStatusedDate() throws OseeCoreException, SQLException {
+   public Date getLastStatusedDate() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Metrics);
       if (logItem == null) return null;
       return logItem.getDate();
@@ -199,19 +197,19 @@ public class ATSLog {
       }
    }
 
-   public void addLog(LogType type, String state, String msg) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public void addLog(LogType type, String state, String msg) throws OseeCoreException {
       addLog(type, state, msg, new Date(), SkynetAuthentication.getUser());
    }
 
-   public void addLog(LogType type, String state, String msg, User user) throws SQLException, MultipleAttributesExist {
+   public void addLog(LogType type, String state, String msg, User user) throws OseeCoreException {
       addLog(type, state, msg, new Date(), user);
    }
 
-   public void addLogItem(LogItem item) throws SQLException, MultipleAttributesExist {
+   public void addLogItem(LogItem item) throws OseeCoreException {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
-   public void addLog(LogType type, String state, String msg, Date date, User user) throws SQLException, MultipleAttributesExist {
+   public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
       if (!enabled) return;
       LogItem logItem = new LogItem(type, date, user, state, msg);
       List<LogItem> logItems = getLogItems();

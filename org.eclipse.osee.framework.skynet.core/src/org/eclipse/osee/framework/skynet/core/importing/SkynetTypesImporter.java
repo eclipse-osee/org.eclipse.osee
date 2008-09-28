@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
@@ -240,10 +241,12 @@ public class SkynetTypesImporter implements RowProcessor {
 
    /**
     * @param row
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     * @throws OseeDataStoreException
     * @throws IllegalStateException
     */
-   private void addArtifactType(String[] row) throws SQLException, ClassNotFoundException, IllegalStateException, OseeCoreException {
+   private void addArtifactType(String[] row) throws OseeDataStoreException, OseeTypeDoesNotExist {
       if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       String factoryClassName = row[0];
       String artifactTypeName = row[1];

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -48,12 +49,16 @@ public class ChangeReportInput implements Serializable {
    /**
     * @param branch
     * @throws SQLException
+    * @throws OseeDataStoreException
+    * @throws TransactionDoesNotExist
+    * @throws BranchDoesNotExist
+    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public ChangeReportInput(Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException, SQLException {
       this("Change Report: " + branch.getDisplayName(), TransactionIdManager.getStartEndPoint(branch),
-            branch.getParentBranch() != null);
+            branch.hasParentBranch());
    }
 
    /**
@@ -63,7 +68,7 @@ public class ChangeReportInput implements Serializable {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, Pair<TransactionId, TransactionId> transactionToFrom, boolean detectConflicts) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public ChangeReportInput(String name, Pair<TransactionId, TransactionId> transactionToFrom, boolean detectConflicts) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, transactionToFrom.getKey(), transactionToFrom.getValue(), detectConflicts, true);
    }
 
@@ -73,7 +78,7 @@ public class ChangeReportInput implements Serializable {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public ChangeReportInput(String name, TransactionId transactionId) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, TransactionIdManager.getPriorTransaction(transactionId), transactionId);
    }
 
@@ -84,7 +89,7 @@ public class ChangeReportInput implements Serializable {
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(String name, TransactionId baseTransactionId, TransactionId toTransactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public ChangeReportInput(String name, TransactionId baseTransactionId, TransactionId toTransactionId) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       this(name, baseTransactionId, toTransactionId, false, false);
    }
 
@@ -95,15 +100,17 @@ public class ChangeReportInput implements Serializable {
     * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
+    * @throws OseeDataStoreException
     */
-   private ChangeReportInput(String name, TransactionId baseTransaction, TransactionId toTransaction, boolean detectConflicts, boolean branchInput) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   private ChangeReportInput(String name, TransactionId baseTransaction, TransactionId toTransaction, boolean detectConflicts, boolean branchInput) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       this(name, null, baseTransaction, toTransaction, branchInput);
 
       if (baseTransaction.equals(toTransaction)) {
-         throw new IllegalArgumentException("The base and to transactions must not be the same transaction for branch " + name);
+         throw new IllegalArgumentException(
+               "The base and to transactions must not be the same transaction for branch " + name);
       }
 
-      if (baseTransaction.getBranch().getParentBranch() == null && detectConflicts) throw new IllegalArgumentException(
+      if (baseTransaction.getBranch().hasParentBranch() && detectConflicts) throw new IllegalArgumentException(
             "The transactions must be from a branch that has a parent branch.");
 
       // Attempt to get the branched transaction number for the parent branch
@@ -121,9 +128,9 @@ public class ChangeReportInput implements Serializable {
     * @param baseParentTransactionId
     * @param baseTransaction
     * @param toTransaction
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private ChangeReportInput(String name, TransactionId baseParentTransactionId, TransactionId baseTransaction, TransactionId toTransaction, boolean branchInput) throws SQLException {
+   private ChangeReportInput(String name, TransactionId baseParentTransactionId, TransactionId baseTransaction, TransactionId toTransaction, boolean branchInput) throws OseeDataStoreException {
       if (baseTransaction == null) throw new IllegalArgumentException("baseTransaction can not be null.");
       if (toTransaction == null) throw new IllegalArgumentException("toTransaction can not be null.");
       if (!baseTransaction.getBranch().equals(toTransaction.getBranch())) throw new IllegalArgumentException(
@@ -172,12 +179,12 @@ public class ChangeReportInput implements Serializable {
 
    /**
     * @param forceRefresh The forceRefresh to set.
-    * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws TransactionDoesNotExist
+    * @throws OseeDataStoreException
     * @throws IllegalStateException
     */
-   public void setForceRefresh(boolean forceRefresh) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public void setForceRefresh(boolean forceRefresh) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       this.forceRefresh = forceRefresh;
       if (branchInput && this.forceRefresh == true) {
          toTransaction = TransactionIdManager.getStartEndPoint(baseTransaction.getBranch()).getValue();

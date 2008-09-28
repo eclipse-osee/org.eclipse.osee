@@ -78,6 +78,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       return pluginInstance;
    }
 
+   @Deprecated
+   // use OseeLog instead
    public static Logger getLogger() {
       return logger;
    }

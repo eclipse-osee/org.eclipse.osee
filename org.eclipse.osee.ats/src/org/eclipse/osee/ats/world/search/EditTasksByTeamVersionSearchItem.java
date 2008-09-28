@@ -63,7 +63,7 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws SQLException {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException {
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
          srchTeamDefs.add(teamDef);
@@ -76,21 +76,22 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
-	   Set<TeamDefinitionArtifact> teamDefs = getSearchTeamDefs();
-	   List<Artifact> validWorkflows = new ArrayList<Artifact>();
-	   List<Artifact> workflows = selectedVersion.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
-	   for(Artifact workflow:workflows){
-		   if(teamDefs.contains(((TeamWorkFlowArtifact)workflow).getTeamDefinition())){
-			   validWorkflows.add(workflow);
-		   }
-	   }
-	   Set<Artifact> tasks = RelationManager.getRelatedArtifacts(validWorkflows, 1, AtsRelation.SmaToTask_Task);
-	   return tasks;
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+      Set<TeamDefinitionArtifact> teamDefs = getSearchTeamDefs();
+      List<Artifact> validWorkflows = new ArrayList<Artifact>();
+      List<Artifact> workflows =
+            selectedVersion.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
+      for (Artifact workflow : workflows) {
+         if (teamDefs.contains(((TeamWorkFlowArtifact) workflow).getTeamDefinition())) {
+            validWorkflows.add(workflow);
+         }
+      }
+      Set<Artifact> tasks = RelationManager.getRelatedArtifacts(validWorkflows, 1, AtsRelation.SmaToTask_Task);
+      return tasks;
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (teamDefs != null) return;
       if (searchType == SearchType.ReSearch && selectedTeamDefs != null) return;

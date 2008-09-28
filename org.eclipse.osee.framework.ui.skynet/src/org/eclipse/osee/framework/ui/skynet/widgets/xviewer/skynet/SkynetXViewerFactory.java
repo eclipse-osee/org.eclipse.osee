@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -84,7 +85,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
    }
 
-   public static List<XViewerColumn> getAllAttributeColumns() throws SQLException {
+   public static List<XViewerColumn> getAllAttributeColumns() throws OseeDataStoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       for (AttributeType attributeType : AttributeTypeManager.getTypes()) {
          columns.add(getAttributeColumn(attributeType));
@@ -111,7 +112,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       Set<String> attrNames = new HashSet<String>();

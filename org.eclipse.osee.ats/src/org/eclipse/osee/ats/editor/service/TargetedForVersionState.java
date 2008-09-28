@@ -11,13 +11,15 @@
 
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -41,15 +43,18 @@ public class TargetedForVersionState extends WorkPageService {
 
    @Override
    public void refresh() {
+      String str = "Target Version: ";
       try {
-         String str = "Target Version: ";
-         if (smaMgr.getTargetedForVersion() != null) str += smaMgr.getTargetedForVersion().getDescriptiveName();
-         if (link != null && !link.isDisposed())
-            link.setText(str);
-         else if (label != null && !label.isDisposed()) label.setText(str);
-      } catch (SQLException ex) {
-         // Do Nothing
+         if (smaMgr.getTargetedForVersion() != null) {
+            str += smaMgr.getTargetedForVersion().getDescriptiveName();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         str += ex.getLocalizedMessage();
       }
+      if (link != null && !link.isDisposed())
+         link.setText(str);
+      else if (label != null && !label.isDisposed()) label.setText(str);
    }
 
    /* (non-Javadoc)

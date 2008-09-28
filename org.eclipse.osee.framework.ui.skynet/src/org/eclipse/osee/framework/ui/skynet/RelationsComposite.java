@@ -287,9 +287,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             try {
                performDeleteRelation(selection);
             } catch (ArtifactDoesNotExist ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
-            } catch (SQLException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
       });
@@ -369,9 +367,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          RelationLink link = (RelationLink) object;
          try {
             selectedArtifact = link.getArtifactOnOtherSide(artifact);
-         } catch (ArtifactDoesNotExist ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
          ArtifactEditor.editArtifact(selectedArtifact);
@@ -388,9 +384,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             RelationLink link = (RelationLink) object;
             try {
                selectedArtifacts.add(link.getArtifactB());
-            } catch (ArtifactDoesNotExist ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            } catch (SQLException ex) {
+            } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
@@ -548,7 +542,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
     * @throws SQLException
     * @throws ArtifactDoesNotExist
     */
-   private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist, SQLException {
+   private void performDeleteRelation(IStructuredSelection selection) throws ArtifactDoesNotExist {
       Object[] objects = selection.toArray();
       for (Object object : objects) {
          if (object instanceof RelationLink) {
@@ -577,12 +571,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             treeViewer.refresh(relationType);
          } else if (object instanceof RelationTypeSide) {
             RelationTypeSide group = (RelationTypeSide) object;
-            try {
-               RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-               treeViewer.refresh(group);
-            } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
+            RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
+            treeViewer.refresh(group);
          }
       }
    }
@@ -603,9 +593,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             try {
                performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
             } catch (ArtifactDoesNotExist ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
-            } catch (SQLException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
@@ -652,13 +640,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                Artifact selectedArtifact = null;
                try {
                   selectedArtifact = link.getArtifactOnOtherSide(artifact);
-               } catch (ArtifactDoesNotExist ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-               } catch (SQLException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
-               //               Artifact selectedArtifact =
-               //                     artifact.equals(link.getArtifactA()) ? link.getArtifactB() : link.getArtifactA();
                artifacts[index] = selectedArtifact;
                artifactToLinkMap.put(selectedArtifact.getArtId(), link);
             }
@@ -685,7 +669,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                RelationLink dropTarget = (RelationLink) obj;
 
                // the links must be in the same group
-               if ((targetLink.getRelationType().getTypeName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getRelationType().getTypeName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
+
+               if (targetLink.getSide(artifact).equals(dropTarget.getSide(artifact)) && targetLink.getRelationType().equals(
+                     dropTarget.getRelationType())) {
                   if (isFeedbackAfter) {
                      event.feedback = DND.FEEDBACK_INSERT_AFTER;
                   } else {

@@ -10,22 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface ISubscribableArtifact {
 
-   public void addSubscribed(User u) throws SQLException;
+   public void addSubscribed(User u) throws OseeCoreException;
 
-   public void removeSubscribed(User u) throws SQLException;
+   public void removeSubscribed(User u) throws OseeCoreException;
 
-   public boolean isSubscribed(User u) throws SQLException;
+   public boolean isSubscribed(User u) throws OseeCoreException;
 
-   public ArrayList<User> getSubscribed() throws SQLException;
+   public ArrayList<User> getSubscribed() throws OseeCoreException;
 
    public boolean amISubscribed();
 

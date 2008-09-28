@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dialogs;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,19 +53,7 @@ public class BranchSelectionDialog extends ElementTreeSelectionDialog {
                message = "Must make selection.";
             } else {
                Branch branch = (Branch) selection[0];
-               Branch toCheck = branch;
-               // Check that it is a working branch
-               if (areOnlyWorkingBranchesAllowed() != false) {
-                  Branch parentBranch = null;
-                  try {
-                     parentBranch = branch.getParentBranch();
-                  } catch (SQLException ex) {
-                     logger.log(Level.SEVERE, "Unable to get parent branch", ex);
-                  }
-                  toCheck = parentBranch;
-               }
-
-               if (toCheck == null) {
+               if (areOnlyWorkingBranchesAllowed() && !branch.hasParentBranch()) {
                   message = getBranchErrorMessage();
                } else {
                   status = OK;

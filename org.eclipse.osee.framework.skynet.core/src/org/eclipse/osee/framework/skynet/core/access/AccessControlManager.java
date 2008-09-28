@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -126,7 +128,7 @@ public class AccessControlManager {
 
       try {
          populateAccessControlLists();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
@@ -135,8 +137,9 @@ public class AccessControlManager {
     * populates all of the access control lists.
     * 
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   private void populateAccessControlLists() throws SQLException {
+   private void populateAccessControlLists() throws SQLException, OseeCoreException {
       populateArtifactAccessControlList();
       populateBranchAccessControlList();
       // populateSubjectsAccessControlList();
@@ -169,7 +172,7 @@ public class AccessControlManager {
     * 
     * @throws SQLException
     */
-   private void populateBranchAccessControlList() throws SQLException {
+   private void populateBranchAccessControlList() throws SQLException, OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
@@ -198,8 +201,10 @@ public class AccessControlManager {
     * popualtes the artifact access control list cache
     * 
     * @throws SQLException
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   private void populateArtifactAccessControlList() throws SQLException {
+   private void populateArtifactAccessControlList() throws SQLException, OseeDataStoreException, OseeTypeDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -230,7 +235,7 @@ public class AccessControlManager {
       }
    }
 
-   private void populateGroupMembers(Integer groupId) throws SQLException {
+   private void populateGroupMembers(Integer groupId) throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
@@ -515,7 +520,7 @@ public class AccessControlManager {
       }
    }
 
-   private void cacheAccessControlData(AccessControlData data) throws SQLException {
+   private void cacheAccessControlData(AccessControlData data) throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
       AccessObject accessObject = data.getObject();
       int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();
@@ -571,17 +576,12 @@ public class AccessControlManager {
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws SQLException {
+   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws SQLException, OseeDataStoreException, BranchDoesNotExist {
       Branch branch = null;
-      try {
-         if (object instanceof BranchAccessObject) {
-            branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());
-         } else if (object instanceof ArtifactAccessObject) {
-            branch = BranchPersistenceManager.getBranch(((ArtifactAccessObject) object).getBranchId());
-         }
-      } catch (BranchDoesNotExist ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         return null;
+      if (object instanceof BranchAccessObject) {
+         branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());
+      } else if (object instanceof ArtifactAccessObject) {
+         branch = BranchPersistenceManager.getBranch(((ArtifactAccessObject) object).getBranchId());
       }
       return AccessControlManager.getInstance().getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
    }

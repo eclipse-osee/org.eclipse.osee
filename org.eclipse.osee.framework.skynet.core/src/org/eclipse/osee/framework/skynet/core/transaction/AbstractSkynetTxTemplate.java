@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * This abstract class provides a uniform way of executing transactions. It handles exceptions ensuring that
@@ -88,7 +89,7 @@ public abstract class AbstractSkynetTxTemplate {
     * 
     * @throws Exception
     */
-   public void execute() throws OseeCoreException, SQLException {
+   public void execute() throws OseeCoreException {
       try {
          transactionManager.startBatchLevel(this, branch);
          //         SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
@@ -97,6 +98,8 @@ public abstract class AbstractSkynetTxTemplate {
 
          transactionManager.setBatchLevelAsSuccessful(this, branch);
          //         SkynetActivator.getLogger().log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          transactionManager.endBatchLevel(this, branch);
          handleTxFinally();
@@ -113,10 +116,9 @@ public abstract class AbstractSkynetTxTemplate {
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/><b>Override to add additional code to finally block</b>
-    * 
     * @throws Exception
     */
-   protected void handleTxFinally() throws OseeCoreException, SQLException {
+   protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally
    }
 }

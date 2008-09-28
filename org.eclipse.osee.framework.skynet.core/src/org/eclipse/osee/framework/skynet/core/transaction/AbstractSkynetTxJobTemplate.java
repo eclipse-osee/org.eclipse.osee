@@ -112,7 +112,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxFinally()
        */
       @Override
-      protected void handleTxFinally() throws OseeCoreException, SQLException {
+      protected void handleTxFinally() throws OseeCoreException {
          super.handleTxFinally();
          // This calls the containing class's version of the method
          AbstractSkynetTxJobTemplate.this.handleTxFinally();
@@ -129,10 +129,9 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/><b>Override to add additional code to finally block</b>
-    * 
     * @throws Exception
     */
-   protected void handleTxFinally() throws OseeCoreException, SQLException {
+   protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally
    }
 

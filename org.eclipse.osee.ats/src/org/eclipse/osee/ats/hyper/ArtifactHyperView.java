@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -30,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -164,9 +163,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
          }
          create(topAHI);
          center();
-      } catch (SQLException ex) {
-         clear();
-      } catch (ArtifactDoesNotExist ex) {
+      } catch (OseeCoreException ex) {
          clear();
       }
    }

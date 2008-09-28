@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -31,9 +33,11 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param relationEnum the side to start following the link from
     * @param value
+    * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     * @throws SQLException
     */
-   public RelationCriteria(IRelationEnumeration relationEnum) throws SQLException {
+   public RelationCriteria(IRelationEnumeration relationEnum) throws OseeTypeDoesNotExist, OseeDataStoreException {
       this(relationEnum.getRelationType(), relationEnum.getSide());
    }
 

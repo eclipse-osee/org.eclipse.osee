@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -57,7 +56,7 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (searchStr == null) return EMPTY_SET;
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       criteria.add(new AttributeValueSearch(attributeName, searchStr, DepricatedOperator.CONTAINS));
@@ -82,7 +81,7 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Search by Ats Attribute", null,

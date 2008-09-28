@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -267,7 +267,7 @@ public class WordTemplateManager {
     * @return
     * @throws SQLException
     */
-   private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws SQLException {
+   private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact art : artifacts) {
          recursiveChildResolver(art, arts);
@@ -275,7 +275,7 @@ public class WordTemplateManager {
       return arts;
    }
 
-   private void recursiveChildResolver(Artifact artifact, List<Artifact> arts) throws SQLException {
+   private void recursiveChildResolver(Artifact artifact, List<Artifact> arts) throws OseeCoreException {
       arts.add(artifact);
       for (Artifact child : artifact.getChildren()) {
          recursiveChildResolver(child, arts);
@@ -289,7 +289,7 @@ public class WordTemplateManager {
     * @throws SQLException This function expands wildcard(*) attribute names into all of the attribute types of a
     *            particular artifact.
     */
-   private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws SQLException {
+   private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
       List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();
       for (ITemplateTask task : tasks) {
          if (task instanceof TemplateAttribute && ((TemplateAttribute) task).isTypeNameWildcard()) {
@@ -305,7 +305,7 @@ public class WordTemplateManager {
       return newTasks;
    }
 
-   private String peekAtFirstArtifactToGetParagraphNumber(String template, List<Artifact> artifacts) throws SQLException, MultipleAttributesExist, IllegalStateException, SQLException {
+   private String peekAtFirstArtifactToGetParagraphNumber(String template, List<Artifact> artifacts) throws OseeCoreException {
       Pattern headElementsPattern =
             Pattern.compile("<((\\w+:)?(Artifact|Extension_Processor))>(.*?)</\\1>",
                   Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);

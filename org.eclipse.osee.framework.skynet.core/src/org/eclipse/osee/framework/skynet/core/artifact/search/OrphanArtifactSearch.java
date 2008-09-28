@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -30,7 +32,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    private ArtifactType aritfactType;
    private int relationTypeId;
 
-   public OrphanArtifactSearch(ArtifactType aritfactType) throws SQLException {
+   public OrphanArtifactSearch(ArtifactType aritfactType) throws OseeTypeDoesNotExist, OseeDataStoreException {
       this.aritfactType = aritfactType;
       this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
    }
@@ -38,7 +40,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       dataList.add(aritfactType.getArtTypeId());
       dataList.add(branch.getBranchId());
       dataList.add(relationTypeId);
@@ -74,7 +76,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       try {
          ArtifactType artifactType = ArtifactTypeManager.getType(storageString);
          search = new OrphanArtifactSearch(artifactType);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          new IllegalStateException("Value for " + OrphanArtifactSearch.class.getSimpleName() + " not parsable");
       }
       return search;

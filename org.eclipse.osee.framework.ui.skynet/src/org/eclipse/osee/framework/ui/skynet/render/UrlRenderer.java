@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -19,7 +18,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -29,15 +30,16 @@ public class UrlRenderer extends Renderer {
 
    /**
     * @param applicableArtifactTypes
-    * @throws SQLException
+    * @throws OseeTypeDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public UrlRenderer() throws SQLException {
+   public UrlRenderer() throws OseeDataStoreException, OseeTypeDoesNotExist {
       descriptors =
             ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
    }
 
    @Override
-   public String getArtifactUrl(Artifact artifact) throws MultipleAttributesExist, SQLException {
+   public String getArtifactUrl(Artifact artifact) throws OseeCoreException {
       String url = artifact.getSoleAttributeValue("Content URL", "");
       if (url.startsWith("ws:")) {
          IFile iFile = WorkspaceURL.getIFile(url);

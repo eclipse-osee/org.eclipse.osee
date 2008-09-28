@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +36,7 @@ public class UserCommunity {
          communities =
                ConfigurationPersistenceManager.getValidEnumerationAttributeValues("ats.User Community",
                      BranchPersistenceManager.getCommonBranch());
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          communities = new HashSet<String>();
          communities.add(ex.getLocalizedMessage());
       }

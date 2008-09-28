@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.role;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -64,11 +63,11 @@ public class UserRole {
       fromXml(xml);
    }
 
-   public void update(UserRole dItem) throws SQLException, MultipleAttributesExist {
+   public void update(UserRole dItem) throws OseeCoreException {
       fromXml(dItem.toXml());
    }
 
-   public String toXml() throws SQLException, MultipleAttributesExist {
+   public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("role", role.name()));
       sb.append(AXml.addTagData("userId", user.getUserId()));

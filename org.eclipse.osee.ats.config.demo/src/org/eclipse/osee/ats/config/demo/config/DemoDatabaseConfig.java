@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.config.demo.config;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -32,8 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -87,7 +85,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
       CIS_Bld_1, CIS_Bld_2, CIS_Bld_3;
    };
 
-   private void populateProgramBranch(String branchName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   private void populateProgramBranch(String branchName) throws OseeCoreException {
       String[] subsystems =
             new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration", "Registration",
                   "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",

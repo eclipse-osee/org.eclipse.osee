@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +41,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException, SQLException {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
       if (!toState.equals(PeerToPeerReviewArtifact.State.Review.name())) return;
       // Set Assignees to all user roles users
@@ -59,7 +58,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() throws OseeCoreException, SQLException {
+   public String getDescription() throws OseeCoreException {
       return "AtsPeerToPeerReviewReviewStateItem - assign review state to all members of review as per role in prepare state.";
    }
 

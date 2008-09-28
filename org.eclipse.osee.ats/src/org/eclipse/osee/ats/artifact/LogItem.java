@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -35,7 +34,7 @@ public class LogItem {
    public LogItem() {
    }
 
-   public LogItem(LogType type, Date date, User user, String state, String msg) throws SQLException, MultipleAttributesExist {
+   public LogItem(LogType type, Date date, User user, String state, String msg) throws OseeCoreException {
       this(type.name(), date.getTime() + "", user.getUserId(), state, msg);
    }
 
@@ -56,7 +55,7 @@ public class LogItem {
       this(LogType.getType(type), date, userId, state, msg);
    }
 
-   public String toXml() throws SQLException, MultipleAttributesExist {
+   public String toXml() throws OseeCoreException {
       return "<type>" + type.name() + "</type><date>" + date.getTime() + "</date><user>" + user.getUserId() + "</user><state>" + (state != null ? state : "") + "</state><msg>" + (msg != null ? msg : "") + "</msg>";
    }
 

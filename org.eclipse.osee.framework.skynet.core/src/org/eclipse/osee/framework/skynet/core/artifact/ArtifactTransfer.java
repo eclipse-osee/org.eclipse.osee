@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -29,25 +30,24 @@ import org.eclipse.swt.dnd.TransferData;
  * The <code>ArtifactTransfer</code> class is used to transfer an array of <code>Artifact</code>s from one part to
  * another in a drag and drop operation or a cut, copy, paste action.
  * <p>
- * In every drag and drop operation there is a <code>DragSource</code> and a <code>DropTarget</code>. When a drag
- * occurs a <code>Transfer</code> is used to marshall the drag data from the source into a byte array. If a drop
- * occurs another <code>Transfer</code> is used to marshall the byte array into drop data for the target.
+ * In every drag and drop operation there is a <code>DragSource</code> and a <code>DropTarget</code>. When a drag occurs
+ * a <code>Transfer</code> is used to marshall the drag data from the source into a byte array. If a drop occurs another
+ * <code>Transfer</code> is used to marshall the byte array into drop data for the target.
  * </p>
  * <p>
- * When a <code>CutAction</code> or a <code>CopyAction</code> is performed, this transfer is used to place
- * references to the selected resources on the <code>Clipboard</code>. When a <code>PasteAction</code> is
- * performed, the references on the clipboard are used to move or copy the resources to the selected destination.
+ * When a <code>CutAction</code> or a <code>CopyAction</code> is performed, this transfer is used to place references to
+ * the selected resources on the <code>Clipboard</code>. When a <code>PasteAction</code> is performed, the references on
+ * the clipboard are used to move or copy the resources to the selected destination.
  * </p>
  * <p>
  * This class can be used for a <code>Viewer<code> or an SWT component directly.
- * A singleton is provided which may be serially reused (see <code>getInstance</code>).  
- * It is not intended to be subclassed.
+ * A singleton is provided which may be serially reused (see <code>getInstance</code>). It is not intended to be
+ * subclassed.
  * </p>
- *
+ * 
  * @see org.eclipse.jface.viewers.StructuredViewer
  * @see org.eclipse.swt.dnd.DropTarget
  * @see org.eclipse.swt.dnd.DragSource
- * 
  * @author Robert A. Fisher
  */
 
@@ -177,7 +177,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     * @throws IOException
     * @throws BranchDoesNotExist
     */
-   private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, IOException, BranchDoesNotExist {
+   private Artifact readArtifact(DataInputStream dataIn) throws SQLException, OseeCoreException, IOException {
       int artID = dataIn.readInt();
       int branchId = dataIn.readInt();
       return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getBranch(branchId));

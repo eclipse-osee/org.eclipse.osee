@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -74,7 +74,7 @@ public class FullPortableExport {
       columnIndexHash = new HashMap<String, Integer>();
    }
 
-   public void createRelationsSheet(Collection<Artifact> artifacts) throws IOException, SQLException, ArtifactDoesNotExist {
+   public void createRelationsSheet(Collection<Artifact> artifacts) throws IOException, OseeCoreException {
       writeRelationsHeader();
 
       HashSet<RelationLink> links = new HashSet<RelationLink>();
@@ -174,7 +174,7 @@ public class FullPortableExport {
       excelWriter.writeRow(row);
    }
 
-   private void processArtifact(Artifact artifact) throws IOException, SQLException {
+   private void processArtifact(Artifact artifact) throws IOException, OseeCoreException {
       Arrays.fill(row, 0, row.length, null);
       row[0] = artifact.getGuid();
       row[1] = artifact.getHumanReadableId();
@@ -184,7 +184,7 @@ public class FullPortableExport {
       excelWriter.writeRow(row);
    }
 
-   private String prepareAttributes(Artifact artifact, AttributeType attributeType) throws SQLException {
+   private String prepareAttributes(Artifact artifact, AttributeType attributeType) throws OseeCoreException {
       if (artifact.getAttributeCount(attributeType.getName()) == 0) {
          return null;
       }

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -167,7 +167,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.endSheet();
    }
 
-   private void writeTraceCountsSheet() throws IOException, SQLException {
+   private void writeTraceCountsSheet() throws IOException, OseeCoreException {
       excelWriter.startSheet("trace counts", 3);
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
@@ -180,7 +180,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.endSheet();
    }
 
-   private void handelReqTrace(String path, String traceMark) throws SQLException, IOException, MultipleAttributesExist {
+   private void handelReqTrace(String path, String traceMark) throws OseeCoreException, IOException, SQLException {
       String foundStr;
       Artifact reqArtifact = null;
 

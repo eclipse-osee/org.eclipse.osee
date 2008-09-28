@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -27,20 +26,20 @@ public class ArtifactTypeValidityCache {
       branchToartifactTypeMap = new HashCollection<Branch, ArtifactType>(false, TreeSet.class);
    }
 
-   private synchronized void ensurePopulated() throws SQLException, OseeCoreException {
+   private synchronized void ensurePopulated() throws OseeCoreException {
       if (branchToartifactTypeMap.size() == 0) {
          populateCache();
       }
    }
 
-   private void populateCache() throws SQLException, OseeCoreException {
+   private void populateCache() throws OseeCoreException {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
       for (Branch branch : BranchPersistenceManager.getRootBranches()) {
          branchToartifactTypeMap.put(branch, artifactTypes);
       }
    }
 
-   public Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException, OseeCoreException {
+   public Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
       if (false) {
          // TODO: Filter Types By Branch
          ensurePopulated();

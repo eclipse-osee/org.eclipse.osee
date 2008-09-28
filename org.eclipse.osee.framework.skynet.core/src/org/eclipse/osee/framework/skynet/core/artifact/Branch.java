@@ -18,14 +18,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -34,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 
@@ -177,43 +175,54 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchName;
    }
 
-   public Branch getParentBranch() throws SQLException {
-      if (parentBranch == null && parentBranchId != NULL_PARENT_BRANCH_ID) {
-         try {
-            parentBranch = BranchPersistenceManager.getBranch(parentBranchId);
-         } catch (BranchDoesNotExist ex) {
-            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-         }
+   public Branch getParentBranchOrAlternative(Branch alternativeBranch) throws OseeDataStoreException {
+      try {
+         return getParentBranch();
+      } catch (BranchDoesNotExist ex) {
+         return alternativeBranch;
       }
-      return parentBranch;
    }
 
-   public boolean hasParentBranch() throws SQLException {
-      return getParentBranch() != null;
+   public Branch getParentBranch() throws BranchDoesNotExist, OseeDataStoreException {
+      if (hasParentBranch()) {
+         if (parentBranch == null) {
+            parentBranch = BranchPersistenceManager.getBranch(parentBranchId);
+         }
+         return parentBranch;
+      }
+      throw new BranchDoesNotExist(branchName + " does not have a parent.");
+   }
+
+   public boolean hasParentBranch() {
+      return parentBranchId != NULL_PARENT_BRANCH_ID;
    }
 
    /**
     * @return the branch that is this oldest ancestor for this branch (which could be itself)
     * @throws SQLException
     */
-   public Branch getRootBranch() throws SQLException {
+   public Branch getRootBranch() throws OseeDataStoreException {
       Branch branchCursor = null;
-      for (branchCursor = this; branchCursor.getParentBranch() != null; branchCursor = branchCursor.getParentBranch())
-         ;
+      try {
+         for (branchCursor = this;; branchCursor = branchCursor.getParentBranch())
+            ;
+      } catch (BranchDoesNotExist ex) {
+         // this will always happen but only once branchCursor is equal to the correct value
+      }
       return branchCursor;
    }
 
-   public Collection<Branch> getChildBranches() throws SQLException {
+   public Collection<Branch> getChildBranches() throws OseeDataStoreException {
       return getChildBranches(false);
    }
 
-   public Collection<Branch> getChildBranches(boolean recurse) throws SQLException {
+   public Collection<Branch> getChildBranches(boolean recurse) throws OseeDataStoreException {
       Set<Branch> children = new HashSet<Branch>();
       getChildBranches(this, children, recurse);
       return children;
    }
 
-   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws SQLException {
+   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeDataStoreException {
       for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
@@ -231,7 +240,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return parentBranchId;
    }
 
-   public void archive() throws SQLException {
+   public void archive() throws OseeDataStoreException {
       BranchPersistenceManager.archive(this);
    }
 
@@ -260,7 +269,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       archived = true;
    }
 
-   public boolean hasChanges() throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public boolean hasChanges() throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       return RevisionManager.getInstance().branchHasChanges(this);
    }
 
@@ -289,8 +298,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return Returns the associatedArtifact.
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
+    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public Artifact getAssociatedArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact getAssociatedArtifact() throws OseeCoreException {
       if (associatedArtifact == null && associatedArtifactId > 0) {
          associatedArtifact =
                ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchPersistenceManager.getCommonBranch());
@@ -302,7 +313,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * Efficient way of determining if branch is associated cause it does not load the associated artifact
     * 
     * @param artifact
-    * @return
     */
    public boolean isAssociatedToArtifact(Artifact artifact) {
       return artifact.getArtId() == getAssociatedArtifactId();

@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 
@@ -34,9 +32,9 @@ public final class SkynetSelections {
       return selection.size() == 1 && boilDownObject(selection.getFirstElement()) instanceof Branch;
    }
 
-   public static boolean oneDescendantBranchSelected(IStructuredSelection selection) throws SQLException {
+   public static boolean oneDescendantBranchSelected(IStructuredSelection selection) {
       Object object = boilDownObject(selection.getFirstElement());
-      return selection.size() == 1 && object instanceof Branch && ((Branch) object).getParentBranch() != null;
+      return selection.size() == 1 && object instanceof Branch && ((Branch) object).hasParentBranch();
    }
 
    public static boolean oneTransactionSelected(IStructuredSelection selection) {
@@ -57,7 +55,7 @@ public final class SkynetSelections {
       return false;
    }
 
-   public static boolean twoTransactionsSelectedOnSameBranch(IStructuredSelection selection) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static boolean twoTransactionsSelectedOnSameBranch(IStructuredSelection selection) throws OseeCoreException {
       if (selection.size() == 2) {
          Iterator<?> iter = selection.iterator();
          Object obj1 = boilDownObject(iter.next());

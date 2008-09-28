@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -246,7 +247,7 @@ public class RevisionManager {
             }
 
             if (includeAncestry) {
-               cursor = cursor.getParentBranch();
+               cursor = cursor.getParentBranchOrAlternative(null);
                limit = transactionDetails.get(transactionDetails.size() - 1).getTransactionNumber();
             } else {
                cursor = null;
@@ -269,7 +270,7 @@ public class RevisionManager {
     * @throws ArtifactDoesNotExist
     * @throws TransactionDoesNotExist
     */
-   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist, TransactionDoesNotExist {
+   public Collection<RevisionChange> getTransactionChanges(TransactionData tData) throws OseeCoreException {
       IArtifactNameDescriptorResolver resolver = new ArtifactNameDescriptorResolver(tData.getBranch());
 
       return getTransactionChanges(OUTGOING, tData.getTransactionId(), tData.getTransactionId(),
@@ -310,7 +311,7 @@ public class RevisionManager {
     * @throws BranchDoesNotExist
     * @throws ArtifactDoesNotExist
     */
-   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, BranchDoesNotExist, ArtifactDoesNotExist {
+   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
       Collection<RevisionChange> changes =
             getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId, artifactNameDescriptorResolver);
       changes.addAll(getArtifactChanges(fromTransactionId, toTransactionId, artId));
@@ -318,7 +319,7 @@ public class RevisionManager {
       return changes;
    }
 
-   public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException, ArtifactDoesNotExist {
+   public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
       Collection<AttributeChange> attributeChanges =
             getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
                   toTransactionId.getTransactionNumber(), artId);
@@ -432,11 +433,11 @@ public class RevisionManager {
       return name;
    }
 
-   private Collection<ArtifactChange> getArtifactChanges(TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException, ArtifactDoesNotExist {
+   private Collection<ArtifactChange> getArtifactChanges(TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
       return getArtifactChanges(OUTGOING, fromTransactionId, toTransactionId, artId);
    }
 
-   private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws SQLException, ArtifactDoesNotExist {
+   private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
       Collection<ArtifactChange> changes = new LinkedList<ArtifactChange>();
       ConnectionHandlerStatement chStmt = null;
 
@@ -453,18 +454,20 @@ public class RevisionManager {
             changes.add(new ArtifactChange(changeType, ModificationType.getMod(rSet.getInt("mod_type")), artifact,
                   null, null, null, toTransactionId, fromTransactionId, rSet.getInt("gamma_id")));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
       return changes;
    }
 
-   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       return getDeletedArtifactChanges(null, null, TransactionIdManager.getPriorTransaction(transactionId),
             transactionId, null);
    }
 
-   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
+   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) {
       Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
       //This for the case where the toTransaction is the baseline transaction for a branch
       if (fromTransactionId == null) {
@@ -477,10 +480,14 @@ public class RevisionManager {
          throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
       }
 
-      Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
-            headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
-            fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
-            toTransactionId.getTransactionNumber(), DELETED.getValue());
+      try {
+         Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
+               headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
+               fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
+               toTransactionId.getTransactionNumber(), DELETED.getValue());
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
 
       return deletedArtifacts;
    }
@@ -492,7 +499,7 @@ public class RevisionManager {
             transactionDataSet.get(0).getTransactionId(), includeRelationOnlyChanges);
    }
 
-   public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws SQLException {
+   public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws OseeDataStoreException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new ArtifactInTransactionSearch(baseTransaction, toTransaction));
 
@@ -508,7 +515,7 @@ public class RevisionManager {
       return modOnlyArtifacts;
    }
 
-   public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
+   public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException, OseeDataStoreException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
@@ -516,9 +523,10 @@ public class RevisionManager {
 
    /**
     * @param newAndModArts
+    * @throws OseeDataStoreException
     * @throws SQLException
     */
-   public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
+   public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws OseeDataStoreException {
 
       Collection<Artifact> newAndModArts = getNewAndModifiedArtifacts(fromTransactionId, toTransactionId, true);
 
@@ -752,7 +760,7 @@ public class RevisionManager {
       }
    }
 
-   public boolean branchHasChanges(Branch branch) throws IllegalStateException, SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public boolean branchHasChanges(Branch branch) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
       return transactions.getKey() != transactions.getValue();
    }

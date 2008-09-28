@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -27,14 +25,13 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
  */
 public class UniversalGroup {
    public static final String ARTIFACT_TYPE_NAME = "Universal Group";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UniversalGroup.class);
 
    public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
          artifacts = ArtifactQuery.getArtifactsFromType(ARTIFACT_TYPE_NAME, branch);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          artifacts = new LinkedList<Artifact>();
       }
       return artifacts;
@@ -43,8 +40,8 @@ public class UniversalGroup {
    public static Collection<Artifact> getGroups(String groupName, Branch branch) {
       try {
          return ArtifactQuery.getArtifactsFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return new ArrayList<Artifact>();
    }
@@ -65,12 +62,12 @@ public class UniversalGroup {
       return groupArt;
    }
 
-   public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public static Artifact getTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
             ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 
-   public static Artifact createTopUniversalGroupArtifact(Branch branch) throws SQLException {
+   public static Artifact createTopUniversalGroupArtifact(Branch branch) throws OseeCoreException {
       Collection<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
                   ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -19,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -312,7 +312,7 @@ public class RelationExplorerWindow {
             if (artifact != null) {
                try {
                   relationGroup.getArtifact().addRelation(relationGroup, artifact);
-               } catch (SQLException ex) {
+               } catch (OseeCoreException ex) {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                }
             }
@@ -321,7 +321,7 @@ public class RelationExplorerWindow {
       if (persistOnOk) {
          try {
             relationGroup.getArtifact().persistRelations();
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }

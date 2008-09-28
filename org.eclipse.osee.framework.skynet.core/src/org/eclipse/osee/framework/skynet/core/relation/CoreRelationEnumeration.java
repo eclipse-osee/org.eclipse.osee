@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 public enum CoreRelationEnumeration implements IRelationEnumeration {
-
-   x(false, null), y(false, null),
 
    Users_Artifact(true, "Users"), Users_User(false, "Users"),
 
@@ -64,19 +62,13 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    TestRunConfigRelation_TestConfiguration(true, "Test Run Config Relation"),
    TestRunConfigRelation_TestRun(false, "Test Run Config Relation");
 
-   private boolean sideA;
+   private RelationSide relationSide;
    private String typeName;
 
    private CoreRelationEnumeration(boolean sideA, String typeName) {
-      this.sideA = sideA;
+      this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.typeName = typeName;
       RelationPersistenceManager.sideHash.put(typeName, sideA, this);
-   }
-
-   public static IRelationEnumeration getRelationSide(String relationTypeName, String relationSide, Branch branch) throws SQLException {
-      RelationType relationType = RelationTypeManager.getType(relationTypeName);
-      boolean isSideA = (relationType.getSideAName().equals(relationSide));
-      return RelationPersistenceManager.sideHash.get(relationTypeName, isSideA);
    }
 
    /**
@@ -84,21 +76,11 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
     */
    @Deprecated
    public boolean isSideA() {
-      return sideA;
+      return relationSide.isSideA();
    }
 
-   /**
-    * @deprecated Use {@link #getSideName()} instead
-    */
-   public String getSideName(Branch branch) throws SQLException {
-      return getSideName();
-   }
-
-   public String getSideName() throws SQLException {
-      if (isSideA())
-         return getRelationType().getSideAName();
-      else
-         return getRelationType().getSideBName();
+   public String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException {
+      return getRelationType().getSideName(relationSide);
    }
 
    /**
@@ -108,7 +90,7 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       return typeName;
    }
 
-   public RelationType getRelationType() throws SQLException {
+   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException {
       return RelationTypeManager.getType(typeName);
    }
 
@@ -121,6 +103,6 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
     */
    @Override
    public RelationSide getSide() {
-      return sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+      return relationSide;
    }
 }

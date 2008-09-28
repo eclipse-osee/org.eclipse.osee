@@ -36,7 +36,7 @@ public class AttributeExtensionManager {
    private static final String[] attributeProviderBaseTypes =
          new String[] {"CharacterAttributeDataProvider", "BinaryAttributeDataProvider"};
 
-   private static AttributeExtensionManager instance = null;
+   private static final AttributeExtensionManager instance = new AttributeExtensionManager();
 
    private Map<String, Pair<String, String>> attributeTypeClasses;
    private Map<String, Pair<String, String>> attributeDataProviderClasses;
@@ -46,35 +46,28 @@ public class AttributeExtensionManager {
       this.attributeDataProviderClasses = null;
    }
 
-   protected static AttributeExtensionManager getInstance() {
-      if (instance == null) {
-         instance = new AttributeExtensionManager();
+   public static Class<? extends Attribute<?>> getAttributeClassFor(String name) throws ClassNotFoundException {
+      if (instance.attributeTypeClasses == null) {
+         instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
-      return instance;
+      Pair<String, String> entry = instance.attributeTypeClasses.get(name);
+      if (entry == null) {
+         throw new ClassNotFoundException(String.format("Unable to find class for: [%s]", name));
+      }
+
+      return instance.loadClass(entry.getKey(), entry.getValue());
    }
 
-   public Class<? extends Attribute<?>> getAttributeClassFor(String name) throws ClassNotFoundException {
-      if (attributeTypeClasses == null) {
-         attributeTypeClasses = loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
+   public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws ClassNotFoundException {
+      if (instance.attributeDataProviderClasses == null) {
+         instance.attributeDataProviderClasses =
+               instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
-      Pair<String, String> entry = attributeTypeClasses.get(name);
+      Pair<String, String> entry = instance.attributeDataProviderClasses.get(name);
       if (entry == null) {
-         throw new IllegalStateException(String.format("Unable to find class for: [%s]", name));
+         throw new ClassNotFoundException(String.format("Unable to find class for: [%s]", name));
       }
-
-      return loadClass(entry.getKey(), entry.getValue());
-   }
-
-   public Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws ClassNotFoundException {
-      if (attributeDataProviderClasses == null) {
-         attributeDataProviderClasses =
-               loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
-      }
-      Pair<String, String> entry = attributeDataProviderClasses.get(name);
-      if (entry == null) {
-         throw new IllegalStateException(String.format("Unable to find class for: [%s]", name));
-      }
-      return loadClass(entry.getKey(), entry.getValue());
+      return instance.loadClass(entry.getKey(), entry.getValue());
    }
 
    @SuppressWarnings("unchecked")

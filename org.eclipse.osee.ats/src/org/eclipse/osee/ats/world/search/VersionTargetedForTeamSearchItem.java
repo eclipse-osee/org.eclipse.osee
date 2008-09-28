@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -59,7 +58,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
       if (getSearchVersionArtifact() == null) throw new IllegalArgumentException("Invalid release version");
 
@@ -74,7 +73,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (searchType == SearchType.ReSearch && selectedVersionArt != null) return;
       if (versionArt != null) return;

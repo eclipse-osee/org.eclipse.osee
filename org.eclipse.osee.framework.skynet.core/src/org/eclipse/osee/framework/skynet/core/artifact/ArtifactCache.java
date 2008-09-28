@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -61,13 +59,9 @@ public class ArtifactCache {
       }
    }
 
-   static void cachePostAttributeLoad(Artifact artifact) throws OseeDataStoreException {
-      try {
-         for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
-            instance.staticIdArtifactCache.put(staticId, artifact);
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+   static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
+      for (String staticId : artifact.getAttributesToStringList(StaticIdQuery.STATIC_ID_ATTRIBUTE)) {
+         instance.staticIdArtifactCache.put(staticId, artifact);
       }
    }
 

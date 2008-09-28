@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
@@ -43,7 +42,7 @@ public class XMembersList extends XListViewer {
       super.setSorter(new ArtifactViewerSorter());
    }
 
-   public String[] getEmails() throws SQLException, MultipleAttributesExist {
+   public String[] getEmails() throws OseeCoreException {
       ArrayList<String> v = new ArrayList<String>();
       for (Object obj : this.getSelected()) {
          User u = (User) obj;

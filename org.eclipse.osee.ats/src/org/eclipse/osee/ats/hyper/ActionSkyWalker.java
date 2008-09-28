@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -20,12 +20,15 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -112,12 +115,13 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
             super.explore(artifact);
          else
             super.explore(getTopArtifact((ATSArtifact) artifact));
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          clear();
       }
    }
 
-   public ATSArtifact getTopArtifact(ATSArtifact art) throws SQLException {
+   public ATSArtifact getTopArtifact(ATSArtifact art) throws OseeCoreException {
       ATSArtifact artifact = null;
       if (art instanceof ActionArtifact)
          artifact = art;

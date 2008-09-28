@@ -130,7 +130,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                                  String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() : commitTrans.getTransactionNumber()),
                                  IWorkbenchPage.VIEW_VISIBLE);
                      mergeView.explore(sourceBranch, destBranch, tranId, commitTrans);
-                     //                     }
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }

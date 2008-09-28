@@ -52,7 +52,7 @@ public class ArtifactHridSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       String sql = ARTIFACT_TABLE.column("human_readable_id") + operator + "?";
       dataList.add(humanReadableId);
 

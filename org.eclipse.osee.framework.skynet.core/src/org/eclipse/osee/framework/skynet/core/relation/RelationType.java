@@ -88,9 +88,9 @@ public class RelationType implements Comparable<RelationType> {
    }
 
    public boolean isSideAName(String sideName) {
-
-      if (!sideAName.equals(sideName) && !sideBName.equals(sideName)) throw new IllegalArgumentException(
-            "sideName does not match either of the available side names");
+      if (!sideAName.equals(sideName) && !sideBName.equals(sideName)) {
+         throw new IllegalArgumentException("sideName does not match either of the available side names");
+      }
 
       return sideAName.equals(sideName);
    }

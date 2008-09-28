@@ -37,8 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -117,12 +115,12 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isValidationRequired()
     */
    @Override
-   public boolean isValidationRequired() throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public boolean isValidationRequired() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false);
    }
 
    @Override
-   public int getWorldViewPercentRework() throws OseeCoreException, SQLException {
+   public int getWorldViewPercentRework() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName(), 0);
    }
 
@@ -163,17 +161,12 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return users;
    }
 
-   private void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) {
-      try {
-         users.addAll(tda.getLeads());
+   private void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
+      users.addAll(tda.getLeads());
 
-         // Walk up tree to get other editors
-         if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) {
-            addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
-         }
-
-      } catch (SQLException ex) {
-         // Do nothing
+      // Walk up tree to get other editors
+      if (tda.getParent() != null && (tda.getParent() instanceof TeamDefinitionArtifact)) {
+         addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
       }
    }
 
@@ -197,19 +190,19 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public ChangeType getChangeType() throws SQLException, MultipleAttributesExist {
+   public ChangeType getChangeType() throws OseeCoreException {
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public void setChangeType(ChangeType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public void setChangeType(ChangeType type) throws OseeCoreException {
       setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
-   public PriorityType getPriority() throws SQLException, MultipleAttributesExist {
+   public PriorityType getPriority() throws OseeCoreException {
       return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public void setPriority(PriorityType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public void setPriority(PriorityType type) throws OseeCoreException {
       setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
@@ -220,11 +213,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return actionableItemsDam;
    }
 
-   public void setTeamDefinition(TeamDefinitionArtifact tda) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public void setTeamDefinition(TeamDefinitionArtifact tda) throws OseeCoreException {
       this.setSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, OseeCoreException {
+   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
@@ -245,45 +238,45 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getWorldViewType() throws OseeCoreException, SQLException {
+   public String getWorldViewType() throws OseeCoreException {
       return getTeamName() + " Workflow";
    }
 
    @Override
-   public ChangeType getWorldViewChangeType() throws SQLException, MultipleAttributesExist {
+   public ChangeType getWorldViewChangeType() throws OseeCoreException {
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    @Override
-   public String getWorldViewPriority() throws OseeCoreException, SQLException {
+   public String getWorldViewPriority() throws OseeCoreException {
       return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
    }
 
    @Override
-   public String getWorldViewUserCommunity() throws OseeCoreException, SQLException {
+   public String getWorldViewUserCommunity() throws OseeCoreException {
       return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
    }
 
    @Override
-   public String getWorldViewActionableItems() throws OseeCoreException, SQLException {
+   public String getWorldViewActionableItems() throws OseeCoreException {
       return getActionableItemsDam().getActionableItemsStr();
    }
 
    @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException, SQLException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
       for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews())
          reviewArt.atsDelete(deleteArts, allRelated);
    }
 
    @Override
-   public String getWorldViewTeam() throws OseeCoreException, SQLException {
+   public String getWorldViewTeam() throws OseeCoreException {
       return getTeamName();
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws SQLException {
-      Collection<ActionArtifact> arts = getArtifacts(AtsRelation.ActionToWorkflow_Action, ActionArtifact.class);
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+      Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelation.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
          throw new IllegalStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
@@ -293,9 +286,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getWorldViewVersion() throws OseeCoreException, SQLException {
+   public String getWorldViewVersion() throws OseeCoreException {
       Collection<VersionArtifact> verArts =
-            getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       if (verArts.size() == 0) return "";
       if (verArts.size() > 1) {
          String errStr =
@@ -315,13 +308,11 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public VersionArtifact getTargetedForVersion() throws SQLException {
+   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
       try {
          return (VersionArtifact) getRelatedArtifact(AtsRelation.TeamWorkflowTargetedForVersion_Version);
       } catch (ArtifactDoesNotExist ex) {
          return null;
-      } catch (Exception ex) {
-         throw new SQLException(ex);
       }
    }
 
@@ -349,7 +340,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                   Active.Both);
 
       try {
-         diag.setInput(getTeamDefinition().getArtifacts(AtsRelation.TeamActionableItem_ActionableItem,
+         diag.setInput(getTeamDefinition().getRelatedArtifacts(AtsRelation.TeamActionableItem_ActionableItem,
                ActionableItemArtifact.class));
          diag.setInitialSelections(actionableItemsDam.getActionableItems());
          if (diag.open() != 0) {
@@ -374,7 +365,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return toReturn;
    }
 
-   public Result convertActionableItems() throws OseeCoreException, SQLException {
+   public Result convertActionableItems() throws OseeCoreException {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =
             new AICheckTreeDialog("Convert Impacted Actionable Items",
@@ -402,42 +393,37 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
                   //
                   "You will be prompted to confirm this conversion.", Active.Both);
 
-      try {
-         diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
-         if (diag.open() != 0) return Result.FalseResult;
-         if (diag.getChecked().size() == 0) return new Result("At least one actionable item must must be selected.");
-         if (diag.getChecked().size() > 1) return new Result("Only ONE actionable item can be selected for converts");
-         ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
-         Collection<TeamDefinitionArtifact> teamDefs =
-               ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
-         if (teamDefs.size() != 1) {
-            toReturn = new Result("Single team can not retrieved for " + selectedAia.getDescriptiveName());
+      diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
+      if (diag.open() != 0) return Result.FalseResult;
+      if (diag.getChecked().size() == 0) return new Result("At least one actionable item must must be selected.");
+      if (diag.getChecked().size() > 1) return new Result("Only ONE actionable item can be selected for converts");
+      ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
+      Collection<TeamDefinitionArtifact> teamDefs =
+            ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
+      if (teamDefs.size() != 1) {
+         toReturn = new Result("Single team can not retrieved for " + selectedAia.getDescriptiveName());
+      } else {
+         TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
+         if (newTeamDef.equals(getTeamDefinition())) {
+            toReturn =
+                  new Result(
+                        "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
          } else {
-            TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
-            if (newTeamDef.equals(getTeamDefinition())) {
-               toReturn =
-                     new Result(
-                           "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
-            } else {
-               StringBuffer sb = new StringBuffer();
-               sb.append("Converting...");
-               sb.append("\nActionable Item(s): " + getWorldViewActionableItems());
-               sb.append("\nTeam: " + getTeamDefinition().getDescriptiveName());
-               sb.append("\nto\nActionable Item(s): " + selectedAia);
-               sb.append("\nTeam: " + newTeamDef.getDescriptiveName());
-               if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
-                  Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
-                  toProcess.add(selectedAia);
-                  ActionableItemsTx txWrapper =
-                        new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess, newTeamDef);
-                  txWrapper.execute();
-                  toReturn = txWrapper.getResult();
-               }
+            StringBuffer sb = new StringBuffer();
+            sb.append("Converting...");
+            sb.append("\nActionable Item(s): " + getWorldViewActionableItems());
+            sb.append("\nTeam: " + getTeamDefinition().getDescriptiveName());
+            sb.append("\nto\nActionable Item(s): " + selectedAia);
+            sb.append("\nTeam: " + newTeamDef.getDescriptiveName());
+            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
+               Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
+               toProcess.add(selectedAia);
+               ActionableItemsTx txWrapper =
+                     new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess, newTeamDef);
+               txWrapper.execute();
+               toReturn = txWrapper.getResult();
             }
          }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-         throw new SQLException(ex.getLocalizedMessage());
       }
       return toReturn;
    }
@@ -448,7 +434,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentSMA()
     */
    @Override
-   public StateMachineArtifact getParentSMA() throws SQLException {
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
       return null;
    }
 
@@ -456,7 +442,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentAtsArtifact()
     */
    @Override
-   public Artifact getParentAtsArtifact() throws SQLException {
+   public Artifact getParentAtsArtifact() throws OseeCoreException {
       return getParentActionArtifact();
    }
 
@@ -466,7 +452,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    @Override
-   public String getWorldViewDescription() throws OseeCoreException, SQLException {
+   public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
@@ -475,9 +461,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * null.
     */
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException {
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
       Collection<VersionArtifact> vers =
-            getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
@@ -494,9 +480,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * null.
     */
    @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException {
+   public Date getWorldViewReleaseDate() throws OseeCoreException {
       Collection<VersionArtifact> vers =
-            getArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();
@@ -514,7 +500,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
    @Override
-   public String getWorldViewImplementer() throws OseeCoreException, SQLException {
+   public String getWorldViewImplementer() throws OseeCoreException {
       return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DefaultTeamState.Implement.name()));
    }
 
@@ -524,7 +510,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
    @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException {
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
       Date date = getWorldViewDeadlineDate();
       if (date != null) return new XDate(date).getMMDDYY();
       return "";
@@ -536,7 +522,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException {
+   public Date getWorldViewDeadlineDate() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), null);
    }
 
@@ -546,7 +532,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
    @Override
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException, SQLException {
+   public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return 0;
       String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
       if (value == null || value.equals("")) return 0;
@@ -559,7 +545,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewAnnualCostAvoidance()
     */
    @Override
-   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException, SQLException {
+   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
       double benefit = getWorldViewWeeklyBenefit();
       double remainHrs = getRemainHoursTotal();
       return (benefit * 52) - remainHrs;
@@ -571,7 +557,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#getParentTeamWorkflow()
     */
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws SQLException {
+   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return this;
    }
 
@@ -598,7 +584,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          workResult = actionableItemsDam.setActionableItems(selectedAlias);
          if (workResult.isTrue()) {
             if (teamDefinition != null) setTeamDefinition(teamDefinition);
@@ -612,7 +598,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
     */
    @Override
-   public String getWorldViewBranchStatus() throws OseeCoreException, SQLException {
+   public String getWorldViewBranchStatus() throws OseeCoreException {
       try {
          if (getSmaMgr().getBranchMgr().isWorkingBranch())
             return "Working";
@@ -633,7 +619,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getCommitManagerBranch()
     */
-   public Branch getWorkingBranch() throws SQLException, MultipleBranchesExist {
+   public Branch getWorkingBranch() throws OseeCoreException {
       if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) {
          return getSmaMgr().getBranchMgr().getWorkingBranch();
       }
@@ -641,7 +627,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException {
+   public String getWorldViewSWEnhancement() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.SW_ENHANCEMENT_ATTRIBUTE.getStoreName(), "");
    }
 

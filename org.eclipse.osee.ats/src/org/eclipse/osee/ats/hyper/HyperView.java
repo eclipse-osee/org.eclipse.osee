@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.hyper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -42,9 +42,10 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -594,10 +595,8 @@ public class HyperView extends ViewPart implements IPartListener {
                         connectPopupMenu = null;
                         display();
                      }
-                  } catch (SQLException ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
-                  } catch (ArtifactDoesNotExist ex) {
-                     OSEELog.logException(AtsPlugin.class, ex, true);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
                }
             });

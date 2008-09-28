@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -29,8 +29,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class ArtifactChanged extends Change {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChanged.class);
    private ArtifactType artifactSubtypeDescriptor;
    private ArtifactChange artifactChange;
 
@@ -45,13 +43,15 @@ public class ArtifactChanged extends Change {
     * @param changeType
     */
    public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
+      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
+            isHistorical);
    }
 
    /**
     * @return the dynamicAttributeDescriptor
+    * @throws OseeCoreException
     */
-   private ArtifactType getDynamicArtifactSubtypeDescriptor() throws SQLException {
+   private ArtifactType getDynamicArtifactSubtypeDescriptor() throws OseeCoreException {
       if (artifactSubtypeDescriptor == null) {
          artifactSubtypeDescriptor = ArtifactTypeManager.getType(artTypeId);
       }
@@ -67,10 +67,8 @@ public class ArtifactChanged extends Change {
 
       try {
          image = getItemKindImage();
-      } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
       return image;
    }
@@ -87,7 +85,7 @@ public class ArtifactChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
     */
    @Override
-   public String getItemTypeName() throws SQLException {
+   public String getItemTypeName() throws OseeCoreException {
       return getDynamicArtifactSubtypeDescriptor().getName();
    }
 
@@ -99,12 +97,11 @@ public class ArtifactChanged extends Change {
       return "";
    }
 
-   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, OseeCoreException {
+   private ArtifactChange getArtifactChange() throws OseeCoreException {
       if (artifactChange == null) {
          artifactChange =
-               new ArtifactChange(getChangeType(), getModificationType(), 
-                     getArtifact(), null, null, getFromTransactionId(),
-                     getFromTransactionId(), getToTransactionId(), getGamma());
+               new ArtifactChange(getChangeType(), getModificationType(), getArtifact(), null, null,
+                     getFromTransactionId(), getFromTransactionId(), getToTransactionId(), getGamma());
       }
       return artifactChange;
    }
@@ -125,17 +122,9 @@ public class ArtifactChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
-      } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (ArtifactDoesNotExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (MultipleArtifactsExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (OseeCoreException ex) {
-          logger.log(Level.SEVERE, ex.toString(), ex);
-	}
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+      }
       return null;
    }
 
@@ -143,7 +132,7 @@ public class ArtifactChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getObjectImage()
     */
    @Override
-   public Image getItemKindImage() throws IllegalArgumentException, SQLException {
+   public Image getItemKindImage() throws OseeCoreException {
       return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 

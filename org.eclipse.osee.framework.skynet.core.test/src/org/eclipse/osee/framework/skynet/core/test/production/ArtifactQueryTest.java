@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.skynet.core.test.production;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,22 +9,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactQueryTest extends TestCase {
 
-   public void testGetArtifactFromId() throws MultipleArtifactsExist, ArtifactDoesNotExist, SQLException {
+   public void testGetArtifactFromId() throws OseeCoreException {
       Branch common = BranchPersistenceManager.getCommonBranch();
       Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(common);
       Artifact artifact = ArtifactQuery.getArtifactFromId(root.getHumanReadableId(), common);
       assertEquals(root.getHumanReadableId(), artifact.getHumanReadableId());
    }
 
-   public void testGetArtifactsFromBranch() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   public void testGetArtifactsFromBranch() throws OseeCoreException {
       Branch common = BranchPersistenceManager.getCommonBranch();
       List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(common, true);
 

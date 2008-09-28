@@ -175,7 +175,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       }
    }
 
-   public ATSArtifact getTopArtifact(ATSArtifact art) throws SQLException {
+   public ATSArtifact getTopArtifact(ATSArtifact art) throws OseeCoreException {
       ATSArtifact artifact = art;
       if (artifact instanceof TaskArtifact) {
          artifact = ((TaskArtifact) artifact).getParentSMA();

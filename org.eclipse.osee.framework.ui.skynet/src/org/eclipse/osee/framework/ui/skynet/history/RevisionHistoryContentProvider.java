@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.history;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -55,8 +54,6 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
          Collection<RevisionChange> changes = null;
          try {
             changes = RevisionManager.getInstance().getTransactionChanges(parentItem);
-         } catch (SQLException ex) {
-            OSEELog.logException(getClass(), ex, false);
          } catch (OseeCoreException ex) {
             OSEELog.logException(getClass(), ex, false);
          }

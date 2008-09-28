@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -19,6 +18,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -45,7 +45,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
             return;
          }
          OSEELog.logSevere(AtsPlugin.class, "Unhandled artifact type " + smaMgr.getSma().getArtifactTypeName(), true);
-      } catch (SQLException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

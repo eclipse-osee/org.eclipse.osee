@@ -12,13 +12,13 @@ package org.eclipse.osee.define.relation.Import;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -75,7 +75,7 @@ public class RelationImporter implements RowProcessor {
          try {
             rowArtifact = getSoleArtifact(artifacts);
          } catch (IllegalArgumentException ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             return;
          }
 
@@ -92,13 +92,14 @@ public class RelationImporter implements RowProcessor {
                   if (rationale.equalsIgnoreCase("x")) {
                      rationale = "";
                   }
-                  columnArtifacts[i].addRelation(CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
+                  columnArtifacts[i].addRelation(CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact,
+                        rationale);
                   columnArtifacts[i].persistRelations();
                }
             }
          }
-      } catch (SQLException ex) {
-         System.out.println(ex);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 

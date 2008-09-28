@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog;
@@ -27,10 +27,11 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.ResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultHtml;
@@ -127,43 +128,42 @@ public class Overview {
    }
 
    public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) {
-
-      try {
-         SMAManager smaMgr = new SMAManager(sma);
-         startBorderTable(100, false, "");
-         addTable(getLabelValue("Title", sma.getDescriptiveName()));
-         this.html.append(AHTML.multiColumnTable(new String[] {
-               AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getStateMgr().getCurrentStateName(),
-               AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
-               AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-         addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue(
-               "Creation Date", XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
-            addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
-                  "Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
-         else
-            addTable(getLabelValue("Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
-         addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
-         if (smaMgr.isCancelled()) {
-            LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
-            addTable(getLabelValue("Cancelled From", item.getState()));
-            addTable(getLabelValue("Cancellation Reason", item.getMsg()));
-         }
-         if (sma instanceof TaskArtifact) {
+      SMAManager smaMgr = new SMAManager(sma);
+      startBorderTable(100, false, "");
+      addTable(getLabelValue("Title", sma.getDescriptiveName()));
+      this.html.append(AHTML.multiColumnTable(new String[] {
+            AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getStateMgr().getCurrentStateName(),
+            AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
+            AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
+      addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue("Creation Date",
+            XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
+         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
+               "Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      else
+         addTable(getLabelValue("Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
+      if (smaMgr.isCancelled()) {
+         LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
+         addTable(getLabelValue("Cancelled From", item.getState()));
+         addTable(getLabelValue("Cancellation Reason", item.getMsg()));
+      }
+      if (sma instanceof TaskArtifact) {
+         try {
             StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
             if (parentArt != null) {
                this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getDescriptiveName()}));
                this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
             }
-
-            SMAManager taskSmaMgr = new SMAManager(sma);
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
-                  "; ", taskSmaMgr.getStateMgr().getAssignees())}));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
-         endBorderTable();
-      } catch (SQLException ex) {
-         // Do Nothing
+
+         SMAManager taskSmaMgr = new SMAManager(sma);
+         this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
+               "; ", taskSmaMgr.getStateMgr().getAssignees())}));
       }
+      endBorderTable();
    }
 
    public void addFooter(StateMachineArtifact sma, PreviewStyle... styles) {
@@ -233,8 +233,8 @@ public class Overview {
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), hyperStr, rationale}));
          }
          endBorderTable();
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

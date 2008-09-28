@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,6 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
 /**
@@ -112,7 +112,7 @@ public class LoadedArtifacts {
       return allUnloadedArtifactIds;
    }
 
-   public synchronized Collection<Artifact> getLoadedArtifacts() throws BranchDoesNotExist, SQLException {
+   public synchronized Collection<Artifact> getLoadedArtifacts() throws BranchDoesNotExist, OseeDataStoreException {
       // If artifacts have not been set, resolve any unloaded artifactIds that exist in current cache
       if (artifacts == null) {
          artifacts = new HashSet<Artifact>();

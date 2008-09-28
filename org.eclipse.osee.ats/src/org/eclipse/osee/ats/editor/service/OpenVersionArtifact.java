@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -40,8 +42,8 @@ public class OpenVersionArtifact extends WorkPageService {
    private void performOpen() {
       try {
          if (((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion() != null) ArtifactEditor.editArtifact(((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion());
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

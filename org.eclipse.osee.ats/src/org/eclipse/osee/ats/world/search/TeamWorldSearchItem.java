@@ -99,7 +99,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public void getTeamDefs() throws OseeCoreException, SQLException {
+   public void getTeamDefs() throws OseeCoreException {
       if (teamDefNames != null && teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
@@ -115,7 +115,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException, SQLException {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws OseeCoreException {
       getTeamDefs();
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))
@@ -129,7 +129,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<TeamDefinitionArtifact> items = getSearchTeamDefs();
       List<String> teamDefinitionGuids = new ArrayList<String>(items.size());
       for (TeamDefinitionArtifact art : items) {
@@ -161,7 +161,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       if (teamDefNames != null) return;
       if (teamDefs != null) return;

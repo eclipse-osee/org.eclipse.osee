@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
@@ -70,15 +71,15 @@ public class TransactionIdManager {
     * Returns the transaction corresponding to current head of the given branch
     * 
     * @param branch
-    * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws TransactionDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public TransactionId getEditableTransactionId(Branch branch) throws SQLException, TransactionDoesNotExist, BranchDoesNotExist {
+   public TransactionId getEditableTransactionId(Branch branch) throws TransactionDoesNotExist, BranchDoesNotExist, OseeDataStoreException {
       return getTransactionId(getlatestTransactionForBranch(branch));
    }
 
-   private int getlatestTransactionForBranch(Branch branch) throws SQLException, TransactionDoesNotExist {
+   private int getlatestTransactionForBranch(Branch branch) throws TransactionDoesNotExist, OseeDataStoreException {
       int transactionNumber = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -88,6 +89,8 @@ public class TransactionIdManager {
          } else {
             throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -120,7 +123,7 @@ public class TransactionIdManager {
       return transactionId;
    }
 
-   public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
@@ -137,6 +140,8 @@ public class TransactionIdManager {
          }
 
          return new Pair<TransactionId, TransactionId>(getTransactionId(minId), getTransactionId(maxId));
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -148,9 +153,9 @@ public class TransactionIdManager {
     * @return The prior transactionId, or null if there is no prior.
     * @throws BranchDoesNotExist
     * @throws TransactionDoesNotExist
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, SQLException {
+   public TransactionId getPriorTransaction(Timestamp time, Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -165,6 +170,8 @@ public class TransactionIdManager {
             int priorId = rset.getInt("prior_id");
             if (!rset.wasNull()) priorTransactionId = getTransactionId(priorId);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -174,11 +181,11 @@ public class TransactionIdManager {
    /**
     * @param transactionId
     * @return The prior transactionId, or null if there is no prior.
-    * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws TransactionDoesNotExist
+    * @throws OseeDataStoreException
     */
-   public static TransactionId getPriorTransaction(TransactionId transactionId) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static TransactionId getPriorTransaction(TransactionId transactionId) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -196,15 +203,17 @@ public class TransactionIdManager {
             }
             priorTransactionId = getTransactionId(priorId);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
       return priorTransactionId;
    }
 
-   public static TransactionId getParentBaseTransaction(Branch branch) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist {
+   public static TransactionId getParentBaseTransaction(Branch branch) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       if (branch == null) throw new IllegalArgumentException("branch can not be null.");
-      if (branch.getParentBranch() == null) throw new IllegalArgumentException("branch must have a parent branch.");
+      if (branch.hasParentBranch()) throw new IllegalArgumentException("branch must have a parent branch.");
 
       TransactionId baseParentTransactionId = null;
       TransactionId baseTransaction = getStartEndPoint(branch).getKey();
@@ -233,7 +242,7 @@ public class TransactionIdManager {
    }
 
    @Deprecated
-   public static Checksum getTransactionRangeChecksum(TransactionId startTransactionId, TransactionId endTransactionId) throws SQLException {
+   public static Checksum getTransactionRangeChecksum(TransactionId startTransactionId, TransactionId endTransactionId) throws OseeDataStoreException {
       if (startTransactionId == null) throw new IllegalArgumentException("startTransactionId can not be null");
       if (endTransactionId == null) throw new IllegalArgumentException("endTransactionId can not be null");
       if (startTransactionId.getBranch() != endTransactionId.getBranch()) throw new IllegalArgumentException(
@@ -262,6 +271,8 @@ public class TransactionIdManager {
             checksum.update(toBytes(rset.getLong("transaction_id")), 0, 8);
             checksum.update(toBytes(rset.getLong("gamma_id")), 0, 8);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -291,15 +302,15 @@ public class TransactionIdManager {
       return bytes;
    }
 
-   public static TransactionId getTransactionId(int transactionNumber) throws SQLException, TransactionDoesNotExist, BranchDoesNotExist {
+   public static TransactionId getTransactionId(int transactionNumber) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionId getTransactionId(ResultSet rSet) throws SQLException, TransactionDoesNotExist, BranchDoesNotExist {
+   public static TransactionId getTransactionId(ResultSet rSet) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist, SQLException {
       return getTransactionId(rSet.getInt("transaction_id"), rSet);
    }
 
-   private static TransactionId getTransactionId(int transactionNumber, ResultSet rSet) throws SQLException, TransactionDoesNotExist, BranchDoesNotExist {
+   private static TransactionId getTransactionId(int transactionNumber, ResultSet rSet) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
       if (transactionId == null) {
          ConnectionHandlerStatement chStmt = null;
@@ -319,6 +330,8 @@ public class TransactionIdManager {
                   new TransactionId(transactionNumber, branch, rSet.getString("osee_comment"),
                         rSet.getTimestamp("time"), rSet.getInt("author"), rSet.getInt("commit_art_id"), txType);
             instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
             DbUtil.close(chStmt);
          }

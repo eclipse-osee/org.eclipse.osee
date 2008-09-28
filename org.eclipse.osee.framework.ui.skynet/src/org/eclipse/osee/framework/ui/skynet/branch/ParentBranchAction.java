@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.NonBlankValidator;
@@ -72,7 +73,7 @@ public class ParentBranchAction extends Action {
 
       try {
          if (PlatformUI.isWorkbenchRunning() && BranchView.getBranchView() != null) BranchView.getBranchView().forcePopulateView();
-      } catch (Exception ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return branch;

@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.SQLException;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -42,8 +39,6 @@ public class ArtifactNameDescriptorResolver implements IArtifactNameDescriptorRe
          artifact = ArtifactQuery.getArtifactFromId(artId, branch);
       } catch (OseeCoreException ex) {
          return new Pair<String, ArtifactType>("", null);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
       return new Pair<String, ArtifactType>(artifact.getDescriptiveName(), artifact.getArtifactType());
    }

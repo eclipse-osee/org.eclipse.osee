@@ -120,7 +120,7 @@ public class RoughArtifact {
       }
    }
 
-   private void setFileAttributes(Artifact artifact) throws OseeCoreException, FileNotFoundException, SQLException {
+   private void setFileAttributes(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       if (fileAttributes != null) {
          for (Entry<String, File> entry : fileAttributes.entrySet()) {
             artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));

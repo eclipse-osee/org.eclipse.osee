@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -31,7 +30,7 @@ public interface IAtsTeamWorkflow {
     * @return true if responsible, false if not
     * @throws Exception TODO
     */
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException;
+   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
    /**
     * Return the artifact type name for the given parameters. This method will only be called if
@@ -42,7 +41,7 @@ public interface IAtsTeamWorkflow {
     * @return string artifact type name
     * @throws Exception TODO
     */
-   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException, SQLException;
+   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
    /**
     * Notification that a teamWorkflow was created. This allows the extension to do necessary initial tasks after the

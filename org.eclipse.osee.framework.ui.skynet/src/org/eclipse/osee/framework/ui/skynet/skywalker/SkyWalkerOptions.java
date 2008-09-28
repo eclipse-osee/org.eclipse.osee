@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.skywalker;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -77,7 +80,7 @@ public class SkyWalkerOptions {
       listeners.add(skyWalkerOptionsChangeListener);
    }
 
-   public String getExtendedName(Artifact artifact) throws SQLException {
+   public String getExtendedName(Artifact artifact) throws OseeCoreException {
       if (getSelectedShowAttributeTypes().size() == 0)
          return "";
       else {
@@ -96,8 +99,7 @@ public class SkyWalkerOptions {
       if (artTypes == null) {
          artTypes = new HashMap<ArtifactType, Boolean>();
          try {
-            for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(
-                  artifact.getBranch())) {
+            for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }
          } catch (Exception ex) {
@@ -113,8 +115,8 @@ public class SkyWalkerOptions {
             for (AttributeType descriptor : AttributeTypeManager.getTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
             }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }

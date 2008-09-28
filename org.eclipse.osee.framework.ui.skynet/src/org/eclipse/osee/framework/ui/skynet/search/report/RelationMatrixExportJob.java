@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.search.report;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
@@ -20,8 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -45,7 +43,7 @@ public class RelationMatrixExportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException, MultipleAttributesExist, ArtifactDoesNotExist {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws IOException, CoreException, OseeCoreException {
       matrix.clear();
       columnCount = selectedArtifacts.size() + 2; // use first column is the artifact name and 2nd is its identifier
       header = new String[columnCount];
@@ -62,7 +60,7 @@ public class RelationMatrixExportJob extends ReportJob {
       writeMatrix();
    }
 
-   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist {
+   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws OseeCoreException {
       header[columnIndex] = columnArtifact.getDescriptiveName();
 
       for (RelationLink relation : columnArtifact.getRelations(relationType)) {
@@ -75,7 +73,7 @@ public class RelationMatrixExportJob extends ReportJob {
       }
    }
 
-   private String[] getAssociatedRow(Artifact artifact) throws MultipleAttributesExist, SQLException {
+   private String[] getAssociatedRow(Artifact artifact) throws OseeCoreException {
       String[] row = matrix.get(artifact);
       if (row == null) {
          row = new String[columnCount];

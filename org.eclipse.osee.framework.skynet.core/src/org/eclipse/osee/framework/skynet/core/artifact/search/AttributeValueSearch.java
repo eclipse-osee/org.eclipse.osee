@@ -78,7 +78,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
       String sql;
 
       if (operator == DepricatedOperator.LIKE || operator == DepricatedOperator.CONTAINS)

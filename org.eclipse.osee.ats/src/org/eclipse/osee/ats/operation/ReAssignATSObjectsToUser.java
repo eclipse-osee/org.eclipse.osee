@@ -65,7 +65,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Get all things user is directly assigned to
                Collection<Artifact> assignedToArts =
-                     fromUser.getArtifacts(CoreRelationEnumeration.Users_Artifact, Artifact.class);
+                     fromUser.getRelatedArtifacts(CoreRelationEnumeration.Users_Artifact, Artifact.class);
                Set<Artifact> atsArts = new HashSet<Artifact>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof StateMachineArtifact) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.ISearchResult;
@@ -257,7 +257,7 @@ public abstract class AbstractArtifactSearchResult implements ISearchResult {
          try {
             // remove all of its children
             removeArtifacts(artifact.getChildren());
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }

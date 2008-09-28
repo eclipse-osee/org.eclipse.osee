@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -19,7 +18,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Donald G. Dunne
@@ -30,30 +28,25 @@ public class StaticIdQuery {
 
    @SuppressWarnings("unchecked")
    public static Set<Artifact> getArtifacts(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
-      try {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
-         // Retrieve cached artifacts first
-         for (Artifact artifact : ArtifactCache.getArtifactsByStaticId(staticId, branch)) {
-            if (artifact.getArtifactTypeName().equals(artifactTypeName)) artifacts.add(artifact);
-         }
-         if (artifacts.size() > 0) {
-            OseeLog.log(SkynetActivator.class, Level.FINE,
-                  "StaticId Load: [" + staticId + "][" + artifactTypeName + "]");
-         }
-         if (artifacts.size() == 0) {
-            // Retrieve database artifacts if cache has none
-            artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
-                  staticId, branch));
-         }
-
-         // Store results in cache
-         for (Artifact artifact : artifacts) {
-            ArtifactCache.cachePostAttributeLoad(artifact);
-         }
-         return artifacts;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      // Retrieve cached artifacts first
+      for (Artifact artifact : ArtifactCache.getArtifactsByStaticId(staticId, branch)) {
+         if (artifact.getArtifactTypeName().equals(artifactTypeName)) artifacts.add(artifact);
       }
+      if (artifacts.size() > 0) {
+         OseeLog.log(SkynetActivator.class, Level.FINE, "StaticId Load: [" + staticId + "][" + artifactTypeName + "]");
+      }
+      if (artifacts.size() == 0) {
+         // Retrieve database artifacts if cache has none
+         artifacts.addAll(ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
+               staticId, branch));
+      }
+
+      // Store results in cache
+      for (Artifact artifact : artifacts) {
+         ArtifactCache.cachePostAttributeLoad(artifact);
+      }
+      return artifacts;
    }
 
    public static Artifact getSingletonArtifactOrException(String artifactType, String staticId, Branch branch) throws OseeCoreException {

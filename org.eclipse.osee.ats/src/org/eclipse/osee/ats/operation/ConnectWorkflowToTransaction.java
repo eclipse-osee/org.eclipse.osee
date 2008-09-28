@@ -52,20 +52,16 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
       }
    }
 
-   private void updateWorkflow(String commitComment, int transactionId) throws SQLException {
+   private void updateWorkflow(String commitComment, int transactionId) throws OseeCoreException, SQLException {
       Branch atsBranch = BranchPersistenceManager.getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 
       if (hridMatcher.find()) {
          String hrid = hridMatcher.group(1);
 
-         try {
-            int artId = ArtifactQuery.getArtifactFromId(hrid, atsBranch).getArtId();
-            ConnectionHandler.runPreparedUpdate(
-                  "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", artId, transactionId);
-         } catch (OseeCoreException ex) {
-            appendResultLine(ex.getLocalizedMessage());
-         }
+         int artId = ArtifactQuery.getArtifactFromId(hrid, atsBranch).getArtId();
+         ConnectionHandler.runPreparedUpdate(
+               "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", artId, transactionId);
       }
    }
 

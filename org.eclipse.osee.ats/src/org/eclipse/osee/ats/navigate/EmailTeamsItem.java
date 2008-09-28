@@ -65,11 +65,11 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getArtifacts(AtsRelation.TeamMember_Member, User.class))
+            for (User user : teamDef.getRelatedArtifacts(AtsRelation.TeamMember_Member, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getArtifacts(AtsRelation.TeamLead_Lead, User.class))
+            for (User user : teamDef.getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
       }

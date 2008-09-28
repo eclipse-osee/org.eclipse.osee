@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -28,12 +28,12 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -55,11 +55,13 @@ public class ReviewManager {
     * 
     * @param force will force the creation of the review without checking that a review should be created
     * @return new review
-    * @throws SQLException
+    * @throws
     */
-   public DecisionReviewArtifact createValidateReview(boolean force) throws OseeCoreException, SQLException {
+   public DecisionReviewArtifact createValidateReview(boolean force) throws OseeCoreException {
       // If not validate page, don't do anything
-      if (!force && !AtsWorkDefinitions.isValidatePage(smaMgr.getWorkPageDefinition())) return null;
+      if (!force && !AtsWorkDefinitions.isValidatePage(smaMgr.getWorkPageDefinition())) {
+         return null;
+      }
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState().size() > 0) {
          for (ReviewSMArtifact rev : getReviewsFromCurrentState()) {
@@ -87,15 +89,15 @@ public class ReviewManager {
       return null;
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState) throws OseeCoreException, SQLException {
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState) throws OseeCoreException {
       return createNewPeerToPeerReview(reviewTitle, againstState, SkynetAuthentication.getUser(), new Date());
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException {
       return createNewPeerToPeerReview(smaMgr.getSma(), reviewTitle, againstState, origUser, origDate);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException, SQLException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String reviewTitle, String againstState, User origUser, Date origDate) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
@@ -123,7 +125,7 @@ public class ReviewManager {
     * @return
     * @throws Exception
     */
-   public double getRemainHours() throws OseeCoreException, SQLException {
+   public double getRemainHours() throws OseeCoreException {
       double hours = 0;
       for (ReviewSMArtifact reviewArt : getReviews())
          hours += reviewArt.getRemainHoursFromArtifact();
@@ -137,7 +139,7 @@ public class ReviewManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
-   public double getEstimatedHours(String relatedToStateName) throws OseeCoreException, SQLException {
+   public double getEstimatedHours(String relatedToStateName) throws OseeCoreException {
       double hours = 0;
       for (ReviewSMArtifact revArt : getReviews(relatedToStateName))
          hours += revArt.getEstimatedHoursTotal();
@@ -150,7 +152,7 @@ public class ReviewManager {
     * @return
     * @throws Exception
     */
-   public double getEstimatedHours() throws OseeCoreException, SQLException {
+   public double getEstimatedHours() throws OseeCoreException {
       double hours = 0;
       for (ReviewSMArtifact revArt : getReviews())
          hours += revArt.getEstimatedHoursTotal();
@@ -167,7 +169,7 @@ public class ReviewManager {
       }
    }
 
-   public Collection<User> getValidateReviewFollowupUsers() throws OseeCoreException, SQLException {
+   public Collection<User> getValidateReviewFollowupUsers() throws OseeCoreException {
       Collection<User> users = smaMgr.getStateMgr().getAssignees("Implement");
       if (users.size() > 0) return users;
 
@@ -178,15 +180,15 @@ public class ReviewManager {
       return Arrays.asList(SkynetAuthentication.getUser());
    }
 
-   public Collection<ReviewSMArtifact> getReviews() throws SQLException {
-      return smaMgr.getSma().getArtifacts(AtsRelation.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
+   public Collection<ReviewSMArtifact> getReviews() throws OseeCoreException {
+      return smaMgr.getSma().getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
    }
 
-   public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws OseeCoreException, SQLException {
+   public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws OseeCoreException {
       return getReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
-   public Collection<ReviewSMArtifact> getReviews(String stateName) throws OseeCoreException, SQLException {
+   public Collection<ReviewSMArtifact> getReviews(String stateName) throws OseeCoreException {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
@@ -198,7 +200,7 @@ public class ReviewManager {
    public boolean hasReviews() {
       try {
          return smaMgr.getSma().getRelatedArtifactsCount(AtsRelation.TeamWorkflowToReview_Review) > 0;
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
       }
@@ -214,8 +216,8 @@ public class ReviewManager {
             SMAManager smaMgr = new SMAManager(reviewArt);
             if (!smaMgr.isCompleted() && smaMgr.isCancelled()) return new Result("Not Complete");
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return Result.TrueResult;
    }
@@ -230,7 +232,7 @@ public class ReviewManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Hours Spent
     */
-   public double getHoursSpent(String relatedToStateName) throws OseeCoreException, SQLException {
+   public double getHoursSpent(String relatedToStateName) throws OseeCoreException {
       double spent = 0;
       for (ReviewSMArtifact reviewArt : getReviews(relatedToStateName))
          spent += reviewArt.getHoursSpentSMATotal();
@@ -243,7 +245,7 @@ public class ReviewManager {
     * @param relatedToStateName state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
-   public int getPercentComplete(String relatedToStateName) throws OseeCoreException, SQLException {
+   public int getPercentComplete(String relatedToStateName) throws OseeCoreException {
       int spent = 0;
       Collection<ReviewSMArtifact> reviewArts = getReviews(relatedToStateName);
       for (ReviewSMArtifact reviewArt : reviewArts)

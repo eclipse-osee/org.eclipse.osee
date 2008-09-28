@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +44,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException, SQLException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
       if (pcrIds != null && pcrIds.size() > 0) {
@@ -59,8 +58,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          for (TeamDefinitionArtifact teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
-         criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
-               teamDefGuids));
+         criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), teamDefGuids));
       }
 
       if (returnActions) {

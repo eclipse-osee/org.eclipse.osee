@@ -186,22 +186,17 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeDataStoreException {
-      try {
-         for (AttributeType attributeType : artifact.getAttributeTypes()) {
-            int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
-            for (int i = 0; i < missingCount; i++) {
-               Attribute<?> attribute = artifact.createAttribute(attributeType, true);
-               if (!isNewArtifact) {
-                  attribute.setNotDirty();
-                  OseeLog.log(SkynetActivator.class, Level.FINER, String.format(
-                        "artId [%d] - an attribute of type %s was created", artifact.getArtId(),
-                        attributeType.toString()));
-               }
+   public static void meetMinimumAttributeCounts(Artifact artifact, boolean isNewArtifact) throws OseeCoreException {
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
+         for (int i = 0; i < missingCount; i++) {
+            Attribute<?> attribute = artifact.createAttribute(attributeType, true);
+            if (!isNewArtifact) {
+               attribute.setNotDirty();
+               OseeLog.log(SkynetActivator.class, Level.FINER, String.format(
+                     "artId [%d] - an attribute of type %s was created", artifact.getArtId(), attributeType.toString()));
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex.getMessage(), ex);
       }
    }
 

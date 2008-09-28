@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -37,7 +36,7 @@ public class MyCompletedSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws OseeCoreException, SQLException {
+   protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
       if (isCancelled()) return EMPTY_SET;
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       String valueToMatch =

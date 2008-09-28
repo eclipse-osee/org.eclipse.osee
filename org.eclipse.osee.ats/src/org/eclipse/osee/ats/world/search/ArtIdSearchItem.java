@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,7 +36,7 @@ public class ArtIdSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Artifact art : ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
             BranchPersistenceManager.getDefaultBranch(), false)) {
@@ -48,15 +47,14 @@ public class ArtIdSearchItem extends WorldSearchItem {
          artifacts.add(art);
       }
       if (artifacts.size() == 0) {
-         AWorkbench.popup(
-               "ERROR",
+         AWorkbench.popup("ERROR",
                "Didn't find any artifacts on default branch \"" + BranchPersistenceManager.getDefaultBranch() + "\"");
       }
       return artifacts;
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException, SQLException {
+   public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,

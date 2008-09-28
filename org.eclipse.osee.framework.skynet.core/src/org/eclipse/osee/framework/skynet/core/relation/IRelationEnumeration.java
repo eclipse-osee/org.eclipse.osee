@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 public interface IRelationEnumeration {
    boolean isSideA();
 
-   String getSideName() throws SQLException;
+   String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException;
 
    public String getTypeName();
 
-   public RelationType getRelationType() throws SQLException;
+   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException;
 
    public boolean isThisType(RelationLink link);
 

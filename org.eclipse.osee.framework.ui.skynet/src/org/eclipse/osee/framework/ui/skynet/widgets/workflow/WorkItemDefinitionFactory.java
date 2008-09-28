@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact = null;
    }
 
-   public synchronized static void loadDefinitions() throws OseeCoreException, SQLException {
+   public synchronized static void loadDefinitions() throws OseeCoreException {
       if (itemIdToDefinition == null) {
          OSEELog.logInfo(SkynetGuiPlugin.class, "Loading Work Item Definitions", false);
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
@@ -73,7 +72,7 @@ public class WorkItemDefinitionFactory {
       addItemDefinition(writeType, workItemDefinition, artifact);
    }
 
-   public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException, SQLException {
+   public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
       Artifact parentArt =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
                   parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
@@ -82,7 +81,7 @@ public class WorkItemDefinitionFactory {
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
                   BranchPersistenceManager.getCommonBranch()).iterator().next();
       if (childArt == null) throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
-      if (!parentArt.getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
+      if (!parentArt.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
          parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
          parentArt.persistRelations();
       }
@@ -100,7 +99,7 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact.put(workItemDefinition.id, artifact);
    }
 
-   public static void loadDefinitions(Collection<Artifact> arts) throws OseeCoreException, SQLException {
+   public static void loadDefinitions(Collection<Artifact> arts) throws OseeCoreException {
       for (Artifact art : arts) {
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
@@ -121,7 +120,7 @@ public class WorkItemDefinitionFactory {
       }
    }
 
-   public static WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException, SQLException {
+   public static WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException {
       if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       WorkItemDefinition wid = itemIdToDefinition.get(id);
@@ -133,7 +132,7 @@ public class WorkItemDefinitionFactory {
       return itemIdToDefinition.get(id);
    }
 
-   public static Artifact getWorkItemDefinitionArtifact(String id) throws OseeCoreException, SQLException {
+   public static Artifact getWorkItemDefinitionArtifact(String id) throws OseeCoreException {
       if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       Artifact art = itemIdToWidArtifact.get(id);
@@ -145,7 +144,7 @@ public class WorkItemDefinitionFactory {
       return itemIdToWidArtifact.get(id);
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) throws OseeCoreException, SQLException {
+   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) throws OseeCoreException {
       loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String id : ids) {
@@ -163,7 +162,7 @@ public class WorkItemDefinitionFactory {
     * @param data
     * @return
     */
-   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException, SQLException {
+   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
       List<WorkItemDefinition> dynamicDefinitions = new ArrayList<WorkItemDefinition>();
       for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
          dynamicDefinitions.addAll(provider.getDynamicWorkItemDefinitionsForPage(workFlowDefinition,
@@ -172,7 +171,7 @@ public class WorkItemDefinitionFactory {
       return dynamicDefinitions;
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws OseeCoreException, SQLException {
+   public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws OseeCoreException {
       loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String itemId : pageids) {
@@ -183,7 +182,7 @@ public class WorkItemDefinitionFactory {
       return defs;
    }
 
-   public static Collection<WorkItemDefinition> getWorkItemDefinitions() throws OseeCoreException, SQLException {
+   public static Collection<WorkItemDefinition> getWorkItemDefinitions() throws OseeCoreException {
       loadDefinitions();
       return itemIdToDefinition.values();
    }
