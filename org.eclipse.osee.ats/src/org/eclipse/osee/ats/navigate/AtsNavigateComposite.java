@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -39,8 +39,9 @@ public class AtsNavigateComposite extends XNavigateComposite {
     */
    public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
       super(navigateViewItems, parent, style);
-      if (!ConnectionHandler.isConnected()) {
-         (new Label(parent, SWT.NONE)).setText("DB Connection Unavailable");
+      Result result = AtsPlugin.areOSEEServicesAvailable();
+      if (result.isFalse()) {
+         (new Label(parent, SWT.NONE)).setText(result.getText());
          return;
       }
    }
@@ -53,6 +54,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       handleDoubleClick(item);
    }
 
+   @Override
    protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
@@ -83,6 +85,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       }
    }
 
+   @Override
    public void refresh() {
       super.refresh();
       if (AtsPlugin.isAtsAdmin()) {

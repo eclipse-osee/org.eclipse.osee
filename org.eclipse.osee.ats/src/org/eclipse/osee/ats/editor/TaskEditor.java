@@ -27,13 +27,13 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -261,8 +261,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);
-      if (!ConnectionHandler.isConnected()) {
-         AWorkbench.popup("ERROR", "DB Connection Unavailable");
+      Result result = AtsPlugin.areOSEEServicesAvailable();
+      if (result.isFalse()) {
+         result.popup();
          return;
       }
 

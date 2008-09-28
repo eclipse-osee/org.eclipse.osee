@@ -90,6 +90,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    /**
     * This method is called upon plug-in activation
     */
+   @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
 
@@ -294,17 +295,27 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * @return Result.isFalse if not connected with getText() of problem
     */
    public static Result areOSEEServicesAvailable() {
-      StringBuilder message = new StringBuilder();
-      if (!ConnectionHandler.isConnected()) {
-         message.append("DB Connection Unavailable");
+      StringBuffer message = new StringBuffer();
+      try {
+         if (!ConnectionHandler.isConnected()) {
+            message.append("DB Connection Unavailable");
+         }
+      } catch (Exception ex) {
+         message.append("DB Connection Unavailable: " + ex.getLocalizedMessage());
       }
-      if (!OseeApplicationServer.isApplicationServerAlive()) {
+      try {
+         if (!OseeApplicationServer.isApplicationServerAlive()) {
+            if (message.length() > 0) {
+               message.append("\n");
+            }
+            message.append("OSEE Application Server Unavailable");
+         }
+      } catch (Exception ex) {
          if (message.length() > 0) {
             message.append("\n");
          }
-         message.append("OSEE Application Server Unavailable");
+         message.append("OSEE Application Server Unavailable: " + ex.getLocalizedMessage());
       }
-
       return message.length() > 0 ? new Result(message.toString()) : Result.TrueResult;
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config.demo.navigate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -56,7 +56,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (!ConnectionHandler.isConnected()) return items;
+      if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
 
       // If Demo Teams not configured, ignore these navigate items
       try {

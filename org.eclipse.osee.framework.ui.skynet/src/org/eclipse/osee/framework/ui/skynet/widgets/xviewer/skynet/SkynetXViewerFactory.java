@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -53,7 +52,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
    @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       try {
-         if (ConnectionHandler.isConnected()) {
+         if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
             if (xViewerCustomizations == null) {
                xViewerCustomizations = new SkynetCustomizations(this);
             }

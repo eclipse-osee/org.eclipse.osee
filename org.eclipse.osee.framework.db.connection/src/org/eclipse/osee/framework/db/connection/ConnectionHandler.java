@@ -96,15 +96,11 @@ public final class ConnectionHandler {
    /**
     * returns existing connection, or attempts to acquire a connection on does not exist and reports whether we are
     * connected after this processing
+    * 
+    * @throws SQLException
     */
-   public static boolean isConnected() {
-      try {
-         return (getConnection() != null);
-      } catch (Exception ex) {
-         //         OseeLog.log(Activator.class.getName(), Level.SEVERE,
-         //               "Unable to get a database connection: " + ex.getLocalizedMessage(), ex);
-      }
-      return false;
+   public static boolean isConnected() throws SQLException {
+      return (getConnection() != null);
    }
 
    /**
