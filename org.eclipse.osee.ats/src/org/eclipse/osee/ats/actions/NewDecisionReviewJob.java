@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.actions;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,9 +23,11 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -37,10 +40,12 @@ public class NewDecisionReviewJob extends Job {
    private final TeamWorkFlowArtifact teamParent;
    private final boolean againstCurrentState;
    private DecisionReviewArtifact decisionReviewArtifact;
+   private final ReviewBlockType reviewBlockType;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, boolean againstCurrentState) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
+      this.reviewBlockType = reviewBlockType;
       this.againstCurrentState = againstCurrentState;
    }
 
@@ -51,7 +56,7 @@ public class NewDecisionReviewJob extends Job {
 
             @Override
             protected void handleTxWork() throws OseeCoreException, SQLException {
-               decisionReviewArtifact = createNewDecisionReview(teamParent, againstCurrentState);
+               decisionReviewArtifact = createNewDecisionReview(teamParent, reviewBlockType, againstCurrentState);
                decisionReviewArtifact.persistAttributesAndRelations();
             }
 
@@ -67,24 +72,42 @@ public class NewDecisionReviewJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws OseeCoreException, SQLException {
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException, SQLException {
+      return createNewDecisionReview(teamParent, reviewBlockType,
+            "Should we do this?  Yes will require followup, No will not",
+            againstCurrentState ? teamParent.getSmaMgr().getStateMgr().getCurrentStateName() : null,
+            "Enter description of the decision, if any",
+            "Yes;Followup;<" + SkynetAuthentication.getUser().getUserId() + ">\n" + "No;Completed;", null);
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees) throws OseeCoreException {
       DecisionReviewArtifact decRev =
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
-                  AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
+                  AtsPlugin.getAtsBranch(), title);
 
-      if (teamParent != null) teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, decRev);
-      if (againstCurrentState) decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            teamParent.getSmaMgr().getStateMgr().getCurrentStateName());
-
+      if (teamParent != null) {
+         teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, decRev);
+      }
+      if (relatedToState != null && !relatedToState.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), relatedToState);
+      }
       decRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
-      decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
-            "Enter description of the decision, if any");
-      decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
-            "Yes;Followup;<" + SkynetAuthentication.getUser().getUserId() + ">\n" + "No;Completed;");
+      if (description != null && !description.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      }
+      if (options != null && !options.equals("")) {
+         decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), options);
+      }
+      if (reviewBlockType != null) {
+         decRev.setSoleAttributeFromString(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), reviewBlockType.name());
+      }
 
       // Initialize state machine
       decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
       decRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "");
+      if (assignees != null && assignees.size() > 0) {
+         decRev.getSmaMgr().getStateMgr().setAssignees(assignees);
+      }
 
       return decRev;
    }

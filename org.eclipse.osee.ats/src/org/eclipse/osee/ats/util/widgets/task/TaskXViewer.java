@@ -32,8 +32,10 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -57,6 +59,7 @@ public class TaskXViewer extends WorldXViewer {
    private final List<TaskResOptionDefinition> taskResOptionDefinitions;
    private Map<String, TaskResOptionDefinition> nameToResOptionDef = null;
    private boolean tasksEditable = true;
+   private static String viewerId = GUID.generateGuidStr();
 
    /**
     * @param parent
@@ -74,11 +77,11 @@ public class TaskXViewer extends WorldXViewer {
       if (xTaskViewer == null) return "TaskXViewer";
       try {
          if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() != null) {
-            return "TaskXViewer: " + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma().toString();
+            return "TaskXViewer - id:" + viewerId + " - " + xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma().toString();
          }
-         return "TaskXViewer: " + xTaskViewer.getIXTaskViewer().toString();
+         return "TaskXViewer - id:" + viewerId + " - " + xTaskViewer.getIXTaskViewer().toString();
       } catch (Exception ex) {
-         return "TaskXViewer";
+         return "TaskXViewer - id:" + viewerId;
       }
    }
 
@@ -423,6 +426,15 @@ public class TaskXViewer extends WorldXViewer {
       } catch (OseeCoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.WorldXViewer#dispose()
+    */
+   @Override
+   public void dispose() {
+      OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
    @Override

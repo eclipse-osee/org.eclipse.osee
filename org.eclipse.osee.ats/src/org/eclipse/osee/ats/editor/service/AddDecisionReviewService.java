@@ -61,7 +61,7 @@ public class AddDecisionReviewService extends WorkPageService {
          public void linkActivated(HyperlinkEvent e) {
             if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add Decision Review",
                   "Create a Decision Review and attach it to the current state?")) return;
-            NewDecisionReviewJob job = new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), true);
+            NewDecisionReviewJob job = new NewDecisionReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), null, true);
             job.setUser(true);
             job.setPriority(Job.LONG);
             job.schedule();

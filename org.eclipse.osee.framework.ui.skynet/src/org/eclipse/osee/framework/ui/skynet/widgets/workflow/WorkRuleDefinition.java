@@ -5,8 +5,9 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.sql.SQLException;
+import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
@@ -23,7 +24,7 @@ public class WorkRuleDefinition extends WorkItemDefinition {
     * @param id
     */
    public WorkRuleDefinition(String id) {
-      this(id, id, null);
+      this(id, id, null, null);
    }
 
    /**
@@ -33,40 +34,22 @@ public class WorkRuleDefinition extends WorkItemDefinition {
     * @param id
     */
    public WorkRuleDefinition(String name, String id) {
-      this(name, id, null);
+      this(name, id, null, null);
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
-   public WorkRuleDefinition(String name, String id, String value) {
-      this(name, id, value, null);
-   }
-
-   public WorkRuleDefinition(String name, String id, String value, String type) {
+   public WorkRuleDefinition(String name, String id, Map<String, String> workDataKeyValueMap, String type) {
       super(name, id, null, type);
-      if (value != null && value.equals("")) throw new IllegalArgumentException(
-            "value must be either null or length>0.  value can not be \"\".  Invalid for WorkRuleDefinition " + id);
-      if (value != null) setData(value);
+      if (workDataKeyValueMap != null) {
+         setWorkDataKeyValueMap(workDataKeyValueMap);
+      }
    }
 
    public WorkRuleDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
-            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null);
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null, null);
       setDescription(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DESCRIPTION.getAttributeTypeName(), ""));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
-
-      try {
-         setData(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName()));
-      } catch (AttributeDoesNotExist ex) {
-         // do nothing
-      }
-   }
-
-   public String get() {
-      return (String) getData();
+      loadWorkDataKeyValueMap(artifact);
    }
 
    /* (non-Javadoc)
@@ -75,7 +58,6 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    @Override
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact ruleArt = super.toArtifact(writeType);
-      if (get() != null) ruleArt.setSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), get());
       return ruleArt;
    }
 

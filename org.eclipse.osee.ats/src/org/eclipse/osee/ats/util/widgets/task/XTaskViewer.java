@@ -195,10 +195,10 @@ public class XTaskViewer extends XWidget implements IActionable {
    public void updateExtendedStatusString() {
       String str = "";
       if (filterCompletedMenuItem != null && filterCompletedMenuItem.getSelection()) {
-         str += " Complete/Cancel FILTERED - ";
+         str += "[Complete/Cancel Filter]";
       }
       if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
-         str += " Curr State FILTERED - ";
+         str += "[State Filter]";
       }
       xViewer.setExtendedStatusString(str);
       xViewer.refresh();

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -197,10 +199,26 @@ public class ATSLog {
       }
    }
 
+   /**
+    * @param type
+    * @param state name of state or null
+    * @param msg
+    * @throws IllegalStateException
+    * @throws SQLException
+    * @throws MultipleAttributesExist
+    */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {
       addLog(type, state, msg, new Date(), SkynetAuthentication.getUser());
    }
 
+   /**
+    * @param type
+    * @param state name of state or null
+    * @param msg
+    * @param user
+    * @throws SQLException
+    * @throws MultipleAttributesExist
+    */
    public void addLog(LogType type, String state, String msg, User user) throws OseeCoreException {
       addLog(type, state, msg, new Date(), user);
    }
@@ -209,6 +227,15 @@ public class ATSLog {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
+   /**
+    * @param type
+    * @param state name of state or null
+    * @param msg
+    * @param date
+    * @param user
+    * @throws SQLException
+    * @throws MultipleAttributesExist
+    */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
       if (!enabled) return;
       LogItem logItem = new LogItem(type, date, user, state, msg);

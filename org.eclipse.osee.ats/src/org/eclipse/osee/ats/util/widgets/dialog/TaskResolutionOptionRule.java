@@ -36,7 +36,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    public TaskResolutionOptionRule(String name, String id, String value) {
       super(name, id, null, WORK_TYPE);
-      if (value != null && !value.equals("")) setData(value);
+      addWorkDataKeyValue(ATS_TASK_OPTIONS_TAG, value);
    }
 
    /**
@@ -62,7 +62,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       if (workItemDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule =
                new TaskResolutionOptionRule(null, GUID.generateGuidStr(), null);
-         taskResolutionOptionRule.fromXml((String) workItemDefinition.getData());
+         taskResolutionOptionRule.fromXml(workItemDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
          return taskResolutionOptionRule;
       }
       return null;

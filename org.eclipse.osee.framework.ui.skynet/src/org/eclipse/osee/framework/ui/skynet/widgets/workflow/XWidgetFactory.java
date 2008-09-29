@@ -217,7 +217,6 @@ public class XWidgetFactory {
    }
    private static Set<IXWidgetProvider> widgetProviders;
 
-   @SuppressWarnings("deprecation")
    private static Set<IXWidgetProvider> getXWidgetProviders() {
       widgetProviders = new HashSet<IXWidgetProvider>();
       IExtensionPoint point =

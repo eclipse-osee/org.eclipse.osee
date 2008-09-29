@@ -14,13 +14,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SMAState {
    private String name;
@@ -46,6 +44,7 @@ public class SMAState {
       this("", (User) null);
    }
 
+   @Override
    public String toString() {
       return name;
    }
@@ -126,7 +125,7 @@ public class SMAState {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
-      sb.append(getAssigneesStorageString(assignees));
+      sb.append(UsersByIds.getStorageString(assignees));
       sb.append(";");
       if (hoursSpent > 0) sb.append(getHoursSpentStr());
       sb.append(";");
@@ -134,15 +133,7 @@ public class SMAState {
       return sb.toString();
    }
 
-   public static String getAssigneesStorageString(Collection<User> users) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      for (User u : users)
-         sb.append("<" + u.getUserId() + ">");
-      return sb.toString();
-   }
-
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
-   public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
    public void setFromXml(String xml) throws OseeCoreException {
       if (xml == null || xml.equals("")) {
@@ -154,17 +145,7 @@ public class SMAState {
          name = m.group(1);
          if (!m.group(3).equals("")) hoursSpent = new Float(m.group(3)).doubleValue();
          if (!m.group(4).equals("")) percentComplete = new Integer(m.group(4)).intValue();
-         m = userPattern.matcher(m.group(2));
-         while (m.find()) {
-            String userId = m.group(1);
-            if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
-            try {
-               User u = SkynetAuthentication.getUserByUserId(m.group(1));
-               assignees.add(u);
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
-            }
-         }
+         assignees = UsersByIds.getUsers(m.group(2));
       } else
          throw new IllegalArgumentException("Can't unpack state data => " + xml);
    }

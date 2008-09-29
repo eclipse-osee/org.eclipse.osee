@@ -21,6 +21,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
 
    public static String ARTIFACT_NAME = "Work Widget Definition";
    public static String tagName = DynamicXWidgetLayout.XWIDGET;
+   private DynamicXWidgetLayoutData widgetLayoutData;
 
    public WorkWidgetDefinition(String name, String id) {
       super(name, id, null);
@@ -28,17 +29,21 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
 
    public WorkWidgetDefinition(DynamicXWidgetLayoutData xWidgetLayoutData) {
       super(xWidgetLayoutData.getName() + " - " + xWidgetLayoutData.getId(), xWidgetLayoutData.getId(), null);
-      setData(xWidgetLayoutData);
+      setXWidgetLayoutData(xWidgetLayoutData);
+   }
+
+   public void setXWidgetLayoutData(DynamicXWidgetLayoutData xWidgetLayoutData) {
+      widgetLayoutData = xWidgetLayoutData;
    }
 
    public WorkWidgetDefinition(Artifact artifact) throws OseeCoreException {
       this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getDescriptiveName()));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      loadWorkDataKeyValueMap(artifact);
 
-      DynamicXWidgetLayoutData data =
-            getFromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), ""));
-      setData(data);
+      DynamicXWidgetLayoutData data = getFromXml(getWorkDataValue(tagName));
+      setXWidgetLayoutData(data);
    }
 
    @Override
@@ -55,7 +60,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    public DynamicXWidgetLayoutData get() {
       // Hand out an modifiable copy of the LayoutData to ensure widgets created off it aren't shared
       try {
-         return (DynamicXWidgetLayoutData) ((DynamicXWidgetLayoutData) getData()).clone();
+         return (DynamicXWidgetLayoutData) widgetLayoutData.clone();
       } catch (CloneNotSupportedException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
@@ -63,7 +68,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    }
 
    public void set(DynamicXWidgetLayoutData xWidgetLayoutData) {
-      setData(xWidgetLayoutData);
+      setXWidgetLayoutData(xWidgetLayoutData);
    }
 
    public static boolean isWorkItemXWidget(String xml) {
@@ -78,7 +83,7 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
     * Create WorkItemXWidgetDefinition from xml
     * 
     * @param xml <XWidget displayName="Problem" storageName="ats.Problem" xwidgetType="XTextDam" fill="Vertically"/>
-    * @return
+    * @return WorkWidgetDefinition
     * @throws Exception
     */
    public static WorkWidgetDefinition createFromXml(String xml) throws OseeCoreException {

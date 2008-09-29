@@ -7,6 +7,8 @@ package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
+import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -22,6 +24,8 @@ public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
    public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
+      addWorkItem(AtsAddDecisionReviewRule.ID);
+      addWorkItem(AtsAddPeerToPeerReviewRule.ID);
    }
 
 }

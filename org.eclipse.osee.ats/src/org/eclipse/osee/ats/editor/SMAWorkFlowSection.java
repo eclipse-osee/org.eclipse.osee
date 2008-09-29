@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -587,11 +588,10 @@ public class SMAWorkFlowSection extends SectionPart {
 
             // Loop through this state's blocking reviews to confirm complete
             for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
-               SMAManager smaMgr = new SMAManager(reviewArt);
-               if (reviewArt.isBlocking() && (!smaMgr.isCancelled() && !smaMgr.isCompleted())) {
+               if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
                   AWorkbench.popup(
                         "Error",
-                        "Blocking Review Not Complete\n\nTitle: " + reviewArt.getDescriptiveName() + "\n\nHRID: " + reviewArt.getHumanReadableId());
+                        "Blocking Review must be completed before transition.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
                   return;
                }
             }
@@ -615,7 +615,7 @@ public class SMAWorkFlowSection extends SectionPart {
             if (!handlePopulateStateMetrics()) return;
          }
 
-         smaMgr.getSma().persistAttributes();
+            smaMgr.getSma().persistAttributes();
 
          Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false);
          if (result.isFalse()) {

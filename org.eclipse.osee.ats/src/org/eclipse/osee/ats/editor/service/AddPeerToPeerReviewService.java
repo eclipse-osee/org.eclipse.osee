@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -67,7 +68,7 @@ public class AddPeerToPeerReviewService extends WorkPageService {
                            "Select state to that review will be associated with.",
                            smaMgr.getWorkFlowDefinition().getPageNames());
                dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
-               dialog.setReviewTitle("Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getDescriptiveName() + "\"");
+               dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(smaMgr));
                if (dialog.open() == 0) {
                   if (dialog.getReviewTitle() == null || dialog.getReviewTitle().equals("")) {
                      AWorkbench.popup("ERROR", "Must enter review title");

@@ -564,10 +564,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
-      super.dispose();
       // Dispose of the table objects is done through separate dispose listener off tree
-      // Tell the label provider to release its ressources
+      // Tell the label provider to release its resources
       getLabelProvider().dispose();
+      super.dispose();
    }
 
    public ArrayList<Artifact> getSelectedArtifacts() {

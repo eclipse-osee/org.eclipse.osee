@@ -96,6 +96,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()));
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
+      workItems.add(new AtsAddDecisionReviewRule());
+      workItems.add(new AtsAddPeerToPeerReviewRule());
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
@@ -123,6 +125,8 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.NOT_REQUIRED, XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE,
+            "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam",

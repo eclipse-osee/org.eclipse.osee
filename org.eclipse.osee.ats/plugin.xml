@@ -148,6 +148,12 @@
       <AtsStateItem
             classname="org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
       </AtsStateItem>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsHandleAddDecisionReviewRuleStateItem">
+      </AtsStateItem>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsHandleAddPeerToPeerReviewRuleStateItem">
+      </AtsStateItem>
    </extension>
    <extension
          id="ATS_Skynet_Types"

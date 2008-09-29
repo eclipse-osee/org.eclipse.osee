@@ -23,8 +23,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSBranchMetrics;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -234,7 +236,7 @@ public class AtsBranchManager {
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.
     * 
-    * @return
+    * @return Branch
     * @throws SQLException
     */
    public Branch getWorkingBranch() throws OseeCoreException {
@@ -456,6 +458,15 @@ public class AtsBranchManager {
                            smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
                            String.valueOf(targetedVersionBranchId), String.valueOf(workflowWorkingBranchParentBranchId)));
             }
+         }
+      }
+
+      // Confirm that all blocking reviews are completed
+      // Loop through this state's blocking reviews to confirm complete
+      for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
+         if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.getSmaMgr().isCancelledOrCompleted()) {
+            return new Result(
+                  "Blocking Review must be completed before commit.\n\nReview Title: \"" + reviewArt.getDescriptiveName() + "\"\nHRID: " + reviewArt.getHumanReadableId());
          }
       }
 

@@ -93,9 +93,10 @@ public class FilterDataUI {
    public void dispose() {
    }
 
-   public String getStatusLabelAddition() {
-      if (isXViewerTextFiltered()) return "Text FILTERED - ";
-      return "";
+   public void getStatusLabelAddition(StringBuffer sb) {
+      if (isXViewerTextFiltered()) {
+         sb.append("[Text Filter]");
+      }
    }
 
    private void refresh() {

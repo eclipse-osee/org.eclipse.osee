@@ -47,7 +47,7 @@ public class BlockingReview extends WorkPageService {
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       label = toolkit.createLabel(workGroup, "");
-      label.setToolTipText("A blocking review requires the review be completed before the parent workflow can continue.");
+      label.setToolTipText("A blocking review requires the review be completed before the parent workflow has satisfied option.");
       refresh();
    }
 
@@ -56,7 +56,7 @@ public class BlockingReview extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Blocking Review";
+      return "Review Blocks";
    }
 
    /* (non-Javadoc)
@@ -76,9 +76,9 @@ public class BlockingReview extends WorkPageService {
    public void refresh() {
       try {
          if (label != null && !label.isDisposed()) {
-            boolean blocking = ((ReviewSMArtifact) smaMgr.getSma()).isBlocking();
-            label.setText(blocking ? "Blocking Review" : "Non-Blocking Review");
-            label.setForeground(blocking ? Display.getCurrent().getSystemColor(SWT.COLOR_RED) : null);
+            label.setText(((ReviewSMArtifact) smaMgr.getSma()).isBlocking() ? "Review Blocks " + ((ReviewSMArtifact) smaMgr.getSma()).getReviewBlockType().name() : "Non-Blocking Review");
+            label.setForeground(((ReviewSMArtifact) smaMgr.getSma()).isBlocking() ? Display.getCurrent().getSystemColor(
+                  SWT.COLOR_RED) : null);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

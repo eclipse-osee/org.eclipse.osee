@@ -5,8 +5,13 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -25,6 +30,26 @@ public abstract class WorkItemDefinition {
    protected final String name;
    protected final String parentId;
    protected String description;
+   protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
+   private final Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$");
+   protected String type;
+   public static enum WriteType {
+      Update, New
+   };
+
+   /**
+    * @return the workDataKeyValueMap
+    */
+   public Map<String, String> getWorkDataKeyValueMap() {
+      return workDataKeyValueMap;
+   }
+
+   /**
+    * @param workDataKeyValueMap the workDataKeyValueMap to set
+    */
+   public void setWorkDataKeyValueMap(Map<String, String> workDataKeyValueMap) {
+      this.workDataKeyValueMap = workDataKeyValueMap;
+   }
 
    /**
     * @param description the description to set
@@ -39,12 +64,6 @@ public abstract class WorkItemDefinition {
    public String getDescription() {
       return description;
    }
-
-   protected String type;
-   protected Object data;
-   public static enum WriteType {
-      Update, New
-   };
 
    public WorkItemDefinition(String name, String id, String parentId) {
       this(name, id, parentId, null);
@@ -77,7 +96,7 @@ public abstract class WorkItemDefinition {
     * definition inheritance to answer the question
     * 
     * @param pageId
-    * @return
+    * @return boolean
     * @throws OseeCoreException TODO
     */
    public boolean isInstanceOfPage(String pageId, String... visitedPageIds) throws OseeCoreException {
@@ -148,20 +167,6 @@ public abstract class WorkItemDefinition {
       return parentId;
    }
 
-   /**
-    * @return the data
-    */
-   public Object getData() {
-      return data;
-   }
-
-   /**
-    * @param data the data to set
-    */
-   public void setData(Object data) {
-      this.data = data;
-   }
-
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId());
       if (writeType == WriteType.New) {
@@ -184,6 +189,12 @@ public abstract class WorkItemDefinition {
       artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
       if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
             getType());
+      if (workDataKeyValueMap != null) {
+         for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
+            artifact.addAttribute(WorkItemAttributes.WORK_DATA.getAttributeTypeName(),
+                  entry.getKey() + "=" + entry.getValue());
+         }
+      }
       WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(writeType, this, artifact);
       return artifact;
    }
@@ -194,4 +205,29 @@ public abstract class WorkItemDefinition {
       this.type = type;
    }
 
+   public void loadWorkDataKeyValueMap(Artifact artifact) throws OseeCoreException {
+      for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA.getAttributeTypeName())) {
+         // TODO Remove this check once production WorkData has been changed to XWidget=; for backwards compatibility
+         if (value.contains(DynamicXWidgetLayout.XWIDGET)) {
+            addWorkDataKeyValue(DynamicXWidgetLayout.XWIDGET, value);
+         }
+         // TODO Remove this check once product WorkData has been changed to AtsTaskOptions=; for backwards compatibility
+         else if (value.contains("AtsTaskOptions")) {
+            addWorkDataKeyValue("AtsTaskOptions", value);
+         } else {
+            Matcher m = keyValuePattern.matcher(value);
+            if (m.find()) {
+               addWorkDataKeyValue(m.group(1), m.group(2));
+            }
+         }
+      }
+   }
+
+   public String getWorkDataValue(String key) {
+      return workDataKeyValueMap.get(key);
+   }
+
+   public void addWorkDataKeyValue(String key, String value) {
+      workDataKeyValueMap.put(key, value);
+   }
 }

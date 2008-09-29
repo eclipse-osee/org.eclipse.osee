@@ -34,7 +34,7 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       this(ID, ID);
    }
 
-   public TeamWorkflowDefinition(Artifact artifact)throws OseeCoreException, SQLException{
+   public TeamWorkflowDefinition(Artifact artifact) throws OseeCoreException, SQLException {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
    }
@@ -51,7 +51,7 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       super(name, workflowId, parentWorkflowId);
    }
 
-   public void config(WriteType writeType, XResultData xResultData)throws OseeCoreException, SQLException{
+   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException, SQLException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
    }
 

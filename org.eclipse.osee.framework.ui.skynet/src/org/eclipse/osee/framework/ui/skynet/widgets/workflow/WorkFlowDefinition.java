@@ -37,7 +37,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    }
    // fromPageId --- TransitionType ---> toPageIds
    // Contains locally defined transitions
-   private Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType =
+   private final Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType =
          new HashMap<String, Map<TransitionType, Set<String>>>();
    // Contains locally and inherited transitions 
    protected Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType;
@@ -55,6 +55,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
       setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      loadWorkDataKeyValueMap(artifact);
 
       // Add local transitions from this artifact
       addTransitionsFromArtifact(artifact, pageIdToPageIdsViaTransitionType, getId());
@@ -312,11 +313,10 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       // Add this page first
       if (!pages.contains(workPageDefinition)) pages.add(workPageDefinition);
       // Add default page
-      if (getDefaultToPage(workPageDefinition) != null) getOrderedPages(
-            (WorkPageDefinition) getDefaultToPage(workPageDefinition), pages);
+      if (getDefaultToPage(workPageDefinition) != null) getOrderedPages(getDefaultToPage(workPageDefinition), pages);
       // Add remaining pages
       for (WorkPageDefinition wPage : getToPages(workPageDefinition))
-         if (!pages.contains(wPage)) getOrderedPages((WorkPageDefinition) wPage, pages);
+         if (!pages.contains(wPage)) getOrderedPages(wPage, pages);
    }
 
    /**
@@ -338,6 +338,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return getReturnPages(fromWorkPageDefinition).contains(toWorkPageDefinition);
    }
 
+   @Override
    public String toString() {
       try {
          return id + " - " + name + (parentId != null ? " - Parent: " + parentId : "") + getPageNames().toString();

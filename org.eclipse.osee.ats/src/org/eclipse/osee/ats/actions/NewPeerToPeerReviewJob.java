@@ -41,6 +41,13 @@ public class NewPeerToPeerReviewJob extends Job {
       this.reviewTitle = reviewTitle;
    }
 
+   public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent, String againstState) {
+      super("Creating New PeerToPeer Review");
+      this.teamParent = teamParent;
+      this.againstState = againstState;
+      this.reviewTitle = PeerToPeerReviewArtifact.getDefaultReviewTitle(teamParent.getSmaMgr());
+   }
+
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {

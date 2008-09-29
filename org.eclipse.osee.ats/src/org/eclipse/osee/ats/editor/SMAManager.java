@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -63,7 +66,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -204,6 +211,34 @@ public class SMAManager {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
       }
+   }
+
+   public boolean workPageHasWorkRule(String ruleId) throws OseeCoreException, SQLException {
+      return getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+   }
+
+   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      if (ruleId == null || ruleId.equals("")) return workRules;
+      // Get work rules from team definition
+      if (teamDefHasWorkRule(AtsAddDecisionReviewRule.ID)) {
+         TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) getSma()).getTeamDefinition();
+         for (Artifact art : teamDef.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+            String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
+            if (!id.equals("") && id.startsWith(ruleId)) {
+               workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+            }
+         }
+      }
+      // Add work rules from page
+      if (getWorkPageDefinition().hasWorkRule(ruleId)) {
+         for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {
+            if (!wid.getId().equals("") && wid.getId().startsWith(ruleId)) {
+               workRules.add((WorkRuleDefinition) wid);
+            }
+         }
+      }
+      return workRules;
    }
 
    /**

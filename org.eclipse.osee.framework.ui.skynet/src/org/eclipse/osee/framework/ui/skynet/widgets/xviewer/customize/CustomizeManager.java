@@ -175,13 +175,16 @@ public class CustomizeManager {
       (new XViewerCustomizeDialog(xViewer)).open();
    }
 
-   /**
-    * @return Returns the selectedCustomization.
-    */
-   public String getStatusLabelAddition() {
-      if (currentCustData != null && currentCustData.getName() != null && !currentCustData.getName().equals(
-            CURRENT_LABEL) && !currentCustData.getName().equals(TABLE_DEFAULT_LABEL) && currentCustData.getName() != null) return ("Custom: " + currentCustData.getName() + " - ");
-      return "";
+   public void getStatusLabelAddition(StringBuffer sb) {
+      if (currentCustData != null && currentCustData.getName() != null &&
+      //
+      !currentCustData.getName().equals(CURRENT_LABEL) &&
+      // 
+      !currentCustData.getName().equals(TABLE_DEFAULT_LABEL) &&
+      //
+      currentCustData.getName() != null) {
+         sb.append("[Custom: " + currentCustData.getName() + "]");
+      }
    }
 
    /**
@@ -265,20 +268,18 @@ public class CustomizeManager {
       return custData;
    }
 
-   public String getSortingStr() {
+   public void getSortingStr(StringBuffer sb) {
       if (currentCustData.getSortingData().isSorting()) {
          List<XViewerColumn> cols = getSortXCols();
-         if (cols.size() == 0) return "";
-         StringBuffer sb = new StringBuffer("Sort: ");
+         if (cols.size() == 0) return;
+         sb.append("Sort: ");
          for (XViewerColumn col : getSortXCols()) {
             if (col != null) {
-               sb.append(col.getName());
-               sb.append(col.isSortForward() ? " (FWD) , " : " (REV) , ");
+               sb.append("[" + col.getName());
+               sb.append(col.isSortForward() ? " (FWD)] " : " (REV)] ");
             }
          }
-         return sb.toString().replaceFirst(" , $", "");
       }
-      return "";
    }
 
    public int getDefaultWidth(String id) {

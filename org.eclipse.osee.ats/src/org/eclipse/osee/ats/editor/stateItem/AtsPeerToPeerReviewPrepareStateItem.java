@@ -34,6 +34,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
     */
+   @Override
    public String getId() {
       return "osee.ats.peerToPeerReview.Prepare";
    }
@@ -51,7 +52,8 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
          if ((art instanceof ReviewSMArtifact) && ((ReviewSMArtifact) art).getParentSMA() == null) {
-            if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName())) {
+            if (widget.getLabel().equals(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getDisplayName()) || widget.getLabel().equals(
+                  ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getDisplayName())) {
                XComboBooleanDam decisionComboDam = (XComboBooleanDam) widget;
                decisionComboDam.setEnabled(false);
                decisionComboDam.setRequiredEntry(false);

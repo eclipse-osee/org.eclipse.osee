@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
-import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -38,12 +37,12 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       startPageId = AtsDecisionPrepareWorkPageDefinition.ID;
    }
 
-   public DecisionWorkflowDefinition(Artifact artifact)throws OseeCoreException, SQLException{
+   public DecisionWorkflowDefinition(Artifact artifact) throws OseeCoreException, SQLException {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
    }
 
-   public void config(WriteType writeType, XResultData xResultData)throws OseeCoreException, SQLException{
+   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException, SQLException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
    }
 
@@ -67,7 +66,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       // Add Prepare Transitions
       addPageTransition(AtsDecisionPrepareWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
             TransitionType.ToPageAsDefault);
-      addPageTransitionToPageAndReturn(AtsPeerPrepareWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
+      addPageTransitionToPageAndReturn(AtsDecisionPrepareWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Decision Transitions
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, DECISION_COMPLETED_STATE_ID,

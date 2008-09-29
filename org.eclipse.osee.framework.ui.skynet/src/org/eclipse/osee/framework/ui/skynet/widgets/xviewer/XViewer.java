@@ -26,8 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeM
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -135,7 +133,6 @@ public class XViewer extends TreeViewer {
                   }
                }
             }
-            updateStatusLabel();
          }
       });
       getTree().addListener(SWT.MouseUp, new Listener() {
@@ -156,13 +153,6 @@ public class XViewer extends TreeViewer {
                   handleLeftClick(getTree().getColumns()[colNum], item);
                }
             }
-            updateStatusLabel();
-         }
-      });
-      getTree().addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
             updateStatusLabel();
          }
       });
@@ -335,33 +325,30 @@ public class XViewer extends TreeViewer {
       return "";
    }
 
-   public String getStatusLine1() {
-      StringBuffer sb = new StringBuffer();
+   public void getStatusLine1(StringBuffer sb) {
       int loadedNum = 0;
-      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
-            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) {
+         loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+      }
       sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-      sb.append(customizeMgr.getStatusLabelAddition());
-      sb.append(filterDataUI.getStatusLabelAddition());
+      customizeMgr.getStatusLabelAddition(sb);
+      filterDataUI.getStatusLabelAddition(sb);
       sb.append(getStatusString());
-      return sb.toString().replaceAll(" - $", "");
    }
 
-   public String getStatusLine2() {
-      StringBuffer sb = new StringBuffer();
-      sb.append(customizeMgr.getSortingStr());
-      return sb.toString().replaceFirst(", $", "");
+   public void getStatusLine2(StringBuffer sb) {
+      customizeMgr.getSortingStr(sb);
    }
 
    public void updateStatusLabel() {
       if (getTree().isDisposed() || statusLabel.isDisposed()) return;
-      String line2 = getStatusLine2();
-      String status = "";
-      if (line2.equals(""))
-         status = getStatusLine1();
-      else
-         status = getStatusLine1() + "\n" + line2;
-      statusLabel.setText(status);
+      StringBuffer sb = new StringBuffer();
+      getStatusLine1(sb);
+      if (sb.length() > 0) {
+         sb.append("\n");
+      }
+      getStatusLine2(sb);
+      statusLabel.setText(sb.toString());
       statusLabel.getParent().getParent().layout();
    }
 

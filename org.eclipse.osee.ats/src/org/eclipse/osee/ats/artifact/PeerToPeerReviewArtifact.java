@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -52,6 +53,10 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       defectManager = new DefectManager(this);
+   }
+
+   public static String getDefaultReviewTitle(SMAManager smaMgr) {
+      return "Review \"" + smaMgr.getSma().getArtifactTypeName() + "\" titled \"" + smaMgr.getSma().getDescriptiveName() + "\"";
    }
 
    @Override

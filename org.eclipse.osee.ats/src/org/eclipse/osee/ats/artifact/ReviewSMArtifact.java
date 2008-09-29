@@ -30,6 +30,9 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    protected DefectManager defectManager;
    protected UserRoleManager userRoleManager;
    private XActionableItemsDam actionableItemsDam;
+   public static enum ReviewBlockType {
+      None, Transition, Commit
+   };
 
    /**
     * @param parentFactory
@@ -70,7 +73,19 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    public boolean isBlocking() throws OseeCoreException, SQLException {
-      return getSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
+      return getReviewBlockType() != ReviewBlockType.None;
+   }
+
+   public ReviewBlockType getReviewBlockType() throws OseeCoreException, SQLException {
+      String typeStr = getSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), null);
+      if (typeStr == null) {
+         // Check old attribute value
+         if (getSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false) == true) {
+            return ReviewBlockType.Transition;
+         }
+         return ReviewBlockType.None;
+      }
+      return ReviewBlockType.valueOf(typeStr);
    }
 
    public DefectManager getDefectManager() {

@@ -27,7 +27,8 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
       addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
+      addWorkItem(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
    }

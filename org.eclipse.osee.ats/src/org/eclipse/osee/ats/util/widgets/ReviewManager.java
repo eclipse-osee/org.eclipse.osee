@@ -25,8 +25,10 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.UsersByIds;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -71,12 +73,14 @@ public class ReviewManager {
       // Create validate review
       try {
 
-         DecisionReviewArtifact decRev = NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), true);
+         DecisionReviewArtifact decRev =
+               NewDecisionReviewJob.createNewDecisionReview(
+                     smaMgr.getSma(),
+                     AtsWorkDefinitions.isValidateReviewBlocking(smaMgr.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
+                     true);
          decRev.setDescriptiveName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
-         decRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
-               AtsWorkDefinitions.isValidateReviewBlocking(smaMgr.getWorkPageDefinition()));
 
          SMAManager revSmaMgr = new SMAManager(decRev);
          revSmaMgr.transition(DecisionReviewArtifact.StateNames.Decision.name(), smaMgr.getOriginator(), true);
@@ -109,7 +113,8 @@ public class ReviewManager {
       }
 
       peerToPeerRev.getSmaMgr().getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
+      peerToPeerRev.setSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(),
+            ReviewBlockType.None.name());
 
       // Initialize state machine
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
@@ -122,7 +127,7 @@ public class ReviewManager {
    /**
     * Return Remain Hours for all reviews
     * 
-    * @return
+    * @return remain hours
     * @throws Exception
     */
    public double getRemainHours() throws OseeCoreException {
@@ -149,7 +154,7 @@ public class ReviewManager {
    /**
     * Return Estimated Hours for all reviews
     * 
-    * @return
+    * @return estimated hours
     * @throws Exception
     */
    public double getEstimatedHours() throws OseeCoreException {
@@ -162,7 +167,7 @@ public class ReviewManager {
 
    public String getValidateReviewFollowupUsersStr() {
       try {
-         return SMAState.getAssigneesStorageString(getValidateReviewFollowupUsers());
+         return UsersByIds.getStorageString(getValidateReviewFollowupUsers());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return ex.getLocalizedMessage();

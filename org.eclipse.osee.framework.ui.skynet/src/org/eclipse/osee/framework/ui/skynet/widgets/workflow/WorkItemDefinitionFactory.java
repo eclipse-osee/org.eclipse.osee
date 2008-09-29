@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -155,12 +156,23 @@ public class WorkItemDefinitionFactory {
       return defs;
    }
 
+   public static List<WorkItemDefinition> getWorkItemDefinitionsStartsWithId(String id) throws OseeCoreException {
+      loadDefinitions();
+      List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
+      for (Entry<String, WorkItemDefinition> entry : itemIdToDefinition.entrySet()) {
+         if (entry.getKey().startsWith(id)) {
+            defs.add(entry.getValue());
+         }
+      }
+      return defs;
+   }
+
    /**
     * Call to get dynamic definitions based on data specified. This is intended for extenders to be able to provide
     * widgets that are either conditionally added or are configured dynamically based on dynamic circumstances
     * 
     * @param data
-    * @return
+    * @return list of WorkItemDefinitions
     */
    public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws OseeCoreException {
       List<WorkItemDefinition> dynamicDefinitions = new ArrayList<WorkItemDefinition>();

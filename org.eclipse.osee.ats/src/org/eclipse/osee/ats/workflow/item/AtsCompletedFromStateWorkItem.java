@@ -27,6 +27,6 @@ public class AtsCompletedFromStateWorkItem extends WorkWidgetDefinition {
       data.setXWidgetName("XText");
       data.getXOptionHandler().add(XOption.NOT_EDITABLE);
       data.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
-      setData(data);
+      setXWidgetLayoutData(data);
    }
 }
