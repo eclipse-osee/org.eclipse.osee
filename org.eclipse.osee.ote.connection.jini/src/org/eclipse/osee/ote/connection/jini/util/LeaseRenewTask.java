@@ -24,7 +24,6 @@ public class LeaseRenewTask extends TimerTask {
    }
 
    public void run() {
-      System.out.println("renewing lease");
       try {
          // Renew for the maximum amount of time allowed
 	    registration.getLease().renew(RENEWAL_TIME + 10000);

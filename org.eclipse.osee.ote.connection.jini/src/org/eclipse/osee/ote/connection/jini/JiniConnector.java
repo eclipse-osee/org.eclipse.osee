@@ -226,7 +226,6 @@ public abstract class JiniConnector implements IServiceConnector {
     }
 
     public void entriesChanged(Entry[] entries) {
-	System.out.println("props changed!!");
 	EnhancedProperties newProps = new EnhancedProperties();
 	buildPropertiesFromEntries(entries, newProps);
 	for (String key : properties.differences(newProps)) {
