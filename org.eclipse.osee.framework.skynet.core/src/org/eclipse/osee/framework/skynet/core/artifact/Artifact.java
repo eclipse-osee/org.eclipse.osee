@@ -317,7 +317,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             return artifact;
          }
       }
-      throw new ArtifactDoesNotExist("No child with the name \"" + descriptiveName + "\" exists");
+      throw new ArtifactDoesNotExist(
+            "\"" + getDescriptiveName() + "\" has no child with the name \"" + descriptiveName + "\"");
    }
 
    public boolean hasChild(String descriptiveName) throws OseeCoreException {

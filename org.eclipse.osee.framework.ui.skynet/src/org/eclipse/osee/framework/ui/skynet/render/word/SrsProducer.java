@@ -46,7 +46,8 @@ public class SrsProducer implements IWordMlProducer {
    }
 
    private void process(Artifact parent, ArrayList<Artifact> artifacts, String name) throws OseeCoreException {
-      Artifact child = parent.getChild(name);
-      artifacts.add(child);
+      if (parent.hasChild(name)) {
+         artifacts.add(parent.getChild(name));
+      }
    }
 }
