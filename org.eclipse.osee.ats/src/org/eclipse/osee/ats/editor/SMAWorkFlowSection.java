@@ -634,7 +634,6 @@ public class SMAWorkFlowSection extends SectionPart {
             return;
          }
          smaMgr.setInTransition(false);
-         smaMgr.getEditor().refreshPages();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       } finally {
