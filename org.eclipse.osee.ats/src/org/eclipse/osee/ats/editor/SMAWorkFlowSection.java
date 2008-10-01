@@ -34,8 +34,10 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -547,6 +549,15 @@ public class SMAWorkFlowSection extends SectionPart {
             return;
          }
 
+         // Validate assignees
+         if (smaMgr.getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || smaMgr.getStateMgr().getAssignees().contains(
+               SkynetAuthentication.getUser(UserEnum.Guest)) || smaMgr.getStateMgr().getAssignees().contains(
+               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+            AWorkbench.popup("ERROR",
+                  "Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
+            return;
+         }
+
          // Get transition to assignees
          Set<User> toAssignees;
          if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage())
@@ -615,7 +626,7 @@ public class SMAWorkFlowSection extends SectionPart {
             if (!handlePopulateStateMetrics()) return;
          }
 
-            smaMgr.getSma().persistAttributes();
+         smaMgr.getSma().persistAttributes();
 
          Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false);
          if (result.isFalse()) {

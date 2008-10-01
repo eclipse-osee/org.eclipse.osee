@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -782,6 +783,13 @@ public class SMAManager {
 
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck) {
       try {
+         // Validate assignees
+         if (getStateMgr().getAssignees().contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || getStateMgr().getAssignees().contains(
+               SkynetAuthentication.getUser(UserEnum.Guest)) || getStateMgr().getAssignees().contains(
+               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+            return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"NoOne\" user as assignee.");
+         }
+
          // Validate toState name
          final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
          final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
