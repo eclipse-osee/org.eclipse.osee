@@ -21,11 +21,12 @@ import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.Activator;
-import org.eclipse.osee.framework.branch.management.ExportOptions;
+import org.eclipse.osee.framework.branch.management.exchange.BranchExportTaskConfig;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -56,17 +57,6 @@ public class RelationalExportItem extends AbstractDbExportItem {
       this.branchShortNameBuffer = new StringBuffer();
       this.rationaleBuffer = new StringBuffer();
       this.exportColumnListeners = java.util.Collections.synchronizedSet(new HashSet<IExportColumnListener>());
-   }
-
-   public String getQuery() {
-      if (query.contains("%s")) {
-         String options = "";
-         if (getOptions().getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name()) && query.contains("txd1")) {
-            options = " AND txd1.TX_TYPE = 0";
-         }
-         return String.format(query, options);
-      }
-      return query;
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws Exception {
@@ -109,7 +99,9 @@ public class RelationalExportItem extends AbstractDbExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       ConnectionHandlerStatement stmt = null;
       try {
-         stmt = ConnectionHandler.runPreparedQuery(getConnection(), getQuery(), getJoinQueryId());
+         ObjectPair<String, Object[]> sqlData =
+               BranchExportTaskConfig.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
+         stmt = ConnectionHandler.runPreparedQuery(getConnection(), sqlData.object1, sqlData.object2);
          while (stmt.next()) {
             processData(appendable, stmt.getRset());
          }

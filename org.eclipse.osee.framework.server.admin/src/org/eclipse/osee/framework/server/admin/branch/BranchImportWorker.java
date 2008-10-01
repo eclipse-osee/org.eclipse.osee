@@ -50,6 +50,18 @@ public class BranchImportWorker extends BaseCmdWorker {
                options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), true);
             } else if (arg.equals("-allAsRootBranches")) {
                options.put(ImportOptions.ALL_AS_ROOT_BRANCHES.name(), true);
+            } else if (arg.equals("-minTx")) {
+               arg = getCommandInterpreter().nextArgument();
+               if (isValidArg(arg)) {
+                  options.put(ImportOptions.MIN_TXS.name(), arg);
+               }
+               count++;
+            } else if (arg.equals("-maxTx")) {
+               arg = getCommandInterpreter().nextArgument();
+               if (isValidArg(arg)) {
+                  options.put(ImportOptions.MAX_TXS.name(), arg);
+               }
+               count++;
             } else if (count == 0 && !arg.startsWith("-")) {
                importFiles.add(new File(arg));
             } else {

@@ -23,6 +23,7 @@ public class OseeApplicationServerContext {
    public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext("branch/exchange");
    public static final String SEARCH_TAGGING_CONTEXT = asAbsoluteContext("search/tagger");
    public static final String RESOURCE_CONTEXT = asAbsoluteContext("resource");
+   public static final String SESSION_CONTEXT = asAbsoluteContext("session");
 
    private static final String asAbsoluteContext(String value) {
       return BASE_CONTEXT + "/" + value;

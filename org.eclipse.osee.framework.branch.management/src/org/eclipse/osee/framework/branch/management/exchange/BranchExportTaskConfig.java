@@ -12,12 +12,16 @@ package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -86,6 +90,39 @@ public class BranchExportTaskConfig {
       return items;
    }
 
+   public static ObjectPair<String, Object[]> getQueryWithOptions(String originalQuery, int queryId, Options options) throws Exception {
+      if (originalQuery.contains("%s") && originalQuery.contains("txd1")) {
+         List<Object> dataArray = new ArrayList<Object>();
+         dataArray.add(queryId);
+         StringBuilder optionString = new StringBuilder();
+         if (options.getBoolean(ExportOptions.EXCLUDE_BASELINE_TXS.name())) {
+            optionString.append(" AND txd1.TX_TYPE = 0");
+         } else {
+            String minTxs = options.getString(ExportOptions.MIN_TXS.name());
+            String maxTxs = options.getString(ExportOptions.MAX_TXS.name());
+            Integer minTxsInt = null;
+            if (Strings.isValid(minTxs)) {
+               minTxsInt = new Integer(minTxs);
+               optionString.append(" AND txd1.transaction_id >= ?");
+               dataArray.add(minTxsInt);
+            }
+            if (Strings.isValid(maxTxs)) {
+               Integer maxTxsInt = new Integer(maxTxs);
+               optionString.append(" AND txd1.transaction_id <= ?");
+               dataArray.add(maxTxsInt);
+               if (minTxsInt != null && minTxsInt > maxTxsInt) {
+                  throw new Exception(String.format("Invalid transaction range: min - %d >  max - %d", minTxsInt,
+                        maxTxsInt));
+               }
+            }
+         }
+         return new ObjectPair<String, Object[]>(String.format(originalQuery, optionString),
+               dataArray.toArray(new Object[dataArray.size()]));
+      }
+      return new ObjectPair<String, Object[]>(originalQuery, new Object[] {queryId});
+   }
+
    private BranchExportTaskConfig() {
    }
+
 }
