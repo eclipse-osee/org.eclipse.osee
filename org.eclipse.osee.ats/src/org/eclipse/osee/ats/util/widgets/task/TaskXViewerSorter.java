@@ -41,19 +41,23 @@ public class TaskXViewerSorter extends WorldXViewerSorter {
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
-      if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) return 0;
-      XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
-      IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
-      IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
+      try {
+         if (xViewer == null || !xViewer.getCustomizeMgr().isSorting()) return 0;
+         XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
+         IWorldViewArtifact m1 = (IWorldViewArtifact) ((Artifact) o1);
+         IWorldViewArtifact m2 = (IWorldViewArtifact) ((Artifact) o2);
 
-      if (sortXCol.equals(WorldXViewerFactory.Assignees_Col)) {
-         int compareInt =
-               getComparator().compare(
-                     (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
-                     (new SMAManager((StateMachineArtifact) m2)).getAssigneesWasIsStr().replaceFirst("\\(", ""));
-         return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+         if (sortXCol.equals(WorldXViewerFactory.Assignees_Col)) {
+            int compareInt =
+                  getComparator().compare(
+                        (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
+                        (new SMAManager((StateMachineArtifact) m2)).getAssigneesWasIsStr().replaceFirst("\\(", ""));
+            return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+         }
+
+         return super.compare(viewer, o1, o2, sortXColIndex);
+      } catch (Exception ex) {
+         return 0;
       }
-
-      return super.compare(viewer, o1, o2, sortXColIndex);
    }
 }

@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.workflow.page;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -26,6 +27,7 @@ public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_XWIDGET_ID);
       addWorkItem(ATSAttributes.DECISION_ATTRIBUTE.getStoreName());
+      addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
    }
 
