@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
-import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -220,8 +219,8 @@ public class SMAManager {
    public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       if (ruleId == null || ruleId.equals("")) return workRules;
-      // Get work rules from team definition
-      if (teamDefHasWorkRule(AtsAddDecisionReviewRule.ID)) {
+      if (getSma() instanceof TeamWorkFlowArtifact) {
+         // Get work rules from team definition
          TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) getSma()).getTeamDefinition();
          for (Artifact art : teamDef.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
             String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
@@ -231,11 +230,9 @@ public class SMAManager {
          }
       }
       // Add work rules from page
-      if (getWorkPageDefinition().hasWorkRule(ruleId)) {
-         for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {
-            if (!wid.getId().equals("") && wid.getId().startsWith(ruleId)) {
-               workRules.add((WorkRuleDefinition) wid);
-            }
+      for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {
+         if (!wid.getId().equals("") && wid.getId().startsWith(ruleId)) {
+            workRules.add((WorkRuleDefinition) wid);
          }
       }
       return workRules;

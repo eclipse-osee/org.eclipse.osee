@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -23,12 +24,17 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ATSBranchMetrics;
+import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
+import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
+import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,6 +66,7 @@ import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -312,6 +319,28 @@ public class AtsBranchManager {
       return Result.TrueResult;
    }
 
+   private void createNecessaryBranchEventReviews(StateEventType stateEventType, SMAManager smaMgr) throws OseeCoreException {
+      if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
+         throw new IllegalStateException("Invalid stateEventType = " + stateEventType);
+      }
+      // Create any decision and peerToPeer reviews for createBranch and commitBranch
+      for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
+         for (WorkRuleDefinition workRuleDef : smaMgr.getWorkRulesStartsWith(ruleId)) {
+            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(smaMgr, workRuleDef);
+            if (eventType != null && eventType == stateEventType) {
+               if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
+                  DecisionReviewArtifact decArt = AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, smaMgr);
+                  if (decArt != null) decArt.persistAttributesAndRelations();
+               } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
+                  PeerToPeerReviewArtifact peerArt =
+                        AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr);
+                  if (peerArt != null) peerArt.persistAttributesAndRelations();
+               }
+            }
+         }
+      }
+   }
+
    /**
     * @return Branch that is the configured branch to create working branch from.
     * @throws SQLException
@@ -383,6 +412,8 @@ public class AtsBranchManager {
          public void run(IProgressMonitor monitor) throws OseeCoreException, SQLException {
             BranchPersistenceManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
                   stateMachineArtifact);
+            // Create reviews as necessary
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr);
          }
       };
 
@@ -524,6 +555,8 @@ public class AtsBranchManager {
          int result = dialog.open();
          if (result == 0) {
             BranchPersistenceManager.commitBranch(branch, true, true);
+            // Create reviews as necessary
+            createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr);
          } else if (result == 1) {
             MergeView.openView(branch, branch.getParentBranch(), TransactionIdManager.getStartEndPoint(branch).getKey());
          }

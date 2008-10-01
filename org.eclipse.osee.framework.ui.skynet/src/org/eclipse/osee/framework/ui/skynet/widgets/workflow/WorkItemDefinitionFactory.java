@@ -74,14 +74,20 @@ public class WorkItemDefinitionFactory {
    }
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws OseeCoreException {
-      Artifact parentArt =
+      List<Artifact> parentArts =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
-                  parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
-      if (parentArt == null) throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
-      Artifact childArt =
+                  parentWorkflowId, BranchPersistenceManager.getCommonBranch());
+      if (parentArts == null || parentArts.size() == 0) {
+         throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
+      }
+      Artifact parentArt = parentArts.iterator().next();
+      List<Artifact> childArts =
             ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
-                  BranchPersistenceManager.getCommonBranch()).iterator().next();
-      if (childArt == null) throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
+                  BranchPersistenceManager.getCommonBranch());
+      if (childArts == null || childArts.size() == 0) {
+         throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
+      }
+      Artifact childArt = childArts.iterator().next();
       if (!parentArt.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
          parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
          parentArt.persistRelations();

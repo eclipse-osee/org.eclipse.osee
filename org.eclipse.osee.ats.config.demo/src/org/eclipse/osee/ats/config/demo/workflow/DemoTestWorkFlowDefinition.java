@@ -22,10 +22,10 @@ public class DemoTestWorkFlowDefinition extends TeamWorkflowDefinition {
       super(ID, ID, TeamWorkflowDefinition.ID);
    }
 
+   @Override
    public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException, SQLException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
             TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoTestWorkFlowDefinition());
    }
-
 }

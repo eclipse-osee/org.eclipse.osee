@@ -62,7 +62,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * @throws SQLException
     */
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, SMAManager smaMgr) throws OseeCoreException {
-      if (!atsAddPeerToPeerReviewRule.getId().equals(AtsAddPeerToPeerReviewRule.ID)) {
+      if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
       }
       String title = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.title);

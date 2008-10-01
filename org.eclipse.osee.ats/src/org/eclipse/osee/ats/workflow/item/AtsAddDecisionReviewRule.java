@@ -29,15 +29,20 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    public static String ID = "atsAddDecisionReview";
    public static enum DecisionParameter {
-      title, forState, reviewBlockingType, assignees, options, description
+      title, forState, forEvent, reviewBlockingType, assignees, options, description
    };
 
    public AtsAddDecisionReviewRule() {
-      super(ID, ID);
+      this(ID, ID);
+   }
+
+   public AtsAddDecisionReviewRule(String name, String id) {
+      super(name, id);
       setDescription("Work Page and Team Definition Option: Decision Review will be auto-created based on WorkData attribute values.");
       setDecisionParameterValue(this, DecisionParameter.title, "Enter Title Here");
       setDecisionParameterValue(this, DecisionParameter.reviewBlockingType, "Transition");
       setDecisionParameterValue(this, DecisionParameter.forState, "Implement");
+      setDecisionParameterValue(this, DecisionParameter.forEvent, StateEventType.TransitionTo.name());
       try {
          setDecisionParameterValue(this, DecisionParameter.assignees, "<99999997>");
          setDecisionParameterValue(this, DecisionParameter.options, "Completed;Completed;");
@@ -64,7 +69,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     * @throws SQLException
     */
    public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SMAManager smaMgr) throws OseeCoreException {
-      if (!atsAddDecisionReviewRule.getId().equals(AtsAddDecisionReviewRule.ID)) {
+      if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
          throw new IllegalArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
       String title = getValueOrDefault(smaMgr, atsAddDecisionReviewRule, DecisionParameter.title);
@@ -90,6 +95,14 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
          return null;
       }
       return ReviewBlockType.valueOf(value);
+   }
+
+   public static StateEventType getStateEventType(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition) {
+      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.forEvent);
+      if (value == null || value.equals("")) {
+         return null;
+      }
+      return StateEventType.valueOf(value);
    }
 
    private static String getValueOrDefault(SMAManager smaMgr, WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
