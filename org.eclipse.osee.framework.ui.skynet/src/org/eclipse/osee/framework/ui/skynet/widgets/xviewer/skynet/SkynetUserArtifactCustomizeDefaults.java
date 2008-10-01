@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -32,7 +33,7 @@ public class SkynetUserArtifactCustomizeDefaults {
    Set<String> defaultGuids = new HashSet<String>();
    private static String XVIEWER_DEFAULT_ATTRIBUTE = "XViewer Defaults";
    private static String DEFAULT_CUST_GUID_TAG = "defaultCustGuid";
-   private User user;
+   private final User user;
 
    public SkynetUserArtifactCustomizeDefaults(User user) {
       this.user = user;
@@ -41,6 +42,10 @@ public class SkynetUserArtifactCustomizeDefaults {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
+   }
+
+   public int size() {
+      return defaultGuids.size();
    }
 
    private void setDefaultCustomizationsFromXml(String xml) {
@@ -81,6 +86,15 @@ public class SkynetUserArtifactCustomizeDefaults {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
+   }
+
+   public Set<String> getGuids() {
+      return defaultGuids;
+   }
+
+   public void setGuids(Collection<String> defaultGuids) {
+      this.defaultGuids.clear();
+      this.defaultGuids.addAll(defaultGuids);
    }
 
    private String getDefaultCustomizationXml() {
