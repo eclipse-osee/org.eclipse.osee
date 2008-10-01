@@ -112,6 +112,8 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
             return "Decide on \"" + smaMgr.getSma().getDescriptiveName() + "\"";
          } else if (decisionParameter == DecisionParameter.options) {
             return "Yes;Followup;<" + SkynetAuthentication.getUser().getUserId() + ">\n" + "No;Completed;";
+         } else if (decisionParameter == DecisionParameter.description) {
+            return null;
          } else if (decisionParameter == DecisionParameter.forState) {
             return smaMgr.getStateMgr().getCurrentStateName();
          }

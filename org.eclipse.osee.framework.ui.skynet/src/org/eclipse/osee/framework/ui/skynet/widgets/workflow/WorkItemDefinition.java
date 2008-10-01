@@ -31,7 +31,7 @@ public abstract class WorkItemDefinition {
    protected final String parentId;
    protected String description;
    protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
-   private final Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$");
+   private final Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$", Pattern.MULTILINE);
    protected String type;
    public static enum WriteType {
       Update, New
