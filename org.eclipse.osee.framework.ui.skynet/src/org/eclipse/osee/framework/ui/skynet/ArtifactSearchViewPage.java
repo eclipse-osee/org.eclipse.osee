@@ -69,7 +69,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
-import org.eclipse.osee.framework.ui.skynet.search.ArtifactExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.report.ReportJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -168,8 +167,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       createShowInExplorerHandler(menuManager, viewer);
       createResourceHistoryHandler(menuManager, viewer);
-      menuManager.add(new Separator());
-      createExportHandler(menuManager, viewer);
       menuManager.add(new Separator());
       createOpenArtifactHandler(menuManager, viewer);
       createOpenInAtsWorldHandler(menuManager, viewer);
@@ -541,27 +538,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(openArtifactsCommand);
 
       return openArtifactsCommand.getId();
-   }
-
-   private void createExportHandler(MenuManager menuManager, final TableViewer viewer) {
-      handlerService.activateHandler(addExportHandler(menuManager, viewer),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            try {
-               Jobs.startJob(new ArtifactExportJob(viewer));
-            } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getMessage(), ex);
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabled() {
-            return true;
-         }
-      });
    }
 
    private String addResourceHistoryHandler(MenuManager menuManager, final TableViewer viewer) {

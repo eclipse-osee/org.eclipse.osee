@@ -450,12 +450,7 @@
 			<description>
             Import Skynet configuration information.
          </description>
-		</wizard>
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.BranchImportWizard" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.BranchImportWizard" name="Branch">
-			<description>
-            Import a branch export XML file on to a Branch in Skynet.
-         </description>
-		</wizard>
+		</wizard>		
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
   	</extension>

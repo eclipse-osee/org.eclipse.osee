@@ -15,12 +15,10 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.io.Zip;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.export.ExportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.EmailableJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -86,16 +84,17 @@ public class BackupBranchesJob extends EmailableJob {
                   new File(
                         path + "/OSEE_Branch_Backup__" + XDate.getDateNow("yyyy_MM_dd_HH_MM__") + backupName + ".xml");
             if (xmlFile != null) {
-               Job job = new ExportBranchJob(xmlFile, branch, false);
-               job.setUser(true);
-               job.setPriority(Job.LONG);
-               job.schedule();
-               try {
-                  job.join();
-               } catch (InterruptedException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-                  rd.logError(ex.getLocalizedMessage());
-               }
+               throw new UnsupportedOperationException("Export from client is not supported");
+               //               Job job = new ExportBranchJob(xmlFile, branch, false);
+               //               job.setUser(true);
+               //               job.setPriority(Job.LONG);
+               //               job.schedule();
+               //               try {
+               //                  job.join();
+               //               } catch (InterruptedException ex) {
+               //                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               //                  rd.logError(ex.getLocalizedMessage());
+               //               }
             }
             rd.log("Zipping up \"" + branch.getBranchShortName() + "\" - " + XDate.getDateNow());
             Zip.zip(new String[] {xmlFile.getAbsolutePath()}, xmlFile.getAbsolutePath().replaceFirst(".xml", ".zip"));
@@ -112,5 +111,4 @@ public class BackupBranchesJob extends EmailableJob {
       }
 
    }
-
 }

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -80,9 +79,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -91,8 +88,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.export.ExportBranchJob;
-import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
@@ -338,11 +333,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       createCommitCommand(menuManager);
       createCommitIntoCommand(menuManager);
       menuManager.add(new Separator());
-      createImportOntoBranchCommand(menuManager);
-      createImportDescendantsOntoBranchCommand(menuManager);
-      createExportBranchCommand(menuManager);
-      createExportBranchDescendantsCommand(menuManager);
-      menuManager.add(new Separator());
       createMarkAsFavoriteCommand(menuManager);
       menuManager.add(new Separator());
       createDeleteBranchCommand(menuManager);
@@ -390,11 +380,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       addSelectivelyBranchCommand(menuManager);
       addCommitCommand(menuManager);
       addCommitIntoCommand(menuManager);
-      menuManager.add(new Separator());
-      addImportOntoBranchCommand(menuManager);
-      addImportDescendantsOntoBranchCommand(menuManager);
-      addExportBranchCommand(menuManager);
-      addExportBranchDescendantsCommand(menuManager);
       menuManager.add(new Separator());
       addMarkAsFavoriteCommand(menuManager);
       menuManager.add(new Separator());
@@ -1391,138 +1376,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
             return !selection.isEmpty();
-         }
-      });
-   }
-
-   private String addImportOntoBranchCommand(MenuManager menuManager) {
-      CommandContributionItem importOntoBranchCommand =
-            Commands.getLocalCommandContribution(getSite(), "importOntoBranchCommand", "Import Onto Branch...", null,
-                  null, null, "I", null, null);
-      menuManager.add(importOntoBranchCommand);
-      return importOntoBranchCommand.getId();
-   }
-
-   private void createImportOntoBranchCommand(MenuManager menuManager) {
-
-      handlerService.activateHandler(addImportOntoBranchCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-
-            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.zip");
-            if (file != null) {
-               Jobs.startJob(new ImportBranchJob(file, branch, true, true));
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabled() {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
-                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.WRITE);
-         }
-      });
-   }
-
-   private String addImportDescendantsOntoBranchCommand(MenuManager menuManager) {
-      CommandContributionItem importDescendantsOntoBranchCommand =
-            Commands.getLocalCommandContribution(getSite(), "importDescendantsOntoBranchCommand",
-                  "Import Descendants Onto Branch...", null, null, null, "m", null, null);
-      menuManager.add(importDescendantsOntoBranchCommand);
-      return importDescendantsOntoBranchCommand.getId();
-   }
-
-   private void createImportDescendantsOntoBranchCommand(MenuManager menuManager) {
-
-      handlerService.activateHandler(addImportDescendantsOntoBranchCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-
-            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.zip");
-            if (file != null) {
-               Jobs.startJob(new ImportBranchJob(file, branch, false, true));
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabled() {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
-                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.WRITE);
-         }
-      });
-   }
-
-   private String addExportBranchCommand(MenuManager menuManager) {
-      CommandContributionItem exportBranchAndDescendantsCommand =
-            Commands.getLocalCommandContribution(getSite(), "exportBranchAndDescendantsCommand",
-                  "Export Branch and Descendants...", null, null, null, "x", null, null);
-      menuManager.add(exportBranchAndDescendantsCommand);
-      return exportBranchAndDescendantsCommand.getId();
-   }
-
-   private void createExportBranchCommand(MenuManager menuManager) {
-
-      handlerService.activateHandler(addExportBranchCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-
-            File file = Files.selectFile(getSite().getShell(), SWT.SAVE, "*.zip");
-            if (file != null) {
-               Jobs.startJob(new ExportBranchJob(file, branch, false));
-            }
-            return null;
-         }
-
-         @Override
-         public boolean isEnabled() {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-            return SkynetSelections.oneBranchSelected(selection) && AccessControlManager.checkObjectPermission(
-                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ);
-         }
-      });
-   }
-
-   private String addExportBranchDescendantsCommand(MenuManager menuManager) {
-      CommandContributionItem exportDescendantsCommand =
-            Commands.getLocalCommandContribution(getSite(), "exportDescendantsCommand",
-                  "Export Branch Descendants Only...", null, null, null, "D", null, null);
-      menuManager.add(exportDescendantsCommand);
-      return exportDescendantsCommand.getId();
-   }
-
-   private void createExportBranchDescendantsCommand(MenuManager menuManager) {
-
-      handlerService.activateHandler(addExportBranchDescendantsCommand(menuManager),
-
-      new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
-         public Object execute(ExecutionEvent event) throws ExecutionException {
-            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-
-            File file = Files.selectFile(getSite().getShell(), SWT.SAVE, "*.xml");
-            if (file != null) {
-               Jobs.startJob(new ExportBranchJob(file, branch, true));
-            }
-            return null;
          }
       });
    }
