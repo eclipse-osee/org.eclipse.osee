@@ -149,14 +149,6 @@
       </Template>
    </extension>
    <extension
-         id="BranchCommitRegressionTest"
-         name="BranchCommitRegressionTest"
-         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
-      <AutoRunTask
-            classname="org.eclipse.osee.define.health.BranchCommitRegressionTest">
-      </AutoRunTask>
-   </extension>
-   <extension
          id="PublishSubsystemToDesignTraceability"
          name="Publish Subsystem To Design Traceability"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">

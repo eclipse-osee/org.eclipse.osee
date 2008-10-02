@@ -36,11 +36,10 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
@@ -48,7 +47,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements IAutoRunTask {
+public class ValidateAtsDatabase extends XNavigateItemAction {
 
    private final boolean fixAssignees = true;
    private final boolean fixAttributeValues = false;
@@ -264,48 +263,5 @@ public class ValidateAtsDatabase extends XNavigateItemAutoRunAction implements I
             }
          }
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#get24HourStartTime()
-    */
-   public String get24HourStartTime() {
-      return "23:00";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getCategory()
-    */
-   public String getCategory() {
-      return "OSEE ATS";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
-    */
-   @Override
-   public String getDescription() {
-      return "Ensure Actions have at least one Team Workflow and Workflows are related to one Action";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getRunDb()
-    */
-   public RunDb getRunDb() {
-      return IAutoRunTask.RunDb.Production_Db;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
-    */
-   public TaskType getTaskType() {
-      return IAutoRunTask.TaskType.Db_Health;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
-    */
-   public void startTasks(XResultData resultData) throws OseeCoreException, SQLException {
-      runIt(null, resultData);
    }
 }

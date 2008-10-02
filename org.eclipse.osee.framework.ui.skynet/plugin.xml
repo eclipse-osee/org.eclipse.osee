@@ -487,9 +487,6 @@
  </extension>
 	<extension point="org.eclipse.ui.startup">
 		<startup class="org.eclipse.osee.framework.skynet.core.linking.HttpServerStartup"/>
-  <startup
-        class="org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup">
-  </startup>
 	</extension>
 	<extension point="org.eclipse.help.contexts">
 		<contexts file="contexts/artifactExplorerContexts.xml"/>

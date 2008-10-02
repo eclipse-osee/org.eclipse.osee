@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
@@ -195,7 +194,6 @@ public class AdminView extends ViewPart implements IActionable {
       tabFolder.setLayoutData(gridData);
 
       // ModeChecker.check(parent);
-      new AutoRunTab(tabFolder);
       try {
          new OseeClientsTab(tabFolder);
       } catch (Exception ex) {

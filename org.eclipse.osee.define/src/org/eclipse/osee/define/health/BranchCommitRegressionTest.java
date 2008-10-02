@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -30,9 +29,8 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class BranchCommitRegressionTest extends XNavigateItemAction implements IAutoRunTask {
+public class BranchCommitRegressionTest extends XNavigateItemAction {
 
-   private String autoRunUniqueId;
    public static String NAME = "CommitRegressionTest - Run on Test";
 
    /**
@@ -61,6 +59,7 @@ public class BranchCommitRegressionTest extends XNavigateItemAction implements I
          this.jobName = jobName;
       }
 
+      @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
             runTest(rd, monitor);
@@ -87,69 +86,6 @@ public class BranchCommitRegressionTest extends XNavigateItemAction implements I
       rd.logWarning("This is a warning");
       if (monitor != null) monitor.done();
       rd.log("Complete");
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#startTasks()
-    */
-   public void startTasks(XResultData resultData) throws Exception {
-      BranchCommitRegressionTest.runTest(resultData, null);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#get24HourStartTime()
-    */
-   public String get24HourStartTime() {
-      return "00:08";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getNotificationEmailAddresses()
-    */
-   public String[] getNotificationEmailAddresses() {
-      return new String[] {"jeff.c.phillips@boeing.com"};
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getAutoRunUniqueId()
-    */
-   public String getAutoRunUniqueId() {
-      return autoRunUniqueId;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#setAutoRunUniqueId(java.lang.String)
-    */
-   public void setAutoRunUniqueId(String autoRunUniqueId) {
-      this.autoRunUniqueId = autoRunUniqueId;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getDescription()
-    */
-   public String getDescription() {
-      return "Test Branch Commit Logic";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getRunDb()
-    */
-   public RunDb getRunDb() {
-      return RunDb.Test_Db;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getTaskType()
-    */
-   public TaskType getTaskType() {
-      return TaskType.Regression;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getCategory()
-    */
-   public String getCategory() {
-      return "OSEE Define";
    }
 
 }
