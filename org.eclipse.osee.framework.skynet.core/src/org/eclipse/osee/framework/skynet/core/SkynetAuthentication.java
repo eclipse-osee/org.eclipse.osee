@@ -240,7 +240,7 @@ public class SkynetAuthentication {
       return user;
    }
 
-   public static User getUser(OseeUser userEnum) throws OseeCoreException, SQLException {
+   public static User getUser(OseeUser userEnum) throws OseeCoreException {
       instance.loadUsersCache();
       User user = instance.enumeratedUserCache.get(userEnum);
       if (user == null) {
@@ -293,7 +293,7 @@ public class SkynetAuthentication {
       return users;
    }
 
-   public static User getUserByUserId(String userId) throws OseeCoreException, SQLException {
+   public static User getUserByUserId(String userId) throws OseeCoreException {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
