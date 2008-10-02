@@ -21,11 +21,12 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
-   private List<Object[]> data;
-   private int cacheLimit;
+   private final List<Object[]> data;
+   private final int cacheLimit;
+   private final boolean isCacheAll;
+
    private Connection connection;
    private MetaData metadata;
-   private boolean isCacheAll;
    private Translator translator;
    private Options options;
 
@@ -95,8 +96,6 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    public void reset() {
       this.metadata = null;
-      this.connection = null;
-      this.translator = null;
       this.data.clear();
    }
 }

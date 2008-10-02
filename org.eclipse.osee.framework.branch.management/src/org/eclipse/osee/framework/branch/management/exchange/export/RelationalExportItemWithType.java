@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class RelationalExportItemWithType extends RelationalExportItem {
 
-   private RelationalExportItem typeExportItem;
-   private TypeCollector typeCollector;
+   private final RelationalExportItem typeExportItem;
+   private final TypeCollector typeCollector;
 
    public RelationalExportItemWithType(int priority, String name, String source, String typeColumn, String regularQuery, String typeQuery) {
       super(priority, name, source, regularQuery);

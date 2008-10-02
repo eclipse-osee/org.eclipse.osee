@@ -24,7 +24,8 @@ import org.xml.sax.SAXException;
 public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
    protected final static String STRING_CONTENT = "stringContent";
    protected final static String BINARY_CONTENT_LOCATION = "binaryContentLocation";
-   private Map<String, String> dataMap;
+
+   private final Map<String, String> dataMap;
 
    protected BaseExportImportSaxHandler() {
       super();

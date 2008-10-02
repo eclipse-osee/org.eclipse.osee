@@ -45,7 +45,7 @@ public class DataToSql {
             Class<?> clazz = metadata.toClass(columnName);
             Object object = stringToObject(clazz, columnName, dataValue);
             if (object != null && translator.isTranslatable(columnName)) {
-               object = translator.translate(connection, columnName, object);
+               object = translator.translate(columnName, object);
             }
             if (object != null) {
                data[index] = object;

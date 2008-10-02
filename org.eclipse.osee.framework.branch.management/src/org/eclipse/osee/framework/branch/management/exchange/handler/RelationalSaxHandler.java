@@ -35,12 +35,13 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       return new RelationalSaxHandler(false, cacheLimit);
    }
 
-   private Set<Integer> branchesToImport;
+   private final Set<Integer> branchesToImport;
    private ZipFile zipFile;
 
    protected RelationalSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
+      this.zipFile = null;
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -94,15 +95,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    @Override
    protected void processData(Map<String, String> fieldMap) throws Exception {
       boolean process = true;
-      //      boolean exclude = false;
       try {
-         //         if(shouldExcludeBaselineTxs()){
-         //            String txType = fieldMap.get("tx_type");
-         //            if(Strings.isValid(txType) && Integer.parseInt(txType) == 0){
-         //               exclude =
-         //            }
-         //         }
-         //         System.out.println(String.format("Table: [%s] Data: %s ", getMetaData(), fieldMap));
          if (!branchesToImport.isEmpty()) {
             String branchIdString = fieldMap.get(ExportImportXml.PART_OF_BRANCH);
             if (Strings.isValid(branchIdString)) {
@@ -116,7 +109,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             String uriValue = fieldMap.get(BINARY_CONTENT_LOCATION);
             if (Strings.isValid(uriValue)) {
                String gammaId = fieldMap.get("gamma_id");
-               Object translated = getTranslator().translate(getConnection(), "gamma_id", Long.valueOf(gammaId));
+               Object translated = getTranslator().translate("gamma_id", Long.valueOf(gammaId));
                uriValue = importBinaryContent(uriValue, translated.toString());
                fieldMap.put("uri", uriValue);
             }

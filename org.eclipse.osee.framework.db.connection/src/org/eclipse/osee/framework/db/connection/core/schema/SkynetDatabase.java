@@ -36,7 +36,7 @@ public class SkynetDatabase {
    public static final Table RELATION_LINK_TYPE_TABLE = new Table("OSEE_RELATION_LINK_TYPE");
    public static final Table RELATION_LINK_TYPE_TABLE_ACL = new Table("OSEE_RELATION_LINK_TYPE_ACL");
    public static final Table BRANCH_TABLE = new Table("OSEE_BRANCH");
-   public static final Table BRANCH_DEFINITIONS = new Table("OSEE_DEFINITIONS");
+   public static final Table BRANCH_DEFINITIONS = new Table("OSEE_BRANCH_DEFINITIONS");
    public static final Table BRANCH_TABLE_ACL = new Table("OSEE_BRANCH_ACL");
 
    public static final Table BRANCH_DELETE_HELPER = new Table("OSEE_BRANCH_DELETE_HELPER");

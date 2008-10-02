@@ -15,12 +15,13 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.db.connection.core.OseeDatabaseId;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ManifestExportItem extends AbstractExportItem {
-   private List<AbstractExportItem> exportItems;
+   private final List<AbstractExportItem> exportItems;
 
    public ManifestExportItem(int priority, String name, List<AbstractExportItem> exportItems) {
       super(priority, name, "");
@@ -40,8 +41,10 @@ public class ManifestExportItem extends AbstractExportItem {
     */
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      ExportImportXml.openPartialXmlNode(appendable, "export");
-      ExportImportXml.addXmlAttribute(appendable, "date", new Long(new Date().getTime()).toString());
+      ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, OseeDatabaseId.getGuid());
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,
+            new Long(new Date().getTime()).toString());
       ExportImportXml.closePartialXmlNode(appendable);
 
       for (AbstractExportItem relationalItem : exportItems) {

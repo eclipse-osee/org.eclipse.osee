@@ -27,13 +27,14 @@ import org.eclipse.osee.framework.resource.management.Options;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractExportItem implements Runnable {
-   private String name;
-   private String fileName;
-   private int priority;
+   private final String name;
+   private final String fileName;
+   private final int priority;
+   private final Set<IExchangeTaskListener> exportListeners;
+   private final String source;
+
    private File writeLocation;
    private Options options;
-   private Set<IExchangeTaskListener> exportListeners;
-   private String source;
    private boolean cancel;
 
    public AbstractExportItem(int priority, String name, String source) {

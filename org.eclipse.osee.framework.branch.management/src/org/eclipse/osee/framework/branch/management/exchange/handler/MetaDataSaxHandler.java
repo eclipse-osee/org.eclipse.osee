@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
  */
 public class MetaDataSaxHandler extends AbstractSaxHandler {
 
-   private Map<String, MetaData> metadataMap;
+   private final Map<String, MetaData> metadataMap;
    private MetaData currentMetadata;
 
    public MetaDataSaxHandler() {

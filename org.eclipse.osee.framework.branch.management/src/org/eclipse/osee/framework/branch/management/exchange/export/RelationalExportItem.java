@@ -38,14 +38,14 @@ import org.eclipse.osee.framework.resource.management.Options;
  * @author Roberto E. Escobar
  */
 public class RelationalExportItem extends AbstractDbExportItem {
-   private String query;
-   private StringBuffer binaryContentBuffer;
-   private StringBuffer stringContentBuffer;
-   private StringBuffer oseeCommentBuffer;
-   private StringBuffer branchNameBuffer;
-   private StringBuffer branchShortNameBuffer;
-   private StringBuffer rationaleBuffer;
-   private Set<IExportColumnListener> exportColumnListeners;
+   private final String query;
+   private final StringBuffer binaryContentBuffer;
+   private final StringBuffer stringContentBuffer;
+   private final StringBuffer oseeCommentBuffer;
+   private final StringBuffer branchNameBuffer;
+   private final StringBuffer branchShortNameBuffer;
+   private final StringBuffer rationaleBuffer;
+   private final Set<IExportColumnListener> exportColumnListeners;
 
    public RelationalExportItem(int priority, String name, String source, String query) {
       super(priority, name, source.toLowerCase());

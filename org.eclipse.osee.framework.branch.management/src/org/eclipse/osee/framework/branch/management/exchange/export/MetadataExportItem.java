@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
  * @author Roberto E. Escobar
  */
 public class MetadataExportItem extends AbstractDbExportItem {
-   private List<AbstractExportItem> exportItems;
+   private final List<AbstractExportItem> exportItems;
 
    public MetadataExportItem(int priority, String name, List<AbstractExportItem> exportItems) {
       super(priority, name, ExportImportXml.DB_SCHEMA);

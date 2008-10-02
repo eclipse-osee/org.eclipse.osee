@@ -12,21 +12,26 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
-   private List<ImportFile> filesToImport;
-   private List<ImportFile> typesToCheck;
+   private final List<ImportFile> filesToImport;
+   private final List<ImportFile> typesToCheck;
    private String metadataFile;
    private ImportFile branchFile;
+   private String sourceDatabaseId;
+   private Date sourceExportDate;
 
    public ManifestSaxHandler() {
       super();
@@ -34,6 +39,25 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       this.typesToCheck = new ArrayList<ImportFile>();
       this.metadataFile = null;
       this.branchFile = null;
+      this.sourceExportDate = null;
+      this.sourceDatabaseId = "UNKNOWN";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseExportImportSaxHandler#startElementFound(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+    */
+   @Override
+   public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+      try {
+         if (localName.equalsIgnoreCase(ExportImportXml.EXPORT_ENTRY)) {
+            sourceDatabaseId = attributes.getValue(ExportImportXml.DATABASE_ID);
+            sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportImportXml.EXPORT_DATE)));
+         }
+      } catch (Exception ex) {
+         throw new IllegalStateException(ex);
+      }
+      super.startElementFound(uri, localName, name, attributes);
+
    }
 
    @Override
@@ -67,6 +91,14 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    public String getMetadataFile() {
       return Strings.isValid(metadataFile) ? metadataFile : "";
+   }
+
+   public String getSourceDatabaseId() {
+      return sourceDatabaseId;
+   }
+
+   public Date getSourceExportDate() {
+      return sourceExportDate;
    }
 
    public List<ImportFile> getImportFiles() {

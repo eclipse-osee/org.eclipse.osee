@@ -565,5 +565,31 @@
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
 	</Table>
-	
+	<Table name="OSEE_IMPORT_MAP" schema="OSEE" tablespace="osee_data">
+		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="SEQUENCE_NAME" defaultValue="not null" type="VARCHAR" limits="128"/>
+		<Column id="DB_SOURCE_GUID" defaultValue="not null" type="VARCHAR"/>
+		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Constraint schema="OSEE" id="OSEE_IMPORT_MAP_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID" />
+		<Index id="OSEE_IMPORT_MAP_SN_IDX" tablespace="osee_index">
+			<AppliesTo id="SEQUENCE_NAME"/>
+		</Index>
+	</Table>
+	<Table name="OSEE_IMPORT_INDEX_MAP" schema="OSEE" tablespace="osee_data">
+		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ORIGINAL_ID" defaultValue="not null" type="BIGINT"/>
+		<Column id="MAPPED_ID" defaultValue="not null" type="BIGINT" />
+		<Constraint schema="OSEE" id="OSEE_IMPORT_INDEX_MAP_IOM_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID, ORIGINAL_ID, MAPPED_ID" />
+		<Constraint schema="OSEE" id="OSEE_IMPORT_INDEX_MAP_II_FK" type="FOREIGN KEY" appliesTo="IMPORT_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_IMPORT_MAP" column="IMPORT_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_IMPORT_INDEX_MAP_IO_IDX" tablespace="osee_index">
+			<AppliesTo id="IMPORT_ID"/>
+			<AppliesTo id="ORIGINAL_ID"/>
+		</Index>
+		<Index id="OSEE_IMPORT_INDEX_MAP_IM_IDX" tablespace="osee_index">
+			<AppliesTo id="IMPORT_ID"/>
+			<AppliesTo id="MAPPED_ID"/>
+		</Index>
+	</Table>
 </TableConfig>

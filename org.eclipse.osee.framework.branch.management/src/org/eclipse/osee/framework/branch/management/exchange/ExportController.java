@@ -38,9 +38,10 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
 final class ExportController extends DbTransaction implements IExchangeTaskListener {
    private static final String ZIP_EXTENSION = ".zip";
    private static final String TEMP_NAME_PREFIX = "branch.xchng.";
+
    private String exportName;
-   private Options options;
-   private int[] branchIds;
+   private final Options options;
+   private final int[] branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
    private List<String> errorList;
@@ -76,6 +77,8 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       } catch (SQLException ex) {
          onException("Export Clean-Up", ex);
       }
+      this.executorService.shutdown();
+      this.executorService = null;
    }
 
    private File createTempFolder() {
@@ -109,10 +112,6 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             Executors.newFixedThreadPool(2, Activator.getInstance().createNewThreadFactory("branch.export.worker"));
    }
 
-   private Future<?> submitTask(int exportQueryId, Runnable runnable) {
-      return this.executorService.submit(runnable);
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
     */
@@ -126,7 +125,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
 
          List<Future<?>> futures = new ArrayList<Future<?>>();
          for (AbstractExportItem exportItem : taskList) {
-            futures.add(submitTask(joinQuery.getQueryId(), exportItem));
+            futures.add(this.executorService.submit(exportItem));
          }
 
          for (Future<?> future : futures) {

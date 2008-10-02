@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
  */
 public final class ZipBinaryResource implements IResource {
 
-   private IResourceLocator locator;
-   private ZipEntry entry;
-   private ZipFile zipFile;
+   private final IResourceLocator locator;
+   private final ZipEntry entry;
+   private final ZipFile zipFile;
 
    public ZipBinaryResource(ZipFile zipFile, ZipEntry entry, IResourceLocator locator) {
       checkNotNull("ZipFile", zipFile);

@@ -29,7 +29,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
       return new RelationalTypeCheckSaxHandler(false, cacheLimit);
    }
 
-   private StringBuffer errorCheck;
+   private final StringBuffer errorCheck;
 
    private RelationalTypeCheckSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
@@ -57,10 +57,10 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s =?",
+               ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s = ?",
                      typeField, getMetaData().getTableName(), nameField), name);
          if (chStmt.next()) {
-            getTranslator().addMappingTo(typeField, original, chStmt.getRset().getLong(1));
+            getTranslator().checkIdMapping(typeField, original, chStmt.getRset().getLong(1));
          } else {
             this.errorCheck.append(String.format("Type not found in target db. type:[%s] - [%s (%s)]\n", name,
                   typeField, typeId));
