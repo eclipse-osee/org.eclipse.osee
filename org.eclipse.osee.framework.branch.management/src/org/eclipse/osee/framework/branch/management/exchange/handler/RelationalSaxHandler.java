@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class RelationalSaxHandler extends BaseDbSaxHandler {
 
-   public static RelationalSaxHandler newCacheAllDataRelationalSaxHandler() {
+   public static RelationalSaxHandler createWithCacheAll() {
       return new RelationalSaxHandler(true, 0);
    }
 
-   public static RelationalSaxHandler newLimitedCacheRelationalSaxHandler(int cacheLimit) {
+   public static RelationalSaxHandler createWithLimitedCache(int cacheLimit) {
       return new RelationalSaxHandler(false, cacheLimit);
    }
 

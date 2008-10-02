@@ -31,7 +31,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    private final Map<Integer, BranchData> idToImportFileBranchData;
 
-   public static BranchDataSaxHandler newCacheAllDataBranchDataSaxHandler() {
+   public static BranchDataSaxHandler createWithCacheAll() {
       return new BranchDataSaxHandler(true, 0);
    }
 
@@ -105,10 +105,14 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void store(int... branchesToImport) throws Exception {
+   public int[] store(int... branchesToImport) throws Exception {
       checkSelectedBranches(branchesToImport);
-      List<BranchData> selectedBranches = getSelectedBranchesToImport(branchesToImport);
-      for (BranchData branchData : checkTargetDbBranches(selectedBranches)) {
+      Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
+      branchesToStore = checkTargetDbBranches(branchesToStore);
+      int[] toReturn = new int[branchesToStore.size()];
+      int index = 0;
+      for (BranchData branchData : branchesToStore) {
+         toReturn[index] = branchData.getBranchId();
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
             branchData.setParentBranchId(-1);
             branchData.setBranchType(BranchType.ROOT);
@@ -120,11 +124,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          if (data != null) {
             addData(data);
          }
+         index++;
       }
       super.store(getConnection());
+      return toReturn;
    }
 
-   private Collection<BranchData> checkTargetDbBranches(List<BranchData> selectedBranches) throws SQLException {
+   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws SQLException {
       Map<String, BranchData> nameToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
          nameToImportFileBranchData.put(data.getBranchName(), data);
@@ -139,7 +145,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             BranchData branchData = nameToImportFileBranchData.get(name);
             if (branchData != null) {
                getTranslator().checkIdMapping("branch_id", (long) branchData.getBranchId(), branchId);
-               // Remove so we don't store duplicate information
+               // Remove from to store list so we don't store duplicate information
                nameToImportFileBranchData.remove(name);
             }
          }

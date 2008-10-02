@@ -80,7 +80,7 @@ public class Translator {
 
       Map<Integer, TranslatedIdMap> importIdIndex = new HashMap<Integer, TranslatedIdMap>();
       List<Object[]> data = new ArrayList<Object[]>();
-      for (TranslatedIdMap entry : translatorMap.values()) {
+      for (TranslatedIdMap entry : translators) {
          int importId = SequenceManager.getNextImportId();
          String sequence = entry.getSequence();
          importIdIndex.put(importId, entry);

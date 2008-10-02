@@ -95,6 +95,9 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    }
 
    public void reset() {
+      this.connection = null;
+      this.translator = null;
+      this.options = null;
       this.metadata = null;
       this.data.clear();
    }

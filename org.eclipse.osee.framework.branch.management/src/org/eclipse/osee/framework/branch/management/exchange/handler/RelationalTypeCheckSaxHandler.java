@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
 
-   public static RelationalTypeCheckSaxHandler newCacheAllDataRelationalTypeCheckSaxHandler() {
+   public static RelationalTypeCheckSaxHandler createWithCacheAll() {
       return new RelationalTypeCheckSaxHandler(true, 0);
    }
 
-   public static RelationalTypeCheckSaxHandler newLimitedCacheRelationalTypeCheckSaxHandler(int cacheLimit) {
+   public static RelationalTypeCheckSaxHandler createWithLimitedCache(int cacheLimit) {
       return new RelationalTypeCheckSaxHandler(false, cacheLimit);
    }
 
