@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -121,13 +122,19 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    /**
     * This method will create an assignee relation for each current assignee. Assignees are related to user artifacts to
-    * speed up ATS searching. This does not persist the artifact.
+    * speed up ATS searching. This does not persist the artifact.<br>
+    * <br>
+    * The "UnAssigned" user is no longer related due to the performance and event service issues with having a single
+    * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
+    * "UnAssigned".
     * 
     * @throws OseeCoreException
     * @throws SQLException
     */
    public void updateAssigneeRelations() throws OseeCoreException {
-      setRelations(CoreRelationEnumeration.Users_User, getSmaMgr().getStateMgr().getAssignees());
+      Collection<User> assignees = getSmaMgr().getStateMgr().getAssignees();
+      assignees.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
+      setRelations(CoreRelationEnumeration.Users_User, assignees);
    }
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {

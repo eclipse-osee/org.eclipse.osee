@@ -22,8 +22,10 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -51,23 +53,31 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      List<String> teamWorkflowNames =
+      final List<String> teamWorkflowNames =
             Arrays.asList(TeamWorkFlowArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
                   DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME);
       teamWorkflowNames.addAll(TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames());
 
-      for (String artTypeName : teamWorkflowNames) {
-         System.out.println("Processing artifact type - " + artTypeName);
-         for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
-            if (art instanceof StateMachineArtifact) {
-               ((StateMachineArtifact) art).updateAssigneeRelations();
-               if (art.isDirty()) {
-                  System.out.println("Updated assignee relations for " + art.getHumanReadableId() + " - " + art);
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+
+         @Override
+         protected void handleTxWork() throws OseeCoreException {
+            for (String artTypeName : teamWorkflowNames) {
+               System.out.println("Processing artifact type - " + artTypeName);
+               for (Artifact art : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {
+                  if (art instanceof StateMachineArtifact) {
+                     ((StateMachineArtifact) art).updateAssigneeRelations();
+                     if (art.isDirty()) {
+                        System.out.println("Updated assignee relations for " + art.getHumanReadableId() + " - " + art);
+                     }
+                     art.persistRelations();
+                  }
                }
-               art.persistRelations();
             }
          }
-      }
+      };
+      newActionTx.execute();
+
       AWorkbench.popup("Completed", "Complete");
    }
 }

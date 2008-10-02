@@ -16,9 +16,15 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -38,7 +44,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - clean XViewerCustomization");
+      super(parent, "Does Not Work - delete unassignedUser relations");
    }
 
    /*
@@ -50,6 +56,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
+      //      deleteUnAssignedUserRelations();
       cleanXViewerCustomizations();
       //      relateDonDunne();
 
@@ -64,6 +71,23 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void deleteUnAssignedUserRelations() throws OseeCoreException {
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+
+         @Override
+         protected void handleTxWork() throws OseeCoreException {
+            User unassignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
+            for (Artifact art : unassignedUser.getRelatedArtifacts(CoreRelationEnumeration.Users_Artifact)) {
+               if (art instanceof StateMachineArtifact) {
+                  unassignedUser.deleteRelation(CoreRelationEnumeration.Users_Artifact, art);
+               }
+            }
+            unassignedUser.persistRelations();
+         }
+      };
+      newActionTx.execute();
    }
 
    private final boolean fixIt = false;
