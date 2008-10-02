@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetUserArtifactCustomizeDefaults;
 import org.eclipse.swt.widgets.Display;
@@ -44,7 +45,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItem(XNavigateItem parent) {
-      super(parent, "Does Not Work - delete unassignedUser relations");
+      super(parent, "Does Not Work - update XViewerCustomizations");
    }
 
    /*
@@ -119,9 +120,9 @@ public class DoesNotWorkItem extends XNavigateItemAction {
             custDefaults.setGuids(validGuids);
          }
          if (fixIt) {
-            //         custDefaults.save();
-            //         user.setAttributeValues("XViewer Customization", customizations);
-            //         user.persistAttributes();
+            //            custDefaults.save();
+            //            user.setAttributeValues("XViewer Customization", customizations);
+            //            user.persistAttributes();
          }
       }
    }
@@ -130,6 +131,13 @@ public class DoesNotWorkItem extends XNavigateItemAction {
       System.out.println("CustData: " + custDataStr);
       if (custDataStr.contains("<order>")) {
          return new Result("<order>");
+      }
+      for (String columnName : custData.getSortingData().getSortingNames()) {
+         XViewerColumn xCol = custData.getColumnData().getXColumn(columnName);
+         if (xCol == null) return new Result("sort column not found");
+         if (xCol.isShow() == false) {
+            return new Result("sort col is hidden");
+         }
       }
       return Result.TrueResult;
    }
