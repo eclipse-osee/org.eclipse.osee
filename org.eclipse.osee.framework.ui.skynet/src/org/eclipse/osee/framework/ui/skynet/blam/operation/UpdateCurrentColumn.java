@@ -48,53 +48,53 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    private static final String SELECT_ATTRIBUTES_TO_UPDATE =
-         "SELECT branch_id, maxt, txs2.gamma_id, atid, txs2.mod_type FROM osee_define_attribute att2,  osee_define_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
+         "SELECT branch_id, maxt, txs2.gamma_id, atid, txs2.mod_type FROM osee_attribute att2,  osee_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
    private static final String SELECT_ARTIFACTS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, art_id, txs1.mod_type FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, art_id, txs1.mod_type FROM osee_artifact_version arv2,  osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_artifact_version arv1, osee_txs txs2, osee_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
    private static final String SELECT_RELATIONS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, rel_id, txs1.mod_type FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, rel_id, txs1.mod_type FROM osee_relation_link rel2, osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_relation_link rel1, osee_txs txs2, osee_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
 
    private static final String SELECT_STALE_ATTRIBUTES =
-         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = attr1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_tx_details txd1, osee_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = attr1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
    private static final String SELECT_STALE_ARTIFACTS =
-         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_artifact_version art1 WHERE txd1.branch_id = ? AND art1.art_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_tx_details txd1, osee_artifact_version art1 WHERE txd1.branch_id = ? AND art1.art_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
    private static final String SELECT_STALE_RELATIONS =
-         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_rel_link link1 where txd1.branch_id = ? and link1.rel_link_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = link1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_tx_details txd1, osee_relation_link link1 where txd1.branch_id = ? and link1.rel_link_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = link1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
 
    private static final String UPDATE_TXS_CURRENT_TO_0 =
-         "update osee_define_txs set tx_current = 0 where gamma_id = ? and transaction_id = ?";
+         "update osee_txs set tx_current = 0 where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT =
-         "update osee_define_txs set tx_current = ? where gamma_id = ? and transaction_id = ?";
+         "update osee_txs set tx_current = ? where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT_FROM_NULL =
-         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE tx_current IS null";
+         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE tx_current IS null";
 
    private static final String SELECT_BASELINED_TRANSACTIONS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.mod_type from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
+         "SELECT txs1.gamma_id, txs1.transaction_id, txs1.mod_type from osee_txs txs1, osee_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
 
    private static final String UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0 =
-         "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type IS NULL"; // Changed tx_type <> 1 to account for null case
+         "UPDATE osee_tx_details SET tx_type = 0 WHERE tx_type IS NULL"; // Changed tx_type <> 1 to account for null case
    private static final String UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1 =
-         "UPDATE osee_Define_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
+         "UPDATE osee_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
 
    private static final String VERIFY_ARTIFACT_MOD_TYPE =
-         "select count(1) from osee_define_txs txs1, osee_define_artifact_version artv1 WHERE txs1.gamma_id = artv1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) from osee_txs txs1, osee_artifact_version artv1 WHERE txs1.gamma_id = artv1.gamma_id AND txs1.mod_type IS NULL";
    private static final String VERIFY_ATTRIBUTE_MOD_TYPE =
-         "select count(1) from osee_define_txs txs1, osee_define_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) from osee_txs txs1, osee_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id AND txs1.mod_type IS NULL";
    private static final String VERIFY_RELATION_MOD_TYPE =
-         "select count(1) from osee_define_txs txs1, osee_define_rel_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) from osee_txs txs1, osee_relation_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
 
    private static final String INNER_SELECT_ARTIFACT_MOD_TYPE =
-         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 where txs1.gamma_id = artv1.gamma_id";
+         "select artv1.modification_id from osee_txs txs1, osee_artifact_version artv1 where txs1.gamma_id = artv1.gamma_id";
    private static final String INNER_SELECT_ATTRIBUTE_MOD_TYPE =
-         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 where txs1.gamma_id = attr1.gamma_id";
+         "select attr1.modification_id from osee_txs txs1, osee_attribute attr1 where txs1.gamma_id = attr1.gamma_id";
    private static final String INNER_SELECT_RELATION_MOD_TYPE =
-         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 where txs1.gamma_id = rel1.gamma_id";
+         "select rel1.modification_id from osee_txs txs1, osee_relation_link rel1 where txs1.gamma_id = rel1.gamma_id";
 
    private static final String UPDATE_TXS_MOD_TYPE_SINGLE_CALL =
-         "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
+         "update osee_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
 
    private static final String VERIFY_TX_CURRENT =
-         "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, txs1.mod_type, art1.art_type_id FROM osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact art1, osee_define_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
+         "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, txs1.mod_type, art1.art_type_id FROM osee_tx_details txd1, osee_txs txs1, osee_artifact art1, osee_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
 
    private final class UpdateHelper {
       TypesEnum type;

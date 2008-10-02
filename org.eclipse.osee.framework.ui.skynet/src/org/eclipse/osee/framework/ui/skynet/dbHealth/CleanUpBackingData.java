@@ -32,14 +32,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class CleanUpBackingData extends DatabaseHealthTask {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-         "(SELECT gamma_id FROM osee_Define_artifact_version UNION SELECT gamma_id FROM osee_Define_attribute UNION SELECT gamma_id FROM osee_Define_rel_link) MINUS SELECT gamma_id FROM osee_define_txs";
+         "(SELECT gamma_id FROM osee_artifact_version UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link) MINUS SELECT gamma_id FROM osee_txs";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT DISTINCT transaction_id FROM osee_Define_tx_details MINUS SELECT transaction_id FROM osee_Define_txs";
-   private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_define_artifact_version WHERE gamma_id = ?";
-   private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_define_attribute WHERE gamma_id = ?";
-   private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_define_rel_link WHERE gamma_id = ?";
+         "SELECT DISTINCT transaction_id FROM osee_tx_details MINUS SELECT transaction_id FROM osee_txs";
+   private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_artifact_version WHERE gamma_id = ?";
+   private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_attribute WHERE gamma_id = ?";
+   private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_relation_link WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
-         "DELETE FROM osee_define_tx_details WHERE transaction_id = ?";
+         "DELETE FROM osee_tx_details WHERE transaction_id = ?";
 
    private static final String[] COLUMN_HEADER = {"Gamma Id", "Transaction Id"};
    private static final int GAMMA = 0;

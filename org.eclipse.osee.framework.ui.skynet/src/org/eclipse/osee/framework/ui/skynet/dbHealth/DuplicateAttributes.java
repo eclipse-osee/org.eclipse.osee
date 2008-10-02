@@ -39,15 +39,15 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    }
 
    private static final String GET_DUPLICATE_ATTRIBUTES =
-         "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_define_attribute attr1, osee_define_attribute attr2, osee_define_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_define_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id) AND EXISTS (SELECT 'x' FROM osee_define_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id) order by aty1.NAME, attr1.art_id";
+         "SELECT attr1.art_id, aty1.NAME, attr1.attr_id as attr_id_1, attr2.attr_id as attr_id_2, attr1.value as value_1, attr2.value as value_2, attr1.uri as uri_1, attr2.uri as uri_2, attr1.gamma_id as gamma_id_1, attr2.gamma_id as gamma_id_2 FROM osee_attribute attr1, osee_attribute attr2, osee_attribute_type  aty1 WHERE attr1.art_id = attr2.art_id AND attr1.attr_id < attr2.attr_id AND attr1.attr_type_id = attr2.attr_type_id AND attr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1  AND EXISTS (SELECT 'x' FROM osee_txs txs1 WHERE txs1.gamma_id = attr1.gamma_id) AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.gamma_id = attr2.gamma_id) order by aty1.NAME, attr1.art_id";
 
    private static final String BRANCHES_WITH_ONLY_ATTR =
-         "SELECT DISTINCT branch_id FROM osee_define_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) MINUS (SELECT DISTINCT branch_id FROM osee_define_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
+         "SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?) MINUS (SELECT DISTINCT branch_id FROM osee_tx_details det WHERE EXISTS (SELECT 'x' FROM osee_txs txs, osee_attribute att WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?))";
 
-   private static final String DELETE_ATTR = "DELETE FROM osee_define_attribute WHERE attr_id = ?";
+   private static final String DELETE_ATTR = "DELETE FROM osee_attribute WHERE attr_id = ?";
 
    private static final String FILTER_DELTED =
-         "SELECT * FROM osee_define_txs txs, osee_define_attribute atr WHERE txs.tx_current = 1 AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ?";
+         "SELECT * FROM osee_txs txs, osee_attribute atr WHERE txs.tx_current = 1 AND txs.gamma_id = atr.gamma_id AND atr.attr_id = ?";
 
    boolean fixErrors = false;
    boolean processTxCurrent = true;

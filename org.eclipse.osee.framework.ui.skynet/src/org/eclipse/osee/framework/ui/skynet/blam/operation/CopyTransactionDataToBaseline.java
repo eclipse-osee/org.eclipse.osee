@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class CopyTransactionDataToBaseline extends AbstractBlam {
    private static final String COPY_TX_DATA =
-         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs WHERE transaction_id = ?";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_txs WHERE transaction_id = ?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)

@@ -32,12 +32,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class CleanUpAddressingData extends DatabaseHealthTask {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-         "SELECT gamma_id from osee_define_txs MINUS (SELECT gamma_id FROM osee_Define_artifact_version UNION SELECT gamma_id FROM osee_Define_attribute UNION SELECT gamma_id FROM osee_Define_rel_link)";
+         "SELECT gamma_id from osee_txs MINUS (SELECT gamma_id FROM osee_artifact_version UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link)";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT transaction_id from osee_Define_txs MINUS SELECT transaction_id from osee_Define_tx_details";
-   private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_define_txs WHERE gamma_id = ?";
-   private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
-         "DELETE FROM osee_define_txs WHERE transaction_id = ?";
+         "SELECT transaction_id from osee_txs MINUS SELECT transaction_id from osee_tx_details";
+   private static final String REMOVE_NOT_ADDRESSED_GAMMAS = "DELETE FROM osee_txs WHERE gamma_id = ?";
+   private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS = "DELETE FROM osee_txs WHERE transaction_id = ?";
 
    private static final String[] COLUMN_HEADER = {"Gamma Id", "Transaction Id"};
    private static final int GAMMA = 0;

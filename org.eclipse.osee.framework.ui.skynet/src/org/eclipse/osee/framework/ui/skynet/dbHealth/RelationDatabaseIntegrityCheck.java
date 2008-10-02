@@ -53,28 +53,27 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
    }
 
    private static final String NO_ADDRESSING_ARTIFACTS_A =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran FROM osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 WHERE td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.a_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran FROM osee_txs tx1, osee_tx_details td1, osee_relation_link rel1 WHERE td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_txs tx2, osee_tx_details td2, osee_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.a_art_id)";
 
    private static final String NO_ADDRESSING_ARTIFACTS_B =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran from osee_define_txs tx1, osee_define_tx_details td1, osee_define_rel_link rel1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_define_txs tx2, osee_define_tx_details td2, osee_define_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.b_art_id)";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 as deleted_tran from osee_txs tx1, osee_tx_details td1, osee_relation_link rel1 where td1.transaction_id = tx1.transaction_id AND tx1.gamma_id = rel1.gamma_id AND not exists (select 'x' from osee_txs tx2, osee_tx_details td2, osee_artifact_version av1 where td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and av1.art_id = rel1.b_art_id)";
 
    private static final String DELETED_A_ARTIFACTS =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rel1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.a_art_id";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_txs tx1, osee_txs tx2, osee_tx_details td1, osee_tx_details td2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.a_art_id";
 
    private static final String DELETED_B_ARTIFACTS =
-         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_Define_txs tx1, osee_Define_txs tx2, osee_Define_tx_details td1, osee_Define_tx_details td2, osee_Define_rel_link rel1, osee_define_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.b_art_id";
+         "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, td1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id as deleted_tran from osee_txs tx1, osee_txs tx2, osee_tx_details td1, osee_tx_details td2, osee_relation_link rel1, osee_artifact_version av1 WHERE tx1.transaction_id = td1.transaction_id and tx1.gamma_id = rel1.gamma_id and tx1.tx_current = 1 and td1.branch_id = td2.branch_id and td2.transaction_id = tx2.transaction_id and tx2.gamma_id = av1.gamma_id and tx2.tx_current = 2 and av1.art_id = rel1.b_art_id";
 
-   private static final String DELETE_FROM_TXS =
-         "DELETE FROM osee_define_txs where gamma_id = ? AND  transaction_id = ?";
+   private static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND  transaction_id = ?";
 
    private static final String UPDATE_TXS =
-         "UPDATE osee_define_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
+         "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
 
    private static final String UPDATE_TXS_SAME =
-         "UPDATE osee_define_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
+         "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
 
    private static final String INSERT_TXS =
-         "INSERT INTO osee_define_txs (gamma_id, transaction_id, tx_current, mod_type) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ")";
+         "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ")";
 
    private static final String[] columnHeaders =
          new String[] {"Rel Link ID", "Gamma Id", "Transaction Id", "Branch_id", "A Art Id", "B Art Id",

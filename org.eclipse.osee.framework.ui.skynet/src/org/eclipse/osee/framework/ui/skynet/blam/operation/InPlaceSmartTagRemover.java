@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Ryan D. Brooks
  */
 public class InPlaceSmartTagRemover extends AbstractBlam {
-   private static final String UPDATE_ATTRIBUTE = "UPDATE osee_define_attribute SET content = ? WHERE gamma_id = ?";
+   private static final String UPDATE_ATTRIBUTE = "UPDATE osee_attribute SET content = ? WHERE gamma_id = ?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)

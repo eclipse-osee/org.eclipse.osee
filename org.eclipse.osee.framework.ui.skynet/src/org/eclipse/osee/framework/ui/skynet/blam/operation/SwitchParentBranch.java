@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class SwitchParentBranch extends AbstractBlam {
    private static final String UPDATE_PARENT_BRANCHES =
-         "UPDATE osee_define_branch SET parent_branch_id = ? where branch_id in (";
+         "UPDATE osee_branch SET parent_branch_id = ? where branch_id in (";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)

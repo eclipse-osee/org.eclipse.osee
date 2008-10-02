@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Ryan D. Brooks
  */
 public class PurgeArtifactType extends AbstractBlam {
-   public static final String DELETE_VALID_REL = "delete from osee_define_valid_relations where art_type_id = ?";
-   public static final String DELETE_VALID_ATTRIBUTE = "delete from osee_define_valid_attributes where art_type_id = ?";
+   public static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
+   public static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
    public static final String COUNT_ARTIFACT_OCCURRENCE =
-         "select count(1) AS artCount FROM osee_define_artifact where art_type_id = ?";
-   public static final String DELETE_ARIFACT_TYPE = "delete from osee_define_artifact_type where art_type_id = ?";
+         "select count(1) AS artCount FROM osee_artifact where art_type_id = ?";
+   public static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)

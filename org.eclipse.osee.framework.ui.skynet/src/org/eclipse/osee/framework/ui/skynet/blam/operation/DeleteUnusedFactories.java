@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class DeleteUnusedFactories extends AbstractBlam {
    private static final String DELETE_UNUSED_FACTORIES =
-         "delete from osee_define_factory f1 where not exists (select '1' from osee_define_artifact_type f2 where f1.factory_id = f2.factory_id)";
+         "delete from osee_artifact_factory f1 where not exists (select '1' from osee_artifact_type f2 where f1.factory_id = f2.factory_id)";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)

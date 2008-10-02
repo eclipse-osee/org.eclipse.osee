@@ -22,22 +22,22 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
  */
 public class AttributeTxCurrent extends DatabaseHealthTask {
    private static final String NO_TX_CURRENT_SET =
-         "SELECT distinct atr.attr_id, det.branch_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute atr WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = atr.gamma_id AND txs.tx_current = 0 MINUS SELECT distinct atr.attr_id, det.branch_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute atr WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = atr.gamma_id AND txs.tx_current in (1,2,3)";
+         "SELECT distinct atr.attr_id, det.branch_id FROM osee_tx_details det, osee_txs txs, osee_attribute atr WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = atr.gamma_id AND txs.tx_current = 0 MINUS SELECT distinct atr.attr_id, det.branch_id FROM osee_tx_details det, osee_txs txs, osee_attribute atr WHERE det.transaction_id = txs.transaction_id AND txs.gamma_id = atr.gamma_id AND txs.tx_current in (1,2,3)";
 
    private static final String QUERY_TX_CURRENT_SET =
-         "SELECT txs.transaction_id, txs.gamma_id from osee_define_txs txs, osee_define_tx_details det, osee_define_attribute atr WHERE det.branch_id = ? And det.transaction_id = txs.transaction_id And txs.tx_current in (1,2,3) And txs.gamma_id = atr.gamma_id and atr.attr_id = ?";
+         "SELECT txs.transaction_id, txs.gamma_id from osee_txs txs, osee_tx_details det, osee_attribute atr WHERE det.branch_id = ? And det.transaction_id = txs.transaction_id And txs.tx_current in (1,2,3) And txs.gamma_id = atr.gamma_id and atr.attr_id = ?";
 
    private static final String NO_TX_CURRENT_CLEANUP =
-         "UPDATE osee_define_txs SET tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1  END  WHERE (transaction_id, gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id FROM osee_define_txs txs2, osee_define_attribute atr2 WHERE atr2.attr_id = ? And atr2.gamma_id = txs2.gamma_id  And txs2.transaction_id = (SELECT MAX(txs.transaction_id) from osee_define_txs txs, osee_define_tx_details det, osee_define_attribute atr WHERE det.branch_id = ? And det.transaction_id = txs.transaction_id And txs.gamma_id = atr.gamma_id and atr.attr_id = ?))";
+         "UPDATE osee_txs SET tx_current = CASE WHEN mod_type = 3 THEN 2 WHEN mod_type = 5 THEN 3 ELSE 1  END  WHERE (transaction_id, gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id FROM osee_txs txs2, osee_attribute atr2 WHERE atr2.attr_id = ? And atr2.gamma_id = txs2.gamma_id  And txs2.transaction_id = (SELECT MAX(txs.transaction_id) from osee_txs txs, osee_tx_details det, osee_attribute atr WHERE det.branch_id = ? And det.transaction_id = txs.transaction_id And txs.gamma_id = atr.gamma_id and atr.attr_id = ?))";
 
    private static final String MULTIPLE_TX_CURRENT_SET =
-         "SELECT resulttable.branch_id, resulttable.attr_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, atr1.attr_id FROM osee_define_tx_details txd1, osee_define_txs txs1, osee_define_attribute atr1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atr1.gamma_id AND txs1.tx_current in (1,2)) resulttable GROUP BY resulttable.branch_id, resulttable.attr_id HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
+         "SELECT resulttable.branch_id, resulttable.attr_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, atr1.attr_id FROM osee_tx_details txd1, osee_txs txs1, osee_attribute atr1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atr1.gamma_id AND txs1.tx_current in (1,2)) resulttable GROUP BY resulttable.branch_id, resulttable.attr_id HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
 
    private static final String DUPLICATE_ATTRIBUTES_TX_CURRENT =
-         "Select atr1.attr_id, atr1.gamma_id as gamma_id_1, atr2.gamma_id as gamma_id_2, atr1.art_id, txs1.tx_current as tx_current_1, txs2.tx_current as tx_current_2, txs1.transaction_id as tran_id_1, txs2.transaction_id as tran_id_2, det1.branch_id From osee_define_attribute atr1, osee_define_attribute atr2, osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details det1, osee_define_tx_details det2 WHERE atr1.attr_id = atr2.attr_id AND atr1.gamma_id < atr2.gamma_id AND atr1.gamma_id = txs1.gamma_id AND atr2.gamma_id = txs2.gamma_id AND txs1.tx_current in (1,2) and txs2.tx_current in (1,2) AND txs1.transaction_id = det1.transaction_id AND txs2.transaction_id = det2.transaction_id AND det1.branch_id = det2.branch_id";
+         "Select atr1.attr_id, atr1.gamma_id as gamma_id_1, atr2.gamma_id as gamma_id_2, atr1.art_id, txs1.tx_current as tx_current_1, txs2.tx_current as tx_current_2, txs1.transaction_id as tran_id_1, txs2.transaction_id as tran_id_2, det1.branch_id From osee_attribute atr1, osee_attribute atr2, osee_txs txs1, osee_txs txs2, osee_tx_details det1, osee_tx_details det2 WHERE atr1.attr_id = atr2.attr_id AND atr1.gamma_id < atr2.gamma_id AND atr1.gamma_id = txs1.gamma_id AND atr2.gamma_id = txs2.gamma_id AND txs1.tx_current in (1,2) and txs2.tx_current in (1,2) AND txs1.transaction_id = det1.transaction_id AND txs2.transaction_id = det2.transaction_id AND det1.branch_id = det2.branch_id";
 
    private static final String DUPLICATE_TX_CURRENT_CLEANUP =
-         "UPDATE osee_define_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
+         "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthTask#getFixTaskName()
