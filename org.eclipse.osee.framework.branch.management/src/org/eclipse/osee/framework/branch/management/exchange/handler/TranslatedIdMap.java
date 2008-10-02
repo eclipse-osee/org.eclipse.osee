@@ -123,8 +123,8 @@ public class TranslatedIdMap {
          chStmt =
                ConnectionHandler.runPreparedQuery(connection, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId,
                      getSequence());
-         if (chStmt.next()) {
-            originalToMapped.put(chStmt.getRset().getLong(1), chStmt.getRset().getLong(2));
+         while (chStmt.next()) {
+            originalToMapped.put(chStmt.getRset().getLong("original_id"), chStmt.getRset().getLong("mapped_id"));
          }
       } finally {
          DbUtil.close(chStmt);

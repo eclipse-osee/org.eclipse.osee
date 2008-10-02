@@ -48,7 +48,7 @@ public class BranchDefinitionsSaxHandler extends BaseDbSaxHandler {
    @Override
    protected void processData(Map<String, String> dataMap) throws Exception {
       Integer branchId = new Integer(dataMap.get("mapped_branch_id"));
-      if (allowedBranches.isEmpty() || allowedBranches.contains(branchId)) {
+      if (allowedBranches.contains(branchId)) {
          Object[] objectData = DataToSql.toDataArray(getConnection(), getMetaData(), getTranslator(), dataMap);
          if (objectData != null) {
             addData(objectData);

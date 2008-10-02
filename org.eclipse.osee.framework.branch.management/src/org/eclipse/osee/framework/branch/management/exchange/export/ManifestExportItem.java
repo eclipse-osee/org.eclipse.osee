@@ -58,8 +58,11 @@ public class ManifestExportItem extends AbstractExportItem {
       }
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.OPTIONS);
       for (ExportOptions exportOptions : ExportOptions.values()) {
-         ExportImportXml.addXmlAttribute(appendable, exportOptions.name(),
-               getOptions().getBoolean(exportOptions.name()));
+         String value = getOptions().getString(exportOptions.name());
+         if (exportOptions.equals(ExportOptions.EXCLUDE_BASELINE_TXS)) {
+            value = Boolean.valueOf(value).toString();
+         }
+         ExportImportXml.addXmlAttribute(appendable, exportOptions.name(), value);
       }
       ExportImportXml.closePartialXmlNode(appendable);
    }
