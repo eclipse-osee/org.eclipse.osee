@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch;
 
 /**
+ * Tests the BLAM operation updateFromParentBranch.
  * @author Jeff C. Phillips
  */
 public class UpdateFromParentTest extends TestCase {
