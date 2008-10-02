@@ -517,7 +517,7 @@ public class RelationManager {
       Collection<RelationLink> links = artifactToRelations.get(artifact);
       if (!links.isEmpty()) {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
-         String PURGE_RELATION = "Delete from osee_define_rel_link WHERE rel_link_id = ?";
+         String PURGE_RELATION = "delete from osee_relation_link WHERE rel_link_id = ?";
          for (RelationLink link : links) {
             batchArgs.add(new Object[] {link.getRelationId()});
             link.markAsPurged();

@@ -56,9 +56,9 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
-      relAlias = builder.appendAliasedTable("osee_define_rel_link");
-      txsAlias = builder.appendAliasedTable("osee_define_txs");
-      txdAlias = builder.appendAliasedTable("osee_define_tx_details");
+      relAlias = builder.appendAliasedTable("osee_relation_link");
+      txsAlias = builder.appendAliasedTable("osee_txs");
+      txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
    /* (non-Javadoc)

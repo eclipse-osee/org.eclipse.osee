@@ -156,12 +156,12 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      nextAliases.put("osee_define_txs", new NextAlias("txs"));
-      nextAliases.put("osee_define_tx_details", new NextAlias("txd"));
-      nextAliases.put("osee_define_artifact", new NextAlias("art"));
-      nextAliases.put("osee_define_artifact_version", new NextAlias("arv"));
-      nextAliases.put("osee_define_attribute", new NextAlias("att"));
-      nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
+      nextAliases.put("osee_txs", new NextAlias("txs"));
+      nextAliases.put("osee_tx_details", new NextAlias("txd"));
+      nextAliases.put("osee_artifact", new NextAlias("art"));
+      nextAliases.put("osee_artifact_version", new NextAlias("arv"));
+      nextAliases.put("osee_attribute", new NextAlias("att"));
+      nextAliases.put("osee_relation_link", new NextAlias("rel"));
    }
 
    private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
@@ -181,8 +181,8 @@ public class ArtifactQueryBuilder {
       } else {
          sql.append("SELECT art1.art_id, txd1.transaction_id, txd1.branch_id FROM ");
       }
-      appendAliasedTable("osee_define_artifact", false);
-      appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
+      appendAliasedTable("osee_artifact", false);
+      appendAliasedTables("osee_artifact_version", "osee_txs", "osee_tx_details");
       sql.append("\n");
 
       if (criteria.length > 0) {

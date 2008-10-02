@@ -43,7 +43,7 @@ public class TransactionIdManager {
    private static final String largestTransIdSql =
          "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "largest_transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?";
    private static final String SELECT_MAX_MIN_TX =
-         "SELECT max(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_define_tx_details WHERE branch_id = ?";
+         "SELECT max(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_tx_details WHERE branch_id = ?";
    private static final String SELECT_TX_GAMMAS =
          "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
@@ -54,11 +54,11 @@ public class TransactionIdManager {
                "gamma_id");
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
-         "INSERT INTO osee_define_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
 
-   private static final String SELECT_TRANSACTION = "SELECT * FROM osee_define_tx_details WHERE transaction_id = ?";
+   private static final String SELECT_TRANSACTION = "SELECT * FROM osee_tx_details WHERE transaction_id = ?";
 
    public static TransactionIdManager getInstance() {
       return instance;

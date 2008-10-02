@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
  */
 public class ConfigurationPersistenceManager {
    private static final String INSERT_VALID_ATTRIBUTE =
-         "INSERT INTO osee_define_valid_attributes (art_type_id, attr_type_id) VALUES (?, ?)";
+         "INSERT INTO osee_valid_attributes (art_type_id, attr_type_id) VALUES (?, ?)";
 
    private final AttributeTypeValidityCache cacheAttributeTypeValidity = new AttributeTypeValidityCache();
    private final ArtifactTypeValidityCache artifactTypeValidityCache = new ArtifactTypeValidityCache();

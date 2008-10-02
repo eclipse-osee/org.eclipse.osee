@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class RelationPersistenceManager {
    private static final String UPDATE_RELATION_ORDERS =
-         "UPDATE osee_define_rel_link SET a_order=?, b_order=? WHERE gamma_id=?";
+         "UPDATE osee_relation_link SET a_order=?, b_order=? WHERE gamma_id=?";
 
    // This must be declared here cause it can't be declared in enum RelationSide
    public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =

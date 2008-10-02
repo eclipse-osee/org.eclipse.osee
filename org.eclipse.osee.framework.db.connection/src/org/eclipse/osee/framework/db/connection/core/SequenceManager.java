@@ -21,12 +21,11 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
  */
 public class SequenceManager {
    private static final String LAST_SEQUENCE = "LAST_SEQUENCE";
-   private static final String QUERY_SEQUENCE =
-         "SELECT last_sequence FROM osee_define_sequence WHERE sequence_name = ?";
+   private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
    private static final String INSERT_SEQUENCE =
-         "INSERT INTO osee_define_sequence (last_sequence, sequence_name) VALUES (?,?)";
+         "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
    private static final String UPDATE_SEQUENCE =
-         "UPDATE osee_define_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
+         "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
 
    private HashMap<String, SequenceRange> sequences;
 

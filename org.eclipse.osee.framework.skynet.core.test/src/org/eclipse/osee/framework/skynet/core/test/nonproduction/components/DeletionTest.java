@@ -37,30 +37,30 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 public class DeletionTest extends TestCase {
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_artifact_version art WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = 2 AND txs.gamma_id = art.gamma_id and art.art_id = ?";
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT_ATTRIBUTE =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = att.gamma_id and att.attr_id = ?";
 
    private static final String CHECK_FOR_ZERO_TX_CURRENT_RELATION =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_rel_link rel WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id < ? AND det.transaction_id = txs.transaction_id AND txs.tx_current != 0 AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
    private static final String CHECK_FOR_DELETED_TX_CURRENT_RELATION =
-         "SELECT tx_current, txs.transaction_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_rel_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
+         "SELECT tx_current, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.tx_current = ? AND txs.gamma_id = rel.gamma_id and rel.rel_link_id = ?";
 
-   private static final String GET_DELETED_TRANSACTION = "SELECT * FROM osee_define_txs WHERE transaction_id = ?";
+   private static final String GET_DELETED_TRANSACTION = "SELECT * FROM osee_txs WHERE transaction_id = ?";
 
    private static final String GET_ARTIFACT_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
+         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, art.art_id FROM osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
 
    private static final String GET_ATTRIBUTE_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, att.art_id, att.attr_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?";
+         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, att.art_id, att.attr_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id AND att.attr_id = ?";
 
    private static final String GET_RELATION_DEBUG =
-         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_define_tx_details det, osee_define_txs txs, osee_define_rel_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
+         "Select det.branch_id, det.transaction_id, txs.tx_current, txs.mod_type, txs.gamma_id, rel.rel_link_id, rel.a_art_id, rel.b_art_id FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_id = ?";
 
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));

@@ -37,13 +37,13 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 public class AttributeTypeManager {
 
    private static final String SELECT_ATTRIBUTE_TYPES =
-         "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby1, osee_define_attr_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
+         "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
+         "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
-         "INSERT INTO osee_define_attr_provider_type (attr_provider_type_id, attribute_provider_class) VALUES (?, ?)";
+         "INSERT INTO osee_attribute_provider_type (attr_provider_type_id, attribute_provider_class) VALUES (?, ?)";
    private static final String SELECT_ATTRIBUTE_BASE_TYPE =
          "SELECT attr_base_type_id FROM " + ATTRIBUTE_BASE_TYPE_TABLE + " WHERE attribute_class = ?";
    private static final String SELECT_ATTRIBUTE_PROVIDER_TYPE =

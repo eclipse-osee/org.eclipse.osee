@@ -59,9 +59,9 @@ import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
 
 public class BranchPersistenceManager {
    private static final String READ_BRANCH_TABLE =
-         "SELECT * FROM osee_define_branch br1, osee_define_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type=" + TransactionDetailsType.Baselined.getId();
+         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type=" + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
-         "select * from osee_define_branch b1, osee_define_merge m2, osee_define_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
+         "select * from osee_branch b1, osee_merge m2, osee_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
    private static final String COMMIT_TRANSACTION =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
                TXD_COMMENT, "time", "author", "commit_art_id");
@@ -70,9 +70,9 @@ public class BranchPersistenceManager {
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
 
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
-   private static final String ARCHIVE_BRANCH = "UPDATE osee_define_branch set archived = 1 WHERE branch_id = ?";
+   private static final String ARCHIVE_BRANCH = "UPDATE osee_branch set archived = 1 WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
-         "UPDATE  osee_define_branch set associated_art_id = ? WHERE branch_id = ?";
+         "UPDATE  osee_branch set associated_art_id = ? WHERE branch_id = ?";
 
    private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();

@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 public class DemoPurgeTest extends TestCase {
 
    private List<String> tables =
-         Arrays.asList("osee_define_attribute", "osee_define_artifact", "osee_define_artifact_version",
-               "osee_define_rel_link", "osee_define_attribute", "osee_define_tx_details", "osee_define_txs");
+         Arrays.asList("osee_attribute", "osee_artifact", "osee_artifact_version", "osee_relation_link",
+               "osee_tx_details", "osee_txs");
    private Map<String, Integer> preCreateActionCount = new HashMap<String, Integer>();
    private Map<String, Integer> postCreateActionCount = new HashMap<String, Integer>();
    private Map<String, Integer> postPurgeCount = new HashMap<String, Integer>();

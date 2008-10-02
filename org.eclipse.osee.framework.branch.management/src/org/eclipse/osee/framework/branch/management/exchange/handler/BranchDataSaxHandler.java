@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class BranchDataSaxHandler extends BaseDbSaxHandler {
    private static final String BRANCH_QUERY =
-         "select br1.* from osee_define_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=?";
+         "select br1.* from osee_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=?";
 
    private static final String BRANCH_NAME = "branch_name";
    private static final String BRANCH_ID = "branch_id";

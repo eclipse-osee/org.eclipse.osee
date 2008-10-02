@@ -47,7 +47,7 @@ public class AttributeToTransactionOperation {
          "UPDATE " + ATTRIBUTE_VERSION_TABLE + " SET value = ?, uri = ? WHERE art_id = ? and attr_id = ? and attr_type_id = ? and gamma_id = ?";
 
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
-         "SELECT att1.attr_id FROM osee_define_attribute att1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
+         "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
 
    private final Artifact artifact;
    private final SkynetTransaction transaction;

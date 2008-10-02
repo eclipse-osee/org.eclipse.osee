@@ -30,19 +30,16 @@ import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
 public class AttributeDataStore {
 
    private static final String LOAD_ATTRIBUTE =
-         "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id FROM osee_define_attribute attr1, osee_define_attribute_type attrtype, osee_tag_gamma_queue tgq1 WHERE attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
+         "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id FROM osee_attribute attr1, osee_attribute_type attrtype, osee_tag_gamma_queue tgq1 WHERE attrtype.attr_type_id = attr1.attr_type_id AND attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
 
    private static final String RESTRICT_BRANCH = " AND txd1.branch_id = ?";
 
    private static final String SEARCH_TAG_TABLE = "osee_search_tags ost%s";
    private static final String SELECT_ATTRIBUTE_BY_TAG_TEMPLATE =
-         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype, %s WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id AND %s";
-
-//   private static final String SELECT_ATTRIBUTE_BY_TAG =
-//         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee.osee_join_search_tags jq1, osee_search_tags ost1, osee_define_attribute attr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute_type attrtype WHERE jq1.query_id = ? AND jq1.coded_tag_id = ost1.coded_tag_id AND ost1.gamma_id = attr1.gamma_id AND attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id";
+         "SELECT attr1.art_id, attr1.gamma_id, attr1.VALUE, attr1.uri, attrtype.tagger_id, txd1.branch_id FROM osee_attribute attr1, osee_txs txs1, osee_tx_details txd1, osee_attribute_type attrtype, %s WHERE attr1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND attr1.attr_type_id = attrtype.attr_type_id AND %s";
 
    private static final String GET_TAGGABLE_SQL_BODY =
-         " FROM osee_define_attribute attr1, osee_define_attribute_type type1,  osee_define_txs txs1, osee_define_tx_details txd1, osee_define_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
+         " FROM osee_attribute attr1, osee_attribute_type type1,  osee_txs txs1, osee_tx_details txd1, osee_branch br1 WHERE txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = attr1.gamma_id AND txd1.branch_id = br1.branch_id AND br1.archived <> 1 AND attr1.attr_type_id = type1.attr_type_id AND type1.tagger_id IS NOT NULL";
 
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES = "SELECT DISTINCT attr1.gamma_id" + GET_TAGGABLE_SQL_BODY;
    private static final String COUNT_TAGGABLE_ATTRIBUTES =
@@ -103,25 +100,6 @@ public class AttributeDataStore {
 
       return toReturn.toString();
    }
-
-//   public static Set<AttributeData> getAttributesByTagsOLD(final Connection connection, final int branchId, final Options options, final int queryId) throws Exception {
-//      final Set<AttributeData> toReturn = new HashSet<AttributeData>();
-//      String sqlQuery = getQuery(SELECT_ATTRIBUTE_BY_TAG, branchId, options);
-//      List<Object> params = new ArrayList<Object>();
-//      params.add(queryId);
-//      if (branchId > -1) {
-//         params.add(branchId);
-//      }
-//      DatabaseUtil.executeQuery(connection, sqlQuery, new IRowProcessor() {
-//         @Override
-//         public void processRow(ResultSet resultSet) throws Exception {
-//            toReturn.add(new AttributeData(resultSet.getInt("art_id"), resultSet.getLong("gamma_id"),
-//                  resultSet.getInt("branch_id"), resultSet.getString("value"), resultSet.getString("uri"),
-//                  resultSet.getString("tagger_id")));
-//         }
-//      }, params.toArray(new Object[params.size()]));
-//      return toReturn;
-//   }
 
    public static Set<AttributeData> getAttributesByTags(final Connection connection, final int branchId, final Options options, final Collection<Long> tagData) throws Exception {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();

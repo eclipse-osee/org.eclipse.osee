@@ -54,10 +54,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
  */
 public class SkynetTransaction {
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "UPDATE osee_define_txs txs1 SET tx_current = 0 WHERE EXISTS (SELECT 1 FROM osee_join_transaction jt1 WHERE jt1.query_id = ? AND txs1.transaction_id = jt1.transaction_id AND txs1.gamma_id = jt1.gamma_id)";
-   private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_define_tx_details WHERE transaction_id =?";
+         "UPDATE osee_txs txs1 SET tx_current = 0 WHERE EXISTS (SELECT 1 FROM osee_join_transaction jt1 WHERE jt1.query_id = ? AND txs1.transaction_id = jt1.transaction_id AND txs1.gamma_id = jt1.gamma_id)";
+   private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM osee_tx_details WHERE transaction_id =?";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
    private final Map<String, List<Object[]>> preparedBatch = new HashMap<String, List<Object[]>>();
    private String transactionName;
    private String comment;

@@ -136,9 +136,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
-      attrAlias = builder.appendAliasedTable("osee_define_attribute");
-      txsAlias = builder.appendAliasedTable("osee_define_txs");
-      txdAlias = builder.appendAliasedTable("osee_define_tx_details");
+      attrAlias = builder.appendAliasedTable("osee_attribute");
+      txsAlias = builder.appendAliasedTable("osee_txs");
+      txdAlias = builder.appendAliasedTable("osee_tx_details");
    }
 
    /* (non-Javadoc)

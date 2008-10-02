@@ -29,18 +29,18 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 public class BranchCreation implements IBranchCreation {
 
    private static final String COPY_BRANCH_ADDRESSING =
-         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs txs1, osee_define_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_txs txs1, osee_tx_details txd1 WHERE txs1.tx_current = 1 AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?";
 
    private static final String BRANCH_TABLE_INSERT =
-         "INSERT INTO OSEE_DEFINE_BRANCH (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id, branch_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_branch (branch_id, short_name, branch_name, parent_branch_id, archived, associated_art_id, branch_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-   private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM osee_define_branch WHERE branch_name = ?";
+   private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM osee_branch WHERE branch_name = ?";
 
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO OSEE_BRANCH_DEFINITIONS (static_branch_name, mapped_branch_id) VALUES (?, ?)";
 
    private static final String INSERT_TX_DETAILS =
-         "INSERT INTO OSEE_DEFINE_TX_DETAILS ( branch_id, transaction_id, OSEE_COMMENT, time, author, tx_type ) VALUES ( ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_TX_DETAILS ( branch_id, transaction_id, OSEE_COMMENT, time, author, tx_type ) VALUES ( ?, ?, ?, ?, ?, ?)";
 
    public int createRootBranch(int parentBranchId, String childBranchShortName, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception {
       CreateRootBranchTx createRootBranchTx =

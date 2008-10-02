@@ -45,9 +45,9 @@ import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
-   private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_define_artifact_type";
+   private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_artifact_type";
    private static final String INSERT_ARTIFACT_TYPE =
-         "INSERT INTO osee_define_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
+         "INSERT INTO osee_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
    private HashMap<String, Pair<String, String>> imageMap;
 
    private static Pair<String, String> defaultIconLocation =
@@ -220,7 +220,7 @@ public class ArtifactTypeManager {
    }
 
    public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_define_artifact_type SET image = ? where art_type_id = ?",
+      ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
             new ByteArrayInputStream(imageDescriptor.getData()), descriptor.getArtTypeId());
 
       // TODO Update descriptor's cached copy of image

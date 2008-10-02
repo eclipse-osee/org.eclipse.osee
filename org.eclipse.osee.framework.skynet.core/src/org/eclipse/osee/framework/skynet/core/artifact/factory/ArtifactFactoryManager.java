@@ -33,7 +33,7 @@ import org.osgi.framework.Bundle;
  * @author Ryan D. Brooks
  */
 public class ArtifactFactoryManager {
-   private static final String SELECT_FROM_FACTORY = "SELECT * FROM osee_define_factory";
+   private static final String SELECT_FROM_FACTORY = "SELECT * FROM osee_artifact_factory";
    private final HashMap<String, String> factoryBundleMap = new HashMap<String, String>();
    private final HashMap<String, ArtifactFactory> factoryNameMap = new HashMap<String, ArtifactFactory>();
    private final HashMap<Integer, ArtifactFactory> factoryIdMap = new HashMap<Integer, ArtifactFactory>();
@@ -146,7 +146,7 @@ public class ArtifactFactoryManager {
                int factoryId = SequenceManager.getNextFactoryId();
 
                ConnectionHandler.runPreparedUpdate(
-                     "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,
+                     "INSERT INTO osee_artifact_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,
                      factoryClassName);
 
                createFactory(factoryClassName, factoryId);

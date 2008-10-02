@@ -35,8 +35,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
  * @author Ryan D. Brooks
  */
 public class AttributeTypeValidityCache {
-   private static final String attributeValiditySql =
-         "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes";
+   private static final String attributeValiditySql = "SELECT art_type_id, attr_type_id FROM osee_valid_attributes";
    private final HashCollection<ArtifactType, AttributeType> artifactToAttributeMap;
    private final HashCollection<AttributeType, ArtifactType> attributeToartifactMap;
 
