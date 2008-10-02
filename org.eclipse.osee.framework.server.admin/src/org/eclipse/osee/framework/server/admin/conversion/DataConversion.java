@@ -46,9 +46,9 @@ public class DataConversion {
    }
 
    private static final String sql =
-         "SELECT attr1.gamma_id,  attr1.content,  art1.human_readable_id,  attr1.uri,  art1.art_id,  attrt1.name, art1.guid " + "FROM osee_define_attribute attr1,  osee_define_artifact art1,  osee_define_attribute_type attrt1 WHERE attr1.content IS NOT NULL AND attr1.art_id = art1.art_id and attr1.ATTR_TYPE_ID = attrt1.ATTR_TYPE_ID";
+         "SELECT attr1.gamma_id,  attr1.content,  art1.human_readable_id,  attr1.uri,  art1.art_id,  attrt1.name, art1.guid " + "FROM osee_attribute attr1,  osee_artifact art1,  osee_attribute_type attrt1 WHERE attr1.content IS NOT NULL AND attr1.art_id = art1.art_id and attr1.ATTR_TYPE_ID = attrt1.ATTR_TYPE_ID";
 
-   private static final String updateUri = "update osee_define_attribute set uri = ? where gamma_id = ?";
+   private static final String updateUri = "update osee_attribute set uri = ? where gamma_id = ?";
 
    private volatile boolean runConversion;
    private volatile boolean isRunning = false;

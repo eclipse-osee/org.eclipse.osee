@@ -23,10 +23,10 @@ import java.util.Map;
 public class Util {
 
    private static final String sqlExtensionTypeId =
-         "Select attrt1.ATTR_TYPE_ID from osee_define_attribute_type attrt1 where name = ?";
+         "Select attrt1.ATTR_TYPE_ID from osee_attribute_type attrt1 where name = ?";
 
    private static final String sqlExtensionTypes =
-         "SELECT attr1.art_id,  attr1.value FROM osee_define_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
+         "SELECT attr1.art_id,  attr1.value FROM osee_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
 
    private Util() {
    }

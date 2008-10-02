@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 public class CheckValidAttributeTypes extends CheckValidType {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(CheckValidAttributeTypes.class);
    private static final String CHECK_SQL =
-         "SELECT t2.*, t4.*, t10.guid, t10.human_readable_id, t10.art_type_id " + "FROM osee_define_attribute t2, " + "osee_define_txs t3, " + "osee_define_tx_details t4, " + "osee_define_artifact t10 " + "WHERE t2.gamma_id = t3.gamma_id " + "and t10.art_id = t2.art_id " + "AND t3.transaction_id = t4.transaction_id " + "AND NOT EXISTS " + "(SELECT 'x' " + "FROM osee_define_attribute_type t5, " + "osee_define_txs t6, " + "osee_define_tx_details t7 " + "WHERE t5.gamma_id = t6.gamma_id " + "AND t6.transaction_id = t7.transaction_id " + "AND t4.branch_id = t7.branch_id " + "AND t2.attr_type_id = t5.attr_type_id) order by attr_id";
+         "SELECT t2.*, t4.*, t10.guid, t10.human_readable_id, t10.art_type_id " + "FROM osee_attribute t2, " + "osee_txs t3, " + "osee_tx_details t4, " + "osee_artifact t10 " + "WHERE t2.gamma_id = t3.gamma_id " + "and t10.art_id = t2.art_id " + "AND t3.transaction_id = t4.transaction_id " + "AND NOT EXISTS " + "(SELECT 'x' " + "FROM osee_attribute_type t5, " + "osee_txs t6, " + "osee_tx_details t7 " + "WHERE t5.gamma_id = t6.gamma_id " + "AND t6.transaction_id = t7.transaction_id " + "AND t4.branch_id = t7.branch_id " + "AND t2.attr_type_id = t5.attr_type_id) order by attr_id";
 
    /**
     * @param sql
