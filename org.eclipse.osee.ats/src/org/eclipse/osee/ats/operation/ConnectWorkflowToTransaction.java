@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
  */
 public class ConnectWorkflowToTransaction extends AbstractBlam {
    private static final String SELECT_COMMIT_TRANSACTIONS =
-         "SELECT * FROM osee_define_tx_details where osee_comment like ? and commit_art_id is null";
+         "SELECT * FROM osee_tx_details where osee_comment like ? and commit_art_id is null";
    private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})[ _]");
 
    /* (non-Javadoc)
@@ -60,8 +60,8 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
          String hrid = hridMatcher.group(1);
 
          int artId = ArtifactQuery.getArtifactFromId(hrid, atsBranch).getArtId();
-         ConnectionHandler.runPreparedUpdate(
-               "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", artId, transactionId);
+         ConnectionHandler.runPreparedUpdate("UPDATE osee_tx_details SET commit_art_id = ? where transaction_id = ?",
+               artId, transactionId);
       }
    }
 

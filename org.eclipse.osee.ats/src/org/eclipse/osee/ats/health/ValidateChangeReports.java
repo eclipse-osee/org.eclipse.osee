@@ -324,7 +324,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       try {
          handlerStatement =
                ConnectionHandler.runPreparedQuery(
-                     "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
+                     "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
                      branch.getBranchId());
 
          while (handlerStatement.getRset().next()) {
@@ -346,7 +346,7 @@ public class ValidateChangeReports extends XNavigateItemAutoRunAction {
       try {
          handlerStatement =
                ConnectionHandler.runPreparedQuery(
-                     "Select art_id from osee_Define_txs t1, osee_Define_artifact_version t2, osee_Define_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
+                     "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
                      branch.getBranchId());
 
          while (handlerStatement.getRset().next()) {
