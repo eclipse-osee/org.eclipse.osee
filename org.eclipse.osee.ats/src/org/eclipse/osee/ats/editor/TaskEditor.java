@@ -105,12 +105,12 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public void dispose() {
-      super.dispose();
       for (TaskArtifact taskArt : tasks)
          if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMAEditorDirty().isTrue()) taskArt.revertSMA();
-      if (taskComposite != null && !taskComposite.isDisposed()) {
+      if (taskComposite != null) {
          taskComposite.dispose();
       }
+      super.dispose();
    }
 
    /*
