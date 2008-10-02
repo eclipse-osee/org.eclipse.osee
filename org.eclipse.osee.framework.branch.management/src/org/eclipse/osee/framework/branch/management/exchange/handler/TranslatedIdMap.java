@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.db.connection.core.SequenceManager;
  */
 public class TranslatedIdMap {
    private static final String INSERT_INTO_IMPORT_INDEX_MAP =
-         "INSERT INTO osee_import_index_map (import_id, original_id, mapped_id) VALUES (?, ?, ?, ?)";
+         "INSERT INTO osee_import_index_map (import_id, original_id, mapped_id) VALUES (?, ?, ?)";
 
    private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
          "SELECT original_id, mapped_id FROM osee_import_map oim, osee_import_index_map oiim WHERE oim.import_id = oiim.import_id AND oim.db_source_guid = ? AND oim.sequence_name = ?";

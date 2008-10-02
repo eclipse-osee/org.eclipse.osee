@@ -78,19 +78,19 @@ public class Translator {
    public void storeImport(Connection connection, String sourceDatabaseId, Date sourceExportDate) throws SQLException {
       Timestamp timeStamp = new Timestamp(sourceExportDate.getTime());
 
-      Map<String, Integer> importIdIndex = new HashMap<String, Integer>();
+      Map<Integer, TranslatedIdMap> importIdIndex = new HashMap<Integer, TranslatedIdMap>();
       List<Object[]> data = new ArrayList<Object[]>();
       for (TranslatedIdMap entry : translatorMap.values()) {
          int importId = SequenceManager.getNextImportId();
          String sequence = entry.getSequence();
-         importIdIndex.put(sequence, importId);
+         importIdIndex.put(importId, entry);
          data.add(new Object[] {importId, sequence, sourceDatabaseId, timeStamp});
       }
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_IMPORT_MAP, data);
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
 
-      for (String seqName : importIdIndex.keySet()) {
-         TranslatedIdMap translatedIdMap = translatorMap.get(seqName);
-         translatedIdMap.store(connection, importIdIndex.get(seqName));
+      for (Integer importIndex : importIdIndex.keySet()) {
+         TranslatedIdMap translatedIdMap = importIdIndex.get(importIndex);
+         translatedIdMap.store(connection, importIndex);
       }
    }
 
