@@ -30,7 +30,6 @@ public class DBConnection {
 
    public static Connection getNewConnection(DbInformation databaseService, boolean validityCheck) throws SQLException {
       try {
-
          IConnection connectionFactory =
                org.eclipse.osee.framework.db.connection.Activator.getInstance().getDbConnectionFactory().get(
                      databaseService.getConnectionData().getDBDriver());
@@ -49,16 +48,15 @@ public class DBConnection {
          if (validityCheck && !userName.equals("peer")) {
             try {
                OseeDbVersion.ensureDatabaseCompatability(connection);
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                connection.close();
                throw ex;
             }
          }
 
          return connection;
-      } catch (Throwable th) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Unable to get database connection.", th);
-         throw new SQLException("Unable to get a database connection: " + th.getMessage());
+      } catch (ClassNotFoundException ex) {
+         throw new SQLException("Unable to get a database connection:", ex);
       }
    }
 }

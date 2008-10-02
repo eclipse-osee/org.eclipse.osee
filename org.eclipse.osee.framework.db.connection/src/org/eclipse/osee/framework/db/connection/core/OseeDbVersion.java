@@ -79,7 +79,7 @@ public class OseeDbVersion {
       }
    }
 
-   public static void ensureDatabaseCompatability(Connection connection) throws Exception {
+   public static void ensureDatabaseCompatability(Connection connection) throws SQLException {
       // If runtime parameter to override is set, All Ok
       if (OseeProperties.getInstance().isOverrideVersionCheck()) return;
       // If this is runtime development, All Ok
@@ -104,7 +104,7 @@ public class OseeDbVersion {
                      "This installation of OSEE \"%s\" is out of date and is not compatible with database version \"%s\".  Please restart OSEE and accept all updates.",
                      codeVersionStr, dbVersionStr);
          if (!OseeProperties.getInstance().isOverrideVersionCheck())
-            throw new IllegalArgumentException(errorStr);
+            throw new SQLException(errorStr);
          else
             OseeLog.log(Activator.class, Level.SEVERE, "Overriding Version Check - " + errorStr);
       }
