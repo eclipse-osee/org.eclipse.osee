@@ -99,7 +99,9 @@ public class XViewerCustomizeDialog extends MessageDialog {
       }
 
       final Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 700;
+      comp.setLayoutData(gd);
       final GridLayout gridLayout_2 = new GridLayout();
       gridLayout_2.numColumns = 2;
       comp.setLayout(gridLayout_2);
