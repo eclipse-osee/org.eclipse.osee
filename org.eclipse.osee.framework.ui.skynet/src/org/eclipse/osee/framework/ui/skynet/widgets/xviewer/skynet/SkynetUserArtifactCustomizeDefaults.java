@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -37,11 +38,7 @@ public class SkynetUserArtifactCustomizeDefaults {
 
    public SkynetUserArtifactCustomizeDefaults(User user) {
       this.user = user;
-      try {
-         loadCustomizeDefaults();
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+      loadCustomizeDefaults();
    }
 
    public int size() {
@@ -68,20 +65,33 @@ public class SkynetUserArtifactCustomizeDefaults {
       return defaultGuids.contains(custData.getGuid());
    }
 
-   private void loadCustomizeDefaults() throws OseeCoreException {
+   private void loadCustomizeDefaults() {
       String xml = "";
       if (user != null) {
-         xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
+         try {
+            xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE);
+            if (xml == null) {
+               OSEELog.logException(SkynetGuiPlugin.class, "Invalid null for XViewerDefaults for user " + user, null,
+                     false);
+               xml = "";
+            }
+         } catch (AttributeDoesNotExist ex) {
+            xml = "";
+         } catch (OseeCoreException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            xml = "";
+         }
       }
       setDefaultCustomizationsFromXml(xml);
    }
 
    public void save() {
-      StringBuffer sb = new StringBuffer();
-      sb.append(getDefaultCustomizationXml());
-
       try {
-         user.setSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, sb.toString());
+         if (defaultGuids.size() == 0) {
+            user.deleteSoleAttribute(XVIEWER_DEFAULT_ATTRIBUTE);
+         } else {
+            user.setSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, getDefaultCustomizationXml());
+         }
          user.persistAttributes();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

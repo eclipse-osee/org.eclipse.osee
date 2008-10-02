@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -27,13 +22,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetUserArtifactCustomizeDefaults;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -57,8 +49,15 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
+      //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+      //         @Override
+      //         protected void handleTxWork() throws OseeCoreException {
+      //            cleanXViewerCustomizations();
+      //         }
+      //      };
+      //      newActionTx.execute();
+
       //      deleteUnAssignedUserRelations();
-      cleanXViewerCustomizations();
       //      relateDonDunne();
 
       //      testDeleteAttribute();
@@ -93,52 +92,55 @@ public class DoesNotWorkItem extends XNavigateItemAction {
 
    private final boolean fixIt = false;
 
-   public void cleanXViewerCustomizations() throws OseeCoreException {
-      for (User user : SkynetAuthentication.getUsers()) {
-         System.out.println("User: " + user);
-         SkynetUserArtifactCustomizeDefaults custDefaults = new SkynetUserArtifactCustomizeDefaults(user);
-         // Get all customizations
-         List<String> customizations = user.getAttributesToStringList("XViewer Customization");
-         if (customizations.size() == 0 && custDefaults.size() == 0) continue;
-         Set<String> validGuids = new HashSet<String>();
-         for (String custStr : new CopyOnWriteArrayList<String>(customizations)) {
-            CustomizeData custData = new CustomizeData(custStr);
-            Result result = isValidCustomizeData(custStr, custData);
-            if (result.isTrue()) {
-               validGuids.add(custData.getGuid());
-            } else {
-               OSEELog.logException(AtsPlugin.class,
-                     "Removing invalid customization (" + result.getText() + ") " + custData.getGuid(), null, false);
-               custDefaults.removeDefaultCustomization(custData);
-               customizations.remove(custStr);
-            }
-         }
-         if (validGuids.size() != custDefaults.getGuids().size()) {
-            OSEELog.logException(AtsPlugin.class,
-                  "Update default customizations : " + custDefaults.getGuids().size() + " valid: " + validGuids.size(),
-                  null, false);
-            custDefaults.setGuids(validGuids);
-         }
-         if (fixIt) {
-            //            custDefaults.save();
-            //            user.setAttributeValues("XViewer Customization", customizations);
-            //            user.persistAttributes();
-         }
-      }
-   }
+   //   public void cleanXViewerCustomizations() throws OseeCoreException {
+   //      for (User user : SkynetAuthentication.getUsers()) {
+   //         System.out.println("User: " + user);
+   //
+   //         SkynetUserArtifactCustomizeDefaults custDefaults = new SkynetUserArtifactCustomizeDefaults(user);
+   //
+   //         // Get all customizations
+   //         List<String> customizations = user.getAttributesToStringList("XViewer Customization");
+   //         if (customizations.size() == 0 && custDefaults.size() == 0) continue;
+   //         Set<String> validGuids = new HashSet<String>();
+   //         int currNumDefaults = custDefaults.getGuids().size();
+   //         for (String custStr : new CopyOnWriteArrayList<String>(customizations)) {
+   //            CustomizeData custData = new CustomizeData(custStr);
+   //            validGuids.add(custData.getGuid());
+   //
+   //            // check for old customizations to remove
+   //            boolean orderFound = custStr.contains("<order>");
+   //            boolean namespaceNullFound = custStr.contains("namespace=\"null\"");
+   //            if (orderFound || namespaceNullFound) {
+   //               System.err.println("Removing " + (orderFound ? "<order>" : "namespace==null") + " customizations " + custData.getGuid());
+   //               validGuids.remove(custData.getGuid());
+   //               custDefaults.removeDefaultCustomization(custData);
+   //               customizations.remove(custStr);
+   //            } else {
+   //               // Check for sort columns that are hidden
+   //               for (String columnName : custData.getSortingData().getSortingNames()) {
+   //                  XViewerColumn xCol = custData.getColumnData().getXColumn(columnName);
+   //                  if (xCol == null) {
+   //                     System.err.println("sort column not found \"" + columnName + "\" - " + custData.getGuid());
+   //                  } else if (xCol.isShow() == false) {
+   //                     System.err.println("sort col is hidden \"" + columnName + "\" - " + custData.getGuid());
+   //                  }
+   //               }
+   //            }
+   //         }
+   //         if (validGuids.size() != custDefaults.getGuids().size()) {
+   //            System.err.println("Update default customizations : " + user + " - " + currNumDefaults + " valid: " + validGuids.size());
+   //            custDefaults.setGuids(validGuids);
+   //         }
+   //         if (fixIt) {
+   //            custDefaults.save();
+   //            user.setAttributeValues("XViewer Customization", customizations);
+   //            user.persistAttributes();
+   //         }
+   //      }
+   //   }
 
-   public Result isValidCustomizeData(String custDataStr, CustomizeData custData) {
-      System.out.println("CustData: " + custDataStr);
-      if (custDataStr.contains("<order>")) {
-         return new Result("<order>");
-      }
-      for (String columnName : custData.getSortingData().getSortingNames()) {
-         XViewerColumn xCol = custData.getColumnData().getXColumn(columnName);
-         if (xCol == null) return new Result("sort column not found");
-         if (xCol.isShow() == false) {
-            return new Result("sort col is hidden");
-         }
-      }
+   public Result isCustomizationSortErrored(String custDataStr, CustomizeData custData) {
+
       return Result.TrueResult;
    }
 
