@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.plugin.core.util.OseeCodeVersion;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 public class OseeSession implements Serializable {
 
    private static final long serialVersionUID = 1L;
-   private String id = GUID.generateGuidStr();
+   private String id = GUID.generateGuidStr() + "=" + OseeCodeVersion.getInstance().get();
    private String machineName;
    private String userId;
    private String machineIp;

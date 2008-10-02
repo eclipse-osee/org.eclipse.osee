@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
-   private Map<String, SchemaData> userSpecifiedConfig;
+   private final Map<String, SchemaData> userSpecifiedConfig;
    private static final File backupDirectory = new File("BackupDirectory");
 
    public ImportDataFromDbService(Map<String, SchemaData> userSpecifiedConfig) {
@@ -45,7 +45,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
 
          Connection importConnection = null;
          try {
-            importConnection = DBConnection.getNewConnection(databaseService, false);
+            importConnection = DBConnection.getNewConnection(databaseService);
          } catch (SQLException ex) {
             System.out.println("Unable to import table data");
          }

@@ -32,10 +32,11 @@ public abstract class DbClientThread extends Thread {
       this.logger = logger;
    }
 
+   @Override
    public void run() {
       logger.log(Level.INFO, "Starting " + getName() + "...");
       try {
-         connection = DBConnection.getNewConnection(databaseService, false);
+         connection = DBConnection.getNewConnection(databaseService);
          connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
          processTask();

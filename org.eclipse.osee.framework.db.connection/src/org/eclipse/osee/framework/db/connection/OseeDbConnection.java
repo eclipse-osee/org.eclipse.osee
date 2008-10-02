@@ -32,13 +32,9 @@ public class OseeDbConnection {
    }
 
    public static Connection getConnection(DbInformation dbInformation) throws SQLException {
-      return getConnection(dbInformation, true);
-   }
-
-   public static Connection getConnection(DbInformation dbInformation, boolean validityCheck) throws SQLException {
       OseeConnectionPool pool = dbInfoToPools.get(dbInformation);
       if (pool == null) {
-         pool = new OseeConnectionPool(dbInformation, validityCheck);
+         pool = new OseeConnectionPool(dbInformation);
          dbInfoToPools.put(dbInformation, pool);
       }
       return pool.getConnection();

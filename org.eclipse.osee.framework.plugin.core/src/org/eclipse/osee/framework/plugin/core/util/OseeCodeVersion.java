@@ -9,13 +9,14 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.db.connection.core;
+package org.eclipse.osee.framework.plugin.core.util;
 
 import java.io.InputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 /**
  * @author Donald G. Dunne
@@ -37,9 +38,9 @@ public class OseeCodeVersion {
    public String get() {
       if (oseeVersion == null) {
          try {
-            if (Activator.getInstance().getBundleContext().getBundle().getEntry("support/OseeCodeVersion.txt") != null) {
+            if (PluginCoreActivator.getInstance().getBundle().getEntry("support/OseeCodeVersion.txt") != null) {
                InputStream is =
-                     Activator.getInstance().getBundleContext().getBundle().getEntry("support/OseeCodeVersion.txt").openStream();
+                     PluginCoreActivator.getInstance().getBundle().getEntry("support/OseeCodeVersion.txt").openStream();
                if (is != null) {
                   oseeVersion = Lib.inputStreamToString(is);
                   oseeVersion = oseeVersion.replace("0=", "");

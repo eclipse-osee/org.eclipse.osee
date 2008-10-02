@@ -14,14 +14,7 @@ package org.eclipse.osee.framework.db.connection.core;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Provides the necessary methods to ensure old versions of OSEE code do not get run against versions of the database
@@ -79,62 +72,4 @@ public class OseeDbVersion {
       }
    }
 
-   public static void ensureDatabaseCompatability(Connection connection) throws SQLException {
-      // If runtime parameter to override is set, All Ok
-      if (OseeProperties.getInstance().isOverrideVersionCheck()) return;
-      // If this is runtime development, All Ok
-      if (OseeCodeVersion.getInstance().isDevelopmentVersion()) return;
-      // If this check is overridden in OSEE_LOG, All Ok
-      if (!getOseeDbCheckVersion(connection)) return;
-
-      String dbVersionStr = getOseeDbVersion(connection);
-      String codeVersionStr = OseeCodeVersion.getInstance().get();
-
-      // If match, All Ok
-      if (dbVersionStr.equals(codeVersionStr)) return;
-
-      // Otherwise, extract date from code and db versions
-      Date codeVersionDate = extractDateFromVersion(codeVersionStr);
-      Date dbVersionDate = extractDateFromVersion(dbVersionStr);
-
-      // Throw exception if code version is earlier than dbVersion;  all later or equal versions are Ok
-      if (codeVersionDate == null || dbVersionDate == null || codeVersionDate.before(dbVersionDate)) {
-         String errorStr =
-               String.format(
-                     "This installation of OSEE \"%s\" is out of date and is not compatible with database version \"%s\".  Please restart OSEE and accept all updates.",
-                     codeVersionStr, dbVersionStr);
-         if (!OseeProperties.getInstance().isOverrideVersionCheck())
-            throw new SQLException(errorStr);
-         else
-            OseeLog.log(Activator.class, Level.SEVERE, "Overriding Version Check - " + errorStr);
-      }
-   }
-
-   private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-   private static Pattern pattern = Pattern.compile(" (\\d+-.*?-.*? .*?:.*?)$");
-
-   /**
-    * Extract date from release string of format 0.1.3 M2 2007-12-04 17:13
-    * 
-    * @param versionStr
-    * @return Date
-    */
-   private static Date extractDateFromVersion(String versionStr) {
-      Matcher m = pattern.matcher(versionStr);
-      if (m.find()) {
-         String timestampStr = m.group(1);
-         if (timestampStr == null || timestampStr.equals("")) return null;
-         try {
-            return (Date) formatter.parse(timestampStr);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, "Couldn't process date: " + timestampStr);
-         }
-      }
-      return null;
-   }
-
-   public static void initializeDbVersion(Connection connection) throws SQLException {
-      setOseeDbVersion(connection, OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
-      setOseeDbCheckVersion(connection, false);
-   }
 }
