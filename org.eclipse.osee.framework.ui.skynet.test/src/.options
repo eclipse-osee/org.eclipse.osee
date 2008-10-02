@@ -1,0 +1,3 @@
+org.eclipse.osee.framework.ui.skynet.test/debug = false
+
+org.eclipse.osee.framework.ui.skynet.test/debug/Junit = false

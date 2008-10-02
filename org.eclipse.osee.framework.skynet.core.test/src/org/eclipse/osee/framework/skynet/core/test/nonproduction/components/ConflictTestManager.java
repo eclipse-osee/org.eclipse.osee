@@ -44,7 +44,7 @@ public class ConflictTestManager {
    private static final String DEST_BRANCH = "Conflict_Test_Destination_Branch";
    private static Branch sourceBranch;
    private static Branch destBranch;
-   private static final int NUMBER_OF_ARTIFACTS = 20;
+   private static final int NUMBER_OF_ARTIFACTS = 28;
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
@@ -53,6 +53,8 @@ public class ConflictTestManager {
    private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 0;
    public static int DELETION_TEST_QUERY = 1;
    public static int DELETION_ATTRIBUTE_TEST_QUERY = 2;
+   public static int REVERT_QUERY = 3;
+   public static int UPDATE_PARENT_QUERY = 4;
 
    protected static class AttributeValue {
       protected String attributeName;
@@ -419,11 +421,47 @@ public class ConflictTestManager {
 
       conflictDefs[18].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[18].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      conflictDefs[18].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
+      conflictDefs[18].values.add(new AttributeValue("Name", "Test Artifact Number 18 - Parent", null, "Source",
             StringAttribute.class));
       conflictDefs[19].setValues("Software Requirement", false, false, 18, DELETION_ATTRIBUTE_TEST_QUERY);
       conflictDefs[19].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      conflictDefs[19].values.add(new AttributeValue("Name", "Test Artifact Number 15 - Child", null, "Source",
+      conflictDefs[19].values.add(new AttributeValue("Name", "Test Artifact Number 19 - Child", null, "Source",
+            StringAttribute.class));
+
+      conflictDefs[20].setValues("Software Requirement", true, false, 0, REVERT_QUERY);
+      conflictDefs[20].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
+            StringAttribute.class));
+      conflictDefs[20].values.add(new AttributeValue("Name", "Test Artifact Number 20 - Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[21].setValues("Software Requirement", false, false, 20, 0);
+      conflictDefs[21].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[21].values.add(new AttributeValue("Name", "Test Artifact Number 21 - Child", null, "Source",
+            StringAttribute.class));
+      conflictDefs[22].setValues("Software Requirement", false, false, 20, 0);
+      conflictDefs[22].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[22].values.add(new AttributeValue("Name", "Test Artifact Number 22 - Child/Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[23].setValues("Software Requirement", false, false, 22, 0);
+      conflictDefs[23].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[23].values.add(new AttributeValue("Name", "Test Artifact Number 23 - Child", null, "Source",
+            StringAttribute.class));
+
+      conflictDefs[24].setValues("Software Requirement", false, false, 0, UPDATE_PARENT_QUERY);
+      conflictDefs[24].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
+            StringAttribute.class));
+      conflictDefs[24].values.add(new AttributeValue("Name", "Test Artifact Number 24 - Parent", "Test Artifact Number 24 - Parent/Destination", "Source",
+            StringAttribute.class));
+      conflictDefs[25].setValues("Software Requirement", false, false, 24, 0);
+      conflictDefs[25].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[25].values.add(new AttributeValue("Name", "Test Artifact Number 25 - Child", null, "Source",
+            StringAttribute.class));
+      conflictDefs[26].setValues("Software Requirement", false, false, 24, 0);
+      conflictDefs[26].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[26].values.add(new AttributeValue("Name", "Test Artifact Number 26 - Child/Parent", null, "Source",
+            StringAttribute.class));
+      conflictDefs[27].setValues("Software Requirement", false, false, 26, 0);
+      conflictDefs[27].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[27].values.add(new AttributeValue("Name", "Test Artifact Number 27 - Child", null, "Source",
             StringAttribute.class));
 
    }

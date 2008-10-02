@@ -30,3 +30,4 @@ Import-Package: org.eclipse.core.runtime,
 Require-Bundle: org.junit,
  org.eclipse.osee.framework.skynet.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.framework.skynet.core.test.nonproduction.components
