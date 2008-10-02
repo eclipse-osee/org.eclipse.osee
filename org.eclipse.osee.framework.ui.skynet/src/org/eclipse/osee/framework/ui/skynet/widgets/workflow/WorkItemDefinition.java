@@ -31,7 +31,7 @@ public abstract class WorkItemDefinition {
    protected final String parentId;
    protected String description;
    protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
-   private final Pattern keyValuePattern = Pattern.compile("^(.*)=(.*)$", Pattern.MULTILINE);
+   private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE);
    protected String type;
    public static enum WriteType {
       Update, New
@@ -209,11 +209,12 @@ public abstract class WorkItemDefinition {
       for (String value : artifact.getAttributesToStringList(WorkItemAttributes.WORK_DATA.getAttributeTypeName())) {
          // TODO Remove this check once production WorkData has been changed to XWidget=; for backwards compatibility
          if (value.contains(DynamicXWidgetLayout.XWIDGET)) {
-            addWorkDataKeyValue(DynamicXWidgetLayout.XWIDGET, value);
+            addWorkDataKeyValue(DynamicXWidgetLayout.XWIDGET,
+                  value.replaceFirst(DynamicXWidgetLayout.XWIDGET + "=", ""));
          }
          // TODO Remove this check once product WorkData has been changed to AtsTaskOptions=; for backwards compatibility
          else if (value.contains("AtsTaskOptions")) {
-            addWorkDataKeyValue("AtsTaskOptions", value);
+            addWorkDataKeyValue("AtsTaskOptions", value.replaceFirst("AtsTaskOptions=", ""));
          } else {
             Matcher m = keyValuePattern.matcher(value);
             if (m.find()) {
