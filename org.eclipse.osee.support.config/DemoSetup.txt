@@ -1,0 +1,9 @@
+
+set proxy info if needed
+http://osee.microdoc.com/downloads/osee/add-ons/0.4/updatesite/index.html
+need to increase heap size setting in ini file
+
+MicroDoc
+	update http://osee.microdoc.com/node/2 with new release date
+	need the all-in-one download link fix 
+	image on page banner looks corrupted
