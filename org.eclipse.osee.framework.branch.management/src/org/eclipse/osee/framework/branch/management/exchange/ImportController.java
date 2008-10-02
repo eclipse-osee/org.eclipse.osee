@@ -81,6 +81,7 @@ final class ImportController extends DbTransaction {
          // Process database meta data
          MetaDataSaxHandler metadataHandler = new MetaDataSaxHandler();
          processImportFile(zipFile, manifestHandler.getMetadataFile(), metadataHandler);
+         metadataHandler.checkAndLoadTargetDbMetadata(connection);
 
          // Load Import Indexes
          translator.loadTranslators(connection, manifestHandler.getSourceDatabaseId());
