@@ -762,17 +762,6 @@ public class InternalEventManager {
             RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
             UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
             LoadedRelation loadedRelation = null;
-            if (xRelationModifiedEvent.link != null) {
-               try {
-                  loadedRelation =
-                        new LoadedRelation(xRelationModifiedEvent.link.getArtifactA(),
-                              xRelationModifiedEvent.link.getArtifactB(),
-                              xRelationModifiedEvent.link.getRelationType(), xRelationModifiedEvent.branch,
-                              unloadedRelation);
-               } catch (Exception ex) {
-                  SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-               }
-            }
             if (unloadedRelation != null) {
                Artifact artA =
                      ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getBranchId());
