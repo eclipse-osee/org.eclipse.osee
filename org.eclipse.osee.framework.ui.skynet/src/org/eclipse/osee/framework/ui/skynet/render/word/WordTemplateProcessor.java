@@ -439,6 +439,8 @@ public class WordTemplateProcessor {
             if (artifact.isAttributeTypeValid(attributeName)) {
                processAttribute(artifact, wordMl, attributeElement, attributeName, false, presentationType,
                      multipleArtifacts);
+            } else {
+               throw new OseeCoreException(String.format("Invalid attribute type [%s]", attributeName));
             }
          }
       }
