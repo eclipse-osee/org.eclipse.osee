@@ -199,7 +199,7 @@ public abstract class SqlManager {
       return toReturn.toString();
    }
 
-   protected void executeStatement(Connection connection, String sqlStatement) throws SQLException, Exception {
+   protected void executeStatement(Connection connection, String sqlStatement) throws SQLException {
       Statement statement = null;
       try {
          statement = connection.createStatement();
@@ -214,15 +214,15 @@ public abstract class SqlManager {
       }
    }
 
-   public void createSchema(Connection connection, String schema) throws SQLException, Exception {
+   public void createSchema(Connection connection, String schema) throws SQLException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(CREATE_STRING + " SCHEMA \"" + schema + "\"");
       executeStatement(connection, toExecute.toString());
    }
 
-   public void dropSchema(Connection connection, String schema) throws SQLException, Exception {
+   public void dropSchema(Connection connection, String schema) throws SQLException {
       StringBuilder toExecute = new StringBuilder();
-      toExecute.append(DROP_STRING + " SCHEMA \"" + schema + "\" RESTRICT");
+      toExecute.append(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
       executeStatement(connection, toExecute.toString());
    }
 

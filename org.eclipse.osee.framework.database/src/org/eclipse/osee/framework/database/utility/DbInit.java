@@ -20,6 +20,8 @@ import java.util.Set;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.DbFactory;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
+import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.View;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -176,6 +178,20 @@ public class DbInit {
                statement.close();
             }
          }
+      }
+   }
+
+   public static void createSchema(Connection connection, Set<String> schemas) throws SQLException {
+      SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
+      for (String schemaId : schemas) {
+         manager.createSchema(connection, schemaId.toLowerCase());
+      }
+   }
+
+   public static void dropSchema(Connection connection, Set<String> schemas) throws SQLException {
+      SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
+      for (String schemaId : schemas) {
+         manager.dropSchema(connection, schemaId.toLowerCase());
       }
    }
 }
