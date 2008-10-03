@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.OseeDatabaseId;
-import org.eclipse.osee.framework.db.connection.core.OseeDbVersion;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -69,7 +68,6 @@ public class SkynetDbInit extends DbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addViews(connection, databaseType);
       OseeInfo.putValue(OseeDatabaseId.getKey(), GUID.generateGuidStr());
-      OseeDbVersion.initializeDbVersion(connection);
       ApplicationServer.initialize();
       populateSequenceTable();
       addDefaultPermissions();
