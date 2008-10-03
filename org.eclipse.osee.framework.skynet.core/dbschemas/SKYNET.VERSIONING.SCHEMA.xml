@@ -240,7 +240,7 @@
 		<Column id="AB_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
-		<Column id="ORDERED" defaultValue="not null" type="VARCHAR" />
+		<Column id="USER_ORDERED" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
 	</Table>
 	
@@ -568,7 +568,7 @@
 	<Table name="OSEE_IMPORT_MAP" schema="OSEE" tablespace="osee_data">
 		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="SEQUENCE_NAME" defaultValue="not null" type="VARCHAR" limits="128"/>
-		<Column id="DB_SOURCE_GUID" defaultValue="not null" type="VARCHAR"/>
+		<Column id="DB_SOURCE_GUID" defaultValue="not null" type="VARCHAR" limits="28"/>
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_IMPORT_MAP_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID" />
 		<Index id="OSEE_IMPORT_MAP_SN_IDX" tablespace="osee_index">

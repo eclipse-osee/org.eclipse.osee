@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 public class RelationTypeManager {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_LINK_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, namespace, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, ordered) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_relation_link_type (rel_link_type_id, namespace, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, user_ordered) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
    private static final String INSERT_VALID_RELATION =
          "INSERT INTO osee_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?, ?, ?, ?, ?)";
@@ -141,7 +141,7 @@ public class RelationTypeManager {
                   new RelationType(rset.getInt("rel_link_type_id"), rset.getString("namespace"),
                         rset.getString("type_name"), rset.getString("a_name"), rset.getString("b_name"),
                         rset.getString("ab_phrasing"), rset.getString("ba_phrasing"), rset.getString("short_name"),
-                        rset.getString("ordered"));
+                        rset.getString("user_ordered"));
             cache(relationType);
          }
          loadLinkValidities();
