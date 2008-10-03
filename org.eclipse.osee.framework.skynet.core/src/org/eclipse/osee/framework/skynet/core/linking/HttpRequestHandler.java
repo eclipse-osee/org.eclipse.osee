@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +30,10 @@ public class HttpRequestHandler implements Runnable {
       httpMethodHandlers.put(HttpMethod.RESOURCE_GET, HttpResourceRequest.getInstance());
       httpMethodHandlers.put(HttpMethod.GET, new HttpGetMethod());
    }
-   private boolean areRemoteRequestsAllowed;
    private Socket socket;
 
-   public HttpRequestHandler(Socket socket, boolean areRemoteRequestsAllowed) throws Exception {
+   public HttpRequestHandler(Socket socket) throws Exception {
       this.socket = socket;
-      this.areRemoteRequestsAllowed = areRemoteRequestsAllowed;
    }
 
    public void run() {
@@ -47,15 +44,6 @@ public class HttpRequestHandler implements Runnable {
       }
    }
 
-   private void securityCheck(HttpRequest httpRequest, HttpResponse httpResponse) throws Exception {
-      InetAddress requestingAddress = httpRequest.getOriginatingAddress();
-
-      if (!requestingAddress.isLoopbackAddress() && areRemoteRequestsAllowed != true) {
-         httpResponse.outputStandardError(403, "Sorry, the OSEE HTTP server only responds to local requests.");
-         throw new SecurityException("Remote request received. This HTTP server only responds to local requests.");
-      }
-   }
-
    private void processRequest() throws Exception {
       HttpRequest httpRequest = null;
       HttpResponse httpResponse = null;
@@ -63,7 +51,6 @@ public class HttpRequestHandler implements Runnable {
          httpRequest = new HttpRequest(socket);
          httpResponse = new HttpResponse(socket);
 
-         securityCheck(httpRequest, httpResponse);
          try {
             processRequest(httpRequest, httpResponse);
          } catch (Exception ex) {

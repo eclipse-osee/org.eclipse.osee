@@ -19,6 +19,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,8 +34,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
- * <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace that allows us to create a
- * page that is small and knows how to save, restore and apply itself.
+ * <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace that allows us to create a page
+ * that is small and knows how to save, restore and apply itself.
  * <p>
  * This page is used to modify preferences only. They are stored in the preference store that belongs to the main
  * plug-in class. That way, preferences can be accessed directly via the preference store.
@@ -41,12 +43,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class OseePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseePreferencePage.class);
-   public static final String INETADDRESS_KEY =
-         "org.eclipse.osee.framework.jdk.core.OseePreferencePage.InetAddressDefault";
-   public static final String WORDWRAP_KEY = "org.eclipse.osee.framework.jdk.core.OseePreferencePage.WordWrap";
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;
-   private OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
+   private OseeUiActivator plugin = SkynetActivator.getInstance();
 
    private void createNetworkAdapterArea(Composite parent) {
       addDialogControls(parent);
@@ -99,7 +98,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       }
 
       IPreferenceStore prefStore = plugin.getPreferenceStore();
-      String inetaddress = prefStore.getString(INETADDRESS_KEY);
+      String inetaddress = prefStore.getString(PreferenceConstants.INETADDRESS_KEY);
 
       boolean addressSelected = false;
       if (inetaddress != null && !inetaddress.equals("")) {
@@ -118,8 +117,8 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
 
    private void setupWordWrapChkButton() {
       IPreferenceStore prefStore = plugin.getPreferenceStore();
-      wordWrapChkBox.setSelection(prefStore.getString(WORDWRAP_KEY) != null && prefStore.getString(WORDWRAP_KEY).equals(
-            IPreferenceStore.TRUE));
+      wordWrapChkBox.setSelection(prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
+            PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE));
    }
 
    private void createBlankArea(Composite parent, int height, boolean allVertical) {
@@ -140,15 +139,6 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
       return parent;
    }
 
-   public static InetAddress getDefaultInetAddress() throws UnknownHostException {
-      IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
-      String inetaddress = prefStore.getString(INETADDRESS_KEY);
-      if (inetaddress != null && !inetaddress.equals("")) {
-         return InetAddress.getByName(inetaddress);
-      }
-      return Network.getValidIP();
-   }
-
    /**
     * initialize the preference store to use with the workbench
     */
@@ -167,15 +157,16 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    public boolean performOk() {
       IPreferenceStore prefStore = plugin.getPreferenceStore();
 
-      prefStore.putValue(INETADDRESS_KEY, "");
+      prefStore.putValue(PreferenceConstants.INETADDRESS_KEY, "");
       for (InetAddress address : networkButtons.keySet()) {
          if (networkButtons.get(address).getSelection()) {
-            prefStore.putValue(INETADDRESS_KEY, address.getHostAddress());
+            prefStore.putValue(PreferenceConstants.INETADDRESS_KEY, address.getHostAddress());
             break;
          }
       }
 
-      prefStore.putValue(WORDWRAP_KEY, wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
+      prefStore.putValue(PreferenceConstants.WORDWRAP_KEY,
+            wordWrapChkBox.getSelection() ? IPreferenceStore.TRUE : IPreferenceStore.FALSE);
 
       return super.performOk();
    }

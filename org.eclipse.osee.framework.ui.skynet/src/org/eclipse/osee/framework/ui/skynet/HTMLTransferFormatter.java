@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
  * @author Jeff C. Phillips
@@ -26,8 +27,8 @@ public class HTMLTransferFormatter {
 
    public static String getHtml(Artifact... artifacts) {
       boolean applyWordTagWrap =
-            prefStore.getString(OseePreferencePage.WORDWRAP_KEY) != null && prefStore.getString(
-                  OseePreferencePage.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
+            prefStore.getString(PreferenceConstants.WORDWRAP_KEY) != null && prefStore.getString(
+                  PreferenceConstants.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
 
       if (artifacts != null) {
          StringBuilder sb = new StringBuilder();

@@ -29,10 +29,11 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 public class HttpServer implements Runnable {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpServer.class);
-   private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
+   //   private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
    private static final int DEFAULT_HTTP_PRODUCTION_PORT = 8010;
    private static final int DEFAULT_HTTP_DEVELOPMENT_PORT = 8011;
    protected static final String DEFAULT_SERVICE_NAME = "osee.http.server";
@@ -60,10 +61,18 @@ public class HttpServer implements Runnable {
                InetAddress address = InetAddress.getLocalHost();
                serverAddress = address.getHostAddress();
             } catch (UnknownHostException ex) {
-               serverAddress = DEFAULT_SERVER_ADDRESS;
+               try {
+                  serverAddress = PreferenceConstants.getDefaultInetAddress().getHostAddress();
+               } catch (UnknownHostException ex1) {
+                  logger.log(Level.SEVERE, ex1.toString(), ex1);
+               }
             }
          } else {
-            serverAddress = DEFAULT_SERVER_ADDRESS;
+            try {
+               serverAddress = PreferenceConstants.getDefaultInetAddress().getHostAddress();
+            } catch (UnknownHostException ex) {
+               logger.log(Level.SEVERE, ex.toString(), ex);
+            }
          }
       }
       return serverAddress;
@@ -151,7 +160,7 @@ public class HttpServer implements Runnable {
             try {
                Socket incoming = listenSocket.accept();
                try {
-                  final HttpRequestHandler handler = new HttpRequestHandler(incoming, isRemoteServer);
+                  final HttpRequestHandler handler = new HttpRequestHandler(incoming);
                   final String threadName = createNameForConnection(incoming);
 
                   // Process the request in a new thread

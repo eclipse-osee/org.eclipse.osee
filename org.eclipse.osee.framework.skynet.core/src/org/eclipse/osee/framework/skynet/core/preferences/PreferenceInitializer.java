@@ -11,8 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.preferences;
 
+import java.net.UnknownHostException;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.jdk.core.util.Network;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
@@ -31,5 +36,17 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
       String defaultRemoteAddress = ConfigUtil.getConfigFactory().getOseeConfig().getRemoteHttpServer();
       store.setDefault(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER, defaultRemoteAddress);
+
+      try {
+         String defaultValue = Network.getValidIP().getHostAddress();
+         store.setDefault(PreferenceConstants.INETADDRESS_KEY, defaultValue);
+         String value = store.getString(PreferenceConstants.INETADDRESS_KEY);
+         if (!Strings.isValid(value)) {
+            store.setValue(PreferenceConstants.INETADDRESS_KEY,
+                  store.getDefaultString(PreferenceConstants.INETADDRESS_KEY));
+         }
+      } catch (UnknownHostException ex) {
+         OseeLog.log(this.getClass(), Level.SEVERE, "Error initializing default inet address key", ex);
+      }
    }
 }
