@@ -10,13 +10,13 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.artifact.DemoTestTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
-import org.eclipse.osee.ats.util.DefaultDecisionReviewWorkflowManager;
-import org.eclipse.osee.ats.util.DefaultPeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
@@ -58,7 +58,7 @@ public class DemoDbReviews {
       // Create a Decision review and transition to ReWork
       DecisionReviewArtifact reviewArt = firstTestArt.getSmaMgr().getReviewManager().createValidateReview(true);
       Result result =
-            DefaultDecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.StateNames.Followup,
+            DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
                   SkynetAuthentication.getUser(), false);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
@@ -67,7 +67,7 @@ public class DemoDbReviews {
 
       // Create a Decision review and transition to Completed
       reviewArt = secondTestArt.getSmaMgr().getReviewManager().createValidateReview(true);
-      DefaultDecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.StateNames.Completed,
+      DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Completed,
             SkynetAuthentication.getUser(), false);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
@@ -125,7 +125,7 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, DemoUsers.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-            DefaultPeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.State.Review,
+            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review,
                   roles, null, SkynetAuthentication.getUser(), false);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
@@ -154,7 +154,7 @@ public class DemoDbReviews {
       defects.add(new DefectItem(DemoUsers.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
             InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       result =
-            DefaultPeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.State.Completed,
+            PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed,
                   roles, defects, SkynetAuthentication.getUser(), false);
       reviewArt.persistAttributesAndRelations();
       if (result.isFalse()) {

@@ -57,9 +57,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
    public static enum DefaultTeamState {
-
       Endorse, Analyze, Authorize, Implement, Completed, Cancelled
-
    }
 
    /**

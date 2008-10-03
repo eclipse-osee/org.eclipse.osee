@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.StateNames.Followup.name();
+   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Followup.name();
 
    public AtsDecisionFollowupWorkPageDefinition() {
-      this(DecisionReviewArtifact.StateNames.Followup.name(), ID, null);
+      this(DecisionReviewArtifact.DecisionReviewState.Followup.name(), ID, null);
    }
 
    public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {

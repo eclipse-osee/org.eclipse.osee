@@ -103,8 +103,8 @@ public class NewDecisionReviewJob extends Job {
       }
 
       // Initialize state machine
-      decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
-      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "");
+      decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      decRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "");
       if (assignees != null && assignees.size() > 0) {
          decRev.getSmaMgr().getStateMgr().setAssignees(assignees);
       }

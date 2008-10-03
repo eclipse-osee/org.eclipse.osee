@@ -9,12 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.util;
+package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -28,7 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * 
  * @author Donald G. Dunne
  */
-public class DefaultPeerToPeerReviewWorkflowManager {
+public class PeerToPeerReviewWorkflowManager {
 
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
@@ -40,20 +38,20 @@ public class DefaultPeerToPeerReviewWorkflowManager {
     * @return
     * @throws Exception
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.State toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException, SQLException {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException, SQLException {
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
       }
       result =
-            reviewArt.getSmaMgr().transition(PeerToPeerReviewArtifact.State.Review.name(),
+            reviewArt.getSmaMgr().transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
                   (user != null ? user : reviewArt.getSmaMgr().getStateMgr().getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
       }
-      if (toState == PeerToPeerReviewArtifact.State.Review) return Result.TrueResult;
+      if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) return Result.TrueResult;
 
       result = setReviewStateData(reviewArt, roles, defects, 100, .2);
       if (result.isFalse()) {

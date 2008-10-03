@@ -36,7 +36,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    public static String ARTIFACT_NAME = "Decision Review";
    public XDecisionOptions decisionOptions;
-   public static enum StateNames {
+   public static enum DecisionReviewState {
       Prepare, Decision, Followup, Completed
    };
 
@@ -69,9 +69,9 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    @Override
    public boolean isCurrentSectionExpanded(String stateName) {
       // Always expand the decision state
-      if (stateName.endsWith(StateNames.Decision.name())) return true;
+      if (stateName.endsWith(DecisionReviewState.Decision.name())) return true;
       // If current state is decision and this is prepare state, don't expand the Prepare state
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(StateNames.Decision.name()) && stateName.contains(StateNames.Prepare.name())) return false;
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(DecisionReviewState.Decision.name()) && stateName.contains(DecisionReviewState.Prepare.name())) return false;
       return super.isCurrentSectionExpanded(stateName);
    }
 
@@ -189,7 +189,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
    }
 
    /*
@@ -254,7 +254,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
    }
 
    /* (non-Javadoc)

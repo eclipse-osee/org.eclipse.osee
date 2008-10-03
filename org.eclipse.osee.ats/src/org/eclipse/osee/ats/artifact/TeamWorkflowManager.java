@@ -9,11 +9,9 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.util;
+package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -26,12 +24,12 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * 
  * @author Donald G. Dunne
  */
-public class DefaultTeamWorkflowManager {
+public class TeamWorkflowManager {
 
    private final SMAManager smaMgr;
    private final TeamWorkFlowArtifact teamArt;
 
-   public DefaultTeamWorkflowManager(TeamWorkFlowArtifact teamArt) {
+   public TeamWorkflowManager(TeamWorkFlowArtifact teamArt) {
       this.teamArt = teamArt;
       smaMgr = new SMAManager(teamArt);
    }

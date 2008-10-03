@@ -43,7 +43,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    @Override
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
-      if (!toState.equals(PeerToPeerReviewArtifact.State.Review.name())) return;
+      if (!toState.equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) return;
       // Set Assignees to all user roles users
       Set<User> assignees = new HashSet<User>();
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) smaMgr.getSma();

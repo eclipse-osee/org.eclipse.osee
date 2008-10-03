@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.config.demo.util.ProgramAttributes;
 import org.eclipse.osee.ats.config.demo.util.Subsystems;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.DefaultTeamWorkflowManager;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
@@ -389,7 +389,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                         aData.getUserCommunities(), false, null, aData.getActionableItems());
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
-               DefaultTeamWorkflowManager dtwm = new DefaultTeamWorkflowManager(teamWf);
+               TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {

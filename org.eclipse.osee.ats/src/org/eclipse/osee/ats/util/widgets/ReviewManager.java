@@ -83,7 +83,7 @@ public class ReviewManager {
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
 
          SMAManager revSmaMgr = new SMAManager(decRev);
-         revSmaMgr.transition(DecisionReviewArtifact.StateNames.Decision.name(), smaMgr.getOriginator(), true);
+         revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), smaMgr.getOriginator(), true);
 
          return decRev;
 
@@ -117,8 +117,8 @@ public class ReviewManager {
             ReviewBlockType.None.name());
 
       // Initialize state machine
-      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
-      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(),
+      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.DecisionReviewState.Prepare.name());
+      peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.DecisionReviewState.Prepare.name(),
             "", origDate, origUser);
       peerToPeerRev.persistAttributesAndRelations();
       return peerToPeerRev;

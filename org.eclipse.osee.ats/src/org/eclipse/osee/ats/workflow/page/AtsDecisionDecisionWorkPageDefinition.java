@@ -16,11 +16,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.StateNames.Decision.name();
+   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Decision.name();
    public static String DECISION_XWIDGET_ID = "ats.Decision Question";
 
    public AtsDecisionDecisionWorkPageDefinition() {
-      this(DecisionReviewArtifact.StateNames.Decision.name(), ID, null);
+      this(DecisionReviewArtifact.DecisionReviewState.Decision.name(), ID, null);
    }
 
    public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId) {

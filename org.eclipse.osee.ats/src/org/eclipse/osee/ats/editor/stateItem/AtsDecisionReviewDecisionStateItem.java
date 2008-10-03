@@ -70,9 +70,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       boolean followUpRequired = decisionOption.isFollowupRequired();
       if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) return null;
       if (followUpRequired)
-         return DecisionReviewArtifact.StateNames.Followup.name();
+         return DecisionReviewArtifact.DecisionReviewState.Followup.name();
       else
-         return DecisionReviewArtifact.StateNames.Completed.name();
+         return DecisionReviewArtifact.DecisionReviewState.Completed.name();
    }
 
    /*

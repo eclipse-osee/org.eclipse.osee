@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IWorldViewArtifact, IATSStateMachineArtifact {
 
    public static String ARTIFACT_NAME = "PeerToPeer Review";
-   public static enum State {
+   public static enum PeerToPeerReviewState {
       Prepare, Review, Completed
    };
 
@@ -80,7 +80,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Result(
             "Must have at least one Reviewer");
       // If in review state, all roles must have hours spent entered
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.State.Review.name())) {
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) return new Result("Hours spent must be entered for each role.");
          }
@@ -193,7 +193,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     */
    @Override
    public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(State.Review.name()));
+      return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees(PeerToPeerReviewState.Review.name()));
    }
 
    /*
