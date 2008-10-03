@@ -23,7 +23,7 @@ public class DbConnectionInfo implements IDbConnectionInformationContributer {
     */
    @Override
    public DbInformation[] getDbInformation() throws Exception {
-      URL url = Activator.getInstance().getBundleContext().getBundle().getEntry("support/osee.demo.db.connection.xml");
+      URL url = Activator.getInstance().getBundleContext().getBundle().getEntry("/support/osee.demo.db.connection.xml");
       Document document = Jaxp.readXmlDocument(url.openStream());
       Element rootElement = document.getDocumentElement();
       return DbConfigParser.parse(rootElement);
