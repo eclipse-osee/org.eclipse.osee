@@ -40,7 +40,7 @@ class TaggerRunnable implements Runnable {
    private final boolean isCacheAll;
    private final int cacheLimit;
    private long processingTime;
-   private long waitStart;
+   private final long waitStart;
    private long waitTime;
 
    TaggerRunnable(int tagQueueQueryId, boolean isCacheAll, int cacheLimit) {
@@ -139,7 +139,7 @@ class TaggerRunnable implements Runnable {
                this.searchTags.add(this.currentTag);
                try {
                   Activator.getInstance().getTaggerManager().tagIt(attributeData, this);
-                  checkSizeStoreIfNeeeded(connection);
+                  checkSizeStoreIfNeeded(connection);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Unable to tag - [%s]", this.currentTag), ex);
                } finally {
@@ -191,7 +191,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void checkSizeStoreIfNeeeded(Connection connection) throws SQLException {
+      private void checkSizeStoreIfNeeded(Connection connection) throws SQLException {
          int cummulative = 0;
          boolean needsStorage = false;
          for (SearchTag item : this.searchTags) {

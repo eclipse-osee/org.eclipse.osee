@@ -80,11 +80,11 @@ public class AXml {
       while (m.find()) {
          v.add(xmlToText(m.group(1)));
       }
-      return (String[]) v.toArray(new String[v.size()]);
+      return v.toArray(new String[v.size()]);
    }
 
    /**
-    * Returns data betweeen <xmlRoot> and </xmlRoot> from xmlStr
+    * Returns data between <xmlRoot> and </xmlRoot> from xmlStr
     * 
     * @param xmlStr
     * @param xmlRoot
@@ -117,8 +117,8 @@ public class AXml {
    }
 
    /**
-    * Given text strings containing xml reserved characters, replace with valid xml representation characters > => & gt; < => &
-    * lt; & => & amp; ' => & apos; " => & quot;
+    * Given text strings containing xml reserved characters, replace with valid xml representation characters > => & gt;
+    * < => & lt; & => & amp; ' => & apos; " => & quot;
     * 
     * @param text text to be converted to valid XML representation characters
     * @return String valid xml string
@@ -135,8 +135,8 @@ public class AXml {
    }
 
    /**
-    * Given xml strings containing xml reserved characters, replace with displayable characters > <= & gt; < <= & lt; & <= &
-    * amp; ' <= & apos; " <= & quot;
+    * Given xml strings containing xml reserved characters, replace with displayable characters > <= & gt; < <= & lt; &
+    * <= & amp; ' <= & apos; " <= & quot;
     * 
     * @param xml
     * @return displayable string
