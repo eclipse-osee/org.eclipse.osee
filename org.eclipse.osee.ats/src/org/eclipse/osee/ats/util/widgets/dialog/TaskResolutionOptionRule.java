@@ -48,13 +48,13 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
    }
 
-   public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws SQLException, OseeCoreException {
+   public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(workPageDefinition);
       if (taskResolutionOptionRule != null) return taskResolutionOptionRule.getOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
 
-   public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws SQLException, OseeCoreException {
+   public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws OseeCoreException {
       List<WorkItemDefinition> wids =
             workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
       if (wids.size() == 0) return null;
@@ -80,7 +80,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       }
    }
 
-   public void fromXml(String xmlStr) throws OseeCoreException, SQLException {
+   public void fromXml(String xmlStr) throws OseeCoreException {
       try {
          setFromDoc(Jaxp.readXmlDocument(xmlStr));
       } catch (Exception ex) {

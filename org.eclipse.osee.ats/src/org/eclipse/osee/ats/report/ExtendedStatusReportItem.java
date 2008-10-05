@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.report;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -37,7 +36,7 @@ public class ExtendedStatusReportItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       WorldView worldView = WorldView.getWorldView();
       if (worldView == null) {
          AWorkbench.popup("ERROR",

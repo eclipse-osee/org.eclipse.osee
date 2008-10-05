@@ -86,7 +86,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       try {
          TeamDefinitionArtifact teamDef = getTeamDefinition();
          if (teamDef == null) return;

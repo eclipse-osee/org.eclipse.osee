@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -165,7 +164,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return AtsCache.getArtifactsByActive(active, TeamDefinitionArtifact.class);
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws SQLException, OseeCoreException {
+   public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
       if (topTeamDef == null) return EMPTY_SET;
       return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
@@ -235,7 +234,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
    }
 
-   public double getManDayHrsFromItemAndChildren() throws SQLException {
+   public double getManDayHrsFromItemAndChildren() {
       return getManDayHrsFromItemAndChildren(this);
    }
 

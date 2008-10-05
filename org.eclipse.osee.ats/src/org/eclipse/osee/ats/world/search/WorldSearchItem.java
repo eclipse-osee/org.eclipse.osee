@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,7 +74,7 @@ public abstract class WorldSearchItem {
 
    public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
 
-   public Collection<Artifact> performReSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performReSearch() {
       return EMPTY_SET;
    }
 

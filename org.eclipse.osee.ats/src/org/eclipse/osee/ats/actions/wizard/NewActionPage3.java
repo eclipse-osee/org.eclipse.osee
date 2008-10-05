@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -182,7 +181,7 @@ public class NewActionPage3 extends WizardPage {
       }
    }
 
-   public static boolean isPage3Necesary(Collection<ActionableItemArtifact> aias) throws SQLException {
+   public static boolean isPage3Necesary(Collection<ActionableItemArtifact> aias) {
       getWizardXWidgetExtensions();
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
@@ -194,7 +193,7 @@ public class NewActionPage3 extends WizardPage {
       return false;
    }
 
-   public Result isActionValid() throws SQLException {
+   public Result isActionValid() {
       getWizardXWidgetExtensions();
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {

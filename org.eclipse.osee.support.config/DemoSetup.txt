@@ -1,9 +1,53 @@
+Todo:
+	fix broken link "Eclipse OSEE download information page." on http://osee.microdoc.com/node/2
 
-set proxy info if needed
-http://osee.microdoc.com/downloads/osee/add-ons/0.4/updatesite/index.html
-need to increase heap size setting in ini file
+ 0.4.0 2008-09-24 13:40
+
+C:\UserData\archives\winscp380.exe
+
+Download Eclipse Classic 3.4.1 from http://www.eclipse.org/downloads/
+install OSEE updatesite
+set proxy info if behind firewall
+http://osee.microdoc.com/downloads/osee/add-ons/0.4/updatesite/
+need specialized ini file
 
 MicroDoc
 	update http://osee.microdoc.com/node/2 with new release date
 	need the all-in-one download link fix 
 	image on page banner looks corrupted
+	
+Drop all in one to the following path:
+/var/www/downloads/osee/all-in-one/0.4/all-in-one-0.4.0.200809261535.zip
+
+copy download files to /home/data/users/<user>/downloads/technology/osee/
+it may take 15 minutes or so to replicate to the main mirror and longer for others
+
+http://www.eclipse.org/downloads/download.php?file=/technology/osee/0.4/update-site/content.xml
+http://www.eclipse.org/downloads/download.php?file=/technology/osee/0.4/org.eclipse.osee.zip
+http://www.eclipse.org/downloads/download.php?file=/technology/osee/0.4/test.txt
+
+____________________________________________________________________________________
+     <b>NOTE</b>:  For Eclipse 3.4/Ganymede, you <b>must</b> use this update site and not the other update sites
+     given below.  
+     <p>
+      <ul>
+       <li>In Eclipse 3.4/Ganymede, choose <b>Help -> Software Updates...</b>
+       
+       </li>
+       <li>Click on <b>Available Features</b> tab.
+       </li>
+       <li>Click on <b>Manage Sites...</b> button.
+       </li>
+       <li>Drag and drop the following URL from your browser to the list in the Manage Sites window:
+       <p>
+       <b><a href="http://download.eclipse.org/technology/ecf/2.0/3.4/updateSite/site.xml">http://download.eclipse.org/technology/ecf/2.0/3.4/updateSite/site.xml</a></b>
+       <p>
+       </li>
+       <li>As a result of the drag and drop, you should see the above URL appear as an update site in the list.</li>
+       <li>Click <b>OK</b> in the Manage Sites window</li>.
+       <li>You should see the <b>Eclipse Communication Framework (ECF)</b> category in the Available Features window.</li>
+       <li>Open the category and select both the two ECF features.</li>
+       <li>Click Install...</li>
+       <li>Follow through remaining dialogs to complete install.</li>
+      </ul>
+     <p></p>

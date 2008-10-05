@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.VersionReportJob;
@@ -30,7 +29,7 @@ public class GenerateVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       TeamVersionListDialog ld = new TeamVersionListDialog(Active.Both);
       int result = ld.open();
       if (result == 0) {

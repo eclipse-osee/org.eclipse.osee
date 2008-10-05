@@ -59,7 +59,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       EntryDialog ed =
             new EntryDialog(
                   getName(),
@@ -96,8 +96,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws OseeCoreException, SQLException {
          final Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%",
-                     BranchPersistenceManager.getDefaultBranch());
+               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchPersistenceManager.getDefaultBranch());
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.size() == 0) return;
          if (srchArts.size() > 1) {

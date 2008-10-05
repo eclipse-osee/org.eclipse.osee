@@ -79,7 +79,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       Jobs.startJob(new Report(getName()), true);
    }

@@ -48,7 +48,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       final ActionableItemListDialog ld = new ActionableItemListDialog(Active.Both);
       ld.setMessage("Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
       int result = ld.open();

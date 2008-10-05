@@ -10,20 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -86,13 +83,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public void createPage3IfNecessary() {
-      try {
-         if (page3 == null && NewActionPage3.isPage3Necesary(getSelectedActionableItemArtifacts())) {
-            page3 = new NewActionPage3(this);
-            addPage(page3);
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+      if (page3 == null && NewActionPage3.isPage3Necesary(getSelectedActionableItemArtifacts())) {
+         page3 = new NewActionPage3(this);
+         addPage(page3);
       }
    }
 
@@ -149,7 +142,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return page3.getXWidget(attrName);
    }
 
-   public Result isActionValid() throws SQLException {
+   public Result isActionValid() {
       if (page3 == null) return Result.TrueResult;
       return page3.isActionValid();
    }

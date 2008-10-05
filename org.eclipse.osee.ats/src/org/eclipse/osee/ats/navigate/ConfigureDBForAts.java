@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,7 +39,7 @@ public class ConfigureDBForAts extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Configure DB for ATS",
             "Configure DB for ATS " + pluginId)) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Configure DB for ATS",

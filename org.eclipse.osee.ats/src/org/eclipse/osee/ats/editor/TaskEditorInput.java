@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -67,7 +66,7 @@ public class TaskEditorInput implements IEditorInput {
    /**
     * @return the resOptions
     */
-   public List<TaskResOptionDefinition> getResOptions() throws SQLException, OseeCoreException {
+   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException {
       if (resOptions == null) {
          resOptions =
                TaskResolutionOptionRule.getTaskResolutionOptions(taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPageDefinitionByName(

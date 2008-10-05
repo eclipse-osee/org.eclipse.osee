@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -37,7 +36,7 @@ public class DisplayCurrentOseeEventListeners extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       String str = OseeEventManager.getListenerReport();
       XResultView.getResultView().displayPage(new XResultPage(getName(), str));
    }

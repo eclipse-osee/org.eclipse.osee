@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.world.WorldView;
@@ -51,7 +50,7 @@ public class VisitedItems extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       WorldView.loadIt(getName(), visited, tableLoadOptions);
    }
 

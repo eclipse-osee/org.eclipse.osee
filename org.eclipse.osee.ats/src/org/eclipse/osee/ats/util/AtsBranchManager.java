@@ -646,7 +646,7 @@ public class AtsBranchManager {
     * 
     * @return artifacts
     */
-   public Collection<Artifact> getArtifactsRelChanged() throws SQLException {
+   public Collection<Artifact> getArtifactsRelChanged() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       try {
          if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;

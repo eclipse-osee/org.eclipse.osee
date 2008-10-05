@@ -26,8 +26,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -57,7 +55,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) {
       super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
       this.persist = persist;

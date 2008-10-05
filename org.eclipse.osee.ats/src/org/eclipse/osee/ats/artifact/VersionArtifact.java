@@ -99,13 +99,11 @@ public class VersionArtifact extends BasicArtifact {
       return str;
    }
 
-   public TeamDefinitionArtifact getTeamDefinitionArtifact() throws SQLException {
+   public TeamDefinitionArtifact getTeamDefinitionArtifact() throws OseeCoreException {
       try {
          return (TeamDefinitionArtifact) getRelatedArtifact(AtsRelation.TeamDefinitionToVersion_TeamDefinition);
       } catch (ArtifactDoesNotExist ex) {
          return null;
-      } catch (Exception ex) {
-         throw new SQLException(ex);
       }
    }
 

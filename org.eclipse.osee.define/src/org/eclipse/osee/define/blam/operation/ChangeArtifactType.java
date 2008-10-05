@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +96,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifact
     * @param artifactType
     */
-   private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
+   private void processRelations(Artifact artifact, ArtifactType artifactType) {
       relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getRelationsAll(false)) {

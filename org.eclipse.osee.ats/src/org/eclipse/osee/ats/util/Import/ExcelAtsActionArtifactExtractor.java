@@ -60,7 +60,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
    private Set<ActionData> actionDatas = new HashSet<ActionData>();
    private Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
 
-   public ExcelAtsActionArtifactExtractor(Branch branch, boolean emailPOCs) throws SQLException, IllegalArgumentException {
+   public ExcelAtsActionArtifactExtractor(Branch branch, boolean emailPOCs) {
       super(branch);
       this.emailPOCs = emailPOCs;
    }

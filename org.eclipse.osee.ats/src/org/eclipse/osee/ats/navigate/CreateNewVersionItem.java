@@ -88,7 +88,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws SQLException, OseeCoreException {
+   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
       if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));

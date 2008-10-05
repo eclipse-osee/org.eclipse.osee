@@ -345,7 +345,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
     */
-   public List<TaskResOptionDefinition> getResOptions() throws SQLException, OseeCoreException {
+   public List<TaskResOptionDefinition> getResOptions() throws OseeCoreException {
       return TaskResolutionOptionRule.getTaskResolutionOptions(smaMgr.getWorkPageDefinition());
    }
 
