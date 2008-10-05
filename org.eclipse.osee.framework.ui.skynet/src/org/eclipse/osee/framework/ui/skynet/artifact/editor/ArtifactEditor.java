@@ -175,7 +175,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       } catch (Exception ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return false;
@@ -301,7 +301,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    private void renderPreviewPage() {
       if (previewComposite == null) {
          Composite composite = createCommonPageComposite();
-         previewComposite = new BrowserComposite(composite, SWT.BORDER, createToolBar(composite));
+         previewComposite = new BrowserComposite(composite, SWT.BORDER, createPreviewToolBar(composite));
          if (artifact.getAnnotations().size() > 0) {
             new AnnotationComposite(previewComposite, SWT.BORDER, artifact);
          }
@@ -343,7 +343,72 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       return addPage(composite);
    }
 
-   private ToolBar createToolBar(Composite parent) {
+   public ToolBar createToolBar(Composite parent) {
+      return createToolBar(parent, this, artifact);
+   }
+
+   private ToolBar createPreviewToolBar(Composite parent) {
+      ToolBar toolBar = createToolBar(parent, this, artifact);
+
+      // Add Navigation Browser Navigation Buttons
+      back = new ToolItem(toolBar, SWT.NONE);
+      back.setImage(SkynetGuiPlugin.getInstance().getImage("nav_backward.gif"));
+      back.setToolTipText("Back to previous page");
+      back.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            previewComposite.back();
+         }
+      });
+      forward = new ToolItem(toolBar, SWT.NONE);
+      forward.setImage(SkynetGuiPlugin.getInstance().getImage("nav_forward.gif"));
+      forward.setToolTipText("Forward to the next page.");
+      forward.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            previewComposite.forward();
+         }
+      });
+
+      ToolItem refresh = new ToolItem(toolBar, SWT.NONE);
+      refresh.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
+      refresh.setToolTipText("Refresh the current page");
+      refresh.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            previewComposite.refresh();
+         }
+      });
+
+      if (OseeProperties.isDeveloper()) {
+         ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
+         snapshotSave.setImage(SkynetGuiPlugin.getInstance().getImage("snapshotSave.gif"));
+         snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
+         snapshotSave.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent event) {
+               final String oldUrl = previewComposite.getUrl();
+               if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
+                  previewComposite.setUrl(oldUrl + "&force=true");
+                  Job job = new Job("Update Preview") {
+                     @Override
+                     protected IStatus run(IProgressMonitor monitor) {
+                        renderPreviewPage();
+                        return Status.OK_STATUS;
+                     }
+                  };
+                  job.setUser(false);
+                  job.setPriority(Job.SHORT);
+                  job.schedule(2000);
+               }
+            }
+         });
+      }
+      return toolBar;
+
+   }
+
+   private ToolBar createToolBar(Composite parent, IActionable actionable, final Artifact artifact) {
       Composite toolBarComposite = new Composite(parent, SWT.BORDER);
       GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
       toolBarComposite.setLayoutData(gridData);
@@ -359,7 +424,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
       ToolItem item;
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Artifact Editor");
+      if (actionable != null) {
+         OseeAts.addButtonToEditorToolBar(actionable, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID,
+               "Artifact Editor");
+      }
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("edit.gif"));
@@ -409,7 +477,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       });
 
-      final DeleteArtifactAction deleteAction = new DeleteArtifactAction();
+      final DeleteArtifactAction deleteAction = new DeleteArtifactAction(artifact);
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("delete.gif"));
       item.setToolTipText(deleteAction.getText());
@@ -448,61 +516,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
-      // Add Navigation Browser Navigation Buttons
-      back = new ToolItem(toolBar, SWT.NONE);
-      back.setImage(skynetGuiPlugin.getImage("nav_backward.gif"));
-      back.setToolTipText("Back to previous page");
-      back.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.back();
-         }
-      });
-      forward = new ToolItem(toolBar, SWT.NONE);
-      forward.setImage(skynetGuiPlugin.getImage("nav_forward.gif"));
-      forward.setToolTipText("Forward to the next page.");
-      forward.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.forward();
-         }
-      });
-
-      ToolItem refresh = new ToolItem(toolBar, SWT.NONE);
-      refresh.setImage(skynetGuiPlugin.getImage("refresh.gif"));
-      refresh.setToolTipText("Refresh the current page");
-      refresh.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            previewComposite.refresh();
-         }
-      });
-
-      if (OseeProperties.isDeveloper()) {
-         ToolItem snapshotSave = new ToolItem(toolBar, SWT.NONE);
-         snapshotSave.setImage(skynetGuiPlugin.getImage("snapshotSave.gif"));
-         snapshotSave.setToolTipText("DEVELOPERS ONLY: Take a Snapshot of the preview");
-         snapshotSave.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-               final String oldUrl = previewComposite.getUrl();
-               if (oldUrl.contains("GET.ARTIFACT") && !oldUrl.contains("&force=true")) {
-                  previewComposite.setUrl(oldUrl + "&force=true");
-                  Job job = new Job("Update Preview") {
-                     @Override
-                     protected IStatus run(IProgressMonitor monitor) {
-                        renderPreviewPage();
-                        return Status.OK_STATUS;
-                     }
-                  };
-                  job.setUser(false);
-                  job.setPriority(Job.SHORT);
-                  job.schedule(2000);
-               }
-            }
-         });
-      }
-
       Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
       artifactInfoLabel.setEditable(false);
 
@@ -513,8 +526,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    }
    private final class DeleteArtifactAction extends Action {
 
-      public DeleteArtifactAction() {
+      private final Artifact artifact;
+
+      public DeleteArtifactAction(Artifact artifact) {
          super("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON);
+         this.artifact = artifact;
       }
 
       @Override

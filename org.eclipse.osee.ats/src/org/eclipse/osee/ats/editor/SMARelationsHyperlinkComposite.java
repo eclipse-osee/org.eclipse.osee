@@ -38,7 +38,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class SMARelationsComposite extends Composite {
+public class SMARelationsHyperlinkComposite extends Composite {
 
    private final XFormToolkit toolkit;
    private static AtsRelation sides[] =
@@ -52,7 +52,7 @@ public class SMARelationsComposite extends Composite {
     * @param parent
     * @param style
     */
-   public SMARelationsComposite(Composite parent, XFormToolkit toolkit, int style) {
+   public SMARelationsHyperlinkComposite(Composite parent, XFormToolkit toolkit, int style) {
       super(parent, style);
       this.toolkit = toolkit;
    }

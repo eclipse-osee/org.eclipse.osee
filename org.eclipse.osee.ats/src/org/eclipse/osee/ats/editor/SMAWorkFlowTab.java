@@ -80,7 +80,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final Integer HEADER_COMP_COLUMNS = 4;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private final TeamWorkFlowArtifact teamWf;
-   private SMARelationsComposite smaRelationsComposite;
+   private SMARelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
    private Composite body;
    private Composite atsBody;
@@ -225,8 +225,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          sections.clear();
          pages.clear();
 
-         if (SMARelationsComposite.relationExists(smaMgr.getSma())) {
-            smaRelationsComposite = new SMARelationsComposite(atsBody, toolkit, SWT.NONE);
+         if (SMARelationsHyperlinkComposite.relationExists(smaMgr.getSma())) {
+            smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, toolkit, SWT.NONE);
             smaRelationsComposite.create(smaMgr);
          }
       } catch (Exception ex) {

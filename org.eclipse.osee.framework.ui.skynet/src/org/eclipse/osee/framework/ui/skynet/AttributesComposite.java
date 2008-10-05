@@ -59,15 +59,19 @@ public class AttributesComposite extends Composite {
    private static final String[] columnNames = new String[] {"name", "value"};
    private static final Integer[] columnWidths = new Integer[] {200, 600};
    private Artifact artifact;
-   private IDirtiableEditor editor;
+   private final IDirtiableEditor editor;
    private Label warningLabel;
-   private boolean displayNameAttribute = true;
-   private ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<ModifyAttributesListener>();
+   private final boolean displayNameAttribute = true;
+   private final ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<ModifyAttributesListener>();
    private MenuItem deleteItem;
-   private ToolBar toolBar;
+   private final ToolBar toolBar;
 
    public static final int NAME_COLUMN_INDEX = 0;
    public static final int VALUE_COLUMN_INDEX = 1;
+
+   public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
+      this(editor, parent, style, artifact, null);
+   }
 
    public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, ToolBar toolBar) {
       super(parent, style);

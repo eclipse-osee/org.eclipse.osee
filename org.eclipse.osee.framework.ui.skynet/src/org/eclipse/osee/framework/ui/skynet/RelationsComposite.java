@@ -217,6 +217,11 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          }
       });
 
+      expandItemsThatHaveChildren();
+      new RelationSkynetDragAndDrop(tree, VIEW_ID);
+   }
+
+   private void expandItemsThatHaveChildren() {
       //expand items that have children
       Object[] types = ((ITreeContentProvider) treeViewer.getContentProvider()).getChildren(treeViewer.getInput());
       for (Object obj : types) {
@@ -227,8 +232,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             }
          }
       }
-
-      new RelationSkynetDragAndDrop(tree, VIEW_ID);
    }
 
    private void createColumns() {
@@ -614,7 +617,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    public void refreshArtifact(Artifact newArtifact) {
       relationLabelProvider.setArtifact(newArtifact);
       treeViewer.setInput(newArtifact);
-
+      expandItemsThatHaveChildren();
       refresh();
    }
 

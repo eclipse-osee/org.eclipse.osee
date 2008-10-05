@@ -314,7 +314,7 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   public boolean handleChangeResolution() throws OseeCoreException, SQLException {
+   public boolean handleChangeResolution() throws OseeCoreException {
       if (isUsingTaskResolutionOptions()) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();

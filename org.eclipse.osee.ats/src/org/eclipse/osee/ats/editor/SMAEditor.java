@@ -12,16 +12,20 @@
 package org.eclipse.osee.ats.editor;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
@@ -29,27 +33,49 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
+import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -61,13 +87,15 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IArtifactsPurgedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, historyPageIndex;
+   private int workFlowPageIndex, taskPageIndex, historyPageIndex, relationPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
    private SMAHistoryComposite historyComposite;
+   private RelationsComposite relationsComposite;
+   private AttributesComposite attributesComposite;
    private final MultiPageEditorPart editor;
    public static enum PriviledgedEditMode {
       Off, CurrentState, Global
@@ -99,6 +127,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
                protected void handleTxWork() throws OseeCoreException, SQLException {
+                  if (getActivePage() == attributesPageIndex) {
+                     smaMgr.getSma().persistAttributes();
+                  }
                   // Save widget data to artifact
                   workFlowTab.saveXWidgetToArtifact();
                   smaMgr.getSma().saveSMA();
@@ -138,6 +169,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (taskComposite != null) {
          taskComposite.dispose();
       }
+      if (relationsComposite != null) {
+         relationsComposite.disposeRelationsComposite();
+      }
       super.dispose();
    }
 
@@ -159,6 +193,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) return result;
+
+         if (smaMgr.getSma().isDirty(true)) {
+            return new Result(true, "Another relation is dirty");
+         }
 
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -226,9 +264,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
 
          // Create History tab
-         historyComposite = new SMAHistoryComposite(smaMgr, getContainer(), SWT.NONE);
-         historyPageIndex = addPage(historyComposite);
+         Composite composite = createCommonPageComposite();
+         createCommonToolBar(composite);
+         historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
+         historyPageIndex = addPage(composite);
          setPageText(historyPageIndex, "History");
+
+         createRelationsTab();
+
+         createAttributesTab();
 
          setActivePage(workFlowPageIndex);
       } catch (Exception ex) {
@@ -238,11 +282,175 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       enableGlobalPrint();
    }
 
+   private void createAttributesTab() {
+      if (!AtsPlugin.isAtsAdmin()) return;
+
+      // Create Attributes tab
+      Composite composite = createCommonPageComposite();
+      ToolBar toolBar = createCommonToolBar(composite);
+
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("save.gif"));
+      item.setToolTipText("Save attributes changes only");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+                        @Override
+                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                           smaMgr.getSma().persistAttributes();
+                        }
+                     };
+               txWrapper.execute();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      });
+
+      Label label = new Label(composite, SWT.NONE);
+      label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
+      label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+
+      attributesComposite = new AttributesComposite(this, composite, SWT.NONE, smaMgr.getSma());
+      attributesPageIndex = addPage(composite);
+      setPageText(attributesPageIndex, "Attributes");
+   }
+
+   private void createRelationsTab() {
+      // Create Relations tab
+      Composite composite = createCommonPageComposite();
+      ToolBar toolBar = createCommonToolBar(composite);
+
+      if (AtsPlugin.isAtsAdmin()) {
+         final ToolItem showAllRelationsItem = new ToolItem(toolBar, SWT.CHECK);
+         showAllRelationsItem.setImage(AtsPlugin.getInstance().getImage("relate.gif"));
+         showAllRelationsItem.setToolTipText("Shows all relations - AtsAdmin only");
+         showAllRelationsItem.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               if (showAllRelationsItem.getSelection()) {
+                  relationsComposite.getTreeViewer().removeFilter(userRelationsFilter);
+                  relationsComposite.refreshArtifact(smaMgr.getSma());
+               } else {
+                  relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
+               }
+               relationsComposite.refresh();
+            }
+         });
+      }
+
+      ToolItem item = new ToolItem(toolBar, SWT.CHECK);
+      item.setImage(AtsPlugin.getInstance().getImage("refresh.gif"));
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            relationsComposite.refreshArtifact(smaMgr.getSma());
+         }
+      });
+
+      relationsComposite = new RelationsComposite(this, composite, SWT.NONE, smaMgr.getSma());
+      relationPageIndex = addPage(composite);
+      setPageText(relationPageIndex, "Relations");
+      // Don't allow users to see all relations
+      relationsComposite.getTreeViewer().addFilter(userRelationsFilter);
+
+   }
+
+   private static List<String> filteredRelationTypeNames =
+         Arrays.asList(AtsRelation.ActionToWorkflow_Action.getTypeName(), AtsRelation.SmaToTask_Sma.getTypeName(),
+               AtsRelation.TeamActionableItem_ActionableItem.getTypeName(),
+               AtsRelation.TeamWorkflowTargetedForVersion_Version.getTypeName(),
+               AtsRelation.TeamLead_Lead.getTypeName(), AtsRelation.TeamMember_Member.getTypeName(),
+               AtsRelation.TeamWorkflowToReview_Review.getTypeName(), AtsRelation.WorkItem__Child.getTypeName(),
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getTypeName(),
+               CoreRelationEnumeration.Dependency__Artifact.getTypeName(),
+               CoreRelationEnumeration.Users_Artifact.getTypeName());
+
+   private static ViewerFilter userRelationsFilter = new ViewerFilter() {
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+       */
+      @Override
+      public boolean select(Viewer viewer, Object parentElement, Object element) {
+         if (element instanceof RelationType) {
+            return !filteredRelationTypeNames.contains(((RelationType) element).getTypeName());
+         }
+         return true;
+      }
+   };
+
+   protected ToolBar createCommonToolBar(Composite parent) {
+      Composite toolBarComposite = new Composite(parent, SWT.BORDER);
+      GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 1, 1);
+      toolBarComposite.setLayoutData(gridData);
+      GridLayout layout = new GridLayout(2, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      toolBarComposite.setLayout(layout);
+
+      ToolBar toolBar = new ToolBar(toolBarComposite, SWT.FLAT | SWT.RIGHT);
+
+      gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true, 1, 1);
+      toolBar.setLayoutData(gridData);
+      SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
+      ToolItem item;
+
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(skynetGuiPlugin.getImage("edit.gif"));
+      item.setToolTipText("Show this artifact in the Resource History");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            RevisionHistoryView.open(smaMgr.getSma());
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("authenticated.gif"));
+      item.setToolTipText("Access Control");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
+            pd.open();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.SEPARATOR);
+
+      Text artifactInfoLabel = new Text(toolBarComposite, SWT.END);
+      artifactInfoLabel.setEditable(false);
+      artifactInfoLabel.setText("Type: \"" + smaMgr.getSma().getArtifactTypeName() + "\"   HRID: " + smaMgr.getSma().getHumanReadableId());
+      artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
+
+      return toolBar;
+   }
+
+   private Composite createCommonPageComposite() {
+      Composite composite = new Composite(getContainer(), SWT.NONE);
+      GridLayout layout = new GridLayout(1, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      layout.verticalSpacing = 0;
+      composite.setLayout(layout);
+
+      return composite;
+   }
+
    public void refreshPages() throws OseeCoreException, SQLException {
       if (getContainer() == null || getContainer().isDisposed()) return;
       setTitleImage(smaMgr.getSma().getImage());
       if (workFlowTab != null) workFlowTab.refresh();
       if (historyComposite != null) historyComposite.refresh();
+      if (relationsComposite != null) relationsComposite.refreshArtifact(smaMgr.getSma());
+      if (attributesComposite != null) attributesComposite.refreshArtifact(smaMgr.getSma());
       smaMgr.getEditor().onDirtied();
    }
 
@@ -406,8 +614,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    /**
-    * @param priviledgedEditMode the priviledgedEditMode to set
-    * @throws OseeCoreException
+    * @param priviledgedEditMode the priviledgedEditMode to set s * @throws OseeCoreException
     */
    public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException {
       this.priviledgedEditMode = priviledgedEditMode;
@@ -526,6 +733,28 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener#handleRelationModifiedEvent(org.eclipse.osee.framework.skynet.core.event.Sender, org.eclipse.osee.framework.skynet.core.relation.RelationModType, org.eclipse.osee.framework.skynet.core.relation.RelationLink, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.lang.String)
+    */
+   @Override
+   public void handleRelationModifiedEvent(Sender sender, RelationModType relationModType, RelationLink link, Branch branch, String relationType) {
+      try {
+         if (link.getArtifactA().equals(smaMgr.getSma()) || link.getArtifactB().equals(smaMgr.getSma())) {
+            onDirtied();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
+    */
+   @Override
+   public String getActionDescription() {
+      return null;
    }
 
 }
