@@ -11,9 +11,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class UpdateWordFormattedContentAttributes extends AbstractBlam {
 	private static final String UPDATE_ATTRIBUTE_TYPE_WHOLE_WORD = "update osee_attribute set attr_type_id = 963 where gamma_id in (select t2.gamma_id from osee_artifact t1, osee_attribute t2 where t1.art_id = t2.art_id and t2.attr_type_id = 19 and t1.art_type_id in (select art_type_id from osee_artifact_type where name in ('Checklist (WordML)', 'Guideline', 'How To', 'Renderer Template', 'Roadmap','Template (WordML)', 'Test Procedure WML', 'Work Instruction', 'Work Sheet (WordML)')))";
-	private static final String UPDATE_ATTRIBUTE_TYPE_WORD_TEMPLATE = "update osee_attribute set attr_type_id = 962 where attr_type = 19";
+	private static final String UPDATE_ATTRIBUTE_TYPE_WORD_TEMPLATE = "update osee_attribute set attr_type_id = 962 where attr_type_id = 19";
 	private static final String UPDATE_ATTR_VAL_WHOLE_WORD = "update osee_valid_attributes set attr_type_id = 963 where attr_type_id = 19 and art_type_id in (select art_type_id from osee_artifact_type where name in ('Checklist (WordML)', 'Guideline', 'How To', 'Renderer Template', 'Roadmap','Template (WordML)', 'Test Procedure WML', 'Work Instruction', 'Work Sheet (WordML)'))";
-	private static final String UPDATE_ATTR_VAL_WORD_TEMP = "update osee_valid_attributes set attr_type_id = 962 where attr_type = 19";
+	private static final String UPDATE_ATTR_VAL_WORD_TEMP = "update osee_valid_attributes set attr_type_id = 962 where attr_type_id = 19";
 	
 	@Override
 	public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
