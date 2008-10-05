@@ -22,11 +22,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -57,7 +57,7 @@ public class OseeNotifyUsersJob extends Job {
          for (OseeNotificationEvent notificationEvent : notificationEvents) {
             users.addAll(notificationEvent.getUsers());
          }
-         XResultData resultData = new XResultData(SkynetGuiPlugin.getLogger());
+         XResultData resultData = new XResultData();
          if (testing) {
             resultData.log("Testing Results Report for Osee Notification; Email to current user.<br>");
             users.clear();

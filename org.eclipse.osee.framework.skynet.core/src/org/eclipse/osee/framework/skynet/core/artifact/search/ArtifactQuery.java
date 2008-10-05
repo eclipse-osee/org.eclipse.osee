@@ -14,6 +14,10 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -21,10 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
@@ -332,7 +332,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     */
-   public static Artifact reloadArtifactFromId(int artId, Branch branch) throws OseeDataStoreException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact reloadArtifactFromId(int artId, Branch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifact();
    }
 }

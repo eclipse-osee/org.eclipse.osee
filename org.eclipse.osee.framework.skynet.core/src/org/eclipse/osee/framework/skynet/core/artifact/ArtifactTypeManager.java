@@ -27,15 +27,14 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -93,14 +92,13 @@ public class ArtifactTypeManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
    /**
     * @return Returns all of the descriptors.
     * @throws OseeCoreException
-    * @throws SQLException
     */
    static Collection<ArtifactType> getAllTypes() throws OseeDataStoreException {
       ensurePopulated();
@@ -127,7 +125,6 @@ public class ArtifactTypeManager {
     * @return Returns the descriptor with a particular namespace and name
     * @throws OseeDataStoreException
     * @throws OseeCoreException
-    * @throws SQLException
     */
    public static ArtifactType getType(String namespace, String name) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
@@ -166,7 +163,6 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
     * @throws OseeTypeDoesNotExist
-    * @throws SQLException
     */
    public static ArtifactType getType(int artTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
@@ -184,7 +180,6 @@ public class ArtifactTypeManager {
     * 
     * @param artifactTypeName
     * @param branch
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch) throws OseeCoreException {
@@ -197,7 +192,6 @@ public class ArtifactTypeManager {
     * @param artifactTypeName
     * @param branch
     * @param name
-    * @throws SQLException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws OseeCoreException {
       Artifact artifact;
@@ -219,7 +213,7 @@ public class ArtifactTypeManager {
       return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
-   public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
+   public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
             new ByteArrayInputStream(imageDescriptor.getData()), descriptor.getArtTypeId());
 
@@ -228,30 +222,25 @@ public class ArtifactTypeManager {
    }
 
    public static ArtifactType createType(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      try {
-         ArtifactType artifactType;
-         if (!typeExists(namespace, artifactTypeName)) {
-            int artTypeId = SequenceManager.getNextArtifactTypeId();
-            InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
-            ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
+      ArtifactType artifactType;
+      if (!typeExists(namespace, artifactTypeName)) {
+         int artTypeId = SequenceManager.getNextArtifactTypeId();
+         InputStreamImageDescriptor imageDescriptor = instance.getDefaultImageDescriptor(artifactTypeName);
+         ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromName(factoryName);
 
-            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
-                  artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, factory.getFactoryId(), namespace,
+               artifactTypeName, factoryKey, new ByteArrayInputStream(imageDescriptor.getData()));
 
-            artifactType =
-                  new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
-         } else {
-            // Check if anything valuable is different
-            artifactType = getType(namespace, artifactTypeName);
-            if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
-                  factoryName)) {
-               // update factory information
-            }
+         artifactType = new ArtifactType(artTypeId, factoryKey, factory, namespace, artifactTypeName, imageDescriptor);
+      } else {
+         // Check if anything valuable is different
+         artifactType = getType(namespace, artifactTypeName);
+         if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
+               factoryName)) {
+            // update factory information
          }
-         return artifactType;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       }
+      return artifactType;
    }
 
    private InputStreamImageDescriptor getDefaultImageDescriptor(String typeName) {
@@ -284,18 +273,18 @@ public class ArtifactTypeManager {
       try {
          Pair<String, String> imagelocation = imageMap.get(typeName);
          if (imagelocation == null) {
-            SkynetActivator.getLogger().log(Level.WARNING, "No image was defined for art type [" + typeName + "]");
+            OseeLog.log(SkynetActivator.class, Level.WARNING, "No image was defined for art type [" + typeName + "]");
             imagelocation = defaultIconLocation;
          }
          URL url = getUrl(imagelocation);
          if (url == null) {
-            SkynetActivator.getLogger().log(Level.WARNING,
+            OseeLog.log(SkynetActivator.class, Level.WARNING,
                   "Unable to get url for type [" + typeName + "] bundle path " + imagelocation.getValue());
             url = getUrl(defaultIconLocation);
          }
          imageDescriptor = new InputStreamImageDescriptor(url.openStream());
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, "Icon for Artifact type " + typeName + " not found.", ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, "Icon for Artifact type " + typeName + " not found.", ex);
          imageDescriptor = new InputStreamImageDescriptor(new byte[0]);
       }
 

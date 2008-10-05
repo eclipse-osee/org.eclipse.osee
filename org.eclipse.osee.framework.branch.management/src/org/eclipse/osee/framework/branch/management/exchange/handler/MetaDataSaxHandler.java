@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -102,7 +103,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       this.targetMetadataMap.putAll(targetTables);
    }
 
-   private Map<String, MetaData> getTargetDbMetadata(Connection connection) throws SQLException {
+   private Map<String, MetaData> getTargetDbMetadata(Connection connection) throws SQLException, OseeDataStoreException {
       Map<String, MetaData> targetDbMetadata = new HashMap<String, MetaData>();
       DatabaseMetaData dbMetaData = connection.getMetaData();
       for (String sourceTables : importMetadataMap.keySet()) {
@@ -111,7 +112,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       return targetDbMetadata;
    }
 
-   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException {
+   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException, OseeDataStoreException {
       ResultSet resultSet = null;
       try {
          resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"});
@@ -134,7 +135,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException {
+   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException, OseeDataStoreException {
       ResultSet resultSet = null;
       try {
          try {

@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -51,7 +51,6 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @param artifacts
     * @param descriptor
-    * @throws SQLException
     */
    private void processChange(List<Artifact> artifacts, ArtifactType descriptor) throws Exception {
       if (artifacts.isEmpty()) {
@@ -77,8 +76,6 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @param artifact
     * @param descriptor
-    * @throws SQLException
-    * @throws SQLException
     */
    private void processAttributes(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
@@ -99,7 +96,6 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @param artifact
     * @param artifactType
-    * @throws SQLException
     */
    private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
       relationsToDelete = new LinkedList<RelationLink>();
@@ -160,10 +156,9 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @param artifact
     * @param descriptor
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws OseeCoreException, SQLException {
+   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }

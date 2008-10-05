@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osee.framework.server.admin.BaseCmdWorker;
@@ -92,7 +91,7 @@ public class BranchExportWorker extends BaseCmdWorker {
                branchIds.add(chStmt.getRset().getInt("branch_id"));
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
       println(String.format("Exporting: [%s] branches\n", branchIds.size()));

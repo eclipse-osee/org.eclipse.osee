@@ -22,17 +22,16 @@ import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -92,12 +91,12 @@ public class TransactionIdManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return transactionNumber;
    }
 
-   public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws SQLException {
+   public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
       Integer transactionNumber = SequenceManager.getNextTransactionId();
       if (comment == null) {
          comment = "";
@@ -143,7 +142,7 @@ public class TransactionIdManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -173,7 +172,7 @@ public class TransactionIdManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return priorTransactionId;
    }
@@ -206,7 +205,7 @@ public class TransactionIdManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return priorTransactionId;
    }
@@ -274,7 +273,7 @@ public class TransactionIdManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       return checksum;
@@ -333,7 +332,7 @@ public class TransactionIdManager {
          } catch (SQLException ex) {
             throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
       return transactionId;

@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.db.connection;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DBConnection {
 
-   public static Connection getNewConnection(DbInformation databaseService) throws SQLException {
+   public static Connection getNewConnection(DbInformation databaseService) throws OseeDataStoreException {
       try {
 
          IConnection connectionFactory =
@@ -39,8 +39,8 @@ public class DBConnection {
          connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
          return connection;
-      } catch (ClassNotFoundException ex) {
-         throw new SQLException("Unable to get a database connection:", ex);
+      } catch (Exception ex) {
+         throw new OseeDataStoreException("Unable to get a database connection:", ex);
       }
    }
 }

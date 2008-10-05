@@ -44,7 +44,7 @@ public class SMAPrint extends Action {
    @Override
    public void run() {
       try {
-         XResultData resultData = new XResultData(AtsPlugin.getLogger());
+         XResultData resultData = new XResultData();
          resultData.addRaw(AHTML.beginMultiColumnTable(100));
          resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT,
                "Title: ", smaMgr.getSma().getDescriptiveName())}));

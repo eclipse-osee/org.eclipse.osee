@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -59,7 +59,8 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
       String message = null;
       try {
          message = OseeApplicationServer.getOseeApplicationServer();
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
+         message = "";
       }
       return String.format("Not connected to application server [%s]", message);
    }
@@ -69,10 +70,11 @@ public class ApplicationServerStatusContributionItem extends SkynetContributionI
     */
    @Override
    protected String getEnabledToolTip() {
-      String message = null;
+      String message;
       try {
          message = OseeApplicationServer.getOseeApplicationServer();
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
+         message = "";
       }
       return String.format("Connected to application server [%s]", message);
    }

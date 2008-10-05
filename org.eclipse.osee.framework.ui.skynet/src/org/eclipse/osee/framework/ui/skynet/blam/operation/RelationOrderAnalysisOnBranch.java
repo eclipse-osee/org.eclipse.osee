@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -172,7 +171,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
 	public void widgetCreated(XWidget widget, FormToolkit toolkit,
 			Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout,
 			XModifiedListener modListener, boolean isEditable)
-			throws OseeCoreException, SQLException {
+			throws OseeCoreException {
 		super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout,
 				modListener, isEditable);
 		if (widget.getLabel().equals("Branch")) {

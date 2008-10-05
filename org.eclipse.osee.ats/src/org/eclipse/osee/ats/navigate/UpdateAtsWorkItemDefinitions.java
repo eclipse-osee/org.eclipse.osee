@@ -13,9 +13,8 @@ package org.eclipse.osee.ats.navigate;
 import java.sql.SQLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -46,7 +45,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(),
             "This could break lots of things, are you SURE?")) return;
 
-      XResultData xResultData = new XResultData(SkynetGuiPlugin.getLogger());
+      XResultData xResultData = new XResultData();
       AtsDatabaseConfig.configWorkItemDefinitions(WriteType.Update, xResultData);
       if (xResultData.isEmpty()) {
          xResultData.log("Nothing updated");

@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xresults;
 
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -33,13 +33,12 @@ import org.eclipse.swt.widgets.Display;
 public class XResultData {
 
    StringBuffer sb = new StringBuffer();
-   private final Logger logger;
    private static enum Type {
       Severe, Warning, Info;
    }
 
    public static void runExample() {
-      XResultData rd = new XResultData(SkynetGuiPlugin.getLogger());
+      XResultData rd = new XResultData();
       rd.log("This is just a normal log message");
       rd.logWarning("This is a warning");
       rd.logError("This is an error");
@@ -51,10 +50,6 @@ public class XResultData {
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
       rd.addRaw(AHTML.endMultiColumnTable());
       rd.report("This is my report title");
-   }
-
-   public XResultData(Logger logger) {
-      this.logger = logger;
    }
 
    public void addRaw(String str) {
@@ -90,14 +85,7 @@ public class XResultData {
       else
          resultStr = str;
       sb.append(resultStr);
-      if (logger != null)
-         logger.log(Level.parse(type.name().toUpperCase()), resultStr);
-      else {
-         if (type == Type.Info)
-            System.out.println(resultStr);
-         else
-            System.err.println(resultStr);
-      }
+      OseeLog.log(SkynetGuiPlugin.class, Level.parse(type.name().toUpperCase()), resultStr);
       if (monitor != null) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {

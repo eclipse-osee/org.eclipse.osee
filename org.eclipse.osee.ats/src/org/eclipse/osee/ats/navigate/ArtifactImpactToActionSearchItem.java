@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -75,7 +75,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
    public class ActionToArtifactImpactJob extends Job {
       private IProgressMonitor monitor;
       private final String artifactName;
-      private XResultData rd = new XResultData(AtsPlugin.getLogger());
+      private XResultData rd = new XResultData();
 
       public ActionToArtifactImpactJob(String artifactName) {
          super("Searching \"" + artifactName + "\"...");

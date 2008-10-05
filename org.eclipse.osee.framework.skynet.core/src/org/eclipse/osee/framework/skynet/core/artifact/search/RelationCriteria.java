@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -35,7 +34,6 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * @param value
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
-    * @throws SQLException
     */
    public RelationCriteria(IRelationEnumeration relationEnum) throws OseeTypeDoesNotExist, OseeDataStoreException {
       this(relationEnum.getRelationType(), relationEnum.getSide());
@@ -65,7 +63,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToWhereSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
     */
    @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException {
+   public void addToWhereSql(ArtifactQueryBuilder builder) {
       if (artifactId > 0) {
          builder.append(relAlias);
          builder.append(relationSide.isSideA() ? ".b_art_id" : ".a_art_id");

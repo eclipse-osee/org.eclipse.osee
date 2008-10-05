@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 public abstract class ArtifactFactory {
@@ -43,7 +41,6 @@ public abstract class ArtifactFactory {
     * @param humandReadableId
     * @param earlyArtifactInitialization TODO
     * @return
-    * @throws SQLException
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (!compatibleWith(artifactType)) {
@@ -53,11 +50,7 @@ public abstract class ArtifactFactory {
       Artifact artifact =
             getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
 
-      try {
-         artifact.setArtId(SequenceManager.getNextArtifactId());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      artifact.setArtId(SequenceManager.getNextArtifactId());
       if (earlyArtifactInitialization != null) {
          earlyArtifactInitialization.run(artifact);
       }

@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.IConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -55,7 +56,7 @@ public class OseeConnectionPool {
       connections.removeElement(conn);
    }
 
-   public synchronized Connection getConnection() throws SQLException {
+   public synchronized Connection getConnection() throws OseeDataStoreException {
       OseeConnection c;
       for (int i = 0; i < connections.size(); i++) {
          c = connections.elementAt(i);
@@ -69,8 +70,7 @@ public class OseeConnectionPool {
          connections.addElement(c);
          return c;
       } catch (Throwable th) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Unable to get database connection.", th);
-         throw new SQLException("Unable to get a database connection: " + th.getMessage());
+         throw new OseeDataStoreException("Unable to get a database connection: ", th);
       }
    }
 

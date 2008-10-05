@@ -32,12 +32,14 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -53,9 +55,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOp
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -131,8 +130,6 @@ public class ArtifactPersistenceManager {
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
-
-   private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
 
    private static final String REVERT_ATTRIBUTE_ADDRESSING =
          "Delete from osee_txs where (gamma_id, transaction_id) in (SELECT txs.gamma_id, txs.transaction_id FROM osee_tx_details det, osee_txs txs, osee_attribute att WHERE det.branch_id = ? and det.tx_type = 0 and det.transaction_id = txs.transaction_id and txs.gamma_id = att.gamma_id and att.art_id = ? and att.attr_id = ?)";
@@ -253,17 +250,16 @@ public class ArtifactPersistenceManager {
     * 
     * @param guid The guid of the artifact.
     * @return The <code>Artifact</code> from the database that corresponds to the supplied guid.
-    * @throws SQLException
     */
-   public Artifact getArtifact(String guid, TransactionId transactionId) throws SQLException, OseeCoreException {
+   public Artifact getArtifact(String guid, TransactionId transactionId) throws OseeCoreException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, guid, -1, true);
    }
 
-   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException, OseeCoreException {
+   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws OseeCoreException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, null, artId, false);
    }
 
-   private Artifact getArtifactInternal(TransactionId transactionLimit, String query, String guid, int artId, boolean useGuid) throws SQLException, OseeCoreException {
+   private Artifact getArtifactInternal(TransactionId transactionLimit, String query, String guid, int artId, boolean useGuid) throws OseeCoreException {
       // First try to acquire the artifact from cache
       Artifact artifact;
       Object data;
@@ -304,8 +300,10 @@ public class ArtifactPersistenceManager {
             setAttributesOnHistoricalArtifact(artifact);
 
             artifact.onInitializationComplete();
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
 
@@ -396,7 +394,7 @@ public class ArtifactPersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws OseeDataStoreException {
+   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws OseeCoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(branch.getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, queryParameters, branch),
@@ -420,7 +418,7 @@ public class ArtifactPersistenceManager {
     * This is method only exists to support the old change reports
     */
    @Deprecated
-   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws OseeDataStoreException {
+   public static Collection<Artifact> getArtifactsNotCurrent(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId, ISearchConfirmer confirmer) throws OseeCoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(transactionId.getBranch().getBranchId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT_NOT_CURRENT, queryParameters,
@@ -434,7 +432,6 @@ public class ArtifactPersistenceManager {
     * 
     * @param artifact The artifact to acquire the attributes for.
     * @param branch The tag to get the data for.
-    * @throws SQLException
     * @throws OseeDataStoreException
     * @throws OseeCoreException
     */
@@ -455,7 +452,7 @@ public class ArtifactPersistenceManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact, false);
@@ -483,7 +480,6 @@ public class ArtifactPersistenceManager {
 
    /**
     * @param artifacts The artifacts to delete.
-    * @throws SQLException
     */
    public static void deleteArtifact(boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
       if (artifacts.length == 0) return;
@@ -567,9 +563,8 @@ public class ArtifactPersistenceManager {
     * will also be removed from the database only for the branch it is on).
     * 
     * @param artifact
-    * @throws SQLException
     */
-   public void purgeArtifactFromBranch(int branchId, int artId) throws OseeCoreException, SQLException {
+   public void purgeArtifactFromBranch(int branchId, int artId) throws OseeCoreException {
       revertArtifact(branchId, artId);
 
       //Remove from Baseline
@@ -578,15 +573,15 @@ public class ArtifactPersistenceManager {
       ConnectionHandler.runPreparedUpdate(PURGE_BASELINE_ARTIFACT_TRANS, branchId, artId);
    }
 
-   public void revertAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException, SQLException {
+   public void revertAttribute(Artifact artifact, Attribute<?> attribute) throws OseeDataStoreException {
       revertAttribute(artifact.getBranch().getBranchId(), artifact.getArtId(), attribute.getAttrId());
    }
 
-   public void revertAttribute(int branchId, int artId, int attributeId) throws OseeCoreException, SQLException {
+   public void revertAttribute(int branchId, int artId, int attributeId) throws OseeDataStoreException {
       try {
          new RevertAttrDbTx(branchId, artId, attributeId).execute();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw new OseeDataStoreException(ex);
       }
    }
 
@@ -602,35 +597,33 @@ public class ArtifactPersistenceManager {
       }
 
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeDataStoreException {
          ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_ADDRESSING, branchId, artId, attributeId);
          ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_CURRENT, branchId, artId, attributeId);
          ConnectionHandler.runPreparedUpdate(REVERT_ATTRIBUTE_DATA, attributeId, artId);
          //Clean up artifact version table and transaction details table.
-         ConnectionHandlerStatement connectionHandlerStatement = null;
+         ConnectionHandlerStatement chStmt1 = null;
+         ConnectionHandlerStatement chStmt2 = null;
          ResultSet resultSet = null;
          try {
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, artId, branchId);
-            resultSet = connectionHandlerStatement.getRset();
+            chStmt1 = ConnectionHandler.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, artId, branchId);
+            resultSet = chStmt1.getRset();
             while (resultSet.next()) {
                ConnectionHandler.runPreparedUpdate(REMOVE_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
                      resultSet.getInt("gamma_id"));
                ConnectionHandler.runPreparedUpdate(REMOVE_AV_ATTRIBUTE_REVERT, resultSet.getInt("gamma_id"));
             }
-         } finally {
-            DbUtil.close(connectionHandlerStatement);
-         }
-         try {
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(UPDATE_TXS_ATTRIBUTE_REVERT, branchId, artId);
-            resultSet = connectionHandlerStatement.getRset();
+            chStmt2 = ConnectionHandler.runPreparedQuery(UPDATE_TXS_ATTRIBUTE_REVERT, branchId, artId);
+            resultSet = chStmt2.getRset();
             if (resultSet.next()) {
                ConnectionHandler.runPreparedUpdate(SET_TXS_ATTRIBUTE_REVERT, resultSet.getInt("transaction_id"),
                      resultSet.getInt("gamma_id"));
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(connectionHandlerStatement);
+            ConnectionHandler.close(chStmt1);
+            ConnectionHandler.close(chStmt2);
          }
          ConnectionHandler.runPreparedUpdate(REMOVE_DET_ATTRIBUTE_REVERT, branchId);
       }
@@ -641,12 +634,12 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public void revertArtifact(Artifact artifact) throws OseeCoreException, SQLException {
+   public void revertArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact == null) return;
       revertArtifact(artifact.getBranch().getBranchId(), artifact.getArtId());
    }
 
-   public void revertArtifact(int branchId, int artId) throws OseeCoreException, SQLException {
+   public void revertArtifact(int branchId, int artId) throws OseeCoreException {
       try {
          new RevertDbTx(branchId, artId).execute();
       } catch (Exception ex) {
@@ -663,18 +656,18 @@ public class ArtifactPersistenceManager {
       }
 
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          TransactionJoinQuery gammaIdsModifications = JoinUtility.createTransactionJoinQuery();
          TransactionJoinQuery gammaIdsBaseline = JoinUtility.createTransactionJoinQuery();
 
          //Get attribute Gammas
-         ConnectionHandlerStatement connectionHandlerStatement = null;
+         ConnectionHandlerStatement chStmt = null;
          ResultSet resultSet = null;
          try {
-            connectionHandlerStatement =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(GET_GAMMAS_REVERT, branchId, artId, branchId, artId, artId,
                         branchId, artId);
-            resultSet = connectionHandlerStatement.getRset();
+            resultSet = chStmt.getRset();
             while (resultSet.next()) {
                if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
                   gammaIdsModifications.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
@@ -682,10 +675,10 @@ public class ArtifactPersistenceManager {
                   gammaIdsBaseline.add(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"));
                }
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(connectionHandlerStatement);
-            connectionHandlerStatement = null;
-            resultSet = null;
+            ConnectionHandler.close(chStmt);
          }
 
          if (!gammaIdsModifications.isEmpty()) {
@@ -761,9 +754,9 @@ public class ArtifactPersistenceManager {
     * 
     * @param artifact
     * @param artifactType
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws SQLException {
+   public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, artifactType.getArtTypeId(), artifact.getArtId());
    }
 
@@ -771,8 +764,9 @@ public class ArtifactPersistenceManager {
     * Purge attribute from the database.
     * 
     * @param attribute
+    * @throws OseeDataStoreException
     */
-   public static void purgeAttribute(Attribute<?> attribute, int attributeId) throws SQLException {
+   public static void purgeAttribute(Attribute<?> attribute, int attributeId) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, attributeId);
       ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, attributeId);
    }
@@ -804,7 +798,6 @@ public class ArtifactPersistenceManager {
    /**
     * @param artifactsToPurge
     * @param collection
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static void purgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
@@ -822,17 +815,17 @@ public class ArtifactPersistenceManager {
          }
          if (batchParameters.size() > 0) {
             ArtifactLoader.selectArtifacts(batchParameters);
-            ConnectionHandlerStatement stmt = null;
+            ConnectionHandlerStatement chStmt = null;
             try {
-               stmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
+               chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
-               while (stmt.getRset().next()) {
+               while (chStmt.getRset().next()) {
                   failed = true;
                   sb.append("ArtifactId[");
-                  sb.append(stmt.getRset().getInt(1));
+                  sb.append(chStmt.getRset().getInt(1));
                   sb.append("] BranchId[");
-                  sb.append(stmt.getRset().getInt(2));
+                  sb.append(chStmt.getRset().getInt(2));
                   sb.append("]\n");
                }
                if (failed) {
@@ -841,7 +834,7 @@ public class ArtifactPersistenceManager {
                }
             } finally {
                ArtifactLoader.clearQuery(queryId);
-               DbUtil.close(stmt);
+               ConnectionHandler.close(chStmt);
             }
          }
 

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +27,10 @@ import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -129,7 +128,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void refreshToolbar() throws OseeCoreException, SQLException {
+   private void refreshToolbar() throws OseeCoreException {
       if (toolbarArea != null) {
          toolbarArea.dispose();
          scrolledForm.getToolBarManager().removeAll();
@@ -143,7 +142,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       scrolledForm.updateToolBar();
    }
 
-   public Result isXWidgetDirty() throws OseeCoreException, SQLException {
+   public Result isXWidgetDirty() throws OseeCoreException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetDirty();
          if (result.isTrue()) return result;
@@ -151,7 +150,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.FalseResult;
    }
 
-   public Result isXWidgetSavable() throws OseeCoreException, SQLException {
+   public Result isXWidgetSavable() throws OseeCoreException {
       for (SMAWorkFlowSection section : sections) {
          Result result = section.isXWidgetSavable();
          if (result.isFalse()) return result;
@@ -159,7 +158,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return Result.TrueResult;
    }
 
-   public void saveXWidgetToArtifact() throws OseeCoreException, SQLException {
+   public void saveXWidgetToArtifact() throws OseeCoreException {
       for (SMAWorkFlowSection section : sections) {
          section.saveXWidgetToArtifact();
       }
@@ -192,7 +191,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return sb.toString();
    }
 
-   private void fillBody(IManagedForm managedForm) throws OseeCoreException, SQLException {
+   private void fillBody(IManagedForm managedForm) throws OseeCoreException {
       body = managedForm.getForm().getBody();
       GridLayout gridLayout = new GridLayout(1, false);
       body.setLayout(gridLayout);
@@ -203,7 +202,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private ServicesArea toolbarArea;
 
-   private void createBody(Composite body) throws OseeCoreException, SQLException {
+   private void createBody(Composite body) throws OseeCoreException {
       atsBody = toolkit.createComposite(body);
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(ALayout.getZeroMarginLayout(1, false));
@@ -491,7 +490,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan, String forStateName) throws SQLException, MultipleAttributesExist {
+   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan, String forStateName) throws MultipleAttributesExist {
       // Display global Notes
       for (NoteItem noteItem : smaMgr.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
@@ -566,7 +565,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void updateOrigLabel() throws OseeCoreException, SQLException {
+   public void updateOrigLabel() throws OseeCoreException {
       origLabel.setText(smaMgr.getOriginator().getName());
       origLabel.getParent().layout();
       if (teamWf != null) {
@@ -575,7 +574,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refresh() throws OseeCoreException, SQLException {
+   public void refresh() throws OseeCoreException {
       if (smaMgr.getEditor() != null && !smaMgr.isInTransition()) {
          for (SMAWorkFlowSection section : sections) {
             section.dispose();

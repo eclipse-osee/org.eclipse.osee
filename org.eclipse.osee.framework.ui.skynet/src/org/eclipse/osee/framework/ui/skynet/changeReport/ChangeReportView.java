@@ -45,6 +45,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -63,8 +65,6 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -336,7 +336,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
                            toTransId, false)) {
                         attributeModifiedArtifactIds.add(artifact.getArtId());
                      }
-                  } catch (OseeDataStoreException ex) {
+                  } catch (OseeCoreException ex) {
                      OSEELog.logSevere(SkynetGuiPlugin.class, "Error getting modified artifacts", true);
                   }
                }
@@ -921,7 +921,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
     * Explores the changes on the branch.
     * 
     * @param branch
-    * @throws SQLException
     */
    public void explore(final Branch branch) {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
@@ -933,8 +932,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
             try {
                ChangeReportInput input = new ChangeReportInput(branch);
                explore(input);
-            } catch (SQLException ex) {
-               OSEELog.logException(ChangeReportView.class, ex, true);
             } catch (OseeCoreException ex) {
                OSEELog.logException(ChangeReportView.class, ex, true);
             }

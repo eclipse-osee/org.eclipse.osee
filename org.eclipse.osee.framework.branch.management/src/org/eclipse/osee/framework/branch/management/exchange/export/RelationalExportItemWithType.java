@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -100,7 +100,7 @@ public class RelationalExportItemWithType extends RelationalExportItem {
       public void cleanUp() {
          try {
             this.joinQuery.delete(getConnection());
-         } catch (SQLException ex) {
+         } catch (OseeDataStoreException ex) {
             notifyOnExportException(ex);
          }
          this.joinQuery = null;
@@ -110,7 +110,7 @@ public class RelationalExportItemWithType extends RelationalExportItem {
          return columnToListenFor;
       }
 
-      public void store() throws SQLException {
+      public void store() throws OseeDataStoreException {
          if (this.joinQuery != null) {
             this.joinQuery.store(getConnection());
          }

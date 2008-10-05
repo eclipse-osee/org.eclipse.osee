@@ -34,6 +34,7 @@ Import-Package: org.eclipse.nebula.widgets.calendarcombo,
  org.eclipse.osee.framework.db.connection.core.query,
  org.eclipse.osee.framework.db.connection.core.schema,
  org.eclipse.osee.framework.db.connection.core.transaction,
+ org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

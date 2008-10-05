@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TagQueueJoinQuery;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.server.admin.Activator;
@@ -40,15 +40,15 @@ class TaggerAllWorker extends BaseCmdWorker {
       this.processor = null;
    }
 
-   private void fetchAndProcessGammas(Connection connection, int branchId, TagProcessListener processor) throws SQLException {
-      ConnectionHandlerStatement stmt = null;
+   private void fetchAndProcessGammas(Connection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
       try {
-         stmt =
+         chStmt =
                ConnectionHandler.runPreparedQuery(connection, AttributeDataStore.getAllTaggableGammasByBranchQuery(
                      connection, branchId), AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
-         while (stmt.next() && isExecutionAllowed()) {
-            long gammaId = stmt.getRset().getLong("gamma_id");
+         while (chStmt.next() && isExecutionAllowed()) {
+            long gammaId = chStmt.getRset().getLong("gamma_id");
             joinQuery.add(gammaId);
             if (joinQuery.size() >= BATCH_SIZE) {
                processor.storeAndAddQueryId(connection, joinQuery);
@@ -56,8 +56,10 @@ class TaggerAllWorker extends BaseCmdWorker {
             }
          }
          processor.storeAndAddQueryId(connection, joinQuery);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(stmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -142,7 +144,7 @@ class TaggerAllWorker extends BaseCmdWorker {
          Activator.getInstance().getSearchTagger().stopTaggingByQueueQueryId(toStop);
       }
 
-      public void storeAndAddQueryId(Connection connection, TagQueueJoinQuery joinQuery) throws SQLException {
+      public void storeAndAddQueryId(Connection connection, TagQueueJoinQuery joinQuery) throws OseeDataStoreException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);

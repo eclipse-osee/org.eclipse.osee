@@ -8,17 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.exception;
-
+package org.eclipse.osee.framework.db.connection.exception;
 
 /**
- * @author Donald G. Dunne
+ * @author Ryan D. Brooks
  */
-public class ArtifactDoesNotExist extends OseeCoreException {
-
+public class OseeCoreException extends Exception {
    private static final long serialVersionUID = 1L;
 
-   public ArtifactDoesNotExist(String message) {
+   /**
+    * @param message
+    */
+   public OseeCoreException(String message) {
       super(message);
+   }
+
+   /**
+    * @param message
+    * @param cause
+    */
+   public OseeCoreException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
+   /**
+    * @param cause
+    */
+   public OseeCoreException(Throwable cause) {
+      super(cause);
    }
 }

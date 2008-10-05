@@ -10,9 +10,7 @@ import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -62,8 +60,8 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       monitor.beginTask("Verify TX_Current Artifact Errors", 100);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      ConnectionHandlerStatement connection = null;
-      ConnectionHandlerStatement connection2 = null;
+      ConnectionHandlerStatement chStmt1 = null;
+      ConnectionHandlerStatement chStmt2 = null;
       ResultSet resultSet;
       int count = 0;
       if (operation.equals(Operation.Verify)) {
@@ -76,10 +74,10 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                   sbFull.append(AHTML.addRowSpanMultiColumnTable("Artifacts with no tx_current set",
                         columnHeaders.length));
                }
-               connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
+               chStmt1 = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
                monitor.worked(35);
                if (monitor.isCanceled()) return;
-               resultSet = connection.getRset();
+               resultSet = chStmt1.getRset();
                while (resultSet.next()) {
                   count++;
                   if (showDetails) {
@@ -90,7 +88,7 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                   }
                }
             } finally {
-               DbUtil.close(connection);
+               ConnectionHandler.close(chStmt1);
             }
             monitor.worked(15);
             if (monitor.isCanceled()) return;
@@ -107,10 +105,10 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                }
                count = 0;
                monitor.worked(5);
-               connection = ConnectionHandler.runPreparedQuery(MULTIPLE_TX_CURRENT_SET);
+               chStmt1 = ConnectionHandler.runPreparedQuery(MULTIPLE_TX_CURRENT_SET);
                monitor.worked(30);
                if (monitor.isCanceled()) return;
-               resultSet = connection.getRset();
+               resultSet = chStmt1.getRset();
                while (resultSet.next()) {
                   count++;
                   if (showDetails) {
@@ -122,7 +120,7 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                   }
                }
             } finally {
-               DbUtil.close(connection);
+               ConnectionHandler.close(chStmt1);
 
             }
             monitor.worked(15);
@@ -133,7 +131,7 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
          } finally {
             if (showDetails) {
                sbFull.append(AHTML.endMultiColumnTable());
-               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               XResultData rd = new XResultData();
                rd.addRaw(sbFull.toString());
                rd.report("Artifact TX_Current Check", Manipulations.RAW_HTML);
             }
@@ -155,8 +153,8 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
          monitor.subTask("Querying for multiple Tx_currents");
          try {
             try {
-               connection = ConnectionHandler.runPreparedQuery(DUPLICATE_ARTIFACTS_TX_CURRENT);
-               resultSet = connection.getRset();
+               chStmt1 = ConnectionHandler.runPreparedQuery(DUPLICATE_ARTIFACTS_TX_CURRENT);
+               resultSet = chStmt1.getRset();
                monitor.worked(9);
                monitor.subTask("Processing Results");
                if (monitor.isCanceled()) return;
@@ -180,13 +178,13 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                builder.append("Cleaned up " + total + " Tx_Current duplication errors\n");
 
             } finally {
-               DbUtil.close(connection);
+               ConnectionHandler.close(chStmt1);
             }
             try {
-               connection = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
+               chStmt1 = ConnectionHandler.runPreparedQuery(NO_TX_CURRENT_SET);
                monitor.worked(35);
                if (monitor.isCanceled()) return;
-               resultSet = connection.getRset();
+               resultSet = chStmt1.getRset();
                if (showDetails) {
                   columnHeaders = new String[] {"Art ID", "Gamma Id", "Transaction Id", "Branch id"};
                   sbFull.append(AHTML.beginMultiColumnTable(100, 1));
@@ -199,10 +197,10 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                   ConnectionHandler.runPreparedUpdate(NO_TX_CURRENT_CLEANUP, resultSet.getInt("art_id"),
                         resultSet.getInt("branch_id"), resultSet.getInt("art_id"));
                   if (showDetails) {
-                     connection2 =
+                     chStmt2 =
                            ConnectionHandler.runPreparedQuery(QUERY_TX_CURRENT_SET, resultSet.getInt("branch_id"),
                                  resultSet.getInt("art_id"));
-                     ResultSet resultSet2 = connection2.getRset();
+                     ResultSet resultSet2 = chStmt2.getRset();
                      String trans_id = "Not Found", gamma_id = "Not Found";
                      if (resultSet2.next()) {
                         trans_id = resultSet2.getString("transaction_id");
@@ -212,7 +210,7 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                            AHTML.addRowMultiColumnTable(new String[] {resultSet.getString("art_id"), gamma_id,
                                  trans_id, resultSet.getString("branch_id")});
                      builder.append(str);
-                     DbUtil.close(connection2);
+                     ConnectionHandler.close(chStmt2);
                   }
                   if (monitor.isCanceled()) {
                      builder.append("Canceled: Cleaned up " + count + " no Tx_Current set errors\n");
@@ -221,13 +219,13 @@ public class ArtifactTxCurrent extends DatabaseHealthTask {
                }
                builder.append("Cleaned up " + count + " no Tx_Current set errors\n");
             } finally {
-               DbUtil.close(connection2);
-               DbUtil.close(connection);
+               ConnectionHandler.close(chStmt2);
+               ConnectionHandler.close(chStmt1);
             }
          } finally {
             if (showDetails) {
                sbFull.append(AHTML.endMultiColumnTable());
-               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               XResultData rd = new XResultData();
                rd.addRaw(sbFull.toString());
                rd.report("Artifact TX_Current Fix", Manipulations.RAW_HTML);
             }

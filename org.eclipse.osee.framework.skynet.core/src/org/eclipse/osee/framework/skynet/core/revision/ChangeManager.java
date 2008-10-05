@@ -1,7 +1,5 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +12,10 @@ import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -29,10 +30,6 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -87,10 +84,9 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public Collection<Change> getChangesPerTransaction(TransactionId transactionId) throws SQLException, OseeCoreException {
+   public Collection<Change> getChangesPerTransaction(TransactionId transactionId) throws OseeCoreException {
       return getChanges(null, transactionId);
    }
 
@@ -100,10 +96,9 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws SQLException, OseeCoreException {
+   public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws OseeCoreException {
       return getChanges(sourceBranch, null);
    }
 
@@ -113,10 +108,9 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   private Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId) throws SQLException, OseeCoreException {
+   private Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
@@ -163,13 +157,12 @@ public class ChangeManager {
    /**
     * @param sourceBranch
     * @param changes
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
-      ConnectionHandlerStatement connectionHandlerStatement = null;
+   private void loadNewOrDeletedArtifactChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
       Map<Integer, ArtifactChanged> artifactChanges = new HashMap<Integer, ArtifactChanged>();
       boolean hasBranch = sourceBranch != null;
       TransactionId fromTransactionId;
@@ -189,29 +182,26 @@ public class ChangeManager {
             fromTransactionId = branchStartEndTransaction.getKey();
             toTransactionId = branchStartEndTransaction.getValue();
 
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, sourceBranch.getBranchId());
+            chStmt = ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_CHANGES, sourceBranch.getBranchId());
          }
          //Changes per a transaction
          else {
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
 
-            connectionHandlerStatement =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_CHANGES,
                         toTransactionId.getTransactionNumber());
          }
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-
          int count = 0;
-         while (resultSet.next()) {
+         while (chStmt.next()) {
             count++;
-            int artId = resultSet.getInt("art_id");
+            int artId = chStmt.getInt("art_id");
 
             ArtifactChanged artifactChanged =
-                  new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"), resultSet.getInt("gamma_id"),
-                        artId, toTransactionId, fromTransactionId,
-                        ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, !hasBranch);
+                  new ArtifactChanged(sourceBranch, chStmt.getInt("art_type_id"), chStmt.getInt("gamma_id"), artId,
+                        toTransactionId, fromTransactionId, ModificationType.getMod(chStmt.getInt("mod_type")),
+                        ChangeType.OUTGOING, !hasBranch);
 
             //We do not want to display artifacts that were new and then deleted
             //The only was this could happen is if the artifact was in here twice
@@ -229,18 +219,17 @@ public class ChangeManager {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
       } finally {
-         DbUtil.close(connectionHandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 
    /**
     * @param sourceBranch
     * @param changes
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, OseeCoreException {
-      ConnectionHandlerStatement connectionHandlerStatement = null;
+   private void loadRelationChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = null;
       TransactionId fromTransactionId;
       TransactionId toTransactionId;
 
@@ -253,8 +242,7 @@ public class ChangeManager {
          }
          //Changes per a branch
          if (hasBranch) {
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, sourceBranch.getBranchId());
+            chStmt = ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -263,54 +251,50 @@ public class ChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per a transaction
          else {
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, transactionId.getTransactionNumber());
+            chStmt = ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
          }
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-
          int count = 0;
-         while (resultSet.next()) {
+         while (chStmt.next()) {
             count++;
-            int aArtId = resultSet.getInt("a_art_id");
-            int bArtId = resultSet.getInt("b_art_id");
-            int relLinkId = resultSet.getInt("rel_link_id");
+            int aArtId = chStmt.getInt("a_art_id");
+            int bArtId = chStmt.getInt("b_art_id");
+            int relLinkId = chStmt.getInt("rel_link_id");
 
             if (!newAndDeletedArtifactIds.contains(aArtId) && !newAndDeletedArtifactIds.contains(bArtId)) {
-               ModificationType modificationType = ModificationType.getMod(resultSet.getInt("mod_type"));
-               String rationale = modificationType != ModificationType.DELETED ? resultSet.getString("rationale") : "";
+               ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               String rationale = modificationType != ModificationType.DELETED ? chStmt.getString("rationale") : "";
                artIds.add(aArtId);
                artIds.add(bArtId);
 
-               changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, toTransactionId,
+               changes.add(new RelationChanged(sourceBranch, -1, chStmt.getInt("gamma_id"), aArtId, toTransactionId,
                      fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId, relLinkId, rationale,
-                     resultSet.getInt("a_order"), resultSet.getInt("b_order"),
-                     RelationTypeManager.getType(resultSet.getInt("rel_link_type_id")), !hasBranch));
+                     chStmt.getInt("a_order"), chStmt.getInt("b_order"),
+                     RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
          if (DEBUG) {
             System.out.println(String.format("        Found %d Changes in %s", count, Lib.getElapseString(time)));
          }
       } finally {
-         DbUtil.close(connectionHandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 
    /**
     * @param sourceBranch
     * @param changes
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws SQLException, BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
+   private void loadAttributeChanges(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       Map<Integer, Change> attributesWasValueCache = new HashMap<Integer, Change>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
-      ConnectionHandlerStatement connectionHandlerStatement = null;
+      ConnectionHandlerStatement chStmt = null;
       ModificationType artModType;
       boolean hasBranch = sourceBranch != null;
       long time = System.currentTimeMillis();
@@ -329,8 +313,7 @@ public class ChangeManager {
       try {
          //Changes per a branch
          if (hasBranch) {
-            connectionHandlerStatement =
-                  ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, sourceBranch.getBranchId());
+            chStmt = ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_IS_CHANGES, sourceBranch.getBranchId());
 
             Pair<TransactionId, TransactionId> branchStartEndTransaction =
                   TransactionIdManager.getStartEndPoint(sourceBranch);
@@ -339,26 +322,25 @@ public class ChangeManager {
             toTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
-            connectionHandlerStatement =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES,
                         transactionId.getTransactionNumber());
 
             toTransactionId = transactionId;
             fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
          }
-         ResultSet resultSet = connectionHandlerStatement.getRset();
          AttributeChanged attributeChanged;
 
          int count = 0;
-         while (resultSet.next()) {
+         while (chStmt.next()) {
             count++;
-            int attrId = resultSet.getInt(3);
-            int artId = resultSet.getInt(2);
-            int sourceGamma = resultSet.getInt(4);
-            int attrTypeId = resultSet.getInt(5);
-            int artTypeId = resultSet.getInt(1);
-            String isValue = resultSet.getString(6);
-            ModificationType modificationType = ModificationType.getMod(resultSet.getInt(7));
+            int attrId = chStmt.getInt("attr_id");
+            int artId = chStmt.getInt("art_id");
+            int sourceGamma = chStmt.getInt("gamma_id");
+            int attrTypeId = chStmt.getInt("attr_type_id");
+            int artTypeId = chStmt.getInt("art_type_id");
+            String isValue = chStmt.getString("is_value");
+            ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             if (artModTypes.containsKey(artId)) {
                artModType = artModTypes.get(artId);
@@ -425,16 +407,15 @@ public class ChangeManager {
                }
                ArtifactLoader.selectArtifacts(datas);
 
-               connectionHandlerStatement = ConnectionHandler.runPreparedQuery(sql, sqlParamter, queryId);
-               resultSet = connectionHandlerStatement.getRset();
+               chStmt = ConnectionHandler.runPreparedQuery(sql, sqlParamter, queryId);
                int previousAttrId = -1;
 
                count = 0;
-               while (resultSet.next()) {
+               while (chStmt.next()) {
                   count++;
-                  int attrId = resultSet.getInt("attr_id");
+                  int attrId = chStmt.getInt("attr_id");
                   if (previousAttrId != attrId) {
-                     String wasValue = resultSet.getString("was_value");
+                     String wasValue = chStmt.getString("was_value");
                      if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChanged) {
                         AttributeChanged changed = (AttributeChanged) attributesWasValueCache.get(attrId);
                         if (changed.getModificationType() != ModificationType.DELETED && changed.getModificationType() != ModificationType.ARTIFACT_DELETED) {
@@ -453,7 +434,7 @@ public class ChangeManager {
             }
          }
       } finally {
-         DbUtil.close(connectionHandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 

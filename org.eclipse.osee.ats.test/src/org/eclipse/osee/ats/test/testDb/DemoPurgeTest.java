@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.test.testDb;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,8 +20,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -113,24 +112,20 @@ public class DemoPurgeTest extends TestCase {
       }
    }
 
-   private void getTableCounts(Map<String, Integer> tableCount) throws SQLException {
+   private void getTableCounts(Map<String, Integer> tableCount) throws OseeDataStoreException {
       for (String tableName : tables) {
          tableCount.put(tableName, getTableRowCount(tableName));
-         System.out.println("Table Count " + tableName + " = " + tableCount.get(tableName));
       }
    }
 
-   private Integer getTableRowCount(String tableName) throws SQLException {
+   private int getTableRowCount(String tableName) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(String.format("select count(*) from %s", tableName), new Object[] {});
-         if (chStmt.next()) {
-            return new Integer(chStmt.getRset().getString(1));
-         }
+         chStmt = ConnectionHandler.runPreparedQuery(String.format("select count(1) as count from %s", tableName));
+         chStmt.next();
+         return chStmt.getInt("count");
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
-      return null;
    }
 }

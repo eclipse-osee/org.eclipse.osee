@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 

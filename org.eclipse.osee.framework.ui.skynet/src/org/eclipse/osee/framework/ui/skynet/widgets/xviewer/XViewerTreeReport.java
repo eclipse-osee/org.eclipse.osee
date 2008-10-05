@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
@@ -44,7 +44,7 @@ public class XViewerTreeReport {
    public void open(TreeItem items[]) {
       try {
          String html = getHtml(items);
-         XResultData xResultData = new XResultData(SkynetGuiPlugin.getLogger());
+         XResultData xResultData = new XResultData();
          xResultData.addRaw(html);
          xResultData.report(title, Manipulations.RAW_HTML);
       } catch (Exception ex) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -59,20 +58,20 @@ public class VersionMetrics {
       return sb.toString();
    }
 
-   public Integer getNumberDaysInRelease() throws OseeCoreException, SQLException {
+   public Integer getNumberDaysInRelease() throws OseeCoreException {
       Date startDate = getReleaseStartDate();
       if (startDate == null) return null;
       if (verArt.getReleaseDate() == null) return null;
       return XDate.calculateDifference(startDate, verArt.getReleaseDate());
    }
 
-   public Date getReleaseStartDate() throws OseeCoreException, SQLException {
+   public Date getReleaseStartDate() throws OseeCoreException {
       VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
       if (prevVerMet == null) return null;
       return prevVerMet.getVerArt().getReleaseDate();
    }
 
-   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException, SQLException {
+   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
@@ -81,14 +80,14 @@ public class VersionMetrics {
       return teams;
    }
 
-   public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException, SQLException {
+   public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException {
       if (verArt.getReleaseDate() == null) return null;
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
       if (index > 0) return verTeamMet.getReleasedOrderedVersions().get(index - 1);
       return null;
    }
 
-   public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException, SQLException {
+   public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException {
       if (verArt.getReleaseDate() == null) return null;
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
       if (index < verTeamMet.getReleasedOrderedVersions().size() - 1) {

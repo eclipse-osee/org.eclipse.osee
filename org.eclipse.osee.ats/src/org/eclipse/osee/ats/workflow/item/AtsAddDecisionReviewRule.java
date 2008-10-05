@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.workflow.item;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -15,9 +14,9 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.UsersByIds;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -66,7 +65,6 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
     * @param smaMgr
     * @return DecisionReviewArtifact
     * @throws OseeCoreException
-    * @throws SQLException
     */
    public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SMAManager smaMgr) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {

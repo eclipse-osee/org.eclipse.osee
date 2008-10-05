@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.SQLException;
 import java.util.Stack;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * Keeps track of nested calls by tracking start keys and confirming them upon the end of the level.<br>
@@ -67,10 +67,9 @@ public class KeyedLevelManager {
     * 
     * @param key An object for the manager to track this level. This will need to be passed to
     *           <code>endTransactionLevel</code> when the calling method is done.
-    * @throws SQLException
     * @see KeyedLevelManager#endTransactionLevel(Object)
     */
-   public boolean startTransactionLevel(Object key) throws SQLException {
+   public boolean startTransactionLevel(Object key) throws OseeDataStoreException {
       if (key == null) throw new IllegalArgumentException("key must not be null");
       if (isValid(key)) throw new IllegalArgumentException("The provided key is already in use for this manager");
 
@@ -86,8 +85,10 @@ public class KeyedLevelManager {
 
    /**
     * Re-implement this method to provide functionality upon initial entry. The default implementation does nothing.
+    * 
+    * @throws OseeDataStoreException TODO
     */
-   protected void onInitialEntry() throws SQLException {
+   protected void onInitialEntry() throws OseeDataStoreException {
    }
 
    /**
@@ -98,7 +99,7 @@ public class KeyedLevelManager {
     *           <code>startTransactionLevel</code>.
     * @see KeyedLevelManager#startTransactionLevel(Object)
     */
-   public void endTransactionLevel(Object key) throws SQLException {
+   public void endTransactionLevel(Object key) throws OseeDataStoreException {
       if (key == null) throw new IllegalArgumentException("key must not be null");
       if (true != isValid(key)) throw new IllegalArgumentException("The provided key is not known by this manager");
 
@@ -152,8 +153,10 @@ public class KeyedLevelManager {
    /**
     * Reimplement to provide funtionality when a full series of levels have been exited. The default implementation does
     * nothing.
+    * 
+    * @throws OseeDataStoreException TODO
     */
-   protected void onLastExit() throws SQLException {
+   protected void onLastExit() throws OseeDataStoreException {
    }
 
    /**

@@ -19,8 +19,9 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -28,8 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -93,7 +92,7 @@ public class AttributeTypeManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -169,8 +168,6 @@ public class AttributeTypeManager {
     * @param attrTypeId
     * @return the attribute type with the given name or throws an IllegalArgumentException if it does not exist.
     * @throws OseeTypeDoesNotExist
-    * @throws SQLException
-    * @throws IllegalArgumentException
     */
    public static AttributeType getType(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return getType("", name);
@@ -180,7 +177,6 @@ public class AttributeTypeManager {
     * Cache a newly created type.
     * 
     * @param attributeType
-    * @throws SQLException
     */
    public void cache(AttributeType attributeType) throws SQLException {
       nameToTypeMap.put(attributeType.getNamespace() + attributeType.getName(), attributeType);
@@ -215,7 +211,7 @@ public class AttributeTypeManager {
       return descriptor;
    }
 
-   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws SQLException {
+   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -227,13 +223,15 @@ public class AttributeTypeManager {
             attrBaseTypeId = SequenceManager.getNextAttributeProviderTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId, attrProviderExtension);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return attrBaseTypeId;
    }
 
-   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws SQLException {
+   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -245,8 +243,10 @@ public class AttributeTypeManager {
             attrBaseTypeId = SequenceManager.getNextAttributeBaseTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, attrBaseTypeId, attrBaseExtension);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       return attrBaseTypeId;

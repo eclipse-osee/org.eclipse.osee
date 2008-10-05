@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
+import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 
 public class SiteGssflRpcr extends DbItem {
 
@@ -49,9 +51,9 @@ public class SiteGssflRpcr extends DbItem {
          chStmt = ConnectionHandler.runPreparedQuery(query);
 
          boolean b = chStmt.next();
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
          return (b);
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          ex.printStackTrace();
       }
       return false;
@@ -72,8 +74,8 @@ public class SiteGssflRpcr extends DbItem {
             query = "INSERT INTO " + getTableName() + " (program,directory,program_id) VALUES (?,?,?)";
             ConnectionHandler.runPreparedUpdate(query, program, dir, programId);
          }
-      } catch (SQLException ex) {
-         ex.printStackTrace();
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
       }
    }
 

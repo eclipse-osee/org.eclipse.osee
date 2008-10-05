@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * Provides access to annotations stored as the "Annotation" attribute in the specified artifact. NOTE: Annotations can
@@ -40,7 +39,6 @@ public class AttributeAnnotationManager {
    /**
     * @return annotations stored in "Annotation" attribute of given artifact. NOTE: This is not a full list of
     *         annotation for this artifact as annotations can be added via extension point.
-    * @throws SQLException
     */
    public List<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
@@ -55,10 +53,9 @@ public class AttributeAnnotationManager {
     * Add an annotation to be stored in the "Annotation" attribute of this given artifact.
     * 
     * @param newAnnotation
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public void addAnnotation(ArtifactAnnotation newAnnotation) throws OseeCoreException, SQLException {
+   public void addAnnotation(ArtifactAnnotation newAnnotation) throws OseeCoreException {
 
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
@@ -75,10 +72,9 @@ public class AttributeAnnotationManager {
     * Remove the annotation from the "Annotation" attribute of the given artifact.
     * 
     * @param annotation
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public void removeAnnotation(ArtifactAnnotation annotation) throws SQLException, OseeCoreException {
+   public void removeAnnotation(ArtifactAnnotation annotation) throws OseeCoreException {
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
          ArtifactAnnotation attrAnnotation = new ArtifactAnnotation(attr.getValue());

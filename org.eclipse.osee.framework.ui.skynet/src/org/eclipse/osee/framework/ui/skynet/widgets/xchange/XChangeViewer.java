@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -270,8 +270,6 @@ public class XChangeViewer extends XWidget implements IActionable {
                      }
                   }
                });
-            } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             } catch (OseeCoreException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }

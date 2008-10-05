@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -39,7 +39,7 @@ public class TransactionData {
    private String name;
    private Branch branch;
 
-   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) throws OseeCoreException, SQLException {
+   public TransactionData(String comment, Timestamp timeStamp, int authorId, int transactionId, int associatedArtId, Branch branch, int commitArtId) throws OseeCoreException {
       super();
       this.comment = comment == null ? "" : comment;
       this.timeStamp = timeStamp;
@@ -53,7 +53,7 @@ public class TransactionData {
          name = user.getDescriptiveName();
       } catch (UserNotInDatabase ex) {
          name = "Could not resolve artId: " + authorId;
-         SkynetActivator.getLogger().log(Level.FINE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 

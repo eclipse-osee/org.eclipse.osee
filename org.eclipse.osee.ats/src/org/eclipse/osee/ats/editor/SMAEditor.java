@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -407,10 +407,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    /**
     * @param priviledgedEditMode the priviledgedEditMode to set
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException, SQLException {
+   public void setPriviledgedEditMode(PriviledgedEditMode priviledgedEditMode) throws OseeCoreException {
       this.priviledgedEditMode = priviledgedEditMode;
       smaMgr.getSma().saveSMA();
       workFlowTab.refresh();

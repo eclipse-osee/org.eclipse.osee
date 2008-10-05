@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -49,7 +48,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
             }
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
          System.out.println("count:  " + count);
       }
    }

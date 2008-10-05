@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -47,7 +46,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
             logger.log(Level.INFO, "active user count: " + rSet.getInt("user_count"));
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       monitor.done();
    }

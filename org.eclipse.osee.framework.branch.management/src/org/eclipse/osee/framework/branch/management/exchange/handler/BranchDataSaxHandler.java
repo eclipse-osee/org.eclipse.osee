@@ -20,8 +20,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -130,7 +130,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws SQLException {
+   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeDataStoreException {
       Map<String, BranchData> nameToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
          nameToImportFileBranchData.put(data.getBranchName(), data);
@@ -149,8 +149,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
                nameToImportFileBranchData.remove(name);
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return nameToImportFileBranchData.values();
    }

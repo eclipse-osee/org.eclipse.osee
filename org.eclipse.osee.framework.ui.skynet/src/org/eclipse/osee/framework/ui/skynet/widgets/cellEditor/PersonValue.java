@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 

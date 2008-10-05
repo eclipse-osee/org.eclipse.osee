@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -25,7 +24,6 @@ public class XAttributeTypeListViewer extends XTypeListViewer {
 
    /**
     * @param name
-    * @throws SQLException
     */
    public XAttributeTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);

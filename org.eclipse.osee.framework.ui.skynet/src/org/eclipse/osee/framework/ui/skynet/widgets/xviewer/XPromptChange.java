@@ -46,7 +46,7 @@ public class XPromptChange {
       return null;
    }
 
-   public static EnumStringSingleSelectionDialog promptChangeSingleSelectEnumeration(String displayName, Collection<String> enums, String currSelected) throws SQLException {
+   public static EnumStringSingleSelectionDialog promptChangeSingleSelectEnumeration(String displayName, Collection<String> enums, String currSelected) {
       final EnumStringSingleSelectionDialog diag =
             new EnumStringSingleSelectionDialog(displayName, displayName, enums, currSelected);
       if (diag.open() == 0) {

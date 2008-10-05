@@ -45,7 +45,7 @@ public class BackupBranchesJob extends EmailableJob {
       if (rd != null)
          this.rd = rd;
       else
-         this.rd = new XResultData(SkynetGuiPlugin.getLogger());
+         this.rd = new XResultData();
    }
 
    /*
@@ -71,9 +71,9 @@ public class BackupBranchesJob extends EmailableJob {
    }
 
    public void backup(Collection<Branch> branches) {
-      XResultData rd = new XResultData(SkynetGuiPlugin.getLogger());
+      XResultData rd = new XResultData();
       try {
-         rd = new XResultData(SkynetGuiPlugin.getLogger());
+         rd = new XResultData();
          rd.log(getName());
          rd.log("Starting OSEE DB Backup - " + XDate.getDateNow());
          for (Branch branch : branches) {

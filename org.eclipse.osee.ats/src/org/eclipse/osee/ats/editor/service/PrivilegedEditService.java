@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -19,9 +18,9 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -70,12 +69,9 @@ public class PrivilegedEditService extends WorkPageService {
             public void linkActivated(HyperlinkEvent e) {
                try {
                   if (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off) {
-                     if (MessageDialog.openQuestion(
-                           Display.getCurrent().getActiveShell(),
-                           "Diable Privileged Edit",
+                     if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Diable Privileged Edit",
                            "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
-                        smaMgr.getEditor().setPriviledgedEditMode(
-                              SMAEditor.PriviledgedEditMode.Off);
+                        smaMgr.getEditor().setPriviledgedEditMode(SMAEditor.PriviledgedEditMode.Off);
                      }
                   } else {
                      Set<User> users = smaMgr.getPrivilegedUsers();
@@ -84,8 +80,7 @@ public class PrivilegedEditService extends WorkPageService {
                      for (User user : users)
                         sb.append(user.getName() + "\n");
                      String buttons[];
-                     boolean iAmPrivileged =
-                           users.contains(SkynetAuthentication.getUser());
+                     boolean iAmPrivileged = users.contains(SkynetAuthentication.getUser());
                      if (iAmPrivileged)
                         buttons = new String[] {"Override and Edit", "Cancel"};
                      else
@@ -101,9 +96,6 @@ public class PrivilegedEditService extends WorkPageService {
                      if (iAmPrivileged && result == 0) smaMgr.getEditor().setPriviledgedEditMode(
                            SMAEditor.PriviledgedEditMode.Global);
                   }
-
-               } catch (SQLException ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
                } catch (OseeCoreException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }

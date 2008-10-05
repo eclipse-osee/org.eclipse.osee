@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util.widgets.role;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -234,7 +233,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                        protected void handleTxWork() throws OseeCoreException {
                            removeUserRoleHelper(items);
                         }
 
@@ -249,7 +248,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items) throws OseeCoreException, SQLException {
+   private void removeUserRoleHelper(List<UserRole> items) throws OseeCoreException {
       for (UserRole userRole : items) {
          reviewArt.getUserRoleManager().removeUserRole(userRole, false);
          xViewer.remove(userRole);
@@ -420,7 +419,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
     */
    @Override
-   public void saveToArtifact() throws OseeCoreException, SQLException {
+   public void saveToArtifact() throws OseeCoreException {
       // RoleViewer uses artifact as storage mechanism, nothing to save
    }
 
@@ -428,7 +427,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws OseeCoreException, SQLException {
+   public Result isDirty() throws OseeCoreException {
       // RoleViewer uses artifact as storage mechanism which already determines dirty
       return Result.FalseResult;
    }
@@ -437,7 +436,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws OseeCoreException, SQLException {
+   public void revert() throws OseeCoreException {
       // Nothing to revert cause artifact will be reverted
    }
 

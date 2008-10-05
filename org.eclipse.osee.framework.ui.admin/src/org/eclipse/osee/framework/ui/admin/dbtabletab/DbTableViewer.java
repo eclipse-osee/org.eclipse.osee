@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbDescribe.Describe;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -61,8 +61,9 @@ public class DbTableViewer {
 
    /**
     * @param parent
+    * @throws OseeDataStoreException
     */
-   public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) {
+   public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) throws OseeDataStoreException {
       this.dbTab = dbTab;
       this.dbItem = dbItem;
       getTableDescription();
@@ -198,25 +199,19 @@ public class DbTableViewer {
 
    }
 
-   public void getTableDescription() {
+   public void getTableDescription() throws OseeDataStoreException {
       dbDescribe = new DbDescribe(dbItem);
-      try {
-         describeList = dbDescribe.getDescription();
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
+      describeList = dbDescribe.getDescription();
    }
 
    /**
     * Load table with administration items
+    * 
+    * @throws OseeDataStoreException
     */
-   public void load() {
-      try {
-         dbTaskList = dbDescribe.getDbTaskList(describeList);
-         tableViewer.setInput(dbTaskList);
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
+   public void load() throws OseeDataStoreException {
+      dbTaskList = dbDescribe.getDbTaskList(describeList);
+      tableViewer.setInput(dbTaskList);
       refresh();
    }
 

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks

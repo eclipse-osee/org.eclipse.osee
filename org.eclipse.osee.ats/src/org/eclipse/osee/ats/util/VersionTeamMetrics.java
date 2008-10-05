@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +23,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
@@ -38,17 +37,17 @@ public class VersionTeamMetrics {
    private Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
    Map<Date, VersionMetrics> relDateToVerMet = new HashMap<Date, VersionMetrics>();
 
-   public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef) throws OseeCoreException, SQLException {
+   public VersionTeamMetrics(TeamDefinitionArtifact verTeamDef) throws OseeCoreException {
       this.verTeamDef = verTeamDef;
       loadMetrics();
    }
 
-   private void loadMetrics() throws OseeCoreException, SQLException {
+   private void loadMetrics() throws OseeCoreException {
       bulkLoadArtifacts();
       orderReleasedVersions();
    }
 
-   private void bulkLoadArtifacts() throws OseeCoreException, SQLException {
+   private void bulkLoadArtifacts() throws OseeCoreException {
       RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
             CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version,
             AtsRelation.TeamWorkflowTargetedForVersion_Workflow, AtsRelation.SmaToTask_Task,
@@ -57,7 +56,7 @@ public class VersionTeamMetrics {
 
    private Map<TeamWorkFlowArtifact, Date> teamWorkflowToOrigDate = null;
 
-   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException, SQLException {
+   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
          for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
@@ -76,7 +75,7 @@ public class VersionTeamMetrics {
       return teams;
    }
 
-   private void orderReleasedVersions() throws OseeCoreException, SQLException {
+   private void orderReleasedVersions() throws OseeCoreException {
       for (VersionArtifact ver : verTeamDef.getVersionsArtifacts()) {
          VersionMetrics verMet = new VersionMetrics(ver, this);
          if (ver.getReleaseDate() != null) {

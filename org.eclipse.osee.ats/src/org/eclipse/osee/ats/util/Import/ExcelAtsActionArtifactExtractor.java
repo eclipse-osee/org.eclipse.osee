@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -144,7 +144,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
 
    public boolean dataIsValid() throws OseeCoreException, SQLException {
       System.out.println("Validating...");
-      XResultData rd = new XResultData(AtsPlugin.getLogger());
+      XResultData rd = new XResultData();
       int rowNum = 1; // Header is row 1
       for (ActionData aData : actionDatas) {
          rowNum++;

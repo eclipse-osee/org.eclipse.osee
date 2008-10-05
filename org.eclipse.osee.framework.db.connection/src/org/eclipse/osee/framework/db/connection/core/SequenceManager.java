@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -69,7 +69,7 @@ public class SequenceManager {
       return range;
    }
 
-   private void prefetch(String sequenceName) throws SQLException {
+   private void prefetch(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
 
       long lastValue = -1;
@@ -81,29 +81,31 @@ public class SequenceManager {
       range.updateRange(lastValue);
    }
 
-   private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws SQLException {
+   private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt =
             ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE, value, sequenceName, lastValue);
       return modifySequenceValue(chStmt);
    }
 
-   private boolean insertSequenceValue(String sequenceName, long value) throws SQLException {
+   private boolean insertSequenceValue(String sequenceName, long value) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt =
             ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE, value, sequenceName);
       return modifySequenceValue(chStmt);
    }
 
-   private boolean modifySequenceValue(ConnectionHandlerStatement chStmt) throws SQLException {
+   private boolean modifySequenceValue(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
       boolean updated = false;
       try {
          updated = chStmt.getStatement().getUpdateCount() == 1;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return updated;
    }
 
-   private long getSequence(String sequenceName) throws SQLException {
+   private long getSequence(String sequenceName) throws OseeDataStoreException {
       long toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -111,15 +113,17 @@ public class SequenceManager {
          if (chStmt.next()) {
             toReturn = chStmt.getRset().getLong(LAST_SEQUENCE);
          } else {
-            throw new SQLException("Sequence name [" + sequenceName + "] was not found");
+            throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return toReturn;
    }
 
-   public static synchronized long getNextSequence(String sequenceName) throws SQLException {
+   public static synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = instance.getRange(sequenceName);
       if (range.lastAvailable == 0) {
          instance.prefetch(sequenceName);
@@ -132,65 +136,65 @@ public class SequenceManager {
       return range.currentValue;
    }
 
-   public void initializeSequence(String sequenceName) throws SQLException {
+   public void initializeSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;
       insertSequenceValue(sequenceName, 0);
    }
 
-   public static int getNextSessionId() throws SQLException {
+   public static int getNextSessionId() throws OseeDataStoreException {
       return (int) getNextSequence(TTE_SESSION_SEQ);
    }
 
-   public static int getNextTransactionId() throws SQLException {
+   public static int getNextTransactionId() throws OseeDataStoreException {
       return (int) getNextSequence(TRANSACTION_ID_SEQ);
    }
 
-   public static int getNextArtifactId() throws SQLException {
+   public static int getNextArtifactId() throws OseeDataStoreException {
       return (int) getNextSequence(ART_ID_SEQ);
    }
 
-   public static int getNextGammaId() throws SQLException {
+   public static int getNextGammaId() throws OseeDataStoreException {
       return (int) getNextSequence(GAMMA_ID_SEQ);
    }
 
-   public static int getNextArtifactTypeId() throws SQLException {
+   public static int getNextArtifactTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ART_TYPE_ID_SEQ);
    }
 
-   public static int getNextAttributeBaseTypeId() throws SQLException {
+   public static int getNextAttributeBaseTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_BASE_TYPE_ID_SEQ);
    }
 
-   public static int getNextAttributeProviderTypeId() throws SQLException {
+   public static int getNextAttributeProviderTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_PROVIDER_TYPE_ID_SEQ);
    }
 
-   public static int getNextAttributeId() throws SQLException {
+   public static int getNextAttributeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_ID_SEQ);
    }
 
-   public static int getNextAttributeTypeId() throws SQLException {
+   public static int getNextAttributeTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(ATTR_TYPE_ID_SEQ);
    }
 
-   public static int getNextFactoryId() throws SQLException {
+   public static int getNextFactoryId() throws OseeDataStoreException {
       return (int) getNextSequence(FACTORY_ID_SEQ);
    }
 
-   public static int getNextBranchId() throws SQLException {
+   public static int getNextBranchId() throws OseeDataStoreException {
       return (int) getNextSequence(BRANCH_ID_SEQ);
    }
 
-   public static int getNextRelationTypeId() throws SQLException {
+   public static int getNextRelationTypeId() throws OseeDataStoreException {
       return (int) getNextSequence(REL_LINK_TYPE_ID_SEQ);
    }
 
-   public static int getNextRelationId() throws SQLException {
+   public static int getNextRelationId() throws OseeDataStoreException {
       return (int) getNextSequence(REL_LINK_ID_SEQ);
    }
 
-   public static int getNextImportId() throws SQLException {
+   public static int getNextImportId() throws OseeDataStoreException {
       return (int) getNextSequence(IMPORT_ID_SEQ);
    }
 

@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
@@ -79,7 +80,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName) throws SQLException, IOException {
+   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName) throws SQLException, OseeDataStoreException, IOException {
       ResultSet resultSet = null;
       try {
          try {

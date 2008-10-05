@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -36,7 +36,6 @@ public class NativeArtifact extends Artifact {
     * @param parentFactory
     * @param guid
     * @param branch
-    * @throws SQLException
     */
    public NativeArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

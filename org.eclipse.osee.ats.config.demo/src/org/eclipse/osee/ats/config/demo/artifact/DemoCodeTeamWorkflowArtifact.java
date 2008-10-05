@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -28,7 +27,6 @@ public class DemoCodeTeamWorkflowArtifact extends TeamWorkFlowArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
-    * @throws SQLException
     */
    public DemoCodeTeamWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

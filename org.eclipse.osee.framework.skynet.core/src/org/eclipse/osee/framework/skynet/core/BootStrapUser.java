@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
-import java.sql.SQLException;
 
 /**
  * @author Ryan D. Brooks
@@ -25,16 +24,15 @@ public class BootStrapUser extends User {
     * @param guid
     * @param humanReadableId
     * @param tagId
-    * @throws SQLException
     */
-   private BootStrapUser() throws SQLException {
+   private BootStrapUser() {
       super(null, null, null, null, null);
    }
 
    /**
     * @return the instance
     */
-   public static BootStrapUser getInstance() throws SQLException {
+   public static BootStrapUser getInstance() {
       if (instance == null) instance = new BootStrapUser();
       return instance;
    }

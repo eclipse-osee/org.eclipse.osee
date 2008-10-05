@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.db.connection.core.OseeInfo;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plug-in class to be used in the desktop.
+ * The main plug-in class
  * 
  * @author Robert A. Fisher
  */
@@ -52,17 +50,5 @@ public class SkynetActivator extends OseeUiActivator {
    // usee OseeLog instead
    public static Logger getLogger() {
       return logger;
-   }
-
-   public boolean isAutoTaggingEnabled() throws SQLException {
-      String propertyValue = System.getProperty(AUTO_TAG_KEY, null);
-      if (propertyValue != null) {
-         return Boolean.parseBoolean(propertyValue);
-      }
-      return Boolean.parseBoolean(OseeInfo.getValue(SkynetActivator.AUTO_TAG_KEY));
-   }
-
-   public static void setAutoTaggingEnabled(boolean enabled) throws SQLException {
-      OseeInfo.putValue(SkynetActivator.AUTO_TAG_KEY, String.valueOf(enabled));
    }
 }

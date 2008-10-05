@@ -11,12 +11,10 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
@@ -100,17 +98,11 @@ public class NewActionPage2 extends WizardPage {
    }
 
    public void handlePopulateWithDebugInfo() {
-      try {
-         ((XText) getXWidget("Description")).set("See title");
-         // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-         ((XList) getXWidget("ats.User Community")).setSelected("Other");
-         ((XCombo) getXWidget("ats.Priority")).set("3");
-         ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
-      } catch (IllegalStateException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+      ((XText) getXWidget("Description")).set("See title");
+      // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
+      ((XList) getXWidget("ats.User Community")).setSelected("Other");
+      ((XCombo) getXWidget("ats.Priority")).set("3");
+      ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
    }
 
    public void update() {

@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,8 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -61,7 +61,6 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
-    * @throws SQLException
     */
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -267,7 +266,6 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * 
     * @param teamDef
     * @return number of hours per single person per single day
-    * @throws SQLException
     */
    public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
@@ -300,7 +298,6 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * 
     * @param actionableItems
     * @return users configured as leads by ActionableItems, then by TeamDefinition
-    * @throws SQLException
     */
    public Collection<User> getLeads(Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException {
       Set<User> leads = new HashSet<User>();
@@ -394,7 +391,6 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * will be asked, this results in a recursive look at parent teams until a parent artifact has a related branch or
     * the parent of a team is not a team. <br/><br/> If no branch is associated then null will be returned.
     * 
-    * @throws SQLException
     * @throws BranchDoesNotExist
     */
    public Branch getTeamBranch() throws OseeCoreException {

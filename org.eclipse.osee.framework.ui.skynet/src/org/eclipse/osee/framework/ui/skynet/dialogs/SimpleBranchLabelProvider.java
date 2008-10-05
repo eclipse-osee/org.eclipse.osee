@@ -11,11 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.dialogs;
 
-import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
 

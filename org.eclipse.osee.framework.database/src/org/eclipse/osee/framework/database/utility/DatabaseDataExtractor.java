@@ -41,10 +41,12 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.Activator;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,18 +74,14 @@ public class DatabaseDataExtractor {
       SQL3DataType type;
    }
 
-   public DatabaseDataExtractor(Connection connection, Set<String> schemas, File directory) {
+   public DatabaseDataExtractor(Connection connection, Set<String> schemas, File directory) throws OseeDataStoreException {
       this.connection = connection;
       this.schemas = schemas;
       this.directory = directory;
       this.logger = ConfigUtil.getConfigFactory().getLogger(DatabaseDataExtractor.class);
       this.workerThreads = new ArrayList<Thread>();
       this.extractTables = new TreeSet<String>();
-      try {
-         this.dbType = SupportedDatabase.getDatabaseType(connection);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Invalid database type. ", ex);
-      }
+      this.dbType = SupportedDatabase.getDatabaseType(connection);
    }
 
    public void addTableNameToExtract(String fullyQualifiedTableName) {
@@ -94,18 +92,9 @@ public class DatabaseDataExtractor {
       this.extractTables.clear();
    }
 
-   public void extract() {
-      try {
-         FileUtility.setupDirectoryForWrite(directory);
-         extractData();
-      } catch (IOException ex) {
-         logger.log(Level.SEVERE, "Directory Invalid. ", ex);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Extract Exception. ", ex);
-      } finally {
-
-      }
-
+   public void extract() throws OseeDataStoreException, IOException {
+      FileUtility.setupDirectoryForWrite(directory);
+      extractData();
    }
 
    private class DataExtractorThread extends Thread {
@@ -136,7 +125,14 @@ public class DatabaseDataExtractor {
                }
             } catch (Exception ex) {
             }
-            DbUtil.close(statement);
+
+            if (statement != null) {
+               try {
+                  statement.close();
+               } catch (SQLException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
          }
       }
    }
@@ -151,7 +147,7 @@ public class DatabaseDataExtractor {
       }
    }
 
-   private void extractData() throws SQLException {
+   private void extractData() throws OseeDataStoreException {
       databaseInfo = new DatabaseSchemaExtractor(connection, schemas);
       databaseInfo.extractSchemaData();
       Map<String, SchemaData> schemaDataMap = databaseInfo.getSchemas();

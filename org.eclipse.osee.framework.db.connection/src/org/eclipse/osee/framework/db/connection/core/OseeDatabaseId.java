@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * This is a unique identifier generated upon database initialization. The field should never be changed in the database
@@ -30,7 +30,7 @@ public class OseeDatabaseId {
       return DB_ID_KEY;
    }
 
-   public synchronized static String getGuid() throws SQLException {
+   public synchronized static String getGuid() throws OseeDataStoreException {
       if (databaseId == null) {
          databaseId = OseeInfo.getValue(DB_ID_KEY);
       }

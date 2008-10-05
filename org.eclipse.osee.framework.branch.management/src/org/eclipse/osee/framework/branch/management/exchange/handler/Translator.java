@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
 public class Translator {
@@ -69,13 +69,13 @@ public class Translator {
       return translators;
    }
 
-   public void loadTranslators(Connection connection, String sourceDatabaseId) throws SQLException {
+   public void loadTranslators(Connection connection, String sourceDatabaseId) throws OseeDataStoreException {
       for (TranslatedIdMap translator : translators) {
          translator.load(connection, sourceDatabaseId);
       }
    }
 
-   public void storeImport(Connection connection, String sourceDatabaseId, Date sourceExportDate) throws SQLException {
+   public void storeImport(Connection connection, String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
       Timestamp timeStamp = new Timestamp(sourceExportDate.getTime());
 
       Map<Integer, TranslatedIdMap> importIdIndex = new HashMap<Integer, TranslatedIdMap>();

@@ -28,9 +28,9 @@ import java.util.TreeSet;
 import org.eclipse.osee.framework.branch.management.impl.BranchCreation.CreateBranchTx;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
@@ -80,7 +80,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
     * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
     */
    @Override
-   public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
+   public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
       gammasToCurrent.clear();
 
       if (compressArtTypeIds != null && compressArtTypeIds.length > 0) {
@@ -115,8 +115,10 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
             }
          }
          initSelectLinkHistory(compressArtTypeIds, preserveArtTypeIds, historyMap, connection);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
@@ -139,7 +141,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       }
    }
 
-   private void createBaselineTransaction(int newTransactionNumber, String[] compressArtTypes, Connection connection) throws SQLException {
+   private void createBaselineTransaction(int newTransactionNumber, String[] compressArtTypes, Connection connection) throws OseeDataStoreException {
       for (String artifactTypeId : compressArtTypes) {
          ConnectionHandler.runPreparedUpdate(connection, SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, newTransactionNumber,
                1, artifactTypeId, getParentBranchId());
@@ -157,9 +159,8 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
     * 
     * @param compressArtTypes
     * @param preserveArtTypes
-    * @throws SQLException
     */
-   private void initSelectLinkHistory(String[] compressArtTypeIds, String[] preserveArtTypeIds, HashCollection<Integer, Pair<Integer, Integer>> historyMap, Connection connection) throws SQLException {
+   private void initSelectLinkHistory(String[] compressArtTypeIds, String[] preserveArtTypeIds, HashCollection<Integer, Pair<Integer, Integer>> historyMap, Connection connection) throws OseeDataStoreException {
       String preservedTypeSet = makeArtTypeSet(null, preserveArtTypeIds);
       String compressTypeSet = makeArtTypeSet(compressArtTypeIds, null);
 
@@ -196,7 +197,7 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       populateHistoryMapWithRelations(historyMap, ppSql, connection);
    }
 
-   private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, Connection connection) throws SQLException {
+   private void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, Integer>> historyMap, String sql, Connection connection) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(connection, sql, getParentBranchId());
@@ -210,8 +211,10 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
 
             gammasToCurrent.put(linkGammaId, txCurrent);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 

@@ -20,13 +20,12 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.osgi.framework.Bundle;
 
 /**
@@ -127,7 +126,7 @@ public class ArtifactFactoryManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -136,24 +135,19 @@ public class ArtifactFactoryManager {
     * factory that was not loaded from the DB
     * 
     * @throws OseeDataStoreException
-    * @throws SQLException
     */
    private void registerNewFactories() throws OseeDataStoreException {
-      try {
-         for (String factoryClassName : factoryBundleMap.keySet()) {
-            if (!factoryNameMap.containsKey(factoryClassName)) {
+      for (String factoryClassName : factoryBundleMap.keySet()) {
+         if (!factoryNameMap.containsKey(factoryClassName)) {
 
-               int factoryId = SequenceManager.getNextFactoryId();
+            int factoryId = SequenceManager.getNextFactoryId();
 
-               ConnectionHandler.runPreparedUpdate(
-                     "INSERT INTO osee_artifact_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,
-                     factoryClassName);
+            ConnectionHandler.runPreparedUpdate(
+                  "INSERT INTO osee_artifact_factory (factory_id, factory_class) VALUES (?, ?)", factoryId,
+                  factoryClassName);
 
-               createFactory(factoryClassName, factoryId);
-            }
+            createFactory(factoryClassName, factoryId);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       }
    }
 

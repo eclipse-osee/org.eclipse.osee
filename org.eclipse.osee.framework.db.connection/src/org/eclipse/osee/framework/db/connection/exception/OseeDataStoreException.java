@@ -8,16 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.exception;
+package org.eclipse.osee.framework.db.connection.exception;
+
 
 /**
  * @author Ryan D. Brooks
  */
-public class OseeTypeDoesNotExist extends OseeCoreException {
+public class OseeDataStoreException extends OseeCoreException {
+   private static final long serialVersionUID = 7339636628746394923L;
 
-   private static final long serialVersionUID = 1L;
+   /**
+    * @param message
+    * @param cause
+    */
+   public OseeDataStoreException(String message, Throwable cause) {
+      super(message, cause);
+   }
 
-   public OseeTypeDoesNotExist(String message) {
+   /**
+    * @param message
+    */
+   public OseeDataStoreException(String message) {
       super(message);
+   }
+
+   /**
+    * @param cause
+    */
+   public OseeDataStoreException(Throwable cause) {
+      super(cause);
    }
 }

@@ -46,6 +46,8 @@ import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,8 +59,6 @@ import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListene
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
@@ -355,7 +355,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          return;
       }
       final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
-      XResultData rData = new XResultData(AtsPlugin.getLogger());
+      XResultData rData = new XResultData();
       final String attrName = xCol.getAttributeTypeName();
       if (attrName == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());

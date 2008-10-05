@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -26,7 +25,6 @@ public class Spreadsheet extends Artifact {
     * @param guid
     * @param humanReadableId
     * @param branch
-    * @throws SQLException
     */
    public Spreadsheet(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

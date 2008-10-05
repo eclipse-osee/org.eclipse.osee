@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -149,19 +148,15 @@ public class XWidgetFactory {
          combo.setDataStrings(BooleanAttribute.booleanChoices);
          xWidget = combo;
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
-            try {
-               String value = xWidgetLayoutData.getDefaultValue();
-               if (value == null)
-                  combo.set("");
-               else if (value.equals("true") || value.equals("yes"))
-                  combo.set("yes");
-               else if (value.equals("false") || value.equals("no"))
-                  combo.set("no");
-               else
-                  combo.set("");
-            } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-            }
+            String value = xWidgetLayoutData.getDefaultValue();
+            if (value == null)
+               combo.set("");
+            else if (value.equals("true") || value.equals("yes"))
+               combo.set("yes");
+            else if (value.equals("false") || value.equals("no"))
+               combo.set("no");
+            else
+               combo.set("");
          }
       } else if (xWidgetName.startsWith("XCombo")) {
          String values[] =

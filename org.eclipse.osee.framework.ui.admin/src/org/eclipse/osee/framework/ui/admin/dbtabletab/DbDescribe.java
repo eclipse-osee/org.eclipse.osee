@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 public class DbDescribe {
 
@@ -29,7 +30,7 @@ public class DbDescribe {
       this.dbColumns = null;
    }
 
-   public int indexOfColumn(String name) throws SQLException {
+   public int indexOfColumn(String name) throws OseeDataStoreException {
       int toReturn = -1;
       List<Describe> items = getDescription();
       for (int index = 0; index < items.size(); index++) {
@@ -41,7 +42,7 @@ public class DbDescribe {
       return toReturn;
    }
 
-   public List<Describe> getDescription() throws SQLException {
+   public List<Describe> getDescription() throws OseeDataStoreException {
       if (dbColumns == null) {
          dbColumns = new ArrayList<Describe>();
          ConnectionHandlerStatement chStmt = null;
@@ -58,6 +59,8 @@ public class DbDescribe {
                describe.type = meta.getColumnTypeName(columnIndex).toUpperCase();
                dbColumns.add(describe);
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
             chStmt.close();
          }
@@ -65,7 +68,7 @@ public class DbDescribe {
       return dbColumns;
    }
 
-   public DbTaskList getDbTaskList(List<Describe> describeList) throws SQLException {
+   public DbTaskList getDbTaskList(List<Describe> describeList) throws OseeDataStoreException {
       DbTaskList taskList = new DbTaskList();
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -93,8 +96,10 @@ public class DbDescribe {
             }
             taskList.addTask(dbModel);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         chStmt.close();
+         ConnectionHandler.close(chStmt);
       }
       return taskList;
    }

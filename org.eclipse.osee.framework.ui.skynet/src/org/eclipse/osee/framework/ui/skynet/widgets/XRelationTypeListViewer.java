@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 
@@ -23,7 +22,6 @@ public class XRelationTypeListViewer extends XTypeListViewer {
    /**
     * @param branch
     * @param name
-    * @throws SQLException
     */
    public XRelationTypeListViewer() {
       super(NAME);

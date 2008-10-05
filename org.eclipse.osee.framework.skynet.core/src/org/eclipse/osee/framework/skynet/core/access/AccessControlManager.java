@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.access;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,9 +20,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,10 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -136,10 +133,9 @@ public class AccessControlManager {
    /**
     * populates all of the access control lists.
     * 
-    * @throws SQLException
     * @throws OseeCoreException
     */
-   private void populateAccessControlLists() throws SQLException, OseeCoreException {
+   private void populateAccessControlLists() throws OseeCoreException {
       populateArtifactAccessControlList();
       populateBranchAccessControlList();
       // populateSubjectsAccessControlList();
@@ -163,26 +159,22 @@ public class AccessControlManager {
    // logger.log(Level.SEVERE, ex.toString(), ex);
    // }
    // finally {
-   // DbUtil.close(chStmt);
+   // ConnectionHandler.close(chStmt);
    // }
    // }
 
    /**
     * populates the branch access control list.
-    * 
-    * @throws SQLException
     */
-   private void populateBranchAccessControlList() throws SQLException, OseeCoreException {
+   private void populateBranchAccessControlList() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
-
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            Integer subjectId = rSet.getInt("privilege_entity_id");
-            Integer branchId = rSet.getInt("branch_id");
-            int subjectArtifactTypeId = rSet.getInt("art_type_id");
-            PermissionEnum permission = PermissionEnum.getPermission(rSet.getInt("permission_id"));
+         while (chStmt.next()) {
+            Integer subjectId = chStmt.getInt("privilege_entity_id");
+            Integer branchId = chStmt.getInt("branch_id");
+            int subjectArtifactTypeId = chStmt.getInt("art_type_id");
+            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
             BranchAccessObject branchAccessObject = getBranchAccessObject(branchId);
 
             accessControlListCache.put(subjectId, branchAccessObject, permission);
@@ -193,30 +185,28 @@ public class AccessControlManager {
             }
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
    /**
     * popualtes the artifact access control list cache
     * 
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   private void populateArtifactAccessControlList() throws SQLException, OseeDataStoreException, OseeTypeDoesNotExist {
+   private void populateArtifactAccessControlList() throws OseeDataStoreException, OseeTypeDoesNotExist {
       ConnectionHandlerStatement chStmt = null;
 
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            Integer subjectId = rSet.getInt("privilege_entity_id");
-            Integer objectId = rSet.getInt("art_id");
-            Integer branchId = rSet.getInt("branch_id");
-            int subjectArtifactTypeId = rSet.getInt("art_type_id");
-            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getRset().getInt("permission_id"));
+         while (chStmt.next()) {
+            Integer subjectId = chStmt.getInt("privilege_entity_id");
+            Integer objectId = chStmt.getInt("art_id");
+            Integer branchId = chStmt.getInt("branch_id");
+            int subjectArtifactTypeId = chStmt.getInt("art_type_id");
+            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
 
             if (permission.equals(PermissionEnum.LOCK)) {
                objectToBranchLockCache.put(objectId, branchId);
@@ -231,11 +221,11 @@ public class AccessControlManager {
             }
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
-   private void populateGroupMembers(Integer groupId) throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
+   private void populateGroupMembers(Integer groupId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
@@ -247,12 +237,12 @@ public class AccessControlManager {
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {
-               groupMember = chStmt.getRset().getInt("b_art_id");
+               groupMember = chStmt.getInt("b_art_id");
                subjectToGroupCache.put(groupMember, groupId);
                groupToSubjectsCache.put(groupId, groupMember);
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
    }
@@ -520,7 +510,7 @@ public class AccessControlManager {
       }
    }
 
-   private void cacheAccessControlData(AccessControlData data) throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
+   private void cacheAccessControlData(AccessControlData data) throws OseeTypeDoesNotExist, OseeDataStoreException {
       AccessObject accessObject = data.getObject();
       int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();
@@ -576,7 +566,7 @@ public class AccessControlManager {
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws SQLException, OseeDataStoreException, BranchDoesNotExist {
+   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeDataStoreException, BranchDoesNotExist {
       Branch branch = null;
       if (object instanceof BranchAccessObject) {
          branch = BranchPersistenceManager.getBranch(((BranchAccessObject) object).getBranchId());
@@ -590,22 +580,19 @@ public class AccessControlManager {
     * Remove an item from their access control list
     * 
     * @param data
+    * @throws OseeDataStoreException
     */
-   public void removeAccessControlData(AccessControlData data) {
-      try {
-         if (data.getObject() instanceof ArtifactAccessObject) {
-            ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
-                  object.getBranchId());
+   public void removeAccessControlData(AccessControlData data) throws OseeDataStoreException {
+      if (data.getObject() instanceof ArtifactAccessObject) {
+         ArtifactAccessObject object = (ArtifactAccessObject) data.getObject();
+         ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, data.getSubject().getArtId(), object.getArtId(),
+               object.getBranchId());
 
-         } else if (data.getObject() instanceof BranchAccessObject) {
-            BranchAccessObject object = (BranchAccessObject) data.getObject();
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
-         }
-         deCacheAccessControlData(data);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } else if (data.getObject() instanceof BranchAccessObject) {
+         BranchAccessObject object = (BranchAccessObject) data.getObject();
+         ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, data.getSubject().getArtId(), object.getBranchId());
       }
+      deCacheAccessControlData(data);
    }
 
    /**
@@ -710,7 +697,7 @@ public class AccessControlManager {
       }
    }
 
-   public void unLockObject(Artifact object, Artifact subject) {
+   public void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException {
       Integer objectArtId = object.getArtId();
       Integer branchId = object.getBranch().getBranchId();
       Integer lockedBranchId;
@@ -724,26 +711,20 @@ public class AccessControlManager {
             objectToBranchLockCache.remove(objectArtId);
             lockedObjectToSubject.remove(objectArtId);
 
-            try {
-               OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsUnlocked,
-                     new LoadedArtifacts(object));
-            } catch (Exception ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
+            OseeEventManager.kickAccessControlArtifactsEvent(this, AccessControlEventType.ArtifactsUnlocked,
+                  new LoadedArtifacts(object));
          }
       }
    }
 
    /**
     * Removes all locks from a branch
-    * 
-    * @throws SQLException
     */
-   public void removeAllPermissionsFromBranch(final Branch branch) throws OseeCoreException, SQLException {
+   public void removeAllPermissionsFromBranch(final Branch branch) throws OseeCoreException {
       try {
          AbstractDbTxTemplate dbTxWrapper = new AbstractDbTxTemplate() {
             @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
+            protected void handleTxWork() throws OseeCoreException {
                ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
                ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
             }
@@ -775,7 +756,7 @@ public class AccessControlManager {
    /**
     * @return - Returns the subject who has the artifact locked or null if the object is not locked.
     */
-   public static Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException, SQLException {
+   public static Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException {
       Artifact subject = null;
 
       if (object instanceof Artifact) {

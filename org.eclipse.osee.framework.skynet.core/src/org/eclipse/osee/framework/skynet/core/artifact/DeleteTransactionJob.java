@@ -23,15 +23,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -173,9 +173,9 @@ public class DeleteTransactionJob extends Job {
       }
 
       /**
-       * @throws SQLException
+       * @throws OseeDataStoreException
        */
-      private void getAffectedArtifacts(Connection connection, IProgressMonitor monitor, int transactionQueryId) throws SQLException {
+      private void getAffectedArtifacts(Connection connection, IProgressMonitor monitor, int transactionQueryId) throws OseeDataStoreException {
          artifactJoinId = ArtifactLoader.getNewQueryId();
          ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
                artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId, artifactJoinId,
@@ -210,13 +210,13 @@ public class DeleteTransactionJob extends Job {
          return fromToTxData;
       }
 
-      private void deleteTransactionsFromTxDetails(Connection connection, IProgressMonitor monitor, int queryId) throws SQLException {
+      private void deleteTransactionsFromTxDetails(Connection connection, IProgressMonitor monitor, int queryId) throws OseeDataStoreException {
          monitor.subTask("Deleting Tx");
          ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, queryId);
          monitor.worked(1);
       }
 
-      private void deleteItemEntriesForTransactions(Connection connection, IProgressMonitor monitor, int txsToDeleteQueryId) throws SQLException {
+      private void deleteItemEntriesForTransactions(Connection connection, IProgressMonitor monitor, int txsToDeleteQueryId) throws OseeDataStoreException {
          monitor.subTask("Deleting Tx Items");
          TransactionJoinQuery txGammasToDelete = JoinUtility.createTransactionJoinQuery();
          try {
@@ -229,22 +229,28 @@ public class DeleteTransactionJob extends Job {
             ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATIONS, deleteQueryId);
 
          } finally {
-            if (txGammasToDelete != null && connection != null && connection.isClosed() != true) {
-               txGammasToDelete.delete(connection);
+            try {
+               if (txGammasToDelete != null && connection != null && connection.isClosed() != true) {
+                  txGammasToDelete.delete(connection);
+               }
+            } catch (SQLException ex) {
+               throw new OseeDataStoreException(ex);
             }
          }
          monitor.worked(1);
       }
 
-      private void populateJoinQueryFromSql(Connection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws SQLException {
+      private void populateJoinQueryFromSql(Connection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeDataStoreException {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
             while (chStmt.next()) {
                joinQuery.add(chStmt.getRset().getInt("gamma_id"), chStmt.getRset().getInt(txFieldName));
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
 
@@ -260,13 +266,13 @@ public class DeleteTransactionJob extends Job {
          return toReturn != Integer.MAX_VALUE ? toReturn : -1;
       }
 
-      private void updateTxCurrent(Connection conn, IProgressMonitor monitor) throws SQLException {
+      private void updateTxCurrent(Connection conn, IProgressMonitor monitor) throws OseeDataStoreException {
          monitor.subTask("Updating Previous Tx to Current");
          ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
          monitor.worked(1);
       }
 
-      private void setChildBranchBaselineTxs(Connection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions) throws SQLException {
+      private void setChildBranchBaselineTxs(Connection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions) throws OseeDataStoreException {
          List<Object[]> data = new ArrayList<Object[]>();
          monitor.subTask("Update Baseline Txs for Child Branches");
          for (TxDeleteInfo entry : transactions.getValues()) {

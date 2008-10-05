@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -50,10 +49,10 @@ public class OseeInfoDbItem extends DbItem {
          String query = "SELECT * FROM " + getTableName() + " WHERE OSEE_KEY = " + returnTic(key);
          chStmt = ConnectionHandler.runPreparedQuery(query);
          toReturn = chStmt.next();
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return toReturn;
    }
@@ -71,7 +70,7 @@ public class OseeInfoDbItem extends DbItem {
             query = "INSERT INTO " + getTableName() + " (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
             ConnectionHandler.runPreparedUpdate(query, key, value);
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);
       }
    }

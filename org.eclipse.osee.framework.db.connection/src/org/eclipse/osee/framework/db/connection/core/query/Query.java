@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -34,9 +34,8 @@ public class Query {
     * @param sql The SQL statement to use to acquire a ResultSet.
     * @param processor The RsetProcessor used for providing and validating items.
     * @param <A> The type of object being placed into the collection.
-    * @throws SQLException
     */
-   public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws SQLException {
+   public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws OseeDataStoreException {
       acquireCollection(collection, processor, 0, sql, data);
    }
 
@@ -47,13 +46,13 @@ public class Query {
     * @param sql The SQL statement to use to acquire a ResultSet.
     * @param processor The RsetProcessor used for providing and validating items.
     * @param <A> The type of object being placed into the collection.
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static <A extends Object> void acquireCollection(Collection<A> collection, String sql, RsetProcessor<A> processor) throws SQLException {
-      acquireCollection(collection, processor, 100, sql, new Object[0]);
+   public static <A extends Object> void acquireCollection(Collection<A> collection, String sql, RsetProcessor<A> processor) throws OseeDataStoreException {
+      acquireCollection(collection, processor, 100, sql);
    }
 
-   private static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, int fetchSize, String sql, Object... data) throws SQLException {
+   private static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, int fetchSize, String sql, Object... data) throws OseeDataStoreException {
       A item;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -67,8 +66,10 @@ public class Query {
                      ex);
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -88,7 +89,7 @@ public class Query {
       return sql;
    }
 
-   public static int getInt(String columnName, String query, Object... data) throws SQLException {
+   public static int getInt(String columnName, String query, Object... data) throws OseeDataStoreException {
       int toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -101,8 +102,10 @@ public class Query {
          } else {
             throw new IllegalArgumentException("No value returned");
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return toReturn;
    }

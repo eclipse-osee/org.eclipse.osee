@@ -13,13 +13,12 @@ package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -90,7 +89,7 @@ public class HttpUrlBuilder {
       return getLocalServerPrefix(HttpServer.DEFAULT_SERVICE_NAME);
    }
 
-   public String getApplicationServerPrefix() throws SQLException {
+   public String getApplicationServerPrefix() throws OseeDataStoreException {
       String address = OseeApplicationServer.getOseeApplicationServer();
       if (address.endsWith("/") != true) {
          address += "/";

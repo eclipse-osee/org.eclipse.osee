@@ -16,11 +16,9 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -35,17 +33,15 @@ public class CheckValidType extends AbstractBlam {
    private final String sql;
    private final String[] headers;
    private final String[] colNames;
-   private final Logger logger;
 
    /**
     * @param sql
     */
-   public CheckValidType(final String sql, final String[] colNames, final String[] headers, final Logger logger) {
+   public CheckValidType(final String sql, final String[] colNames, final String[] headers) {
       super();
       this.sql = sql;
       this.headers = headers;
       this.colNames = colNames;
-      this.logger = logger;
    }
 
    /* (non-Javadoc)
@@ -57,7 +53,7 @@ public class CheckValidType extends AbstractBlam {
          chStmt = ConnectionHandler.runPreparedQuery(sql);
          Calendar cal = Calendar.getInstance(TimeZone.getDefault());
          List<String> datas = new LinkedList<String>();
-         XResultData rd = new XResultData(logger);
+         XResultData rd = new XResultData();
          ResultSet rSet = chStmt.getRset();
          int count = 0;
          while (rSet.next()) {
@@ -70,7 +66,7 @@ public class CheckValidType extends AbstractBlam {
                datas, headers, headers.length, 1, 3));
          rd.report("The report", Manipulations.RAW_HTML);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 }

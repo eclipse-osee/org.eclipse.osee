@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -99,7 +97,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the name.
     */
    public String getName() {
-      return artifact != null? artifact.getInternalDescriptiveName(): "Null";
+      return artifact != null ? artifact.getInternalDescriptiveName() : "Null";
    }
 
    /**
@@ -118,10 +116,8 @@ public class ArtifactChange extends RevisionChange {
 
    /**
     * @param conflictingModArtifact The conflictingModArtifact to set.
-    * @throws SQLException
-    * @throws BranchDoesNotExist
     */
-   public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException, BranchDoesNotExist {
+   public void setConflictingModArtifact(Artifact conflictingModArtifact) {
       this.conflictingModArtifact = conflictingModArtifact;
    }
 

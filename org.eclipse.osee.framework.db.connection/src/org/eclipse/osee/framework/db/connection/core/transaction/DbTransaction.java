@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.db.connection.core.transaction;
 import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -53,7 +55,7 @@ public abstract class DbTransaction {
       try {
          OseeLog.log(Activator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
          connection.setAutoCommit(false);
-         DbUtil.deferConstraintChecking(connection);
+         DbTransaction.deferConstraintChecking(connection);
          handleTxWork(connection);
          connection.commit();
          OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
@@ -107,5 +109,19 @@ public abstract class DbTransaction {
     */
    protected void handleTxFinally() throws Exception {
       // override to add additional code to finally
+   }
+
+   /**
+    * Cause constraint checking to be deferred until the end of the current transaction.
+    * 
+    * @param connection
+    * @throws OseeDataStoreException
+    */
+   public static void deferConstraintChecking(Connection connection) throws OseeDataStoreException {
+      if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.derby)) {
+         return;
+      }
+      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+      ConnectionHandler.runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
    }
 }

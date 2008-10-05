@@ -11,7 +11,11 @@
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -71,7 +75,11 @@ public class DbTableTab {
       filterCombo.addModifyListener(new ModifyListener() {
 
          public void modifyText(ModifyEvent e) {
-            handleTableSelect();
+            try {
+               handleTableSelect();
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+            }
             AdminView.setSaveNeeded(false);
          }
       });
@@ -152,7 +160,7 @@ public class DbTableTab {
       return null;
    }
 
-   public void handleTableSelect() {
+   public void handleTableSelect() throws OseeDataStoreException {
       if (dbTableViewer != null) dbTableViewer.dispose();
       updateReadOnly();
       if (filterCombo.get().equals("")) return;
@@ -162,7 +170,7 @@ public class DbTableTab {
       parent.layout();
    }
 
-   public static void refresh() {
+   public static void refresh() throws OseeDataStoreException {
       if (filterCombo.get().equals("")) return;
       if (dbTableViewer != null) {
          dbTableViewer.load();

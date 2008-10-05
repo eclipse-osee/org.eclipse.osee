@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Date;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;

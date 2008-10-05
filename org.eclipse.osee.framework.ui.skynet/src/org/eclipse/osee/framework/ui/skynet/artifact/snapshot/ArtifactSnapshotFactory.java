@@ -12,18 +12,17 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest;
@@ -57,7 +56,7 @@ class ArtifactSnapshotFactory {
     * @return snapshot of the artifact
     * @throws UnsupportedEncodingException
     */
-   public ArtifactSnapshot createSnapshot(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
+   public ArtifactSnapshot createSnapshot(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       long start = System.currentTimeMillis();
       Pair<String, String> key = keyGenerator.getKeyPair(artifact);
       ArtifactSnapshot snapshotData = new ArtifactSnapshot(key.getKey(), key.getValue(), artifact);

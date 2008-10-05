@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.ui.admin;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.ApplicationServer;
@@ -97,7 +100,11 @@ public class AdminView extends ViewPart implements IActionable {
 
          @Override
          public void run() {
-            DbTableTab.refresh();
+            try {
+               DbTableTab.refresh();
+            } catch (OseeDataStoreException ex) {
+               OseeLog.log(AdminView.class, Level.SEVERE, ex);
+            }
          }
       };
       refreshAction.setImageDescriptor(plugin.getImageDescriptor("refresh.gif"));

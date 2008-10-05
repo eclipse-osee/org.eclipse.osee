@@ -11,15 +11,13 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
@@ -49,10 +47,6 @@ public class ArtifactTransactionData implements ITransactionData {
 
    /**
     * should not be called by applications. Should be called exactly once - when the transaction has been committed
-    * 
-    * @throws SQLException
-    * @throws BranchDoesNotExist
-    * @throws TransactionDoesNotExist
     */
    void updateArtifact() {
       artifact.internalSetPersistenceData(gammaId, transactionId, modificationType, false);
@@ -116,7 +110,7 @@ public class ArtifactTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws SQLException {
+   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, artifact.getArtId(),
             branch.getBranchId());
    }
@@ -125,7 +119,7 @@ public class ArtifactTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public void insertTransactionChange() throws SQLException {
+   public void insertTransactionChange() throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_VERSION_TABLE, artifact.getArtId(), gammaId,
             modificationType.getValue());
    }

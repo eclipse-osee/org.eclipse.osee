@@ -13,10 +13,10 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.OseeApplicationServerContext;
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
  */
 public class HttpBranchCreation {
 
-   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws SQLException, OseeCoreException {
+   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
@@ -69,12 +68,11 @@ public class HttpBranchCreation {
     * @param branchName
     * @param staticBranchName null if no static key is desired
     * @return branch object
-    * @throws SQLException
     * @throws OseeCoreException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, OseeCoreException {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
@@ -111,7 +109,7 @@ public class HttpBranchCreation {
       return branch;
    }
 
-   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException, SQLException {
+   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
          associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
@@ -122,7 +120,7 @@ public class HttpBranchCreation {
       return associatedArtifactId;
    }
 
-   private static int getAuthorId() throws OseeCoreException, SQLException {
+   private static int getAuthorId() throws OseeCoreException {
       if (SkynetDbInit.isDbInit()) {
          return -1;
       }

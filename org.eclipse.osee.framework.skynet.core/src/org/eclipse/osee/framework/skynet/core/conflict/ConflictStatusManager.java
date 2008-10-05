@@ -15,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict.Status;
 
 /**
@@ -34,29 +34,26 @@ public class ConflictStatusManager {
    private static final String MERGE_INSERT_STATUS =
          "INSERT INTO osee_conflict ( conflict_id, branch_id, source_gamma_id, " + "dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
-   public static void setStatus(Status status, int sourceGamma, int destGamma) throws SQLException {
-      ConnectionHandlerStatement HandlerStatement = null;
-      //Gammas should be up to date so you can use them to get entry
-      //just update the status field.
+   public static void setStatus(Status status, int sourceGamma, int destGamma) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
          ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma);
-
       } finally {
-         DbUtil.close(HandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 
-   public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus, int transactionId, int attrId) throws SQLException {
+   public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus, int transactionId, int attrId) throws OseeDataStoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
 
-      ConnectionHandlerStatement checkHandlerStatement = null;
+      ConnectionHandlerStatement chStmt = null;
       try {
-         checkHandlerStatement =
-               ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
+         chStmt = ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
 
-         ResultSet statusSet = checkHandlerStatement.getRset();
+         ResultSet statusSet = chStmt.getRset();
          if (statusSet.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = statusSet.getInt("status");
@@ -73,9 +70,10 @@ public class ConflictStatusManager {
             return Status.getStatus(intStatus);
          }
          // add the entry to the table and set as UNTOUCHED
-
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(checkHandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
       ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, objectID, branchID, sourceGamma, destGamma,
             passedStatus.getValue(), conflictType);

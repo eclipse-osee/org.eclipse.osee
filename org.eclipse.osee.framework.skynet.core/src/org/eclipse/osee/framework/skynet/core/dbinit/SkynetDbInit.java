@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.dbinit;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.OseeDatabaseId;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -116,18 +116,18 @@ public class SkynetDbInit extends DbInitializationTask {
    }
 
    /**
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private void addDefaultPermissions() throws SQLException {
+   private void addDefaultPermissions() throws OseeDataStoreException {
       for (PermissionEnum permission : PermissionEnum.values()) {
          ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
       }
    }
 
    /**
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private void populateSequenceTable() throws SQLException {
+   private void populateSequenceTable() throws OseeDataStoreException {
       SequenceManager seqManager = SequenceManager.getInstance();
       for (String sequenceName : SequenceManager.sequenceNames) {
          seqManager.initializeSequence(sequenceName);

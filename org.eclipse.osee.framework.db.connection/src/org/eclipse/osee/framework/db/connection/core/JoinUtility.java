@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -106,7 +106,7 @@ public class JoinUtility {
       return new ExportImportJoinQuery();
    }
 
-   public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws SQLException {
+   public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws OseeDataStoreException {
       List<Integer> toReturn = new ArrayList<Integer>();
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -114,8 +114,10 @@ public class JoinUtility {
          while (chStmt.next()) {
             toReturn.add(chStmt.getRset().getInt("query_id"));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return toReturn;
    }
@@ -153,7 +155,7 @@ public class JoinUtility {
          return insertTime;
       }
 
-      public void store(Connection connection) throws SQLException {
+      public void store(Connection connection) throws OseeDataStoreException {
          if (this.wasStored != true) {
             List<Object[]> data = new ArrayList<Object[]>();
             for (IJoinRow joinArray : entries) {
@@ -164,11 +166,11 @@ public class JoinUtility {
             this.wasStored = true;
             this.entries.clear();
          } else {
-            throw new SQLException("Cannot store query id twice");
+            throw new OseeDataStoreException("Cannot store query id twice");
          }
       }
 
-      public int delete(Connection connection) throws SQLException {
+      public int delete(Connection connection) throws OseeDataStoreException {
          int updated = 0;
          if (queryId != -1) {
             updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
@@ -176,11 +178,11 @@ public class JoinUtility {
          return updated;
       }
 
-      public void store() throws SQLException {
+      public void store() throws OseeDataStoreException {
          store(ConnectionHandler.getConnection());
       }
 
-      public int delete() throws SQLException {
+      public int delete() throws OseeDataStoreException {
          return delete(ConnectionHandler.getConnection());
       }
 

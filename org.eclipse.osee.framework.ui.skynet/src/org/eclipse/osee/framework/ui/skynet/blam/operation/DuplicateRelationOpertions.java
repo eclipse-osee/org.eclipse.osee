@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -73,21 +72,16 @@ public class DuplicateRelationOpertions extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-
-      //      Branch branch = variableMap.getBranch("Parent Branch");
-      //      List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, false);
-      //      System.out.println("done loading arts... did some fail to sort?");
-      //*
-      ConnectionHandlerStatement stmt = null;
+      ConnectionHandlerStatement chStmt = null;
       try {
-         stmt = ConnectionHandler.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
-         while (stmt.getRset().next()) {
-            addRelationEntry(stmt.getRset().getInt(1), stmt.getRset().getInt(2), stmt.getRset().getInt(3),
-                  stmt.getRset().getInt(4), stmt.getRset().getInt(5), stmt.getRset().getLong(6), stmt.getRset().getInt(
-                        7));
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
+         while (chStmt.getRset().next()) {
+            addRelationEntry(chStmt.getRset().getInt(1), chStmt.getRset().getInt(2), chStmt.getRset().getInt(3),
+                  chStmt.getRset().getInt(4), chStmt.getRset().getInt(5), chStmt.getRset().getLong(6),
+                  chStmt.getRset().getInt(7));
          }
       } finally {
-         DbUtil.close(stmt);
+         ConnectionHandler.close(chStmt);
       }
       Collection<RelationInfo> values = relationInfo.values();
       this.appendResultLine(String.format("Found [%d] potential conflicts.", values.size()));
@@ -133,18 +127,19 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          int modCount = 0;
          long gammaId = 0;
          try {
-            stmt = ConnectionHandler.runPreparedQuery(this.checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
-            while (stmt.getRset().next()) {
-               if (stmt.getRset().getInt("mod_type") == 2) {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(this.checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
+            while (chStmt.getRset().next()) {
+               if (chStmt.getRset().getInt("mod_type") == 2) {
                   modCount++;
-                  gammaId = stmt.getRset().getLong("gamma_id");
+                  gammaId = chStmt.getRset().getLong("gamma_id");
                }
                count++;
             }
          } catch (SQLException ex) {
             ex.printStackTrace();
          } finally {
-            DbUtil.close(stmt);
+            ConnectionHandler.close(chStmt);
          }
          boolean added = false;
          if (modCount == 1 && count == 2) {

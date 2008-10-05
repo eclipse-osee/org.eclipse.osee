@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -45,7 +44,7 @@ public class PurgeArtifactType extends AbstractBlam {
                   "Can not delete artifact type " + artType.getName() + " because there are " + rSet.getInt("artCount") + " existing artifacts of this type.");
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);

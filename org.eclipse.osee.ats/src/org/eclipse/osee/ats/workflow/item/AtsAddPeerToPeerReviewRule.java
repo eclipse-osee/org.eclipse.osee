@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.workflow.item;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -15,9 +14,9 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -59,7 +58,6 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * @param smaMgr
     * @return review
     * @throws OseeCoreException
-    * @throws SQLException
     */
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, SMAManager smaMgr) throws OseeCoreException {
       if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +22,10 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -35,9 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -459,7 +459,6 @@ public class RelationManager {
     * @param relationSide
     * @param artifact
     * @param artifactCount
-    * @throws SQLException
     */
    public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) {
       int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
@@ -511,9 +510,9 @@ public class RelationManager {
    /**
     * Remove all relations stored in the list awaiting to be deleted.
     * 
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static void purgeRelationsFor(Artifact artifact) throws SQLException {
+   public static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {
       Collection<RelationLink> links = artifactToRelations.get(artifact);
       if (!links.isEmpty()) {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
@@ -534,7 +533,6 @@ public class RelationManager {
     * @param artifactA
     * @param artifactB
     * @param rationale
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
@@ -619,7 +617,6 @@ public class RelationManager {
     * @param relationType
     * @param artifactA
     * @param artifactB
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static void setRelationOrder(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
@@ -641,7 +638,6 @@ public class RelationManager {
 
    /**
     * @param artifact
-    * @throws SQLException
     */
    public static void sortRelations(Artifact artifact, Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) {
       List<RelationType> types = RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
@@ -721,7 +717,6 @@ public class RelationManager {
    /**
     * @param relationLink
     * @param b
-    * @throws SQLException
     * @throws ArtifactDoesNotExist
     */
    static void setOrderValuesBasedOnCurrentMemoryOrder(RelationLink relationLink, boolean markAsNotDirty) throws ArtifactDoesNotExist {

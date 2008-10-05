@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 
@@ -36,7 +36,7 @@ final class ArtifactSnapshot implements Serializable {
    private Timestamp createdOn;
    private Map<String, byte[]> binaryData;
 
-   protected ArtifactSnapshot(String namespace, String key, Artifact artifact) throws OseeCoreException, SQLException {
+   protected ArtifactSnapshot(String namespace, String key, Artifact artifact) throws OseeCoreException {
       this.namespace = namespace;
       this.key = key;
       this.gammaId = getGamma(artifact);
@@ -116,7 +116,7 @@ final class ArtifactSnapshot implements Serializable {
       return artifact.getGammaId();
    }
 
-   private Timestamp getCreationDate(Artifact artifact) throws OseeCoreException, SQLException {
+   private Timestamp getCreationDate(Artifact artifact) throws OseeCoreException {
       List<TransactionData> txData =
             new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
       for (TransactionData data : txData) {

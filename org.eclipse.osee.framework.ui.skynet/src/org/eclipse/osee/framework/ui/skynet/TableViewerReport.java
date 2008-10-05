@@ -42,7 +42,7 @@ public class TableViewerReport {
 
    public void open(TableItem items[]) {
       String html = getHtml(items);
-      XResultData xResultData = new XResultData(SkynetGuiPlugin.getLogger());
+      XResultData xResultData = new XResultData();
       xResultData.addRaw(html);
       xResultData.report(title, Manipulations.RAW_HTML);
    }

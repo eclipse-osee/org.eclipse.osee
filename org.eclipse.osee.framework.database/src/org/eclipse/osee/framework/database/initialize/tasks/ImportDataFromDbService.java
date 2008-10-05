@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
 import org.eclipse.osee.framework.db.connection.DBConnection;
 import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
@@ -44,11 +44,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
          DbInformation databaseService = OseeDb.getDatabaseService(importFromDbService);
 
          Connection importConnection = null;
-         try {
-            importConnection = DBConnection.getNewConnection(databaseService);
-         } catch (SQLException ex) {
-            System.out.println("Unable to import table data");
-         }
+         importConnection = DBConnection.getNewConnection(databaseService);
          if (importConnection != null) {
             try {
                System.out.println("Gathering information from ..." + importFromDbService);
@@ -141,7 +137,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       return true;
    }
 
-   private Map<String, SchemaData> getAvailableSchemasFromImportDb(Connection importConnection, Set<String> schemas) throws SQLException {
+   private Map<String, SchemaData> getAvailableSchemasFromImportDb(Connection importConnection, Set<String> schemas) throws OseeDataStoreException {
       DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(importConnection, schemas);
       schemaExtractor.extractSchemaData();
       return schemaExtractor.getSchemas();

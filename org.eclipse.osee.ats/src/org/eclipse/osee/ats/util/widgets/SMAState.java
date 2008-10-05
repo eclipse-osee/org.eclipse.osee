@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.UsersByIds;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 public class SMAState {
    private String name;

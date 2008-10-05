@@ -48,7 +48,6 @@ public interface IAtsWizardItem {
     * @param wizard
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     *         created
-    * @throws SQLException
     */
    public Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard) throws SQLException;
 
@@ -70,7 +69,6 @@ public interface IAtsWizardItem {
     * 
     * @param wizard
     * @return true if widget data entered is valid
-    * @throws SQLException
     */
    public Result isWizardXWidgetsComplete(NewActionWizard wizard) throws SQLException;
 

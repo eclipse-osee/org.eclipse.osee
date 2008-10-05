@@ -11,9 +11,8 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -75,8 +74,8 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    public void run(BlamVariableMap variableMap, IProgressMonitor monitor, Operation operation, StringBuilder builder, boolean showDetails) throws Exception {
       LinkedList<DuplicateAttribute> sameValues = new LinkedList<DuplicateAttribute>();
       LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
-      ConnectionHandlerStatement connectionHandlerStatement = null;
-      ConnectionHandlerStatement connectionHandlerStatement2 = null;
+      ConnectionHandlerStatement chStmt1 = null;
+      ConnectionHandlerStatement chStmt2 = null;
       ResultSet resultSet = null;
       ResultSet resultSet2 = null;
       fixErrors = operation.equals(Operation.Fix);
@@ -87,21 +86,19 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       monitor.subTask("Querying for Duplicate Attributes");
       if (monitor.isCanceled()) return;
       try {
-         connectionHandlerStatement = ConnectionHandler.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
-         resultSet = connectionHandlerStatement.getRset();
+         chStmt1 = ConnectionHandler.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
+         resultSet = chStmt1.getRset();
          monitor.worked(6);
          monitor.subTask("Processing Results");
          if (monitor.isCanceled()) return;
          while (resultSet.next()) {
             try {
-               connectionHandlerStatement2 =
-                     ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_1"));
-               resultSet2 = connectionHandlerStatement2.getRset();
+               chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_1"));
+               resultSet2 = chStmt2.getRset();
                if (resultSet2.next()) {
-                  DbUtil.close(connectionHandlerStatement2);
-                  connectionHandlerStatement2 =
-                        ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_2"));
-                  resultSet2 = connectionHandlerStatement2.getRset();
+                  ConnectionHandler.close(chStmt2);
+                  chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_2"));
+                  resultSet2 = chStmt2.getRset();
                   if (resultSet2.next()) {
                      DuplicateAttribute duplicateAttribute;
                      duplicateAttribute = new DuplicateAttribute();
@@ -125,14 +122,14 @@ public class DuplicateAttributes extends DatabaseHealthTask {
 
                }
             } finally {
-               DbUtil.close(connectionHandlerStatement2);
+               ConnectionHandler.close(chStmt2);
             }
 
          }
 
       } finally {
-         DbUtil.close(connectionHandlerStatement);
-         DbUtil.close(connectionHandlerStatement2);
+         ConnectionHandler.close(chStmt1);
+         ConnectionHandler.close(chStmt2);
       }
       monitor.worked(2);
       monitor.subTask("Cleaning Up Attrinbutes");
@@ -155,7 +152,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
          } finally {
             if (showDetails) {
                sbFull.append(AHTML.endMultiColumnTable());
-               XResultData rd = new XResultData(SkynetActivator.getLogger());
+               XResultData rd = new XResultData();
                rd.addRaw(sbFull.toString());
                rd.report("Artifact TX_Current Fix", Manipulations.RAW_HTML);
             }
@@ -175,7 +172,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       builder.append(str);
    }
 
-   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder, boolean showDetails) throws SQLException {
+   private int showAttributeCleanUpDecisions(LinkedList<DuplicateAttribute> values, boolean removeAttribute, StringBuffer builder, boolean showDetails) throws OseeDataStoreException {
       int x = 0;
       if (showDetails) {
 
@@ -202,17 +199,18 @@ public class DuplicateAttributes extends DatabaseHealthTask {
    }
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
-   private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws SQLException {
-      ConnectionHandlerStatement connectionHandlerStatement = null;
+   private void findProminentAttribute(int attrId1, int attrId2, LinkedList<Integer> branches) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
       try {
-         connectionHandlerStatement = ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
-         ResultSet resultSet = connectionHandlerStatement.getRset();
+         chStmt = ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
+         ResultSet resultSet = chStmt.getRset();
          while (resultSet.next()) {
             branches.add(new Integer(resultSet.getInt("branch_id")));
          }
-
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(connectionHandlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 }

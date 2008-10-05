@@ -73,9 +73,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
 
    /**
     * @throws SAXException
-    * @throws SAXException
-    * @throws IOException
-    * @throws SQLException
     */
    public SkynetTypesEnumGenerator() throws SAXException {
 
@@ -197,10 +194,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
             default:
                break;
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (ClassNotFoundException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -209,9 +202,8 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    /**
     * @param row
     * @throws ClassNotFoundException
-    * @throws SQLException
     */
-   private void addAttributeType(String[] row) throws ClassNotFoundException, SQLException {
+   private void addAttributeType(String[] row) throws ClassNotFoundException {
       //      String attrBaseType = row[0];
       //      String attrProviderType = row[1];
       String attributeName = row[2];

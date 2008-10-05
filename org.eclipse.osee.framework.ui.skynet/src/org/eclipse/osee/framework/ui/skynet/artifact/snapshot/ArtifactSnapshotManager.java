@@ -19,11 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.osgi.framework.Bundle;
@@ -124,9 +124,8 @@ public class ArtifactSnapshotManager {
     * Create artifact snapshot and stores data into the snapshot remote repository
     * 
     * @param artifact to store into snapshot repository
-    * @throws SQLException
     */
-   private ArtifactSnapshot doSave(Artifact artifact) throws Exception {
+   private ArtifactSnapshot doSave(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       checkArtifact(artifact);
       ArtifactSnapshot snapshot = null;
       if (isSavingAllowed() != false) {

@@ -11,10 +11,8 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.BranchMergeException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -43,14 +41,14 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#clearAttributeValue()
     */
    @Override
-   public boolean clearValue() throws SQLException {
+   public boolean clearValue() {
       return false;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#computeStatus()
     */
-   public Status computeStatus() throws SQLException {
+   public Status computeStatus() {
       return null;
    }
 
@@ -58,7 +56,7 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getChangeItem()
     */
    @Override
-   public String getChangeItem() throws SQLException {
+   public String getChangeItem() {
       return null;
    }
 
@@ -90,14 +88,14 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeDisplayData()
     */
    @Override
-   public String getMergeDisplayData() throws SQLException {
+   public String getMergeDisplayData() {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getMergeValue()
     */
-   public String getMergeValue() throws SQLException {
+   public String getMergeValue() {
       return null;
    }
 
@@ -113,7 +111,7 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsDestination()
     */
    @Override
-   public boolean mergeEqualsDestination() throws SQLException {
+   public boolean mergeEqualsDestination() {
       return false;
    }
 
@@ -121,7 +119,7 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#mergeEqualsSource()
     */
    @Override
-   public boolean mergeEqualsSource() throws SQLException {
+   public boolean mergeEqualsSource() {
       return false;
    }
 
@@ -129,7 +127,7 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setAttributeToDest()
     */
    @Override
-   public boolean setToDest() throws SQLException {
+   public boolean setToDest() {
       return false;
    }
 
@@ -137,7 +135,7 @@ public class RelationConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#setAttributeToSource()
     */
    @Override
-   public boolean setToSource() throws SQLException {
+   public boolean setToSource() {
       return false;
    }
 
@@ -157,7 +155,7 @@ public class RelationConflict extends Conflict {
       return null;
    }
 
-   public int getMergeGammaId() throws OseeCoreException, SQLException {
+   public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");
    }
 }

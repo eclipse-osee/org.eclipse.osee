@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -108,7 +108,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       public IStatus run(IProgressMonitor monitor) {
          try {
             String html = VersionReportJob.getFullReleaseReport(teamDef, monitor);
-            XResultData rd = new XResultData(AtsPlugin.getLogger());
+            XResultData rd = new XResultData();
             rd.addRaw(html);
             rd.report(getName(), Manipulations.RAW_HTML);
          } catch (Exception ex) {

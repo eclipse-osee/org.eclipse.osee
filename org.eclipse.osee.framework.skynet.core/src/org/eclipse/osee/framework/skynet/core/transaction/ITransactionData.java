@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**
@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
  */
 public interface ITransactionData {
 
-   public void insertTransactionChange() throws SQLException;
+   public void insertTransactionChange() throws OseeDataStoreException;
 
-   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws SQLException;
+   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws OseeDataStoreException;
 
    public int getGammaId();
 

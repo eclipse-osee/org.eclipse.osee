@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.skynet.core.dbinit;
 import java.io.File;
 import java.net.Socket;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,11 +43,11 @@ public class ApplicationServer {
       return oseeSession;
    }
 
-   protected static void initialize() throws SQLException {
+   protected static void initialize() throws OseeDataStoreException {
       DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
       String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
       if (Strings.isValid(resourceServer) != true) {
-         throw new SQLException(
+         throw new OseeDataStoreException(
                String.format(
                      "Invalid resource server address [%s]. Please ensure db service info has a valid resource server defined.",
                      resourceServer));

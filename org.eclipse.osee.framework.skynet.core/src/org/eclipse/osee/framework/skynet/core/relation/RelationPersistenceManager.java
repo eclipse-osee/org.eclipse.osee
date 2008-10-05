@@ -16,13 +16,13 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -135,9 +135,9 @@ public class RelationPersistenceManager {
     * Updates the aOrder and bOrder of a RelationLink without producing a transaction.
     * 
     * @param link
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public void updateRelationOrdersWithoutTransaction(RelationLink... links) throws SQLException {
+   public void updateRelationOrdersWithoutTransaction(RelationLink... links) throws OseeDataStoreException {
       List<Object[]> data = new LinkedList<Object[]>();
 
       for (RelationLink link : links) {

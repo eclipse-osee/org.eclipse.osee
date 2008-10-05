@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -127,8 +128,8 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       String defaultApplicationServer = null;
       try {
          defaultApplicationServer = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
-      } catch (SQLException ex) {
-         OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
       }
       DataRecord record =
             new DataRecord("Application Server", defaultApplicationServer != null ? defaultApplicationServer : "");

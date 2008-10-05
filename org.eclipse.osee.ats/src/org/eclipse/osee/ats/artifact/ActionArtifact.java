@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -64,7 +64,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
-    * @throws SQLException
     */
    public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -98,8 +97,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    /**
     * Reset Action title only if all children are titled the same
-    * 
-    * @throws SQLException
     */
    private void resetTitleOffChildren() throws OseeCoreException {
       String title = "";
@@ -126,8 +123,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    /**
     * Reset Action title only if all children are titled the same
-    * 
-    * @throws SQLException
     */
    private void resetDescriptionOffChildren() throws OseeCoreException {
       String desc = "";
@@ -817,7 +812,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @param fromAction
     * @param toTeam
-    * @throws SQLException
     * @throws IllegalStateException
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
@@ -842,7 +836,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     * 
     * @param art
-    * @throws SQLException
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setDescriptiveName(title);

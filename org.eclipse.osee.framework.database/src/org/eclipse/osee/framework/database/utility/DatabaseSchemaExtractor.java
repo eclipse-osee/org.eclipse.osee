@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
@@ -68,16 +69,19 @@ public class DatabaseSchemaExtractor {
 
    private static final String DEFAULT_FILTER = "BIN.*";
 
-   public DatabaseSchemaExtractor(Connection connection, Set<String> schemas) throws SQLException {
-      super();
-      this.dbData = connection.getMetaData();
-      this.dbName = dbData.getDatabaseProductName();
-      this.dbVersion = dbData.getDatabaseProductVersion();
-      this.dbType = SupportedDatabase.getDatabaseType(connection);
-      this.filter = new ArrayList<String>();
-      filter.add(DEFAULT_FILTER);
-      this.tablesToExtract = new TreeSet<String>();
-      this.schemas = schemas;
+   public DatabaseSchemaExtractor(Connection connection, Set<String> schemas) throws OseeDataStoreException {
+      try {
+         this.dbData = connection.getMetaData();
+         this.dbName = dbData.getDatabaseProductName();
+         this.dbVersion = dbData.getDatabaseProductVersion();
+         this.dbType = SupportedDatabase.getDatabaseType(connection);
+         this.filter = new ArrayList<String>();
+         filter.add(DEFAULT_FILTER);
+         this.tablesToExtract = new TreeSet<String>();
+         this.schemas = schemas;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    public void addToFilter(String value) {
@@ -96,8 +100,12 @@ public class DatabaseSchemaExtractor {
       return database;
    }
 
-   public void extractSchemaData() throws SQLException {
-      populateDatabaseMap(schemas);
+   public void extractSchemaData() throws OseeDataStoreException {
+      try {
+         populateDatabaseMap(schemas);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    private void populateDatabaseMap(Set<String> schemas) throws SQLException {

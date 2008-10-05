@@ -18,8 +18,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -27,8 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -126,24 +125,26 @@ public class AttributeToTransactionOperation {
             transaction.getTransactionId(), dao.getUri(), attrModType, transaction.getBranch());
    }
 
-   private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
+   private void createNewAttributeMemo(Attribute<?> attribute) throws OseeDataStoreException {
       if (attribute == null) return;
-      ConnectionHandlerStatement connectionHandlerStatement = null;
+      ConnectionHandlerStatement chStmt = null;
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
 
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
       if (attributeType.getMaxOccurrences() == 1) {
          try {
-            connectionHandlerStatement =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId());
 
-            if (connectionHandlerStatement.next()) {
-               attrId = connectionHandlerStatement.getRset().getInt("attr_id");
+            if (chStmt.next()) {
+               attrId = chStmt.getRset().getInt("attr_id");
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(connectionHandlerStatement);
+            ConnectionHandler.close(chStmt);
          }
       }
       int gammaId = SequenceManager.getNextGammaId();
@@ -158,9 +159,9 @@ public class AttributeToTransactionOperation {
     * layer marked it with. The persistence memo is used for this since it is the identifying information the
     * persistence layer needs, allowing the attribute to be destroyed and released back to the system.
     * 
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws SQLException {
+   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws OseeDataStoreException {
       if (!attribute.isInDatastore()) return;
 
       int attrGammaId;
@@ -181,8 +182,8 @@ public class AttributeToTransactionOperation {
       // Kick Local Event
       try {
          transaction.addArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
-      } catch (Exception ex) {
-         // do nothing
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 

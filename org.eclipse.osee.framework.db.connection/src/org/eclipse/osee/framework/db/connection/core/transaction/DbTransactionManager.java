@@ -18,8 +18,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.KeyedLevelManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -42,7 +42,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
    }
 
    @Override
-   protected void onInitialEntry() throws SQLException {
+   protected void onInitialEntry() throws OseeDataStoreException {
       super.onInitialEntry();
       try {
          if (connection == null) connection = ConnectionHandler.getPooledConnection();
@@ -59,16 +59,16 @@ public final class DbTransactionManager extends KeyedLevelManager {
                         "We are doing a naughty thing in DbTransactionManager line:66.  We skip defering constraint checking because we're using %s, " + "and we're checking the metaData to see if we are using %s.",
                         dbName, dbName));
          } else {
-            DbUtil.deferConstraintChecking(connection);
+            DbTransaction.deferConstraintChecking(connection);
          }
-      } catch (SQLException e) {
+      } catch (SQLException ex) {
          requestRollback();
-         throw e;
+         throw new OseeDataStoreException(ex);
       }
    }
 
    @Override
-   protected void onLastExit() {
+   protected void onLastExit() throws OseeDataStoreException {
       // This is used to signify that the commit itself was successful, and does
       // not necessarily signify that no SQLException occurred.
       boolean committed = false;
@@ -143,7 +143,7 @@ public final class DbTransactionManager extends KeyedLevelManager {
     * @see org.eclipse.osee.framework.ui.plugin.util.db.KeyedLevelManager#endTransactionLevel(java.lang.Object)
     */
    @Override
-   public void endTransactionLevel(Object key) throws SQLException {
+   public void endTransactionLevel(Object key) throws OseeDataStoreException {
       if (true != isTransactionLevelSuccess(key)) {
          requestRollback();
       }

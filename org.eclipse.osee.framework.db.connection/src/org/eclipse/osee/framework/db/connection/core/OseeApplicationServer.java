@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.db.connection.core;
 
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.IApplicationServerConnectionListener;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,14 +33,14 @@ public class OseeApplicationServer {
    private static String oseeServer = null;
    private static boolean serverStatus = false;
 
-   public static void setApplicationOseeServer(String string) throws SQLException {
+   public static void setApplicationOseeServer(String string) throws OseeDataStoreException {
       OseeInfo.putValue(key, string);
    }
 
-   public static String getOseeApplicationServer() throws SQLException {
+   public static String getOseeApplicationServer() throws OseeDataStoreException {
       checkAndUpdateStatus();
       if (Strings.isValid(oseeServer) != true) {
-         throw new SQLException("Invalid resource server address in DB. Check OSEE_INFO table.");
+         throw new OseeDataStoreException("Invalid resource server address in DB. Check OSEE_INFO table.");
       }
       return oseeServer;
    }
@@ -53,7 +53,7 @@ public class OseeApplicationServer {
       return serverStatus;
    }
 
-   private static void checkAndUpdateStatus() throws SQLException {
+   private static void checkAndUpdateStatus() throws OseeDataStoreException {
       try {
          if (oseeServer == null) {
             String overrideValue = OseeProperties.getInstance().getOseeApplicationServerOverride();

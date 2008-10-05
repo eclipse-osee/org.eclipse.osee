@@ -17,11 +17,12 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
@@ -40,14 +41,14 @@ public class SkynetTransactionBuilder {
    private final IProgressMonitor monitor;
    private final Object transactionKey;
 
-   protected SkynetTransactionBuilder(Branch branch) throws SQLException {
+   protected SkynetTransactionBuilder(Branch branch) throws OseeDataStoreException {
       this(branch, new NullProgressMonitor());
    }
 
    /**
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   protected SkynetTransactionBuilder(Branch branch, IProgressMonitor monitor) throws SQLException {
+   protected SkynetTransactionBuilder(Branch branch, IProgressMonitor monitor) throws OseeDataStoreException {
       this.transactions = new LinkedList<SkynetTransaction>();
       this.versionedTransaction = null;
       this.branch = branch;
@@ -82,7 +83,7 @@ public class SkynetTransactionBuilder {
     * Finish and commit the Skynet Transactions. This method performs clean up and either terminate, or this method must
     * be called, so use in accordance with a try/finally block.
     */
-   protected void execute() throws SQLException {
+   protected void execute() throws OseeDataStoreException {
       checkFinished();
 
       // Start at a non-zero value to accommodate work contributed at this level
@@ -107,7 +108,7 @@ public class SkynetTransactionBuilder {
       }
    }
 
-   private SkynetTransaction getTransaction(boolean isVersioned) throws SQLException {
+   private SkynetTransaction getTransaction(boolean isVersioned) throws OseeDataStoreException {
       SkynetTransaction transaction;
 
       if (isVersioned) {
@@ -120,7 +121,7 @@ public class SkynetTransactionBuilder {
       return transaction;
    }
 
-   private SkynetTransaction getVersionedTransaction() throws SQLException {
+   private SkynetTransaction getVersionedTransaction() throws OseeDataStoreException {
       if (versionedTransaction == null) {
          versionedTransaction = new SkynetTransaction(branch);
          transactions.add(versionedTransaction);

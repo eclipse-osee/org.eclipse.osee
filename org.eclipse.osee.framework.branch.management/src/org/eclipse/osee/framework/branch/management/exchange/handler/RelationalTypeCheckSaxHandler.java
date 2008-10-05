@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -66,7 +65,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
                   typeField, typeId));
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 

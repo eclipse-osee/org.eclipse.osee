@@ -17,10 +17,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -186,7 +185,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
       if (showDetails) {
          sbFull.append(AHTML.endMultiColumnTable());
-         XResultData rd = new XResultData(SkynetActivator.getLogger());
+         XResultData rd = new XResultData();
          rd.addRaw(sbFull.toString());
          rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }
@@ -209,7 +208,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       builder.append(DESCRIPTION[x]);
    }
 
-   private void loadData(String sql, boolean forDelete) throws SQLException {
+   private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       ResultSet resultSet = null;
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
@@ -225,8 +224,10 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
                      resultSet.getInt("deleted_tran")));
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -134,7 +135,7 @@ public class SortRelationsByBranch extends AbstractBlam {
          monitor.worked(1);
       }
 
-      private void writeToDb(IProgressMonitor monitor, Connection connection, String update, List<Object[]> data) throws SQLException {
+      private void writeToDb(IProgressMonitor monitor, Connection connection, String update, List<Object[]> data) throws OseeDataStoreException {
          int count = ConnectionHandler.runPreparedUpdate(connection, update, data);
          totalModCount += count;
          monitor.subTask(String.format("Updated [%d of %d] relation orders - overall [%d]", count, data.size(),

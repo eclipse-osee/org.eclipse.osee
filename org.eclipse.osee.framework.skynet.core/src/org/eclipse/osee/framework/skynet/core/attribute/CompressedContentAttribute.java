@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 

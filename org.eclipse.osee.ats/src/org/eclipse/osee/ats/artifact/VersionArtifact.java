@@ -17,13 +17,13 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCache;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 public class VersionArtifact extends BasicArtifact {
 
@@ -130,9 +130,8 @@ public class VersionArtifact extends BasicArtifact {
     * 
     * @param name
     * @return
-    * @throws SQLException
     */
-   public static VersionArtifact getSoleVersion(String name) throws OseeCoreException, SQLException {
+   public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
       return AtsCache.getArtifactsByName(name, VersionArtifact.class).iterator().next();
    }
 }

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.db;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Types;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.VariantData;
@@ -28,7 +30,7 @@ public class ResultSetProcessor {
    public ResultSetProcessor() {
    }
 
-   public IVariantData parse(ResultSet resultSet) throws Exception {
+   public IVariantData parse(ResultSet resultSet) throws SQLException, IOException {
       IVariantData toReturn = new VariantData();
       ResultSetMetaData meta = resultSet.getMetaData();
       int numberOfColumns = meta.getColumnCount() + 1;
@@ -62,8 +64,8 @@ public class ResultSetProcessor {
                      value = value.trim();
                   }
                   toReturn.put(name, resultSet.getString(columnIndex));
-               } catch (Exception ex) {
-                  throw new Exception(getErrorMessage(name, typeName), ex);
+               } catch (SQLException ex) {
+                  throw new SQLException(getErrorMessage(name, typeName), ex);
                }
                break;
          }
@@ -75,7 +77,7 @@ public class ResultSetProcessor {
       return String.format("Unable to convert [%s] of raw type [%s] to string.", name, typeName);
    }
 
-   private byte[] streamToByteArray(InputStream inputStream) throws Exception {
+   private byte[] streamToByteArray(InputStream inputStream) throws IOException {
       byte[] toReturn = new byte[0];
       if (inputStream != null) {
          try {

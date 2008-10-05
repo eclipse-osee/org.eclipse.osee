@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -23,7 +22,6 @@ public abstract class WordExtractor extends AbstractArtifactExtractor {
 
    /**
     * @param branch
-    * @throws SQLException
     */
    public WordExtractor(Branch branch) {
       super(branch);

@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedE
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModType;
 
@@ -68,19 +68,19 @@ public class SkynetTransaction {
    private final Map<ITransactionData, ITransactionData> transactionItems =
          new HashMap<ITransactionData, ITransactionData>();
 
-   public SkynetTransaction(Branch branch) throws SQLException {
+   public SkynetTransaction(Branch branch) throws OseeDataStoreException {
       this(branch, SkynetAuthentication.getUser());
    }
 
-   public SkynetTransaction(Branch branch, String comment) throws SQLException {
+   public SkynetTransaction(Branch branch, String comment) throws OseeDataStoreException {
       this(branch, SkynetAuthentication.getUser(), comment);
    }
 
-   public SkynetTransaction(Branch branch, User userToBlame) throws SQLException {
+   public SkynetTransaction(Branch branch, User userToBlame) throws OseeDataStoreException {
       this(branch, userToBlame, "");
    }
 
-   public SkynetTransaction(Branch branch, User userToBlame, String comment) throws SQLException {
+   public SkynetTransaction(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
       this.branch = branch;
       this.comment = comment;
       transactionId = TransactionIdManager.createNextTransactionId(branch, userToBlame, comment);
@@ -101,11 +101,11 @@ public class SkynetTransaction {
       statementData.add(data);
    }
 
-   public void execute() throws SQLException {
+   public void execute() throws OseeDataStoreException {
       execute(new NullProgressMonitor());
    }
 
-   public synchronized void execute(IProgressMonitor monitor) throws SQLException {
+   public synchronized void execute(IProgressMonitor monitor) throws OseeDataStoreException {
       boolean deleteTransactionDetail = false;
 
       try {
@@ -123,7 +123,7 @@ public class SkynetTransaction {
          ConnectionHandler.requestRollback();
          OseeLog.log(SkynetActivator.class, Level.SEVERE,
                "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
-         throw ex;
+         throw new OseeDataStoreException(ex);
       } finally {
          if (deleteTransactionDetail) {
             xModifiedEvents.clear();
@@ -154,7 +154,7 @@ public class SkynetTransaction {
 
    }
 
-   public boolean executeTransactionDataItems() throws SQLException {
+   public boolean executeTransactionDataItems() throws OseeDataStoreException {
       boolean insertTransactionDataItems = transactionItems.size() > 0;
 
       TransactionJoinQuery transactionJoin = JoinUtility.createTransactionJoinQuery();
@@ -197,7 +197,7 @@ public class SkynetTransaction {
 
    // Supports adding new artifacts to the artifact table and
    // updating attributes that are not versioned.
-   public boolean executeBatchToTransactions(IProgressMonitor monitor) throws SQLException {
+   public boolean executeBatchToTransactions(IProgressMonitor monitor) throws OseeDataStoreException {
       Collection<String> sqls = preparedBatch.keySet();
       int size = sqls.size();
       int count = 0;
@@ -211,7 +211,7 @@ public class SkynetTransaction {
       return preparedBatch.size() > 0;
    }
 
-   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeCoreException {
+   public void addArtifactModifiedEvent(Object sourceObject, ArtifactModType artifactModType, Artifact artifact) throws OseeDataStoreException {
       xModifiedEvents.add(new ArtifactModifiedEvent(new Sender(sourceObject), artifactModType, artifact,
             getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
    }

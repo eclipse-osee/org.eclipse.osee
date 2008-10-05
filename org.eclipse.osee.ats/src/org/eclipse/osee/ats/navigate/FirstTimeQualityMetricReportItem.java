@@ -27,10 +27,10 @@ import org.eclipse.osee.ats.util.VersionMetrics;
 import org.eclipse.osee.ats.util.VersionTeamMetrics;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -116,7 +116,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
-            XResultData resultData = new XResultData(AtsPlugin.getLogger());
+            XResultData resultData = new XResultData();
             String html = getTeamWorkflowReport(getName(), teamDef, monitor);
             resultData.addRaw(html);
             resultData.report(getName(), Manipulations.RAW_HTML);
@@ -139,9 +139,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * @param teamDef
     * @param monitor
     * @return
-    * @throws SQLException
     */
-   public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));

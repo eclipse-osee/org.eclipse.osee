@@ -27,7 +27,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -38,10 +41,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOp
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -96,10 +95,10 @@ public final class ArtifactLoader {
     * @param confirmer
     * @param transactionId
     * @param allowDeleted
-    * @return
-    * @throws SQLException
+    * @return list of artifacts resulting for the sql query
+    * @throws OseeCoreException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId, boolean allowDeleted) throws OseeDataStoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
@@ -118,12 +117,12 @@ public final class ArtifactLoader {
     * @param artifactCountEstimate
     * @param loadLevel
     * @param reload
-    * @param allowDeleted TODO
-    * @param historical TODO
-    * @return
-    * @throws SQLException
+    * @param allowDeleted allow the inclusion of deleted artifacts in the results
+    * @param historical
+    * @return list of artifacts resulting for the sql query
+    * @throws OseeCoreException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionId transactionId, boolean allowDeleted) throws OseeDataStoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
       return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId,
             allowDeleted);
    }
@@ -135,11 +134,10 @@ public final class ArtifactLoader {
     * @param fetchSize
     * @param reload
     * @param historical
-    * @param allowDeleted TODO
-    * @return
-    * @throws SQLException
+    * @param allowDeleted allow the inclusion of deleted artifacts in the results
+    * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws SQLException {
+   public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
          ConnectionHandlerStatement chStmt = null;
@@ -164,20 +162,16 @@ public final class ArtifactLoader {
                previousBranchId = branchId;
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
 
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
             loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
          }
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         try {
-            clearQuery(queryId);
-         } catch (OseeDataStoreException ex) {
-            throw new SQLException(ex);
-         }
+         clearQuery(queryId);
       }
       return artifacts;
    }
@@ -192,10 +186,10 @@ public final class ArtifactLoader {
     * @param reload
     * @param historical TODO
     * @param allowDeleted TODO
-    * @return
-    * @throws SQLException
+    * @return list of the loaded artifacts
+    * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeDataStoreException {
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = Collections.emptyList();
       if (insertParameters.size() > 0) {
          long time = System.currentTimeMillis();
@@ -204,8 +198,6 @@ public final class ArtifactLoader {
             artifacts =
                   loadArtifactsFromQueryId(queryId, loadLevel, confirmer, insertParameters.size(), reload, historical,
                         allowDeleted);
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             OseeLog.log(SkynetActivator.class, Level.FINE, String.format(
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), artifacts.size()),
@@ -220,9 +212,9 @@ public final class ArtifactLoader {
     * must be call in a try block with a finally clause which calls clearQuery()
     * 
     * @param insertParameters
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static int selectArtifacts(Collection<Object[]> insertParameters) throws SQLException {
+   public static int selectArtifacts(Collection<Object[]> insertParameters) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedUpdateBatch(INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
@@ -231,7 +223,6 @@ public final class ArtifactLoader {
     * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
-    * @throws SQLException
     */
    public static void clearQuery(int queryId) throws OseeDataStoreException {
       clearQuery(queryId, null);
@@ -242,17 +233,12 @@ public final class ArtifactLoader {
     * 
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     *           selectArtifacts
-    * @throws SQLException
     */
    public static void clearQuery(int queryId, Connection connection) throws OseeDataStoreException {
-      try {
-         if (connection != null) {
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, queryId);
-         } else {
-            ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_JOIN_ARTIFACT, queryId);
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+      if (connection != null) {
+         ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, queryId);
+      } else {
+         ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_JOIN_ARTIFACT, queryId);
       }
    }
 
@@ -262,7 +248,6 @@ public final class ArtifactLoader {
     * @param sql
     * @param queryParameters
     * @param artifactCountEstimate
-    * @throws SQLException
     */
    public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionId transactionId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
@@ -284,7 +269,7 @@ public final class ArtifactLoader {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       OseeLog.log(SkynetActivator.class, Level.FINE,
             String.format("Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time),
@@ -334,8 +319,6 @@ public final class ArtifactLoader {
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
          loadArtifactsData(queryId, artifacts, loadLevel, false, false, artifact.isDeleted());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          clearQuery(queryId);
       }
@@ -403,7 +386,7 @@ public final class ArtifactLoader {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       Map<Integer, RelationLink> sideB = new HashMap<Integer, RelationLink>();
       Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
@@ -468,7 +451,7 @@ public final class ArtifactLoader {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 

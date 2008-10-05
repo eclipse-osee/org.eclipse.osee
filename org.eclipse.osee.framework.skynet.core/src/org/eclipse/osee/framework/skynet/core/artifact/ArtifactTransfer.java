@@ -15,14 +15,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -170,14 +169,13 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     * 
     * @param dataIn the input stream
     * @return the resource
-    * @throws SQLException
     * @throws IllegalArgumentException
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
     * @throws IOException
     * @throws BranchDoesNotExist
     */
-   private Artifact readArtifact(DataInputStream dataIn) throws SQLException, OseeCoreException, IOException {
+   private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
       int artID = dataIn.readInt();
       int branchId = dataIn.readInt();
       return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getBranch(branchId));

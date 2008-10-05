@@ -21,18 +21,18 @@ import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 
 /**
@@ -126,9 +126,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * Sets the branch short name to the given value
     * 
     * @param persist if persist, store the change to the data-store
-    * @throws SQLException
     */
-   public void setBranchShortName(String branchShortName, boolean persist) throws OseeCoreException, SQLException {
+   public void setBranchShortName(String branchShortName, boolean persist) throws OseeCoreException {
       if (persist) {
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, StringFormat.truncate(branchShortName, 25),
                branchId);
@@ -199,7 +198,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    /**
     * @return the branch that is this oldest ancestor for this branch (which could be itself)
-    * @throws SQLException
     */
    public Branch getRootBranch() throws OseeDataStoreException {
       Branch branchCursor = null;
@@ -298,7 +296,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * @return Returns the associatedArtifact.
     * @throws MultipleArtifactsExist
     * @throws ArtifactDoesNotExist
-    * @throws SQLException
     * @throws OseeDataStoreException
     */
    public Artifact getAssociatedArtifact() throws OseeCoreException {

@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -99,7 +100,7 @@ public class CompressedContentFix {
             connection = ConnectionHandler.getConnection();
             initializeData(connection);
             doWork(connection, time);
-         } catch (SQLException ex) {
+         } catch (OseeDataStoreException ex) {
             ci.printStackTrace(ex);
          } finally {
             if (connection != null) {
@@ -120,7 +121,7 @@ public class CompressedContentFix {
          isRunning = false;
       }
 
-      private void initializeData(Connection connection) throws SQLException {
+      private void initializeData(Connection connection) throws OseeDataStoreException {
          nativeExtension = Util.getArtIdMap(connection, "Extension");
          nameMap = Util.getArtIdMap(connection, "Name");
       }

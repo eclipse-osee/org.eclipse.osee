@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.AttributeJoinQuery;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -41,7 +40,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeType
     * @param value to search; supports % wildcard
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
@@ -55,7 +53,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param value
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
@@ -70,7 +67,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param values
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
@@ -86,7 +82,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param values
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
@@ -101,7 +96,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param attributeTypeName
     * @param value to search; supports % wildcard
     * @param historical if true will search on any branch and any attribute revision
-    * @throws SQLException
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
@@ -145,7 +139,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToWhereSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
     */
    @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException {
+   public void addToWhereSql(ArtifactQueryBuilder builder) throws OseeDataStoreException {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");
@@ -229,7 +223,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       return strB.toString();
    }
 
-   public void cleanUp() throws SQLException {
+   public void cleanUp() throws OseeDataStoreException {
       if (joinQuery != null) {
          joinQuery.delete();
       }

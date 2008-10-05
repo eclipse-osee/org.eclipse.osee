@@ -5,11 +5,10 @@
  */
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -27,7 +26,7 @@ public class ConflictManagerExternal {
       this.fromBranch = fromBranch;
    }
 
-   public List<Conflict> getOriginalConflicts() throws OseeCoreException, SQLException {
+   public List<Conflict> getOriginalConflicts() throws OseeCoreException {
       if (originalConflicts == null) {
          originalConflicts =
                ConflictManagerInternal.getInstance().getConflictsPerBranch(fromBranch, toBranch,
@@ -36,11 +35,11 @@ public class ConflictManagerExternal {
       return originalConflicts;
    }
 
-   public boolean originalConflictsExist() throws OseeCoreException, SQLException {
+   public boolean originalConflictsExist() throws OseeCoreException {
       return getOriginalConflicts().size() > 0;
    }
 
-   public List<Conflict> getRemainingConflicts() throws OseeCoreException, SQLException {
+   public List<Conflict> getRemainingConflicts() throws OseeCoreException {
       List<Conflict> remainingConflicts = new ArrayList<Conflict>();
       if (originalConflictsExist()) {
          for (Conflict conflict : getOriginalConflicts()) {
@@ -52,7 +51,7 @@ public class ConflictManagerExternal {
       return remainingConflicts;
    }
 
-   public boolean remainingConflictsExist() throws OseeCoreException, SQLException {
+   public boolean remainingConflictsExist() throws OseeCoreException {
       return getRemainingConflicts().size() > 0;
    }
 

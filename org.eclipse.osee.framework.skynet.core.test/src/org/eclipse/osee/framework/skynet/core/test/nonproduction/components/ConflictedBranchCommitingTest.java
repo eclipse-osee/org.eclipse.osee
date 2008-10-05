@@ -12,10 +12,10 @@
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 
 /**
  * @author Theron Virgin

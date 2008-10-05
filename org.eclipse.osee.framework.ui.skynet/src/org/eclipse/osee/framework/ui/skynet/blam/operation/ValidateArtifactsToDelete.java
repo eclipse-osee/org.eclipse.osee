@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,14 +39,13 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
     * 
     * @param artifacts
     * @param descriptor
-    * @throws SQLException
     */
-   private void processChange(List<Artifact> artifacts) throws SQLException {
+   private void processChange(List<Artifact> artifacts) {
       if (artifacts.isEmpty()) {
          throw new IllegalArgumentException("The artifact list can not be empty");
       }
 
-      XResultData rd = new XResultData(SkynetGuiPlugin.getLogger());
+      XResultData rd = new XResultData();
       // Confirm artifacts are fit to delete
       try {
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {

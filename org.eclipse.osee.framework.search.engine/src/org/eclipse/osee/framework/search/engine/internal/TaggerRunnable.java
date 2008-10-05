@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.Activator;
 import org.eclipse.osee.framework.search.engine.ITagListener;
@@ -178,7 +178,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void deleteOldSearchTags(Connection connection, Collection<AttributeData> attributeDatas) throws SQLException {
+      private void deleteOldSearchTags(Connection connection, Collection<AttributeData> attributeDatas) throws OseeDataStoreException {
          TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
          try {
             for (AttributeData attributeData : attributeDatas) {
@@ -191,7 +191,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void checkSizeStoreIfNeeded(Connection connection) throws SQLException {
+      private void checkSizeStoreIfNeeded(Connection connection) throws OseeDataStoreException {
          int cummulative = 0;
          boolean needsStorage = false;
          for (SearchTag item : this.searchTags) {
@@ -206,7 +206,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void store(Connection connection, Collection<SearchTag> toStore) throws SQLException {
+      private void store(Connection connection, Collection<SearchTag> toStore) throws OseeDataStoreException {
          SearchTagDataStore.storeTags(connection, toStore);
          for (SearchTag item : toStore) {
             item.clearCache();

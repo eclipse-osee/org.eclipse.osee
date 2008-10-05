@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -205,7 +206,7 @@ public class DataConversion {
          isRunning = false;
       }
 
-      private void runUpdateBatch(List<Object[]> batchParams) throws SQLException {
+      private void runUpdateBatch(List<Object[]> batchParams) throws OseeDataStoreException {
          if (batchParams.size() > 0) {
             ConnectionHandler.runPreparedUpdateBatch(updateUri, batchParams);
             batchParams.clear();

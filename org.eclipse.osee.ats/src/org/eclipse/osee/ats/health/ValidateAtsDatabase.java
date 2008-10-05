@@ -26,12 +26,12 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -88,7 +88,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            final XResultData rd = new XResultData(AtsPlugin.getLogger());
+            final XResultData rd = new XResultData();
             runIt(monitor, rd);
             rd.report(getName());
          } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       xResultData.log("testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
       artifacts = ArtifactQuery.getArtifactsFromBranch(AtsPlugin.getAtsBranch(), false);
       if (xResultData == null) {
-         xResultData = new XResultData(AtsPlugin.getLogger());
+         xResultData = new XResultData();
       }
       if (artifacts.size() == 0) {
          xResultData.logError("Artifact load returned 0 artifacts to check");

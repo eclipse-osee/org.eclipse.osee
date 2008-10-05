@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.URL;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 public class AttributeResourceProcessor extends AbstractResourceProcessor {
 

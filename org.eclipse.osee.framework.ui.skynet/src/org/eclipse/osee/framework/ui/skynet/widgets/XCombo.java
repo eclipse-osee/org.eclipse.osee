@@ -288,7 +288,7 @@ public class XCombo extends XWidget {
       setLabelError();
    }
 
-   public void set(String data) throws IllegalStateException, SQLException {
+   public void set(String data) {
       this.data = data;
       updateComboWidget();
    }

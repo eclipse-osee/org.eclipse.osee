@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +25,7 @@ public class OseeInfo {
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
 
-   public static String getValue(String key) throws SQLException {
+   public static String getValue(String key) throws OseeDataStoreException {
       String returnValue = "";
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -34,13 +34,15 @@ public class OseeInfo {
          if (rSet.next()) {
             returnValue = rSet.getString("osee_value");
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return returnValue;
    }
 
-   public static void putValue(String key, String value) throws SQLException {
+   public static void putValue(String key, String value) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
    }

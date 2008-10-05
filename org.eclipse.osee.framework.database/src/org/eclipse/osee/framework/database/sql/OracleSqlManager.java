@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.database.data.IndexElement;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
@@ -58,7 +59,7 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(tableDef.getTablespace());
       toExecute.append("\n");
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
    }
 
    /* (non-Javadoc)
@@ -78,6 +79,6 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\."));
       logger.log(Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
    }
 }

@@ -25,16 +25,16 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -134,7 +134,7 @@ class DeleteBranchJob extends Job {
             deleteArtifactVersions();
             deleteBranch();
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
 
@@ -148,12 +148,11 @@ class DeleteBranchJob extends Job {
          super.handleTxFinally();
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
-            OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted,
-                  branch.getBranchId());
+            OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getBranchId());
          }
       }
 
-      private void deleteAttributeVersions() throws SQLException {
+      private void deleteAttributeVersions() throws OseeDataStoreException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete attribute versions");
             ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_VERSIONS, branch.getBranchId());
@@ -161,7 +160,7 @@ class DeleteBranchJob extends Job {
          }
       }
 
-      private void deleteRelationVersions() throws SQLException {
+      private void deleteRelationVersions() throws OseeDataStoreException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete relation versions");
             ConnectionHandler.runPreparedUpdate(DELETE_RELATION_VERSIONS, branch.getBranchId());
@@ -169,7 +168,7 @@ class DeleteBranchJob extends Job {
          }
       }
 
-      private void deleteArtifactVersions() throws SQLException {
+      private void deleteArtifactVersions() throws OseeDataStoreException {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete artifact versions");
             ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_VERSIONS, branch.getBranchId());
@@ -177,7 +176,7 @@ class DeleteBranchJob extends Job {
          }
       }
 
-      private void deleteBranch() throws SQLException {
+      private void deleteBranch() throws OseeDataStoreException {
          if (true != isCanceled()) {
             monitor.subTask("Delete Branch");
             ConnectionHandler.runPreparedUpdate(DELETE_FROM_BRANCH_TABLE, branch.getBranchId());

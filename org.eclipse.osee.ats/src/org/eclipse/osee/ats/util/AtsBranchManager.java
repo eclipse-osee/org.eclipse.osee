@@ -35,6 +35,12 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,11 +53,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -169,9 +170,8 @@ public class AtsBranchManager {
 
    /**
     * @return TransactionId associated with this state machine artifact
-    * @throws SQLException
     */
-   public TransactionId getTransactionId() throws SQLException {
+   public TransactionId getTransactionId() throws OseeDataStoreException {
       Set<Integer> tranSet = RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
       // Cache null transactionId so don't re-search for every call
       if (tranSet.size() == 0) {
@@ -244,7 +244,6 @@ public class AtsBranchManager {
     * by local and remote events.
     * 
     * @return Branch
-    * @throws SQLException
     */
    public Branch getWorkingBranch() throws OseeCoreException {
       Set<Branch> branches = BranchPersistenceManager.getAssociatedArtifactBranches(smaMgr.getSma());
@@ -260,7 +259,6 @@ public class AtsBranchManager {
 
    /**
     * @return true if there is a current working branch
-    * @throws SQLException
     */
    public boolean isWorkingBranch() throws OseeCoreException {
       return getWorkingBranch() != null;
@@ -269,7 +267,7 @@ public class AtsBranchManager {
    /**
     * @return true if there are committed changes associated with this state machine artifact
     */
-   public boolean isCommittedBranch() throws SQLException {
+   public boolean isCommittedBranch() throws OseeDataStoreException {
       return (getTransactionId() != null);
    }
 
@@ -277,7 +275,6 @@ public class AtsBranchManager {
     * Set parent branch id associated with this state machine artifact
     * 
     * @param branchId
-    * @throws SQLException
     * @throws MultipleAttributesExist
     */
    public void setParentBranchId(int branchId) throws OseeCoreException {
@@ -343,9 +340,8 @@ public class AtsBranchManager {
 
    /**
     * @return Branch that is the configured branch to create working branch from.
-    * @throws SQLException
     */
-   private Branch getParentBranchForWorkingBranchCreation() throws SQLException, OseeCoreException {
+   private Branch getParentBranchForWorkingBranchCreation() throws OseeCoreException {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
@@ -666,7 +662,6 @@ public class AtsBranchManager {
 
    /**
     * @return true if isWorkingBranch() and changes exist else false
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */

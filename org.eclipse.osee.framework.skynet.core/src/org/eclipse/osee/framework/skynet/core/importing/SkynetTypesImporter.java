@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,9 +32,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
@@ -66,9 +65,8 @@ public class SkynetTypesImporter implements RowProcessor {
    /**
     * @throws SAXException
     * @throws IOException
-    * @throws SQLException
     */
-   public SkynetTypesImporter(Branch branch) throws SQLException, SAXException, IOException {
+   public SkynetTypesImporter(Branch branch) throws SAXException, IOException {
       excelHandler = new ExcelSaxHandler(this, true, true);
       superTypeMap = new HashMap<String, ArrayList<String>>();
       relationValidity = new RelationValidity(this, branch);
@@ -150,11 +148,7 @@ public class SkynetTypesImporter implements RowProcessor {
       }
    }
 
-   /**
-    * @param row
-    * @throws SQLException
-    */
-   private void associateAttribute(String[] row) throws SQLException {
+   private void associateAttribute(String[] row) {
       if (debugRows) System.out.println("   associateAttribute => " + row[0] + "," + row[1]);
       attributeMapRows.add(new AttributeMapRow(this, row));
    }

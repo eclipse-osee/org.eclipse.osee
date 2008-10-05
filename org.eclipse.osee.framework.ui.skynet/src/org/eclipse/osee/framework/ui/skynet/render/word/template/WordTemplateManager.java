@@ -11,15 +11,14 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -265,7 +264,7 @@ public class WordTemplateManager {
    /**
     * @param artifacts
     * @return
-    * @throws SQLException
+    * @throws OseeCoreException
     */
    private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
@@ -283,11 +282,12 @@ public class WordTemplateManager {
    }
 
    /**
+    * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
+    * 
     * @param tasks2
     * @param artifact
     * @return
-    * @throws SQLException This function expands wildcard(*) attribute names into all of the attribute types of a
-    *            particular artifact.
+    * @throws OseeCoreException
     */
    private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
       List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();

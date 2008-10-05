@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -39,7 +38,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
-    * @throws SQLException
     */
    public ReviewSMArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -72,11 +70,11 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return "Review";
    }
 
-   public boolean isBlocking() throws OseeCoreException, SQLException {
+   public boolean isBlocking() throws OseeCoreException {
       return getReviewBlockType() != ReviewBlockType.None;
    }
 
-   public ReviewBlockType getReviewBlockType() throws OseeCoreException, SQLException {
+   public ReviewBlockType getReviewBlockType() throws OseeCoreException {
       String typeStr = getSoleAttributeValue(ATSAttributes.REVIEW_BLOCKS_ATTRIBUTE.getStoreName(), null);
       if (typeStr == null) {
          // Check old attribute value
@@ -100,7 +98,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       return Result.TrueResult;
    }
 
-   public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException, SQLException {
+   public Set<TeamDefinitionArtifact> getCorrespondingTeamDefinitionArtifact() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       if (getParentTeamWorkflow() != null) teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       if (actionableItemsDam.getActionableItems().size() > 0) {

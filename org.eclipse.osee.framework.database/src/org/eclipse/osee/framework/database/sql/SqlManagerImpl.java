@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.sql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,8 @@ import org.eclipse.osee.framework.database.data.ColumnMetadata;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
@@ -33,7 +34,7 @@ public class SqlManagerImpl extends SqlManager {
       super(ConfigUtil.getConfigFactory().getLogger(SqlManagerImpl.class), sqlDataType);
    }
 
-   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) throws SQLException {
+   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();
       for (String key : keys) {
@@ -44,7 +45,7 @@ public class SqlManagerImpl extends SqlManager {
       return toExecute;
    }
 
-   public void createTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
+   public void createTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\.") + " ( \n");
@@ -54,15 +55,15 @@ public class SqlManagerImpl extends SqlManager {
             tableDef.getFullyQualifiedTableName()));
       toExecute.append(" \n)\n");
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
    }
 
    @Override
-   public void dropTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
+   public void dropTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
             "\\."));
       logger.log(Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute.toString());
+      ConnectionHandler.runPreparedUpdate(connection, toExecute.toString());
    }
 }

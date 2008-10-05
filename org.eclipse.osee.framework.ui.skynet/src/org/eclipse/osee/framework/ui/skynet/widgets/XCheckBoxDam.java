@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -30,7 +29,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException, SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
       try {
@@ -42,7 +41,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException, SQLException {
+   public void saveToArtifact() throws OseeCoreException {
       try {
          artifact.setSoleAttributeValue(attributeTypeName, checkButton.getSelection());
       } catch (Exception ex) {
@@ -54,7 +53,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws OseeCoreException, SQLException {
+   public Result isDirty() throws OseeCoreException {
       try {
          if (checkButton != null && checkButton.isDisposed() != true) {
             Boolean enteredValue = checkButton.getSelection();
@@ -75,7 +74,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws OseeCoreException, SQLException {
+   public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 

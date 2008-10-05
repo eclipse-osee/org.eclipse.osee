@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.sql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,8 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
@@ -41,7 +42,7 @@ public class MysqlSqlManager extends SqlManagerImpl {
       super(sqlDataType);
    }
 
-   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) throws SQLException {
+   private String handleColumnCreationSection(Connection connection, Map<String, ColumnMetadata> columns) {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();
       for (String key : keys) {
@@ -52,7 +53,7 @@ public class MysqlSqlManager extends SqlManagerImpl {
       return toExecute;
    }
 
-   public void createTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
+   public void createTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
       toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
       toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName());
@@ -60,14 +61,14 @@ public class MysqlSqlManager extends SqlManagerImpl {
             handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute);
+      ConnectionHandler.runPreparedUpdate(connection, toExecute);
    }
 
    @Override
-   public void dropTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
+   public void dropTable(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
       logger.log(Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
-      executeStatement(connection, toExecute);
+      ConnectionHandler.runPreparedUpdate(connection, toExecute);
    }
 
    protected String formatQuotedString(String value, String splitAt) {
@@ -79,16 +80,17 @@ public class MysqlSqlManager extends SqlManagerImpl {
       return StringFormat.separateWith(array, splitAt.replaceAll("\\\\", ""));
    }
 
-   public void dropIndex(Connection connection, TableElement tableDef) throws SQLException, Exception {
+   public void dropIndex(Connection connection, TableElement tableDef) throws OseeDataStoreException {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
          if (iData.ignoreMySql()) continue;
          logger.log(Level.INFO, String.format("Dropping Index: [%s] FROM [%s]", iData.getId(), tableName));
          if (iData.getId().equals("PRIMARY")) {
-            executeStatement(connection, "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
+            ConnectionHandler.runPreparedUpdate(connection,
+                  "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {
-            executeStatement(connection,
+            ConnectionHandler.runPreparedUpdate(connection,
                   "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
          }
       }

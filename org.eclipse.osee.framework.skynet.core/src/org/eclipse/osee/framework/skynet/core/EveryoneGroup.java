@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -69,7 +68,6 @@ public class EveryoneGroup {
     * This does not persist the newly created relation that is the callers responsibility.
     * 
     * @param user
-    * @throws SQLException
     */
    public static void addGroupMember(User user) throws OseeCoreException {
       everyoneGroup.addRelation(CoreRelationEnumeration.Users_User, user);

@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.exception;
+package org.eclipse.osee.framework.db.connection.exception;
+
 
 /**
  * @author Donald G. Dunne
  */
-public class MultipleBranchesExist extends OseeCoreException {
+public class BranchMergeException extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public MultipleBranchesExist(String message) {
+   public BranchMergeException(String message) {
       super(message);
    }
 }

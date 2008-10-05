@@ -11,12 +11,14 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,9 +30,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MergeChangesInArtifactException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -47,7 +46,6 @@ public class AttributeConflict extends Conflict {
          "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    public final static String DIFF_MERGE_MARKUP =
          "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
-   private String sourceDestDiffFile = null;
    private final int attrId;
    private final int attrTypeId;
    private Object sourceObject;
@@ -76,7 +74,7 @@ public class AttributeConflict extends Conflict {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws SQLException, OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -92,7 +90,7 @@ public class AttributeConflict extends Conflict {
       isWordAttribute = sourceValue == null;
    }
 
-   public Attribute<?> getAttribute() throws OseeCoreException, SQLException {
+   public Attribute<?> getAttribute() throws OseeCoreException {
       if (attribute != null) return attribute;
       Collection<Attribute<Object>> localAttributes =
             getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -108,7 +106,7 @@ public class AttributeConflict extends Conflict {
       return attribute;
    }
 
-   public Attribute<?> getSourceAttribute() throws OseeCoreException, SQLException {
+   public Attribute<?> getSourceAttribute() throws OseeCoreException {
       if (sourceAttribute != null) return sourceAttribute;
       Collection<Attribute<Object>> localAttributes =
             getSourceArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -124,7 +122,7 @@ public class AttributeConflict extends Conflict {
       return sourceAttribute;
    }
 
-   public Attribute<?> getDestAttribute() throws OseeCoreException, SQLException {
+   public Attribute<?> getDestAttribute() throws OseeCoreException {
       if (destAttribute != null) return destAttribute;
       Collection<Attribute<Object>> localAttributes =
             getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
@@ -142,9 +140,9 @@ public class AttributeConflict extends Conflict {
 
    /**
     * @return the dynamicAttributeDescriptor
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException, SQLException {
+   public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor =
                AttributeTypeManager.getTypeWithWordContentCheck(getArtifact(),
@@ -153,7 +151,7 @@ public class AttributeConflict extends Conflict {
       return dynamicAttributeDescriptor;
    }
 
-   public Object getSourceObject() throws OseeCoreException, SQLException {
+   public Object getSourceObject() throws OseeCoreException {
       if (sourceObject != null) return sourceObject;
       try {
          sourceObject = getSourceAttribute().getValue();
@@ -163,7 +161,7 @@ public class AttributeConflict extends Conflict {
       return sourceObject;
    }
 
-   public Object getDestObject() throws OseeCoreException, SQLException {
+   public Object getDestObject() throws OseeCoreException {
       if (destObject != null) return destObject;
       try {
          destObject = getDestAttribute().getValue();
@@ -223,48 +221,48 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getDestDisplayData() throws OseeCoreException, SQLException {
+   public String getDestDisplayData() throws OseeCoreException {
       return isWordAttribute ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
    }
 
    @Override
-   public String getSourceDisplayData() throws OseeCoreException, SQLException {
+   public String getSourceDisplayData() throws OseeCoreException {
       return isWordAttribute ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
    }
 
    @Override
-   public boolean mergeEqualsSource() throws OseeCoreException, SQLException {
+   public boolean mergeEqualsSource() throws OseeCoreException {
       if (getMergeObject() == null || getSourceObject() == null) return false;
       return (getMergeObject().equals(getSourceObject()));
    }
 
    @Override
-   public boolean mergeEqualsDestination() throws OseeCoreException, SQLException {
+   public boolean mergeEqualsDestination() throws OseeCoreException {
       if (getMergeObject() == null || getDestObject() == null) return false;
       return (getMergeObject().equals(getDestObject()));
    }
 
    @Override
-   public boolean sourceEqualsDestination() throws OseeCoreException, SQLException {
+   public boolean sourceEqualsDestination() throws OseeCoreException {
       if (getSourceObject() == null || getDestObject() == null) return false;
       return (getSourceObject().equals(getDestObject()));
    }
 
-   public Object getMergeObject() throws OseeCoreException, SQLException {
+   public Object getMergeObject() throws OseeCoreException {
       return getAttribute().getValue();
    }
 
-   public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException, SQLException {
+   public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
       return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(
             getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
    }
 
    @SuppressWarnings("unchecked")
-   public Class<? extends Attribute> getBaseAttributeClass() throws OseeCoreException, SQLException {
+   public Class<? extends Attribute> getBaseAttributeClass() throws OseeCoreException {
       return getDynamicAttributeDescriptor().getBaseAttributeClass();
    }
 
-   public boolean setStringAttributeValue(String value) throws OseeCoreException, SQLException {
+   public boolean setStringAttributeValue(String value) throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
@@ -281,7 +279,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   public boolean setAttributeValue(Object value) throws OseeCoreException, SQLException {
+   public boolean setAttributeValue(Object value) throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
@@ -299,7 +297,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean setToSource() throws OseeCoreException, SQLException {
+   public boolean setToSource() throws OseeCoreException {
       if (!okToOverwriteMerge() || getSourceObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
@@ -318,7 +316,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean setToDest() throws OseeCoreException, SQLException {
+   public boolean setToDest() throws OseeCoreException {
       if (!okToOverwriteMerge() || getDestObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
@@ -337,7 +335,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean clearValue() throws OseeCoreException, SQLException {
+   public boolean clearValue() throws OseeCoreException {
       if (!okToOverwriteMerge()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d",
@@ -359,11 +357,11 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   public void markStatusToReflectEdit() throws OseeCoreException, SQLException {
+   public void markStatusToReflectEdit() throws OseeCoreException {
       if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
    }
 
-   public Status computeStatus() throws OseeCoreException, SQLException {
+   public Status computeStatus() throws OseeCoreException {
       Status passedStatus = Status.UNTOUCHED;
       try {
          getSourceAttribute();
@@ -384,7 +382,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getMergeDisplayData() throws OseeCoreException, SQLException {
+   public String getMergeDisplayData() throws OseeCoreException {
       if ((statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource())) || statusNotResolvable() || statusInformational()) {
          return NO_VALUE;
       }
@@ -395,7 +393,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getChangeItem() throws OseeCoreException, SQLException {
+   public String getChangeItem() throws OseeCoreException {
       return getDynamicAttributeDescriptor().getName();
    }
 
@@ -404,7 +402,7 @@ public class AttributeConflict extends Conflict {
       return ConflictType.ATTRIBUTE;
    }
 
-   public int getMergeGammaId() throws OseeCoreException, SQLException {
+   public int getMergeGammaId() throws OseeCoreException {
       return getAttribute().getGammaId();
    }
 
@@ -412,21 +410,21 @@ public class AttributeConflict extends Conflict {
       return isWordAttribute;
    }
 
-   public void setStatus(Status status) throws OseeCoreException, SQLException {
+   public void setStatus(Status status) throws OseeCoreException {
       if (status.equals(Status.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
          throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
    }
 
-   public boolean wordMarkupPresent() throws OseeCoreException, SQLException {
+   public boolean wordMarkupPresent() throws OseeCoreException {
       if (isWordAttribute() && ((WordAttribute) getAttribute()).mergeMarkupPresent()) {
          return true;
       }
       return false;
    }
 
-   public void revertSourceAttribute() throws OseeCoreException, SQLException {
+   public void revertSourceAttribute() throws OseeCoreException {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Reverting Attribute %d", getAttrId()));
       }

@@ -29,6 +29,13 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -50,13 +57,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -1301,7 +1301,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns dirty attributes.
     * @throws Exception
     */
-   public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws OseeCoreException {
+   public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws OseeDataStoreException {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : internalGetAttributes()) {
@@ -1318,9 +1318,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Changes the artifact type in the database.
     * 
     * @param artifactType
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public void changeArtifactType(ArtifactType artifactType) throws SQLException {
+   public void changeArtifactType(ArtifactType artifactType) throws OseeDataStoreException {
       ArtifactPersistenceManager.changeArtifactSubStype(this, artifactType);
       this.artifactType = artifactType;
    }

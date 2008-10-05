@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -34,9 +33,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -47,9 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -150,10 +148,9 @@ public class BranchPersistenceManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.runPreparedQuery(500, READ_BRANCH_TABLE);
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               int branchId = rSet.getInt("branch_id");
-               boolean isArchived = rSet.getInt("archived") == 1;
+               int branchId = chStmt.getInt("branch_id");
+               boolean isArchived = chStmt.getInt("archived") == 1;
 
                Branch branch = branchCache.get(branchId);
 
@@ -163,33 +160,30 @@ public class BranchPersistenceManager {
                   }
                } else {
                   if (branch == null) {
-                     branch = initializeBranchObject(rSet);
+                     branch = initializeBranchObject(chStmt);
                   } else {
-                     branch.setBranchName(rSet.getString("branch_name"));
+                     branch.setBranchName(chStmt.getString("branch_name"));
                   }
                }
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
    }
 
-   public static Collection<Branch> getArchivedBranches() throws SQLException {
+   public static Collection<Branch> getArchivedBranches() throws OseeDataStoreException {
       Collection<Branch> archivedBranches = new ArrayList<Branch>(100);
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(500, READ_BRANCH_TABLE);
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            if (rSet.getInt("archived") == 1) {
-               archivedBranches.add(initializeBranchObject(rSet));
+            if (chStmt.getInt("archived") == 1) {
+               archivedBranches.add(initializeBranchObject(chStmt));
             }
          }
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return archivedBranches;
    }
@@ -197,10 +191,9 @@ public class BranchPersistenceManager {
    /**
     * deletes (permanently removes from the datastore) each archived branch one at a time using sequential jobs
     * 
-    * @throws SQLException
     * @throws InterruptedException
     */
-   public static void deleteArchivedBranches() throws SQLException, InterruptedException {
+   public static void deleteArchivedBranches() throws OseeDataStoreException, InterruptedException {
       for (Branch archivedBranch : getArchivedBranches()) {
          Job job = new DeleteBranchJob(archivedBranch);
          Jobs.startJob(job);
@@ -213,23 +206,23 @@ public class BranchPersistenceManager {
     * 
     * @param rSet
     * @return
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   private static Branch initializeBranchObject(ResultSet rSet) throws SQLException {
-      int branchId = rSet.getInt("branch_id");
-      int associatedArtifactId = rSet.getInt("associated_art_id");
+   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+      int branchId = chStmt.getInt("branch_id");
+      int associatedArtifactId = chStmt.getInt("associated_art_id");
 
-      return new Branch(rSet.getString("short_name"), rSet.getString("branch_name"), branchId,
-            rSet.getInt("parent_branch_id"), false, rSet.getInt("author"), rSet.getTimestamp("time"),
-            rSet.getString(TXD_COMMENT), associatedArtifactId, BranchType.getBranchType(new Integer(
-                  rSet.getInt("branch_type"))));
+      return new Branch(chStmt.getString("short_name"), chStmt.getString("branch_name"), branchId,
+            chStmt.getInt("parent_branch_id"), false, chStmt.getInt("author"), chStmt.getTimestamp("time"),
+            chStmt.getString(TXD_COMMENT), associatedArtifactId, BranchType.getBranchType(new Integer(
+                  chStmt.getInt("branch_type"))));
    }
 
    /**
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException, SQLException {
+   public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       long time = 0;
       Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
 
@@ -259,7 +252,7 @@ public class BranchPersistenceManager {
     * Checks the merge branch cache for the branch if it does not find it then it will query the database for the
     * branch.
     */
-   public static Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws OseeCoreException, SQLException {
+   public static Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws OseeCoreException {
       if (sourceBranchId < 1 || destBranchId < 1) {
          throw new IllegalArgumentException(
                "Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
@@ -273,16 +266,15 @@ public class BranchPersistenceManager {
       return mergeBranch;
    }
 
-   private synchronized void ensureMergePopulatedCache(boolean forceRead) throws SQLException {
+   private synchronized void ensureMergePopulatedCache(boolean forceRead) throws OseeDataStoreException {
       if (forceRead || mergeBranchCache.isEmpty()) {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.runPreparedQuery(500, READ_MERGE_BRANCHES);
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               int sourceBranchId = rSet.getInt("source_branch_id");
-               int destBranchId = rSet.getInt("dest_branch_id");
-               boolean isArchived = rSet.getInt("archived") == 1;
+               int sourceBranchId = chStmt.getInt("source_branch_id");
+               int destBranchId = chStmt.getInt("dest_branch_id");
+               boolean isArchived = chStmt.getInt("archived") == 1;
 
                Branch branch = mergeBranchCache.get(sourceBranchId, destBranchId);
 
@@ -292,13 +284,13 @@ public class BranchPersistenceManager {
                   }
                } else {
                   if (branch == null) {
-                     branch = initializeBranchObject(rSet);
+                     branch = initializeBranchObject(chStmt);
                      mergeBranchCache.put(sourceBranchId, destBranchId, branch);
                   }
                }
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
    }
@@ -379,10 +371,9 @@ public class BranchPersistenceManager {
    /**
     * Commit the net changes from the childBranch into its parent branch.
     * 
-    * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public static Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws SQLException, OseeCoreException {
+   public static Job commitBranch(final Branch childBranch, final boolean archiveChildBranch, final boolean forceCommit) throws OseeCoreException {
       Branch parentBranch = childBranch.getParentBranch();
 
       return commitBranch(childBranch, parentBranch, archiveChildBranch, forceCommit);
@@ -393,11 +384,10 @@ public class BranchPersistenceManager {
     * fromBranch's changes override those on the toBranch if overrideConflicts is true otherwise a
     * CommitConflictException is thrown.
     * 
-    * @throws SQLException
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public static Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws SQLException, OseeCoreException {
+   public static Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, boolean forceCommit) throws OseeCoreException {
       CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch, forceCommit);
       Jobs.startJob(commitJob);
       return commitJob;
@@ -406,22 +396,22 @@ public class BranchPersistenceManager {
    /**
     * Creates a working branch from the net changes of the fromBranch onto the toBranch
     * 
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public Branch createWorkingBranchFromBranchChanges(final Branch fromBranch, final Branch toBranch, Artifact associatedArtifact) throws Exception {
+   public Branch createWorkingBranchFromBranchChanges(final Branch fromBranch, final Branch toBranch, Artifact associatedArtifact) throws OseeCoreException {
       return createWorkingBranchFromBranchData(fromBranch, null, toBranch, associatedArtifact);
    }
 
    /**
     * Creates a working branch from the net changes of the fromTransaction onto the toBranch
     * 
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public Branch createWorkingBranchFromBranchChanges(TransactionId fromTransactionId, final Branch toBranch, Artifact associatedArtifact) throws Exception {
+   public Branch createWorkingBranchFromBranchChanges(TransactionId fromTransactionId, final Branch toBranch, Artifact associatedArtifact) throws OseeCoreException {
       return createWorkingBranchFromBranchData(null, fromTransactionId, toBranch, associatedArtifact);
    }
 
-   private Branch createWorkingBranchFromBranchData(final Branch fromBranch, TransactionId fromTransactionId, final Branch toBranch, Artifact associatedArtifact) throws Exception {
+   private Branch createWorkingBranchFromBranchData(final Branch fromBranch, TransactionId fromTransactionId, final Branch toBranch, Artifact associatedArtifact) throws OseeCoreException {
       String toBranchName;
 
       if (fromTransactionId == null) {
@@ -437,9 +427,9 @@ public class BranchPersistenceManager {
    }
 
    /**
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   static int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
+   static int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws OseeDataStoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -458,9 +448,9 @@ public class BranchPersistenceManager {
    }
 
    /**
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
+   int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws OseeDataStoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, TransactionDetailsType.NonBaselined.getId(),
@@ -474,11 +464,7 @@ public class BranchPersistenceManager {
     * Archives a branch in the database by changing its archived value from 0 to 1.
     */
    public static void archive(Branch branch) throws OseeDataStoreException {
-      try {
-         ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, branch.getBranchId());
 
       branch.setArchived();
       instance.branchCache.remove(branch.getBranchId());
@@ -510,9 +496,9 @@ public class BranchPersistenceManager {
     * errors. No internal cached data is updated, nor are any events fired from the modified data so any Skynet sessions
     * reading this data should be restarted to see the changes.
     * 
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static void moveTransaction(TransactionId transactionId, Branch toBranch) throws SQLException {
+   public static void moveTransaction(TransactionId transactionId, Branch toBranch) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_BRANCH, toBranch.getBranchId(),
             transactionId.getTransactionNumber());
    }
@@ -526,7 +512,7 @@ public class BranchPersistenceManager {
       return true;
    }
 
-   public void updateAssociatedArtifact(Branch branch, Artifact artifact) throws SQLException {
+   public void updateAssociatedArtifact(Branch branch, Artifact artifact) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_ASSOCIATED_ART_BRANCH, artifact.getArtId(), branch.getBranchId());
    }
 
@@ -535,9 +521,9 @@ public class BranchPersistenceManager {
     * 
     * @param parentTransactionId
     * @param childBranchName
-    * @throws SQLException
+    * @throws OseeCoreException
     */
-   public static Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException, SQLException {
+   public static Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws OseeCoreException {
       return BranchCreator.getInstance().createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, null, null);
    }

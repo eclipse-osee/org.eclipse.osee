@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.usage;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -72,7 +72,7 @@ public class UsageLog {
       }
    }
 
-   public void writeOutLog() throws SQLException {
+   public void writeOutLog() throws OseeDataStoreException {
       if (log.isEmpty()) {
          return;
       }
@@ -109,7 +109,7 @@ public class UsageLog {
             }
             try {
                log.writeOutLog();
-            } catch (SQLException ex) {
+            } catch (OseeDataStoreException ex) {
                running = false;
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }

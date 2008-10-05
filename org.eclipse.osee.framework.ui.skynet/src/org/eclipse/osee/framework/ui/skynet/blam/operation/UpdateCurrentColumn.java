@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -256,7 +257,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          subMonitor.done();
       }
 
-      private int updateBaselineTransactions(IProgressMonitor monitor, Connection connection) throws SQLException {
+      private int updateBaselineTransactions(IProgressMonitor monitor, Connection connection) throws OseeDataStoreException {
          int txTypeNumber = 0;
          monitor.subTask("Update Baseline Txs - Tx Details Table");
          if (monitor.isCanceled() != true) {
@@ -296,7 +297,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          monitor.worked(1);
       }
 
-      private void writeToDb(IProgressMonitor monitor, Connection connection, String sql, String name, List<Object[]> data) throws SQLException {
+      private void writeToDb(IProgressMonitor monitor, Connection connection, String sql, String name, List<Object[]> data) throws OseeDataStoreException {
          int count = ConnectionHandler.runPreparedUpdate(connection, sql, data);
          totalCount += count;
          monitor.subTask(String.format("Updated [%d of %d] %s - overall [%d]\n", count, data.size(), name, totalCount));
@@ -346,7 +347,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          return updated;
       }
 
-      private int updateTxCurrentForLatestItems(IProgressMonitor monitor, Connection connection, List<UpdateHelper> updates) throws SQLException {
+      private int updateTxCurrentForLatestItems(IProgressMonitor monitor, Connection connection, List<UpdateHelper> updates) throws OseeDataStoreException {
          monitor.subTask("Setting Tx Current for current items");
          List<Object[]> batchArgs = new ArrayList<Object[]>();
          for (UpdateHelper data : updates) {

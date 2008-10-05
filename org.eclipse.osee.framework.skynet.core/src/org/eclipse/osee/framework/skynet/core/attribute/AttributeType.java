@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
@@ -46,9 +45,8 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param minOccurrences
     * @param maxOccurrences
     * @param tipText
-    * @throws SQLException
     */
-   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws SQLException {
+   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }

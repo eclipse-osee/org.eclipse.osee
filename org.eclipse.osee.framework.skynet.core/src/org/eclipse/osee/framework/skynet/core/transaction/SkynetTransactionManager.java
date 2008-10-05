@@ -23,8 +23,11 @@ import org.eclipse.osee.framework.db.connection.core.KeyedLevelManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionEventCompleted;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionEvent;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.ThreadKeyLocal;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -67,7 +70,7 @@ public class SkynetTransactionManager {
       };
    }
 
-   protected void startBatchLevel(Object key, Branch branch) throws SQLException {
+   protected void startBatchLevel(Object key, Branch branch) throws OseeDataStoreException {
       levelManager.get(branch).startTransactionLevel(branch, key);
    }
 
@@ -83,22 +86,16 @@ public class SkynetTransactionManager {
 
       try {
          manager.endTransactionLevel(key);
-      } catch (IllegalArgumentException ex) {
-         // If the terminate had to be done because the endBatchLevel died in onLastExit with
-         // SQLException
-         // then this will occur
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (IllegalStateException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 
-   protected void startBuilder(Branch branch, IProgressMonitor monitor) throws SQLException {
+   protected void startBuilder(Branch branch, IProgressMonitor monitor) throws OseeDataStoreException {
       transactionBuilder.set(branch, new SkynetTransactionBuilder(branch, monitor));
    }
 
-   private void endBuilder(boolean rollback, Branch branch) throws SQLException {
+   private void endBuilder(boolean rollback, Branch branch) throws OseeDataStoreException {
       try {
          SkynetTransactionBuilder builder = transactionBuilder.get(branch);
          if (builder != null) {
@@ -139,13 +136,13 @@ public class SkynetTransactionManager {
       }
 
       @Override
-      protected void onInitialEntry() throws SQLException {
+      protected void onInitialEntry() throws OseeDataStoreException {
          super.onInitialEntry();
          this.rollback = false;
          ConnectionHandler.addDbTransactionListener(this);
       }
 
-      public void startTransactionLevel(Branch branch, Object key) throws SQLException {
+      public void startTransactionLevel(Branch branch, Object key) throws OseeDataStoreException {
          this.branch = branch;
          boolean initialEntry = super.startTransactionLevel(key);
 
@@ -164,7 +161,7 @@ public class SkynetTransactionManager {
       }
 
       @Override
-      protected void onLastExit() throws SQLException {
+      protected void onLastExit() throws OseeDataStoreException {
          try {
             if (!rollback) {
                SkynetTransactionBuilder builder = getTransactionBuilder(branch);

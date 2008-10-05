@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -96,7 +96,7 @@ public class RelationTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws SQLException {
+   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, link.getRelationId(),
             branch.getBranchId());
    }
@@ -105,7 +105,7 @@ public class RelationTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public void insertTransactionChange() throws SQLException {
+   public void insertTransactionChange() throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_RELATION_TABLE, link.getRelationId(),
             link.getRelationType().getRelationTypeId(), link.getAArtifactId(), link.getBArtifactId(),
             link.getRationale(), link.getAOrder(), link.getBOrder(), gammaId, modificationType.getValue());

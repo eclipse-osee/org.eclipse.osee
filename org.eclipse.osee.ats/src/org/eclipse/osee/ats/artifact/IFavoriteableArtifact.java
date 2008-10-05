@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

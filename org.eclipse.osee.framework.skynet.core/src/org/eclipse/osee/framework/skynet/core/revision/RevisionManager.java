@@ -37,11 +37,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.Table;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -61,11 +65,6 @@ import org.eclipse.osee.framework.skynet.core.event.BranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -136,13 +135,13 @@ public class RevisionManager {
       } catch (SQLException e) {
          logger.log(Level.SEVERE, e.toString(), e);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return transactionDetails;
    }
 
    @Deprecated
-   public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws SQLException {
+   public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws OseeDataStoreException {
       checkCommitArtifactToTransactionCache();
 
       if (commitArtifact != null && commitArtifactIdToTransactionId.containsKey(commitArtifact.getArtId())) {
@@ -152,11 +151,11 @@ public class RevisionManager {
       return new HashSet<Integer>();
    }
 
-   public void cacheTransactionDataPerCommitArtifact(Artifact commitArtifact, int transactionData) throws SQLException {
+   public void cacheTransactionDataPerCommitArtifact(Artifact commitArtifact, int transactionData) throws OseeDataStoreException {
       cacheTransactionDataPerCommitArtifact(commitArtifact.getArtId(), transactionData);
    }
 
-   private void checkCommitArtifactToTransactionCache() throws SQLException {
+   private void checkCommitArtifactToTransactionCache() throws OseeDataStoreException {
       if (commitArtifactIdToTransactionId == null) {
          commitArtifactIdToTransactionId = new HashMap<Integer, Set<Integer>>();
 
@@ -168,8 +167,10 @@ public class RevisionManager {
                int commitArtId = rSet.getInt("commit_art_id");
                cacheTransactionDataPerCommitArtifact(commitArtId, rSet.getInt("transaction_id"));
             }
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
          OseeEventManager.addListener(new BranchEventListener() {
             /* (non-Javadoc)
@@ -195,7 +196,7 @@ public class RevisionManager {
       }
    }
 
-   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionId) throws SQLException {
+   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionId) throws OseeDataStoreException {
       checkCommitArtifactToTransactionCache();
 
       Set<Integer> transactionIds = commitArtifactIdToTransactionId.get(commitArtifactId);
@@ -214,7 +215,7 @@ public class RevisionManager {
     * @param artifact
     * @return - Collection<TransactionData>
     */
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact) throws OseeCoreException, SQLException {
+   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact) throws OseeCoreException {
       return getTransactionsPerArtifact(artifact, false);
    }
 
@@ -225,7 +226,7 @@ public class RevisionManager {
     * @param includeAncestry - indicate whether or not history from ancestor branches should be included
     * @return - Collection<TransactionData>
     */
-   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException, SQLException {
+   public Collection<TransactionData> getTransactionsPerArtifact(Artifact artifact, boolean includeAncestry) throws OseeCoreException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
       ConnectionHandlerStatement chStmt = null;
@@ -240,10 +241,10 @@ public class RevisionManager {
                   ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, artId, cursor.getBranchId(),
                         artId, cursor.getBranchId(), artId, cursor.getBranchId(), limit);
 
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               transactionDetails.add(new TransactionData(rSet.getString(TXD_COMMENT), rSet.getTimestamp("time"),
-                     rSet.getInt("author"), rSet.getInt("transaction_id"), artId, cursor, rSet.getInt("commit_art_id")));
+               transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
+                     chStmt.getInt("author"), chStmt.getInt("transaction_id"), artId, cursor,
+                     chStmt.getInt("commit_art_id")));
             }
 
             if (includeAncestry) {
@@ -253,7 +254,7 @@ public class RevisionManager {
                cursor = null;
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
       return transactionDetails;
@@ -265,7 +266,6 @@ public class RevisionManager {
     * 
     * @param tData
     * @return - Collection<RevisionChange>
-    * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws ArtifactDoesNotExist
     * @throws TransactionDoesNotExist
@@ -282,7 +282,6 @@ public class RevisionManager {
     * TransactionData id
     * 
     * @return - Collection<RevisionChange>
-    * @throws SQLException
     */
    public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws OseeCoreException, SQLException {
       Collection<RevisionChange> changes =
@@ -307,7 +306,6 @@ public class RevisionManager {
     * @param artId
     * @param artifactNameDescriptorResolver
     * @return All revision changes including artifact, attribute and relationLink.
-    * @throws SQLException
     * @throws BranchDoesNotExist
     * @throws ArtifactDoesNotExist
     */
@@ -360,8 +358,7 @@ public class RevisionManager {
 
       try {
          Query.acquireCollection(revisions, new AttributeChangeProcessor(changeType), sql, dataList.toArray());
-
-      } catch (SQLException e) {
+      } catch (OseeDataStoreException e) {
          logger.log(Level.SEVERE, e.toString(), e);
       }
 
@@ -399,7 +396,7 @@ public class RevisionManager {
          Query.acquireCollection(revisions,
                new RelationLinkChangeProcessor(changeType, artifactNameDescriptorResolver), sql, dataList.toArray());
 
-      } catch (SQLException e) {
+      } catch (OseeDataStoreException e) {
          logger.log(Level.SEVERE, e.toString(), e);
       }
 
@@ -410,8 +407,9 @@ public class RevisionManager {
     * Returns the name of an artifact
     * 
     * @param artId
+    * @throws OseeDataStoreException
     */
-   public String getName(int artId) {
+   public String getName(int artId) throws OseeDataStoreException {
       String name = bemsToName.get(artId);
 
       if (name == null) {
@@ -423,10 +421,10 @@ public class RevisionManager {
             chStmt = ConnectionHandler.runPreparedQuery(sql, artId);
 
             if (chStmt.next()) name = chStmt.getRset().getString("value");
-         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.toString(), e);
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
          bemsToName.put(artId, name);
       }
@@ -457,7 +455,7 @@ public class RevisionManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
       return changes;
    }
@@ -485,7 +483,7 @@ public class RevisionManager {
                headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, "Name",
                fromTransactionId.getBranch().getBranchId(), fromTransactionId.getTransactionNumber(),
                toTransactionId.getTransactionNumber(), DELETED.getValue());
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
 
@@ -499,7 +497,7 @@ public class RevisionManager {
             transactionDataSet.get(0).getTransactionId(), includeRelationOnlyChanges);
    }
 
-   public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws OseeDataStoreException {
+   public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws OseeCoreException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new ArtifactInTransactionSearch(baseTransaction, toTransaction));
 
@@ -515,7 +513,7 @@ public class RevisionManager {
       return modOnlyArtifacts;
    }
 
-   public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException, OseeDataStoreException {
+   public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       return ArtifactPersistenceManager.getArtifactsNotCurrent(criteria, false, toTransaction, null);
@@ -524,9 +522,8 @@ public class RevisionManager {
    /**
     * @param newAndModArts
     * @throws OseeDataStoreException
-    * @throws SQLException
     */
-   public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws OseeDataStoreException {
+   public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws OseeCoreException {
 
       Collection<Artifact> newAndModArts = getNewAndModifiedArtifacts(fromTransactionId, toTransactionId, true);
 
@@ -571,7 +568,7 @@ public class RevisionManager {
                         TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
                }
             } finally {
-               DbUtil.close(chStmt);
+               ConnectionHandler.close(chStmt);
             }
 
             ConnectionHandlerStatement chStmt1 = null;
@@ -589,7 +586,7 @@ public class RevisionManager {
                         TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
                }
             } finally {
-               DbUtil.close(chStmt1);
+               ConnectionHandler.close(chStmt1);
             }
          }
       } catch (SQLException ex) {
@@ -794,7 +791,7 @@ public class RevisionManager {
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
       }
       return otherBranches;

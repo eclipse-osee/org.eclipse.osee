@@ -18,15 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -148,7 +147,7 @@ public class RelationTypeManager {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -161,7 +160,7 @@ public class RelationTypeManager {
       return relationSide == RelationSide.SIDE_A ? pair.object1 : pair.object2;
    }
 
-   private void loadLinkValidities() throws SQLException {
+   private void loadLinkValidities() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
@@ -171,8 +170,10 @@ public class RelationTypeManager {
             validityMap.put(rset.getInt("rel_link_type_id"), rset.getInt("art_type_id"),
                   new ObjectPair<Integer, Integer>(rset.getInt("side_a_max"), rset.getInt("side_b_max")));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
@@ -205,20 +206,16 @@ public class RelationTypeManager {
       if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
             "The shortName can not be null or empty");
 
-      try {
-         int relationTypeId = SequenceManager.getNextRelationTypeId();
+      int relationTypeId = SequenceManager.getNextRelationTypeId();
 
-         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
-               sideAName, sideBName, abPhrasing, baPhrasing, shortName, ordered);
+      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
+            sideAName, sideBName, abPhrasing, baPhrasing, shortName, ordered);
 
-         RelationType relationType =
-               new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing,
-                     baPhrasing, shortName, ordered);
-         instance.cache(relationType);
-         return relationType;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      RelationType relationType =
+            new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
+                  shortName, ordered);
+      instance.cache(relationType);
+      return relationType;
    }
 
    /**
@@ -227,9 +224,9 @@ public class RelationTypeManager {
     * @param relLinkTypeId
     * @param sideAMax
     * @param sideBMax
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws SQLException {
+   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws OseeDataStoreException {
       if (sideAMax < 0) throw new IllegalArgumentException("The sideAMax can no be negative");
       if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
 

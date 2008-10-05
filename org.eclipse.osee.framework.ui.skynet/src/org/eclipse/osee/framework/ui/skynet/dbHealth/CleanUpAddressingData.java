@@ -17,9 +17,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -74,7 +72,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
                gammas.add(resultSet.getInt("gamma_id"));
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
          monitor.worked(25);
          if (monitor.isCanceled()) return;
@@ -85,7 +83,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
                transactions.add(resultSet.getInt("transaction_id"));
             }
          } finally {
-            DbUtil.close(chStmt);
+            ConnectionHandler.close(chStmt);
          }
          monitor.worked(25);
       }
@@ -118,7 +116,7 @@ public class CleanUpAddressingData extends DatabaseHealthTask {
 
       if (showDetails) {
          sbFull.append(AHTML.endMultiColumnTable());
-         XResultData rd = new XResultData(SkynetActivator.getLogger());
+         XResultData rd = new XResultData();
          rd.addRaw(sbFull.toString());
          rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
       }

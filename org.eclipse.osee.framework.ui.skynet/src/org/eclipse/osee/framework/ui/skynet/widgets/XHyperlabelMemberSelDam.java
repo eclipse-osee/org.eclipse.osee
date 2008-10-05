@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -69,7 +68,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException, SQLException {
+   public void saveToArtifact() throws OseeCoreException {
       try {
          String selectedStrValue = getSelectedStringValue();
          if (selectedStrValue == null || selectedStrValue.equals("")) {
@@ -94,7 +93,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws OseeCoreException, SQLException {
+   public Result isDirty() throws OseeCoreException {
       try {
          String enteredValue = getSelectedStringValue();
          String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
@@ -114,7 +113,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws OseeCoreException, SQLException {
+   public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 }

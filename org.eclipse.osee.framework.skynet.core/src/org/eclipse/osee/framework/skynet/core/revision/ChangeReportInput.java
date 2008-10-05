@@ -14,13 +14,13 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.ui.IMemento;
@@ -48,15 +48,11 @@ public class ChangeReportInput implements Serializable {
 
    /**
     * @param branch
-    * @throws SQLException
     * @throws OseeDataStoreException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
-    * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
     */
-   public ChangeReportInput(Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException, SQLException {
+   public ChangeReportInput(Branch branch) throws BranchDoesNotExist, TransactionDoesNotExist, OseeDataStoreException {
       this("Change Report: " + branch.getDisplayName(), TransactionIdManager.getStartEndPoint(branch),
             branch.hasParentBranch());
    }
@@ -64,7 +60,6 @@ public class ChangeReportInput implements Serializable {
    /**
     * @param transactionToFrom
     * @param detectConflicts
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
@@ -74,7 +69,6 @@ public class ChangeReportInput implements Serializable {
 
    /**
     * @param transactionId
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
@@ -85,7 +79,6 @@ public class ChangeReportInput implements Serializable {
    /**
     * @param baseTransactionId
     * @param toTransactionId
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     */
@@ -97,7 +90,6 @@ public class ChangeReportInput implements Serializable {
     * @param baseTransaction
     * @param toTransaction
     * @param detectConflicts
-    * @throws SQLException
     * @throws TransactionDoesNotExist
     * @throws BranchDoesNotExist
     * @throws OseeDataStoreException

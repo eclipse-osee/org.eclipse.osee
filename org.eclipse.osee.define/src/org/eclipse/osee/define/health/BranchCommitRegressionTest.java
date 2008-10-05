@@ -51,7 +51,7 @@ public class BranchCommitRegressionTest extends XNavigateItemAction {
    }
 
    public class TraxInterfaceRegressionTestJob extends Job {
-      XResultData rd = new XResultData(DefinePlugin.getLogger());
+      XResultData rd = new XResultData();
       private final String jobName;
 
       public TraxInterfaceRegressionTestJob(String jobName) {

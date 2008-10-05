@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.usage;
 
-import java.sql.SQLException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Robert A. Fisher
@@ -39,8 +41,8 @@ public class SkynetUsageHandler extends Handler {
             }
             log.writeOutLog();
          }
-      } catch (SQLException ex) {
-         ex.printStackTrace();
+      } catch (OseeDataStoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
    }
 

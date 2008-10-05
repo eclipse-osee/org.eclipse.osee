@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -50,7 +50,7 @@ public class RevertTest extends TestCase {
       assertFalse(DatabaseActivator.getInstance().isProductionDb());
    }
 
-   public void testRevertArtifacts() throws SQLException {
+   public void testRevertArtifacts() throws OseeDataStoreException {
 
       Set<Pair<Integer, Integer>> baselines = new HashSet<Pair<Integer, Integer>>();
       Set<Pair<Integer, Integer>> nonBaselines = new HashSet<Pair<Integer, Integer>>();
@@ -59,7 +59,7 @@ public class RevertTest extends TestCase {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.REVERT_QUERY);
-      ConnectionHandlerStatement chstmt = null;
+      ConnectionHandlerStatement chStmt = null;
       ResultSet rSet = null;
       //Let's check both through the API and the SQL to make sure the Artifact is internally deleted
       //and deleted in the Database, That we don't get some bad data case.
@@ -69,11 +69,11 @@ public class RevertTest extends TestCase {
             if (DEBUG) {
                System.out.println("     Baselined Transactions");
             }
-            chstmt =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(GET_BASELINED_TRANSACTIONS, artifact.getBranch().getBranchId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId(), artifact.getArtId(),
                         artifact.getBranch().getBranchId(), artifact.getArtId(), artifact.getArtId());
-            rSet = chstmt.getRset();
+            rSet = chStmt.getRset();
             while (rSet.next()) {
                baselines.add(new Pair<Integer, Integer>(rSet.getInt("gamma_id"), rSet.getInt("transaction_id")));
                if (DEBUG) {
@@ -81,20 +81,21 @@ public class RevertTest extends TestCase {
                         rSet.getInt("gamma_id"), rSet.getInt("transaction_id")));
                }
             }
-
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chstmt);
+            ConnectionHandler.close(chStmt);
          }
          if (DEBUG) {
             System.out.println("     Nonbaselined Transactions");
          }
          try {
-            chstmt =
+            chStmt =
                   ConnectionHandler.runPreparedQuery(GET_NON_BASELINED_TRANSACTIONS,
                         artifact.getBranch().getBranchId(), artifact.getArtId(), artifact.getBranch().getBranchId(),
                         artifact.getArtId(), artifact.getBranch().getBranchId(), artifact.getArtId(),
                         artifact.getArtId());
-            rSet = chstmt.getRset();
+            rSet = chStmt.getRset();
             while (rSet.next()) {
                nonBaselines.add(new Pair<Integer, Integer>(rSet.getInt("gamma_id"), rSet.getInt("transaction_id")));
                if (DEBUG) {
@@ -102,35 +103,38 @@ public class RevertTest extends TestCase {
                         rSet.getInt("gamma_id"), rSet.getInt("transaction_id")));
                }
             }
-
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            DbUtil.close(chstmt);
+            ConnectionHandler.close(chStmt);
          }
          for (Pair<Integer, Integer> pairs : nonBaselines) {
             try {
-               chstmt =
+               chStmt =
                      ConnectionHandler.runPreparedQuery(GAMMA_UNIQUE, pairs.getKey(),
                            artifact.getBranch().getBranchId());
-               rSet = chstmt.getRset();
+               rSet = chStmt.getRset();
                while (rSet.next()) {
                   uniqueGammas.add(rSet.getInt("gamma_id"));
                }
-
+            } catch (SQLException ex) {
+               throw new OseeDataStoreException(ex);
             } finally {
-               DbUtil.close(chstmt);
+               ConnectionHandler.close(chStmt);
             }
          }
          for (Pair<Integer, Integer> pairs : nonBaselines) {
             try {
-               chstmt =
+               chStmt =
                      ConnectionHandler.runPreparedQuery(GAMMAS_KEEP, pairs.getKey(), artifact.getBranch().getBranchId());
-               rSet = chstmt.getRset();
+               rSet = chStmt.getRset();
                while (rSet.next()) {
                   keepGammas.add(rSet.getInt("gamma_id"));
                }
-
+            } catch (SQLException ex) {
+               throw new OseeDataStoreException(ex);
             } finally {
-               DbUtil.close(chstmt);
+               ConnectionHandler.close(chStmt);
             }
          }
          if (DEBUG) {

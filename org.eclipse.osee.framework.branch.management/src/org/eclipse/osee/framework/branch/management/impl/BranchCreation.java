@@ -16,11 +16,11 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -106,7 +106,7 @@ public class BranchCreation implements IBranchCreation {
          success = true;
       }
 
-      private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) throws SQLException {
+      private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) throws OseeDataStoreException {
          if (checkAlreadyHasBranchName(branchName)) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
@@ -117,32 +117,25 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
-      private boolean checkAlreadyHasBranchName(String branchName) throws SQLException {
+      private boolean checkAlreadyHasBranchName(String branchName) throws OseeDataStoreException {
          Connection connection = null;
+         ConnectionHandlerStatement stmt = null;
          boolean alreadyHasName = false;
          try {
             connection = OseeDbConnection.getConnection();
-            ConnectionHandlerStatement stmt = null;
-            try {
-               stmt =
-                     org.eclipse.osee.framework.db.connection.ConnectionHandler.runPreparedQuery(connection,
-                           SELECT_BRANCH_BY_NAME, branchName);
-               if (stmt.getRset().next()) {
-                  alreadyHasName = true;
-               }
-            } finally {
-               DbUtil.close(stmt);
+            stmt = ConnectionHandler.runPreparedQuery(connection, SELECT_BRANCH_BY_NAME, branchName);
+            if (stmt.getRset().next()) {
+               alreadyHasName = true;
             }
-
+         } catch (SQLException ex) {
+            throw new OseeDataStoreException(ex);
          } finally {
-            if (connection != null) {
-               connection.close();
-            }
+            ConnectionHandler.close(connection, stmt);
          }
          return alreadyHasName;
       }
 
-      public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException;
+      public abstract void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException;
 
       /**
        * @return the parentBranchId
@@ -171,9 +164,10 @@ public class BranchCreation implements IBranchCreation {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
-         if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES,
-               staticBranchName, branchId);
+      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
+         if (staticBranchName != null) {
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, staticBranchName, branchId);
+         }
 
       }
    }
@@ -188,7 +182,7 @@ public class BranchCreation implements IBranchCreation {
        * @see org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
+      public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws OseeDataStoreException {
          int updates =
                ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, newTransactionNumber,
                      parentBranchId);

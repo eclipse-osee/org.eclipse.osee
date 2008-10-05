@@ -3,18 +3,18 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.exception;
+package org.eclipse.osee.framework.db.connection.exception;
 
 /**
  * @author Ryan D. Brooks
  */
-public class TransactionDoesNotExist extends OseeCoreException {
+public class BranchDoesNotExist extends OseeCoreException {
    private static final long serialVersionUID = -6197324585250025613L;
 
    /**
     * @param message
     */
-   public TransactionDoesNotExist(String message) {
+   public BranchDoesNotExist(String message) {
       super(message);
    }
 
@@ -22,7 +22,7 @@ public class TransactionDoesNotExist extends OseeCoreException {
     * @param message
     * @param cause
     */
-   public TransactionDoesNotExist(String message, Throwable cause) {
+   public BranchDoesNotExist(String message, Throwable cause) {
       super(message, cause);
    }
 }

@@ -29,28 +29,28 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -60,8 +60,6 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
  * @author Ryan D. Brooks
  */
 public class BranchCreator {
-   static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
-
    public static final String NEW_MERGE_BRANCH_COMMENT = "New Merge Branch from ";
 
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
@@ -123,7 +121,7 @@ public class BranchCreator {
       return instance;
    }
 
-   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException, SQLException {
+   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
       User userToBlame = SkynetAuthentication.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId =
@@ -147,7 +145,7 @@ public class BranchCreator {
       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
    }
 
-   private void copyBranchAddressingFromTransaction(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException {
+   private void copyBranchAddressingFromTransaction(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws OseeDataStoreException {
       if (compressArtTypes != null && preserveArtTypes != null) {
          Set<ArtifactType> intersection = new HashSet<ArtifactType>(compressArtTypes);
          intersection.retainAll(preserveArtTypes);
@@ -172,9 +170,8 @@ public class BranchCreator {
     * @param compressArtTypes
     * @param preserveArtTypes
     * @param newTransactionNumber
-    * @throws SQLException
     */
-   public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException {
+   public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws OseeDataStoreException {
 
       HashCollection<Integer, Pair<Integer, ModificationType>> historyMap =
             new HashCollection<Integer, Pair<Integer, ModificationType>>(false, HashSet.class);
@@ -195,8 +192,10 @@ public class BranchCreator {
             }
          }
          initSelectLinkHistory(compressArtTypes, preserveArtTypes, parentTransactionId, historyMap);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       Set<Integer> transactions = new TreeSet<Integer>(historyMap.keySet()); // the tree set is to in ascending order
@@ -224,9 +223,8 @@ public class BranchCreator {
     * 
     * @param compressArtTypes
     * @param preserveArtTypes
-    * @throws SQLException
     */
-   private static void initSelectLinkHistory(Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes, TransactionId parentTransactionId, HashCollection<Integer, Pair<Integer, ModificationType>> historyMap) throws SQLException {
+   private static void initSelectLinkHistory(Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes, TransactionId parentTransactionId, HashCollection<Integer, Pair<Integer, ModificationType>> historyMap) throws OseeDataStoreException {
       String preservedTypeSet = makeArtTypeSet(null, preserveArtTypes);
       String compressTypeSet = makeArtTypeSet(compressArtTypes, null);
 
@@ -263,7 +261,7 @@ public class BranchCreator {
       populateHistoryMapWithRelations(historyMap, ppSql, parentTransactionId);
    }
 
-   private static void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, ModificationType>> historyMap, String sql, TransactionId parentTransactionId) throws SQLException {
+   private static void populateHistoryMapWithRelations(HashCollection<Integer, Pair<Integer, ModificationType>> historyMap, String sql, TransactionId parentTransactionId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
@@ -274,31 +272,36 @@ public class BranchCreator {
             historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, ModificationType>(
                   rSet.getInt("link_gamma_id"), ModificationType.getMod(rSet.getInt("mod_type"))));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
-   private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes) throws SQLException {
+   private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes) throws OseeDataStoreException {
       for (ArtifactType artifactType : compressArtTypes) {
          int count =
                ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
                      newTransactionNumber, TxChange.CURRENT.getValue(), artifactType.getArtTypeId(),
                      parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
-         if (count > 0) logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
+         if (count > 0) {
+            OseeLog.log(SkynetActivator.class, Level.INFO,
+                  "inserted " + count + " " + artifactType.getName() + " artifacts");
+         }
       }
 
       int count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber,
                   TxChange.CURRENT.getValue(), newTransactionNumber, parentTransactionId.getTransactionNumber(),
                   parentTransactionId.getBranch().getBranchId());
-      logger.log(Level.INFO, "inserted " + count + " attributes");
+      OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " attributes");
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, newTransactionNumber,
                   TxChange.CURRENT.getValue(), newTransactionNumber, newTransactionNumber,
                   parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
-      logger.log(Level.INFO, "inserted " + count + " relations");
+      OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " relations");
    }
 
    private static String makeArtTypeSet(Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) {
@@ -336,12 +339,11 @@ public class BranchCreator {
     * @param branchName
     * @param staticBranchName null if no static key is desired
     * @return branch object
-    * @throws SQLException
     * @throws OseeCoreException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, OseeCoreException {
+   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws OseeCoreException {
       return HttpBranchCreation.createRootBranch(shortBranchName, branchName, staticBranchName);
    }
 
@@ -351,11 +353,10 @@ public class BranchCreator {
     * @param branchName caller is responsible for ensuring no branch has already been given this name
     * @param parentBranchId the id of the parent branch or NULL_PARENT_BRANCH_ID if this branch has no parent
     * @return branch object that represents the newly created branch
-    * @throws SQLException
     * @throws UserNotInDatabase
     * @throws MultipleArtifactsExist
     */
-   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException, SQLException {
+   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
       ConnectionHandlerStatement chStmt = null;
@@ -365,8 +366,10 @@ public class BranchCreator {
          if (rset.next()) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
 
       int branchId = SequenceManager.getNextBranchId();
@@ -405,9 +408,8 @@ public class BranchCreator {
     * 
     * @param parentTransactionId
     * @param childBranchName
-    * @throws SQLException
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException, SQLException {
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<Integer> compressArtTypeIds, Collection<Integer> preserveArtTypeIds) throws OseeCoreException {
       return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, preserveMetaData, compressArtTypeIds, preserveArtTypeIds);
    }
@@ -415,25 +417,21 @@ public class BranchCreator {
    /**
     * Creates a new merge branch based on the artifacts from the source branch
     */
-   public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException, SQLException {
+   public Branch createMergeBranch(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws OseeCoreException {
       try {
          CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, destBranch, artIds);
          createMergeBranchTx.execute();
          return createMergeBranchTx.getMergeBranch();
-      } catch (SQLException ex) {
-         throw ex;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
    }
 
-   public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException, SQLException {
+   public void addArtifactsToBranch(Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       try {
          CreateMergeBranchTx createMergeBranchTx =
                new CreateMergeBranchTx(sourceBranch, destBranch, artIds, mergeBranch);
          createMergeBranchTx.execute();
-      } catch (SQLException ex) {
-         throw ex;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
@@ -459,7 +457,7 @@ public class BranchCreator {
        * @param destBranch
        * @param artIds
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) throws SQLException {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) {
          super();
          this.sourceBranch = sourceBranch;
          this.destBranch = destBranch;
@@ -471,7 +469,7 @@ public class BranchCreator {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          boolean createBranch = (mergeBranch == null);
 
          if (artIds == null || artIds.isEmpty()) {
@@ -520,7 +518,7 @@ public class BranchCreator {
                ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
                      destBranch.getBranchId(), mergeBranch.getBranchId());
             } finally {
-               DbUtil.close(chStmt);
+               ConnectionHandler.close(chStmt);
             }
          }
       }
@@ -529,7 +527,7 @@ public class BranchCreator {
          return mergeBranch;
       }
 
-      private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws SQLException {
+      private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws OseeDataStoreException {
          ConnectionHandler.runPreparedUpdate(sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
                sourceBranch.getBranchId(), queryId);
       }

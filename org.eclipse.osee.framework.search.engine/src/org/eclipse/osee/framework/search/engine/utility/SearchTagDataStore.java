@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableDouble;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
@@ -78,22 +79,26 @@ public class SearchTagDataStore {
       return (long) toReturn.getValue();
    }
 
-   private static String getInsertSQL(Connection connection) throws SQLException {
-      String dummyTable = "";
-      String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
-      if (dbName.contains("oracle") || dbName.contains("mysql")) {
-         dummyTable = "FROM DUAL";
-      } else if (dbName.contains("derby")) {
-         dummyTable = "FROM sysibm.sysdummy1"; // 
+   private static String getInsertSQL(Connection connection) throws OseeDataStoreException {
+      try {
+         String dummyTable = "";
+         String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
+         if (dbName.contains("oracle") || dbName.contains("mysql")) {
+            dummyTable = "FROM DUAL";
+         } else if (dbName.contains("derby")) {
+            dummyTable = "FROM sysibm.sysdummy1"; // 
+         }
+         return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
-      return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
    }
 
    public static int deleteTags(Connection connection, Collection<IAttributeLocator> locators) throws Exception {
       return deleteTags(connection, locators.toArray(new IAttributeLocator[locators.size()]));
    }
 
-   public static int deleteTags(Connection connection, IAttributeLocator... locators) throws SQLException {
+   public static int deleteTags(Connection connection, IAttributeLocator... locators) throws OseeDataStoreException {
       List<Object[]> datas = new ArrayList<Object[]>();
       for (IAttributeLocator locator : locators) {
          datas.add(new Object[] {locator.getGammaId()});
@@ -101,11 +106,11 @@ public class SearchTagDataStore {
       return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS, datas);
    }
 
-   public static int storeTags(Connection connection, Collection<SearchTag> searchTags) throws SQLException {
+   public static int storeTags(Connection connection, Collection<SearchTag> searchTags) throws OseeDataStoreException {
       return storeTags(connection, searchTags.toArray(new SearchTag[searchTags.size()]));
    }
 
-   public static int storeTags(Connection connection, SearchTag... searchTags) throws SQLException {
+   public static int storeTags(Connection connection, SearchTag... searchTags) throws OseeDataStoreException {
       int updated = 0;
       if (searchTags != null && searchTags.length > 0) {
          for (SearchTag searchTag : searchTags) {
@@ -136,7 +141,7 @@ public class SearchTagDataStore {
       return toReturn;
    }
 
-   public static int deleteTags(Connection connection, int joinQueryId) throws SQLException {
+   public static int deleteTags(Connection connection, int joinQueryId) throws OseeDataStoreException {
       return ConnectionHandler.runPreparedUpdate(connection, DELETE_SEARCH_TAGS_BY_JOIN, joinQueryId);
    }
 }

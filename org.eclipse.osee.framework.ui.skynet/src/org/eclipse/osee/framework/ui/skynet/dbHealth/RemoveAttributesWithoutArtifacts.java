@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
@@ -79,26 +79,35 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
       } finally {
          if (showDetails) {
             sbFull.append(AHTML.endMultiColumnTable());
-            XResultData rd = new XResultData(SkynetActivator.getLogger());
+            XResultData rd = new XResultData();
             rd.addRaw(sbFull.toString());
             rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
          }
       }
    }
 
-   private void loadData() throws SQLException {
+   private void loadData() throws OseeDataStoreException {
       datas.clear();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS);
-      ResultSet rSet = chStmt.getRset();
-      int transactionNumber;
-      int gammaIdNumber;
 
-      while (rSet.next()) {
-         transactionNumber = rSet.getInt("transaction_id");
-         gammaIdNumber = rSet.getInt("gamma_id");
-         datas.add(new Integer[] {transactionNumber, gammaIdNumber, rSet.getInt("branch_id"), rSet.getInt("art_id"),
-               rSet.getInt("attr_id")});
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS);
+         ResultSet rSet = chStmt.getRset();
+         int transactionNumber;
+         int gammaIdNumber;
+
+         while (rSet.next()) {
+            transactionNumber = rSet.getInt("transaction_id");
+            gammaIdNumber = rSet.getInt("gamma_id");
+            datas.add(new Integer[] {transactionNumber, gammaIdNumber, rSet.getInt("branch_id"), rSet.getInt("art_id"),
+                  rSet.getInt("attr_id")});
+         }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      } finally {
+         ConnectionHandler.close(chStmt);
       }
+
    }
 
    private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) throws SQLException {
@@ -112,7 +121,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
       builder.append("\n");
    }
 
-   private void fixAttributes() throws SQLException {
+   private void fixAttributes() throws OseeDataStoreException {
       Set<Object[]> insertParameters = new HashSet<Object[]>();
       for (Integer[] data : datas) {
          insertParameters.add(new Object[] {data[0], data[1]});

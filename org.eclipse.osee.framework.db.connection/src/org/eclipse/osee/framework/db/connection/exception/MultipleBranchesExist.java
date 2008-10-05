@@ -8,29 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
-package org.eclipse.osee.framework.skynet.core.exception;
-
+package org.eclipse.osee.framework.db.connection.exception;
 
 /**
- * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public class UserInDatabaseMultipleTimes extends OseeCoreException {
+public class MultipleBranchesExist extends OseeCoreException {
+
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param message
-    */
-   public UserInDatabaseMultipleTimes(String message) {
+   public MultipleBranchesExist(String message) {
       super(message);
-   }
-
-   /**
-    * @param message
-    * @param cause
-    */
-   public UserInDatabaseMultipleTimes(String message, Throwable cause) {
-      super(message, cause);
    }
 }

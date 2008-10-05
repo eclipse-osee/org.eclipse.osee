@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -27,7 +26,7 @@ public class XIntegerDam extends XInteger implements IArtifactWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException, SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
       try {
@@ -39,7 +38,7 @@ public class XIntegerDam extends XInteger implements IArtifactWidget {
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException, SQLException {
+   public void saveToArtifact() throws OseeCoreException {
       try {
          if (text == null || text.equals("")) {
             artifact.deleteSoleAttribute(attributeTypeName);
@@ -58,7 +57,7 @@ public class XIntegerDam extends XInteger implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public Result isDirty() throws OseeCoreException, SQLException {
+   public Result isDirty() throws OseeCoreException {
       try {
          Integer enteredValue = getInteger();
          Integer storedValue = artifact.getSoleAttributeValue(attributeTypeName);
@@ -77,7 +76,7 @@ public class XIntegerDam extends XInteger implements IArtifactWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
     */
    @Override
-   public void revert() throws OseeCoreException, SQLException {
+   public void revert() throws OseeCoreException {
       setArtifact(artifact, attributeTypeName);
    }
 

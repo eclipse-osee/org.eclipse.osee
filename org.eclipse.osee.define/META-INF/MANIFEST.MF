@@ -31,6 +31,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.jini;bundle-version="0.4.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.exception,
  org.eclipse.osee.framework.db.connection.info,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

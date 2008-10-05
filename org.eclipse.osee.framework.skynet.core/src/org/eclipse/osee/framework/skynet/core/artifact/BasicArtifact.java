@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.SQLException;
 
 /**
  * @author Ryan D. Brooks
@@ -21,7 +20,6 @@ public class BasicArtifact extends Artifact {
     * @param parentFactory
     * @param guid
     * @param branch
-    * @throws SQLException
     */
    public BasicArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

@@ -26,7 +26,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -98,7 +98,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            final XResultData rd = new XResultData(AtsPlugin.getLogger());
+            final XResultData rd = new XResultData();
             runIt(monitor, rd);
             rd.report(getName());
          } catch (Exception ex) {
@@ -296,7 +296,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          if (foundChangeReport) {
             sbByType.append(AHTML.endMultiColumnTable());
 
-            XResultData xResultdata = new XResultData(AtsPlugin.getLogger());
+            XResultData xResultdata = new XResultData();
             xResultdata.addRaw(sbByType.toString().replaceAll("\n", ""));
             xResultdata.report("Change Report Test for " + artifactTypeName);
             File file = OseeData.getFile(artifactTypeName + ".html");
@@ -316,44 +316,46 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * 
     * @param branch
     * @param transactionNumber
-    * @throws SQLException
     */
-   private void loadNewArtIdsPerBranch(Branch branch) throws SQLException {
-      ConnectionHandlerStatement handlerStatement = null;
+   private void loadNewArtIdsPerBranch(Branch branch) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
       newArtIds.clear();
       try {
-         handlerStatement =
+         chStmt =
                ConnectionHandler.runPreparedQuery(
                      "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
                      branch.getBranchId());
 
-         while (handlerStatement.getRset().next()) {
-            newArtIds.add(handlerStatement.getRset().getInt(1));
+         while (chStmt.getRset().next()) {
+            newArtIds.add(chStmt.getRset().getInt(1));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(handlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 
    /**
     * @param branch
     * @param transactionNumber
-    * @throws SQLException
     */
-   private void loadDelArtIdsPerBranch(Branch branch) throws SQLException {
-      ConnectionHandlerStatement handlerStatement = null;
+   private void loadDelArtIdsPerBranch(Branch branch) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
       delArtIds.clear();
       try {
-         handlerStatement =
+         chStmt =
                ConnectionHandler.runPreparedQuery(
                      "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
                      branch.getBranchId());
 
-         while (handlerStatement.getRset().next()) {
-            delArtIds.add(handlerStatement.getRset().getInt(1));
+         while (chStmt.getRset().next()) {
+            delArtIds.add(chStmt.getRset().getInt(1));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(handlerStatement);
+         ConnectionHandler.close(chStmt);
       }
    }
 

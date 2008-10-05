@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.DbFactory;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.schema.View;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class DbInit {
@@ -37,11 +39,10 @@ public class DbInit {
     * @param connection
     * @param databaseType
     * @param databaseType2
-    * @throws SQLException
+    * @throws OseeDataStoreException
     */
-   public static void addViews(Connection connection, SupportedDatabase databaseType) throws SQLException {
+   public static void addViews(Connection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
       for (View view : SkynetDatabase.getSkynetViews()) {
-         Statement statement = connection.createStatement();
          String viewCreateCmd = "";
          if (databaseType == SupportedDatabase.derby)
             viewCreateCmd = derbyCreateViewCmd;
@@ -54,10 +55,9 @@ public class DbInit {
          } else
             throw new IllegalArgumentException("Unhandled database type.");
 
-         statement.executeUpdate(viewCreateCmd + view.toString() + view.getDefinition());
-
-         statement.executeUpdate("create OR REPLACE public synonym " + view.toString() + " for " + view.toString());
-         statement.close();
+         ConnectionHandler.runPreparedUpdate(connection, viewCreateCmd + view.toString() + view.getDefinition());
+         ConnectionHandler.runPreparedUpdate(connection,
+               "create OR REPLACE public synonym " + view.toString() + " for " + view.toString());
       }
    }
 
@@ -70,9 +70,8 @@ public class DbInit {
     * @param userSpecifiedConfig2
     * @param databaseType2
     * @throws Exception
-    * @throws SQLException
     */
-   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws SQLException, Exception {
+   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws Exception {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
@@ -87,9 +86,8 @@ public class DbInit {
     * @param userSpecifiedConfig2
     * @param databaseType2
     * @throws Exception
-    * @throws SQLException
     */
-   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws SQLException, Exception {
+   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws Exception {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
@@ -106,7 +104,6 @@ public class DbInit {
     * @param currentDatabaseConfig2
     * @param databaseType2
     * @throws Exception
-    * @throws SQLException
     */
    public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws SQLException, Exception {
       for (String schemaId : schemas) {
@@ -137,7 +134,6 @@ public class DbInit {
     * @param currentDatabaseConfig2
     * @param databaseType2
     * @throws Exception
-    * @throws SQLException
     */
    public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws SQLException, Exception {
       System.out.println("Drop Indeces");
@@ -164,7 +160,6 @@ public class DbInit {
 
    /**
     * @param connection
-    * @throws SQLException
     */
    public static void dropViews(Connection connection) throws SQLException {
       DatabaseMetaData dbData = connection.getMetaData();
@@ -181,14 +176,14 @@ public class DbInit {
       }
    }
 
-   public static void createSchema(Connection connection, Set<String> schemas) throws SQLException {
+   public static void createSchema(Connection connection, Set<String> schemas) throws OseeDataStoreException {
       SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
       for (String schemaId : schemas) {
          manager.createSchema(connection, schemaId.toLowerCase());
       }
    }
 
-   public static void dropSchema(Connection connection, Set<String> schemas) throws SQLException {
+   public static void dropSchema(Connection connection, Set<String> schemas) throws OseeDataStoreException {
       SqlManager manager = SqlFactory.getSqlManager(SupportedDatabase.getDatabaseType(connection));
       for (String schemaId : schemas) {
          manager.dropSchema(connection, schemaId.toLowerCase());

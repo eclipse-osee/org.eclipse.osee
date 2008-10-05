@@ -9,28 +9,17 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.exception;
+package org.eclipse.osee.framework.db.connection.exception;
 
 
 /**
- * @author Ryan D. Brooks
- * @author Donald G. Dunne
+ * @author Theron Virgin
  */
-public class UserNotInDatabase extends OseeCoreException {
+public class ConflictDetectionException extends OseeCoreException {
+
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param message
-    */
-   public UserNotInDatabase(String message) {
+   public ConflictDetectionException(String message) {
       super(message);
-   }
-
-   /**
-    * @param message
-    * @param cause
-    */
-   public UserNotInDatabase(String message, Throwable cause) {
-      super(message, cause);
    }
 }

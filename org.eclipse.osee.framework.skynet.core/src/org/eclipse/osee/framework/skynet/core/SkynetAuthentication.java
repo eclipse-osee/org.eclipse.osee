@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.UserInDatabaseMultipleTimes;
+import org.eclipse.osee.framework.db.connection.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -30,10 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.exception.UserInDatabaseMultipleTimes;
-import org.eclipse.osee.framework.skynet.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
@@ -200,8 +199,6 @@ public class SkynetAuthentication {
          }
       } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return currentUser;
@@ -217,7 +214,7 @@ public class SkynetAuthentication {
       }
    }
 
-   public static User createUser(OseeUser userEnum) throws OseeCoreException, SQLException {
+   public static User createUser(OseeUser userEnum) throws OseeCoreException {
       instance.loadUsersCache();
       // Determine if user with id has already been created; boot strap issue with dbInit
       User user = instance.userIdToUserCache.get(userEnum.getUserID());
@@ -251,7 +248,7 @@ public class SkynetAuthentication {
       return instance.enumeratedUserCache.get(userEnum);
    }
 
-   private User createUser(String name, String email, String userID, boolean active) throws OseeCoreException, SQLException {
+   private User createUser(String name, String email, String userID, boolean active) throws OseeCoreException {
       duringUserCreation = true;
       User user = null;
       try {
@@ -285,7 +282,7 @@ public class SkynetAuthentication {
       return (ArrayList<User>) instance.activeUserCache.clone();
    }
 
-   public static List<User> getUsersSortedByName() throws OseeCoreException, SQLException {
+   public static List<User> getUsersSortedByName() throws OseeCoreException {
       List<User> users = new ArrayList<User>();
       for (String user : getUserNames()) {
          users.add(getUserByName(user, false));
@@ -317,7 +314,7 @@ public class SkynetAuthentication {
     * 
     * @return String[]
     */
-   public static String[] getUserNames() throws OseeCoreException, SQLException {
+   public static String[] getUserNames() throws OseeCoreException {
       instance.loadUsersCache();
       // Sort if null or new names added since last sort
       if (instance.sortedActiveUserNameCache == null || instance.sortedActiveUserNameCache.length != instance.userIdToUserCache.size()) {
@@ -336,7 +333,7 @@ public class SkynetAuthentication {
     * @param create if true, will create a temp user artifact; should only be used for dev purposes
     * @return user
     */
-   public static User getUserByName(String name, boolean create) throws OseeCoreException, SQLException {
+   public static User getUserByName(String name, boolean create) throws OseeCoreException {
       instance.loadUsersCache();
       User user = instance.nameToUserCache.get(name);
       if (user == null && create) {
@@ -349,7 +346,7 @@ public class SkynetAuthentication {
       return user;
    }
 
-   public static User getUserByArtId(int userArtifactId) throws OseeCoreException, SQLException {
+   public static User getUserByArtId(int userArtifactId) throws OseeCoreException {
       instance.loadUsersCache();
       User user = (User) ArtifactCache.getActive(userArtifactId, BranchPersistenceManager.getCommonBranch());
       if (user == null) throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");

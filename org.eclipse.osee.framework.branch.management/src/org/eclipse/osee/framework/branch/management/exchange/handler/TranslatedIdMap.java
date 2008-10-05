@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -75,7 +75,7 @@ public class TranslatedIdMap {
       return toReturn;
    }
 
-   private Long transalateId(Long original) throws SQLException {
+   private Long transalateId(Long original) throws OseeDataStoreException {
       Long newVersion = null;
       if (original <= 0L) {
          newVersion = original;
@@ -116,7 +116,7 @@ public class TranslatedIdMap {
       return newVersion;
    }
 
-   public void load(Connection connection, String sourceDatabaseId) throws SQLException {
+   public void load(Connection connection, String sourceDatabaseId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          originalToMapped.clear();
@@ -126,12 +126,14 @@ public class TranslatedIdMap {
          while (chStmt.next()) {
             originalToMapped.put(chStmt.getRset().getLong("original_id"), chStmt.getRset().getLong("mapped_id"));
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
-         DbUtil.close(chStmt);
+         ConnectionHandler.close(chStmt);
       }
    }
 
-   public void store(Connection connection, int importId) throws SQLException {
+   public void store(Connection connection, int importId) throws OseeDataStoreException {
       if (!newIds.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Long original : newIds) {

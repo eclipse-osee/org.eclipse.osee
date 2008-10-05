@@ -7,8 +7,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;

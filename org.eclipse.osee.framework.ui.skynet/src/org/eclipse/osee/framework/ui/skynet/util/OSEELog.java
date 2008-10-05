@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.PlatformUI;
 
