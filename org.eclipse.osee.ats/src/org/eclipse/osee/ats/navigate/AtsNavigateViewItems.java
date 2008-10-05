@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.operation.EditTasksNavigateItem;
 import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
+import org.eclipse.osee.ats.report.GenerateAtsBranchMetricsCacheReport;
 import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
@@ -214,6 +215,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem reportItems = new XNavigateItem(null, "Reports");
       new FirstTimeQualityMetricReportItem(reportItems);
+      new GenerateAtsBranchMetricsCacheReport(reportItems);
       XNavigateItem atsReportItems =
             new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
       new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
