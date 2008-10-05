@@ -366,7 +366,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                AtsRelation.TeamLead_Lead.getTypeName(), AtsRelation.TeamMember_Member.getTypeName(),
                AtsRelation.TeamWorkflowToReview_Review.getTypeName(), AtsRelation.WorkItem__Child.getTypeName(),
                CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getTypeName(),
-               CoreRelationEnumeration.Dependency__Artifact.getTypeName(),
                CoreRelationEnumeration.Users_Artifact.getTypeName());
 
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {
