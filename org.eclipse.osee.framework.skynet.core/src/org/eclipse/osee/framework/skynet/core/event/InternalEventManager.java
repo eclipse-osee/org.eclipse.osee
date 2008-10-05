@@ -761,7 +761,22 @@ public class InternalEventManager {
             RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
             UnloadedRelation unloadedRelation = xRelationModifiedEvent.unloadedRelation;
             LoadedRelation loadedRelation = null;
-            if (unloadedRelation != null) {
+            // If link is loaded, get information from link
+            if (xRelationModifiedEvent.link != null) {
+               RelationLink link = xRelationModifiedEvent.link;
+               // Get artifact A/B if loaded in artifact cache
+               Artifact artA = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
+               Artifact artB = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+               try {
+                  loadedRelation =
+                        new LoadedRelation(artA, artB, xRelationModifiedEvent.link.getRelationType(),
+                              xRelationModifiedEvent.branch, unloadedRelation);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+               }
+            }
+            // Else, get information from unloadedRelation (if != null)
+            else if (unloadedRelation != null) {
                Artifact artA =
                      ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getBranchId());
                Artifact artB =

@@ -177,7 +177,7 @@ public class FrameworkTransactionData {
     * @return true if any event was found
     */
    public boolean isHasEvent(int artId) {
-      return isChanged(artId) || isRelChange(artId) || isDeleted(artId);
+      return isChanged(artId) || isDeleted(artId) || isRelChange(artId) || isRelDeleted(artId) || isRelAdded(artId);
    }
 
    public boolean isDeleted(Artifact artifact) {
