@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -35,7 +34,7 @@ public class ATSBranchMetrics {
       this.branchMgr = branchMgr;
    }
 
-   public void load() throws OseeCoreException, SQLException {
+   public void load() throws OseeCoreException {
       try {
          if (numDeletedArtifacts == null) {
             String xml =
@@ -66,12 +65,12 @@ public class ATSBranchMetrics {
       }
    }
 
-   public boolean isCached() throws OseeCoreException, SQLException {
+   public boolean isCached() throws OseeCoreException {
       return !branchMgr.getSmaMgr().getSma().getSoleAttributeValue(
             ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(), "").equals("");
    }
 
-   public void persist() throws OseeCoreException, SQLException {
+   public void persist() throws OseeCoreException {
       if (isCached()) return;
       load();
       try {
@@ -92,7 +91,7 @@ public class ATSBranchMetrics {
    /**
     * @return the numDeletedArtifacts
     */
-   public Integer getNumDeletedArtifacts() throws OseeCoreException, SQLException {
+   public Integer getNumDeletedArtifacts() throws OseeCoreException {
       load();
       return numDeletedArtifacts;
    }
@@ -107,7 +106,7 @@ public class ATSBranchMetrics {
    /**
     * @return the numModifiedArtifacts
     */
-   public Integer getNumModifiedArtifacts() throws OseeCoreException, SQLException {
+   public Integer getNumModifiedArtifacts() throws OseeCoreException {
       return numModifiedArtifacts;
    }
 
@@ -121,7 +120,7 @@ public class ATSBranchMetrics {
    /**
     * @return the numNonRelationModifiedArtifacts
     */
-   public Integer getNumNonRelationModifiedArtifacts() throws OseeCoreException, SQLException {
+   public Integer getNumNonRelationModifiedArtifacts() throws OseeCoreException {
       return numNonRelationModifiedArtifacts;
    }
 

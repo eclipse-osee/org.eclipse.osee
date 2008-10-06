@@ -706,7 +706,7 @@ public class AtsBranchManager {
    /**
     * @return the atsBranchMetrics
     */
-   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws OseeCoreException, SQLException {
+   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws OseeCoreException {
       if (cache) atsBranchMetrics.persist();
       return atsBranchMetrics;
    }
