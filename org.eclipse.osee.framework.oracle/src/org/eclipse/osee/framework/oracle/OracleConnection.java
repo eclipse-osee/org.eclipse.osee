@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.IConnection;
 
 public class OracleConnection implements IConnection {
 
-   private static final String driver = "oracle.jdbc.driver.OracleDriver";
+   private static final String driver = "oracle.jdbc.OracleDriver";
 
    public Connection getConnection(Properties properties, String connectionURL) throws ClassNotFoundException, SQLException {
       Class.forName(driver);
