@@ -31,7 +31,7 @@ public class Dialogs {
     * 
     * @param htmlText
     * @param openInSystem true if desire to open resulting file in system browser after saving
-    * @return
+    * @return Result
     */
    public static Result saveHtmlDialog(String htmlText, boolean openInSystem) {
       if (htmlText == null || htmlText.equals("")) {
