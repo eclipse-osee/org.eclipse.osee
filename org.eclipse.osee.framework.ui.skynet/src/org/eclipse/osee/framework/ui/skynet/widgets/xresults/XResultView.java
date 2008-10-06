@@ -23,12 +23,14 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.swt.SWT;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -53,7 +56,7 @@ public class XResultView extends ViewPart implements IActionable {
    private static File errorImageFile = null;
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(XResultView.class);
    private XResultPage currentPage;
-   private List<XResultPage> pages = new ArrayList<XResultPage>();
+   private final List<XResultPage> pages = new ArrayList<XResultPage>();
    private Label errorLabel;
    private XResultsComposite xResultsComp;
 
@@ -83,6 +86,7 @@ public class XResultView extends ViewPart implements IActionable {
          // Add to pulldown
          Action action = new Action(x++ + ") " + fPage.getTitle(), Action.AS_CHECK_BOX) {
 
+            @Override
             public void run() {
                displayPage(fPage);
                // Redisplay so check the current action
@@ -148,12 +152,14 @@ public class XResultView extends ViewPart implements IActionable {
       super.dispose();
    }
 
+   @Override
    public void setFocus() {
    }
 
    /*
     * @see IWorkbenchPart#createPartControl(Composite)
     */
+   @Override
    public void createPartControl(Composite parent) {
       /*
        * Create a grid layout object so the text and treeviewer are layed out the way I want.
@@ -181,6 +187,7 @@ public class XResultView extends ViewPart implements IActionable {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       Action action = new Action("Remove Result") {
 
+         @Override
          public void run() {
             if (currentPage == null) {
                AWorkbench.popup("ERROR", "Nothing to remove");
@@ -202,6 +209,7 @@ public class XResultView extends ViewPart implements IActionable {
 
       action = new Action("Remove All Results") {
 
+         @Override
          public void run() {
             if (currentPage == null) {
                AWorkbench.popup("ERROR", "Nothing to remove");
@@ -223,6 +231,7 @@ public class XResultView extends ViewPart implements IActionable {
 
       action = new Action("Print") {
 
+         @Override
          public void run() {
             printContents();
          }
@@ -233,6 +242,7 @@ public class XResultView extends ViewPart implements IActionable {
 
       action = new Action("Email") {
 
+         @Override
          public void run() {
             if (currentPage == null) {
                AWorkbench.popup("ERROR", "Nothing to email");
@@ -250,6 +260,7 @@ public class XResultView extends ViewPart implements IActionable {
 
       action = new Action("Export Table") {
 
+         @Override
          public void run() {
             if (currentPage == null) {
                AWorkbench.popup("ERROR", "Nothing to export");
@@ -264,6 +275,7 @@ public class XResultView extends ViewPart implements IActionable {
 
       action = new Action("Save Report") {
 
+         @Override
          public void run() {
             if (currentPage == null) {
                AWorkbench.popup("ERROR", "Nothing to export");
@@ -274,6 +286,28 @@ public class XResultView extends ViewPart implements IActionable {
       };
       action.setToolTipText("Save report to file");
       action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("save.gif"));
+      toolbarManager.add(action);
+
+      action = new Action("Import Save Results Report") {
+
+         @Override
+         public void run() {
+            try {
+               final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.OPEN);
+               dialog.setFilterExtensions(new String[] {"*.html"});
+               String filename = dialog.open();
+               if (filename == null || filename.equals("")) return;
+               String html = AFile.readFile(filename);
+               if (html == null) throw new IllegalStateException("Can't load file");
+               if (html.equals("")) throw new IllegalStateException("Empty file");
+               XResultView.getResultView().addResultPage(new XResultPage(filename, html, Manipulations.RAW_HTML));
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
+      };
+      action.setToolTipText("Import saved results report into Results View");
+      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("load.gif"));
       toolbarManager.add(action);
 
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Result View");
