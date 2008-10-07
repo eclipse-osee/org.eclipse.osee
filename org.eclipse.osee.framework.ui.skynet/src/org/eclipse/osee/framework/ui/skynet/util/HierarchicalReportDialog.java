@@ -27,7 +27,6 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 public class HierarchicalReportDialog extends SelectionDialog {
 
    XCheckBox showAttributesCheck = new XCheckBox("Include Attributes");
-   boolean showAttributes = true;
    XCheckBox recurseChildrenCheck = new XCheckBox("Recurse Children");
    boolean recurseChildren = true;
 
@@ -44,16 +43,6 @@ public class HierarchicalReportDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      showAttributesCheck.createWidgets(comp, 2);
-      showAttributesCheck.set(showAttributes);
-      showAttributesCheck.addSelectionListener(new SelectionListener() {
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
-         public void widgetSelected(SelectionEvent e) {
-            showAttributes = showAttributesCheck.isSelected();
-         };
-      });
       recurseChildrenCheck.createWidgets(comp, 2);
       recurseChildrenCheck.set(recurseChildren);
       recurseChildrenCheck.addSelectionListener(new SelectionListener() {
@@ -70,10 +59,6 @@ public class HierarchicalReportDialog extends SelectionDialog {
 
    public boolean isRecurseChildren() {
       return recurseChildren;
-   }
-
-   public boolean isShowAttributes() {
-      return showAttributes;
    }
 
 }

@@ -11,35 +11,33 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.Renderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 
@@ -49,7 +47,6 @@ import org.eclipse.swt.widgets.Display;
 public class HtmlReportJob extends Job {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HtmlReportJob.class);
    private final CoreRelationEnumeration side;
-   private boolean includeAttributes;
    private boolean recurseChildren;
    private final String title;
    private final Collection<Artifact> artifacts;
@@ -112,13 +109,13 @@ public class HtmlReportJob extends Job {
       for (Artifact artifact : artifacts) {
          monitor.setTaskName(String.format("Processing %s/%s", x + "", artifacts.size() + ""));
          sb.append(AHTML.addSimpleTableRow(processArtifact(artifact, "" + x++, side, recurseChildren,
-               includeAttributes, onlyAttributeNames)));
+               onlyAttributeNames)));
       }
       sb.append(AHTML.endSimpleTable());
       return AHTML.titledPage(title, sb.toString());
    }
 
-   public String processArtifact(Artifact art, String paraNum, CoreRelationEnumeration side, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) throws OseeCoreException {
+   public String processArtifact(Artifact art, String paraNum, CoreRelationEnumeration side, boolean recurseChildren, Collection<String> onlyAttributeNames) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return "";
       }
@@ -127,67 +124,22 @@ public class HtmlReportJob extends Job {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginSimpleTable(0, 100));
       sb.append(AHTML.addSimpleTableRow(String.format("%s    %s", paraNum + "", AHTML.bold(art.getDescriptiveName()))));
-      if (includeAttributes) sb.append(AHTML.addSimpleTableRow(processAttributes(art, recurseChildren,
-            includeAttributes, onlyAttributeNames)));
+      sb.append(AHTML.addSimpleTableRow(processAttributes(art, recurseChildren, onlyAttributeNames)));
       int x = 1;
       if (recurseChildren) for (Artifact child : art.getRelatedArtifacts(side)) {
          sb.append(AHTML.addSimpleTableRow(processArtifact(child, paraNum + "." + x++, side, recurseChildren,
-               includeAttributes, onlyAttributeNames)));
+               onlyAttributeNames)));
       }
       sb.append(AHTML.endSimpleTable());
       return sb.toString();
    }
 
-   public String processAttributes(Artifact artifact, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) {
+   public String processAttributes(Artifact artifact, boolean recurseChildren, Collection<String> onlyAttributeNames) {
       StringBuilder sb = new StringBuilder();
-      String wordHtml = null;
-
       sb.append(AHTML.beginMultiColumnTable(90));
-      if (includeAttributes) {
-         try {
-            for (AttributeType attributeType : artifact.getAttributeTypes()) {
-               String attributeTypeName = attributeType.getName();
-
-               attributeTypeName =
-                     AttributeTypeManager.getTypeWithWordContentCheck(artifact, WordAttribute.CONTENT_NAME).getName();
-
-               if (onlyAttributeNames == null || onlyAttributeNames.contains(attributeTypeName)) {
-                  for (String attributeValue : artifact.getAttributesToStringList(attributeTypeName)) {
-                     if (!attributeTypeName.equals("Name") && !attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(
-                           artifact, WordAttribute.CONTENT_NAME).getName())) {
-                        sb.append(AHTML.addRowMultiColumnTable(new String[] {attributeTypeName, attributeValue}));
-                     } else if (attributeTypeName.equals(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                           WordAttribute.CONTENT_NAME).getName())) {
-                        try {
-                           ByteArrayInputStream wordMl =
-                                 new ByteArrayInputStream(("<body>" + attributeValue + "</body>").getBytes("UTF-8"));
-                           wordHtml = WordConverter.getInstance().toHtml(wordMl);
-                        } catch (UnsupportedEncodingException ex) {
-                           wordHtml = ex.getLocalizedMessage();
-                           logger.log(Level.SEVERE, ex.toString(), ex);
-                        }
-                     }
-                  }
-               }
-            }
-
-            if (wordHtml != null) {
-               sb.append(AHTML.addRowSpanMultiColumnTable(wordHtml, 2));
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
+      sb.append(AHTML.addRowSpanMultiColumnTable(((Renderer)RendererManager.getInstance().getBestRenderer(PresentationType.PREVIEW, artifact)).generateHtml(artifact, new NullProgressMonitor()), 2));
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
-   }
-
-   public boolean isIncludeAttributes() {
-      return includeAttributes;
-   }
-
-   public void setIncludeAttributes(boolean includeAttributes) {
-      this.includeAttributes = includeAttributes;
    }
 
    public boolean isRecurseChildren() {

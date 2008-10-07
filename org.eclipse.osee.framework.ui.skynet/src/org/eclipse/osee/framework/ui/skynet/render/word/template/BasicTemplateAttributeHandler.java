@@ -45,7 +45,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException, OseeCoreException {
       AttributeType attributeType =
-            AttributeTypeManager.getTypeWithWordContentCheck(artifact, templateAttribute.getName());
+            AttributeTypeManager.getType(templateAttribute.getName());
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType.getName());
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();

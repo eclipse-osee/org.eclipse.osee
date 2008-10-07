@@ -22,9 +22,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -56,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -425,12 +428,10 @@ public class WordRenderer extends FileRenderer {
 
          for (Artifact artifact : artifacts) {
             Attribute<?> attribute =
-                  artifact.getSoleAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                        WordAttribute.CONTENT_NAME).getName());
+                  artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
             if (attribute == null) {
                attribute =
-                     artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                           WordAttribute.CONTENT_NAME), true);
+                     artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT), true);
             }
             if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
                throw new OseeCoreException(

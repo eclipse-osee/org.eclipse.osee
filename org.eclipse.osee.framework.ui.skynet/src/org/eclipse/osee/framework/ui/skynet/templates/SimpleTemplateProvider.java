@@ -77,8 +77,8 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       for (String name : possibleTemplateNames) {
          Artifact template = templateMap.get(name);
          if (template != null) {
-            return template.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(template,
-                  WordAttribute.CONTENT_NAME).getName());
+        	 //template
+            return template.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
          }
       }
       throw new IllegalStateException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",

@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -200,7 +201,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
                      IWorkbenchPage.VIEW_ACTIVATE);
          artifactExplorer.setPartName("Artifacts");
-         artifactExplorer.setContentDescription("These artifact must be edited individually");
+         artifactExplorer.setContentDescription("These artifact must be handled individually");
          artifactExplorer.treeViewer.setInput(artifacts);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
@@ -988,7 +989,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                   job =
                         new HtmlReportJob("Hierarchical Report", artifacts,
                               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
-                  job.setIncludeAttributes(ld.isShowAttributes());
                   job.setRecurseChildren(ld.isRecurseChildren());
                   Jobs.startJob(job);
                } catch (Exception ex) {

@@ -15,8 +15,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -31,15 +33,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.program.Program;
 
 public class WholeDocumentRenderer extends FileRenderer {
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WholeDocumentRenderer.class);
-   private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
 
    public WholeDocumentRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
    }
@@ -74,12 +73,10 @@ public class WholeDocumentRenderer extends FileRenderer {
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
       if (artifact != null) {
          Attribute<?> attribute =
-               artifact.getSoleAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                     WordAttribute.CONTENT_NAME).getName());
+               artifact.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
          if (attribute == null) {
             attribute =
-                  artifact.createAttribute(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                        WordAttribute.CONTENT_NAME), true);
+                  artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WHOLE_WORD_CONTENT), true);
          }
          if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
             throw new OseeCoreException(
@@ -93,8 +90,7 @@ public class WholeDocumentRenderer extends FileRenderer {
 
       if (artifact != null) {
          String content =
-               artifact.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(artifact,
-                     WordAttribute.CONTENT_NAME).getName());
+               artifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
          String myGuid = artifact.getGuid();
          content = WordUtil.addGUIDToDocument(myGuid, content);
          stream = Streams.convertStringToInputStream(content, "UTF-8");

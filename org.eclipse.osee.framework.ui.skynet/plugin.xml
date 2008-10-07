@@ -586,9 +586,6 @@
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
-	<extension id="InPlaceSmartTagRemover" name="In-Place Smart Tag Remover" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.InPlaceSmartTagRemover"/>
-	</extension>
 	<extension id="UpdateFromParentBranch" name="Update From Parent Branch" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch"/>
 	</extension>
@@ -996,5 +993,11 @@
          <Operation
                className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationOrderAnalysisOnBranch">
          </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateWordFormattedContentAttributes">
+    </Operation>
  </extension>
 </plugin>
