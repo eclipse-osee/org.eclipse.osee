@@ -118,7 +118,7 @@ public abstract class DbTransaction {
     * @throws OseeDataStoreException
     */
    public static void deferConstraintChecking(Connection connection) throws OseeDataStoreException {
-      if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.derby)) {
+      if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.derby) {
          return;
       }
       // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.

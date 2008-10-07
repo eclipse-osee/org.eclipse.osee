@@ -10,16 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
+import java.sql.Connection;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 
 /**
  * @author Ryan D. Brooks
  */
 public class SequenceManager {
-   private static final String LAST_SEQUENCE = "LAST_SEQUENCE";
    private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
    private static final String INSERT_SEQUENCE =
          "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
@@ -73,33 +74,29 @@ public class SequenceManager {
 
       long lastValue = -1;
       boolean gotSequence = false;
+      OseeConnection connection = OseeDbConnection.getConnection();
       while (!gotSequence) {
-         lastValue = getSequence(sequenceName);
-         gotSequence = updateSequenceValue(sequenceName, lastValue + range.prefetchSize, lastValue);
+         lastValue = getSequence(connection, sequenceName);
+         gotSequence = updateSequenceValue(connection, sequenceName, lastValue + range.prefetchSize, lastValue);
       }
+      connection.close();
       range.updateRange(lastValue);
    }
 
-   private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_SEQUENCE, value, sequenceName, lastValue) == 1;
+   private boolean updateSequenceValue(Connection connection, String sequenceName, long value, long lastValue) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedUpdate(connection, UPDATE_SEQUENCE, value, sequenceName, lastValue) == 1;
    }
 
    private boolean insertSequenceValue(String sequenceName, long value) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdateReturnCount(INSERT_SEQUENCE, value, sequenceName) == 1;
+      return ConnectionHandler.runPreparedUpdate(INSERT_SEQUENCE, value, sequenceName) == 1;
    }
 
-   private long getSequence(String sequenceName) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(true, QUERY_SEQUENCE, sequenceName);
-         if (chStmt.next()) {
-            return chStmt.getLong(LAST_SEQUENCE);
-         } else {
-            throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
-         }
-      } finally {
-         ConnectionHandler.close(chStmt);
+   private long getSequence(Connection connection, String sequenceName) throws OseeDataStoreException {
+      long seq = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, QUERY_SEQUENCE, sequenceName);
+      if (seq == -1) {
+         throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
       }
+      return seq;
    }
 
    public static synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {

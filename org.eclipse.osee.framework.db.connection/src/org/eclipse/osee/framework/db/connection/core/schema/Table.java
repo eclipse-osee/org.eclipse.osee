@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.db.connection.core.schema;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class Table {
@@ -21,14 +20,7 @@ public class Table {
    private static final Matcher matcher = Pattern.compile(" *PUT_TABLE_ALIAS_HERE *").matcher("");
 
    static {
-      SupportedDatabase db = OseeDb.getDefaultDatabaseService().getDatabaseDetails().getDbType();
-      switch (db) {
-         case postgresql:
-            aliassyntax = " as ";
-            break;
-         default:
-            aliassyntax = " ";
-      }
+      aliassyntax = SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql ? " as " : " ";
    }
 
    /**

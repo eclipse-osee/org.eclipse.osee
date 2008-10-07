@@ -64,23 +64,23 @@ public class UpdateFromParentBranch extends AbstractBlam {
          ArtifactLoader.selectArtifacts(insertParameters);
 
          int count =
-               ConnectionHandler.runPreparedUpdateReturnCount(DELETE_GAMMAS_FOR_UPDATES, childBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(DELETE_GAMMAS_FOR_UPDATES, childBranch.getBranchId(),
                      parentBranch.getBranchId(), queryId, childBranch.getBranchId(), parentBranch.getBranchId(),
                      queryId, childBranch.getBranchId(), parentBranch.getBranchId(), queryId);
          OSEELog.logInfo(SkynetGuiPlugin.class, "deleted " + count + " gammas", false);
 
          count =
-               ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, baselineTransactionNumber,
+               ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ARTIFACTS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
          OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " artifacts", false);
 
          count =
-               ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS,
-                     baselineTransactionNumber, parentBranch.getBranchId(), queryId);
+               ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_ATTRIBUTES_GAMMAS, baselineTransactionNumber,
+                     parentBranch.getBranchId(), queryId);
          OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " attributes", false);
 
          count =
-               ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, baselineTransactionNumber,
+               ConnectionHandler.runPreparedUpdate(INSERT_UPDATED_LINKS_GAMMAS, baselineTransactionNumber,
                      parentBranch.getBranchId(), queryId);
          OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " relations", false);
 

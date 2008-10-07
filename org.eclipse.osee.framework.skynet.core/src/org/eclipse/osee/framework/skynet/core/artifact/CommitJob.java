@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,6 +18,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -156,13 +156,21 @@ class CommitJob extends Job {
          long totalTime = time;
          int count = 0;
          //Load new and deleted artifact so that they can be compressed out of the commit transaction
-         ResultSet resultSet =
-               ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(),
-                     fromBranch.getBranchId()).getRset();
-         while (resultSet.next()) {
-            ArtifactPersistenceManager.getInstance().revertArtifact(resultSet.getInt("branch_id"),
-                  resultSet.getInt("art_id"));
+
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(REVERT_DELETED_NEW, fromBranch.getBranchId(),
+                        fromBranch.getBranchId());
+
+            while (chStmt.next()) {
+               ArtifactPersistenceManager.getInstance().revertArtifact(chStmt.getInt("branch_id"),
+                     chStmt.getInt("art_id"));
+            }
+         } finally {
+            ConnectionHandler.close(chStmt);
          }
+
          if (DEBUG) {
             System.out.println(String.format(
                   "   Reverted %d Artifacts in %s to avoid commiting new and deleted artifacts", count,
@@ -188,7 +196,7 @@ class CommitJob extends Job {
 
          time = System.currentTimeMillis();
          int insertCount =
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ATTRIBUTES, toBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(UPDATE_CURRENT_COMMIT_ATTRIBUTES, toBranch.getBranchId(),
                      fromBranchId);
          if (DEBUG) {
             count = insertCount;
@@ -198,8 +206,7 @@ class CommitJob extends Job {
          }
 
          time = System.currentTimeMillis();
-         insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
+         insertCount += ConnectionHandler.runPreparedUpdate(COMMIT_ATTRIBUTES, newTransactionNumber, fromBranchId);
          if (DEBUG) {
             System.out.println(String.format("   Commited %d Attributes in %s", insertCount - count,
                   Lib.getElapseString(time)));
@@ -208,7 +215,7 @@ class CommitJob extends Job {
 
          time = System.currentTimeMillis();
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(UPDATE_CURRENT_COMMIT_ARTIFACTS, toBranch.getBranchId(),
                      fromBranchId);
          if (DEBUG) {
             System.out.println(String.format(
@@ -218,8 +225,7 @@ class CommitJob extends Job {
          }
 
          time = System.currentTimeMillis();
-         insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
+         insertCount += ConnectionHandler.runPreparedUpdate(COMMIT_ARTIFACTS, newTransactionNumber, fromBranchId);
          if (DEBUG) {
             System.out.println(String.format("   Commited %d Artifacts in %s", insertCount - count,
                   Lib.getElapseString(time)));
@@ -228,7 +234,7 @@ class CommitJob extends Job {
 
          time = System.currentTimeMillis();
          insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(UPDATE_CURRENT_COMMIT_RELATIONS, toBranch.getBranchId(),
                      fromBranchId);
          if (DEBUG) {
             System.out.println(String.format(
@@ -238,8 +244,7 @@ class CommitJob extends Job {
          }
 
          time = System.currentTimeMillis();
-         insertCount +=
-               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
+         insertCount += ConnectionHandler.runPreparedUpdate(COMMIT_RELATIONS, newTransactionNumber, fromBranchId);
          if (DEBUG) {
             System.out.println(String.format("   Commited %d Relations in %s", insertCount - count,
                   Lib.getElapseString(time)));
@@ -269,7 +274,7 @@ class CommitJob extends Job {
                            conflict.getArtifact().getArtId(), conflict.getChangeItem(), conflict.getMergeGammaId(),
                            conflict.getSourceGamma()));
                   }
-                  ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, conflict.getMergeGammaId(),
+                  ConnectionHandler.runPreparedUpdate(UPDATE_MERGE_TRANSACTIONS, conflict.getMergeGammaId(),
                         newTransactionNumber, conflict.getSourceGamma());
                   conflict.setStatus(Conflict.Status.COMMITTED);
                }
@@ -280,7 +285,7 @@ class CommitJob extends Job {
 
             time = System.currentTimeMillis();
             //insert transaction id into the branch table
-            ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
+            ConnectionHandler.runPreparedUpdate(UPDATE_MERGE_TRANSACTION_ID, newTransactionNumber,
                   fromBranch.getBranchId(), toBranch.getBranchId());
             if (DEBUG) {
                System.out.println(String.format("   Updated the Merge Transaction Id in the conflict table in %s",

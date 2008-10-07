@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.framework.db.connection;
 
-import java.sql.Connection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 
 /**
@@ -26,12 +26,12 @@ public class OseeDbConnection {
    private static Map<DbInformation, OseeConnectionPool> dbInfoToPools =
          new ConcurrentHashMap<DbInformation, OseeConnectionPool>();
 
-   public static Connection getConnection() throws OseeDataStoreException {
+   public static OseeConnection getConnection() throws OseeDataStoreException {
       verifyDefaultDbInformation();
       return getConnection(defaultDbInformation);
    }
 
-   public static Connection getConnection(DbInformation dbInformation) throws OseeDataStoreException {
+   public static OseeConnection getConnection(DbInformation dbInformation) throws OseeDataStoreException {
       OseeConnectionPool pool = dbInfoToPools.get(dbInformation);
       if (pool == null) {
          pool = new OseeConnectionPool(dbInformation);

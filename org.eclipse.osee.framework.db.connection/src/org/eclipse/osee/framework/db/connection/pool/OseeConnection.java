@@ -59,7 +59,7 @@ public class OseeConnection implements Connection {
       return timestamp;
    }
 
-   public void close() throws SQLException {
+   public void close() {
       pool.returnConnection(this);
    }
 

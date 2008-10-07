@@ -140,12 +140,13 @@ public final class ArtifactLoader {
       try {
          ConnectionHandlerStatement chStmt = null;
          try {
+            String sql;
             if (historical) {
-               chStmt = ConnectionHandler.runPreparedQuery(fetchSize, SELECT_HISTORICAL_ARTIFACTS, queryId);
+               sql = SELECT_HISTORICAL_ARTIFACTS;
             } else {
-               String sql = allowDeleted ? SELECT_CURRENT_ARTIFACTS_WITH_DELETED : SELECT_CURRENT_ARTIFACTS;
-               chStmt = ConnectionHandler.runPreparedQuery(fetchSize, sql, queryId);
+               sql = allowDeleted ? SELECT_CURRENT_ARTIFACTS_WITH_DELETED : SELECT_CURRENT_ARTIFACTS;
             }
+            chStmt = ConnectionHandler.runPreparedQuery(fetchSize, sql, queryId);
 
             int previousArtId = -1;
             int previousBranchId = -1;
@@ -233,7 +234,7 @@ public final class ArtifactLoader {
       if (connection != null) {
          ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, queryId);
       } else {
-         ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_JOIN_ARTIFACT, queryId);
+         ConnectionHandler.runPreparedUpdate(DELETE_FROM_JOIN_ARTIFACT, queryId);
       }
    }
 

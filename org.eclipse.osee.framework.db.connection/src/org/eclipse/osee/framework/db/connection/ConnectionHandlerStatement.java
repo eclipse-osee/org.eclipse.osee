@@ -26,14 +26,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Jeff C. Phillips
  */
 public class ConnectionHandlerStatement {
-
    private ResultSet rSet;
    private Statement statement;
-   private int updates = 0;
-
-   public ConnectionHandlerStatement() {
-      super();
-   }
 
    public boolean next() throws OseeDataStoreException {
       if (rSet != null) {
@@ -47,8 +41,11 @@ public class ConnectionHandlerStatement {
    }
 
    /**
+    * use the ConnectionHandlerStatement directly for getX() calls and next()
+    * 
     * @return Returns the rset.
     */
+   @Deprecated
    public ResultSet getRset() {
       return rSet;
    }
@@ -72,14 +69,6 @@ public class ConnectionHandlerStatement {
     */
    public void setStatement(Statement statement) {
       this.statement = statement;
-   }
-
-   public int getUpdates() {
-      return updates;
-   }
-
-   public void setUpdates(int updates) {
-      this.updates = updates;
    }
 
    public void close() {
@@ -157,6 +146,21 @@ public class ConnectionHandlerStatement {
     * @return
     * @throws OseeDataStoreException
     */
+   long getLong(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getLong(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return
+    * @throws OseeDataStoreException
+    */
    String getString(int columnIndex) throws OseeDataStoreException {
       try {
          return rSet.getString(columnIndex);
@@ -184,6 +188,14 @@ public class ConnectionHandlerStatement {
    public Date getDate(String columnName) throws OseeDataStoreException {
       try {
          return rSet.getDate(columnName);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public boolean wasNull() throws OseeDataStoreException {
+      try {
+         return rSet.wasNull();
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }

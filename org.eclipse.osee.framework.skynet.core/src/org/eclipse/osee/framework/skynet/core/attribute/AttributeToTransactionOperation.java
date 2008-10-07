@@ -14,10 +14,8 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-
 import java.sql.SQLException;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -141,10 +139,8 @@ public class AttributeToTransactionOperation {
                         artifact.getArtId(), artifact.getBranch().getBranchId());
 
             if (chStmt.next()) {
-               attrId = chStmt.getRset().getInt("attr_id");
+               attrId = chStmt.getInt("attr_id");
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             ConnectionHandler.close(chStmt);
          }

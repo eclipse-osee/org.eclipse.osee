@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionMa
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -195,41 +196,9 @@ public final class ConnectionHandler {
    }
 
    public static int runPreparedUpdate(boolean overrideTransaction, String query, Object... data) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = runPreparedUpdateReturnStmt(overrideTransaction, query, data);
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-      if (chStmt != null) {
-         return chStmt.getUpdates();
-      }
-      return 0;
-   }
-
-   public static int runPreparedUpdate(String query, Object... data) throws OseeDataStoreException {
-      return runPreparedUpdate(false, query, data);
-   }
-
-   public static int runPreparedUpdateReturnCount(String query, Object... data) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      int updateCount;
-      try {
-         chStmt = runPreparedUpdateReturnStmt(false, query, data);
-         updateCount = chStmt.getStatement().getUpdateCount();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-
-      return updateCount;
-   }
-
-   public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(boolean overrideTransaction, String query, Object... data) throws OseeDataStoreException {
       QueryRecord record = new QueryRecord(query, data);
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
+      int updateCount = 0;
       try {
          PreparedStatement preparedStatement = getConnection(overrideTransaction).prepareStatement(query);
          chStmt.setStatement(preparedStatement);
@@ -237,35 +206,117 @@ public final class ConnectionHandler {
          populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
-         int count = preparedStatement.executeUpdate();
-         chStmt.setUpdates(count);
+         updateCount = preparedStatement.executeUpdate();
          record.markEnd();
       } catch (SQLException ex) {
          record.setSqlException(ex);
          OseeLog.log(Activator.class, Level.SEVERE, "update failed: " + query + "\n" + Arrays.deepToString(data), ex);
          reGetConnection(overrideTransaction);
          throw new OseeDataStoreException(ex);
+      } finally {
+         ConnectionHandler.close(chStmt);
       }
-      return chStmt;
+      return updateCount;
+   }
+
+   public static int runPreparedUpdate(String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedUpdate(connection, query, data);
+      } finally {
+         connection.close();
+      }
    }
 
    public static int runPreparedUpdate(Connection connection, String query, Object... data) throws OseeDataStoreException {
       PreparedStatement preparedStatement = null;
-      int returnValue = 0;
+      int updateCount = 0;
       try {
          preparedStatement = connection.prepareStatement(query);
          populateValuesForPreparedStatement(preparedStatement, data);
-         returnValue = preparedStatement.executeUpdate();
+         updateCount = preparedStatement.executeUpdate();
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       } finally {
          close(preparedStatement);
       }
-      return returnValue;
+      return updateCount;
+   }
+
+   public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord("<batchable: batched> " + query, datas.size());
+      int returnCount = 0;
+      PreparedStatement preparedStatement = null;
+      try {
+         preparedStatement = connection.prepareStatement(query);
+         record.markStart();
+         boolean needExecute = false;
+         int count = 0;
+         for (Object[] data : datas) {
+            count++;
+            populateValuesForPreparedStatement(preparedStatement, data);
+            preparedStatement.addBatch();
+            preparedStatement.clearParameters();
+            needExecute = true;
+            if (count > 2000) {
+               int[] updates = preparedStatement.executeBatch();
+               returnCount += processBatchUpdateResults(updates);
+               count = 0;
+               needExecute = false;
+            }
+         }
+         if (needExecute) {
+            int[] updates = preparedStatement.executeBatch();
+            returnCount += processBatchUpdateResults(updates);
+         }
+
+         record.markEnd();
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         SQLException exlist;
+         if ((exlist = ex.getNextException()) != null) {
+            System.out.println("this is the next exception");
+            exlist.printStackTrace();
+         }
+         StringBuilder details = new StringBuilder(datas.size() * datas.get(0).length * 20);
+         details.append("[ DATA OBJECT: \n");
+         for (Object[] data : datas) {
+            for (int i = 0; i < data.length; i++) {
+               details.append(i);
+               details.append(": ");
+               Object dataValue = data[i];
+               if (dataValue != null) {
+                  details.append(dataValue.getClass().getName());
+                  details.append(":");
+
+                  String value = dataValue.toString();
+                  if (value.length() > 50) {
+                     details.append(value.substring(0, 35));
+                  } else {
+                     details.append(value);
+                  }
+                  details.append("\n");
+               } else {
+                  details.append("NULL\n");
+               }
+            }
+         }
+         details.append("]\n");
+         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
+         throw new OseeDataStoreException(ex);
+      } finally {
+         close(preparedStatement);
+      }
+      return returnCount;
    }
 
    public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchInt(OseeDbConnection.getConnection(), defaultValue, query, data);
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQueryFetchInt(connection, defaultValue, query, data);
+      } finally {
+         connection.close();
+      }
    }
 
    public static int runPreparedQueryFetchInt(Connection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
@@ -274,6 +325,28 @@ public final class ConnectionHandler {
          chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
          if (chStmt.next()) {
             return chStmt.getInt(1);
+         }
+         return defaultValue;
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+   }
+
+   public static long runPreparedQueryFetchLong(long defaultValue, String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQueryFetchLong(connection, defaultValue, query, data);
+      } finally {
+         connection.close();
+      }
+   }
+
+   public static long runPreparedQueryFetchLong(Connection connection, long defaultValue, String query, Object... data) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
+         if (chStmt.next()) {
+            return chStmt.getLong(1);
          }
          return defaultValue;
       } finally {
@@ -364,73 +437,6 @@ public final class ConnectionHandler {
          reGetConnection(overrideTranaction);
          throw new OseeDataStoreException(ex);
       }
-   }
-
-   public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord("<batchable: batched> " + query, datas.size());
-      int returnCount = 0;
-      PreparedStatement preparedStatement = null;
-      try {
-         preparedStatement = connection.prepareStatement(query);
-         record.markStart();
-         boolean needExecute = false;
-         int count = 0;
-         for (Object[] data : datas) {
-            count++;
-            populateValuesForPreparedStatement(preparedStatement, data);
-            preparedStatement.addBatch();
-            preparedStatement.clearParameters();
-            needExecute = true;
-            if (count > 2000) {
-               int[] updates = preparedStatement.executeBatch();
-               returnCount += processBatchUpdateResults(updates);
-               count = 0;
-               needExecute = false;
-            }
-         }
-         if (needExecute) {
-            int[] updates = preparedStatement.executeBatch();
-            returnCount += processBatchUpdateResults(updates);
-         }
-
-         record.markEnd();
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         SQLException exlist;
-         if ((exlist = ex.getNextException()) != null) {
-            System.out.println("this is the next exception");
-            exlist.printStackTrace();
-         }
-         StringBuilder details = new StringBuilder(datas.size() * datas.get(0).length * 20);
-         details.append("[ DATA OBJECT: \n");
-         for (Object[] data : datas) {
-            for (int i = 0; i < data.length; i++) {
-               details.append(i);
-               details.append(": ");
-               Object dataValue = data[i];
-               if (dataValue != null) {
-                  details.append(dataValue.getClass().getName());
-                  details.append(":");
-
-                  String value = dataValue.toString();
-                  if (value.length() > 50) {
-                     details.append(value.substring(0, 35));
-                  } else {
-                     details.append(value);
-                  }
-                  details.append("\n");
-               } else {
-                  details.append("NULL\n");
-               }
-            }
-         }
-         details.append("]\n");
-         OseeLog.log(Activator.class, Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n", ex);
-         throw new OseeDataStoreException(ex);
-      } finally {
-         close(preparedStatement);
-      }
-      return returnCount;
    }
 
    private static int processBatchUpdateResults(int[] updates) {

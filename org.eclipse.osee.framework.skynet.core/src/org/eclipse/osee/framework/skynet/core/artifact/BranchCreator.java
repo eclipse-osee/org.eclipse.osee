@@ -275,8 +275,8 @@ public class BranchCreator {
    private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactType> compressArtTypes) throws OseeDataStoreException {
       for (ArtifactType artifactType : compressArtTypes) {
          int count =
-               ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
-                     newTransactionNumber, TxChange.CURRENT.getValue(), artifactType.getArtTypeId(),
+               ConnectionHandler.runPreparedUpdate(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED, newTransactionNumber,
+                     TxChange.CURRENT.getValue(), artifactType.getArtTypeId(),
                      parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
          if (count > 0) {
             OseeLog.log(SkynetActivator.class, Level.INFO,
@@ -285,15 +285,15 @@ public class BranchCreator {
       }
 
       int count =
-            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber,
+            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTES_GAMMAS, newTransactionNumber,
                   TxChange.CURRENT.getValue(), newTransactionNumber, parentTransactionId.getTransactionNumber(),
                   parentTransactionId.getBranch().getBranchId());
       OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " attributes");
 
       count =
-            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, newTransactionNumber,
-                  TxChange.CURRENT.getValue(), newTransactionNumber, newTransactionNumber,
-                  parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
+            ConnectionHandler.runPreparedUpdate(INSERT_LINK_GAMMAS, newTransactionNumber, TxChange.CURRENT.getValue(),
+                  newTransactionNumber, newTransactionNumber, parentTransactionId.getTransactionNumber(),
+                  parentTransactionId.getBranch().getBranchId());
       OseeLog.log(SkynetActivator.class, Level.INFO, "inserted " + count + " relations");
    }
 

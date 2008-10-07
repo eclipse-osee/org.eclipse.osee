@@ -79,19 +79,9 @@ public class TransactionIdManager {
    }
 
    private int getlatestTransactionForBranch(Branch branch) throws TransactionDoesNotExist, OseeDataStoreException {
-      int transactionNumber = -1;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(largestTransIdSql, branch.getBranchId());
-         if (chStmt.next()) {
-            transactionNumber = chStmt.getRset().getInt("largest_transaction_id");
-         } else {
-            throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
+      int transactionNumber = ConnectionHandler.runPreparedQueryFetchInt(-1, largestTransIdSql, branch.getBranchId());
+      if (transactionNumber == -1) {
+         throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
       }
       return transactionNumber;
    }
@@ -127,20 +117,17 @@ public class TransactionIdManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_MIN_TX, branch.getBranchId());
 
-         ResultSet rset = chStmt.getRset();
          // the max, min query will return exactly 1 row by definition (even if there is no max or min)
-         rset.next();
+         chStmt.next();
 
-         int minId = rset.getInt("min_id");
-         int maxId = rset.getInt("max_id");
+         int minId = chStmt.getInt("min_id");
+         int maxId = chStmt.getInt("max_id");
 
-         if (rset.wasNull()) {
+         if (chStmt.wasNull()) {
             throw new TransactionDoesNotExist("Branch " + branch + " has no transactions");
          }
 
          return new Pair<TransactionId, TransactionId>(getTransactionId(minId), getTransactionId(maxId));
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -164,13 +151,12 @@ public class TransactionIdManager {
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
                      branch.getBranchId(), time);
 
-         ResultSet rset = chStmt.getRset();
-         if (rset.next()) {
-            int priorId = rset.getInt("prior_id");
-            if (!rset.wasNull()) priorTransactionId = getTransactionId(priorId);
+         if (chStmt.next()) {
+            int priorId = chStmt.getInt("prior_id");
+            if (!chStmt.wasNull()) {
+               priorTransactionId = getTransactionId(priorId);
+            }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -194,16 +180,13 @@ public class TransactionIdManager {
                      "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
                      transactionId.getBranch().getBranchId(), transactionId.getTransactionNumber());
 
-         ResultSet rset = chStmt.getRset();
-         if (rset.next()) {
-            int priorId = rset.getInt("prior_id");
-            if (rset.wasNull()) {
+         if (chStmt.next()) {
+            int priorId = chStmt.getInt("prior_id");
+            if (chStmt.wasNull()) {
                throw new TransactionDoesNotExist("the prior transation id was null");
             }
             priorTransactionId = getTransactionId(priorId);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -311,31 +294,29 @@ public class TransactionIdManager {
 
    private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
-      boolean emptyChStmt = chStmt == null;
-      
-      try{
-	      if (transactionId == null) {
-	        if (emptyChStmt) {
-	           chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
-	           if (!chStmt.next()) {
-	              throw new TransactionDoesNotExist(
-	                    "The transaction id " + transactionNumber + " does not exist in the databse.");
-	           }
-	        }
-	        Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
-	        TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-	
-	        transactionId =
-	              new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
-	                    chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-	        instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
-	      }
-      }finally{
-    	  if(emptyChStmt){
-        	  chStmt.close();
-          }
+      boolean useLocalConnection = chStmt == null;
+      if (transactionId == null) {
+         try {
+            if (useLocalConnection) {
+               chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
+               if (!chStmt.next()) {
+                  throw new TransactionDoesNotExist(
+                        "The transaction id " + transactionNumber + " does not exist in the databse.");
+               }
+            }
+            Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
+
+            transactionId =
+                  new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
+                        chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
+            instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
+         } finally {
+            if (useLocalConnection) {
+               ConnectionHandler.close(chStmt);
+            }
+         }
       }
-      
       return transactionId;
    }
 }

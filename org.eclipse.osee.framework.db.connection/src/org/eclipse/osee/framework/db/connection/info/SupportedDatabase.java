@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.db.connection.info;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 public enum SupportedDatabase {
@@ -38,4 +39,9 @@ public enum SupportedDatabase {
          throw new OseeDataStoreException(ex);
       }
    }
+
+   public static SupportedDatabase getDatabaseType() {
+      return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getDbType();
+   }
+
 }

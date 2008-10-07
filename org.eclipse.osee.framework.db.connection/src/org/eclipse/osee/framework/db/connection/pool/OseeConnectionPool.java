@@ -56,7 +56,7 @@ public class OseeConnectionPool {
       connections.removeElement(conn);
    }
 
-   public synchronized Connection getConnection() throws OseeDataStoreException {
+   public synchronized OseeConnection getConnection() throws OseeDataStoreException {
       OseeConnection c;
       for (int i = 0; i < connections.size(); i++) {
          c = connections.elementAt(i);
