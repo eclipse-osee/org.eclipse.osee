@@ -1000,4 +1000,10 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateWordFormattedContentAttributes">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAttrFromDeletedArt">
+    </Task>
+ </extension>
 </plugin>
