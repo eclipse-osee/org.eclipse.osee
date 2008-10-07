@@ -15,8 +15,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
 public class GroupLabelProvider extends LabelProvider {
    private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
@@ -28,23 +26,11 @@ public class GroupLabelProvider extends LabelProvider {
    /*
     * @see ILabelProvider#getImage(Object)
     */
+   @Override
    public Image getImage(Object element) {
       if (element instanceof GroupExplorerItem) {
          GroupExplorerItem item = (GroupExplorerItem) element;
-         String typename = item.getArtifact().getArtifactTypeName();
-         if (typename.equals("Heading"))
-            return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-         else if (typename.equals("Narrative"))
-            return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
-         else if (typename.equals("Action"))
-            return plugin.getImage("A.gif");
-         else if (typename.equals("Product Impact"))
-            return plugin.getImage("product.gif");
-         else if (typename.equals("Aspect Impact"))
-            return plugin.getImage("aspect.gif");
-         else if (typename.equals("Task"))
-            return plugin.getImage("task.gif");
-         else if (typename.equals("Universal Group")) return plugin.getImage("group.gif");
+         return item.getArtifact().getImage();
       }
       return plugin.getImage("laser_16_16.gif");
 
@@ -53,6 +39,7 @@ public class GroupLabelProvider extends LabelProvider {
    /*
     * @see ILabelProvider#getText(Object)
     */
+   @Override
    public String getText(Object element) {
       if (element instanceof GroupExplorerItem) {
          GroupExplorerItem item = (GroupExplorerItem) element;
