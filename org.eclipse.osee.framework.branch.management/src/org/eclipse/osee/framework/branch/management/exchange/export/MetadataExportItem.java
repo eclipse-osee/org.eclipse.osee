@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +42,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
       try {
          DatabaseMetaData metaData = getConnection().getMetaData();
          for (AbstractExportItem item : exportItems) {
-            if (!item.equals(this)) {
+            if (!item.equals(this) && Strings.isValid(item.getSource())) {
                processMetaData(appendable, metaData, item.getSource());
                if (item instanceof RelationalExportItemWithType) {
                   AbstractExportItem typeItem = ((RelationalExportItemWithType) item).getTypeItem();
