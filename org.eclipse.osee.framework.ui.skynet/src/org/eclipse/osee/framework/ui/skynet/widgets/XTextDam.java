@@ -39,10 +39,11 @@ public class XTextDam extends XText implements IArtifactWidget {
    @Override
    public void saveToArtifact() throws OseeCoreException {
       String value = get();
-      if (value == null || value.equals(""))
+      if (value == null || value.equals("")) {
          artifact.deleteSoleAttribute(attributeTypeName);
-      else
+      } else if (!value.equals(artifact.getSoleAttributeValue(attributeTypeName, ""))) {
          artifact.setSoleAttributeValue(attributeTypeName, value);
+      }
    }
 
    @Override

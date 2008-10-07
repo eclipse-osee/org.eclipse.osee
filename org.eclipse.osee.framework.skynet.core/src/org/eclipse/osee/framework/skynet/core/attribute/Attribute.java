@@ -41,7 +41,7 @@ public abstract class Attribute<T> {
    }
 
    public void setValue(T value) throws OseeCoreException {
-      if (attributeType.getName().equals("Name")) {
+      if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             Result result = check.isRenamable(Arrays.asList(artifact));
@@ -55,11 +55,13 @@ public abstract class Attribute<T> {
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
-      if (attributeType.getName().equals("Name")) {
+      if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             Result result = check.isRenamable(Arrays.asList(artifact));
-            if (result.isFalse()) throw new OseeCoreException(result.getText());
+            if (result.isFalse()) {
+               throw new OseeCoreException(result.getText());
+            }
          }
       }
 
