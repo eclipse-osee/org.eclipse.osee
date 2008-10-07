@@ -52,8 +52,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -72,11 +70,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
@@ -288,33 +281,12 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
          }
       });
 
+      new WorldViewDragAndDrop(xViewer, VIEW_ID);
       parent.layout();
       createActions();
       SkynetContributionItem.addTo(this, false);
-      setupDragAndDropSupport();
 
       OseeEventManager.addListener(this);
-
-   }
-
-   private void setupDragAndDropSupport() {
-      DragSource source = new DragSource(xViewer.getTree(), DND.DROP_COPY);
-      source.setTransfer(new Transfer[] {ArtifactTransfer.getInstance()});
-      source.addDragListener(new DragSourceListener() {
-
-         public void dragFinished(DragSourceEvent event) {
-         }
-
-         public void dragSetData(DragSourceEvent event) {
-            String item = "work";
-            event.data =
-                  new ArtifactData(xViewer.getSelectedArtifacts().toArray(
-                        new Artifact[xViewer.getSelectedArtifacts().size()]), item, WorldView.VIEW_ID);
-         }
-
-         public void dragStart(DragSourceEvent event) {
-         }
-      });
    }
 
    private String getWhoAmI() {
