@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+
 
 /**
  * @author Ryan D. Brooks
@@ -39,6 +42,16 @@ public class WordArtifact extends Artifact {
     */
    public WordArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
+   }
+   
+   /**
+    * Returns the string content of the attribute Whole Word Content if the artifact is an whole word artifact else returns the string content
+    * Word Template Content if the artifact is a word template artifact.
+    * @return
+    * @throws OseeCoreException
+    */
+   public String getContent() throws OseeCoreException{
+	   return this.getSoleAttributeValue(isWholeWordArtifact()? WordAttribute.WHOLE_WORD_CONTENT :WordAttribute.WORD_TEMPLATE_CONTENT);
    }
 
 }

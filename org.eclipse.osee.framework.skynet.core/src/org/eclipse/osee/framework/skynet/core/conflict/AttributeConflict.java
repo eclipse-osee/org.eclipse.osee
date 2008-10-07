@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
@@ -145,8 +146,7 @@ public class AttributeConflict extends Conflict {
    public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor =
-               AttributeTypeManager.getTypeWithWordContentCheck(getArtifact(),
-                     AttributeTypeManager.getType(attrTypeId).getName());
+               AttributeTypeManager.getType(AttributeTypeManager.getType(attrTypeId).getName());
       }
       return dynamicAttributeDescriptor;
    }

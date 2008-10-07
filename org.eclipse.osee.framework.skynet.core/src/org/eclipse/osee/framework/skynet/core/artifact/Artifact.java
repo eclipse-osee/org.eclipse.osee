@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -80,8 +82,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private boolean deleted = false;
    private final Branch branch;
    private final String guid;
-   private ArtifactType artifactType;
    private String humanReadableId;
+   private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
    private TransactionId transactionId;
@@ -399,7 +401,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
 
-         attributeType = AttributeTypeManager.getTypeWithWordContentCheck(this, attributeType.getName());
+         attributeType = AttributeTypeManager.getType(attributeType.getName());
 
          Object[] params = new Object[] {attributeType, this};
          Class<? extends Attribute<T>> attributeClass =

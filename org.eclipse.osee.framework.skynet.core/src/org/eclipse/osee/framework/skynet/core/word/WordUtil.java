@@ -104,7 +104,7 @@ public class WordUtil {
    public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException, OseeDataStoreException, OseeTypeDoesNotExist {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
-      AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.CONTENT_NAME);
+      AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT);
 
       ConnectionHandlerStatement chStmt = null;
       try {
