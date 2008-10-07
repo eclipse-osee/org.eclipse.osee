@@ -106,7 +106,8 @@ public class ATSBranchMetrics {
    /**
     * @return the numModifiedArtifacts
     */
-   public Integer getNumModifiedArtifacts() throws OseeCoreException {
+   public Integer getNumModifiedArtifacts() throws OseeCoreException{
+      load();
       return numModifiedArtifacts;
    }
 
@@ -120,7 +121,8 @@ public class ATSBranchMetrics {
    /**
     * @return the numNonRelationModifiedArtifacts
     */
-   public Integer getNumNonRelationModifiedArtifacts() throws OseeCoreException {
+   public Integer getNumNonRelationModifiedArtifacts() throws OseeCoreException{
+      load();
       return numNonRelationModifiedArtifacts;
    }
 
