@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -37,8 +39,8 @@ public interface ITaggerStatistics {
 
    public ITagItemStatistics getMostTagsTask();
 
-   public long getTagsInSystem();
+   public long getTagsInSystem() throws OseeDataStoreException;
 
-   public long getTotalQueryIdsInQueue();
+   public long getTotalQueryIdsInQueue() throws OseeDataStoreException;
 
 }
