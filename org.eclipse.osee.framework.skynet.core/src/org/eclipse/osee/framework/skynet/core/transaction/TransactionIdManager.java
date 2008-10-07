@@ -311,26 +311,31 @@ public class TransactionIdManager {
 
    private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
-      if (transactionId == null) {
-         try {
-            if (chStmt == null) {
-               chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
-               if (!chStmt.next()) {
-                  throw new TransactionDoesNotExist(
-                        "The transaction id " + transactionNumber + " does not exist in the databse.");
-               }
-            }
-            Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
-            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-
-            transactionId =
-                  new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
-                        chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-            instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
-         } finally {
-            ConnectionHandler.close(chStmt);
-         }
+      boolean emptyChStmt = chStmt == null;
+      
+      try{
+	      if (transactionId == null) {
+	        if (emptyChStmt) {
+	           chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
+	           if (!chStmt.next()) {
+	              throw new TransactionDoesNotExist(
+	                    "The transaction id " + transactionNumber + " does not exist in the databse.");
+	           }
+	        }
+	        Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+	        TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
+	
+	        transactionId =
+	              new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
+	                    chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
+	        instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
+	      }
+      }finally{
+    	  if(emptyChStmt){
+        	  chStmt.close();
+          }
       }
+      
       return transactionId;
    }
 }
