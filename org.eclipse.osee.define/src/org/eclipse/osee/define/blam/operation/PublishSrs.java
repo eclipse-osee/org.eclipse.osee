@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -35,15 +34,13 @@ public class PublishSrs extends AbstractBlam {
             ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
                   BranchPersistenceManager.getCommonBranch());
       String masterTemplate =
-            srsMasterTemplate.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(srsMasterTemplate,
-                  WordAttribute.CONTENT_NAME).getName(), "");
+            srsMasterTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
 
       Artifact srsSlaveTemplate =
             ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsSlaveTemplate",
                   BranchPersistenceManager.getCommonBranch());
       String slaveTemplate =
-            srsSlaveTemplate.getSoleAttributeValue(AttributeTypeManager.getTypeWithWordContentCheck(srsSlaveTemplate,
-                  WordAttribute.CONTENT_NAME).getName(), "");
+            srsSlaveTemplate.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT, "");
 
       boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
