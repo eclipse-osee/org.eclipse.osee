@@ -11,18 +11,17 @@
 package org.eclipse.osee.framework.search.engine.attribute;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.search.engine.Options;
-import org.eclipse.osee.framework.search.engine.utility.DatabaseUtil;
-import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -53,13 +52,18 @@ public class AttributeDataStore {
 
    public static Collection<AttributeData> getAttribute(final Connection connection, final int tagQueueQueryId) throws Exception {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
-      DatabaseUtil.executeQuery(connection, LOAD_ATTRIBUTE, new IRowProcessor() {
-         @Override
-         public void processRow(ResultSet resultSet) throws Exception {
-            attributeData.add(new AttributeData(resultSet.getLong("gamma_id"), resultSet.getString("value"),
-                  resultSet.getString("uri"), resultSet.getString("tagger_id")));
+
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, LOAD_ATTRIBUTE, tagQueueQueryId);
+         while (chStmt.next()) {
+            attributeData.add(new AttributeData(chStmt.getLong("gamma_id"), chStmt.getString("value"),
+                  chStmt.getString("uri"), chStmt.getString("tagger_id")));
          }
-      }, tagQueueQueryId);
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+
       return attributeData;
    }
 
@@ -109,18 +113,23 @@ public class AttributeDataStore {
       if (branchId > -1) {
          params.add(branchId);
       }
-      DatabaseUtil.executeQuery(connection, sqlQuery, new IRowProcessor() {
-         @Override
-         public void processRow(ResultSet resultSet) throws Exception {
-            toReturn.add(new AttributeData(resultSet.getInt("art_id"), resultSet.getLong("gamma_id"),
-                  resultSet.getInt("branch_id"), resultSet.getString("value"), resultSet.getString("uri"),
-                  resultSet.getString("tagger_id")));
+
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, sqlQuery, params.toArray(new Object[params.size()]));
+         while (chStmt.next()) {
+            toReturn.add(new AttributeData(chStmt.getInt("art_id"), chStmt.getLong("gamma_id"),
+                  chStmt.getInt("branch_id"), chStmt.getString("value"), chStmt.getString("uri"),
+                  chStmt.getString("tagger_id")));
          }
-      }, params.toArray(new Object[params.size()]));
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+
       return toReturn;
    }
 
-   public static String getAllTaggableGammasByBranchQuery(final Connection connection, final int branchId) throws SQLException {
+   public static String getAllTaggableGammasByBranchQuery(final Connection connection, final int branchId) throws OseeDataStoreException {
       return getBranchTaggingQueries(connection, branchId, false);
    }
 
@@ -128,10 +137,10 @@ public class AttributeDataStore {
       return branchId > -1 ? new Object[] {branchId} : new Object[0];
    }
 
-   private static String getBranchTaggingQueries(final Connection connection, final int branchId, final boolean isCountQuery) throws SQLException {
+   private static String getBranchTaggingQueries(final Connection connection, final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      if (connection.getMetaData().getDatabaseProductName().toLowerCase().contains("gresql")) {
+      if (SupportedDatabase.getDatabaseType(connection) == SupportedDatabase.postgresql) {
          builder.append(POSTGRESQL_CHECK);
       }
       if (branchId > -1) {
@@ -140,14 +149,8 @@ public class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(final Connection connection, final int branchId) throws Exception {
-      final MutableInteger total = new MutableInteger(-1);
-      DatabaseUtil.executeQuery(connection, getBranchTaggingQueries(connection, branchId, true), new IRowProcessor() {
-         @Override
-         public void processRow(ResultSet resultSet) throws Exception {
-            total.setValue(resultSet.getInt(1));
-         }
-      }, getAllTaggableGammasByBranchQueryData(branchId));
-      return total.getValue();
+   public static int getTotalTaggableItems(final Connection connection, final int branchId) throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(connection, branchId,
+            true), getAllTaggableGammasByBranchQueryData(branchId));
    }
 }

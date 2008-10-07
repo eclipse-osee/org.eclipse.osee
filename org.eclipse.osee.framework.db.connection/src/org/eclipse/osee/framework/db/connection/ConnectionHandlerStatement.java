@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection;
 
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -94,9 +95,33 @@ public class ConnectionHandlerStatement {
       }
    }
 
+   public InputStream getBinaryStream(String columnName) throws OseeDataStoreException {
+      try {
+         return rSet.getBinaryStream(columnName);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
    public String getString(String columnName) throws OseeDataStoreException {
       try {
          return rSet.getString(columnName);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public float getFloat(String columnName) throws OseeDataStoreException {
+      try {
+         return rSet.getFloat(columnName);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public long getLong(String columnName) throws OseeDataStoreException {
+      try {
+         return rSet.getLong(columnName);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -110,7 +135,14 @@ public class ConnectionHandlerStatement {
       }
    }
 
-   public int getInt(int columnIndex) throws OseeDataStoreException {
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return
+    * @throws OseeDataStoreException
+    */
+   int getInt(int columnIndex) throws OseeDataStoreException {
       try {
          return rSet.getInt(columnIndex);
       } catch (SQLException ex) {
@@ -118,7 +150,14 @@ public class ConnectionHandlerStatement {
       }
    }
 
-   public String getString(int columnIndex) throws OseeDataStoreException {
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return
+    * @throws OseeDataStoreException
+    */
+   String getString(int columnIndex) throws OseeDataStoreException {
       try {
          return rSet.getString(columnIndex);
       } catch (SQLException ex) {

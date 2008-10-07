@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -65,17 +63,14 @@ public class KeyedBranchCache {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_BRANCH_NAMES_FROM_CONFIG);
 
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
+         while (chStmt.next()) {
             try {
-               keynameBranchMap.put(rSet.getString("static_branch_name").toLowerCase(),
-                     BranchPersistenceManager.getBranch(rSet.getInt("mapped_branch_id")));
+               keynameBranchMap.put(chStmt.getString("static_branch_name").toLowerCase(),
+                     BranchPersistenceManager.getBranch(chStmt.getInt("mapped_branch_id")));
             } catch (BranchDoesNotExist ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

@@ -265,9 +265,13 @@ public final class ConnectionHandler {
    }
 
    public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeDataStoreException {
+      return runPreparedQueryFetchInt(OseeDbConnection.getConnection(), defaultValue, query, data);
+   }
+
+   public static int runPreparedQueryFetchInt(Connection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, false, query, data);
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
          if (chStmt.next()) {
             return chStmt.getInt(1);
          }

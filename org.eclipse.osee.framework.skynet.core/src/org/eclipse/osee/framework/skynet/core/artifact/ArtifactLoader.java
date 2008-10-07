@@ -15,8 +15,6 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.RELATION;
 import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.SHALLOW;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,12 +149,11 @@ public final class ArtifactLoader {
 
             int previousArtId = -1;
             int previousBranchId = -1;
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               int artId = rSet.getInt("art_id");
-               int branchId = rSet.getInt("branch_id");
+               int artId = chStmt.getInt("art_id");
+               int branchId = chStmt.getInt("branch_id");
                if (!historical || (previousArtId != artId || previousBranchId != branchId)) {
-                  artifacts.add(retrieveShallowArtifact(rSet, reload, historical));
+                  artifacts.add(retrieveShallowArtifact(chStmt, reload, historical));
                }
                previousArtId = artId;
                previousBranchId = branchId;
@@ -168,8 +165,6 @@ public final class ArtifactLoader {
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
             loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          clearQuery(queryId);
       }
@@ -255,19 +250,16 @@ public final class ArtifactLoader {
 
       try {
          chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
-         ResultSet rSet = chStmt.getRset();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
-         while (rSet.next()) {
-            int artId = rSet.getInt("art_id");
-            int branchId = rSet.getInt("branch_id");
+         while (chStmt.next()) {
+            int artId = chStmt.getInt("art_id");
+            int branchId = chStmt.getInt("branch_id");
             Object transactionParameter =
                   transactionId == null ? SQL3DataType.INTEGER : transactionId.getTransactionNumber();
             insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
                   transactionParameter});
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -276,14 +268,14 @@ public final class ArtifactLoader {
                   insertParameters.size()), new Exception("Artifact Selection Time"));
    }
 
-   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload, boolean historical) throws OseeCoreException, SQLException {
-      int artifactId = rSet.getInt("art_id");
-      Branch branch = BranchPersistenceManager.getBranch(rSet.getInt("branch_id"));
-      TransactionId transactionId = TransactionIdManager.getTransactionId(rSet);
+   private static Artifact retrieveShallowArtifact(ConnectionHandlerStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
+      int artifactId = chStmt.getInt("art_id");
+      Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+      TransactionId transactionId = TransactionIdManager.getTransactionId(chStmt);
       Artifact artifact;
 
       if (historical) {
-         int stripeTransactionNumber = rSet.getInt("stripe_transaction_id");
+         int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
          if (stripeTransactionNumber != transactionId.getTransactionNumber()) {
             transactionId = TransactionIdManager.getTransactionId(stripeTransactionNumber);
          }
@@ -293,17 +285,17 @@ public final class ArtifactLoader {
       }
 
       if (artifact == null) {
-         ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+         ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
          ArtifactFactory factory = artifactType.getFactory();
 
          artifact =
-               factory.loadExisitingArtifact(artifactId, rSet.getString("guid"), rSet.getString("human_readable_id"),
-                     artifactType, rSet.getInt("gamma_id"), transactionId,
-                     ModificationType.getMod(rSet.getInt("mod_type")), historical);
+               factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"),
+                     chStmt.getString("human_readable_id"), artifactType, chStmt.getInt("gamma_id"), transactionId,
+                     ModificationType.getMod(chStmt.getInt("mod_type")), historical);
 
       } else if (reload) {
-         artifact.internalSetPersistenceData(rSet.getInt("gamma_id"), transactionId,
-               ModificationType.getMod(rSet.getInt("mod_type")), historical);
+         artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
+               ModificationType.getMod(chStmt.getInt("mod_type")), historical);
       }
       return artifact;
    }
@@ -357,23 +349,22 @@ public final class ArtifactLoader {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, SELECT_RELATIONS, queryId);
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            int relationId = rSet.getInt("rel_link_id");
-            int aArtifactId = rSet.getInt("a_art_id");
-            int bArtifactId = rSet.getInt("b_art_id");
-            Branch aBranch = BranchPersistenceManager.getBranch(rSet.getInt("branch_id"));
+         while (chStmt.next()) {
+            int relationId = chStmt.getInt("rel_link_id");
+            int aArtifactId = chStmt.getInt("a_art_id");
+            int bArtifactId = chStmt.getInt("b_art_id");
+            Branch aBranch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
             Branch bBranch = aBranch; // TODO these branch ids need to come from the relation link table
-            RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+            RelationType relationType = RelationTypeManager.getType(chStmt.getInt("rel_link_type_id"));
 
             RelationLink relation =
                   RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
 
             if (relation == null) {
-               int aOrderValue = rSet.getInt("a_order");
-               int bOrderValue = rSet.getInt("b_order");
-               int gammaId = rSet.getInt("gamma_id");
-               String rationale = rSet.getString("rationale");
+               int aOrderValue = chStmt.getInt("a_order");
+               int bOrderValue = chStmt.getInt("b_order");
+               int gammaId = chStmt.getInt("gamma_id");
+               String rationale = chStmt.getString("rationale");
 
                relation =
                      new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
@@ -383,8 +374,6 @@ public final class ArtifactLoader {
             RelationManager.manageRelation(relation, RelationSide.SIDE_A);
             RelationManager.manageRelation(relation, RelationSide.SIDE_B);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -406,16 +395,15 @@ public final class ArtifactLoader {
             chStmt = ConnectionHandler.runPreparedQuery(artifacts.size() * 8, sql, queryId);
          }
 
-         ResultSet rSet = chStmt.getRset();
          Artifact artifact = null;
          int previousArtifactId = -1;
          int previousBranchId = -1;
          int previousAttrId = -1;
 
-         while (rSet.next()) {
-            int artifactId = rSet.getInt("art_id");
-            int branchId = rSet.getInt("branch_id");
-            int attrId = rSet.getInt("attr_id");
+         while (chStmt.next()) {
+            int artifactId = chStmt.getInt("art_id");
+            int branchId = chStmt.getInt("branch_id");
+            int attrId = chStmt.getInt("attr_id");
 
             // if a different artifact than the previous iteration
             if (branchId != previousBranchId || artifactId != previousArtifactId) {
@@ -426,7 +414,7 @@ public final class ArtifactLoader {
                }
 
                if (historical) {
-                  artifact = ArtifactCache.getHistorical(artifactId, rSet.getInt("stripe_transaction_id"));
+                  artifact = ArtifactCache.getHistorical(artifactId, chStmt.getInt("stripe_transaction_id"));
                } else {
                   artifact = ArtifactCache.getActive(artifactId, branchId);
                }
@@ -440,16 +428,14 @@ public final class ArtifactLoader {
             }
 
             // if a different attribute than the previous iteration and its attribute had not already been loaded and this attribute is not deleted
-            if (attrId != previousAttrId && artifact != null && rSet.getInt("mod_type") != ModificationType.DELETED.getValue()) {
-               AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"), attrId,
-                     rSet.getInt("gamma_id"), rSet.getString("value"), rSet.getString("uri"));
+            if (attrId != previousAttrId && artifact != null && chStmt.getInt("mod_type") != ModificationType.DELETED.getValue()) {
+               AttributeToTransactionOperation.initializeAttribute(artifact, chStmt.getInt("attr_type_id"), attrId,
+                     chStmt.getInt("gamma_id"), chStmt.getString("value"), chStmt.getString("uri"));
             }
             previousArtifactId = artifactId;
             previousBranchId = branchId;
             previousAttrId = attrId;
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

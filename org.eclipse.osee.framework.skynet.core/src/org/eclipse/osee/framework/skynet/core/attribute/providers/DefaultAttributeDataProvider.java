@@ -99,10 +99,6 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     */
    @Override
    public void purge() throws OseeDataStoreException {
-      try {
-         ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
-      } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
    }
 }

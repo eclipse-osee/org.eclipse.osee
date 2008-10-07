@@ -245,10 +245,8 @@ public class DeleteTransactionJob extends Job {
          try {
             chStmt = ConnectionHandler.runPreparedQuery(connection, sql, data);
             while (chStmt.next()) {
-               joinQuery.add(chStmt.getRset().getInt("gamma_id"), chStmt.getRset().getInt(txFieldName));
+               joinQuery.add(chStmt.getInt("gamma_id"), chStmt.getInt(txFieldName));
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             ConnectionHandler.close(chStmt);
          }

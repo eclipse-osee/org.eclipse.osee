@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,19 +76,16 @@ public class ArtifactTypeManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_TYPES);
 
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
+         while (chStmt.next()) {
             try {
-               ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromId(rSet.getInt("factory_id"));
-               new ArtifactType(rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
-                     rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
-                           rSet.getBinaryStream("image")));
+               ArtifactFactory factory = ArtifactFactoryManager.getFactoryFromId(chStmt.getInt("factory_id"));
+               new ArtifactType(chStmt.getInt("art_type_id"), chStmt.getString("factory_key"), factory,
+                     chStmt.getString("namespace"), chStmt.getString("name"), new InputStreamImageDescriptor(
+                           chStmt.getBinaryStream("image")));
             } catch (OseeDataStoreException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

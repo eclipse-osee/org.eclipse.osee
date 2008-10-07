@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,25 +30,25 @@ public class AttributeURL {
    }
 
    public static URL getStorageURL(Attribute<?> attribute, String extension) throws OseeDataStoreException {
-      return getStorageURL(attribute.getGammaId(), attribute.getArtifact().getHumanReadableId(), extension);
-   }
-
-   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException {
       try {
-         Map<String, String> parameterMap = new HashMap<String, String>();
-         parameterMap.put("protocol", "attr");
-         parameterMap.put("seed", Integer.toString(gammaId));
-         parameterMap.put("name", artifactHrid);
-         if (Strings.isValid(extension) != false) {
-            parameterMap.put("extension", extension);
-         }
-         String urlString =
-               HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
-                     parameterMap);
-         return new URL(urlString);
-      } catch (Exception ex) {
+         return getStorageURL(attribute.getGammaId(), attribute.getArtifact().getHumanReadableId(), extension);
+      } catch (MalformedURLException ex) {
          throw new OseeDataStoreException(ex);
       }
+   }
+
+   public static URL getStorageURL(int gammaId, String artifactHrid, String extension) throws OseeDataStoreException, MalformedURLException {
+      Map<String, String> parameterMap = new HashMap<String, String>();
+      parameterMap.put("protocol", "attr");
+      parameterMap.put("seed", Integer.toString(gammaId));
+      parameterMap.put("name", artifactHrid);
+      if (Strings.isValid(extension) != false) {
+         parameterMap.put("extension", extension);
+      }
+      String urlString =
+            HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeApplicationServerContext.RESOURCE_CONTEXT,
+                  parameterMap);
+      return new URL(urlString);
    }
 
    private static URL generatePathURL(String uri) throws OseeDataStoreException {

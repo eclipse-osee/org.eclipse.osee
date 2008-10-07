@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -84,7 +83,7 @@ public class BranchCreator {
    private static final String BRANCH_TABLE_INSERT =
          "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "short_name", "branch_name", "parent_branch_id",
                "archived", "associated_art_id", "branch_type");
-   private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM osee_branch WHERE branch_name = ?";
+   private static final String SELECT_BRANCH_BY_NAME = "SELECT count(1) FROM osee_branch WHERE branch_name = ?";
 
    /* TODO: DISTINCT */
    private static final String INSERT_LINK_GAMMAS =
@@ -183,17 +182,14 @@ public class BranchCreator {
                   ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, artifactType.getArtTypeId(),
                         parentTransactionId.getTransactionNumber(), parentTransactionId.getBranch().getBranchId());
 
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, ModificationType>(
-                     rSet.getInt("art_gamma_id"), ModificationType.getMod(rSet.getInt("art_mod_type"))));
-               historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, ModificationType>(
-                     rSet.getInt("attr_gamma_id"), ModificationType.getMod(rSet.getInt("attr_mod_type"))));
+               historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, ModificationType>(
+                     chStmt.getInt("art_gamma_id"), ModificationType.getMod(chStmt.getInt("art_mod_type"))));
+               historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, ModificationType>(
+                     chStmt.getInt("attr_gamma_id"), ModificationType.getMod(chStmt.getInt("attr_mod_type"))));
             }
          }
          initSelectLinkHistory(compressArtTypes, preserveArtTypes, parentTransactionId, historyMap);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -267,13 +263,10 @@ public class BranchCreator {
          chStmt =
                ConnectionHandler.runPreparedQuery(sql, parentTransactionId.getTransactionNumber(),
                      parentTransactionId.getBranch().getBranchId());
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, ModificationType>(
-                  rSet.getInt("link_gamma_id"), ModificationType.getMod(rSet.getInt("mod_type"))));
+            historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, ModificationType>(
+                  chStmt.getInt("link_gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type"))));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -359,17 +352,8 @@ public class BranchCreator {
    private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, branchName);
-         ResultSet rset = chStmt.getRset();
-         if (rset.next()) {
-            throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
+      if (ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
+         throw new OseeCoreException("A branch with the name " + branchName + " already exists");
       }
 
       int branchId = SequenceManager.getNextBranchId();

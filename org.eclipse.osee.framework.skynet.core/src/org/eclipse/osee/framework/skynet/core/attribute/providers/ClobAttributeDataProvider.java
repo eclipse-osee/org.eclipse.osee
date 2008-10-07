@@ -123,7 +123,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
             storeValue((String) objects[0]);
             dataStore.setLocator((String) objects[1]);
          }
-      } catch (Exception ex) {
+      } catch (IOException ex) {
          throw new OseeDataStoreException(ex);
       }
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -140,8 +139,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(getConnection(), "select * from osee_branch");
          while (chStmt.next()) {
-            String name = chStmt.getRset().getString(BranchData.BRANCH_NAME);
-            Long branchId = chStmt.getRset().getLong(BranchData.BRANCH_ID);
+            String name = chStmt.getString(BranchData.BRANCH_NAME);
+            Long branchId = chStmt.getLong(BranchData.BRANCH_ID);
             BranchData branchData = nameToImportFileBranchData.get(name);
             if (branchData != null) {
                getTranslator().checkIdMapping("branch_id", (long) branchData.getBranchId(), branchId);
@@ -149,8 +148,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
                nameToImportFileBranchData.remove(name);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

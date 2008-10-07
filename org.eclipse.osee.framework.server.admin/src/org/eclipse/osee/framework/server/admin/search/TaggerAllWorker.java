@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +47,7 @@ class TaggerAllWorker extends BaseCmdWorker {
                      connection, branchId), AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
          while (chStmt.next() && isExecutionAllowed()) {
-            long gammaId = chStmt.getRset().getLong("gamma_id");
+            long gammaId = chStmt.getLong("gamma_id");
             joinQuery.add(gammaId);
             if (joinQuery.size() >= BATCH_SIZE) {
                processor.storeAndAddQueryId(connection, joinQuery);
@@ -56,8 +55,6 @@ class TaggerAllWorker extends BaseCmdWorker {
             }
          }
          processor.storeAndAddQueryId(connection, joinQuery);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -89,13 +86,7 @@ class TaggerAllWorker extends BaseCmdWorker {
          processor.printStats();
       } finally {
          processor = null;
-         try {
-            if (connection != null) {
-               connection.close();
-            }
-         } catch (SQLException ex) {
-            printStackTrace(ex);
-         }
+         ConnectionHandler.close(connection);
       }
    }
 

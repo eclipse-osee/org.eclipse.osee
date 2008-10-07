@@ -11,16 +11,15 @@
 package org.eclipse.osee.framework.search.engine.utility;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.type.MutableDouble;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
@@ -46,52 +45,23 @@ public class SearchTagDataStore {
    private static final String SELECT_SEARCH_TAGS =
          "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
-   public static long getTotalQueryIdsInQueue() {
-      final MutableDouble toReturn = new MutableDouble(-1);
-      try {
-         DatabaseUtil.executeQueryInternalConnection(SELECT_TOTAL_QUERY_IDS_IN_QUEUE, new IRowProcessor() {
-
-            @Override
-            public void processRow(ResultSet resultSet) throws Exception {
-               toReturn.setValue(resultSet.getLong(1));
-            }
-         });
-      } catch (Exception ex) {
-         // Do Nothing
-      }
-      return (long) toReturn.getValue();
+   public static long getTotalQueryIdsInQueue() throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
    }
 
-   public static long getTotalTags() {
-      final MutableDouble toReturn = new MutableDouble(-1);
-      try {
-         DatabaseUtil.executeQueryInternalConnection(SELECT_TOTAL_TAGS, new IRowProcessor() {
-
-            @Override
-            public void processRow(ResultSet resultSet) throws Exception {
-               toReturn.setValue(resultSet.getLong(1));
-            }
-
-         });
-      } catch (Exception ex) {
-         // Do Nothing
-      }
-      return (long) toReturn.getValue();
+   public static long getTotalTags() throws OseeDataStoreException {
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, SELECT_TOTAL_TAGS);
    }
 
    private static String getInsertSQL(Connection connection) throws OseeDataStoreException {
-      try {
-         String dummyTable = "";
-         String dbName = connection.getMetaData().getDatabaseProductName().toLowerCase();
-         if (dbName.contains("oracle") || dbName.contains("mysql")) {
-            dummyTable = "FROM DUAL";
-         } else if (dbName.contains("derby")) {
-            dummyTable = "FROM sysibm.sysdummy1"; // 
-         }
-         return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+      String dummyTable = "";
+      SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection);
+      if (dbType == SupportedDatabase.derby) {
+         dummyTable = "FROM sysibm.sysdummy1"; // 
+      } else {
+         dummyTable = "FROM DUAL";
       }
+      return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);
    }
 
    public static int deleteTags(Connection connection, Collection<IAttributeLocator> locators) throws Exception {
@@ -130,14 +100,19 @@ public class SearchTagDataStore {
 
    public static Set<IAttributeLocator> fetchTagEntries(Connection connection, Long... codedTags) throws Exception {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
+
       for (Long codedTag : codedTags) {
-         DatabaseUtil.executeQuery(connection, SELECT_SEARCH_TAGS, new IRowProcessor() {
-            @Override
-            public void processRow(ResultSet resultSet) throws Exception {
-               toReturn.add(new AttributeVersion(resultSet.getLong("gamma_id")));
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(connection, SELECT_SEARCH_TAGS, codedTag);
+            while (chStmt.next()) {
+               toReturn.add(new AttributeVersion(chStmt.getLong("gamma_id")));
             }
-         }, codedTag);
+         } finally {
+            ConnectionHandler.close(chStmt);
+         }
       }
+
       return toReturn;
    }
 

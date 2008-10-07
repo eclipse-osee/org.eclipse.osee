@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.db.connection.core.query;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Interesting information from a query. These are automatically added to the QueryLog if it is not full.
@@ -35,13 +37,29 @@ public class QueryRecord {
    }
 
    /**
+    * Replaces all of the '?' characters with ':#' values, where # is in incrementing integer value starting at 1.
+    * 
+    * @param sql The sql string to perform the replacement on.
+    */
+   private String replaceBindValues(String sql) {
+      int count = 1;
+
+      Matcher matcher = Pattern.compile("\\?").matcher(sql);
+      while (matcher.find()) {
+         sql = matcher.replaceFirst(":" + count++);
+         matcher.reset(sql);
+      }
+      return sql;
+   }
+
+   /**
     * @param sql The sql text
     * @param bindVariables The bind variables, if any
     */
    public QueryRecord(String sql, Object... bindVariablesLocal) {
       if (sql == null) throw new IllegalArgumentException("sql can not be null");
       this.date = new Date();
-      this.sql = Query.replaceBindValues(sql);
+      this.sql = replaceBindValues(sql);
       this.bindVariables = new Object[bindVariablesLocal.length];
       System.arraycopy(bindVariablesLocal, 0, bindVariables, 0, bindVariables.length);
 

@@ -59,7 +59,7 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
       return new RelatedToAndOfIDSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
    }
 
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return null;
    }
 

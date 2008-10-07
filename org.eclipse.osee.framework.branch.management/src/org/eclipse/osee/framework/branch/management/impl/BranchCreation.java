@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.impl;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -119,18 +118,16 @@ public class BranchCreation implements IBranchCreation {
 
       private boolean checkAlreadyHasBranchName(String branchName) throws OseeDataStoreException {
          Connection connection = null;
-         ConnectionHandlerStatement stmt = null;
+         ConnectionHandlerStatement chStmt = null;
          boolean alreadyHasName = false;
          try {
             connection = OseeDbConnection.getConnection();
-            stmt = ConnectionHandler.runPreparedQuery(connection, SELECT_BRANCH_BY_NAME, branchName);
-            if (stmt.getRset().next()) {
+            chStmt = ConnectionHandler.runPreparedQuery(connection, SELECT_BRANCH_BY_NAME, branchName);
+            if (chStmt.next()) {
                alreadyHasName = true;
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
-            ConnectionHandler.close(connection, stmt);
+            ConnectionHandler.close(connection, chStmt);
          }
          return alreadyHasName;
       }

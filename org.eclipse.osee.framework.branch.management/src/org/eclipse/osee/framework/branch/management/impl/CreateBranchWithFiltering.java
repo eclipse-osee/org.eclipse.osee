@@ -18,8 +18,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -97,26 +95,23 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
                   ConnectionHandler.runPreparedQuery(connection, SELECT_ARTIFACT_HISTORY, preserveArtTypeId,
                         getParentBranchId());
 
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               int artGamma = rSet.getInt("art_gamma_id");
-               int artCurrent = rSet.getInt("art_current");
-               int attrGamma = rSet.getInt("attr_gamma_id");
-               int attrCurrent = rSet.getInt("attr_current");
+               int artGamma = chStmt.getInt("art_gamma_id");
+               int artCurrent = chStmt.getInt("art_current");
+               int attrGamma = chStmt.getInt("attr_gamma_id");
+               int attrCurrent = chStmt.getInt("attr_current");
 
-               historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(artGamma,
-                     rSet.getInt("art_mod_type")));
+               historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, Integer>(artGamma,
+                     chStmt.getInt("art_mod_type")));
 
-               historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(attrGamma,
-                     rSet.getInt("attr_mod_type")));
+               historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, Integer>(attrGamma,
+                     chStmt.getInt("attr_mod_type")));
 
                gammasToCurrent.put(artGamma, artCurrent);
                gammasToCurrent.put(attrGamma, attrCurrent);
             }
          }
          initSelectLinkHistory(compressArtTypeIds, preserveArtTypeIds, historyMap, connection);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -201,18 +196,15 @@ public class CreateBranchWithFiltering extends CreateBranchTx {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(connection, sql, getParentBranchId());
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            int linkGammaId = rSet.getInt("link_gamma_id");
-            int txCurrent = rSet.getInt("tx_current");
+            int linkGammaId = chStmt.getInt("link_gamma_id");
+            int txCurrent = chStmt.getInt("tx_current");
 
-            historyMap.put(rSet.getInt("transaction_id"), new Pair<Integer, Integer>(linkGammaId,
-                  rSet.getInt("mod_type")));
+            historyMap.put(chStmt.getInt("transaction_id"), new Pair<Integer, Integer>(linkGammaId,
+                  chStmt.getInt("mod_type")));
 
             gammasToCurrent.put(linkGammaId, txCurrent);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

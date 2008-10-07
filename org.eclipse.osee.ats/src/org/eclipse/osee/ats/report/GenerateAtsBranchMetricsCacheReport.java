@@ -54,7 +54,8 @@ public class GenerateAtsBranchMetricsCacheReport extends XNavigateItemAction {
       String[] columnHeaders = new String[] {"Team", "PCR", "Working", "Mod", "Del", "NonRelOnly"};
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromAttributeType(ATSBranchMetrics.ATTRIBUTE_TYPE_NAME, AtsPlugin.getAtsBranch());
+            ArtifactQuery.getArtifactsFromAttributeType(ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(),
+                  AtsPlugin.getAtsBranch());
       for (Artifact art : arts) {
          TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) art;
          ATSBranchMetrics metrics = team.getSmaMgr().getBranchMgr().getAtsBranchMetrics(false);

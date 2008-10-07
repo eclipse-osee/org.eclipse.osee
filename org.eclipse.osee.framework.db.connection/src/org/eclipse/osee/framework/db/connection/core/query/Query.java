@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.db.connection.core.query;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -35,28 +33,13 @@ public class Query {
     * @param processor The RsetProcessor used for providing and validating items.
     * @param <A> The type of object being placed into the collection.
     */
+   @Deprecated
+   // all code that uses this is also Deprecated
    public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws OseeDataStoreException {
-      acquireCollection(collection, processor, 0, sql, data);
-   }
-
-   /**
-    * Builds a collection of items from an SQL statement from the basic DBConnection.
-    * 
-    * @param collection The collection to add the objects to.
-    * @param sql The SQL statement to use to acquire a ResultSet.
-    * @param processor The RsetProcessor used for providing and validating items.
-    * @param <A> The type of object being placed into the collection.
-    * @throws OseeDataStoreException
-    */
-   public static <A extends Object> void acquireCollection(Collection<A> collection, String sql, RsetProcessor<A> processor) throws OseeDataStoreException {
-      acquireCollection(collection, processor, 100, sql);
-   }
-
-   private static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, int fetchSize, String sql, Object... data) throws OseeDataStoreException {
       A item;
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(fetchSize, sql, data);
+         chStmt = ConnectionHandler.runPreparedQuery(sql, data);
          while (chStmt.next()) {
             try {
                item = processor.process(chStmt.getRset());
@@ -71,42 +54,5 @@ public class Query {
       } finally {
          ConnectionHandler.close(chStmt);
       }
-   }
-
-   /**
-    * Replaces all of the '?' characters with ':#' values, where # is in incrementing integer value starting at 1.
-    * 
-    * @param sql The sql string to perform the replacement on.
-    */
-   public static String replaceBindValues(String sql) {
-      int count = 1;
-
-      Matcher matcher = Pattern.compile("\\?").matcher(sql);
-      while (matcher.find()) {
-         sql = matcher.replaceFirst(":" + count++);
-         matcher.reset(sql);
-      }
-      return sql;
-   }
-
-   public static int getInt(String columnName, String query, Object... data) throws OseeDataStoreException {
-      int toReturn = -1;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(query, data);
-         if (chStmt.next()) {
-            toReturn = chStmt.getRset().getInt(columnName);
-            if (chStmt.next()) {
-               throw new IllegalStateException("More than one value returned");
-            }
-         } else {
-            throw new IllegalArgumentException("No value returned");
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-      return toReturn;
    }
 }

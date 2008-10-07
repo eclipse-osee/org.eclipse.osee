@@ -16,8 +16,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -117,12 +115,10 @@ public class MergeBranchManager {
       ConnectionHandlerStatement chStmt1 = null;
       ConnectionHandlerStatement chStmt2 = null;
       ConnectionHandlerStatement chStmt3 = null;
-      ResultSet rSet = null;
       try {
          chStmt1 = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ART_VER_TABLE, branch.getBranchId());
-         rSet = chStmt1.getRset();
          while (chStmt1.next()) {
-            artSet.add(new Integer(rSet.getInt("art_id")));
+            artSet.add(chStmt1.getInt("art_id"));
          }
          if (DEBUG) {
             System.out.println(String.format(
@@ -131,9 +127,8 @@ public class MergeBranchManager {
          }
 
          chStmt2 = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, branch.getBranchId());
-         rSet = chStmt2.getRset();
          while (chStmt2.next()) {
-            artSet.add(new Integer(rSet.getInt("art_id")));
+            artSet.add(chStmt2.getInt("art_id"));
          }
          if (DEBUG) {
             System.out.println(String.format(
@@ -143,13 +138,10 @@ public class MergeBranchManager {
          }
 
          chStmt3 = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, branch.getBranchId());
-         rSet = chStmt3.getRset();
          while (chStmt3.next()) {
-            artSet.add(new Integer(rSet.getInt("a_art_id")));
-            artSet.add(new Integer(rSet.getInt("b_art_id")));
+            artSet.add(chStmt3.getInt("a_art_id"));
+            artSet.add(chStmt3.getInt("b_art_id"));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt1);
          ConnectionHandler.close(chStmt2);

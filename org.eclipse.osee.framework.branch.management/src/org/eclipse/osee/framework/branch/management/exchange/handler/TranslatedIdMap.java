@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -124,10 +123,8 @@ public class TranslatedIdMap {
                ConnectionHandler.runPreparedQuery(connection, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId,
                      getSequence());
          while (chStmt.next()) {
-            originalToMapped.put(chStmt.getRset().getLong("original_id"), chStmt.getRset().getLong("mapped_id"));
+            originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

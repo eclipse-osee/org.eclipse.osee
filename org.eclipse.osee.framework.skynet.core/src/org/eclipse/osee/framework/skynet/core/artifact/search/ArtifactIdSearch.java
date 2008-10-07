@@ -52,7 +52,7 @@ public class ArtifactIdSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql = ARTIFACT_TABLE.column("art_id") + operator + "?";
       dataList.add(artId);
 

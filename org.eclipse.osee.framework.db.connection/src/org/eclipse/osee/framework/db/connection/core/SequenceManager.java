@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -82,45 +81,25 @@ public class SequenceManager {
    }
 
    private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt =
-            ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE, value, sequenceName, lastValue);
-      return modifySequenceValue(chStmt);
+      return ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_SEQUENCE, value, sequenceName, lastValue) == 1;
    }
 
    private boolean insertSequenceValue(String sequenceName, long value) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt =
-            ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE, value, sequenceName);
-      return modifySequenceValue(chStmt);
-   }
-
-   private boolean modifySequenceValue(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
-      boolean updated = false;
-      try {
-         updated = chStmt.getStatement().getUpdateCount() == 1;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-      return updated;
+      return ConnectionHandler.runPreparedUpdateReturnCount(INSERT_SEQUENCE, value, sequenceName) == 1;
    }
 
    private long getSequence(String sequenceName) throws OseeDataStoreException {
-      long toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(true, QUERY_SEQUENCE, sequenceName);
          if (chStmt.next()) {
-            toReturn = chStmt.getRset().getLong(LAST_SEQUENCE);
+            return chStmt.getLong(LAST_SEQUENCE);
          } else {
             throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
-      return toReturn;
    }
 
    public static synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {

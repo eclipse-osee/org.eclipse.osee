@@ -101,14 +101,6 @@ public class DatabaseSchemaExtractor {
    }
 
    public void extractSchemaData() throws OseeDataStoreException {
-      try {
-         populateDatabaseMap(schemas);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   private void populateDatabaseMap(Set<String> schemas) throws SQLException {
       database = new HashMap<String, SchemaData>();
       for (String schema : schemas) {
          SchemaData dbTables = getTableInformation(schema);
@@ -183,37 +175,41 @@ public class DatabaseSchemaExtractor {
       tablesToExtract.clear();
    }
 
-   private SchemaData getTableInformation(String schemaPattern) throws SQLException {
-      SchemaData dbTables = new SchemaData();
-      ResultSet tables = null;
-      tables = dbData.getTables(null, null, null, new String[] {"TABLE"});
+   private SchemaData getTableInformation(String schemaPattern) throws OseeDataStoreException {
+      try {
+         SchemaData dbTables = new SchemaData();
+         ResultSet tables = null;
+         tables = dbData.getTables(null, null, null, new String[] {"TABLE"});
 
-      while (tables.next()) {
-         String tableName = tables.getString("TABLE_NAME").toUpperCase();
-         String schemaName = tables.getString("TABLE_SCHEM");
-         if (tableName != null && !isFiltered(tableName) && schemaName.equalsIgnoreCase(schemaPattern)) {
-            boolean extract = true;
-            if (this.tablesToExtract != null && this.tablesToExtract.size() > 0) {
-               extract = tablesToExtract.contains(schemaPattern + "." + tableName);
-            }
-
-            if (extract) {
-               TableElement tableEntry = new TableElement();
-               tableEntry.addTableDescription(TableDescriptionFields.name, tableName);
-               tableEntry.addTableDescription(TableDescriptionFields.schema, schemaName);
-               getColumnInformation(tableEntry);
-               getColumnPrimaryKey(tableEntry);
-
-               if (!(dbType.equals(SupportedDatabase.foxpro) || dbType.equals(SupportedDatabase.postgresql))) {
-                  getColumnForeignKey(tableEntry);
+         while (tables.next()) {
+            String tableName = tables.getString("TABLE_NAME").toUpperCase();
+            String schemaName = tables.getString("TABLE_SCHEM");
+            if (tableName != null && !isFiltered(tableName) && schemaName.equalsIgnoreCase(schemaPattern)) {
+               boolean extract = true;
+               if (this.tablesToExtract != null && this.tablesToExtract.size() > 0) {
+                  extract = tablesToExtract.contains(schemaPattern + "." + tableName);
                }
-               getIndexInfo(tableEntry);
-               dbTables.addTableDefinition(tableEntry);
+
+               if (extract) {
+                  TableElement tableEntry = new TableElement();
+                  tableEntry.addTableDescription(TableDescriptionFields.name, tableName);
+                  tableEntry.addTableDescription(TableDescriptionFields.schema, schemaName);
+                  getColumnInformation(tableEntry);
+                  getColumnPrimaryKey(tableEntry);
+
+                  if (!(dbType.equals(SupportedDatabase.foxpro) || dbType.equals(SupportedDatabase.postgresql))) {
+                     getColumnForeignKey(tableEntry);
+                  }
+                  getIndexInfo(tableEntry);
+                  dbTables.addTableDefinition(tableEntry);
+               }
             }
          }
+         tables.close();
+         return dbTables;
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
-      tables.close();
-      return dbTables;
    }
 
    private void getColumnInformation(TableElement aTable) throws SQLException {

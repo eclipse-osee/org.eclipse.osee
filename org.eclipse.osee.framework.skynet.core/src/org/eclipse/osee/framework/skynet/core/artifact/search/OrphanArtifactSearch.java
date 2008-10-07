@@ -40,7 +40,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) {
       dataList.add(aritfactType.getArtTypeId());
       dataList.add(branch.getBranchId());
       dataList.add(relationTypeId);

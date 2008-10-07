@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.db.connection.core;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -107,19 +106,17 @@ public class JoinUtility {
    }
 
    public static List<Integer> getAllTagQueueQueryIds(Connection connection) throws OseeDataStoreException {
-      List<Integer> toReturn = new ArrayList<Integer>();
+      List<Integer> queryIds = new ArrayList<Integer>();
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(connection, 0, SELECT_TAG_GAMMA_QUEUE_QUERIES);
          while (chStmt.next()) {
-            toReturn.add(chStmt.getRset().getInt("query_id"));
+            queryIds.add(chStmt.getInt("query_id"));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
-      return toReturn;
+      return queryIds;
    }
 
    private static abstract class JoinQueryEntry {

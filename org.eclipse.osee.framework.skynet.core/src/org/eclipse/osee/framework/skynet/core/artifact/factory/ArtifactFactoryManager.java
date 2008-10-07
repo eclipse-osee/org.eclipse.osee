@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import java.lang.reflect.Method;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -116,15 +114,12 @@ public class ArtifactFactoryManager {
 
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_FROM_FACTORY);
-         ResultSet rset = chStmt.getRset();
-         while (rset.next()) {
+         while (chStmt.next()) {
             String factoryClassName = null;
-            factoryClassName = rset.getString("factory_class");
-            int factoryId = rset.getInt("factory_id");
+            factoryClassName = chStmt.getString("factory_class");
+            int factoryId = chStmt.getInt("factory_id");
             createFactory(factoryClassName, factoryId);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

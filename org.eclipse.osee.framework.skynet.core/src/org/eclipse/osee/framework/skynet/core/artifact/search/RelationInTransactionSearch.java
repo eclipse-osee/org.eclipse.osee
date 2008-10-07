@@ -58,7 +58,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) {
       return sql;
    }
 

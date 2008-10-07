@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -392,15 +390,12 @@ public class ArtifactQueryBuilder {
       count = true;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactSelectSql(), queryParameters.toArray());
-         ResultSet rSet = chStmt.getRset();
 
-         if (rSet.next()) {
-            artifactCount = rSet.getInt("count");
+         if (chStmt.next()) {
+            artifactCount = chStmt.getInt("count");
          }
 
          clearCriteria();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

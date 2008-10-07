@@ -46,7 +46,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
     * 
     * @see org.eclipse.osee.framework.jdk.core.search.ISearchPrimitive#getSql()
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql =
             ARTIFACT_TYPE_TABLE.column("name") + operation + " ? AND " + ARTIFACT_TYPE_TABLE.column("art_type_id") + EQUAL + ARTIFACT_TABLE.column("art_type_id");
       dataList.add(typeName);

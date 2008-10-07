@@ -335,6 +335,7 @@ public class RevisionManager {
       return changes;
    }
 
+   @Deprecated
    private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
 
       Collection<AttributeChange> revisions = new LinkedList<AttributeChange>();
@@ -365,6 +366,7 @@ public class RevisionManager {
       return revisions;
    }
 
+   @Deprecated
    private Collection<RelationLinkChange> getRelationLinkChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) {
 
       String transactionCheck =
@@ -465,6 +467,7 @@ public class RevisionManager {
             transactionId, null);
    }
 
+   @Deprecated
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) {
       Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
       //This for the case where the toTransaction is the baseline transaction for a branch

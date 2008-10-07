@@ -20,9 +20,8 @@ public interface ISearchPrimitive {
     * 
     * @param branch TODO
     * @return Return SQL string
-    * @throws Exception TODO
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) throws Exception;
+   public String getCriteriaSql(List<Object> dataList, Branch branch);
 
    /**
     * The name of the column to use as the art_id column.

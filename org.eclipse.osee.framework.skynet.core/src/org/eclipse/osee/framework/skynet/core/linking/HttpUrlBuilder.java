@@ -100,7 +100,7 @@ public class HttpUrlBuilder {
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
       try {
          return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
-      } catch (Exception ex) {
+      } catch (UnsupportedEncodingException ex) {
          throw new OseeDataStoreException(ex);
       }
    }

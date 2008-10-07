@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
@@ -26,20 +23,7 @@ public class OseeInfo {
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
 
    public static String getValue(String key) throws OseeDataStoreException {
-      String returnValue = "";
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(GET_VALUE_SQL, key);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            returnValue = rSet.getString("osee_value");
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-      return returnValue;
+      return ConnectionHandler.runPreparedQueryFetchString("", GET_VALUE_SQL, key);
    }
 
    public static void putValue(String key, String value) throws OseeDataStoreException {

@@ -305,32 +305,28 @@ public class TransactionIdManager {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionId getTransactionId(ResultSet rSet) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist, SQLException {
-      return getTransactionId(rSet.getInt("transaction_id"), rSet);
+   public static TransactionId getTransactionId(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+      return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
-   private static TransactionId getTransactionId(int transactionNumber, ResultSet rSet) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
+   private static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, TransactionDoesNotExist {
       TransactionId transactionId = instance.nonEditableTransactionIdCache.get(transactionNumber);
       if (transactionId == null) {
-         ConnectionHandlerStatement chStmt = null;
          try {
-            if (rSet == null) {
+            if (chStmt == null) {
                chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTION, transactionNumber);
-               rSet = chStmt.getRset();
-               if (!rSet.next()) {
+               if (!chStmt.next()) {
                   throw new TransactionDoesNotExist(
                         "The transaction id " + transactionNumber + " does not exist in the databse.");
                }
             }
-            Branch branch = BranchPersistenceManager.getBranch(rSet.getInt("branch_id"));
-            TransactionDetailsType txType = TransactionDetailsType.toEnum(rSet.getInt("tx_type"));
+            Branch branch = BranchPersistenceManager.getBranch(chStmt.getInt("branch_id"));
+            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             transactionId =
-                  new TransactionId(transactionNumber, branch, rSet.getString("osee_comment"),
-                        rSet.getTimestamp("time"), rSet.getInt("author"), rSet.getInt("commit_art_id"), txType);
+                  new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
+                        chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
             instance.nonEditableTransactionIdCache.put(transactionNumber, transactionId);
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             ConnectionHandler.close(chStmt);
          }

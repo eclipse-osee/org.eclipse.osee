@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.search.engine.internal;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagListener;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
-import org.eclipse.osee.framework.search.engine.utility.DatabaseUtil;
-import org.eclipse.osee.framework.search.engine.utility.IRowProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -45,9 +45,7 @@ public class BranchTaggerRunnable implements Runnable {
       }
    }
 
-   private final class BranchToQueryTx extends InputToTagQueueTx implements IRowProcessor {
-      private Connection connection;
-
+   private final class BranchToQueryTx extends InputToTagQueueTx {
       public BranchToQueryTx(ISearchEngineTagger tagger, ITagListener listener, boolean isCacheAll, int cacheLimit) {
          super(tagger, listener, isCacheAll, cacheLimit);
       }
@@ -56,19 +54,19 @@ public class BranchTaggerRunnable implements Runnable {
        * @see org.eclipse.osee.framework.search.engine.internal.ConvertToTagQueueTx#doWork(java.sql.Connection)
        */
       @Override
-      protected void convertInput(Connection connection) throws Exception {
-         this.connection = connection;
-         DatabaseUtil.executeQuery(connection, AttributeDataStore.getAllTaggableGammasByBranchQuery(connection,
-               branchId), BranchToQueryTx.this, AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
-         this.connection = null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.search.engine.utility.IRowProcessor#processRow(java.sql.ResultSet)
-       */
-      @Override
-      public void processRow(ResultSet resultSet) throws Exception {
-         addEntry(connection, resultSet.getLong("gamma_id"));
+      protected void convertInput(Connection connection) throws OseeDataStoreException {
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(connection, branchId);
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(connection, sql,
+                        AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));
+            while (chStmt.next()) {
+               addEntry(connection, chStmt.getLong("gamma_id"));
+            }
+         } finally {
+            ConnectionHandler.close(chStmt);
+         }
       }
    }
 }

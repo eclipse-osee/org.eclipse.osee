@@ -326,11 +326,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 1 and t3.tx_type <> 1",
                      branch.getBranchId());
 
-         while (chStmt.getRset().next()) {
-            newArtIds.add(chStmt.getRset().getInt(1));
+         while (chStmt.next()) {
+            newArtIds.add(chStmt.getInt("art_id"));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -349,11 +347,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      "Select art_id from osee_txs t1, osee_artifact_version t2, osee_tx_details t3 where t3.branch_id = ? and t3.transaction_id = t1.transaction_id and t1.gamma_id = t2.gamma_id and t1.mod_type = 3 and t3.tx_type <> 1",
                      branch.getBranchId());
 
-         while (chStmt.getRset().next()) {
-            delArtIds.add(chStmt.getRset().getInt(1));
+         while (chStmt.next()) {
+            delArtIds.add(chStmt.getInt("art_id"));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
