@@ -128,12 +128,16 @@ public class XResultView extends ViewPart implements IActionable {
       StringBuffer sb = new StringBuffer();
       sb.append("  " + page.getTitle());
       sb.append(String.format("\n  Errors: %s    Warnings: %s", page.getNumErrors(), page.getNumWarnings()));
-      errorLabel.setText(sb.toString());
-      errorLabel.getParent().layout();
+      setErrorLabel(sb.toString());
 
       // Display results in browser
       xResultsComp.setHtmlText(page.getManipulatedHtml(), page.getTitle());
 
+   }
+
+   private void setErrorLabel(String text) {
+      errorLabel.setText(text);
+      errorLabel.getParent().layout();
    }
 
    public static XResultView getResultView() {
@@ -198,7 +202,7 @@ public class XResultView extends ViewPart implements IActionable {
                if (pages.contains(currentPage)) pages.remove(currentPage);
                updateActionList();
                xResultsComp.getBrowser().setText(AHTML.simplePage("Select page to display."));
-               setContentDescription("");
+               setErrorLabel("");
                if (pages.size() == 0) currentPage = null;
             }
          }
@@ -220,7 +224,7 @@ public class XResultView extends ViewPart implements IActionable {
                pages.clear();
                updateActionList();
                xResultsComp.getBrowser().setText(AHTML.simplePage(""));
-               setContentDescription("");
+               setErrorLabel("");
                currentPage = null;
             }
          }
