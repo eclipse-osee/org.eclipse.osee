@@ -103,7 +103,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          }
       }
    }
-
+   
    public int[] store(int... branchesToImport) throws Exception {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
@@ -119,6 +119,15 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          Long original = new Long(branchData.getBranchId());
          Long newValue = (Long) getTranslator().translate(BranchData.BRANCH_ID, original);
          branchData.setBranchId(newValue.intValue());
+         
+         original = new Long(branchData.getAssociatedArtId());
+         newValue = (Long) getTranslator().translate(BranchData.COMMIT_ART_ID, original);
+         branchData.setAssociatedBranchId(newValue.intValue());
+         
+         original = new Long(branchData.getParentBranchId());
+         newValue = (Long) getTranslator().translate(BranchData.PARENT_BRANCH_ID, original);
+         branchData.setParentBranchId(newValue.intValue());
+         
          Object[] data = branchData.toArray(getMetaData());
          if (data != null) {
             addData(data);

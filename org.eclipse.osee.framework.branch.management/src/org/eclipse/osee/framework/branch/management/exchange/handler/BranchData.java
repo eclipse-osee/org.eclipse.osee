@@ -22,10 +22,10 @@ public final class BranchData implements Cloneable {
    public static final String BRANCH_NAME = "branch_name";
    public static final String BRANCH_ID = "branch_id";
    private static final String BRANCH_TYPE = "branch_type";
-   private static final String COMMIT_ART_ID = "associated_art_id";
+   public static final String COMMIT_ART_ID = "associated_art_id";
    private static final String IS_ARCHIVED_BRANCH = "archived";
    private static final String BRANCH_SHORT_NAME = "short_name";
-   private static final String PARENT_BRANCH_ID = "parent_branch_id";
+   public static final String PARENT_BRANCH_ID = "parent_branch_id";
 
    private final Map<String, Object> backingData;
 
@@ -113,6 +113,10 @@ public final class BranchData implements Cloneable {
 
    public void setParentBranchId(int nextSeqVal) {
       this.backingData.put(PARENT_BRANCH_ID, nextSeqVal);
+   }
+
+   public void setAssociatedBranchId(int nextSeqVal) {
+      this.backingData.put(COMMIT_ART_ID, nextSeqVal);
    }
 
    public void setBranchType(BranchType branchType) {
