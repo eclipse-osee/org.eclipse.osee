@@ -224,11 +224,21 @@ public class SkynetTypesImporter implements RowProcessor {
       }
    }
 
-   protected ArrayList<String> determineConcreateTypes(String type) {
-      ArrayList<String> artifactTypeList = superTypeMap.get(type);
+   protected ArrayList<String> determineConcreteTypes(String artifactSuperTypeName) throws OseeDataStoreException {
+      ArrayList<String> artifactTypeList = superTypeMap.get(artifactSuperTypeName);
+
+      // if no sub-types then just return artifactSuperTypeName as the only Concrete type
       if (artifactTypeList == null) {
          artifactTypeList = new ArrayList<String>();
-         artifactTypeList.add(type);
+         artifactTypeList.add(artifactSuperTypeName);
+      } else {
+         // artifactSuperTypeName might be a concrete type
+         try {
+            ArtifactTypeManager.getType(artifactSuperTypeName); // ensure existence
+            artifactTypeList.add(artifactSuperTypeName);
+         } catch (OseeTypeDoesNotExist ex) {
+            // must not be a concrete type so ignore
+         }
       }
       return artifactTypeList;
    }

@@ -35,7 +35,7 @@ public class AttributeMapRow {
    public void persist() throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(attributeName);
 
-      for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
+      for (String artifactTypeName : importer.determineConcreteTypes(artifactSuperTypeName)) {
          ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
          ConfigurationPersistenceManager.persistAttributeValidity(artifactType, attributeType);
       }

@@ -41,7 +41,7 @@ public class RelationValidity {
 
    public void persist() throws OseeTypeDoesNotExist, OseeDataStoreException {
       for (ValidityRow row : validityArray) {
-         for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
+         for (String artifactTypeName : importer.determineConcreteTypes(row.artifactSuperTypeName)) {
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
             RelationType linkDescriptor = RelationTypeManager.getType(row.relationTypeName);
 
