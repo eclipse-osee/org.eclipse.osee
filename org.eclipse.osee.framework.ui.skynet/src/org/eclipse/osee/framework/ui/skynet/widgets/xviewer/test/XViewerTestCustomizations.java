@@ -87,7 +87,7 @@ public class XViewerTestCustomizations implements IXViewerCustomizations {
     */
    @Override
    public void saveCustomization(CustomizeData custData) throws Exception {
-      AFile.writeFile(getFilename(custData), custData.getXml());
+      AFile.writeFile(getFilename(custData), custData.getXml(true));
       Thread.sleep(2000);
    }
 

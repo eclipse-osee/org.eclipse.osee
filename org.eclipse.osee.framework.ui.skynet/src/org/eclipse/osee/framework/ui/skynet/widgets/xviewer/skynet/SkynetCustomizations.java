@@ -14,28 +14,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomMenu;
 
 /**
  * @author Donald G. Dunne
  */
 public class SkynetCustomizations implements IXViewerCustomizations {
 
+   // Artifact that stores shared/global customizations
    private Artifact globalCustomizationsArtifact;
+   // Collection of all customizations both from local and global storage
    private final List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(XViewerCustomMenu.class);
+   // Storage mechanism (user's User Artifact) for storage of selected default customizations guids for each XViewer namespace
    private final SkynetUserArtifactCustomizeDefaults userArtifactDefaults;
+   // Attribute name for storing customizations both locally and globally
    private static String CUSTOMIZATION_ATTRIBUTE_NAME = "XViewer Customization";
    private final SkynetXViewerFactory skynetXViewerFactory;
 
@@ -45,7 +47,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       try {
          globalCustomizationsArtifact = XViewerCustomizationArtifact.getAtsCustArtifact();
       } catch (Throwable ex) {
-         logger.log(Level.SEVERE, "Unable to get the ATS Custom Artifact", ex);
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Unable to get the ATS Custom Artifact", ex);
       }
    }
 
@@ -65,13 +67,13 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       for (Attribute<String> attribute : attributes) {
          if (attribute.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
                "name=\"" + custData.getName() + "\"")) {
-            attribute.setValue(custData.getXml());
+            attribute.setValue(custData.getXml(true));
             found = true;
             break;
          }
       }
       if (!found) {
-         saveArt.addAttribute(CUSTOMIZATION_ATTRIBUTE_NAME, custData.getXml());
+         saveArt.addAttribute(CUSTOMIZATION_ATTRIBUTE_NAME, custData.getXml(true));
       }
       saveArt.persistAttributes();
    }

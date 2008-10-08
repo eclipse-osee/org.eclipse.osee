@@ -45,6 +45,7 @@ public class CustomizationDataSelectionDialog extends ListDialog {
    private String enteredName;
    private boolean saveGlobal = false;
    private XCheckBox saveGlobalCheck;
+   private CustomizeData selectedCustData = null;
 
    public CustomizationDataSelectionDialog(XViewer xViewer, List<CustomizeData> custDatas) {
       this(Display.getCurrent().getActiveShell(), xViewer, custDatas);
@@ -56,14 +57,14 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       setLabelProvider(new CustomizeDataLabelProvider(xViewer));
       setInput(custDatas);
       setShellStyle(getShellStyle() | SWT.RESIZE);
-      setTitle("Enter Customization Name");
-      setMessage("Enter new customization name or select current customization.");
+      setTitle("Save Customization");
+      setMessage("Enter name or select customization.");
    }
 
    @Override
    protected void okPressed() {
-      if (custText.get().equals("")) {
-         AWorkbench.popup("ERROR", "Must enter customization name.");
+      if (custText.get().equals("") && getSelectedCustData() == null) {
+         AWorkbench.popup("ERROR", "Must select customization or enter new customization name.");
          return;
       }
       super.okPressed();
@@ -78,7 +79,7 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       comp.setLayout(new GridLayout(2, true));
 
-      custText = new XText("Enter Customization Name");
+      custText = new XText("Enter New Customization Name");
       custText.createWidgets(comp, 1);
       custText.setFocus();
       custText.addModifyListener(new ModifyListener() {
@@ -103,6 +104,7 @@ public class CustomizationDataSelectionDialog extends ListDialog {
             /* (non-Javadoc)
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                saveGlobal = saveGlobalCheck.get();
             }
@@ -116,18 +118,28 @@ public class CustomizationDataSelectionDialog extends ListDialog {
           * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
           */
          public void selectionChanged(SelectionChangedEvent event) {
-            IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
-            if (selection.size() == 0) return;
-            Iterator<?> i = selection.iterator();
-            CustomizeData custData = (CustomizeData) i.next();
-            custText.set(custData.getName());
+            selectedCustData = getSelectedCustomizeData();
             if (saveGlobalCheck != null) {
-               saveGlobalCheck.set(!custData.isPersonal());
-               saveGlobal = !custData.isPersonal();
+               saveGlobalCheck.set(!selectedCustData.isPersonal());
+               saveGlobal = !selectedCustData.isPersonal();
             }
          }
       });
       return c;
+   }
+
+   private CustomizeData getSelectedCustomizeData() {
+      IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
+      if (selection.size() == 0) return null;
+      Iterator<?> i = selection.iterator();
+      return (CustomizeData) i.next();
+   }
+
+   /**
+    * @return the selectedCustData
+    */
+   public CustomizeData getSelectedCustData() {
+      return selectedCustData;
    }
 
    public String getEnteredName() {

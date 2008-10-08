@@ -54,10 +54,12 @@ public class ColumnData {
       return idToColumn.get(id);
    }
 
-   public String getXml() {
+   public String getXml(boolean visibleColumnsOnly) {
       StringBuffer sb = new StringBuffer();
       for (XViewerColumn xCol : columns) {
-         sb.append(xCol.toXml());
+         if (!visibleColumnsOnly || (visibleColumnsOnly && xCol.isShow())) {
+            sb.append(xCol.toXml());
+         }
       }
       return sb.toString();
    }

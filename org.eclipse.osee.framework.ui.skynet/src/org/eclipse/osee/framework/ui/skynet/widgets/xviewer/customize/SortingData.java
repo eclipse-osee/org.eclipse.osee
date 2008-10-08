@@ -35,6 +35,11 @@ public class SortingData {
       this.custData = custData;
    }
 
+   public SortingData(String xml) {
+      this.custData = null;
+      setFromXml(xml);
+   }
+
    public void clearSorter() {
       sortingIds.clear();
    }
@@ -50,7 +55,7 @@ public class SortingData {
 
    public List<XViewerColumn> getSortXCols(Map<String, XViewerColumn> oldNameToColumnId) {
       List<XViewerColumn> cols = new ArrayList<XViewerColumn>();
-      for (String id : getSortingNames()) {
+      for (String id : getSortingIds()) {
          XViewerColumn xCol = custData.getColumnData().getXColumn(id);
          // For backward compatibility, try to resolve column name
          if (xCol == null) {
@@ -107,8 +112,12 @@ public class SortingData {
    /**
     * @return the sortingNames
     */
-   public List<String> getSortingNames() {
+   public List<String> getSortingIds() {
       return sortingIds;
+   }
+
+   public void removeSortingName(String name) {
+      this.sortingIds.remove(name);
    }
 
    public void addSortingName(String name) {
