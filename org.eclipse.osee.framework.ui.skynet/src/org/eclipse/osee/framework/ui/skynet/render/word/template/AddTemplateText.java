@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -40,7 +40,7 @@ public class AddTemplateText implements ITemplateTask {
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(java.lang.StringBuilder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws SQLException, Exception {
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws IOException {
       wordMl.addWordMl(template.subSequence(begin, end));
    }
 

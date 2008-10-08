@@ -38,7 +38,7 @@ public class PeerToPeerReviewWorkflowManager {
     * @return
     * @throws Exception
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException, SQLException {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException {
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -69,7 +69,7 @@ public class PeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals("Prepare")) return new Result(
             "Action not in Prepare state");
       if (roles != null) for (UserRole role : roles)
@@ -79,7 +79,7 @@ public class PeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (roles != null) for (UserRole role : roles)
          reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false);
       if (defects != null) for (DefectItem defect : defects)

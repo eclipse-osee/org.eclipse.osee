@@ -54,5 +54,5 @@ public abstract class DbClientThread extends Thread {
       }
    }
 
-   public abstract void processTask() throws SQLException, DatabaseNotSupportedException, Exception;
+   public abstract void processTask() throws Exception;
 }

@@ -12,13 +12,11 @@ package org.eclipse.osee.define.traceability;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,7 +61,7 @@ public class ImportTraceabilityJob extends Job {
    private int pathPrefixLength;
    private boolean writeOutResults;
 
-   public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws IllegalArgumentException, CoreException, SQLException, IOException {
+   public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws CoreException, IOException {
       super("Importing Traceability");
       this.file = file;
       this.requirementData = new RequirementData(branch);
@@ -180,7 +178,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.endSheet();
    }
 
-   private void handelReqTrace(String path, String traceMark) throws OseeCoreException, IOException, SQLException {
+   private void handelReqTrace(String path, String traceMark) throws OseeCoreException, IOException {
       String foundStr;
       Artifact reqArtifact = null;
 
@@ -199,8 +197,7 @@ public class ImportTraceabilityJob extends Job {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
-                        WordUtil.textOnly(
-                              reqArtifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
+                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, "")).toUpperCase();
                   if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getValue()))) {
                      foundStr = "req body match";
                   } else {

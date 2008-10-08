@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -40,7 +39,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(),
             "This could break lots of things, are you SURE?")) return;

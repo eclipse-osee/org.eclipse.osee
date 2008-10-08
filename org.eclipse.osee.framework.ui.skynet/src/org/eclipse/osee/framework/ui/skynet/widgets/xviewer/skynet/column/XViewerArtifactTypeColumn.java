@@ -41,7 +41,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getArtifactTypeName();
       }
@@ -52,7 +52,7 @@ public class XViewerArtifactTypeColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnImage(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       if (element instanceof Artifact) {
          return ((Artifact) element).getImage();
       }

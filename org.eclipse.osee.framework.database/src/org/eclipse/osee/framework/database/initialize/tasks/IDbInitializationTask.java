@@ -11,9 +11,10 @@
 package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.sql.Connection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 public interface IDbInitializationTask {
-   public abstract void run(Connection connection) throws Exception;
+   public abstract void run(Connection connection) throws OseeCoreException;
 
    public abstract boolean canRun();
 }

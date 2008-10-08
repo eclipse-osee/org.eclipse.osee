@@ -36,12 +36,12 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       startPageId = AtsPeerPrepareWorkPageDefinition.ID;
    }
 
-   public PeerToPeerWorkflowDefinition(Artifact artifact)throws OseeCoreException, SQLException{
+   public PeerToPeerWorkflowDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
    }
 
-   public void config(WriteType writeType, XResultData xResultData)throws OseeCoreException, SQLException{
+   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
    }
 

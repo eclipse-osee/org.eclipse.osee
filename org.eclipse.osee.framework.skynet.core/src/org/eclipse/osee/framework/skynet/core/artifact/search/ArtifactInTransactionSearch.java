@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -87,7 +86,7 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
       return fromTransactionNumber + TOKEN + toTransactionNumber;
    }
 
-   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, TransactionDoesNotExist, BranchDoesNotExist, OseeDataStoreException, SQLException {
+   public static ArtifactInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, TransactionDoesNotExist, BranchDoesNotExist, OseeDataStoreException {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) {
          throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);

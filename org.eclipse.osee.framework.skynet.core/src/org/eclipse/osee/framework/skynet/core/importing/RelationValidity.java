@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -35,12 +34,12 @@ public class RelationValidity {
       validityArray = new ArrayList<ValidityRow>();
    }
 
-   public void addValidityConstraints(String[] row) throws SQLException {
+   public void addValidityConstraints(String[] row) {
       validityArray.add(new ValidityRow(row[0], row[1], SkynetTypesImporter.getQuantity(row[2]),
             SkynetTypesImporter.getQuantity(row[3])));
    }
 
-   public void persist() throws SQLException, OseeTypeDoesNotExist, OseeDataStoreException {
+   public void persist() throws OseeTypeDoesNotExist, OseeDataStoreException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
             ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);

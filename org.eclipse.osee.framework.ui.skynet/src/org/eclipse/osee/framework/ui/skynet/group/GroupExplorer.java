@@ -228,7 +228,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
          AbstractSkynetTxTemplate unrelateTx =
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
                   @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
+                  protected void handleTxWork() throws OseeCoreException {
                      for (GroupExplorerItem item : items) {
                         item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
                               item.getParentItem().getArtifact());
@@ -260,7 +260,7 @@ public class GroupExplorer extends ViewPart implements IBranchEventListener, IFr
          AbstractSkynetTxTemplate deleteUniversalGroupTx =
                new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
                   @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
+                  protected void handleTxWork() throws OseeCoreException {
                      for (GroupExplorerItem item : items) {
                         item.getArtifact().delete();
                      }

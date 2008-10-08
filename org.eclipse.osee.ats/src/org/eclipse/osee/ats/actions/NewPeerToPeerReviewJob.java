@@ -54,7 +54,7 @@ public class NewPeerToPeerReviewJob extends Job {
          AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
+            protected void handleTxWork() throws OseeCoreException {
                peerToPeerReviewArtifact =
                      teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState);
                peerToPeerReviewArtifact.persistAttributesAndRelations();

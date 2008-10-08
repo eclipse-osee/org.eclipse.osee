@@ -211,7 +211,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException, SQLException {
+   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);

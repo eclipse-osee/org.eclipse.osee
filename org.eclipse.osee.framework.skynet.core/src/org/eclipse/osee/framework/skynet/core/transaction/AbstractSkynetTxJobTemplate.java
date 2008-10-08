@@ -101,7 +101,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          // This calls the containing class's version of the method
          AbstractSkynetTxJobTemplate.this.handleTxWork();
       }
@@ -124,7 +124,7 @@ public abstract class AbstractSkynetTxJobTemplate extends Job {
     * 
     * @throws Exception
     */
-   protected abstract void handleTxWork() throws OseeCoreException, SQLException;
+   protected abstract void handleTxWork() throws OseeCoreException;
 
    /**
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at

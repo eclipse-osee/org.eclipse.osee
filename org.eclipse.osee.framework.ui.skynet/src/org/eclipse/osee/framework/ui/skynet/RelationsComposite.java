@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -733,10 +732,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                      PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                window.createArtifactInformationBox(null);
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         } catch (ArtifactDoesNotExist ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }

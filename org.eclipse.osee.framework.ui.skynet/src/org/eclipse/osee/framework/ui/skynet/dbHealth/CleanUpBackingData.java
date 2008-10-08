@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -129,7 +128,7 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       }
    }
 
-   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Integer> set) throws SQLException {
+   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Integer> set) {
       int count = 0;
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {COLUMN_HEADER[x]}));
       sbFull.append(AHTML.addRowSpanMultiColumnTable(COLUMN_HEADER[x] + "'s with no TXS addressing", 1));

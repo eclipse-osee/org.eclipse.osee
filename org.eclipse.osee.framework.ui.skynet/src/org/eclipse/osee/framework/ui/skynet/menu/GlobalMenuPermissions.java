@@ -39,7 +39,7 @@ public class GlobalMenuPermissions {
     * 
     * @param globalMenuHelper
     */
-   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException, SQLException {
+   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) throws OseeCoreException {
       this(globalMenuHelper.getArtifacts());
    }
 
@@ -48,7 +48,7 @@ public class GlobalMenuPermissions {
     * 
     * @param artifact
     */
-   public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException, SQLException {
+   public GlobalMenuPermissions(Artifact artifact) throws OseeCoreException {
       this(Arrays.asList(artifact));
    }
 
@@ -57,7 +57,7 @@ public class GlobalMenuPermissions {
     * 
     * @param artifacts
     */
-   public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException, SQLException {
+   public GlobalMenuPermissions(Collection<Artifact> artifacts) throws OseeCoreException {
       hasArtifacts = artifacts.size() > 0;
       writePermission = true;
       readPermission = true;

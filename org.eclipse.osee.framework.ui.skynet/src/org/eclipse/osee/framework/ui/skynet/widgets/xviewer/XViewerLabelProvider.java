@@ -130,7 +130,7 @@ private final XViewer viewer;
       return null;
    }
 
-   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException;
+   public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
 
-   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException;
+   public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
 }

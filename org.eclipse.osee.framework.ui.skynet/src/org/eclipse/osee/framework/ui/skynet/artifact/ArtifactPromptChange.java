@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -49,7 +48,7 @@ public class ArtifactPromptChange {
    private final static String VALID_PERCENT_REG_EX =
          "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
 
-   public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
+   public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) {
       try {
          Class<? extends Attribute<?>> attributeBaseType =
                AttributeTypeManager.getType(attributeName).getBaseAttributeClass();
@@ -197,11 +196,11 @@ public class ArtifactPromptChange {
       return false;
    }
 
-   public static boolean promptChangeBoolean(String attributeName, String displayName, final Artifact artifact, String toggleMessage, boolean persist) throws SQLException, OseeCoreException {
+   public static boolean promptChangeBoolean(String attributeName, String displayName, final Artifact artifact, String toggleMessage, boolean persist) throws OseeCoreException {
       return promptChangeBoolean(attributeName, displayName, Arrays.asList(artifact), toggleMessage, persist);
    }
 
-   public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException, OseeCoreException {
+   public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws OseeCoreException {
       boolean set = false;
       if (smas.size() == 1) set = smas.iterator().next().getSoleAttributeValue(attributeName, false);
       MessageDialogWithToggle md =

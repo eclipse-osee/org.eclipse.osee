@@ -19,138 +19,138 @@ import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
 
-   public Image getAssigneeImage() throws OseeCoreException, SQLException;
+   public Image getAssigneeImage() throws OseeCoreException;
 
-   public String getWorldViewActionableItems() throws OseeCoreException, SQLException;
+   public String getWorldViewActionableItems() throws OseeCoreException;
 
-   public String getWorldViewActivePoc() throws OseeCoreException, SQLException;
+   public String getWorldViewActivePoc() throws OseeCoreException;
 
-   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException, SQLException;
+   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
 
-   public String getWorldViewBranchStatus() throws OseeCoreException, SQLException;
+   public String getWorldViewBranchStatus() throws OseeCoreException;
 
-   public Date getWorldViewCancelledDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewCancelledDate() throws OseeCoreException;
 
-   public String getWorldViewCancelledDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewCancelledDateStr() throws OseeCoreException;
 
-   public String getWorldViewCategory() throws OseeCoreException, SQLException;
+   public String getWorldViewCategory() throws OseeCoreException;
 
-   public String getWorldViewCategory2() throws OseeCoreException, SQLException;
+   public String getWorldViewCategory2() throws OseeCoreException;
 
-   public String getWorldViewCategory3() throws OseeCoreException, SQLException;
+   public String getWorldViewCategory3() throws OseeCoreException;
 
    public ChangeType getWorldViewChangeType() throws OseeCoreException;
 
-   public String getWorldViewChangeTypeStr() throws OseeCoreException, SQLException;
+   public String getWorldViewChangeTypeStr() throws OseeCoreException;
 
-   public Date getWorldViewCompletedDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewCompletedDate() throws OseeCoreException;
 
-   public String getWorldViewCompletedDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewCompletedDateStr() throws OseeCoreException;
 
-   public Date getWorldViewCreatedDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewCreatedDate() throws OseeCoreException;
 
-   public String getWorldViewCreatedDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewCreatedDateStr() throws OseeCoreException;
 
-   public Date getWorldViewDeadlineDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewDeadlineDate() throws OseeCoreException;
 
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException;
 
-   public String getWorldViewDecision() throws OseeCoreException, SQLException;
+   public String getWorldViewDecision() throws OseeCoreException;
 
-   public String getWorldViewDescription() throws OseeCoreException, SQLException;
+   public String getWorldViewDescription() throws OseeCoreException;
 
-   public double getWorldViewEstimatedHours() throws OseeCoreException, SQLException;
+   public double getWorldViewEstimatedHours() throws OseeCoreException;
 
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
 
-   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentState() throws OseeCoreException, SQLException;
+   public double getWorldViewHoursSpentState() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateReview() throws OseeCoreException, SQLException;
+   public double getWorldViewHoursSpentStateReview() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateTask() throws OseeCoreException, SQLException;
+   public double getWorldViewHoursSpentStateTask() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateTotal() throws OseeCoreException, SQLException;
+   public double getWorldViewHoursSpentStateTotal() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentTotal() throws OseeCoreException, SQLException;
+   public double getWorldViewHoursSpentTotal() throws OseeCoreException;
 
-   public String getWorldViewID() throws OseeCoreException, SQLException;
+   public String getWorldViewID() throws OseeCoreException;
 
-   public String getWorldViewImplementer() throws OseeCoreException, SQLException;
+   public String getWorldViewImplementer() throws OseeCoreException;
 
-   public String getWorldViewLegacyPCR() throws OseeCoreException, SQLException;
+   public String getWorldViewLegacyPCR() throws OseeCoreException;
 
-   public String getWorldViewSWEnhancement() throws OseeCoreException, SQLException;
+   public String getWorldViewSWEnhancement() throws OseeCoreException;
 
-   public double getWorldViewManDaysNeeded() throws OseeCoreException, SQLException;
+   public double getWorldViewManDaysNeeded() throws OseeCoreException;
 
-   public String getWorldViewNotes() throws OseeCoreException, SQLException;
+   public String getWorldViewNotes() throws OseeCoreException;
 
-   public String getWorldViewNumberOfTasks() throws OseeCoreException, SQLException;
+   public String getWorldViewNumberOfTasks() throws OseeCoreException;
 
-   public String getWorldViewLastUpdated() throws OseeCoreException, SQLException;
+   public String getWorldViewLastUpdated() throws OseeCoreException;
 
-   public String getWorldViewLastStatused() throws OseeCoreException, SQLException;
+   public String getWorldViewLastStatused() throws OseeCoreException;
 
-   public String getWorldViewOriginator() throws OseeCoreException, SQLException;
+   public String getWorldViewOriginator() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteState() throws OseeCoreException, SQLException;
+   public int getWorldViewPercentCompleteState() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteStateReview() throws OseeCoreException, SQLException;
+   public int getWorldViewPercentCompleteStateReview() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteStateTask() throws OseeCoreException, SQLException;
+   public int getWorldViewPercentCompleteStateTask() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteTotal() throws OseeCoreException, SQLException;
+   public int getWorldViewPercentCompleteTotal() throws OseeCoreException;
 
-   public int getWorldViewPercentRework() throws OseeCoreException, SQLException;
+   public int getWorldViewPercentRework() throws OseeCoreException;
 
-   public String getWorldViewPercentReworkStr() throws OseeCoreException, SQLException;
+   public String getWorldViewPercentReworkStr() throws OseeCoreException;
 
-   public String getWorldViewPriority() throws OseeCoreException, SQLException;
+   public String getWorldViewPriority() throws OseeCoreException;
 
-   public String getWorldViewRelatedToState() throws OseeCoreException, SQLException;
+   public String getWorldViewRelatedToState() throws OseeCoreException;
 
-   public Date getWorldViewReleaseDate() throws OseeCoreException, SQLException;
+   public Date getWorldViewReleaseDate() throws OseeCoreException;
 
-   public String getWorldViewReleaseDateStr() throws OseeCoreException, SQLException;
+   public String getWorldViewReleaseDateStr() throws OseeCoreException;
 
-   public double getWorldViewRemainHours() throws OseeCoreException, SQLException;
+   public double getWorldViewRemainHours() throws OseeCoreException;
 
-   public String getWorldViewResolution() throws OseeCoreException, SQLException;
+   public String getWorldViewResolution() throws OseeCoreException;
 
-   public String getWorldViewReviewAuthor() throws OseeCoreException, SQLException;
+   public String getWorldViewReviewAuthor() throws OseeCoreException;
 
-   public String getWorldViewReviewDecider() throws OseeCoreException, SQLException;
+   public String getWorldViewReviewDecider() throws OseeCoreException;
 
-   public String getWorldViewReviewModerator() throws OseeCoreException, SQLException;
+   public String getWorldViewReviewModerator() throws OseeCoreException;
 
-   public String getWorldViewReviewReviewer() throws OseeCoreException, SQLException;
+   public String getWorldViewReviewReviewer() throws OseeCoreException;
 
-   public String getWorldViewState() throws OseeCoreException, SQLException;
+   public String getWorldViewState() throws OseeCoreException;
 
-   public String getWorldViewTeam() throws OseeCoreException, SQLException;
+   public String getWorldViewTeam() throws OseeCoreException;
 
-   public String getWorldViewTitle() throws OseeCoreException, SQLException;
+   public String getWorldViewTitle() throws OseeCoreException;
 
-   public String getWorldViewType() throws OseeCoreException, SQLException;
+   public String getWorldViewType() throws OseeCoreException;
 
-   public String getWorldViewUserCommunity() throws OseeCoreException, SQLException;
+   public String getWorldViewUserCommunity() throws OseeCoreException;
 
-   public String getWorldViewValidationRequiredStr() throws OseeCoreException, SQLException;
+   public String getWorldViewValidationRequiredStr() throws OseeCoreException;
 
-   public String getWorldViewVersion() throws OseeCoreException, SQLException;
+   public String getWorldViewVersion() throws OseeCoreException;
 
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException, SQLException;
+   public double getWorldViewWeeklyBenefit() throws OseeCoreException;
 
-   public String getWorldViewWorkPackage() throws OseeCoreException, SQLException;
+   public String getWorldViewWorkPackage() throws OseeCoreException;
 
-   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException, SQLException;
+   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException;
 
-   public Result isWorldViewDeadlineAlerting() throws OseeCoreException, SQLException;
+   public Result isWorldViewDeadlineAlerting() throws OseeCoreException;
 
-   public Result isWorldViewManDaysNeededValid() throws OseeCoreException, SQLException;
+   public Result isWorldViewManDaysNeededValid() throws OseeCoreException;
 
-   public Result isWorldViewRemainHoursValid() throws OseeCoreException, SQLException;
+   public Result isWorldViewRemainHoursValid() throws OseeCoreException;
 
 }

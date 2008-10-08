@@ -11,10 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -92,7 +93,7 @@ public class TemplateAttribute implements ITemplateTask {
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(java.lang.StringBuilder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws SQLException, Exception {
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeCoreException, IOException {
       for (ITemplateAttributeHandler handler : handlers) {
          if (handler.canHandle(artifact, this)) {
             handler.process(wordMl, artifact, this);

@@ -43,7 +43,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
     * @param artifact
     * @throws Exception
     */
-   public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException, SQLException {
+   public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException {
       super(artifact);
       fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
    }

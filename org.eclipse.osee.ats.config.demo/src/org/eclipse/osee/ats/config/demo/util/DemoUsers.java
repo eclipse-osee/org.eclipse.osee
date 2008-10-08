@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 public enum DemoUsers {
    Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay;
 
-   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException, SQLException {
+   public static User getDemoUser(DemoUsers demoUser) throws OseeCoreException {
       return SkynetAuthentication.getUserByName(demoUser.name().replaceAll("_", " "), false);
    }
 

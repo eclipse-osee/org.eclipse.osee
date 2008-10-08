@@ -38,7 +38,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
    }
 
    @Override
-   protected void handleTxWork() throws OseeCoreException, SQLException {
+   protected void handleTxWork() throws OseeCoreException {
       try {
          Collection<Artifact> systemArts = DemoDbUtil.getArtTypeRequirements(Requirements.SYSTEM_REQUIREMENT, "Robot");
 

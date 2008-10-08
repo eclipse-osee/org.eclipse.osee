@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTas
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.database.utility.DatabaseDataImporter;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class RestoreTableData implements IDbInitializationTask {
@@ -36,7 +37,7 @@ public class RestoreTableData implements IDbInitializationTask {
       this.databaseType = databaseType;
    }
 
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       System.out.println("RestoreTables");
       System.out.flush();
       SqlManager sqlManager = SqlFactory.getSqlManager(databaseType);

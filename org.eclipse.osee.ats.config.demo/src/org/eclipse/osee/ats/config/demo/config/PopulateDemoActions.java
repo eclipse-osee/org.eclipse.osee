@@ -168,7 +168,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          try {
             OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating SAW_Bld_2 branch off SAW_Bld_1", false);
             // Create SAW_Bld_2 branch off SAW_Bld_1

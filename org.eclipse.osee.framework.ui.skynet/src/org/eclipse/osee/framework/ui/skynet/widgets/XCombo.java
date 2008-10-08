@@ -179,7 +179,7 @@ public class XCombo extends XWidget {
 
    @SuppressWarnings( {"unchecked", "unchecked"})
    @Override
-   public void setFromXml(String xml) throws IllegalStateException, SQLException {
+   public void setFromXml(String xml) throws IllegalStateException {
       Matcher m;
       if (xmlSubRoot.equals("")) {
          m =
@@ -335,7 +335,7 @@ public class XCombo extends XWidget {
       return AHTML.getLabelStr(labelFont, label + ": ") + data;
    }
 
-   public static void copy(XCombo from, XCombo to) throws IllegalStateException, SQLException {
+   public static void copy(XCombo from, XCombo to) throws IllegalStateException {
       to.set(from.get());
    }
 

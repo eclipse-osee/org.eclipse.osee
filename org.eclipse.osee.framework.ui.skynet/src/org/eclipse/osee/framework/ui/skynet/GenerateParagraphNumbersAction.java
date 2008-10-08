@@ -66,7 +66,7 @@ public class GenerateParagraphNumbersAction extends Action {
             AbstractSkynetTxTemplate artifactTx = new AbstractSkynetTxTemplate(selectedArtifact.getBranch()) {
 
                @Override
-               protected void handleTxWork() throws OseeCoreException, SQLException {
+               protected void handleTxWork() throws OseeCoreException {
                   try {
                      for (Artifact artifact : selectedArtifact.getChildren()) {
                         if (monitor.isCanceled()) {

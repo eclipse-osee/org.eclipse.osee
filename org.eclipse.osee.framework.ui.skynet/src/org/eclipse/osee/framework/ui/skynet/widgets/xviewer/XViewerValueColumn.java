@@ -36,31 +36,30 @@ public class XViewerValueColumn extends XViewerColumn {
       super(viewer, xml);
    }
 
-   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       return null;
    }
 
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       return "unhandled";
    }
 
-   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       return null;
    }
 
-   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       return null;
    }
 
    //This method will only be called be the XViewerStyledTextLabelProvider
-   public StyledString getStyledText(Object element, XViewerColumn viewerColumn,
-		int columnIndex) throws OseeCoreException, SQLException {
-	   return new StyledString(getColumnText(element, viewerColumn, columnIndex));
+   public StyledString getStyledText(Object element, XViewerColumn viewerColumn, int columnIndex) throws OseeCoreException {
+      return new StyledString(getColumnText(element, viewerColumn, columnIndex));
    }
-   
+
    //This method will only be called be the XViewerStyledTextLabelProvider
-   public Font getFont(Object element, XViewerColumn viewerColumn, int columnIndex) throws OseeCoreException, SQLException {
-	   return null;
+   public Font getFont(Object element, XViewerColumn viewerColumn, int columnIndex) throws OseeCoreException {
+      return null;
    }
 
 }

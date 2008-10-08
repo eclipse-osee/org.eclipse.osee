@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -386,7 +385,7 @@ public class AtsBranchManager {
     * @param parentBranch
     * @throws Exception
     */
-   public void createWorkingBranch(String pageId, Branch parentBranch) throws OseeCoreException, SQLException {
+   public void createWorkingBranch(String pageId, Branch parentBranch) throws OseeCoreException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
@@ -405,7 +404,7 @@ public class AtsBranchManager {
             TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
-         public void run(IProgressMonitor monitor) throws OseeCoreException, SQLException {
+         public void run(IProgressMonitor monitor) throws OseeCoreException {
             BranchPersistenceManager.createWorkingBranch(parentTransactionId, finalBranchShortName, branchName,
                   stateMachineArtifact);
             // Create reviews as necessary
@@ -416,7 +415,7 @@ public class AtsBranchManager {
       Jobs.run("Create Branch", runnable, AtsPlugin.getLogger(), AtsPlugin.PLUGIN_ID);
    }
 
-   public void updateBranchAccessControl() throws OseeCoreException, SQLException {
+   public void updateBranchAccessControl() throws OseeCoreException {
       // Only set/update branch access control if state item is configured to accept
       for (IAtsStateItem stateItem : smaMgr.getStateItems().getCurrentPageStateItems(smaMgr)) {
          if (stateItem.isAccessControlViaAssigneesEnabledForBranching()) {
@@ -440,7 +439,7 @@ public class AtsBranchManager {
     * @param popup if true, popup errors associated with results
     * @return Result
     */
-   public Result commitWorkingBranch(boolean popup) throws OseeCoreException, SQLException {
+   public Result commitWorkingBranch(boolean popup) throws OseeCoreException {
       return commitWorkingBranch(popup, false);
    }
 
@@ -450,7 +449,7 @@ public class AtsBranchManager {
     *           used for developmental testing or automation
     * @return Result
     */
-   public Result commitWorkingBranch(boolean commitPopup, boolean overrideStateValidation) throws OseeCoreException, SQLException {
+   public Result commitWorkingBranch(boolean commitPopup, boolean overrideStateValidation) throws OseeCoreException {
       Branch branch = getWorkingBranch();
       if (branch == null) {
          OSEELog.logSevere(AtsPlugin.class,
@@ -565,7 +564,7 @@ public class AtsBranchManager {
 
    }
 
-   public List<ArtifactChange> getArtifactChange(String artifactName) throws OseeCoreException, SQLException {
+   public List<ArtifactChange> getArtifactChange(String artifactName) throws OseeCoreException {
       List<ArtifactChange> changes = new ArrayList<ArtifactChange>();
       for (ArtifactChange artChange : getArtifactChanges()) {
          if (artChange.getName().equals(artifactName)) {
@@ -575,30 +574,20 @@ public class AtsBranchManager {
       return changes;
    }
 
-   public Collection<ArtifactChange> getArtifactChanges() throws OseeCoreException, SQLException {
+   public Collection<ArtifactChange> getArtifactChanges() throws OseeCoreException {
       ArrayList<ArtifactChange> artChanges = new ArrayList<ArtifactChange>();
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
          if (workingBranch != null) {
-            try {
-               for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput(workingBranch))) {
-                  if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
-               }
-            } catch (SQLException ex) {
-               OSEELog.logSevere(AtsPlugin.class,
-                     "Error getting branch artifact changes - " + ex.getLocalizedMessage(), true);
+            for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput(workingBranch))) {
+               if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
             }
          }
       } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
          TransactionId transactionId = getTransactionId();
          if (transactionId != null) {
-            try {
-               for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput("", transactionId))) {
-                  if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
-               }
-            } catch (SQLException ex) {
-               OSEELog.logSevere(AtsPlugin.class,
-                     "Error getting transaction artifact changes - " + ex.getLocalizedMessage(), true);
+            for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput("", transactionId))) {
+               if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
             }
          }
       }
@@ -618,13 +607,8 @@ public class AtsBranchManager {
       try {
          if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            try {
-               Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
-               return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch,
-                     includeRelationOnlyChanges);
-            } catch (SQLException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
+            Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+            return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch, includeRelationOnlyChanges);
          } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
             TransactionId transactionId = getTransactionId();
             if (transactionId != null) {

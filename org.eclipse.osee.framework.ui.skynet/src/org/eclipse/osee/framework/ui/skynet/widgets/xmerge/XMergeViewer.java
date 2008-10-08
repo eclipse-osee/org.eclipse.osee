@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -430,16 +429,12 @@ public class XMergeViewer extends XWidget implements IActionable {
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     try {
-                        if (conflicts.length == 0) {
-                           extraInfoLabel.setText(NO_CONFLICTS);
-                        } else {
-                           setConflicts(conflicts);
-                           mergeView.setConflicts(conflicts);
-                           refresh();
-                        }
-                     } catch (SQLException ex) {
-                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+                     if (conflicts.length == 0) {
+                        extraInfoLabel.setText(NO_CONFLICTS);
+                     } else {
+                        setConflicts(conflicts);
+                        mergeView.setConflicts(conflicts);
+                        refresh();
                      }
                   }
                });
@@ -455,7 +450,7 @@ public class XMergeViewer extends XWidget implements IActionable {
       }
    }
 
-   public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
+   public void setConflicts(Conflict[] conflicts) throws IllegalStateException {
       this.conflicts = conflicts;
       loadTable();
       int resolved = 0;

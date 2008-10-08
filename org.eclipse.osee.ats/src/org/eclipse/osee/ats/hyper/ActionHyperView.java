@@ -166,7 +166,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
       }
    }
 
-   private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws OseeCoreException, SQLException {
+   private void addTasksAHIs(ActionHyperItem parentAHI, ATSArtifact artifact) throws OseeCoreException {
       if (!(artifact instanceof StateMachineArtifact)) return;
       if (((StateMachineArtifact) artifact).getSmaMgr().getTaskMgr().getTaskArtifacts().size() > 0) {
          if (artifact instanceof ReviewSMArtifact) tasksReviewsCreated = true;

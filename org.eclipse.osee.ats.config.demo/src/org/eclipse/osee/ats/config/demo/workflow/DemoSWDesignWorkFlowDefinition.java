@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.config.demo.workflow;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -28,7 +27,7 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
    }
 
    @Override
-   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException, SQLException {
+   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       // Create decision and peer rules
       DemoAddDecisionReviewRule decisionTransitionToRule =
             new DemoAddDecisionReviewRule(DefaultTeamState.Analyze.name(), ReviewBlockType.None,

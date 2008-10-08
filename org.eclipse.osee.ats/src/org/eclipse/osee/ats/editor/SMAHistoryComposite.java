@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultsComposite;
@@ -58,7 +57,7 @@ public class SMAHistoryComposite extends Composite {
       });
    }
 
-   public void refresh() throws OseeCoreException, SQLException {
+   public void refresh() throws OseeCoreException {
       if (xResultsComp != null && !xResultsComp.isDisposed()) {
          xResultsComp.setHtmlText(smaMgr.getLog().getHtml(true), smaMgr.getSma().getArtifactTypeName() + " History");
       }

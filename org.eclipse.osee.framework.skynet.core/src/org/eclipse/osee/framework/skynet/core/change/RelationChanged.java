@@ -176,7 +176,7 @@ public class RelationChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactName() + " <-> " + getBArtifact().getInternalDescriptiveName();
    }
 
@@ -184,7 +184,7 @@ public class RelationChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
     */
    @Override
-   public String getItemTypeName() throws SQLException {
+   public String getItemTypeName() {
       return relationType.getTypeName();
    }
 

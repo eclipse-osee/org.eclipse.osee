@@ -108,7 +108,7 @@ public abstract class Change implements IAdaptable {
       return artifact;
    }
 
-   public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifact().getInternalDescriptiveName();
    }
 
@@ -171,7 +171,7 @@ public abstract class Change implements IAdaptable {
 
    public abstract String getItemTypeName() throws Exception;
 
-   public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
+   public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist;
 
    public abstract String getItemKind();
 

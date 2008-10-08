@@ -74,7 +74,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
       if (element instanceof Conflict) {
          Conflict conflict = (Conflict) element;
          if (aCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
@@ -122,7 +122,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       if (element instanceof Conflict) {
          try {
             Conflict conflict = (Conflict) element;
@@ -154,7 +154,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
-   public static Image getMergeImage(Conflict conflict) throws SQLException, OseeCoreException {
+   public static Image getMergeImage(Conflict conflict) throws OseeCoreException {
       if (conflict.statusInformational()) return null;
       if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(START_WIZARD_IMAGE);
       if ((conflict.sourceEqualsDestination()) && (conflict.mergeEqualsSource())) return SkynetGuiPlugin.getInstance().getImage(

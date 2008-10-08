@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -69,7 +68,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          useTeamDef = AtsCache.getSoleArtifactByName(teamDefName, TeamDefinitionArtifact.class);

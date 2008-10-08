@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.templates;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -43,11 +41,15 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
-   public void run(Connection connection) throws Exception {
-      processTemplatesForDBInit();
+   public void run(Connection connection) throws OseeCoreException {
+      try {
+         processTemplatesForDBInit();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
-   private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException, OseeCoreException {
+   private void processTemplatesForDBInit() throws IOException, OseeCoreException {
 
       Artifact templateFolder = getTemplateFolder();
       IExtensionPoint ep =
@@ -80,25 +82,20 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       templateFolder.persistAttributesAndRelations();
    }
 
-   private Artifact getTemplateFolder() throws SQLException {
+   private Artifact getTemplateFolder() throws OseeCoreException {
       try {
-         try {
-            return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
-                  BranchPersistenceManager.getCommonBranch());
-         } catch (ArtifactDoesNotExist ex) {
-            Artifact rootArt =
-                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getCommonBranch());
+         return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
+               BranchPersistenceManager.getCommonBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         Artifact rootArt =
+               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getCommonBranch());
 
-            Artifact templateFolder =
-                  ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
-                        "Document Templates");
-            rootArt.addChild(templateFolder);
-            templateFolder.persistAttributesAndRelations();
-            return templateFolder;
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);
+         Artifact templateFolder =
+               ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
+                     "Document Templates");
+         rootArt.addChild(templateFolder);
+         templateFolder.persistAttributesAndRelations();
+         return templateFolder;
       }
-      return null;
    }
 }

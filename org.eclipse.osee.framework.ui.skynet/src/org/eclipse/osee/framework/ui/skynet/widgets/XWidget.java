@@ -205,7 +205,7 @@ public abstract class XWidget {
       return s;
    }
 
-   public void setFromXml(String xml) throws IllegalStateException, SQLException {
+   public void setFromXml(String xml) throws IllegalStateException {
       Matcher m;
       m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       if (m.find()) setXmlData(AXml.xmlToText(m.group(1)));

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.utility;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class FileUtility {
       return false;
    }
 
-   public static void setupDirectoryForWrite(File directory) throws IOException {
+   public static void setupDirectoryForWrite(File directory) {
       if (directory.exists() && directory.canWrite()) {
          if (!directory.isDirectory()) {
             directory.mkdirs();

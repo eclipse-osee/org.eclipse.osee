@@ -110,7 +110,7 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
 
    }
 
-   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) throws SQLException {
+   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) {
       sbFull.append(AHTML.addRowSpanMultiColumnTable(DESCRIPTION, columnHeaders.length));
       for (Integer[] data : datas) {
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(data[0]), String.valueOf(data[1]),

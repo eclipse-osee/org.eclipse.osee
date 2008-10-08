@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -31,7 +29,7 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws SQLException, IllegalStateException, IOException {
+   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) {
 
    }
 

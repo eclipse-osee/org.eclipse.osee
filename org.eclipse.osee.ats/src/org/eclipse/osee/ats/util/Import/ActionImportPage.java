@@ -141,7 +141,7 @@ public class ActionImportPage extends WizardDataTransferPage {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork()throws OseeCoreException, SQLException{
+            protected void handleTxWork()throws OseeCoreException{
                ExcelAtsActionArtifactExtractor extractor =
                      new ExcelAtsActionArtifactExtractor(BranchPersistenceManager.getAtsBranch(),
                            emailPocs.getSelection());

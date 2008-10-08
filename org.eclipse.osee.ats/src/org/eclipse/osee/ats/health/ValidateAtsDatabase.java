@@ -103,7 +103,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
    private Collection<Artifact> artifacts;
    private XResultData xResultData;
 
-   private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException, SQLException {
+   private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       this.xResultData = xResultData;
       loadAtsBranchArtifacts();
       testAtsBranchAttributeValues();
@@ -116,7 +116,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       xResultData.log("Completed processing " + artifacts.size() + " artifacts.");
    }
 
-   public void loadAtsBranchArtifacts() throws OseeCoreException, SQLException {
+   public void loadAtsBranchArtifacts() throws OseeCoreException {
       xResultData.log("testLoadAllCommonArtifacts - Started " + XDate.getDateNow(XDate.MMDDYYHHMM));
       artifacts = ArtifactQuery.getArtifactsFromBranch(AtsPlugin.getAtsBranch(), false);
       if (xResultData == null) {
@@ -128,7 +128,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       xResultData.log("testLoadAllCommonArtifacts - Completed " + XDate.getDateNow(XDate.MMDDYYHHMM));
    }
 
-   public void testAtsBranchAttributeValues() throws OseeCoreException, SQLException {
+   public void testAtsBranchAttributeValues() throws OseeCoreException {
       xResultData.log("testAtsBranchAttributeValues");
       for (Artifact artifact : artifacts) {
          for (Attribute<?> attr : artifact.getAttributes(false)) {
@@ -143,7 +143,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsActionsHaveTeamWorkflow() throws OseeCoreException, SQLException {
+   public void testAtsActionsHaveTeamWorkflow() throws OseeCoreException {
       xResultData.log("testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ActionArtifact) {
@@ -154,7 +154,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsWorkflowsHaveAction() throws OseeCoreException, SQLException {
+   public void testAtsWorkflowsHaveAction() throws OseeCoreException {
       xResultData.log("testAtsActionsHaveTeamWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
@@ -165,7 +165,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testAtsWorkflowsHaveZeroOrOneVersion() throws OseeCoreException, SQLException {
+   public void testAtsWorkflowsHaveZeroOrOneVersion() throws OseeCoreException {
       xResultData.log("testAtsWorkflowsHaveZeroOrOneVersion");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
@@ -179,7 +179,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
 
    }
 
-   public void testTasksHaveParentWorkflow() throws OseeCoreException, SQLException {
+   public void testTasksHaveParentWorkflow() throws OseeCoreException {
       xResultData.log("testTasksHaveParentWorkflow");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TaskArtifact) {
@@ -192,7 +192,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException, SQLException {
+   public void testReviewsHaveParentWorkflowOrActionableItems() throws OseeCoreException {
       xResultData.log("testReviewsHaveParentWorkflowOrActionableItems");
       for (Artifact artifact : artifacts) {
          if (artifact instanceof ReviewSMArtifact) {
@@ -204,7 +204,7 @@ public class ValidateAtsDatabase extends XNavigateItemAction {
       }
    }
 
-   public void testStateMachineAssignees() throws OseeCoreException, SQLException {
+   public void testStateMachineAssignees() throws OseeCoreException {
       xResultData.log("testStateMachineAssignees");
       User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);

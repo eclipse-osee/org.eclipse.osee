@@ -33,6 +33,8 @@ public enum SupportedDatabase {
             toReturn = SupportedDatabase.mysql;
          } else if (lowerCaseName.contains(SupportedDatabase.postgresql.toString())) {
             toReturn = SupportedDatabase.postgresql;
+         } else {
+            throw new OseeDataStoreException("Unsupported database type: " + dbName);
          }
          return toReturn;
       } catch (SQLException ex) {

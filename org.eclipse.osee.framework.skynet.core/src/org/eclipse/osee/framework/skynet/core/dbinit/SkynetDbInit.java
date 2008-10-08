@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.data.SchemaData;
@@ -29,12 +30,15 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.OseeDatabaseId;
 import org.eclipse.osee.framework.db.connection.core.OseeInfo;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.osgi.framework.Bundle;
@@ -47,7 +51,7 @@ public class SkynetDbInit extends DbInitializationTask {
          "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
    private static boolean isInDbInit;
 
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       setIsInDbInit(true);
       SkynetAuthentication.setBasicUsersCreated(false);
       DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(connection, getSchemaFiles());
@@ -81,7 +85,7 @@ public class SkynetDbInit extends DbInitializationTask {
       SkynetDbInit.isInDbInit = isInDbInit;
    }
 
-   private List<URL> getSchemaFiles() throws Exception {
+   private List<URL> getSchemaFiles() throws OseeCoreException {
       List<URL> toReturn = new ArrayList<URL>();
       List<IConfigurationElement> list =
             ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.OseeDbSchema", "Schema");
@@ -97,9 +101,13 @@ public class SkynetDbInit extends DbInitializationTask {
                boolean isAllowed = true;
                if (Strings.isValid(initRuleClassName)) {
                   isAllowed = false;
-                  Class<?> taskClass = bundle.loadClass(initRuleClassName);
-                  IDbInitRule rule = (IDbInitRule) taskClass.newInstance();
-                  isAllowed = rule.isAllowed();
+                  try {
+                     Class<?> taskClass = bundle.loadClass(initRuleClassName);
+                     IDbInitRule rule = (IDbInitRule) taskClass.newInstance();
+                     isAllowed = rule.isAllowed();
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+                  }
                }
 
                if (isAllowed) {

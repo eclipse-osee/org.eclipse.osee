@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 public class BackupTableData implements IDbInitializationTask {
    private Set<String> schemas;
@@ -33,7 +34,7 @@ public class BackupTableData implements IDbInitializationTask {
       this.currentDatabaseConfig = currentDatabaseConfig;
    }
 
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       System.out.println("BackupTableData: ");
       Set<String> dataToBackup = getTablesToBackup();
       if (dataToBackup.size() > 0) {

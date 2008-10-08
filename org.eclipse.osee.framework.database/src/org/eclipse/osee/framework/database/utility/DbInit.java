@@ -71,7 +71,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws Exception {
+   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
@@ -87,7 +87,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws Exception {
+   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
@@ -105,7 +105,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws SQLException, Exception {
+   public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -135,7 +135,7 @@ public class DbInit {
     * @param databaseType2
     * @throws Exception
     */
-   public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws SQLException, Exception {
+   public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Connection connection, SupportedDatabase databaseType, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       System.out.println("Drop Indeces");
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
@@ -161,18 +161,22 @@ public class DbInit {
    /**
     * @param connection
     */
-   public static void dropViews(Connection connection) throws SQLException {
-      DatabaseMetaData dbData = connection.getMetaData();
-      ResultSet tables = dbData.getTables(null, null, null, new String[] {"VIEW"});
-      while (tables.next()) {
-         String viewName = tables.getString("TABLE_NAME").toUpperCase();
-         for (View viewToDrop : SkynetDatabase.getSkynetViews()) {
-            if (viewToDrop.toString().equalsIgnoreCase(viewName)) {
-               Statement statement = connection.createStatement();
-               statement.executeUpdate("DROP VIEW " + viewName);
-               statement.close();
+   public static void dropViews(Connection connection) throws OseeDataStoreException {
+      try {
+         DatabaseMetaData dbData = connection.getMetaData();
+         ResultSet tables = dbData.getTables(null, null, null, new String[] {"VIEW"});
+         while (tables.next()) {
+            String viewName = tables.getString("TABLE_NAME").toUpperCase();
+            for (View viewToDrop : SkynetDatabase.getSkynetViews()) {
+               if (viewToDrop.toString().equalsIgnoreCase(viewName)) {
+                  Statement statement = connection.createStatement();
+                  statement.executeUpdate("DROP VIEW " + viewName);
+                  statement.close();
+               }
             }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 

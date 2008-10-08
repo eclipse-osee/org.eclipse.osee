@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,9 +42,8 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
     *      org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException, OseeCoreException {
-      AttributeType attributeType =
-            AttributeTypeManager.getType(templateAttribute.getName());
+   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws IOException, OseeCoreException {
+      AttributeType attributeType = AttributeTypeManager.getType(templateAttribute.getName());
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType.getName());
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -60,7 +59,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       return custDatas;
    }
 
-   private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws SQLException, OseeCoreException {
+   private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws OseeCoreException {
       boolean found = false;
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
       for (Attribute<String> attribute : attributes) {
@@ -77,7 +76,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       saveArt.persistAttributes();
    }
 
-   public void saveCustomization(CustomizeData custData) throws SQLException, OseeCoreException {
+   public void saveCustomization(CustomizeData custData) throws OseeCoreException {
       if (custData.isPersonal())
          saveCustomization(custData, SkynetAuthentication.getUser());
       else
@@ -111,7 +110,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       this.globalCustomizationsArtifact = defaultCustomizationsArtifact;
    }
 
-   public void deleteCustomization(CustomizeData custData) throws SQLException, OseeCoreException {
+   public void deleteCustomization(CustomizeData custData) throws OseeCoreException {
       Artifact deleteArt = null;
       if (custData.isPersonal())
          deleteArt = SkynetAuthentication.getUser();
@@ -126,7 +125,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    }
 
-   public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws SQLException, OseeCoreException {
+   public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws OseeCoreException {
       Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME)) {
          String str = attribute.getDisplayableString();

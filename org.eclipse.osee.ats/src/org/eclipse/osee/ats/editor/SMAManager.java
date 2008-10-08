@@ -213,7 +213,7 @@ public class SMAManager {
       }
    }
 
-   public boolean workPageHasWorkRule(String ruleId) throws OseeCoreException, SQLException {
+   public boolean workPageHasWorkRule(String ruleId) throws OseeCoreException {
       return getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
    }
 

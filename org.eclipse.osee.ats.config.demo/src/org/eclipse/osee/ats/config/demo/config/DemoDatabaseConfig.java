@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig extends DbInitializationTask {
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
       new DemoTestWorkFlowDefinition().config(WriteType.New, null);
@@ -70,7 +70,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
             CISBuilds.CIS_Bld_1.name());
    }
 
-   public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws Exception {
+   public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws OseeCoreException {
       Branch branch = BranchPersistenceManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
@@ -113,7 +113,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
 
    }
 
-   private void createProgramBranch(String branchName) throws Exception {
+   private void createProgramBranch(String branchName) throws OseeCoreException {
 
       List<String> skynetTypeImport = new ArrayList<String>();
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
@@ -123,7 +123,7 @@ public class DemoDatabaseConfig extends DbInitializationTask {
       BranchPersistenceManager.createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
-   private void createVersionArtifacts() throws Exception {
+   private void createVersionArtifacts() throws OseeCoreException {
 
       // Setup some sample builds for Widget A
       for (String verName : new String[] {SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name(),

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -119,11 +118,7 @@ public class CommitManagerView extends ViewPart implements IActionable, IBranchE
       xCommitViewer = new XCommitViewer();
       xCommitViewer.setDisplayLabel(false);
       xCommitViewer.createWidgets(parent, 1);
-      try {
-         if (branchArtifact != null) xCommitViewer.setArtifact(branchArtifact.getArtifact(), "");
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+      if (branchArtifact != null) xCommitViewer.setArtifact(branchArtifact.getArtifact(), "");
 
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 

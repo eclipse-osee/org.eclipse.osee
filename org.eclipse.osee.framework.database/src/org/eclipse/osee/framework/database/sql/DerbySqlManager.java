@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.database.sql;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.ConstraintElement;
 import org.eclipse.osee.framework.database.data.ForeignKey;
 import org.eclipse.osee.framework.database.data.ReferenceClause;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -84,13 +86,15 @@ public class DerbySqlManager extends SqlManagerImpl {
                }
 
                else {
-                  logger.log(Level.WARNING, "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
+                  OseeLog.log(DatabaseActivator.class, Level.WARNING,
+                        "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
-         logger.log(Level.WARNING, "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
+         OseeLog.log(DatabaseActivator.class, Level.WARNING,
+               "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
    }

@@ -408,7 +408,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
   	 if (artifact instanceof WordArtifact && !((WordArtifact)artifact).isWholeWordArtifact()) {
 		   if (outlining) {
 	         String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
@@ -436,7 +436,7 @@ public class WordTemplateProcessor {
  	 }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -460,7 +460,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, SQLException, OseeCoreException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes

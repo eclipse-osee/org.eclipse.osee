@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.config.demo.workflow;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -23,7 +22,7 @@ public class DemoReqWorkFlowDefinition extends TeamWorkflowDefinition {
       super(ID, ID, TeamWorkflowDefinition.ID);
    }
 
-   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException, SQLException {
+   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
             TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoReqWorkFlowDefinition());

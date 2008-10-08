@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -74,7 +73,7 @@ public class SkynetTransactionManager {
       levelManager.get(branch).startTransactionLevel(branch, key);
    }
 
-   protected void setBatchLevelAsSuccessful(Object key, Branch branch) throws SQLException {
+   protected void setBatchLevelAsSuccessful(Object key, Branch branch) {
       levelManager.get(branch).setTransactionLevelSuccess(key);
    }
 

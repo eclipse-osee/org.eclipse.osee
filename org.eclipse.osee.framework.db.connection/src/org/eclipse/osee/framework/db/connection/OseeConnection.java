@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.db.connection.pool;
+package org.eclipse.osee.framework.db.connection;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 
 public class OseeConnection implements Connection {
 
@@ -25,7 +26,7 @@ public class OseeConnection implements Connection {
    private volatile boolean inuse;
    private long timestamp;
 
-   OseeConnection(Connection conn, OseeConnectionPool pool) {
+   public OseeConnection(Connection conn, OseeConnectionPool pool) {
       this.conn = conn;
       this.pool = pool;
       this.inuse = false;
@@ -63,7 +64,7 @@ public class OseeConnection implements Connection {
       pool.returnConnection(this);
    }
 
-   protected void expireLease() {
+   public void expireLease() {
       inuse = false;
    }
 

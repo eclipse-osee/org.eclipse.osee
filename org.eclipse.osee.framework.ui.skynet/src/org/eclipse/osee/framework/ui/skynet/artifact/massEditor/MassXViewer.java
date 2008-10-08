@@ -86,13 +86,9 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       for (TreeItem item : treeItems) {
          useArts.add((Artifact) item.getData());
       }
-      try {
-         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, useArts, false)) {
-            refresh();
-            editor.onDirtied();
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      if (ArtifactPromptChange.promptChangeAttribute(colName, colName, useArts, false)) {
+         refresh();
+         editor.onDirtied();
       }
    }
 
@@ -113,22 +109,18 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
    }
 
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
-      try {
-         super.handleAltLeftClick(treeColumn, treeItem);
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
-         String colName = treeColumn.getText();
-         if (EXTRA_COLUMNS.contains(colName)) {
-            AWorkbench.popup("ERROR", "Can't change the field " + colName);
-         }
-         Artifact useArt = ((Artifact) treeItem.getData());
-         if (ArtifactPromptChange.promptChangeAttribute(colName, colName, Arrays.asList(useArt), persist)) {
-            refresh();
-            editor.onDirtied();
-            return true;
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      super.handleAltLeftClick(treeColumn, treeItem);
+      // System.out.println("Column " + treeColumn.getText() + " item " +
+      // treeItem);
+      String colName = treeColumn.getText();
+      if (EXTRA_COLUMNS.contains(colName)) {
+         AWorkbench.popup("ERROR", "Can't change the field " + colName);
+      }
+      Artifact useArt = ((Artifact) treeItem.getData());
+      if (ArtifactPromptChange.promptChangeAttribute(colName, colName, Arrays.asList(useArt), persist)) {
+         refresh();
+         editor.onDirtied();
+         return true;
       }
       return false;
    }
@@ -253,7 +245,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       return title;
    }
 
-   public void add(Collection<? extends Artifact> artifacts) throws SQLException {
+   public void add(Collection<? extends Artifact> artifacts) {
       if (xViewerFactory instanceof MassXViewerFactory) {
          ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true);
       }
@@ -263,7 +255,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       ((MassContentProvider) getContentProvider()).add(artifacts);
    }
 
-   public void set(Collection<? extends Artifact> artifacts) throws SQLException {
+   public void set(Collection<? extends Artifact> artifacts) {
       if (xViewerFactory instanceof MassXViewerFactory) {
          ((MassXViewerFactory) xViewerFactory).registerAllAttributeColumnsForArtifacts(artifacts, true);
       }

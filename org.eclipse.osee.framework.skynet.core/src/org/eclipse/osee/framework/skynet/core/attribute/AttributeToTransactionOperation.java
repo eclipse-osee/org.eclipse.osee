@@ -56,7 +56,7 @@ public class AttributeToTransactionOperation {
       this.transaction = transaction;
    }
 
-   public void execute() throws OseeCoreException, SQLException {
+   public void execute() throws OseeCoreException {
       for (Attribute<?> attribute : artifact.internalGetAttributes()) {
          if (attribute.isDirty()) {
             if (attribute.isDeleted()) {
@@ -68,7 +68,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   private void addAttributeData(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
+   private void addAttributeData(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
       if (artifact.isVersionControlled()) {
          versionControlled(artifact, attribute, transaction);
       } else {
@@ -76,7 +76,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
+   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
       ModificationType attrModType = null;
       if (attribute.isInDatastore()) {
          attribute.setGammaId(SequenceManager.getNextGammaId());
@@ -99,7 +99,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
-   private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException, SQLException {
+   private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws OseeCoreException {
       IAttributeDataProvider dataProvider = attribute.getAttributeDataProvider();
       if (!attribute.isInDatastore()) {
          createNewAttributeMemo(attribute);

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -386,7 +385,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                        protected void handleTxWork() throws OseeCoreException {
                            ArtifactPromptChange.promptChangeAttribute(attrName, xCol.getName(), useArts, persist);
                         }
                      };
@@ -435,23 +434,19 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
    }
 
    public void handleEmailSelectedAtsObject() throws OseeCoreException {
-      try {
-         Artifact art = getSelectedArtifacts().iterator().next();
-         if (art instanceof ActionArtifact) {
-            if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() > 1) {
-               art = AtsLib.promptSelectTeamWorkflow((ActionArtifact) art);
-               if (art == null) return;
-            } else
-               art = ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
-         }
-         if (art != null) {
-            ArtifactEmailWizard ew = new ArtifactEmailWizard((StateMachineArtifact) art);
-            WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
-            dialog.create();
-            dialog.open();
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+      Artifact art = getSelectedArtifacts().iterator().next();
+      if (art instanceof ActionArtifact) {
+         if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() > 1) {
+            art = AtsLib.promptSelectTeamWorkflow((ActionArtifact) art);
+            if (art == null) return;
+         } else
+            art = ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
+      }
+      if (art != null) {
+         ArtifactEmailWizard ew = new ArtifactEmailWizard((StateMachineArtifact) art);
+         WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
+         dialog.create();
+         dialog.open();
       }
    }
 
@@ -740,7 +735,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
-                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                        protected void handleTxWork() throws OseeCoreException {
                            if (purge) {
                               ArtifactPersistenceManager.purgeArtifacts(deleteArts);
                            } else {

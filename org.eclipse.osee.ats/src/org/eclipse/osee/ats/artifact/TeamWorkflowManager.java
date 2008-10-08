@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -44,7 +43,7 @@ public class TeamWorkflowManager {
     * @return
     * @throws Exception
     */
-   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws OseeCoreException, SQLException {
+   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws OseeCoreException {
       Result result = setEndorseData(null, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -99,7 +98,7 @@ public class TeamWorkflowManager {
 
    }
 
-   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
@@ -110,7 +109,7 @@ public class TeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
       if (problem == null || problem.equals(""))
@@ -126,14 +125,14 @@ public class TeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
             "Action not in Authorize state");
       smaMgr.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
       if (resolution == null || resolution.equals(""))

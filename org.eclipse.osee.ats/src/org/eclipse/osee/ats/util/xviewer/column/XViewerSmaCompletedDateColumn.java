@@ -46,7 +46,7 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       if (element instanceof StateMachineArtifact) {
          return ((StateMachineArtifact) element).getWorldViewCompletedDateStr();
       }

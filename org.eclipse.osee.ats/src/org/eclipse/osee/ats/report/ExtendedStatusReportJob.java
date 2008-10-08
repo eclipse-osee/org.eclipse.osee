@@ -77,7 +77,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport() throws OseeCoreException, SQLException {
+   public String getStatusReport() throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(getStatusReportBody());
@@ -114,7 +114,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody() throws OseeCoreException, SQLException {
+   public String getStatusReportBody() throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -139,7 +139,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException, SQLException {
+   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException {
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {

@@ -36,7 +36,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       DefectItem defectItem = (DefectItem) element;
       if (dCol.equals(DefectXViewerFactory.Severity_Col))
          return Severity.getImage(defectItem.getSeverity());
@@ -57,7 +57,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
       DefectItem defectItem = (DefectItem) element;
       if (aCol.equals(DefectXViewerFactory.User_Col))
          return defectItem.getUser().getName();

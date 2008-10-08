@@ -763,7 +763,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
       });
    }
 
-   private void performCompression() throws OseeCoreException, SQLException {
+   private void performCompression() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) changeTable.getSelection();
       final Collection<Integer> artifacts = new LinkedList<Integer>();
       Branch aBranch = null;
@@ -1133,7 +1133,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
       }
 
       @Override
-      public Artifact[] getArtifacts() throws OseeCoreException, SQLException {
+      public Artifact[] getArtifacts() throws OseeCoreException {
          IStructuredSelection selection = (IStructuredSelection) changeTable.getSelection();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
@@ -1220,7 +1220,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IBranchEv
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          monitor.beginTask(txName, 7);
 
          monitor.subTask("Calculating change set");

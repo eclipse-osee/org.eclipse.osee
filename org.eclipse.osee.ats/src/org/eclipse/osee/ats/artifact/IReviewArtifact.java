@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public interface IReviewArtifact {
 
-   public boolean isBlocking() throws OseeCoreException, SQLException;
+   public boolean isBlocking() throws OseeCoreException;
 
    public DefectManager getDefectManager();
 
@@ -30,6 +30,6 @@ public interface IReviewArtifact {
 
    public Artifact getArtifact();
 
-   public Result isUserRoleValid() throws OseeCoreException, SQLException;
+   public Result isUserRoleValid() throws OseeCoreException;
 
 }

@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.database.initialize;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
@@ -38,14 +38,14 @@ public class DbFactory {
       this.logger = ConfigUtil.getConfigFactory().getLogger(DbFactory.class);
    }
 
-   public void createTables() throws SQLException, Exception {
+   public void createTables() throws OseeDataStoreException {
       List<TableElement> tableDefs = schemaData.getTablesOrderedByDependency();
       for (TableElement tableDef : tableDefs) {
          sqlManager.createTable(connection, tableDef);
       }
    }
 
-   public void dropTables() throws SQLException, Exception {
+   public void dropTables() throws OseeDataStoreException {
       List<TableElement> tableDefs = schemaData.getTablesOrderedByDependency();
       for (int index = (tableDefs.size() - 1); index >= 0; index--) {
          TableElement tableDef = tableDefs.get(index);
@@ -53,13 +53,13 @@ public class DbFactory {
       }
    }
 
-   public void createIndeces() throws SQLException, Exception {
+   public void createIndeces() throws OseeDataStoreException {
       for (TableElement tableDef : schemaData.getTableMap().values()) {
          sqlManager.createIndex(connection, tableDef);
       }
    }
 
-   public void dropIndeces() throws SQLException, Exception {
+   public void dropIndeces() throws OseeDataStoreException {
       for (TableElement tableDef : schemaData.getTableMap().values()) {
          sqlManager.dropIndex(connection, tableDef);
       }

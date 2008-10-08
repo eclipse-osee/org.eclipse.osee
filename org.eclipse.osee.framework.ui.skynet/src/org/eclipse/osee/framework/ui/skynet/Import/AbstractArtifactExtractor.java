@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -53,7 +52,7 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
       return roughRelations;
    }
 
-   private void determineParentChildRelations() throws SQLException {
+   private void determineParentChildRelations() {
       for (RoughArtifact roughArtifact : roughArtifacts) {
          if (roughArtifact.hasHierarchicalRelation()) {
             determineParentChildRelationsFor(roughArtifact);
@@ -61,7 +60,7 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
       }
    }
 
-   private void determineParentChildRelationsFor(RoughArtifact roughReq) throws SQLException {
+   private void determineParentChildRelationsFor(RoughArtifact roughReq) {
       // find all children and then save then by their order
       for (RoughArtifact otherRoughReq : roughArtifacts) {
          if (roughReq != otherRoughReq) { // don't compare to self

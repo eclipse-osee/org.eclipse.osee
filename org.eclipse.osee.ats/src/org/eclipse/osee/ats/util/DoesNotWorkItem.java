@@ -154,11 +154,11 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //         }
    //      }
    //   }
-   //   private void relateDonDunne()throws OseeCoreException, SQLException{
+   //   private void relateDonDunne()throws OseeCoreException{
    //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
    //
    //         @Override
-   //         protected void handleTxWork()throws OseeCoreException, SQLException{
+   //         protected void handleTxWork()throws OseeCoreException{
    //            for (Artifact art : ArtifactQuery.getArtifactsFromAttribute(
    //                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
    //                  "%<" + SkynetAuthentication.getUser().getUserId() + ">%", BranchPersistenceManager.getAtsBranch())) {
@@ -174,7 +174,7 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //
    //   }
 
-   //   private void testDeleteAttribute() throws OseeCoreException, SQLException {
+   //   private void testDeleteAttribute() throws OseeCoreException {
    //      Artifact art =
    //            ArtifactQuery.getArtifactsFromIds(Arrays.asList("76589"), AtsPlugin.getAtsBranch()).iterator().next();
    //      for (Attribute<?> attr : art.getAttributes()) {
@@ -186,12 +186,12 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //      art.persistAttributes();
    //   }
 
-   //   private void deleteNullAttributes() throws OseeCoreException, SQLException {
+   //   private void deleteNullAttributes() throws OseeCoreException {
    //
    //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
    //
    //         @Override
-   //         protected void handleTxWork() throws OseeCoreException, SQLException {
+   //         protected void handleTxWork() throws OseeCoreException {
    //            int x = 0;
    //            for (String artTypeName : Arrays.asList(TeamWorkFlowArtifact.ARTIFACT_NAME, TaskArtifact.ARTIFACT_NAME,
    //                  DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME,
@@ -218,12 +218,12 @@ public class DoesNotWorkItem extends XNavigateItemAction {
    //
    //   }
    //
-   //   private void deleteNullUserAttributes() throws OseeCoreException, SQLException {
+   //   private void deleteNullUserAttributes() throws OseeCoreException {
    //
    //      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
    //
    //         @Override
-   //         protected void handleTxWork() throws OseeCoreException, SQLException {
+   //         protected void handleTxWork() throws OseeCoreException {
    //            int x = 0;
    //            for (String artTypeName : Arrays.asList(User.ARTIFACT_NAME)) {
    //               for (Artifact team : ArtifactQuery.getArtifactsFromType(artTypeName, AtsPlugin.getAtsBranch())) {

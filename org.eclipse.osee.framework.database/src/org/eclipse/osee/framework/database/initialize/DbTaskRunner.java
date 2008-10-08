@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.database.initialize;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Queue;
-import org.eclipse.osee.framework.database.core.DatabaseNotSupportedException;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
-import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -32,25 +31,21 @@ public class DbTaskRunner {
       return instance;
    }
 
-   public void processTasks(Connection connection, Queue<IDbInitializationTask> tasks) throws SQLException, DatabaseNotSupportedException, Exception {
-      SupportedDatabase databaseType = SupportedDatabase.getDatabaseType(connection);
-      if (databaseType != null) {
-         int safetyNet = 0;
-         while (!tasks.isEmpty()) {
-            IDbInitializationTask task = tasks.remove();
-            if (task.canRun()) {
-               task.run(connection);
-               safetyNet = 0;
-            } else {
-               tasks.add(task);
-               safetyNet++;
-               if (safetyNet == tasks.size() + 1) {
-                  throw new Exception("Unable to run all of the IDbInitializationTask because canRun() failed");
-               }
+   public void processTasks(Connection connection, Queue<IDbInitializationTask> tasks) throws OseeCoreException {
+      int safetyNet = 0;
+      while (!tasks.isEmpty()) {
+         IDbInitializationTask task = tasks.remove();
+         if (task.canRun()) {
+            task.run(connection);
+            safetyNet = 0;
+         } else {
+            tasks.add(task);
+            safetyNet++;
+            if (safetyNet == tasks.size() + 1) {
+               throw new OseeDataStoreException(
+                     "Unable to run all of the IDbInitializationTask because canRun() failed");
             }
          }
-      } else {
-         throw new DatabaseNotSupportedException("Connected to " + connection.getMetaData().getDatabaseProductName());
       }
       System.out.println("finished the initialization");
    }

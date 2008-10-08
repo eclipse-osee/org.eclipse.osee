@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
@@ -166,7 +164,7 @@ public class AttributeTypeManager {
     * 
     * @param attributeType
     */
-   public void cache(AttributeType attributeType) throws SQLException {
+   public void cache(AttributeType attributeType) {
       nameToTypeMap.put(attributeType.getNamespace() + attributeType.getName(), attributeType);
       idToTypeMap.put(attributeType.getAttrTypeId(), attributeType);
    }

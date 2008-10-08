@@ -64,7 +64,7 @@ public class RelationPersistenceManager {
       AbstractSkynetTxTemplate relationPersistTx = new AbstractSkynetTxTemplate(relationLink.getBranch()) {
 
          @Override
-         protected void handleTxWork() throws OseeCoreException, SQLException {
+         protected void handleTxWork() throws OseeCoreException {
             getTxBuilder().addLinkToPersist(relationLink);
          }
       };
@@ -75,7 +75,7 @@ public class RelationPersistenceManager {
       }
    }
 
-   public static void persist(RelationLink link, SkynetTransaction transaction) throws OseeCoreException, SQLException, ArtifactDoesNotExist {
+   public static void persist(RelationLink link, SkynetTransaction transaction) throws OseeCoreException, ArtifactDoesNotExist {
       // The relation will be clean by the end of this, so mark it early so that this relation won't be
       // persisted by its other artifact
       link.setNotDirty();

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -46,7 +45,7 @@ public class EditTasksByGroup extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
       if (dialog.open() == 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();

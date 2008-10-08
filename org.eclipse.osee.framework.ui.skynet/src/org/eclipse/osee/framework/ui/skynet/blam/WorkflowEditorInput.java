@@ -29,11 +29,11 @@ public class WorkflowEditorInput implements IEditorInput {
       this.artifact = artifact;
    }
 
-   public WorkflowEditorInput(String workflowId) throws OseeCoreException, SQLException {
+   public WorkflowEditorInput(String workflowId) throws OseeCoreException {
       this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(BlamOperations.getBlamOperation(workflowId));
    }
 
-   public WorkflowEditorInput(BlamOperation blamOperation) throws OseeCoreException, SQLException {
+   public WorkflowEditorInput(BlamOperation blamOperation) throws OseeCoreException {
       this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(blamOperation);
    }
 

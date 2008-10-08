@@ -120,20 +120,17 @@ public class RevisionManager {
       return instance;
    }
 
-   public List<TransactionData> getTransactionsPerBranch(Branch branch) throws OseeCoreException, SQLException {
+   public List<TransactionData> getTransactionsPerBranch(Branch branch) throws OseeCoreException {
       List<TransactionData> transactionDetails = new LinkedList<TransactionData>();
 
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
 
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            transactionDetails.add(new TransactionData(rSet.getString(TXD_COMMENT), rSet.getTimestamp("time"),
-                  rSet.getInt("author"), rSet.getInt("transaction_id"), -1, branch, rSet.getInt("commit_art_id")));
+            transactionDetails.add(new TransactionData(chStmt.getString(TXD_COMMENT), chStmt.getTimestamp("time"),
+                  chStmt.getInt("author"), chStmt.getInt("transaction_id"), -1, branch, chStmt.getInt("commit_art_id")));
          }
-      } catch (SQLException e) {
-         logger.log(Level.SEVERE, e.toString(), e);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -283,7 +280,7 @@ public class RevisionManager {
     * 
     * @return - Collection<RevisionChange>
     */
-   public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws OseeCoreException, SQLException {
+   public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws OseeCoreException {
       Collection<RevisionChange> changes =
             getTransactionChanges(OUTGOING, artChange.getFromTransactionId(), artChange.getToTransactionId(),
                   artChange.getArtifact().getArtId(), artifactNameDescriptorCache);
@@ -493,7 +490,7 @@ public class RevisionManager {
       return deletedArtifacts;
    }
 
-   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws OseeCoreException, SQLException {
+   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws OseeCoreException {
       List<TransactionData> transactionDataSet = getTransactionsPerBranch(branch);
       if (transactionDataSet.size() == 0) return new ArrayList<Artifact>();
       return getNewAndModifiedArtifacts(transactionDataSet.get(transactionDataSet.size() - 1).getTransactionId(),

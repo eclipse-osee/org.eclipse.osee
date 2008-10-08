@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,28 +82,28 @@ public class MergeUtility {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.clearValue();
       }
    }
 
-   public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.setToDest();
       }
    }
 
-   public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
          conflict.setToSource();
       }
    }
 
-   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       boolean proceed = true;
       if (!conflict.statusEditable()) {
          MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);

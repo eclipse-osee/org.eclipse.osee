@@ -142,7 +142,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       actionDatas.add(aData);
    }
 
-   public boolean dataIsValid() throws OseeCoreException, SQLException {
+   public boolean dataIsValid() throws OseeCoreException {
       System.out.println("Validating...");
       XResultData rd = new XResultData();
       int rowNum = 1; // Header is row 1
@@ -237,7 +237,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
     * 
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
-   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException, SQLException {
+   public void discoverArtifactAndRelationData(File artifactsFile) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          excelHandler = new ExcelSaxHandler(this, true);

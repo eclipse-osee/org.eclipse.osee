@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
@@ -213,7 +212,7 @@ public class ChangeReportInput implements Serializable {
       memento.putString(NAME, name);
    }
 
-   public static ChangeReportInput loadFromMemento(IMemento memento) throws SQLException {
+   public static ChangeReportInput loadFromMemento(IMemento memento) {
       if (memento == null) throw new IllegalArgumentException("memento can not be null");
 
       Integer transactionNumber;

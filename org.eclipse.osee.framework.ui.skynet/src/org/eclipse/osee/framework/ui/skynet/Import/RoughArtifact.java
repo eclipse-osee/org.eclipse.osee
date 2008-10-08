@@ -183,7 +183,7 @@ public class RoughArtifact {
       return children;
    }
 
-   public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException, SQLException {
+   public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws OseeCoreException {
       if (realArtifact != null) {
          return realArtifact;
       }
@@ -217,7 +217,7 @@ public class RoughArtifact {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   public void updateValues(Artifact artifact) throws OseeCoreException, SQLException, FileNotFoundException {
+   public void updateValues(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       for (NameAndVal value : attributes) {
          artifact.setSoleAttributeFromString(value.getName(), value.getValue());
       }

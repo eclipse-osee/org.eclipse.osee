@@ -91,7 +91,7 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void processNonWholeDocumentUpdates(Branch myBranch) throws OseeCoreException, SQLException, ParserConfigurationException, SAXException, IOException {
+   private void processNonWholeDocumentUpdates(Branch myBranch) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
       Artifact artifact;
 
       Matcher singleEditMatcher = guidPattern.matcher(workingFile.getName());
@@ -120,7 +120,7 @@ public class UpdateArtifactJob extends UpdateJob {
       artifact.persistAttributes();
    }
 
-   private void updateWholeDocumentArtifact(Artifact artifact) throws FileNotFoundException, OseeCoreException, SQLException {
+   private void updateWholeDocumentArtifact(Artifact artifact) throws FileNotFoundException, OseeCoreException {
       artifact.setSoleAttributeFromStream(WordAttribute.WHOLE_WORD_CONTENT, new FileInputStream(workingFile));
       artifact.persistAttributes();
    }
@@ -163,7 +163,7 @@ public class UpdateArtifactJob extends UpdateJob {
       }
 
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          try {
             boolean singleArtifact = artElements.size() == 1;
             boolean containsOleData = false;

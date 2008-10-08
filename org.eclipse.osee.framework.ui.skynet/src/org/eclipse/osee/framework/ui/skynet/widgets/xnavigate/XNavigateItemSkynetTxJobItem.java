@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxJobTemplate;
@@ -39,7 +38,7 @@ public class XNavigateItemSkynetTxJobItem extends XNavigateItem {
       this.promptFirst = promptFirst;
    }
 
-   public void run() throws SQLException {
+   public void run() {
       if (txJob != null) {
          if (promptFirst) {
             Displays.ensureInDisplayThread(new Runnable() {

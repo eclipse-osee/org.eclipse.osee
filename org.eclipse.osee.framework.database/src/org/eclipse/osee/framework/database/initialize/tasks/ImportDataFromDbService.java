@@ -22,10 +22,13 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
-import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
@@ -36,20 +39,19 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       this.userSpecifiedConfig = userSpecifiedConfig;
    }
 
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       Set<String> importConnections = getImportConnections();
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
          DbInformation databaseService = OseeDb.getDatabaseService(importFromDbService);
 
-         Connection importConnection = null;
-         importConnection = DBConnection.getNewConnection(databaseService);
+         OseeConnection importConnection = OseeDbConnection.getConnection(databaseService);
          if (importConnection != null) {
             try {
                System.out.println("Gathering information from ..." + importFromDbService);
 
-               String userName = importConnection.getMetaData().getUserName();
+               String userName = databaseService.getDatabaseDetails().getFieldValue(ConfigField.UserName);
                if (userName != null && !userName.equals("")) {
 
                   Set<String> schemasToGet = new TreeSet<String>();
@@ -143,7 +145,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       return schemaExtractor.getSchemas();
    }
 
-   private Map<String, Set<String>> getTablesToImport(Connection importConnection, String userName, Set<String> schemasToGet) throws Exception {
+   private Map<String, Set<String>> getTablesToImport(Connection importConnection, String userName, Set<String> schemasToGet) throws OseeDataStoreException {
       Map<String, SchemaData> currentDbSchemas = getAvailableSchemasFromImportDb(importConnection, schemasToGet);
       Set<String> userSchemas = userSpecifiedConfig.keySet();
 

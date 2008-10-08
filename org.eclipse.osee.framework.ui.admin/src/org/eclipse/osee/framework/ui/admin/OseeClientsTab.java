@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -55,7 +54,7 @@ public class OseeClientsTab {
    private Composite mainComposite;
    private Text text;
 
-   public OseeClientsTab(TabFolder tabFolder) throws OseeCoreException, SQLException {
+   public OseeClientsTab(TabFolder tabFolder) throws OseeCoreException {
       super();
       this.users = SkynetAuthentication.getUsers();
       this.whoAmI = SkynetAuthentication.getUser();

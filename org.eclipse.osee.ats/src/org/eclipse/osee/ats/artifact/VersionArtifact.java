@@ -115,7 +115,7 @@ public class VersionArtifact extends BasicArtifact {
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
-   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException, SQLException {
+   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<VersionArtifact> teamDefs = new HashSet<VersionArtifact>();
       for (String teamDefName : teamDefNames) {
          teamDefs.add(getSoleVersion(teamDefName));

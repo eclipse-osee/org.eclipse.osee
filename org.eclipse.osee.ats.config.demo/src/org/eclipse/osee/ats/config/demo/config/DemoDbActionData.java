@@ -53,7 +53,7 @@ public class DemoDbActionData {
       return userComms;
    }
 
-   public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException, SQLException {
+   public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
          for (ActionableItemArtifact aia : ActionableItemArtifact.getActionableItems()) {

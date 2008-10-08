@@ -10,18 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.sql.datatype;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
  * @author Roberto E. Escobar
@@ -197,76 +188,5 @@ public abstract class SqlDataType {
          date = date.replaceAll(":", "-");
       }
       return date + time;
-   }
-
-   public void preparedStatementHelper(PreparedStatement statement, int index, SQL3DataType columnType, String value) throws SQLException {
-      switch (columnType) {
-         case BINARY:
-         case BIT:
-            statement.setByte(index, (value != null && !value.equals("") ? Byte.parseByte(value) : 0));
-            break;
-         case TINYINT:
-         case SMALLINT:
-            statement.setShort(index, (value != null && !value.equals("") ? Short.valueOf(value) : 0));
-            break;
-         case INTEGER:
-            statement.setInt(index, (value != null && !value.equals("") ? Integer.valueOf(value) : 0));
-            break;
-         case BIGINT:
-            statement.setBigDecimal(index,
-                  (value != null && !value.equals("") ? BigDecimal.valueOf(Double.valueOf(value)) : new BigDecimal(0)));
-            break;
-         case FLOAT:
-            statement.setFloat(index, (value != null && !value.equals("") ? Float.valueOf(value) : 0.0f));
-            break;
-         case NUMERIC:
-         case DECIMAL:
-         case REAL:
-         case DOUBLE:
-            statement.setDouble(index, (value != null && !value.equals("") ? Double.valueOf(value) : 0.0));
-            break;
-         case CHAR:
-         case VARCHAR:
-         case LONGVARCHAR:
-            statement.setString(index, value);
-            break;
-         case DATE:
-            if (value == null || value.equals("")) {
-               statement.setNull(index, SQL3DataType.DATE.getSQLTypeNumber());
-            } else {
-               statement.setDate(index, Date.valueOf(value));
-            }
-            break;
-         case TIMESTAMP:
-            statement.setTimestamp(index,
-                  (value != null && !value.equals("") ? Timestamp.valueOf(value) : GlobalTime.GreenwichMeanTimestamp()));
-            break;
-         case TIME:
-            if (value == null || value.equals("")) {
-               statement.setNull(index, SQL3DataType.TIME.getSQLTypeNumber());
-            } else {
-               statement.setTime(index, Time.valueOf(value));
-            }
-            break;
-         case VARBINARY:
-         case LONGVARBINARY:
-            statement.setBytes(index, value.getBytes());
-            break;
-         case BLOB:
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(value.getBytes());
-            BufferedInputStream bs = new BufferedInputStream(byteArrayInputStream);
-            statement.setBinaryStream(index, bs, value.length());
-            break;
-         case CLOB:
-            ByteArrayInputStream byteArrayInputStream1 = new ByteArrayInputStream(value.getBytes());
-            BufferedInputStream bs1 = new BufferedInputStream(byteArrayInputStream1);
-            statement.setAsciiStream(index, bs1, value.length());
-            break;
-         case BOOLEAN:
-            statement.setBoolean(index, (value != null && !value.equals("") ? Boolean.parseBoolean(value) : false));
-            break;
-         default:
-            break;
-      }
    }
 }

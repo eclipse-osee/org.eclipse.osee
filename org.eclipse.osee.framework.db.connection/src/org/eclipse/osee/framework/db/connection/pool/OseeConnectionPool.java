@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.IConnection;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.logging.OseeLog;

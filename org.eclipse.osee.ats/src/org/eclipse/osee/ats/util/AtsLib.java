@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -101,13 +100,13 @@ public class AtsLib implements IAtsLib {
          return String.format("%5.2f", d);
    }
 
-   public static void editActionActionableItems(ActionArtifact actionArt) throws OseeCoreException, SQLException {
+   public static void editActionActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       Result result = actionArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse()) result.popup(result.isTrue());
    }
 
-   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException, SQLException {
+   public static void editTeamActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Result result = teamArt.addActionableItems();
       if (result.isFalse() && result.getText().equals("")) return;
       if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
@@ -207,8 +206,6 @@ public class AtsLib implements IAtsLib {
                   }
                } else
                   SMAEditor.editArtifact(art);
-            } catch (SQLException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
             } catch (OseeCoreException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
@@ -216,7 +213,7 @@ public class AtsLib implements IAtsLib {
       });
    }
 
-   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException, SQLException {
+   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException {
       ListDialog ld = new ListDialog(Display.getCurrent().getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TeamWorkflowLabelProvider());

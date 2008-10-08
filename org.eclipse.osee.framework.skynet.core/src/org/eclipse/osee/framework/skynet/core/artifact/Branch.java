@@ -145,7 +145,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * 
     * @param branchName The branchName to set.
     */
-   public void rename(String branchName) throws OseeCoreException, SQLException {
+   public void rename(String branchName) throws OseeCoreException {
       setBranchName(branchName);
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET branch_name = ? WHERE branch_id = ?",
             branchName, branchId);

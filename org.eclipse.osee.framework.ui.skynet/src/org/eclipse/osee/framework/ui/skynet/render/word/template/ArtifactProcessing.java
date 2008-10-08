@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,15 +62,12 @@ public class ArtifactProcessing implements ITemplateTask {
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws SQLException, Exception {
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) {
 
    }
    private static final Matcher setNameMatcher =
          Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
-   /**
-    * @return
-    */
    public List<ITemplateTask> getTasks() {
       return innerTasks;
    }

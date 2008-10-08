@@ -167,7 +167,7 @@ public class RelationLink {
       return getArtifact(getSide(artifact).oppositeSide());
    }
 
-   public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+   public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) throws ArtifactDoesNotExist {
       return getArtifactIfLoaded(getSide(artifact).oppositeSide());
    }
 

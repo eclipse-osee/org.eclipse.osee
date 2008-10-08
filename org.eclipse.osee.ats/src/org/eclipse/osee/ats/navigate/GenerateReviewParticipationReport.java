@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -53,7 +52,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {

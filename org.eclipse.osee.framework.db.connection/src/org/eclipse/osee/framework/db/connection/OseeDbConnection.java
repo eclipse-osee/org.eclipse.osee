@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
-import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 
 /**

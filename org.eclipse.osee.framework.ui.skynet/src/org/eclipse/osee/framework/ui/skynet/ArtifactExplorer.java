@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +21,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -230,7 +228,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       return composite;
    }
 
-   private void checkBranchReadable() throws OseeCoreException, SQLException {
+   private void checkBranchReadable() throws OseeCoreException {
       Control control = branchUnreadableWarning;
       if (false != (new GlobalMenuPermissions(globalMenuHelper)).isDefaultBranchReadable()) {
          control = treeViewer.getTree();
@@ -287,8 +285,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
       createShowArtTypeAction();
       createAttributesAction();
       createNewArtifactExplorerAction();
-
-      if (OseeProperties.isDeveloper()) createDebugStubActions();
 
       getSite().setSelectionProvider(treeViewer);
       addExploreSelection();
@@ -422,21 +418,6 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(upAction);
-   }
-
-   protected void createDebugStubActions() {
-      try {
-         addTemplates();
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (IOException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (ClassNotFoundException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
-   }
-
-   private void addTemplates() throws SQLException, IOException, ClassNotFoundException {
    }
 
    protected void createShowArtIdsAction() {
@@ -1343,7 +1324,7 @@ public class ArtifactExplorer extends ViewPart implements IAccessControlEventLis
                AbstractSkynetTxTemplate replaceRelationTx = new AbstractSkynetTxTemplate(parentArtifact.getBranch()) {
 
                   @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
+                  protected void handleTxWork() throws OseeCoreException {
                      // Replace all of the parent relations
                      for (Artifact artifact : artifactsToBeRelated) {
                         artifact.setSoleRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);

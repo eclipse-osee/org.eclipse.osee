@@ -67,7 +67,7 @@ public class ArtifactImportJob extends Job {
 
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(branch) {
             @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
+            protected void handleTxWork() throws OseeCoreException {
                for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
                   // the getReal call with recursively call get real on all descendants of roughArtifact
                   importRoot.addChild(roughArtifact.getReal(branch, monitor, artifactResolver));

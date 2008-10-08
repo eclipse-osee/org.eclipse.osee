@@ -330,12 +330,12 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
       }
    }
 
-   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
+   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
       searchItem.setCancelled(false);
       loadTable(searchItem, SearchType.Search, tableLoadOptions);
    }
 
-   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException, SQLException {
+   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) throws InterruptedException, OseeCoreException {
       Set<TableLoadOption> options = new HashSet<TableLoadOption>();
       options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);

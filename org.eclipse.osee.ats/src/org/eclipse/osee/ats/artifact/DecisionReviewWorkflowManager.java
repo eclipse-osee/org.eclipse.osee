@@ -34,7 +34,7 @@ public class DecisionReviewWorkflowManager {
     * @return Result
     * @throws Exception
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup) throws OseeCoreException, SQLException {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup) throws OseeCoreException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
@@ -75,7 +75,7 @@ public class DecisionReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.DecisionReviewState.Prepare.name())) return new Result("Action not in Prepare state");
       reviewArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), estimateHours);
@@ -83,7 +83,7 @@ public class DecisionReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException, SQLException {
+   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getSmaMgr().getStateMgr().getCurrentStateName().equals(
             DecisionReviewArtifact.DecisionReviewState.Decision.name())) return new Result(
             "Action not in Decision state");

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -334,7 +333,7 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
-   public abstract Image getImage() throws SQLException;
+   public abstract Image getImage();
 
    public abstract String getSourceDisplayData() throws OseeCoreException;
 

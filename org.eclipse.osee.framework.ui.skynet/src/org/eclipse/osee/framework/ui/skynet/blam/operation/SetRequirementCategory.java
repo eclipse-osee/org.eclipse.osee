@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,7 +51,7 @@ public class SetRequirementCategory extends AbstractBlam {
       }
    }
 
-   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws SQLException, OseeCoreException {
+   private void updateCategory(boolean bulkLoad, Branch branch, String requirementName) throws OseeCoreException {
       try {
          Artifact requirement;
          if (bulkLoad) {

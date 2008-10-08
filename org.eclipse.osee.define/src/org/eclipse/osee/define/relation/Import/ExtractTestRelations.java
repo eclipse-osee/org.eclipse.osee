@@ -13,7 +13,6 @@ package org.eclipse.osee.define.relation.Import;
 import java.io.File;
 import java.io.IOException;
 import java.nio.CharBuffer;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -42,7 +41,7 @@ public class ExtractTestRelations {
    private static final Matcher testScriptMatcher = Pattern.compile("doTestCase").matcher("");
    private static final Matcher traceabilityMatcher = Pattern.compile("RequirementId\\(\\\"([^\\\"]+)\\\"").matcher("");
 
-   public ExtractTestRelations(String scriptsDir, String fileNamePattern, Branch branch) throws SQLException {
+   public ExtractTestRelations(String scriptsDir, String fileNamePattern, Branch branch) {
       super();
       this.scriptsDir = scriptsDir;
       this.fileNamePattern = fileNamePattern;

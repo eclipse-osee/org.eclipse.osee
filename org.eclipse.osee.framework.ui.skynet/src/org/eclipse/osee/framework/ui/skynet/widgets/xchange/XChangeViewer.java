@@ -249,24 +249,20 @@ public class XChangeViewer extends XWidget implements IActionable {
 
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     try {
-                        if (changes.length == 0) {
-                           extraInfoLabel.setText(NOT_CHANGES);
-                           xChangeViewer.setChanges(changes);
-                           xChangeViewer.refresh();
-                        } else {
-                           String infoLabel =
-                                 String.format(
-                                       "Changes %s to branch: %s\n%s",
-                                       hasBranch ? "made" : "committed",
-                                       hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
-                                       hasBranch ? "" : "Comment: " + transactionId.getComment());
-                           extraInfoLabel.setText(infoLabel);
-                           xChangeViewer.setChanges(changes);
-                           loadTable();
-                        }
-                     } catch (SQLException ex) {
-                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+                     if (changes.length == 0) {
+                        extraInfoLabel.setText(NOT_CHANGES);
+                        xChangeViewer.setChanges(changes);
+                        xChangeViewer.refresh();
+                     } else {
+                        String infoLabel =
+                              String.format(
+                                    "Changes %s to branch: %s\n%s",
+                                    hasBranch ? "made" : "committed",
+                                    hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
+                                    hasBranch ? "" : "Comment: " + transactionId.getComment());
+                        extraInfoLabel.setText(infoLabel);
+                        xChangeViewer.setChanges(changes);
+                        loadTable();
                      }
                   }
                });
@@ -313,7 +309,7 @@ public class XChangeViewer extends XWidget implements IActionable {
       }
 
       @Override
-      public Artifact[] getArtifacts() throws SQLException {
+      public Artifact[] getArtifacts() {
          IStructuredSelection selection = (IStructuredSelection) xChangeViewer.getSelection();
          ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
@@ -344,7 +340,7 @@ public class XChangeViewer extends XWidget implements IActionable {
       return sb.toString();
    }
 
-   public TransactionId getTransactionId() throws OseeCoreException, SQLException {
+   public TransactionId getTransactionId() throws OseeCoreException {
       return transactionId;
    }
 

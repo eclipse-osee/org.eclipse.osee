@@ -57,7 +57,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(SMAManager smaMgr) throws OseeCoreException, SQLException {
+   public void create(SMAManager smaMgr) throws OseeCoreException {
       this.smaMgr = smaMgr;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -112,7 +112,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws OseeCoreException, SQLException {
+   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws OseeCoreException {
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().size() == 0) return;
       actionableItemsLabel = toolkit.createLabel(this, "");
       Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
@@ -131,11 +131,11 @@ public class SMARelationsHyperlinkComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void refreshActionableItemsLabel() throws OseeCoreException, SQLException {
+   private void refreshActionableItemsLabel() throws OseeCoreException {
       if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
-   public void refresh() throws OseeCoreException, SQLException {
+   public void refresh() throws OseeCoreException {
       refreshActionableItemsLabel();
    }
 

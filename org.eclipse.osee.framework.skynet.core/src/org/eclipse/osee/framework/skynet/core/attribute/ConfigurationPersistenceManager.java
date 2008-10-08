@@ -49,7 +49,7 @@ public class ConfigurationPersistenceManager {
     * @param artifactType
     * @throws Exception
     */
-   public static void persistAttributeValidity(ArtifactType artifactType, AttributeType attributeType) throws Exception {
+   public static void persistAttributeValidity(ArtifactType artifactType, AttributeType attributeType) throws OseeDataStoreException {
       if (!instance.cacheAttributeTypeValidity.isValid(artifactType, attributeType)) {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, artifactType.getArtTypeId(),
                attributeType.getAttrTypeId());

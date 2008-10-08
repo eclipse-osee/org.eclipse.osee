@@ -61,7 +61,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       this.teamDefName = null;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, SQLException {
+   private TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
       if (selectedTeamDef != null) return selectedTeamDef;
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {

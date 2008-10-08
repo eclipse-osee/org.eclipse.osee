@@ -93,7 +93,7 @@ public class AttributeChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactName();
    }
 
@@ -135,7 +135,7 @@ public class AttributeChanged extends Change {
       this.wasValue = wasValue;
    }
 
-   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, OseeCoreException {
+   private ArtifactChange getArtifactChange() throws ArtifactDoesNotExist {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getArtModType(), getArtifact(), null, null, getFromTransactionId(),
@@ -159,15 +159,7 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
-      } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (ArtifactDoesNotExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (MultipleArtifactsExist ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return null;

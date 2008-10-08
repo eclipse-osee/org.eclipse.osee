@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.sql.SQLException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -98,7 +97,7 @@ public class MergeXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setConflicts(Conflict[] conflicts) throws SQLException {
+   public void setConflicts(Conflict[] conflicts) {
       this.conflicts = conflicts;
       setInput(conflicts);
    }

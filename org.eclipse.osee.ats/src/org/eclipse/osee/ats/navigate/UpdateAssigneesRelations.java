@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -50,7 +49,7 @@ public class UpdateAssigneesRelations extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
       final List<String> teamWorkflowNames =

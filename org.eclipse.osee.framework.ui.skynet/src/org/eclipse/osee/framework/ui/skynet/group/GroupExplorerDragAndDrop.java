@@ -202,7 +202,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                            new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
 
                               @Override
-                              protected void handleTxWork() throws OseeCoreException, SQLException {
+                              protected void handleTxWork() throws OseeCoreException {
                                  for (Artifact artifact : insertArts) {
                                     // Remove item from old group
                                     parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
@@ -299,7 +299,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
             new AbstractSkynetTxTemplate(BranchPersistenceManager.getDefaultBranch()) {
 
                @Override
-               protected void handleTxWork() throws OseeCoreException, SQLException {
+               protected void handleTxWork() throws OseeCoreException {
                   for (Artifact art : artsToRelate) {
                      if (!dragOverExplorerItem.contains(art)) {
                         dragOverExplorerItem.getArtifact().addRelation(

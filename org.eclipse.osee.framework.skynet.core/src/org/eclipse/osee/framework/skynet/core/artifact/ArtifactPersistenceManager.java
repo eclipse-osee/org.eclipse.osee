@@ -202,7 +202,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException, SQLException {
+   public void persistArtifact(Artifact artifact, SkynetTransaction transaction) throws OseeCoreException {
       workingOn(artifact.getInternalDescriptiveName());
       ModificationType modType;
       ArtifactModType artifactModType;
@@ -238,7 +238,7 @@ public class ArtifactPersistenceManager {
       workedOneUnit();
    }
 
-   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) throws SQLException {
+   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) {
       transaction.addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma,
             transaction.getTransactionId(), modType, transaction.getBranch()));
    }
@@ -489,7 +489,7 @@ public class ArtifactPersistenceManager {
       } else {
          AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
             @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
+            protected void handleTxWork() throws OseeCoreException {
                for (Artifact artifact : artifacts) {
                   if (!artifact.isDeleted()) {
                      deleteTrace(artifact, getTxBuilder());
@@ -527,7 +527,7 @@ public class ArtifactPersistenceManager {
     * @param transaction
     * @throws Exception
     */
-   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException, SQLException {
+   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException {
       if (!artifact.isInDb()) return;
 
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());

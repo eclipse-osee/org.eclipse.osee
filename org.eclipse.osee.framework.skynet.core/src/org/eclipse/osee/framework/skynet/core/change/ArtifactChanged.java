@@ -77,7 +77,7 @@ public class ArtifactChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactName();
    }
 

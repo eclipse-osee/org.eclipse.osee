@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
@@ -36,7 +35,7 @@ public class WorkspaceFileArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws SQLException, OseeCoreException {
+   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws OseeCoreException {
       Artifact artifact = null;
       int descriptorSelected = -1;
       ArtifactType descriptor = null;

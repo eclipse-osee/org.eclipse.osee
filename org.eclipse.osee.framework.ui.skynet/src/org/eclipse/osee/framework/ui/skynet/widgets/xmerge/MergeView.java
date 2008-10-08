@@ -177,11 +177,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       xMergeViewer.setDisplayLabel(false);
       xMergeViewer.createWidgets(parent, 1);
 
-      try {
-         if (conflicts != null) xMergeViewer.setConflicts(conflicts);
-      } catch (SQLException ex) {
-         OSEELog.logException(MergeView.class, ex, true);
-      }
+      if (conflicts != null) xMergeViewer.setConflicts(conflicts);
 
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);

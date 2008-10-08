@@ -63,7 +63,7 @@ public class NativeArtifact extends Artifact {
       return getSoleAttributeValue("Extension", "");
    }
 
-   public InputStream getNativeContent() throws IOException, SQLException, OseeCoreException {
+   public InputStream getNativeContent() throws IOException, OseeCoreException {
       return getSoleAttributeValue(CONTENT_NAME);
    }
 

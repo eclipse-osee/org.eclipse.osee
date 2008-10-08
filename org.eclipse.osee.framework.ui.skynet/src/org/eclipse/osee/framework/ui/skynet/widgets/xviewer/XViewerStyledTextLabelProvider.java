@@ -192,19 +192,19 @@ public abstract class XViewerStyledTextLabelProvider extends
 	}
 
 	public abstract Image getColumnImage(Object element, XViewerColumn xCol,
-			int column) throws OseeCoreException, SQLException;
+			int column) throws OseeCoreException;
 
 	public abstract StyledString getStyledText(Object element,
-			XViewerColumn xCol, int column) throws OseeCoreException, SQLException;
+			XViewerColumn xCol, int column) throws OseeCoreException;
 
 	public abstract Color getBackground(Object element,
 			XViewerColumn viewerColumn, int columnIndex)
-			throws OseeCoreException, SQLException;
+			throws OseeCoreException;
 
 	public abstract Color getForeground(Object element,
 			XViewerColumn viewerColumn, int columnIndex)
-			throws OseeCoreException, SQLException;
+			throws OseeCoreException;
 
 	public abstract Font getFont(Object element, XViewerColumn viewerColumn,
-			int columnIndex) throws OseeCoreException, SQLException;
+			int columnIndex) throws OseeCoreException;
 }

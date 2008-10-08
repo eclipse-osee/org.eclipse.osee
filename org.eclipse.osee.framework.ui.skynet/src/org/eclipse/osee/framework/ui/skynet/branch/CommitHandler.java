@@ -3,7 +3,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -67,7 +66,7 @@ public class CommitHandler extends AbstractSelectionEnabledHandler {
       return null;
    }
 
-   public void handleConflicts(Branch fromBranch, Branch toBranch) throws SQLException, OseeCoreException {
+   public void handleConflicts(Branch fromBranch, Branch toBranch) throws OseeCoreException {
       MessageDialog dialog;
       if (OseeProperties.isDeveloper()) {
          dialog =

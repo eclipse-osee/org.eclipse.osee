@@ -195,7 +195,7 @@ public class EditTasks extends AbstractBlam {
 
    }
 
-   private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException, SQLException {
+   private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
       String versionStr = versionCombo.get();
       if (versionStr == null || versionStr.equals("")) return null;
       TeamDefinitionArtifact teamDef = getSelectedTeamDefinition();
@@ -282,7 +282,7 @@ public class EditTasks extends AbstractBlam {
       }
    }
 
-   private TeamDefinitionArtifact getSelectedTeamDefinition() throws OseeCoreException, SQLException {
+   private TeamDefinitionArtifact getSelectedTeamDefinition() throws OseeCoreException {
       String selectedTeam = teamCombo.getComboBox().getText();
       Set<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(selectedTeam));
       if (teams.size() > 0) {

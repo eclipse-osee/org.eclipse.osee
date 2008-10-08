@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 
@@ -40,7 +41,7 @@ public class AddCommonBranch implements IDbInitializationTask {
     * 
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
 
       // Create branch, import skynet types and initialize
       BranchPersistenceManager.createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID,

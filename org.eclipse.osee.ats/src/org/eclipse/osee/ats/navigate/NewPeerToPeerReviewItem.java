@@ -59,7 +59,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                AbstractSkynetTxTemplate txWrapper =
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                         @Override
-                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                        protected void handleTxWork() throws OseeCoreException {
                            PeerToPeerReviewArtifact peerArt =
                                  ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null,
                                        SkynetAuthentication.getUser(), new Date());

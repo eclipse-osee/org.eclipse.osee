@@ -166,7 +166,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          return EMPTY_ARRAY;
       }
 
-      private Collection<Object> getTransactions(Branch branch) throws OseeCoreException, SQLException {
+      private Collection<Object> getTransactions(Branch branch) throws OseeCoreException {
          if (!showTransactions) return Collections.emptyList();
          List<TransactionData> transactions = RevisionManager.getInstance().getTransactionsPerBranch(branch);
          Collections.sort(transactions, new Comparator<TransactionData>() {
@@ -189,7 +189,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    // so they will just
    // use the snapshot that the first concurrently running job produced.
    @SuppressWarnings("unchecked")
-   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws OseeCoreException, SQLException {
+   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws OseeCoreException {
       String key = calculateKey(input);
       Object[] changeReport = null;
       Date changeTime = null;
@@ -231,7 +231,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    }
 
    @SuppressWarnings("unchecked")
-   private Object[] computeChangeReport(ChangeReportInput input) throws OseeCoreException, SQLException {
+   private Object[] computeChangeReport(ChangeReportInput input) throws OseeCoreException {
       Object[] items;
       if (input.isEmptyChange()) {
          items = EMPTY_REPORT_CHILDREN;
@@ -264,12 +264,12 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       return items;
    }
 
-   public static Object[] getArtifactChanges(ChangeReportInput input) throws OseeCoreException, SQLException {
+   public static Object[] getArtifactChanges(ChangeReportInput input) throws OseeCoreException {
       return getArtifactChanges(input.getBaseParentTransactionId(), input.getBaseTransaction(),
             input.getToTransaction());
    }
 
-   private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException, SQLException {
+   private static Object[] getArtifactChanges(TransactionId toTransaction) throws OseeCoreException {
       TransactionId priorTransaction;
       try {
          priorTransaction = TransactionIdManager.getPriorTransaction(toTransaction);
@@ -279,7 +279,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       return getArtifactChanges(null, priorTransaction, toTransaction);
    }
 
-   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException, SQLException {
+   private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws OseeCoreException {
       TransactionId headParentTransaction =
             baseParentTransaction == null ? null : TransactionIdManager.getStartEndPoint(
                   baseParentTransaction.getBranch()).getValue();
@@ -388,7 +388,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       }
    }
 
-   public static Collection<Object> summarize(Collection<RevisionChange> changes) throws IllegalArgumentException, SQLException {
+   public static Collection<Object> summarize(Collection<RevisionChange> changes) throws IllegalArgumentException {
       Collection<Object> summary = new LinkedList<Object>();
       HashCollection<Integer, AttributeChange> attrChanges = new HashCollection<Integer, AttributeChange>();
       HashCollection<Integer, RelationLinkChange> linkChanges = new HashCollection<Integer, RelationLinkChange>();

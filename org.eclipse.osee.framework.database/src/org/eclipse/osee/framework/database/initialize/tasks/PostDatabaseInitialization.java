@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.database.initialize.tasks;
 import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -24,7 +25,7 @@ public class PostDatabaseInitialization extends DbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    @Override
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
       SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType(connection);
       switch (supportedDb) {

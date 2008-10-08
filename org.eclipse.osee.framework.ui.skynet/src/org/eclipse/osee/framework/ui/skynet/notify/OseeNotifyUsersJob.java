@@ -41,7 +41,7 @@ public class OseeNotifyUsersJob extends Job {
    private final boolean testing = false; // Email goes to current user
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
 
-   public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException, SQLException {
+   public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) throws OseeCoreException {
       super("Notifying Users");
       this.notificationEvents = notificationEvents;
       if (testing) {
@@ -92,7 +92,7 @@ public class OseeNotifyUsersJob extends Job {
       return sb.toString().replaceAll("\n", "");
    }
 
-   private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException, SQLException {
+   private void notifyUser(User user, List<OseeNotificationEvent> notificationEvents, XResultData resultData) throws MessagingException, OseeCoreException {
       if (user == SkynetAuthentication.getUser(UserEnum.NoOne) || user == SkynetAuthentication.getUser(UserEnum.UnAssigned) || user == SkynetAuthentication.getUser(UserEnum.Guest)) {
          // do nothing
          return;

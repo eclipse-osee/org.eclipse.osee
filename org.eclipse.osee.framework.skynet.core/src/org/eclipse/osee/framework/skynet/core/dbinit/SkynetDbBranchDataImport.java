@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -54,7 +57,7 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    @Override
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       if (OseeProperties.getInstance().getDbOseeSkynetBranchImport()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchPersistenceManager.getBranches()) {
@@ -70,15 +73,15 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
                File importFile = importData.getExchangeFile();
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
-            } catch (Exception ex) {
+            } catch (OseeDataStoreException ex) {
                logger.log(Level.SEVERE, String.format("Exception while importing branch: [%s]", importData), ex);
-               throw new Exception(ex);
+               throw ex;
             }
          }
       }
    }
 
-   private Collection<ImportData> loadDataFromExtensions() throws Exception {
+   private Collection<ImportData> loadDataFromExtensions() throws OseeDataStoreException {
       List<ImportData> toReturn = new ArrayList<ImportData>();
       Map<String, String> selectedBranches = new HashMap<String, String>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT, ELEMENT_NAME);
@@ -87,7 +90,12 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
          String branchData = element.getAttribute(BRANCH_DATA);
 
          if (Strings.isValid(bundleName) && Strings.isValid(branchData)) {
-            File exchangeFile = getExchangeFile(bundleName, branchData);
+            File exchangeFile;
+            try {
+               exchangeFile = getExchangeFile(bundleName, branchData);
+            } catch (Exception ex) {
+               throw new OseeDataStoreException(ex);
+            }
             ImportData importData = new ImportData(exchangeFile);
             for (IConfigurationElement innerElement : element.getChildren(BRANCHES_TO_IMPORT)) {
                String branchName = innerElement.getAttribute(BRANCH_NAME);
@@ -97,7 +105,7 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
                      selectedBranches.put(branchName.toLowerCase(),
                            element.getDeclaringExtension().getUniqueIdentifier());
                   } else {
-                     throw new Exception(
+                     throw new OseeDataStoreException(
                            String.format(
                                  "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
                                  branchName, selectedBranches.get(branchName.toLowerCase())));
@@ -106,14 +114,14 @@ public class SkynetDbBranchDataImport extends DbInitializationTask {
             }
             toReturn.add(importData);
          } else {
-            throw new Exception(String.format("Branch import error: [%s] attributes were empty.",
+            throw new OseeDataStoreException(String.format("Branch import error: [%s] attributes were empty.",
                   element.getDeclaringExtension().getExtensionPointUniqueIdentifier()));
          }
       }
       return toReturn;
    }
 
-   private File getExchangeFile(String bundleName, String exchangeFile) throws Exception {
+   private File getExchangeFile(String bundleName, String exchangeFile) throws IOException, URISyntaxException {
       if (exchangeFile.endsWith("zip") != true) {
          throw new IOException(String.format("Branch data file is invalid [%s] ", exchangeFile));
       }

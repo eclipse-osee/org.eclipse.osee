@@ -170,7 +170,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                AbstractSkynetTxTemplate modifyArtifactTx = new AbstractSkynetTxTemplate(branch) {
 
                   @Override
-                  protected void handleTxWork() throws OseeCoreException, SQLException {
+                  protected void handleTxWork() throws OseeCoreException {
                      for (Artifact artifact : artifacts) {
                         monitor.subTask("Modifying " + artifact.getDescriptiveName());
                         for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {

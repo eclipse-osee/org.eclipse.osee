@@ -29,7 +29,7 @@ public class AtsRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
       try {
          OseeAts.getAtsLib().openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

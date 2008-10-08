@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -528,7 +527,7 @@ public class BranchPersistenceManager {
             associatedArtifact, false, null, null);
    }
 
-   private Set<Integer> getSubtypeDescriptors(String[] artTypeNames) throws SQLException, OseeCoreException {
+   private Set<Integer> getSubtypeDescriptors(String[] artTypeNames) throws OseeCoreException {
       Set<Integer> artifactTypeIds;
       if (artTypeNames == null) {
          artifactTypeIds = new HashSet<Integer>(0);
@@ -570,7 +569,7 @@ public class BranchPersistenceManager {
     * @see MasterSkynetTypesImport#importSkynetDbTypes
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws Exception {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initializeArtifacts) throws OseeCoreException {
       // Create branch with name and static name; short name will be computed from full name
       Branch branch = BranchCreator.getInstance().createRootBranch(null, branchName, staticBranchName);
       // Add name to cached keyname if static branch name is desired
@@ -581,8 +580,7 @@ public class BranchPersistenceManager {
       ArtifactFactoryManager.refreshCache();
       // Import skynet types if specified
       if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
-         MasterSkynetTypesImport.getInstance().importSkynetDbTypes(ConnectionHandler.getConnection(),
-               skynetTypesImportExtensionsIds, branch);
+         MasterSkynetTypesImport.importSkynetDbTypes(skynetTypesImportExtensionsIds, branch);
       }
       // Initialize branch with common artifacts
       if (initializeArtifacts) {

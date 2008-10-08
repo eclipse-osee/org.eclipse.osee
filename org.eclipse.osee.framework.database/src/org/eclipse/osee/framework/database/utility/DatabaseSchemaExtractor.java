@@ -291,35 +291,6 @@ public class DatabaseSchemaExtractor {
                   break;
             }
          }
-         // System.out.println("\nCol: " + id);
-         // //System.out.println("Sql Data Type: " + columns.getString("SQL_DATA_TYPE"));
-         // System.out.println("DataType : " + dataTypeName);
-         // System.out.println("Data Type Number: " + columns.getString("DATA_TYPE"));
-         //          
-         // try{
-         // System.out.println("Column Size?: " + columns.getString("COLUMN_SIZE"));
-         // } catch(SQLException ex){
-         // }
-         // try{
-         // System.out.println("Decimal Digits: " + columns.getString("DECIMAL_DIGITS"));
-         // } catch(SQLException ex){
-         // }
-         // try{
-         // System.out.println("Num Precision Radix: " + columns.getString("NUM_PREC_RADIX"));
-         // } catch(SQLException ex){
-         // }
-         // try{
-         // System.out.println("Char Octet Length: " + columns.getString("CHAR_OCTET_LENGTHE"));
-         // } catch(SQLException ex){
-         // }
-         // try{
-         // System.out.println("Remarks: " + columns.getString("REMARKS"));
-         // } catch(SQLException ex){
-         // }
-         // try{
-         // System.out.println("BUFFER_LENGTH: " + columns.getString("BUFFER_LENGTH"));
-         // } catch(SQLException ex){
-         // }
          aTable.addColumn(column);
       }
       columns.close();

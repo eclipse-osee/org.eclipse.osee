@@ -95,7 +95,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "update osee_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
 
    private static final String VERIFY_TX_CURRENT =
-         "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, txs1.mod_type, art1.art_type_id FROM osee_tx_details txd1, osee_txs txs1, osee_artifact art1, osee_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
+         "SELECT COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, txs1.mod_type, art1.art_type_id FROM osee_tx_details txd1, osee_txs txs1, osee_artifact art1, osee_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
 
    private final class UpdateHelper {
       TypesEnum type;
@@ -438,12 +438,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Verifying Tx Current", getTotalWork());
 
-         int totalRowCount = executeQuery(monitor, connection, new IRowProcessor() {
-            @Override
-            public void processRow(ResultSet resultSet) throws SQLException {
-               // Do Nothing
-            }
-         }, 0, VERIFY_TX_CURRENT);
+         int totalRowCount = ConnectionHandler.runPreparedQueryFetchInt(connection, -1, VERIFY_TX_CURRENT);
 
          String msg = null;
          boolean result = totalRowCount == 0;

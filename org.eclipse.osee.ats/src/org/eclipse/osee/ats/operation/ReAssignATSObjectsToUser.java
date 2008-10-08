@@ -47,7 +47,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -89,7 +89,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                AbstractSkynetTxTemplate txWrapper =
                      new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                         @Override
-                        protected void handleTxWork() throws OseeCoreException, SQLException {
+                        protected void handleTxWork() throws OseeCoreException {
                            for (Artifact artifact : artsToReAssign) {
                               if (artifact instanceof StateMachineArtifact) {
                                  ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);

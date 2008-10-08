@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.ui.skynet.notify;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.jobs.Job;
@@ -36,7 +35,7 @@ public class OseeNotificationManager {
       notificationEvents.clear();
    }
 
-   public static void sendNotifications() throws OseeCoreException, SQLException {
+   public static void sendNotifications() throws OseeCoreException {
       if (!emailEnabled) {
          OSEELog.logInfo(SkynetGuiPlugin.class, "Osee Notification Disabled", false);
          return;

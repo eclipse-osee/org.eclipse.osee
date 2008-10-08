@@ -120,7 +120,7 @@ public class XRadioButtons extends XWidget {
       if (selected != null) setSelected((String[]) selected.toArray(new String[selected.size()]));
    }
 
-   public void setFromXml(String xml) throws IllegalStateException, SQLException {
+   public void setFromXml(String xml) throws IllegalStateException {
       selectAll(false);
       if (!multiSelect)
          super.setFromXml(xml);

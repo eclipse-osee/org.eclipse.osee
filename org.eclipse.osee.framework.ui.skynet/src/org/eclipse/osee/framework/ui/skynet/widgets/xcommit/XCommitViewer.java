@@ -282,7 +282,7 @@ public class XCommitViewer extends XWidget {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException {
       this.artifact = artifact;
       loadTable();
    }

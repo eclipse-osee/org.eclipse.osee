@@ -34,7 +34,7 @@ public interface IAtsStateItem {
 
    public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
-   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException, SQLException;
+   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException;
 
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException;
 

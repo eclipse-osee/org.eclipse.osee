@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.config;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
 
-   public void run(Connection connection)throws OseeCoreException, SQLException{
+   public void run(Connection connection) throws OseeCoreException {
       createAtsTopLevelConfigObjects();
 
       // Configure WorkItemDefinitions
@@ -33,7 +32,7 @@ public class AtsDatabaseConfig extends DbInitializationTask {
 
    }
 
-   public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData)throws OseeCoreException, SQLException{
+   public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData) throws OseeCoreException {
 
       // Import Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, null, AtsWorkDefinitions.getAtsWorkDefinitions());
@@ -46,7 +45,7 @@ public class AtsDatabaseConfig extends DbInitializationTask {
 
    }
 
-   private void createAtsTopLevelConfigObjects()throws OseeCoreException, SQLException{
+   private void createAtsTopLevelConfigObjects() throws OseeCoreException {
       AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
       AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
       AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();

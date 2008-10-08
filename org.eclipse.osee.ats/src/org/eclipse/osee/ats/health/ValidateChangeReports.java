@@ -114,7 +114,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    // Lba B3 Req Team Workflow
    // Lba V11 REU Req Team Workflow
    // Lba V13 Req Team Workflow
-   private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException, SQLException {
+   private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));

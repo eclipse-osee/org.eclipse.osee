@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +45,7 @@ public class EditTasksBySelectedWorkflows extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions)throws OseeCoreException, SQLException{
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Set<StateMachineArtifact> smas = WorldView.getWorldView().getxViewer().getSelectedSMAArtifacts();
       if (smas.size() == 0) {
          AWorkbench.popup("ERROR", "Must select Action Workflows in ATS World to edit tasks.");

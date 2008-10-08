@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -62,7 +61,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
       if (teamDef == null) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
@@ -72,7 +71,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, SQLException {
+   public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {

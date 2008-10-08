@@ -277,7 +277,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
       return "";
    }
 
-   private String getChangeType(ArtifactChange artifactChange) throws OseeCoreException, SQLException {
+   private String getChangeType(ArtifactChange artifactChange) throws OseeCoreException {
       // Compare using artids cause a historical artifact is NOT equal to a current artifact
       if ((artifactChange.getModType() == ModificationType.CHANGE) && attributeModifiedArtifactIds != null && !attributeModifiedArtifactIds.contains(artifactChange.getArtifact().getArtId())) return artifactChange.getModType().getDisplayName() + " Relation Only";
       return artifactChange.getModType().getDisplayName();

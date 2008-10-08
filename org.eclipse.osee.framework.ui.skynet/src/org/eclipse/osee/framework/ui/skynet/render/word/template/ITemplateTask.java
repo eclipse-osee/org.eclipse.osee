@@ -11,8 +11,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -21,11 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public interface ITemplateTask {
 
-   void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws SQLException, Exception;
+   void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws IOException, OseeCoreException;
 
-   /**
-    * @return
-    */
    boolean isTypeNameWildcard();
 
 }

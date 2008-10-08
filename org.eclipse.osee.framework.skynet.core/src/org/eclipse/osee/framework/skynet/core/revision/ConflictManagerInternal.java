@@ -1,7 +1,5 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,7 +60,7 @@ public class ConflictManagerInternal {
       return instance;
    }
 
-   public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction) throws SQLException, OseeCoreException {
+   public List<Conflict> getConflictsPerBranch(TransactionId commitTransaction) throws OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
       if (DEBUG) {
@@ -82,14 +80,13 @@ public class ConflictManagerInternal {
          if (DEBUG) {
             System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
          }
-         ResultSet resultSet = chStmt.getRset();
-         while (resultSet.next()) {
+         while (chStmt.next()) {
             AttributeConflict attributeConflict =
-                  new AttributeConflict(resultSet.getInt("source_gamma_id"), resultSet.getInt("dest_gamma_id"),
-                        resultSet.getInt("art_id"), commitTransaction, resultSet.getString("source_value"),
-                        resultSet.getInt("attr_id"), resultSet.getInt("attr_type_id"),
-                        BranchPersistenceManager.getBranch(resultSet.getInt("merge_branch_id")),
-                        BranchPersistenceManager.getBranch(resultSet.getInt("dest_branch_id")));
+                  new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
+                        chStmt.getInt("art_id"), commitTransaction, chStmt.getString("source_value"),
+                        chStmt.getInt("attr_id"), chStmt.getInt("attr_type_id"),
+                        BranchPersistenceManager.getBranch(chStmt.getInt("merge_branch_id")),
+                        BranchPersistenceManager.getBranch(chStmt.getInt("dest_branch_id")));
             conflicts.add(attributeConflict);
 
             attributeConflict.computeStatus();
@@ -208,22 +205,21 @@ public class ConflictManagerInternal {
          if (DEBUG) {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
          }
-         ResultSet resultSet = chStmt.getRset();
 
-         if (!resultSet.next()) {
+         if (!chStmt.next()) {
             return;
          }
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
 
          do {
-            int nextArtId = resultSet.getInt("art_id");
-            int sourceGamma = resultSet.getInt("source_gamma");
-            int destGamma = resultSet.getInt("dest_gamma");
-            int sourceModType = resultSet.getInt("source_mod_type");
-            int destModType = resultSet.getInt("dest_mod_type");
-            int artTypeId = resultSet.getInt("art_type_id");
-            int beginGamma = resultSet.getInt("begin_gamma");
+            int nextArtId = chStmt.getInt("art_id");
+            int sourceGamma = chStmt.getInt("source_gamma");
+            int destGamma = chStmt.getInt("dest_gamma");
+            int sourceModType = chStmt.getInt("source_mod_type");
+            int destModType = chStmt.getInt("dest_mod_type");
+            int artTypeId = chStmt.getInt("art_type_id");
+            int beginGamma = chStmt.getInt("begin_gamma");
 
             if (artId != nextArtId && beginGamma != destGamma) {
                artId = nextArtId;
@@ -241,9 +237,7 @@ public class ConflictManagerInternal {
                   artIdSetDontAdd.add(artId);
                }
             }
-         } while (resultSet.next());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         } while (chStmt.next());
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -275,21 +269,19 @@ public class ConflictManagerInternal {
          if (DEBUG) {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
          }
-         ResultSet resultSet = chStmt.getRset();
-
          int attrId = 0;
 
-         if (resultSet.next()) {
+         if (chStmt.next()) {
 
             do {
-               int nextAttrId = resultSet.getInt("attr_id");
-               int artId = resultSet.getInt("art_id");
-               int sourceGamma = resultSet.getInt("source_gamma");
-               int destGamma = resultSet.getInt("dest_gamma");
-               int modType = resultSet.getInt("mod_type");
-               int attrTypeId = resultSet.getInt("attr_type_id");
+               int nextAttrId = chStmt.getInt("attr_id");
+               int artId = chStmt.getInt("art_id");
+               int sourceGamma = chStmt.getInt("source_gamma");
+               int destGamma = chStmt.getInt("dest_gamma");
+               int modType = chStmt.getInt("mod_type");
+               int attrTypeId = chStmt.getInt("attr_type_id");
                String sourceValue =
-                     resultSet.getString("source_value") != null ? resultSet.getString("source_value") : resultSet.getString("dest_value");
+                     chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
                if (attrId != nextAttrId && modType == ModificationType.NEW.getValue()) {
                   attrId = nextAttrId;
@@ -300,10 +292,8 @@ public class ConflictManagerInternal {
                   conflictBuilders.add(attributeConflictBuilder);
                   artIdSet.add(artId);
                }
-            } while (resultSet.next());
+            } while (chStmt.next());
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -322,20 +312,18 @@ public class ConflictManagerInternal {
             System.out.println(String.format("         Query completed in %s ", Lib.getElapseString(time)));
          }
 
-         ResultSet resultSet = chStmt.getRset();
-
-         if (!resultSet.next()) return;
+         if (!chStmt.next()) return;
          int attrId = 0;
 
          do {
-            int nextAttrId = resultSet.getInt("attr_id");
-            int artId = resultSet.getInt("art_id");
-            int sourceGamma = resultSet.getInt("source_gamma");
-            int destGamma = resultSet.getInt("dest_gamma");
-            int attrTypeId = resultSet.getInt("attr_type_id");
-            int beginGamma = resultSet.getInt("begin_gamma");
+            int nextAttrId = chStmt.getInt("attr_id");
+            int artId = chStmt.getInt("art_id");
+            int sourceGamma = chStmt.getInt("source_gamma");
+            int destGamma = chStmt.getInt("dest_gamma");
+            int attrTypeId = chStmt.getInt("attr_type_id");
+            int beginGamma = chStmt.getInt("begin_gamma");
             String sourceValue =
-                  resultSet.getString("source_value") != null ? resultSet.getString("source_value") : resultSet.getString("dest_value");
+                  chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
             if (attrId != nextAttrId && beginGamma != destGamma) {
                attrId = nextAttrId;
@@ -346,9 +334,7 @@ public class ConflictManagerInternal {
                conflictBuilders.add(attributeConflictBuilder);
                artIdSet.add(artId);
             }
-         } while (resultSet.next());
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         } while (chStmt.next());
       } finally {
          ConnectionHandler.close(chStmt);
       }

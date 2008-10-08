@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashSet;
@@ -432,7 +431,7 @@ public class BranchCreator {
        * @param destBranch
        * @param artIds
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws SQLException {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) {
          this(sourceBranch, destBranch, artIds, null);
       }
 

@@ -37,7 +37,7 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
    }
 
    @Override
-   protected void handleTxWork() throws OseeCoreException, SQLException {
+   protected void handleTxWork() throws OseeCoreException {
       try {
          importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SOFTWARE_REQUIREMENT + "s",
                Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");

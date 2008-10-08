@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -56,7 +55,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
       if (teamDefHoldingVersions == null) return;
       try {
@@ -113,7 +112,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException, SQLException {
+   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
       if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {

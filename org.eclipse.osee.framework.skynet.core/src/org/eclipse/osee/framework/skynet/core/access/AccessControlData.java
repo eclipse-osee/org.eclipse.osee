@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -62,15 +61,15 @@ public class AccessControlData implements Comparable<AccessControlData> {
       dirty = true;
    }
 
-   public PermissionEnum getBranchPermission() throws SQLException {
+   public PermissionEnum getBranchPermission() {
       return branchPermission;
    }
 
-   public PermissionEnum getArtifactPermission() throws SQLException {
+   public PermissionEnum getArtifactPermission() {
       return artifactPermission;
    }
 
-   public PermissionEnum getArtifactTypePermission() throws SQLException {
+   public PermissionEnum getArtifactTypePermission() {
       return artifactTypePermission;
    }
 

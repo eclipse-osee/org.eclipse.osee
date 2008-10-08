@@ -34,7 +34,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
       UserRole roleItem = (UserRole) element;
       if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
          if (roleItem.getUser().equals(SkynetAuthentication.getUser()))
@@ -59,7 +59,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
 
       UserRole defectItem = ((UserRole) element);
       if (aCol.equals(UserRoleXViewerFactory.User_Col))

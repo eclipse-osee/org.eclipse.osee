@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.db.connection.core;
 import java.sql.Connection;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 
 /**
  * @author Ryan D. Brooks

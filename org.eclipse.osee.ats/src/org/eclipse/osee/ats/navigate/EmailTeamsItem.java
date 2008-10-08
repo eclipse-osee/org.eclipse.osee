@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -59,7 +58,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException, SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
       if (teamDefs == null || teamDefs.size() == 0) return;
       Set<String> emails = new HashSet<String>();
@@ -81,7 +80,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       AWorkbench.popup("Complete", "Configured emails openened in local email client.");
    }
 
-   public Collection<TeamDefinitionArtifact> getTeamDefinitions() throws OseeCoreException, SQLException {
+   public Collection<TeamDefinitionArtifact> getTeamDefinitions() throws OseeCoreException {
       if (teamDef != null) {
          return Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, true);
       }

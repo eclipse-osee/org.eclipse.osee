@@ -55,7 +55,7 @@ public class NewDecisionReviewJob extends Job {
          AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork() throws OseeCoreException, SQLException {
+            protected void handleTxWork() throws OseeCoreException {
                decisionReviewArtifact = createNewDecisionReview(teamParent, reviewBlockType, againstCurrentState);
                decisionReviewArtifact.persistAttributesAndRelations();
             }
@@ -72,7 +72,7 @@ public class NewDecisionReviewJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException, SQLException {
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, ReviewBlockType reviewBlockType, boolean againstCurrentState) throws OseeCoreException {
       return createNewDecisionReview(teamParent, reviewBlockType,
             "Should we do this?  Yes will require followup, No will not",
             againstCurrentState ? teamParent.getSmaMgr().getStateMgr().getCurrentStateName() : null,

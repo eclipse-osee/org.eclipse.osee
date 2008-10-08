@@ -92,7 +92,7 @@ public class DatabaseDataExtractor {
       this.extractTables.clear();
    }
 
-   public void extract() throws OseeDataStoreException, IOException {
+   public void extract() throws OseeDataStoreException {
       FileUtility.setupDirectoryForWrite(directory);
       extractData();
    }

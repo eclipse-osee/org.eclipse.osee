@@ -147,7 +147,7 @@ class CommitJob extends Job {
        * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          monitor.beginTask("Acquire from branch transactions", 100);
 
          User userToBlame = SkynetAuthentication.getUser();

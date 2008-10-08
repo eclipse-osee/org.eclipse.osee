@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -34,9 +33,8 @@ public class XPromptChange {
       SINGLE_LINE, MULTI_LINE
    };
 
-   public static Date promptChangeDate(String displayName, Date currDate) throws SQLException {
-      // prompt that current release is (get from attribute); want to
-      // change
+   public static Date promptChangeDate(String displayName, Date currDate) {
+      // prompt that current release is (get from attribute); want to change
       DateSelectionDialog diag =
             new DateSelectionDialog("Select " + displayName, "Select " + displayName,
                   currDate != null ? currDate : null);
@@ -55,7 +53,7 @@ public class XPromptChange {
       return null;
    }
 
-   public static EnumStringMultiSelectionDialog promptChangeMultiSelectEnumeration(String displayName, Collection<String> enums, Collection<String> currEnums) throws SQLException {
+   public static EnumStringMultiSelectionDialog promptChangeMultiSelectEnumeration(String displayName, Collection<String> enums, Collection<String> currEnums) {
       final EnumStringMultiSelectionDialog diag = new EnumStringMultiSelectionDialog(displayName, enums, currEnums);
       if (diag.open() == 0) {
          return diag;
@@ -63,31 +61,31 @@ public class XPromptChange {
       return null;
    }
 
-   public static String promptChangeInteger(String displayName, int currEntry) throws SQLException {
+   public static String promptChangeInteger(String displayName, int currEntry) {
       return promptChangeInteger(displayName, currEntry == 0 ? "" : String.valueOf(currEntry));
    }
 
-   public static String promptChangeInteger(String displayName, String currEntry) throws SQLException {
+   public static String promptChangeInteger(String displayName, String currEntry) {
       return promptChangeString(displayName, currEntry, VALID_INTEGER_REG_EX);
    }
 
-   public static String promptChangePercent(String displayName, String currEntry) throws SQLException {
+   public static String promptChangePercent(String displayName, String currEntry) {
       return promptChangeString(displayName, currEntry, VALID_PERCENT_REG_EX);
    }
 
-   public static String promptChangeFloat(String displayName, double currEntry) throws SQLException {
+   public static String promptChangeFloat(String displayName, double currEntry) {
       return promptChangeFloat(displayName, currEntry == 0 ? "" : String.valueOf(currEntry));
    }
 
-   public static String promptChangeFloat(String displayName, String currEntry) throws SQLException {
+   public static String promptChangeFloat(String displayName, String currEntry) {
       return promptChangeString(displayName, currEntry, VALID_FLOAT_REG_EX);
    }
 
-   public static String promptChangeString(String displayName, String currEntry, String validationRegEx) throws SQLException {
+   public static String promptChangeString(String displayName, String currEntry, String validationRegEx) {
       return promptChangeString(displayName, currEntry, validationRegEx, Option.SINGLE_LINE);
    }
 
-   public static String promptChangeString(String displayName, String currEntry, String validationRegEx, Option option) throws SQLException {
+   public static String promptChangeString(String displayName, String currEntry, String validationRegEx, Option option) {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
@@ -101,7 +99,7 @@ public class XPromptChange {
       return null;
    }
 
-   public static Boolean promptChangeBoolean(String displayName, String toggleMessage, boolean currSelection) throws SQLException {
+   public static Boolean promptChangeBoolean(String displayName, String toggleMessage, boolean currSelection) {
       MessageDialogWithToggle md =
             new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
                   MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,

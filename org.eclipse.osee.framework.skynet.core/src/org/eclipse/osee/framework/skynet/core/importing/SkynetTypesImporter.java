@@ -82,7 +82,7 @@ public class SkynetTypesImporter implements RowProcessor {
       xmlReader.parse(new InputSource(importFile));
    }
 
-   public void finish() throws Exception {
+   public void finish() throws OseeCoreException {
       for (AttributeMapRow attributeRow : attributeMapRows) {
          attributeRow.persist();
       }

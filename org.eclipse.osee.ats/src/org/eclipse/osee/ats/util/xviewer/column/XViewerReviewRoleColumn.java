@@ -46,14 +46,14 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerValueColumn#getColumnText(java.lang.Object, org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn)
     */
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws OseeCoreException {
       if (element instanceof ReviewSMArtifact) {
          return getRolesStr((ReviewSMArtifact) element, user);
       }
       return "";
    }
 
-   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException, SQLException {
+   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException {
       String str = "";
       for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
          if (role.getUser().equals(user)) str += role.getRole().name() + ", ";

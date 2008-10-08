@@ -15,14 +15,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -95,63 +93,58 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
             (destinationDir != null && destinationDir.isDirectory()) ? destinationDir : importFile.getParentFile();
    }
 
-   public void finish() throws SQLException, CoreException, IOException {
-      try {
-         BufferedWriter out;
-         //relation enum gen
-         String relClassName = this.sheetName + "_RELATIONS";
-         out = new BufferedWriter(new FileWriter(new File(destinationDir, relClassName + ".java")));
-         out.append("\n\n");
-         out.append(relationImports);
-         out.append("public enum ");
-         out.append(relClassName);
-         out.append(" implements IRelationEnumeration {\n");
-         Iterator<String> it = relations.iterator();
-         while (it.hasNext()) {
-            out.append("   ");
-            out.append(it.next());
-            if (it.hasNext()) out.append(",\n");
-         }
-         out.append(";\n");
-         out.append(relationEnumCode.replace("CLASSNAME_PLACEHOLDER", relClassName));
-         out.append("}");
-         out.close();
-         //attribute enum gen
-         String attrClassName = this.sheetName + "_ATTRIBUTES";
-         out = new BufferedWriter(new FileWriter(new File(destinationDir, attrClassName + ".java")));
-         out.append("\n\nimport org.eclipse.osee.framework.skynet.core.ISkynetType;\n\npublic enum ");
-         out.append(attrClassName);
-         out.append(" implements ISkynetType {\n");
-         it = attributes.iterator();
-         while (it.hasNext()) {
-            out.append("   ");
-            out.append(it.next());
-            if (it.hasNext()) out.append(",\n");
-         }
-         out.append(";\n\n");
-         out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", attrClassName));
-         out.append("}");
-         out.close();
-         //artifact enum gen
-         String artClassName = this.sheetName + "_ARTIFACTS";
-         out = new BufferedWriter(new FileWriter(new File(destinationDir, artClassName + ".java")));
-         out.append("\n\nimport org.eclipse.osee.framework.skynet.core.ISkynetType;\n\npublic enum ");
-         out.append(artClassName);
-         out.append(" implements ISkynetType {\n");
-         it = artifacts.iterator();
-         while (it.hasNext()) {
-            out.append("   ");
-            out.append(it.next());
-            if (it.hasNext()) out.append(",\n");
-         }
-         out.append(";\n\n");
-         out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", artClassName));
-         out.append("}");
-         out.close();
-
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+   public void finish() throws IOException {
+      BufferedWriter out;
+      //relation enum gen
+      String relClassName = this.sheetName + "_RELATIONS";
+      out = new BufferedWriter(new FileWriter(new File(destinationDir, relClassName + ".java")));
+      out.append("\n\n");
+      out.append(relationImports);
+      out.append("public enum ");
+      out.append(relClassName);
+      out.append(" implements IRelationEnumeration {\n");
+      Iterator<String> it = relations.iterator();
+      while (it.hasNext()) {
+         out.append("   ");
+         out.append(it.next());
+         if (it.hasNext()) out.append(",\n");
       }
+      out.append(";\n");
+      out.append(relationEnumCode.replace("CLASSNAME_PLACEHOLDER", relClassName));
+      out.append("}");
+      out.close();
+      //attribute enum gen
+      String attrClassName = this.sheetName + "_ATTRIBUTES";
+      out = new BufferedWriter(new FileWriter(new File(destinationDir, attrClassName + ".java")));
+      out.append("\n\nimport org.eclipse.osee.framework.skynet.core.ISkynetType;\n\npublic enum ");
+      out.append(attrClassName);
+      out.append(" implements ISkynetType {\n");
+      it = attributes.iterator();
+      while (it.hasNext()) {
+         out.append("   ");
+         out.append(it.next());
+         if (it.hasNext()) out.append(",\n");
+      }
+      out.append(";\n\n");
+      out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", attrClassName));
+      out.append("}");
+      out.close();
+      //artifact enum gen
+      String artClassName = this.sheetName + "_ARTIFACTS";
+      out = new BufferedWriter(new FileWriter(new File(destinationDir, artClassName + ".java")));
+      out.append("\n\nimport org.eclipse.osee.framework.skynet.core.ISkynetType;\n\npublic enum ");
+      out.append(artClassName);
+      out.append(" implements ISkynetType {\n");
+      it = artifacts.iterator();
+      while (it.hasNext()) {
+         out.append("   ");
+         out.append(it.next());
+         if (it.hasNext()) out.append(",\n");
+      }
+      out.append(";\n\n");
+      out.append(skynetTypeCode.replace("CLASSNAME_PLACEHOLDER", artClassName));
+      out.append("}");
+      out.close();
    }
 
    public static String getDescription() {

@@ -55,7 +55,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public void runOperation(final BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -89,7 +89,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   AbstractSkynetTxTemplate txWrapper =
                         new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                            @Override
-                           protected void handleTxWork() throws OseeCoreException, SQLException {
+                           protected void handleTxWork() throws OseeCoreException {
                               handleCreateTasks(assignees, titles, teamArt);
                               teamArt.persistAttributesAndRelations();
                            }
@@ -108,7 +108,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       });
    }
 
-   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt) throws OseeCoreException, SQLException {
+   private void handleCreateTasks(List<Artifact> assignees, List<String> titles, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       for (String title : titles) {
          TaskArtifact taskArt = teamArt.getSmaMgr().getTaskMgr().createNewTask(title, false);
          if (assignees != null && assignees.size() > 0) {

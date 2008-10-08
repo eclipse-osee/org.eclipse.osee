@@ -94,7 +94,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          }
       }
 
-      private void getMatrixItems() throws OseeCoreException, SQLException {
+      private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactsFromName("%" + artifactName + "%", BranchPersistenceManager.getDefaultBranch());
          final Set<Artifact> processArts = new HashSet<Artifact>();

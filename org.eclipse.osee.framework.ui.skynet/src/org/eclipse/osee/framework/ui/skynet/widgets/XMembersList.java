@@ -26,15 +26,15 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
  */
 public class XMembersList extends XListViewer {
 
-   public XMembersList() throws OseeCoreException, SQLException {
+   public XMembersList() throws OseeCoreException {
       this("MList", "", "");
    }
 
-   public XMembersList(String displayLabel) throws OseeCoreException, SQLException {
+   public XMembersList(String displayLabel) throws OseeCoreException {
       this(displayLabel, "", "");
    }
 
-   public XMembersList(String displayLabel, String xmlRoot, String xmlSubRoot) throws OseeCoreException, SQLException {
+   public XMembersList(String displayLabel, String xmlRoot, String xmlSubRoot) throws OseeCoreException {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());

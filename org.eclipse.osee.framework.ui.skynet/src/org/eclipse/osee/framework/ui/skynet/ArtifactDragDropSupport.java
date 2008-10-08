@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -34,11 +33,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ArtifactDragDropSupport {
 
-   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) throws SQLException {
+   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) {
       performDragDrop(e, null, window, shell);
    }
 
-   public static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) throws SQLException {
+   public static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 
@@ -94,7 +93,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) throws SQLException {
+   private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) {
       RelationTypeSide group = window.getRelationGroup();
       IFile iFile;
       Artifact artifact;
@@ -135,7 +134,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void addURL(String url, RelationExplorerWindow window, Shell shell) throws SQLException {
+   private static void addURL(String url, RelationExplorerWindow window, Shell shell) {
       RelationTypeSide group = window.getRelationGroup();
       Artifact artifact;
       String location;

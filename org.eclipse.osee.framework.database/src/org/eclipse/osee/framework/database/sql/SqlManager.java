@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.sql;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.data.AppliesToClause;
 import org.eclipse.osee.framework.database.data.ColumnDbData;
 import org.eclipse.osee.framework.database.data.ColumnMetadata;
@@ -35,28 +39,26 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class SqlManager {
-
-   protected Logger logger;
    protected SqlDataType sqlDataType;
    public static final String CREATE_STRING = "CREATE";
    public static final String DROP_STRING = "DROP";
 
-   public SqlManager(Logger logger, SqlDataType sqlDataType) {
-      super();
-      this.logger = logger;
+   public SqlManager(SqlDataType sqlDataType) {
       this.sqlDataType = sqlDataType;
    }
 
-   public abstract void createTable(Connection connection, TableElement tableDef) throws SQLException, Exception;
+   public abstract void createTable(Connection connection, TableElement tableDef) throws OseeDataStoreException;
 
-   public abstract void dropTable(Connection connection, TableElement tableDef) throws SQLException, Exception;
+   public abstract void dropTable(Connection connection, TableElement tableDef) throws OseeDataStoreException;
 
-   public void insertData(Connection connection, List<ColumnDbData> rowData, TableElement tableMetadata) throws SQLException, Exception {
+   public void insertData(Connection connection, List<ColumnDbData> rowData, TableElement tableMetadata) throws OseeDataStoreException {
       List<String> columnNames = new ArrayList<String>();
       List<String> placeHolders = new ArrayList<String>();
       List<String> columnValues = new ArrayList<String>();
@@ -82,20 +84,53 @@ public abstract class SqlManager {
       toExecute += StringFormat.listToCommaSeparatedString(placeHolders);
       toExecute += ")\n";
 
-      PreparedStatement statement = null;
-      try {
-         statement = connection.prepareStatement(toExecute);
-         statement.setFetchSize(1000);
-         for (int index = 0; index < columnNames.size(); index++) {
-            sqlDataType.preparedStatementHelper(statement, index + 1, columnTypes.get(index), columnValues.get(index));
-         }
-         statement.executeUpdate();
-      } catch (SQLException e) {
-         throw new Exception(statement + "\n", e);
-      } finally {
-         if (statement != null) {
-            statement.close();
-         }
+      Object[] data = new Object[columnNames.size()];
+      for (int index = 0; index < columnNames.size(); index++) {
+         data[index] = preparedStatementHelper(columnTypes.get(index), columnValues.get(index));
+      }
+      ConnectionHandler.runPreparedUpdate(connection, toExecute, data);
+   }
+
+   public Object preparedStatementHelper(SQL3DataType columnType, String value) throws OseeDataStoreException {
+      switch (columnType) {
+         case BINARY:
+         case BIT:
+            return value != null && !value.equals("") ? Byte.parseByte(value) : 0;
+         case TINYINT:
+         case SMALLINT:
+            return value != null && !value.equals("") ? Short.valueOf(value) : 0;
+         case INTEGER:
+            return value != null && !value.equals("") ? Integer.valueOf(value) : 0;
+         case BIGINT:
+            return value != null && !value.equals("") ? BigDecimal.valueOf(Double.valueOf(value)) : new BigDecimal(0);
+         case FLOAT:
+            return value != null && !value.equals("") ? Float.valueOf(value) : 0.0f;
+         case NUMERIC:
+         case DECIMAL:
+         case REAL:
+         case DOUBLE:
+            return value != null && !value.equals("") ? Double.valueOf(value) : 0.0;
+         case CHAR:
+         case VARCHAR:
+         case LONGVARCHAR:
+            return value;
+         case DATE:
+            return value == null || value.equals("") ? SQL3DataType.DATE : Date.valueOf(value);
+         case TIMESTAMP:
+            return value != null && !value.equals("") ? Timestamp.valueOf(value) : GlobalTime.GreenwichMeanTimestamp();
+         case TIME:
+            return value == null || value.equals("") ? SQL3DataType.TIME : Time.valueOf(value);
+         case VARBINARY:
+         case LONGVARBINARY:
+            return value.getBytes();
+         case BLOB:
+            return new BufferedInputStream(new ByteArrayInputStream(value.getBytes()));
+         case CLOB:
+            return new BufferedInputStream(new ByteArrayInputStream(value.getBytes()));
+         case BOOLEAN:
+            return value == null || value.equals("") ? false : Boolean.parseBoolean(value);
+         default:
+            throw new OseeDataStoreException("unexpected column type: " + columnType);
       }
    }
 
@@ -189,13 +224,15 @@ public abstract class SqlManager {
                }
 
                else {
-                  logger.log(Level.WARNING, "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
+                  OseeLog.log(DatabaseActivator.class, Level.WARNING,
+                        "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + fk.toString());
                }
 
             }
          }
       } else {
-         logger.log(Level.WARNING, "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
+         OseeLog.log(DatabaseActivator.class, Level.WARNING,
+               "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
       }
       return toReturn.toString();
    }
@@ -255,7 +292,7 @@ public abstract class SqlManager {
                String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                      appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
-         logger.log(Level.INFO, toExecute + "\n");
+         OseeLog.log(DatabaseActivator.class, Level.INFO, toExecute + "\n");
          ConnectionHandler.runPreparedUpdate(connection, toExecute);
       }
    }
@@ -268,7 +305,8 @@ public abstract class SqlManager {
       List<IndexElement> tableIndeces = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndeces) {
-         logger.log(Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName));
+         OseeLog.log(DatabaseActivator.class, Level.INFO, String.format("Dropping Index: [%s] FROM [%s]\n",
+               iData.getId(), tableName));
          ConnectionHandler.runPreparedUpdate(connection, DROP_STRING + " INDEX " + iData.getId());
       }
    }

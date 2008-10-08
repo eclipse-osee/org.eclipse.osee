@@ -927,7 +927,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
          @Override
-         protected void handleTxWork() throws OseeCoreException, SQLException {
+         protected void handleTxWork() throws OseeCoreException {
             if (isDirty()) {
                getTxBuilder().addArtifactToPersist(Artifact.this);
                onAttributePersist();
@@ -1064,7 +1064,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       addRelation(relationSide, artifact, null);
    }
 
-   public void addRelation(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException, SQLException {
+   public void addRelation(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {
       boolean sideA = relationSide.isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
@@ -1521,7 +1521,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return transactionId.getTime();
    }
 
-   public User getLastModifiedBy() throws OseeCoreException, SQLException {
+   public User getLastModifiedBy() throws OseeCoreException {
       return SkynetAuthentication.getUserByArtId(transactionId.getAuthorArtId());
    }
 }

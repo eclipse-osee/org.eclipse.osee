@@ -88,7 +88,7 @@ public class PolicyDialog extends Dialog {
       return mainComposite;
    }
 
-   private void setInputs() throws OseeCoreException, SQLException {
+   private void setInputs() throws OseeCoreException {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();

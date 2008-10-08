@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +53,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       this.groupType = groupType;
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws OseeCoreException, SQLException {
+   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws OseeCoreException {
       List<GroupType> groupTypes = Arrays.asList(groupType);
       Set<Artifact> groupOptions = new HashSet<Artifact>();
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {

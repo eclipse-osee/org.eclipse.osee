@@ -101,7 +101,7 @@ public class ConflictResolutionWizard extends Wizard {
       return super.performCancel();
    }
 
-   public void setResolution() throws OseeCoreException, SQLException {
+   public void setResolution() throws OseeCoreException {
       if (getContainer() != null) {
          IWizardPage page = getContainer().getCurrentPage();
          Image image = XMergeLabelProvider.getMergeImage(conflict);

@@ -191,7 +191,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
       }
    }
 
-   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws SQLException {
+   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) {
       int count = 0;
       sbFull.append(AHTML.addRowSpanMultiColumnTable(HEADER[x], columnHeaders.length));
       for (LocalRelationLink relLink : map.allValues()) {

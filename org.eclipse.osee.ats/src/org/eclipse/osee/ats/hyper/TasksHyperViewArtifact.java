@@ -51,7 +51,7 @@ public class TasksHyperViewArtifact implements IHyperArtifact {
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
     */
    @Override
-   public Image getHyperAssigneeImage()throws OseeCoreException, SQLException{
+   public Image getHyperAssigneeImage()throws OseeCoreException{
       return null;
    }
 

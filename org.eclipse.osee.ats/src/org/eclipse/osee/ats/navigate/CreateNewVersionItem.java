@@ -116,7 +116,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), newVersionName);

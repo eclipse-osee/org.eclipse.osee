@@ -35,7 +35,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       Branch branch = ((Branch) element);
       if (xCol.equals(CommitXViewerFactory.Name_Col)) {
          if (branch.equals(commitXViewer.getWorkingBranch())) return SkynetGuiPlugin.getInstance().getImage(
@@ -52,7 +52,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       Branch branch = ((Branch) element);
       if (xCol.equals(CommitXViewerFactory.Type_Col)) {
          if (branch.equals(commitXViewer.getWorkingBranch()))

@@ -67,7 +67,7 @@ public class BlamWorkflow extends Artifact {
       this.layoutDatas = new LinkedList<DynamicXWidgetLayoutData>();
    }
 
-   public static BlamWorkflow getOrCreateBlamWorkflow(BlamOperation soleOperation) throws SQLException, OseeCoreException {
+   public static BlamWorkflow getOrCreateBlamWorkflow(BlamOperation soleOperation) throws OseeCoreException {
       BlamWorkflow blamWorkflow =
             (BlamWorkflow) ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
       blamWorkflow.setDescriptiveName(soleOperation.getName());
@@ -75,14 +75,14 @@ public class BlamWorkflow extends Artifact {
       return blamWorkflow;
    }
 
-   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, SQLException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
       if (layoutDatas.isEmpty()) {
          getOperations();
       }
       return layoutDatas;
    }
 
-   public List<BlamOperation> getOperations() throws IllegalArgumentException, SQLException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<BlamOperation> getOperations() throws IllegalArgumentException, OseeCoreException, ParserConfigurationException, SAXException, IOException, CoreException {
       operations.clear();
 
       if (soleOperation == null) {
@@ -162,7 +162,7 @@ public class BlamWorkflow extends Artifact {
       return "Select parameters below and click the play button at the top right.";
    }
 
-   public void saveLayoutData(String xml) throws ParserConfigurationException, SQLException, OseeCoreException, SAXException, IOException, IllegalArgumentException, CoreException, SQLException {
+   public void saveLayoutData(String xml) throws ParserConfigurationException, OseeCoreException, SAXException, IOException, IllegalArgumentException, CoreException {
       String blamXml = getSoleAttributeValue("Workflow Definition", "");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();

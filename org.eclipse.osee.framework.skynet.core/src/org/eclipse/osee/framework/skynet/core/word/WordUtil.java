@@ -18,8 +18,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -101,7 +99,7 @@ public class WordUtil {
     * @throws OseeDataStoreException
     * @throws Exception
     */
-   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException, OseeDataStoreException, OseeTypeDoesNotExist {
+   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeDataStoreException, OseeTypeDoesNotExist {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
       AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT);
@@ -112,18 +110,17 @@ public class WordUtil {
                ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getAttrTypeId(),
                      branch.getBranchId());
 
-         ResultSet rset = chStmt.getRset();
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
-         while (rset.next()) {
+         while (chStmt.next()) {
             String content;
             try {
-               InputStream stream = rset.getBinaryStream("content");
+               InputStream stream = chStmt.getBinaryStream("content");
                if (stream == null) {
                   content = "";
                } else {
                   content = new String(Streams.getByteArray(stream), "UTF-8");
                }
-               values.add(new Pair<String, Integer>(content, rset.getInt("gamma_id")));
+               values.add(new Pair<String, Integer>(content, chStmt.getInt("gamma_id")));
             } catch (UnsupportedEncodingException ex) {
                // should never ever ever occur
                throw new IllegalStateException("Must support UTF-8 format");

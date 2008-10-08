@@ -135,7 +135,7 @@ public class LoadAIsAndTeamsAction extends Action {
          AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
             @Override
-            protected void handleTxWork()throws OseeCoreException, SQLException{
+            protected void handleTxWork()throws OseeCoreException{
                // Get or create ATS root artifact
                Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
 
@@ -157,7 +157,7 @@ public class LoadAIsAndTeamsAction extends Action {
       }
    }
 
-   public TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page)throws OseeCoreException, SQLException{
+   public TeamDefinitionArtifact addTeam(Artifact parent, DiagramNode page)throws OseeCoreException{
       // System.out.println("Adding Team " + page.getName());
       TeamDefinitionArtifact teamDefArt = null;
       if (page.getName().equals(AtsConfig.TEAMS_HEADING)) {
@@ -270,7 +270,7 @@ public class LoadAIsAndTeamsAction extends Action {
       return teamDefArt;
    }
 
-   public ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page)throws OseeCoreException, SQLException{
+   public ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page)throws OseeCoreException{
       // System.out.println("Processing page " + page.getName());
       ActionableItemArtifact aia = null;
       boolean getOrCreate = false;

@@ -12,7 +12,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,7 +20,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
@@ -60,12 +58,12 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    public ChangeView() {
    }
 
-   public static void open(Branch branch) throws SQLException {
+   public static void open(Branch branch) {
       if (branch == null) throw new IllegalArgumentException("Branch can't be null");
       ChangeView.openViewUpon(branch, null);
    }
 
-   public static void open(TransactionId transactionId) throws SQLException {
+   public static void open(TransactionId transactionId) {
       if (transactionId == null) throw new IllegalArgumentException("TransactionId can't be null");
       ChangeView.openViewUpon(null, transactionId);
    }
@@ -145,7 +143,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
    }
 
-   private void explore(final Branch branch, final TransactionId transactionId) throws SQLException, BranchDoesNotExist {
+   private void explore(final Branch branch, final TransactionId transactionId) {
       if (xChangeViewer != null) {
          this.branch = branch;
          this.transactionId = transactionId;

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -19,8 +21,9 @@ class RootBranchInitializer {
     * Add common artifacts that should be available to all branches
     * 
     * @param branch
+    * @throws OseeCoreException TODO
     */
-   protected void initialize(Branch branch) throws Exception {
+   protected void initialize(Branch branch) throws OseeCoreException {
       // Create necessary default hierarchy root artifact
       ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch, true);
 

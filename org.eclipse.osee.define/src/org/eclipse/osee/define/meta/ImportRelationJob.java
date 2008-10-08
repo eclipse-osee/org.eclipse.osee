@@ -12,7 +12,6 @@ package org.eclipse.osee.define.meta;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +32,7 @@ public class ImportRelationJob extends Job {
    private final File file;
    private final Branch branch;
 
-   public ImportRelationJob(File file, Branch branch) throws IllegalArgumentException, CoreException, SQLException {
+   public ImportRelationJob(File file, Branch branch) throws IllegalArgumentException, CoreException {
       super("Importing Relations");
       this.file = file;
       this.branch = branch;

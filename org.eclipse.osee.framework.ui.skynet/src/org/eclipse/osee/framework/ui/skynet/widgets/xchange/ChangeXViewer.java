@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -119,7 +118,7 @@ public class ChangeXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setChanges(Change[] changes) throws SQLException {
+   public void setChanges(Change[] changes) {
       setInput(changes);
       expandAll();
    }

@@ -186,7 +186,7 @@ public class DeleteTransactionJob extends Job {
          return txIdsToDelete.length + 5;
       }
 
-      private HashCollection<Branch, TxDeleteInfo> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery) throws SQLException, OseeCoreException {
+      private HashCollection<Branch, TxDeleteInfo> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery) throws OseeCoreException {
          HashCollection<Branch, TxDeleteInfo> fromToTxData = new HashCollection<Branch, TxDeleteInfo>();
          for (int index = 0; index < txsToDelete.length; index++) {
             monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));

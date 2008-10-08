@@ -54,7 +54,7 @@ public class XViewerTreeReport {
 
    private Map<XViewerColumn, Integer> xColToColumnIndex = null;
 
-   public String getHtml(TreeItem items[]) throws OseeCoreException, SQLException {
+   public String getHtml(TreeItem items[]) throws OseeCoreException {
       StringBuffer sb = new StringBuffer("<html><body>");
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       List<XViewerColumn> columns = xViewer.getCustomizeMgr().getCurrentTableColumnsInOrder();
@@ -82,7 +82,7 @@ public class XViewerTreeReport {
       return sb.toString();
    }
 
-   public void addRow(TreeItem item, ArrayList<String[]> rowData, XViewerLabelProvider labelProv, List<XViewerColumn> showCols, int level) throws OseeCoreException, SQLException {
+   public void addRow(TreeItem item, ArrayList<String[]> rowData, XViewerLabelProvider labelProv, List<XViewerColumn> showCols, int level) throws OseeCoreException {
       List<String> cellData = new ArrayList<String>(showCols.size());
       boolean firstCell = true;
       for (XViewerColumn xCol : showCols) {

@@ -35,7 +35,7 @@ public class TaskImportJob extends Job {
    private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
    private final boolean persist;
 
-   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, Branch branch, boolean persist) throws IllegalArgumentException, CoreException, SQLException {
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, Branch branch, boolean persist) throws IllegalArgumentException, CoreException {
       super("Importing Tasks");
       this.file = file;
       this.atsTaskExtractor = atsTaskExtractor;
@@ -83,7 +83,7 @@ public class TaskImportJob extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork()throws OseeCoreException, SQLException{
+      protected void handleTxWork()throws OseeCoreException{
          if (file != null && file.isFile()) {
             atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {

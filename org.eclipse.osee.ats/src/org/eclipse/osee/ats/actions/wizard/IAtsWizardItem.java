@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -49,7 +48,7 @@ public interface IAtsWizardItem {
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     *         created
     */
-   public Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard) throws SQLException;
+   public Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard);
 
    /**
     * Callback with created action upon completion and creation of the action and it's workflows.
@@ -70,6 +69,6 @@ public interface IAtsWizardItem {
     * @param wizard
     * @return true if widget data entered is valid
     */
-   public Result isWizardXWidgetsComplete(NewActionWizard wizard) throws SQLException;
+   public Result isWizardXWidgetsComplete(NewActionWizard wizard);
 
 }

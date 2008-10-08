@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.BranchMergeException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -137,7 +136,7 @@ public class ArtifactConflict extends Conflict {
     * @see org.eclipse.osee.framework.skynet.core.conflict.Conflict#getImage()
     */
    @Override
-   public Image getImage() throws SQLException {
+   public Image getImage() {
       return SkynetActivator.getInstance().getImage("laser_16_16.gif");
    }
 

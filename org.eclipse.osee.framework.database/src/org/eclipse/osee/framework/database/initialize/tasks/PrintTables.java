@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 public class PrintTables extends DbInitializationTask {
 
@@ -28,7 +29,7 @@ public class PrintTables extends DbInitializationTask {
       this.userConfig = userConfig;
    }
 
-   public void run(Connection connection) throws Exception {
+   public void run(Connection connection) throws OseeCoreException {
       Set<String> keys = userConfig.keySet();
       for (String key : keys) {
          SchemaData schemaData = userConfig.get(key);

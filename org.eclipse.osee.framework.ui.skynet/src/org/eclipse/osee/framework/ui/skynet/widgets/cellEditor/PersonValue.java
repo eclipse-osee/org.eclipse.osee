@@ -26,7 +26,7 @@ public class PersonValue extends UniversalCellEditorValue {
    /**
     * 
     */
-   public PersonValue() throws OseeCoreException, SQLException {
+   public PersonValue() throws OseeCoreException {
       super();
       choices = SkynetAuthentication.getUserNames();
    }

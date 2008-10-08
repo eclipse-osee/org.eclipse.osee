@@ -107,7 +107,7 @@ public class XTaskViewer extends XWidget implements IActionable {
     * @param label
     * @throws Exception
     */
-   public XTaskViewer(IXTaskViewer iXTaskViewer) throws OseeCoreException, SQLException {
+   public XTaskViewer(IXTaskViewer iXTaskViewer) throws OseeCoreException {
       super(iXTaskViewer.getTabName());
       this.iXTaskViewer = iXTaskViewer;
    }
@@ -304,7 +304,7 @@ public class XTaskViewer extends XWidget implements IActionable {
       extraInfoLabel.getParent().layout();
    }
 
-   public void updateCurrentStateFilter() throws OseeCoreException, SQLException {
+   public void updateCurrentStateFilter() throws OseeCoreException {
       if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
          currentStateFilter = new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
          getXViewer().addFilter(currentStateFilter);
@@ -401,24 +401,19 @@ public class XTaskViewer extends XWidget implements IActionable {
 
    }
 
-   public void loadTable() throws OseeCoreException, SQLException {
-      try {
-         getXViewer().set(iXTaskViewer.getTaskArtifacts(""));
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-
+   public void loadTable() throws OseeCoreException {
+      getXViewer().set(iXTaskViewer.getTaskArtifacts(""));
       xViewer.refresh();
    }
 
-   public void handleImportTasksViaList() throws OseeCoreException, SQLException {
+   public void handleImportTasksViaList() throws OseeCoreException {
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
       ((ImportTasksFromSimpleList) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
       loadTable();
    }
 
-   public void handleImportTasksViaSpreadsheet() throws OseeCoreException, SQLException {
+   public void handleImportTasksViaSpreadsheet() throws OseeCoreException {
       BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
       ((ImportTasksFromSpreadsheet) blamOperation).setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
       WorkflowEditor.edit(blamOperation);
@@ -447,7 +442,7 @@ public class XTaskViewer extends XWidget implements IActionable {
          try {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork() throws OseeCoreException, SQLException {
+               protected void handleTxWork() throws OseeCoreException {
                   // Done for concurrent modification purposes
                   ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
                   delItems.addAll(items);
@@ -621,7 +616,7 @@ public class XTaskViewer extends XWidget implements IActionable {
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                @Override
-               protected void handleTxWork() throws OseeCoreException, SQLException {
+               protected void handleTxWork() throws OseeCoreException {
                   for (Artifact art : artsToRelate) {
                      if (art instanceof TaskArtifact) {
                         TaskArtifact taskArt = (TaskArtifact) art;

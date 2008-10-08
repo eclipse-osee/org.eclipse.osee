@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.templates;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -37,7 +35,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
 
    }
 
-   private synchronized void ensureTemplateCachePopulated() throws SQLException, OseeCoreException {
+   private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =
@@ -77,7 +75,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       for (String name : possibleTemplateNames) {
          Artifact template = templateMap.get(name);
          if (template != null) {
-        	 //template
+            //template
             return template.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
          }
       }

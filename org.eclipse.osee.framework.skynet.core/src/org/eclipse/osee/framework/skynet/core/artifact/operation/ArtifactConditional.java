@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -23,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 public abstract class ArtifactConditional extends Artifact {
    public static final String ARTIFACT_NAME = "Artifact Conditional";
 
-   public ArtifactConditional(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws SQLException {
+   public ArtifactConditional(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

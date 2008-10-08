@@ -112,7 +112,7 @@ public class BlamJob extends Job {
        * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
        */
       @Override
-      protected void handleTxWork() throws OseeCoreException, SQLException {
+      protected void handleTxWork() throws OseeCoreException {
          try {
             operation.runOperation(variableMap, monitor);
          } catch (Exception ex) {

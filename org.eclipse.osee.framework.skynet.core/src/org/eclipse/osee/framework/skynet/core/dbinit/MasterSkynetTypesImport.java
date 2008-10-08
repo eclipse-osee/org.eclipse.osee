@@ -11,22 +11,23 @@
 
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
+import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.importing.SkynetTypesImporter;
 import org.osgi.framework.Bundle;
+import org.xml.sax.SAXException;
 
 /**
  * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
@@ -39,34 +40,8 @@ import org.osgi.framework.Bundle;
  */
 public class MasterSkynetTypesImport {
    private static final String skynetDbTypesExtensionPointId = "org.eclipse.osee.framework.skynet.core.OseeTypes";
-   private Logger logger = ConfigUtil.getConfigFactory().getLogger(MasterSkynetTypesImport.class);
-   private static MasterSkynetTypesImport instance;
 
    private MasterSkynetTypesImport() {
-   }
-
-   public static MasterSkynetTypesImport getInstance() {
-      if (instance == null) instance = new MasterSkynetTypesImport();
-      return instance;
-   }
-
-   private List<IExtension> getExtensionsById(Collection<String> skynetTypesImportExtensionsIds) {
-      List<IExtension> skynetDbTypesExtensions = new ArrayList<IExtension>();
-      for (String pointId : skynetTypesImportExtensionsIds) {
-         IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
-         if (extension == null) {
-            logger.log(Level.SEVERE, "Unable to locate extension [" + pointId + "]");
-         } else {
-            String extsionPointId = extension.getExtensionPointUniqueIdentifier();
-            if (skynetDbTypesExtensionPointId.equals(extsionPointId)) {
-               skynetDbTypesExtensions.add(extension);
-            } else {
-               logger.log(Level.SEVERE,
-                     "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
-            }
-         }
-      }
-      return skynetDbTypesExtensions;
    }
 
    /**
@@ -79,9 +54,15 @@ public class MasterSkynetTypesImport {
     * @throws Exception
     * @see BranchPersistenceManager#createRootBranch(String, String, String, Collection, boolean)
     */
-   public void importSkynetDbTypes(Connection connection, Collection<String> skynetTypesImportExtensionsUniqueIds, Branch branch) throws Exception {
-      runSkynetDbTypesImport(connection, ExtensionPoints.getExtensionsByUniqueId(skynetDbTypesExtensionPointId,
-            skynetTypesImportExtensionsUniqueIds), branch);
+   public static void importSkynetDbTypes(Collection<String> skynetTypesImportExtensionsUniqueIds, Branch branch) throws OseeCoreException {
+      try {
+         runSkynetDbTypesImport(ExtensionPoints.getExtensionsByUniqueId(skynetDbTypesExtensionPointId,
+               skynetTypesImportExtensionsUniqueIds), branch);
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      } catch (SAXException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /**
@@ -89,13 +70,13 @@ public class MasterSkynetTypesImport {
     * 
     * @param skynetDbTypesExtensions
     * @param branch
-    * @param connection
-    * @throws Exception
+    * @throws SAXException
+    * @throws IOException
+    * @throws OseeCoreException
     */
-   private void runSkynetDbTypesImport(Connection connection, List<IExtension> skynetDbTypesExtensions, Branch branch) throws Exception {
-
+   private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions, Branch branch) throws IOException, SAXException, OseeCoreException {
       SkynetTypesImporter importer = new SkynetTypesImporter(branch);
-      logger.log(Level.INFO, "Importing into [" + branch.getBranchName() + "]");
+      OseeLog.log(SkynetActivator.class, Level.INFO, "Importing into [" + branch.getBranchName() + "]");
       for (IExtension extension : skynetDbTypesExtensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          for (IConfigurationElement el : elements) {
@@ -103,21 +84,12 @@ public class MasterSkynetTypesImport {
                String file = el.getAttribute("file");
                Bundle bundle = Platform.getBundle(el.getContributor().getName());
                URL url = bundle.getEntry(file);
-               logger.log(Level.INFO, "Importing [" + url.getPath() + "]");
+               OseeLog.log(SkynetActivator.class, Level.INFO, "Importing [" + url.getPath() + "]");
                importer.extractTypesFromSheet(url.openStream());
             }
          }
       }
       importer.finish();
-      logger.log(Level.INFO, "Completed import into [" + branch.getBranchName() + "]");
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#canRun()
-    */
-   public boolean canRun() {
-      return true;
+      OseeLog.log(SkynetActivator.class, Level.INFO, "Completed import into [" + branch.getBranchName() + "]");
    }
 }

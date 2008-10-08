@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import junit.framework.TestCase;
@@ -91,7 +90,7 @@ public class DeletionTest extends TestCase {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getMergeBranch(java.lang.Integer, java.lang.Integer)}
     * .
     */
-   public void deleteAndCheckTXCurrents() throws SQLException, OseeCoreException, InterruptedException {
+   public void deleteAndCheckTXCurrents() throws OseeCoreException, InterruptedException {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_TEST_QUERY);

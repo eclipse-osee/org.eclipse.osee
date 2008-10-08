@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.utility;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
 import org.eclipse.osee.framework.database.sql.SqlManager;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.w3c.dom.Document;
@@ -154,7 +154,7 @@ public class DatabaseDataImporter {
       return toReturn;
    }
 
-   private void processData(List<TableData> tables) throws SQLException, Exception {
+   private void processData(List<TableData> tables) throws OseeDataStoreException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
             logger.log(Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");

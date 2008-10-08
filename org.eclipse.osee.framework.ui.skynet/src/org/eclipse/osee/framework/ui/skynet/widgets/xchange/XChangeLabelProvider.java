@@ -33,7 +33,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException, SQLException {
+   public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
       try {
          if (!(element instanceof Change)) return "";
          Change change = (Change) element;
@@ -80,7 +80,7 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException, SQLException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       try {
          if (!(element instanceof Change)) return null;
          Change change = (Change) element;

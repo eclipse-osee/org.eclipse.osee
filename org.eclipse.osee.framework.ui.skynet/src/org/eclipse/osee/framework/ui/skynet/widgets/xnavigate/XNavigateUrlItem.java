@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.net.URL;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -48,7 +47,7 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (external)
          Program.launch(url);
       else {

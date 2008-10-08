@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -31,7 +32,7 @@ public class AttributeMapRow {
       attributeName = row[1];
    }
 
-   public void persist() throws Exception {
+   public void persist() throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(attributeName);
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {

@@ -92,7 +92,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
     * 
     * @throws Exception
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException, SQLException {
+   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, String byAttribute, XResultData rd) throws OseeCoreException {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
@@ -116,7 +116,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, XResultData rd) throws OseeCoreException, SQLException {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);

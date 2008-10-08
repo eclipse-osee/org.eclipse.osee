@@ -40,7 +40,7 @@ public class ModificationReportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException, CoreException, IOException, SQLException {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException, CoreException, IOException {
       matrix.clear();
 
       int columnIndex = 2;
@@ -53,7 +53,7 @@ public class ModificationReportJob extends ReportJob {
       writeMatrix();
    }
 
-   private void processArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   private void processArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Processing " + artifact.getDescriptiveName());
 
       String[] row = new String[3];

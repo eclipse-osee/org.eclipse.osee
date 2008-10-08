@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionMa
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.db.connection.pool.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

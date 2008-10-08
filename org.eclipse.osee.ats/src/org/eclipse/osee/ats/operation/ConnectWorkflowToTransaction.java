@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,23 +33,22 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException, SQLException {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Aquiring Team Workflows");
 
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, "Commit Branch%");
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
             if (monitor.isCanceled()) return;
-            updateWorkflow(rSet.getString("osee_comment"), rSet.getInt("transaction_id"));
+            updateWorkflow(chStmt.getString("osee_comment"), chStmt.getInt("transaction_id"));
          }
       } finally {
          ConnectionHandler.close(chStmt);
       }
    }
 
-   private void updateWorkflow(String commitComment, int transactionId) throws OseeCoreException, SQLException {
+   private void updateWorkflow(String commitComment, int transactionId) throws OseeCoreException {
       Branch atsBranch = BranchPersistenceManager.getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 

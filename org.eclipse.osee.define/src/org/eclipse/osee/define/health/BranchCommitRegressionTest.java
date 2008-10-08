@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.define.health;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -45,7 +44,7 @@ public class BranchCommitRegressionTest extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       Jobs.startJob(new TraxInterfaceRegressionTestJob(getName()), true);
    }

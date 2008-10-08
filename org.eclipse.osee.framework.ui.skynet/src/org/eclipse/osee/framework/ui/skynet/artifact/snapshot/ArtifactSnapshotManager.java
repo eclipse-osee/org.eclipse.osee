@@ -156,7 +156,7 @@ public class ArtifactSnapshotManager {
     * @return The artifact snapshot
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
+   private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       Pair<String, String> snapshotKey = keyGenerator.getKeyPair(artifact);
       ArtifactSnapshot currentSnapshot = getSnapshotFromRemoteStorage(snapshotKey);
       if (currentSnapshot == null) {
@@ -209,7 +209,7 @@ public class ArtifactSnapshotManager {
     * @return snapshot from local cache
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getSnapshotFromLocalCacheAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
+   private ArtifactSnapshot getSnapshotFromLocalCacheAndUpdateIfNeeded(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       Pair<String, String> key = keyGenerator.getKeyPair(artifact);
       String localCacheKey = keyGenerator.toLocalCacheKey(key);
       ArtifactSnapshot toReturn = snapshotLocalCache.get(localCacheKey);
@@ -233,7 +233,7 @@ public class ArtifactSnapshotManager {
     * @return snapshot
     * @throws UnsupportedEncodingException
     */
-   private ArtifactSnapshot getSnapshotForRenderRetrieval(Artifact artifact) throws OseeCoreException, SQLException, UnsupportedEncodingException {
+   private ArtifactSnapshot getSnapshotForRenderRetrieval(Artifact artifact) throws OseeCoreException, UnsupportedEncodingException {
       ArtifactSnapshot data = null;
       try {
          data = getRemoteSnapshotAndUpdateIfNeeded(artifact);

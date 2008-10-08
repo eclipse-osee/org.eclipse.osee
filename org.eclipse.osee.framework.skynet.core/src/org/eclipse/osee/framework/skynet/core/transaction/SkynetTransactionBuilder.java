@@ -59,15 +59,15 @@ public class SkynetTransactionBuilder {
       ConnectionHandler.startTransactionLevel(transactionKey);
    }
 
-   public void addArtifactToPersist(Artifact artifact) throws OseeCoreException, SQLException {
+   public void addArtifactToPersist(Artifact artifact) throws OseeCoreException {
       ArtifactPersistenceManager.getInstance().persistArtifact(artifact, getTransaction(artifact.isVersionControlled()));
    }
 
-   public void addLinkToPersist(RelationLink link) throws OseeCoreException, SQLException, ArtifactDoesNotExist {
+   public void addLinkToPersist(RelationLink link) throws OseeCoreException, ArtifactDoesNotExist {
       RelationPersistenceManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 
-   public void deleteArtifact(Artifact artifact) throws OseeCoreException, SQLException {
+   public void deleteArtifact(Artifact artifact) throws OseeCoreException {
       // No work is recorded since this reports children, and the number of children
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work
