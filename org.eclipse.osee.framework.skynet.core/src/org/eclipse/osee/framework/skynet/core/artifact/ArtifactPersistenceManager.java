@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.net.URL;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +30,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.TransactionJoinQuery;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -541,11 +541,6 @@ public class ArtifactPersistenceManager {
       artifact.persistAttributesAndRelations();
    }
 
-   public static void purgeArtifactFromBranch(Artifact artifact) throws OseeCoreException {
-      if (artifact == null) throw new IllegalArgumentException("Artifact = null in purgeArtifactFromBranch");
-      purgeArtifacts(Collections.getAggregate(artifact));
-   }
-
    /**
     * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
@@ -786,6 +781,7 @@ public class ArtifactPersistenceManager {
       int queryId = ArtifactLoader.getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
+      OseeConnection connection = OseeDbConnection.getConnection();
       try {
          for (Artifact art : artifactsToPurge) {
             for (Branch branch : art.getBranch().getChildBranches(true)) {
@@ -794,10 +790,10 @@ public class ArtifactPersistenceManager {
             }
          }
          if (batchParameters.size() > 0) {
-            ArtifactLoader.selectArtifacts(batchParameters);
+            ArtifactLoader.selectArtifacts(connection, batchParameters);
             ConnectionHandlerStatement chStmt = null;
             try {
-               chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
+               chStmt = ConnectionHandler.runPreparedQuery(connection, COUNT_ARTIFACT_VIOLATIONS, queryId);
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
                while (chStmt.next()) {
@@ -813,7 +809,7 @@ public class ArtifactPersistenceManager {
                         "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
                }
             } finally {
-               ArtifactLoader.clearQuery(queryId);
+               ArtifactLoader.clearQuery(connection, queryId);
                ConnectionHandler.close(chStmt);
             }
          }
@@ -828,7 +824,7 @@ public class ArtifactPersistenceManager {
             batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.selectArtifacts(batchParameters);
+         ArtifactLoader.selectArtifacts(connection, batchParameters);
 
          //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)    
          int transactionJoinId = ArtifactLoader.getNewQueryId();
@@ -883,7 +879,8 @@ public class ArtifactPersistenceManager {
          OseeEventManager.kickArtifactsPurgedEvent(instance, new LoadedArtifacts(artifactsToPurge));
 
       } finally {
-         ArtifactLoader.clearQuery(queryId);
+         ArtifactLoader.clearQuery(connection, queryId);
+         connection.close();
       }
    }
 }

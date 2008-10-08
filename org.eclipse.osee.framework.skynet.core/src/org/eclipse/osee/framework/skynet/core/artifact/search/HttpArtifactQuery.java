@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
@@ -58,15 +60,17 @@ final class HttpArtifactQuery {
    }
 
    public List<Artifact> getArtifacts(ArtifactLoad loadLevel, ISearchConfirmer confirmer, boolean reload, boolean historical, boolean allowDeleted) throws Exception {
+      OseeConnection connection = OseeDbConnection.getConnection();
       List<Artifact> toReturn = null;
       ObjectPair<Integer, Integer> queryIdAndSize = executeSearch(getSearchUrl());
       if (queryIdAndSize != null && queryIdAndSize.object2 > 0) {
          try {
             toReturn =
-                  ArtifactLoader.loadArtifactsFromQueryId(queryIdAndSize.object1, loadLevel, confirmer,
+                  ArtifactLoader.loadArtifactsFromQueryId(connection, queryIdAndSize.object1, loadLevel, confirmer,
                         queryIdAndSize.object2, reload, historical, allowDeleted);
          } finally {
-            JoinUtility.deleteQuery(JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+            JoinUtility.deleteQuery(connection, JoinUtility.JoinItem.ARTIFACT, queryIdAndSize.object1.intValue());
+            connection.close();
          }
       }
       if (toReturn == null) {

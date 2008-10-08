@@ -161,13 +161,13 @@ public class DeleteTransactionJob extends Job {
          } catch (Exception ex) {
             if (connection != null && connection.isClosed() != true) {
                txsToDeleteQuery.delete(connection);
-               ArtifactLoader.clearQuery(artifactJoinId, connection);
+               ArtifactLoader.clearQuery(connection, artifactJoinId);
             }
             throw ex;
          }
          if (connection != null && connection.isClosed() != true) {
             txsToDeleteQuery.delete(connection);
-            ArtifactLoader.clearQuery(artifactJoinId, connection);
+            ArtifactLoader.clearQuery(connection, artifactJoinId);
          }
 
       }

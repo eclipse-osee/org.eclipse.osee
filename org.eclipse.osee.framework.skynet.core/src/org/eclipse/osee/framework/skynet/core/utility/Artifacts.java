@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -97,10 +96,6 @@ public final class Artifacts {
 
       };
       newActionTx.execute();
-   }
-
-   public static void purgeArtifacts(final Collection<? extends Artifact> artifacts) throws Exception {
-      ArtifactPersistenceManager.purgeArtifacts(artifacts);
    }
 
    /**

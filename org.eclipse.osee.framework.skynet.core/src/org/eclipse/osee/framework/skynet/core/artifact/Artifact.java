@@ -1036,7 +1036,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeCoreException
     */
    public void purgeFromBranch() throws OseeCoreException {
-      ArtifactPersistenceManager.purgeArtifactFromBranch(this);
+      ArtifactPersistenceManager.purgeArtifacts(Collections.getAggregate(this));
    }
 
    public boolean isDeleted() {

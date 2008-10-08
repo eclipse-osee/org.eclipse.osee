@@ -144,7 +144,8 @@ public class RelationManager {
       }
 
       if (insertParameters.size() > 0) {
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters.values(), false, false, false);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
+               insertParameters.values()), false, false, false);
       }
 
       //now that bulk loading is done, put the artifacts in the right order and return them
@@ -235,8 +236,8 @@ public class RelationManager {
          }
 
          if (insertParameters.size() > 0) {
-            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null,
-                  insertParameters.values(), false, false, false));
+            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
+                  insertParameters.values()), false, false, false));
          }
          newArtifactsToSearch.clear();
          newArtifactsToSearch.addAll(newArtifacts);

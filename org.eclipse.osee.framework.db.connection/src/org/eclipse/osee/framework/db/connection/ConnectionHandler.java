@@ -93,6 +93,7 @@ public final class ConnectionHandler {
       }
    }
 
+   @Deprecated
    private static Connection getNewConnection() throws OseeDataStoreException {
       if (OseeDb.getDefaultDatabaseService() == null) {
          throw new OseeDataStoreException("Unable to get the default database service.");
@@ -291,7 +292,7 @@ public final class ConnectionHandler {
                   details.append(":");
 
                   String value = dataValue.toString();
-                  if (value.length() > 50) {
+                  if (value.length() > 35) {
                      details.append(value.substring(0, 35));
                   } else {
                      details.append(value);
@@ -309,186 +310,6 @@ public final class ConnectionHandler {
          close(preparedStatement);
       }
       return returnCount;
-   }
-
-   public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeDataStoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
-      try {
-         return runPreparedQueryFetchInt(connection, defaultValue, query, data);
-      } finally {
-         connection.close();
-      }
-   }
-
-   public static int runPreparedQueryFetchInt(Connection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
-         if (chStmt.next()) {
-            return chStmt.getInt(1);
-         }
-         return defaultValue;
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-   }
-
-   public static long runPreparedQueryFetchLong(long defaultValue, String query, Object... data) throws OseeDataStoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
-      try {
-         return runPreparedQueryFetchLong(connection, defaultValue, query, data);
-      } finally {
-         connection.close();
-      }
-   }
-
-   public static long runPreparedQueryFetchLong(Connection connection, long defaultValue, String query, Object... data) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
-         if (chStmt.next()) {
-            return chStmt.getLong(1);
-         }
-         return defaultValue;
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-   }
-
-   public static String runPreparedQueryFetchString(String defaultValue, String query, Object... data) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, false, query, data);
-         if (chStmt.next()) {
-            return chStmt.getString(1);
-         }
-         return defaultValue;
-      } finally {
-         ConnectionHandler.close(chStmt);
-      }
-   }
-
-   public static ConnectionHandlerStatement runPreparedQuery(String query, Object... data) throws OseeDataStoreException {
-      return runPreparedQuery(0, false, query, data);
-   }
-
-   public static ConnectionHandlerStatement runPreparedQuery(boolean overrideTranaction, String query, Object... data) throws OseeDataStoreException {
-      return runPreparedQuery(0, overrideTranaction, query, data);
-   }
-
-   public static ConnectionHandlerStatement runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
-      return runPreparedQuery(fetchSize, false, query, data);
-   }
-
-   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, String query, Object... data) throws OseeDataStoreException {
-      return runPreparedQuery(connection, 0, query, data);
-   }
-
-   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, int fetchSize, String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
-      PreparedStatement preparedStatement = null;
-
-      try {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-         preparedStatement = connection.prepareStatement(query);
-         chStmt.setStatement(preparedStatement);
-
-         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
-         populateValuesForPreparedStatement(preparedStatement, data);
-
-         record.markStart();
-         chStmt.setRset(preparedStatement.executeQuery());
-         record.markEnd();
-         return chStmt;
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         close(preparedStatement);
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   /**
-    * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
-    *           to 10,000
-    * @param overrideTranaction
-    * @param query
-    * @param data
-    * @return
-    * @throws OseeDataStoreException
-    */
-   private static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
-      PreparedStatement preparedStatement = null;
-
-      try {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-         preparedStatement = getConnection(overrideTranaction).prepareStatement(query);
-         chStmt.setStatement(preparedStatement);
-
-         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
-         populateValuesForPreparedStatement(preparedStatement, data);
-
-         record.markStart();
-         chStmt.setRset(preparedStatement.executeQuery());
-         record.markEnd();
-         return chStmt;
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         close(preparedStatement);
-         reGetConnection(overrideTranaction);
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   private static int processBatchUpdateResults(int[] updates) {
-      int returnCount = 0;
-      for (int update : updates) {
-         if (update >= 0) {
-            returnCount += update;
-         } else if (Statement.EXECUTE_FAILED == update) {
-            OseeLog.log(Activator.class, Level.SEVERE, "sql execute failes.");
-         } else if (Statement.SUCCESS_NO_INFO == update) {
-            returnCount++;
-         }
-      }
-      return returnCount;
-   }
-
-   private static void populateValuesForPreparedStatement(PreparedStatement preparedStatement, Object... data) throws OseeDataStoreException {
-      try {
-         int preparedIndex = 0;
-         for (Object dataValue : data) {
-            preparedIndex++;
-            if (dataValue instanceof String) {
-               int length = ((String) dataValue).length();
-               if (length > 4000) {
-                  OseeLog.log(Activator.class, Level.WARNING, "SQL value too long:" + length + "\nValue: " + dataValue);
-                  dataValue = ((String) dataValue).substring(0, 3999);
-               }
-            }
-
-            if (dataValue == null) {
-               throw new OseeDataStoreException(
-                     "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
-            } else if (dataValue instanceof SQL3DataType) {
-               int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
-               if (dataTypeNumber == java.sql.Types.BLOB) {
-                  // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
-                  //  "content" is of type bytea but expression is of type oid"
-                  preparedStatement.setBytes(preparedIndex, null);
-               } else {
-                  preparedStatement.setNull(preparedIndex, dataTypeNumber);
-               }
-            } else if (dataValue instanceof ByteArrayInputStream) {
-               preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
-                     ((ByteArrayInputStream) dataValue).available());
-            } else {
-               preparedStatement.setObject(preparedIndex, dataValue);
-            }
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
    }
 
    public static int runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws OseeDataStoreException {
@@ -563,6 +384,203 @@ public final class ConnectionHandler {
          close(preparedStatement);
       }
       return returnCount;
+   }
+
+   public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQueryFetchInt(connection, defaultValue, query, data);
+      } finally {
+         connection.close();
+      }
+   }
+
+   public static int runPreparedQueryFetchInt(Connection connection, int defaultValue, String query, Object... data) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
+         if (chStmt.next()) {
+            return chStmt.getInt(1);
+         }
+         return defaultValue;
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+   }
+
+   public static long runPreparedQueryFetchLong(long defaultValue, String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQueryFetchLong(connection, defaultValue, query, data);
+      } finally {
+         connection.close();
+      }
+   }
+
+   public static long runPreparedQueryFetchLong(Connection connection, long defaultValue, String query, Object... data) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
+         if (chStmt.next()) {
+            return chStmt.getLong(1);
+         }
+         return defaultValue;
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+   }
+
+   public static String runPreparedQueryFetchString(String defaultValue, String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQueryFetchString(connection, defaultValue, query, data);
+      } finally {
+         connection.close();
+      }
+   }
+
+   public static String runPreparedQueryFetchString(Connection connection, String defaultValue, String query, Object... data) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, 1, query, data);
+         if (chStmt.next()) {
+            return chStmt.getString(1);
+         }
+         return defaultValue;
+      } finally {
+         ConnectionHandler.close(chStmt);
+      }
+   }
+
+   public static ConnectionHandlerStatement runPreparedQuery(String query, Object... data) throws OseeDataStoreException {
+      return runPreparedQuery(0, false, query, data);
+   }
+
+   public static ConnectionHandlerStatement runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
+      return runPreparedQuery(fetchSize, false, query, data);
+   }
+
+   // TODO: remove the RenameMe portion of this method once the conflicting obsolete method has been removed
+   public static ConnectionHandlerStatement runPreparedQueryRenameMe(String query, Object... data) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedQuery(connection, 0, query, data);
+      } finally {
+         connection.close();
+      }
+   }
+
+   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, String query, Object... data) throws OseeDataStoreException {
+      return runPreparedQuery(connection, 0, query, data);
+   }
+
+   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, int fetchSize, String query, Object... data) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord(query, data);
+      PreparedStatement preparedStatement = null;
+
+      try {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         preparedStatement = connection.prepareStatement(query);
+         chStmt.setStatement(preparedStatement);
+
+         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
+         populateValuesForPreparedStatement(preparedStatement, data);
+
+         record.markStart();
+         chStmt.setRset(preparedStatement.executeQuery());
+         record.markEnd();
+         return chStmt;
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         close(preparedStatement);
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   /**
+    * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
+    *           to 10,000
+    * @param overrideTranaction
+    * @param query
+    * @param data
+    * @return
+    * @throws OseeDataStoreException
+    */
+   @Deprecated
+   // use a runPreparedQuery() that does not use ConnectionHandler.getConnection()
+   private static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord(query, data);
+      PreparedStatement preparedStatement = null;
+
+      try {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         preparedStatement = getConnection(overrideTranaction).prepareStatement(query);
+         chStmt.setStatement(preparedStatement);
+
+         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
+         populateValuesForPreparedStatement(preparedStatement, data);
+
+         record.markStart();
+         chStmt.setRset(preparedStatement.executeQuery());
+         record.markEnd();
+         return chStmt;
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         close(preparedStatement);
+         reGetConnection(overrideTranaction);
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   private static int processBatchUpdateResults(int[] updates) {
+      int returnCount = 0;
+      for (int update : updates) {
+         if (update >= 0) {
+            returnCount += update;
+         } else if (Statement.EXECUTE_FAILED == update) {
+            OseeLog.log(Activator.class, Level.SEVERE, "sql execute failes.");
+         } else if (Statement.SUCCESS_NO_INFO == update) {
+            returnCount++;
+         }
+      }
+      return returnCount;
+   }
+
+   private static void populateValuesForPreparedStatement(PreparedStatement preparedStatement, Object... data) throws OseeDataStoreException {
+      try {
+         int preparedIndex = 0;
+         for (Object dataValue : data) {
+            preparedIndex++;
+            if (dataValue instanceof String) {
+               int length = ((String) dataValue).length();
+               if (length > 4000) {
+                  OseeLog.log(Activator.class, Level.WARNING, "SQL value too long:" + length + "\nValue: " + dataValue);
+                  dataValue = ((String) dataValue).substring(0, 3999);
+               }
+            }
+
+            if (dataValue == null) {
+               throw new OseeDataStoreException(
+                     "instead of passing null for an query parameter, pass the corresponding SQL3DataType");
+            } else if (dataValue instanceof SQL3DataType) {
+               int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
+               if (dataTypeNumber == java.sql.Types.BLOB) {
+                  // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
+                  //  "content" is of type bytea but expression is of type oid"
+                  preparedStatement.setBytes(preparedIndex, null);
+               } else {
+                  preparedStatement.setNull(preparedIndex, dataTypeNumber);
+               }
+            } else if (dataValue instanceof ByteArrayInputStream) {
+               preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
+                     ((ByteArrayInputStream) dataValue).available());
+            } else {
+               preparedStatement.setObject(preparedIndex, dataValue);
+            }
+         }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
    public static void startTransactionLevel(Object key) throws OseeDataStoreException {
