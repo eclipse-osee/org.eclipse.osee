@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -110,6 +111,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
             attributeTypes.addAll(art.getAttributeTypes());
          }
       } catch (OseeDataStoreException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      } catch (OseeTypeDoesNotExist ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       Set<String> attrNames = new HashSet<String>();

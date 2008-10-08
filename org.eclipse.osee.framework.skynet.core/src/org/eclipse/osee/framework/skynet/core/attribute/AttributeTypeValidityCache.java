@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
@@ -43,12 +41,12 @@ public class AttributeTypeValidityCache {
       attributeToartifactMap = new HashCollection<AttributeType, ArtifactType>(false, TreeSet.class);
    }
 
-   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
 
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes == null) {
-         throw new IllegalArgumentException(
+         throw new OseeTypeDoesNotExist(
                "There are no valid attribute types available for the artifact type \"" + artifactType + "\"");
       }
       //Partition attribute type id = 107, CSCI attribute type id = 695,
@@ -74,7 +72,7 @@ public class AttributeTypeValidityCache {
    }
 
    private synchronized void ensurePopulated() throws OseeDataStoreException {
-      if (artifactToAttributeMap.size() == 0) {
+      if (artifactToAttributeMap.isEmpty()) {
          populateCache();
       }
    }
@@ -83,12 +81,10 @@ public class AttributeTypeValidityCache {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql);
-         ResultSet rSet = chStmt.getRset();
-
-         while (rSet.next()) {
+         while (chStmt.next()) {
             try {
-               ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
-               AttributeType attributeType = AttributeTypeManager.getType(rSet.getInt("attr_type_id"));
+               ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+               AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
 
                artifactToAttributeMap.put(artifactType, attributeType);
                attributeToartifactMap.put(attributeType, artifactType);
@@ -96,8 +92,6 @@ public class AttributeTypeValidityCache {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

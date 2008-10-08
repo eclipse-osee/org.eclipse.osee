@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
-
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -433,9 +430,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return true if attributeName is valid for the artifact type of this artifact
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
     * @throws OseeCoreException
     */
-   public boolean isAttributeTypeValid(String attributeName) throws OseeDataStoreException {
+   public boolean isAttributeTypeValid(String attributeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
       Collection<AttributeType> attributeTypes =
             ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
       for (AttributeType attributeType : attributeTypes) {
@@ -511,7 +509,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return !attributes.isEmpty();
    }
 
-   public Collection<AttributeType> getAttributeTypes() throws OseeDataStoreException {
+   public Collection<AttributeType> getAttributeTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
       return ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
    }
 

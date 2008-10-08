@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -166,6 +167,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                attributeTypePage.setDescriptors(importAttributes);
             }
          } catch (OseeDataStoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         } catch (OseeTypeDoesNotExist ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
          return attributeTypePage;

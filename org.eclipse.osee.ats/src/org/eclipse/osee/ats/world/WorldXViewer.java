@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -372,6 +373,9 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          } catch (OseeDataStoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             rData.logError(ex.getLocalizedMessage());
+         } catch (OseeTypeDoesNotExist ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            rData.logError(ex.getLocalizedMessage());
          }
       }
       if (!rData.isEmpty()) {
@@ -421,6 +425,9 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
                return false;
             }
          } catch (OseeDataStoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            return false;
+         } catch (OseeTypeDoesNotExist ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return false;
          }

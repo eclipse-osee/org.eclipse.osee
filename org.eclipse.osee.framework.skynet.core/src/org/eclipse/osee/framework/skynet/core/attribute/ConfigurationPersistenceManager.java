@@ -67,7 +67,7 @@ public class ConfigurationPersistenceManager {
             ArtifactTypeManager.getType(artifactTypeName), branch);
    }
 
-   public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException {
+   public static Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return instance.cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(artifactType, branch);
    }
 
