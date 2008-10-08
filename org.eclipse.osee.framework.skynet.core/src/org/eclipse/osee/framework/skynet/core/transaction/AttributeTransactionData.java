@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -115,8 +116,8 @@ public class AttributeTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, attrId,
+   public void setPreviousTxNotCurrent(Connection connection, Timestamp insertTime, int queryId) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, attrId,
             branch.getBranchId());
    }
 
@@ -124,8 +125,8 @@ public class AttributeTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public void insertTransactionChange() throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, artId, attrId, attrTypeId,
+   public void insertTransactionChange(Connection connection) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_ATTRIBUTE, artId, attrId, attrTypeId,
             value == null ? SQL3DataType.VARCHAR : value, gammaId, uri == null ? SQL3DataType.VARCHAR : uri,
             modificationType.getValue());
    }

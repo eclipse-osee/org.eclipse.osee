@@ -17,16 +17,15 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.time.StopWatch;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
-import org.eclipse.osee.framework.database.core.DatabaseNotSupportedException;
 import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
@@ -51,7 +50,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
    }
 
    @Override
-   public void processTask() throws SQLException, DatabaseNotSupportedException, Exception {
+   public void processTask() throws InvalidRegistryObjectException {
       logger.log(Level.INFO, "Begin Database Initialization...");
       run(connection, GroupSelection.getInstance().getDbInitTasks());
       logger.log(Level.INFO, "Database Initialization Complete.");
@@ -65,7 +64,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
     * 
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
-   public void run(Connection connection, List<String> extensionIds) throws Exception {
+   public void run(Connection connection, List<String> extensionIds) throws InvalidRegistryObjectException {
       for (String pointId : extensionIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          if (extension == null) {

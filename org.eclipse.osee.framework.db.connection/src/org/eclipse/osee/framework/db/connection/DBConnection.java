@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DBConnection {
 
+   @Deprecated
+   // use OseeDbConnection.getConnection
    public static Connection getNewConnection(DbInformation databaseService) throws OseeDataStoreException {
       try {
 

@@ -61,6 +61,8 @@ public final class ConnectionHandler {
       listeners.remove(listener);
    }
 
+   @Deprecated
+   // use OseeDbConnection.getConnection
    public static Connection getConnection() throws OseeDataStoreException {
       return getConnection(false);
    }
@@ -575,7 +577,7 @@ public final class ConnectionHandler {
    public static void endTransactionLevel(Object key) {
       try {
          dbTransactionManager.get().endTransactionLevel(key);
-      } catch (Exception ex) {
+      } catch (OseeDataStoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }

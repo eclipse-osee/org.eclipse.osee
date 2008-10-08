@@ -58,7 +58,7 @@ public class SearchTagDataStore {
       SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection);
       if (dbType == SupportedDatabase.derby) {
          dummyTable = "FROM sysibm.sysdummy1"; // 
-      } else {
+      } else if (dbType == SupportedDatabase.oracle || dbType == SupportedDatabase.mysql) {
          dummyTable = "FROM DUAL";
       }
       return String.format(INSERT_SEARCH_TAG_BODY, dummyTable);

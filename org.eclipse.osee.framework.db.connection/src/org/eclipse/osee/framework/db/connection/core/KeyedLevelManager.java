@@ -113,7 +113,7 @@ public class KeyedLevelManager {
             while (true != callKeyQueue.pop().equals(key))
                ;
 
-            throw new IllegalStateException("A transaction level was not closed");
+            throw new OseeDataStoreException("A transaction level was not closed");
          }
       } finally {
          // Check for the end of the series

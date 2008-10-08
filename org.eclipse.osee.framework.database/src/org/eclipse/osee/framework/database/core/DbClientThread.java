@@ -14,7 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
@@ -36,15 +36,8 @@ public abstract class DbClientThread extends Thread {
    public void run() {
       logger.log(Level.INFO, "Starting " + getName() + "...");
       try {
-         connection = DBConnection.getNewConnection(databaseService);
-         connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
+         connection = OseeDbConnection.getConnection(databaseService);
          processTask();
-
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
-      } catch (DatabaseNotSupportedException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
       } catch (ExceptionInInitializerError ex) {

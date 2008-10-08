@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -110,17 +111,17 @@ public class ArtifactTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#setPreviousTxNotCurrent()
     */
    @Override
-   public void setPreviousTxNotCurrent(Timestamp insertTime, int queryId) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime, artifact.getArtId(),
-            branch.getBranchId());
+   public void setPreviousTxNotCurrent(Connection connection, Timestamp insertTime, int queryId) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, SET_PREVIOUS_TX_NOT_CURRENT, queryId, insertTime,
+            artifact.getArtId(), branch.getBranchId());
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#insertTransactionChange()
     */
    @Override
-   public void insertTransactionChange() throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_VERSION_TABLE, artifact.getArtId(), gammaId,
+   public void insertTransactionChange(Connection connection) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_ARTIFACT_VERSION_TABLE, artifact.getArtId(), gammaId,
             modificationType.getValue());
    }
 }

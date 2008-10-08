@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
-import java.sql.SQLException;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,21 +109,22 @@ public class SkynetTransaction {
       boolean deleteTransactionDetail = false;
 
       try {
+         Connection connection = ConnectionHandler.getConnection();
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
-         boolean insertTransactionDataItems = executeTransactionDataItems();
+         boolean insertTransactionDataItems = executeTransactionDataItems(connection);
 
          if (!insertBatchToTransactions && !insertTransactionDataItems) {
             deleteTransactionDetail = true;
          }
 
          setArtifactsNotDirty();
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          deleteTransactionDetail = true;
          transactionCleanUp();
          ConnectionHandler.requestRollback();
          OseeLog.log(SkynetActivator.class, Level.SEVERE,
                "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
-         throw new OseeDataStoreException(ex);
+         throw ex;
       } finally {
          if (deleteTransactionDetail) {
             xModifiedEvents.clear();
@@ -154,7 +155,7 @@ public class SkynetTransaction {
 
    }
 
-   public boolean executeTransactionDataItems() throws OseeDataStoreException {
+   public boolean executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
       boolean insertTransactionDataItems = transactionItems.size() > 0;
 
       TransactionJoinQuery transactionJoin = JoinUtility.createTransactionJoinQuery();
@@ -164,29 +165,29 @@ public class SkynetTransaction {
          for (ITransactionData transactionData : transactionItems.keySet()) {
             //This must be called before adding the new transaction information, because it
             //will update the current transaction to 0.
-            transactionData.setPreviousTxNotCurrent(insertTime, queryId);
+            transactionData.setPreviousTxNotCurrent(connection, insertTime, queryId);
 
             //Add current transaction information
             ModificationType modType = transactionData.getModificationType();
 
-            ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE,
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE,
                   transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
                   modType.getValue(), TxChange.getCurrent(modType).getValue());
 
             if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
                //Add specific object values to the their tables
-               transactionData.insertTransactionChange();
+               transactionData.insertTransactionChange(connection);
             }
          }
 
-         ConnectionHandler.runPreparedUpdate(UPDATE_TXS_NOT_CURRENT, queryId);
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_NOT_CURRENT, queryId);
       } finally {
-         transactionJoin.delete();
+         transactionJoin.delete(connection);
       }
       return insertTransactionDataItems;
    }
 
-   private void setArtifactsNotDirty() throws SQLException {
+   private void setArtifactsNotDirty() {
       for (ITransactionData transactionData : transactionItems.keySet()) {
          if (transactionData instanceof ArtifactTransactionData) {
             Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
