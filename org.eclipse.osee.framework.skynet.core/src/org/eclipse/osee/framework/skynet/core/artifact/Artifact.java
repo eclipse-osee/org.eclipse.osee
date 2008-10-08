@@ -285,7 +285,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    @Override
    public String toString() {
-      return getDescriptiveName();
+      return getInternalDescriptiveName();
    }
 
    //TODO should not return null but currently application code expects it to
