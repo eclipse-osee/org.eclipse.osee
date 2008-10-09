@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.database;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
@@ -47,7 +47,7 @@ public class MySqlLaunch {
       for (int i = 0; i < NUMBER_OF_TRIES && connection == null; i++) {
          Thread.sleep(SLEEP_TIME);
          try {
-            connection = DBConnection.getNewConnection(dbInfo);
+            connection = OseeDbConnection.getConnection(dbInfo);
          } catch (OseeDataStoreException ex) {
          }
       }

@@ -77,7 +77,7 @@ public class OseeConnectionPool {
 
    private OseeConnection getOseeConnection() throws Exception {
       IConnection connectionFactory =
-            org.eclipse.osee.framework.db.connection.Activator.getInstance().getDbConnectionFactory().get(
+            org.eclipse.osee.framework.db.connection.Activator.getDbConnectionFactory().get(
                   dbInformation.getConnectionData().getDBDriver());
 
       // Connection properties and attributes are added in the

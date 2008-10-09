@@ -75,7 +75,8 @@ public final class ConnectionHandler {
          try {
             if (connection == null || connection.isClosed()) {
                try {
-                  connection = getNewConnection();
+                  connection = OseeDbConnection.getConnection();
+                  ;
                } finally {
                   notifyConnectionListeners();
                }
@@ -91,14 +92,6 @@ public final class ConnectionHandler {
       for (IDbConnectionListener listener : listeners) {
          listener.onConnectionStatusUpdate(isOpen());
       }
-   }
-
-   @Deprecated
-   private static Connection getNewConnection() throws OseeDataStoreException {
-      if (OseeDb.getDefaultDatabaseService() == null) {
-         throw new OseeDataStoreException("Unable to get the default database service.");
-      }
-      return DBConnection.getNewConnection(OseeDb.getDefaultDatabaseService());
    }
 
    /**
@@ -144,7 +137,8 @@ public final class ConnectionHandler {
       Connection pooledConnection;
       synchronized (pooledConnections) {
          if (pooledConnections.isEmpty()) {
-            pooledConnection = getNewConnection();
+            pooledConnection = OseeDbConnection.getConnection();
+            ;
          } else {
             pooledConnection = pooledConnections.poll();
          }

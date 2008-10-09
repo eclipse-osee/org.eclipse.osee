@@ -12,7 +12,7 @@ public class Activator implements BundleActivator {
 
    private DbConnectionProviderTracker tracker;
    private DbConnectionInfoTracker infoTracker;
-   private static Activator me;
+   private static Activator instance;
    private BundleContext context;
    private ServiceRegistration dbConnectionFactoryRegistration;
    private BindTracker connectionTracker;
@@ -20,7 +20,7 @@ public class Activator implements BundleActivator {
    private ServiceRegistration dbConnectionInfoProviderRegistration;
 
    public static Activator getInstance() {
-      return me;
+      return instance;
    }
 
    /*
@@ -28,7 +28,7 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
     */
    public void start(BundleContext context) throws Exception {
-      me = this;
+      instance = this;
       this.context = context;
 
       DbConnectionFactory dbConnectionFactory = new DbConnectionFactory();
@@ -55,7 +55,7 @@ public class Activator implements BundleActivator {
     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
     */
    public void stop(BundleContext context) throws Exception {
-      me = null;
+      instance = null;
       tracker.close();
       infoTracker.close();
       connectionTracker.close();
@@ -64,12 +64,12 @@ public class Activator implements BundleActivator {
       dbConnectionInfoProviderRegistration.unregister();
    }
 
-   public IDbConnectionFactory getDbConnectionFactory() {
-      return tracker.getFactory();
+   public static IDbConnectionFactory getDbConnectionFactory() {
+      return instance.tracker.getFactory();
    }
 
-   public IDbConnectionInformation getDbConnectionInformation() {
-      return infoTracker.get();
+   public static IDbConnectionInformation getDbConnectionInformation() {
+      return instance.infoTracker.get();
    }
 
    public BundleContext getBundleContext() {

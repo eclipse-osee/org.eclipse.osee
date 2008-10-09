@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
-import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -44,7 +43,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
-         DbInformation databaseService = OseeDb.getDatabaseService(importFromDbService);
+         DbInformation databaseService = OseeDbConnection.getDatabaseService(importFromDbService);
 
          OseeConnection importConnection = OseeDbConnection.getConnection(databaseService);
          if (importConnection != null) {

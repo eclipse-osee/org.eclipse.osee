@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +44,7 @@ import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -290,7 +289,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
    }
 
    private String getWhoAmI() {
-      return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+      return OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
             ConfigField.UserName) + " - " + SkynetAuthentication.getUser().getName();
    }
 

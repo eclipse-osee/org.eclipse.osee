@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
@@ -145,7 +145,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          dbStatus = getDbStatus(dbData.getDatabaseProductName(), dbData.getDatabaseProductVersion(), dbData.getURL());
          dbConnection = true;
       } catch (Exception ex) {
-         DbInformation info = OseeDb.getDefaultDatabaseService();
+         DbInformation info = OseeDbConnection.getDefaultDatabaseService();
          dbStatus = getDbStatus(info.getDatabaseDetails().getId(), "", info.getConnectionUrl());
          dbConnection = false;
       } finally {

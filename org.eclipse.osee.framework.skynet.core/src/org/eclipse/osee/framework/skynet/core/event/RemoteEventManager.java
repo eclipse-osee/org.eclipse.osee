@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -94,7 +94,7 @@ public class RemoteEventManager implements IServiceLookupListener {
    private RemoteEventManager() {
       super();
 
-      DbDetailData dbData = OseeDb.getDefaultDatabaseService().getDatabaseDetails();
+      DbDetailData dbData = OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails();
       String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
       String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
 
@@ -145,7 +145,7 @@ public class RemoteEventManager implements IServiceLookupListener {
        * to be modified so this client doesn't think the events came from itself.
        */
       if (InternalEventManager.enableRemoteEventLoopback) {
-         SkynetActivator.getLogger().log(Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
+         OseeLog.log(SkynetActivator.class, Level.INFO, "REM: Loopback enabled - Returning events as Remote event.");
          Thread thread = new Thread() {
             /* (non-Javadoc)
              * @see java.lang.Thread#run()

@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
@@ -44,7 +44,7 @@ public class ApplicationServer {
    }
 
    protected static void initialize() throws OseeDataStoreException {
-      DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
       String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
       if (Strings.isValid(resourceServer) != true) {
          throw new OseeDataStoreException(

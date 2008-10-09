@@ -14,7 +14,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
@@ -25,7 +25,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class SkynetConnectionContributionItem extends SkynetContributionItem implements IDbConnectionListener {
-   private static final DbDetailData dbData = OseeDb.getDefaultDatabaseService().getDatabaseDetails();
+   private static final DbDetailData dbData = OseeDbConnection.getDefaultDatabaseService().getDatabaseDetails();
    private static final String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
    private static final String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
    private static final String ID = "skynet.connection";

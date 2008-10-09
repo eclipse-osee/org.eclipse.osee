@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
-import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
@@ -149,7 +149,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
    }
 
    private static boolean checkPreconditions() {
-      DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+      DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
 
       if (DatabaseActivator.getInstance().isProductionDb()) {
          System.err.println(String.format(
@@ -180,7 +180,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
       if (checkPreconditions()) {
-         DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+         DbInformation dbInfo = OseeDbConnection.getDefaultDatabaseService();
          String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
          String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
 

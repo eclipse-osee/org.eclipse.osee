@@ -16,6 +16,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.VariantData;
@@ -50,6 +51,12 @@ public class ResultSetProcessor {
             case Types.BLOB:
                InputStream blobStream = resultSet.getBinaryStream(columnIndex);
                toReturn.put(name, streamToByteArray(blobStream));
+               break;
+            case Types.TIMESTAMP:
+               Timestamp timeStamp = resultSet.getTimestamp(columnIndex);
+               if (timeStamp != null) {
+                  toReturn.put(name, timeStamp.getTime());
+               }
                break;
             case Types.DATE:
                Date date = resultSet.getDate(columnIndex);

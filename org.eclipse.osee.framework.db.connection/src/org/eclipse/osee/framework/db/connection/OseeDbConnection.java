@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class OseeDbConnection {
    private static DbInformation defaultDbInformation;
@@ -28,6 +28,10 @@ public class OseeDbConnection {
    public static OseeConnection getConnection() throws OseeDataStoreException {
       verifyDefaultDbInformation();
       return getConnection(defaultDbInformation);
+   }
+
+   public static OseeConnection getConnection(String serviceName) throws OseeDataStoreException {
+      return getConnection(OseeDbConnection.getDatabaseService(serviceName));
    }
 
    public static OseeConnection getConnection(DbInformation dbInformation) throws OseeDataStoreException {
@@ -41,7 +45,15 @@ public class OseeDbConnection {
 
    private static void verifyDefaultDbInformation() {
       if (defaultDbInformation == null) {
-         defaultDbInformation = OseeDb.getDefaultDatabaseService();
+         defaultDbInformation = OseeDbConnection.getDefaultDatabaseService();
       }
+   }
+
+   public static DbInformation getDefaultDatabaseService() {
+      return Activator.getDbConnectionInformation().getSelectedDatabaseInfo();
+   }
+
+   public static DbInformation getDatabaseService(String id) {
+      return Activator.getDbConnectionInformation().getDatabaseInfo(id);
    }
 }
