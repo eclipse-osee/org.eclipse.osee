@@ -233,6 +233,23 @@ public final class ConnectionHandler {
    }
 
    /**
+    * This method should only be used when not contained in a DB transaction
+    * 
+    * @param query
+    * @param dataList
+    * @return
+    * @throws OseeDataStoreException
+    */
+   public static int runPreparedUpdate(String query, List<Object[]> dataList) throws OseeDataStoreException {
+      OseeConnection connection = OseeDbConnection.getConnection();
+      try {
+         return runPreparedUpdate(connection, query, dataList);
+      } finally {
+         connection.close();
+      }
+   }
+
+   /**
     * This method should only be used when contained in a DB transaction
     * 
     * @param connection
@@ -256,8 +273,8 @@ public final class ConnectionHandler {
       return updateCount;
    }
 
-   public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord("<batchable: batched> " + query, datas.size());
+   public static int runPreparedUpdate(Connection connection, String query, List<Object[]> dataList) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord("<batchable: batched> " + query, dataList.size());
       int returnCount = 0;
       PreparedStatement preparedStatement = null;
       try {
@@ -265,7 +282,7 @@ public final class ConnectionHandler {
          record.markStart();
          boolean needExecute = false;
          int count = 0;
-         for (Object[] data : datas) {
+         for (Object[] data : dataList) {
             count++;
             populateValuesForPreparedStatement(preparedStatement, data);
             preparedStatement.addBatch();
@@ -291,9 +308,9 @@ public final class ConnectionHandler {
             System.out.println("this is the next exception");
             exlist.printStackTrace();
          }
-         StringBuilder details = new StringBuilder(datas.size() * datas.get(0).length * 20);
+         StringBuilder details = new StringBuilder(dataList.size() * dataList.get(0).length * 20);
          details.append("[ DATA OBJECT: \n");
-         for (Object[] data : datas) {
+         for (Object[] data : dataList) {
             for (int i = 0; i < data.length; i++) {
                details.append(i);
                details.append(": ");
@@ -323,12 +340,12 @@ public final class ConnectionHandler {
       return returnCount;
    }
 
-   public static int runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord("<batched> " + query, datas.size());
+   public static int runPreparedUpdateBatch(String query, Collection<Object[]> dataList) throws OseeDataStoreException {
+      QueryRecord record = new QueryRecord("<batched> " + query, dataList.size());
       int returnCount = 0;
-      if (datas.size() < 1) {
+      if (dataList.size() < 1) {
          throw new IllegalArgumentException(
-               "The datas list must have at least one element otherwise no sql statements will be run.");
+               "The dataList list must have at least one element otherwise no sql statements will be run.");
       }
 
       PreparedStatement preparedStatement = null;
@@ -337,7 +354,7 @@ public final class ConnectionHandler {
          record.markStart();
          boolean needExecute = false;
          int count = 0;
-         for (Object[] data : datas) {
+         for (Object[] data : dataList) {
             count++;
             populateValuesForPreparedStatement(preparedStatement, data);
             preparedStatement.addBatch();
@@ -363,9 +380,9 @@ public final class ConnectionHandler {
             System.out.println("this is the next exception");
             exlist.printStackTrace();
          }
-         StringBuilder details = new StringBuilder(datas.size() * datas.iterator().next().length * 20);
+         StringBuilder details = new StringBuilder(dataList.size() * dataList.iterator().next().length * 20);
          details.append("[ DATA OBJECT: \n");
-         for (Object[] data : datas) {
+         for (Object[] data : dataList) {
             for (int i = 0; i < data.length; i++) {
                details.append(i);
                details.append(": ");
