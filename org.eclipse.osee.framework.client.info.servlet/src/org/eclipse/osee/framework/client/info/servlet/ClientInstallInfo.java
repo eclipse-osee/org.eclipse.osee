@@ -93,7 +93,7 @@ class ClientInstallInfo {
       @Override
       public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
          try {
-            if (name.equalsIgnoreCase("client")) {
+            if (localName.equalsIgnoreCase("install")) {
                info.os = attributes.getValue("os");
                if (info.os != null) {
                   info.os = info.os.toLowerCase();

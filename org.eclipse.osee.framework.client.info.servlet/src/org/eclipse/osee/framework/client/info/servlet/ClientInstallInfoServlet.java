@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.client.info.servlet;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,7 +86,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                      if (infos.size() == 0) {
                         response.getWriter().write("<html><body>no installations found</body></html>");
                      } else {
-                        if (infos.size() == 1) {
+                        if (infos.size() == -1) {
                            sendLaunchInstallPage(response, infos.get(0));
                         } else {
                            sendMultiPathPage(response, infos);
@@ -114,18 +118,38 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
 
    private void sendLaunchInstallPage(HttpServletResponse response, ClientInstallInfo info) throws IOException {
       StringBuilder builder = new StringBuilder();
-      builder.append("<html><body>");
-      builder.append(info);
+      builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">");
+      builder.append("<html><head>");
+      String path = info.getExecPath();
+      builder.append("<script type=\"text/javascript\">");
+      builder.append("function initialize()");
+      builder.append("{");
+      builder.append(String.format("location.href='%s';", path.startsWith("file://") ? path : "file://" + path));
+      builder.append("}");
+      builder.append("</script>");
+      builder.append("</head>");
+      builder.append("<body onload=\"initialize()\">");
       builder.append("</body></html>");
+
       response.getWriter().print(builder.toString());
    }
 
    private void sendMultiPathPage(HttpServletResponse response, List<ClientInstallInfo> infos) throws IOException {
       StringBuilder builder = new StringBuilder();
-      builder.append("<html><body>");
+      builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">");
+      builder.append("<html><head>");
+      builder.append("<body>");
       for (ClientInstallInfo info : infos) {
-         builder.append(info);
+         if (info.isActive()) {
+            String path = info.getExecPath();
+            builder.append(String.format("<a href=\"%s\">Launch: %s</a>",
+                  path.startsWith("file://") ? path : "file://" + path, info.getName()));
+         } else {
+            builder.append(String.format("Install: %s - INACTIVE Reason: %s", info.getName(), info.getComment()));
+         }
       }
+      builder.append("</script>");
+      builder.append("</head>");
       builder.append("</body></html>");
       response.getWriter().print(builder.toString());
    }
