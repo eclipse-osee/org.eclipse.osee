@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.nonproduction.components;
 
 import java.util.Collection;
 import junit.framework.TestCase;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,6 +24,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Theron Virgin
  */
 public class MergeBranchManagementTest extends TestCase {
+
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
 
    /**
     * @param name
@@ -80,7 +84,15 @@ public class MergeBranchManagementTest extends TestCase {
                      ConflictTestManager.getDestBranch().getBranchId());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
-         assertEquals("The merge Branch does not contain the expected number of artifacts",
+         if (DEBUG) {
+            System.out.println("Found the following Artifacts on the branch ");
+            System.out.print("     ");
+            for (Artifact artifact : artifacts) {
+               System.out.print(artifact.getArtId() + ", ");
+            }
+            System.out.println("\n");
+         }
+         assertEquals("The merge Branch does not contain the expected number of artifacts: ",
                ConflictTestManager.numberOfArtifactsOnMergeBranch(), artifacts.toArray().length);
       } catch (Exception ex) {
          fail(ex.getMessage());

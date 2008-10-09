@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -39,6 +40,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Theron Virgin
  */
 public class ConflictTestManager {
+
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
+
    private static final String FOLDER = "System Requirements";
    private static final String SOURCE_BRANCH = "Conflict_Test_Source_Branch";
    private static final String DEST_BRANCH = "Conflict_Test_Destination_Branch";
@@ -49,12 +54,10 @@ public class ConflictTestManager {
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private static int NUMBER_OF_CONFLICTS = 0;
-   private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 0;
    public static int DELETION_TEST_QUERY = 1;
    public static int DELETION_ATTRIBUTE_TEST_QUERY = 2;
-   public static int REVERT_QUERY = 3;
-   public static int UPDATE_PARENT_QUERY = 4;
+   public static int REVERT_ARTIFACT_QUERY = 3;
+   public static int REVERT_ATTRIBUTE_QUERY = 4;
 
    protected static class AttributeValue {
       protected String attributeName;
@@ -86,6 +89,10 @@ public class ConflictTestManager {
       protected boolean destDelete;
       protected int rootArtifact;
       protected int queryNumber;
+      protected int numConflicts = 0;
+      protected boolean artifactAdded = false;
+      protected boolean sourceModified = false;
+      protected boolean destModified = false;
 
       protected void setValues(String artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
          this.artifactType = artifactType;
@@ -94,6 +101,39 @@ public class ConflictTestManager {
          this.rootArtifact = rootArtifact;
          this.queryNumber = queryNumber;
       }
+
+      protected boolean destinationDeleted(ConflictDefinition[] conflictDefs) {
+         if (rootArtifact == 0) {
+            return destDelete;
+         }
+         return destDelete || conflictDefs[rootArtifact].destinationDeleted(conflictDefs);
+      }
+
+      protected boolean sourceDeleted(ConflictDefinition[] conflictDefs) {
+         if (rootArtifact == 0) {
+            return sourceDelete;
+         }
+         return sourceDelete || conflictDefs[rootArtifact].sourceDeleted(conflictDefs);
+      }
+
+      protected int getNumberConflicts(ConflictDefinition[] conflictDefs) {
+         if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
+            return numConflicts;
+         } else if ((destinationDeleted(conflictDefs) && sourceModified) || (sourceDeleted(conflictDefs) && destModified)) {
+            return 1;
+         } else
+            return 0;
+      }
+
+      protected boolean artifactAdded(ConflictDefinition[] conflictDefs) {
+         if (!destinationDeleted(conflictDefs) && !sourceDeleted(conflictDefs)) {
+            return numConflicts > 0;
+         } else if ((destinationDeleted(conflictDefs) && sourceModified) || (sourceDeleted(conflictDefs) && destModified)) {
+            return true;
+         }
+         return false;
+      }
+
    }
 
    public static void initializeConflictTest() throws Exception {
@@ -138,47 +178,40 @@ public class ConflictTestManager {
       // create attribute conflicts
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         int numConflicts = 0;
-         int numArtifacts = 0;
          for (AttributeValue value : conflictDefs[i].values) {
             if (value.sourceValue != null) {
+               conflictDefs[i].sourceModified = true;
                sourceArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas,
                      value.sourceValue));
             }
             if (value.sourceValue != null && value.destValue != null) {
-               numConflicts++;
-               numArtifacts = 1;
+               conflictDefs[i].numConflicts++;
             }
          }
          sourceArtifacts[i].persistAttributes();
          for (AttributeValue value : conflictDefs[i].values) {
             if (value.destValue != null) {
+               conflictDefs[i].destModified = true;
                destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
             }
          }
+      }
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          destArtifacts[i].persistAttributes();
 
          if (conflictDefs[i].destDelete) {
-            System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId());
+            System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
             destArtifacts[i].delete();
-            numConflicts = 0;
-            numArtifacts = 0;
-            if (!conflictDefs[i].sourceDelete) {
-               NUMBER_OF_CONFLICTS++;
-               numArtifacts = 1;
-            }
          }
          if (conflictDefs[i].sourceDelete) {
-            System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId());
+            System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId() + " index " + i);
             sourceArtifacts[i].delete();
-            numConflicts = 0;
-            if (!conflictDefs[i].destDelete) {
-               NUMBER_OF_CONFLICTS++;
-               numArtifacts = 1;
-            }
          }
-         NUMBER_OF_CONFLICTS += numConflicts;
-         NUMBER_OF_ARTIFACTS_ON_BRANCH += numArtifacts;
+         if (DEBUG) {
+            DeletionTest.dumpArtifact(sourceArtifacts[i]);
+            DeletionTest.dumpArtifact(destArtifacts[i]);
+         }
+
       }
    }
 
@@ -258,15 +291,23 @@ public class ConflictTestManager {
    }
 
    public static int numberOfConflicts() {
-      return NUMBER_OF_CONFLICTS;
+      int total = 0;
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         total += conflictDefs[i].getNumberConflicts(conflictDefs);
+      }
+      return total;
    }
 
    public static int numberOfArtifactsOnMergeBranch() {
-      return NUMBER_OF_ARTIFACTS_ON_BRANCH;
+      int total = 0;
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         total += conflictDefs[i].artifactAdded(conflictDefs) ? 1 : 0;
+      }
+      return total;
    }
 
    public static boolean hasConflicts() {
-      return NUMBER_OF_CONFLICTS > 0;
+      return numberOfConflicts() > 0;
    }
 
    public static void resolveAttributeConflict(AttributeConflict conflict) throws Exception {
@@ -359,7 +400,7 @@ public class ConflictTestManager {
       conflictDefs[3].setValues("Software Requirement", true, false, 0, 0);
       conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
             StringAttribute.class));
-      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
+      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Source",
             StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
@@ -428,7 +469,7 @@ public class ConflictTestManager {
       conflictDefs[19].values.add(new AttributeValue("Name", "Test Artifact Number 19 - Child", null, "Source",
             StringAttribute.class));
 
-      conflictDefs[20].setValues("Software Requirement", true, false, 0, REVERT_QUERY);
+      conflictDefs[20].setValues("Software Requirement", true, false, 0, REVERT_ARTIFACT_QUERY);
       conflictDefs[20].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
             StringAttribute.class));
       conflictDefs[20].values.add(new AttributeValue("Name", "Test Artifact Number 20 - Parent", null, "Source",
@@ -442,14 +483,15 @@ public class ConflictTestManager {
       conflictDefs[22].values.add(new AttributeValue("Name", "Test Artifact Number 22 - Child/Parent", null, "Source",
             StringAttribute.class));
       conflictDefs[23].setValues("Software Requirement", false, false, 22, 0);
-      conflictDefs[23].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      conflictDefs[23].values.add(new AttributeValue("Name", "Test Artifact Number 23 - Child", null, "Source",
+      conflictDefs[23].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
             StringAttribute.class));
+      conflictDefs[23].values.add(new AttributeValue("Name", "Test Artifact Number 23 - Child", "The Other Name",
+            "Source", StringAttribute.class));
 
-      conflictDefs[24].setValues("Software Requirement", false, false, 0, UPDATE_PARENT_QUERY);
+      conflictDefs[24].setValues("Software Requirement", false, false, 0, 0);
       conflictDefs[24].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
             StringAttribute.class));
-      conflictDefs[24].values.add(new AttributeValue("Name", "Test Artifact Number 24 - Parent", "Test Artifact Number 24 - Parent/Destination", "Source",
+      conflictDefs[24].values.add(new AttributeValue("Name", "Test Artifact Number 24 - Parent", null, "Source",
             StringAttribute.class));
       conflictDefs[25].setValues("Software Requirement", false, false, 24, 0);
       conflictDefs[25].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
@@ -459,10 +501,11 @@ public class ConflictTestManager {
       conflictDefs[26].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[26].values.add(new AttributeValue("Name", "Test Artifact Number 26 - Child/Parent", null, "Source",
             StringAttribute.class));
-      conflictDefs[27].setValues("Software Requirement", false, false, 26, 0);
-      conflictDefs[27].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      conflictDefs[27].values.add(new AttributeValue("Name", "Test Artifact Number 27 - Child", null, "Source",
+      conflictDefs[27].setValues("Software Requirement", false, false, 26, REVERT_ATTRIBUTE_QUERY);
+      conflictDefs[27].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
             StringAttribute.class));
+      conflictDefs[27].values.add(new AttributeValue("Name", "Test Artifact Number 27 - Child", "The Other Name",
+            "Source", StringAttribute.class));
 
    }
 

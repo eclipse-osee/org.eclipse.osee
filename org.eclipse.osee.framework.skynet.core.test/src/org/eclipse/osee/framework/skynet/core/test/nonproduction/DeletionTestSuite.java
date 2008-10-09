@@ -26,7 +26,7 @@ public class DeletionTestSuite {
    }
 
    public static void oneTimeTearDown() throws Exception {
-      //ConflictTestManager.cleanUpConflictTest();
+      ConflictTestManager.cleanUpConflictTest();
    }
 
    public static Test suite() {

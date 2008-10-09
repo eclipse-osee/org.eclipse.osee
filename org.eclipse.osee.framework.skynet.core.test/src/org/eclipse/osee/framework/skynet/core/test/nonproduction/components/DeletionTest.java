@@ -365,10 +365,10 @@ public class DeletionTest extends TestCase {
       }
    }
 
-   private void dumpArtifact(Artifact artifact) throws OseeDataStoreException {
+   public static void dumpArtifact(Artifact artifact) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         System.out.println("Artifact Dump : " + artifact.getInternalDescriptiveName());
+         System.out.println("  Artifact Dump : " + artifact.getInternalDescriptiveName());
          chStmt =
                ConnectionHandler.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch().getBranchId(),
                      artifact.getArtId());
@@ -384,10 +384,10 @@ public class DeletionTest extends TestCase {
       }
    }
 
-   private void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException {
+   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         System.out.println("  Atttribute Dump");
+         System.out.println("  Attribute Dump");
          chStmt =
                ConnectionHandler.runPreparedQuery(GET_ATTRIBUTE_DEBUG,
                      attribute.getArtifact().getBranch().getBranchId(), attribute.getAttrId());
@@ -404,7 +404,7 @@ public class DeletionTest extends TestCase {
       }
    }
 
-   private void dumpRelation(RelationLink relation, Artifact artifact) throws OseeDataStoreException {
+   public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
       try {
          System.out.println("  Relation Dump");

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -60,7 +59,7 @@ public class ConflictResolutionTest extends TestCase {
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
-            if (conflict instanceof ArtifactConflict) {
+            if (conflict instanceof ArtifactConflict && ((ArtifactConflict) conflict).statusNotResolvable()) {
                ((ArtifactConflict) conflict).revertSourceArtifact();
             } else if (conflict instanceof AttributeConflict) {
                ConflictTestManager.resolveAttributeConflict((AttributeConflict) conflict);
@@ -72,14 +71,14 @@ public class ConflictResolutionTest extends TestCase {
          }
 
          conflicts =
-        	 ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictManagerInternal.getInstance().getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
                      ConflictTestManager.getDestBranch(),
                      TransactionIdManager.getStartEndPoint(ConflictTestManager.getSourceBranch()).getKey());
 
          for (Conflict conflict : conflicts) {
             assertTrue(
                   "This conflict was not found to be resolved ArtId = " + conflict.getArtId() + " " + conflict.getSourceDisplayData(),
-                  conflict.statusResolved());
+                  conflict.statusResolved() || conflict.statusInformational());
 
          }
       } catch (Exception ex) {
