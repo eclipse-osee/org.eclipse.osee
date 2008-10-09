@@ -13,8 +13,9 @@ package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +23,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.ATSBranchMetrics;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
@@ -38,9 +38,7 @@ import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,9 +48,10 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -61,11 +60,11 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchContentProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
@@ -80,12 +79,10 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AtsBranchManager {
    private final SMAManager smaMgr;
-   private final ATSBranchMetrics atsBranchMetrics;
    public static String BRANCH_CATEGORY = "Branch Changes";
 
    public AtsBranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
-      atsBranchMetrics = new ATSBranchMetrics(this);
    }
 
    public void setAsDefaultBranch() {
@@ -170,18 +167,19 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public TransactionId getTransactionId() throws OseeDataStoreException {
-      Set<Integer> tranSet = RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
-      // Cache null transactionId so don't re-search for every call
-      if (tranSet.size() == 0) {
-         return null;
-      } else if (tranSet.size() > 1) {
-         OSEELog.logWarning(AtsPlugin.class,
-               "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
-      }
+   public TransactionId getTransactionId() throws OseeCoreException {
       try {
+         Set<Integer> tranSet = RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
+         // Cache null transactionId so don't re-search for every call
+         if (tranSet.size() == 0) {
+            return null;
+         } else if (tranSet.size() > 1) {
+            OSEELog.logWarning(AtsPlugin.class,
+                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
+         }
          return TransactionIdManager.getTransactionId(tranSet.iterator().next());
       } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
          // there may be times where the transaction id cache is not up-to-date yet; don't throw error
       }
       return null;
@@ -266,7 +264,7 @@ public class AtsBranchManager {
    /**
     * @return true if there are committed changes associated with this state machine artifact
     */
-   public boolean isCommittedBranch() throws OseeDataStoreException {
+   public boolean isCommittedBranch() throws OseeCoreException {
       return (getTransactionId() != null);
    }
 
@@ -461,9 +459,16 @@ public class AtsBranchManager {
       // If team uses versions, then validate that the parent branch id is specified by either
       // the team definition's attribute or the related version's attribute
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-         TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
          // Only perform checks if team definition uses ATS versions
+         TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
          if (team.getTeamDefinition().isTeamUsesVersions()) {
+
+            // Confirm that team is targeted for version
+            if (team.getTargetedForVersion() == null) {
+               return new Result(String.format("Commit Branch Failed: Workflow \"%s\" must be targeted for a version.",
+                     smaMgr.getSma().getHumanReadableId()));
+            }
+
             // Validate that a parent branch is specified in ATS configuration
             Branch parentBranch = getParentBranchForWorkingBranchCreation();
             if (parentBranch == null) {
@@ -564,84 +569,31 @@ public class AtsBranchManager {
 
    }
 
-   public List<ArtifactChange> getArtifactChange(String artifactName) throws OseeCoreException {
-      List<ArtifactChange> changes = new ArrayList<ArtifactChange>();
-      for (ArtifactChange artChange : getArtifactChanges()) {
-         if (artChange.getName().equals(artifactName)) {
-            changes.add(artChange);
-         }
-      }
-      return changes;
-   }
+   /**
+    * Since change data for a committed branch is not going to change, cache it per run instance of OSEE
+    */
+   private static final Map<TransactionId, ChangeData> changeDataCacheForCommittedBranch =
+         new HashMap<TransactionId, ChangeData>();
 
-   public Collection<ArtifactChange> getArtifactChanges() throws OseeCoreException {
-      ArrayList<ArtifactChange> artChanges = new ArrayList<ArtifactChange>();
+   public ChangeData getChangeData() throws OseeCoreException {
+      ChangeData changeData = null;
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
-         Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
-         if (workingBranch != null) {
-            for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput(workingBranch))) {
-               if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
-            }
-         }
+         changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch());
       } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
          TransactionId transactionId = getTransactionId();
-         if (transactionId != null) {
-            for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput("", transactionId))) {
-               if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
-            }
+         if (changeDataCacheForCommittedBranch.get(transactionId) != null) {
+            System.err.println("AtsBranchManager: returning cached ChangeData");
+         } else {
+            System.err.println("AtsBranchManager: calculating ChangeData ChangeData Start: " + XDate.getDateNow(XDate.MMDDYYHHMM));
+            changeDataCacheForCommittedBranch.put(transactionId,
+                  ChangeManager.getChangeDataPerTransaction(transactionId));
+            System.err.println("AtsBranchManager: calculating ChangeData ChangeData End: " + XDate.getDateNow(XDate.MMDDYYHHMM));
          }
+         changeData = changeDataCacheForCommittedBranch.get(transactionId);
+      } else {
+         changeData = new ChangeData(new ArrayList<Change>());
       }
-      return artChanges;
-   }
-
-   /**
-    * Return the artifacts modified via transaction of branch commit during implementation state. This includes
-    * artifacts that only had relation changes. NOTE: The returned artifacts are the old versions at the time of the
-    * commit. They can't be used for editing or relating. NOTE: This is a VERY expensive operation as each artifact must
-    * be loaded. Retrieving data through change report snapshot is cheaper.
-    * 
-    * @return artifacts modified
-    */
-   public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      try {
-         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
-            return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch, includeRelationOnlyChanges);
-         } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
-            TransactionId transactionId = getTransactionId();
-            if (transactionId != null) {
-
-               return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
-                     includeRelationOnlyChanges);
-
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
-      }
-      return arts;
-   }
-
-   /**
-    * Return All artifacts who had a relation change. This includes relation only artifacts and those who had other
-    * attribute changes.
-    * 
-    * @return artifacts
-    */
-   public Collection<Artifact> getArtifactsRelChanged() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      try {
-         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-         TransactionId transactionId = getTransactionId();
-         if (transactionId == null) return arts;
-
-         return RevisionManager.getInstance().getRelationChangedArtifacts(transactionId, transactionId);
-      } catch (Exception ex) {
-         OSEELog.logSevere(AtsPlugin.class, "Error getting relation changed artifacts", true);
-      }
-      return arts;
+      return changeData;
    }
 
    /**
@@ -651,48 +603,9 @@ public class AtsBranchManager {
     */
    public Boolean isChangesOnWorkingBranch() throws OseeCoreException {
       if (isWorkingBranch()) {
-         Pair<TransactionId, TransactionId> transactionToFrom =
-               TransactionIdManager.getStartEndPoint(getWorkingBranch());
-         if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
-            return false;
-         }
-         return true;
+         return ChangeManager.isChangesOnWorkingBranch(getWorkingBranch());
       }
       return false;
-   }
-
-   /**
-    * Since deleted artifacts don't exist, this method will return the artifact object just prior to it's deletion.
-    * NOTE: This is a VERY expensive operation as each artifact must be loaded. Retrieving data through change report
-    * snapshot is cheaper.
-    * 
-    * @return artifacts that were deleted
-    */
-   public Collection<Artifact> getArtifactsDeleted() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      try {
-         if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-         TransactionId transactionId = getTransactionId();
-         if (transactionId == null) return arts;
-
-         for (ArtifactChange artChange : RevisionManager.getInstance().getDeletedArtifactChanges(transactionId)) {
-            if (artChange.getModType() == ModificationType.DELETED) {
-               arts.add(artChange.getArtifact());
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class,
-               "Error getting deleted artifacts " + smaMgr.getSma().getHumanReadableId(), ex, true);
-      }
-      return arts;
-   }
-
-   /**
-    * @return the atsBranchMetrics
-    */
-   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws OseeCoreException {
-      if (cache) atsBranchMetrics.persist();
-      return atsBranchMetrics;
    }
 
    /**

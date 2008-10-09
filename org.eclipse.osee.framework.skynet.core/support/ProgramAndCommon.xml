@@ -202,10 +202,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R56C1:R59C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R59C1:R62C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="64" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="11" ss:ExpandedRowCount="67" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="359.25"/>
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300.75"/>
@@ -285,6 +285,15 @@
     <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Url</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">FileArtifact</Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s29"/>
+    <Cell ss:StyleID="s29"/>
+    <Cell ss:StyleID="s29"/>
+    <Cell ss:StyleID="s29"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">General Data</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Artifact</Data></Cell>
     <Cell ss:Index="6" ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
     <Cell ss:StyleID="s29"/>
@@ -430,6 +439,19 @@
     <Cell ss:StyleID="s37"/>
     <Cell ss:StyleID="s37"/>
    </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">General String Data</Data></Cell>
+    <Cell ss:StyleID="s28"/>
+    <Cell ss:StyleID="s28"/>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s37"/>
+    <Cell ss:StyleID="s37"/>
+   </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.CompressedContentAttribute</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
@@ -519,6 +541,10 @@
     <Cell ss:StyleID="s28"><Data ss:Type="String">Blam Workflow</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Workflow Definition</Data></Cell>
    </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s28"><Data ss:Type="String">General Data</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">General String Data</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s28"><Data ss:Type="String">NativeArtifact</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">Extension</Data></Cell>
@@ -581,7 +607,7 @@
     <Cell><Data ss:Type="String">Yes</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="54" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="57" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s43"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -664,11 +690,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>12</TopRowVisible>
+   <TopRowVisible>20</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>51</ActiveRow>
+     <ActiveRow>25</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

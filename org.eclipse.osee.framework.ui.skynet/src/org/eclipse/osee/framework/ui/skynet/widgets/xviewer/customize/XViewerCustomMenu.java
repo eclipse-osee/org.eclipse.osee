@@ -119,7 +119,7 @@ public class XViewerCustomMenu {
             performViewCell();
          };
       };
-      copySelectedCell = new Action("Copy Selected Cell - Ctrl-Shift-C") {
+      copySelectedCell = new Action("Copy Selected Column - Ctrl-Shift-C") {
          @Override
          public void run() {
             performCopyCell();

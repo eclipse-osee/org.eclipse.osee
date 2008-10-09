@@ -17,7 +17,25 @@ import java.io.Serializable;
  * @author Ryan D. Brooks
  */
 public enum ModificationType implements Serializable {
-   NEW("New", 1), CHANGE("Modified", 2), DELETED("Deleted", 3), MERGED("Merged", 4), ARTIFACT_DELETED("Artifact Deleted", 5);
+   // Artifact, Attribute or Relation that was newly created
+   NEW("New", 1),
+
+   // Artifact if any Attribute was changed (not Relation)
+   // Attribute if it's value was modified
+   // Relation if rationale or ordering change
+   CHANGE("Modified", 2),
+
+   // Artifact, Attribute or Relation was deleted
+   DELETED("Deleted", 3),
+
+   // Artifact: Not Valid
+   // Attribute: if value was merged from merge manager
+   // TODO Relation: Not Currently Valid, but needs to be handled
+   MERGED("Merged", 4),
+
+   // Artifact: Not Valid
+   // Attribute or Relation: was deleted as a direct result of Artifact delete, will be marked as ARTIFACT_DELETED
+   ARTIFACT_DELETED("Artifact Deleted", 5);
 
    private int value;
    private String displayName;
@@ -34,6 +52,7 @@ public enum ModificationType implements Serializable {
       return value;
    }
 
+   @Override
    public String toString() {
       return String.valueOf(value);
    }

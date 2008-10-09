@@ -27,16 +27,16 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class Change implements IAdaptable {
 
-   private int sourceGamma;
-   private int artId;
-   private TransactionId toTransactionId;
+   private final int sourceGamma;
+   private final int artId;
+   private final TransactionId toTransactionId;
    private TransactionId fromTransactionId;
    private Artifact artifact;
    private ModificationType modType;
-   private ChangeType changeType;
+   private final ChangeType changeType;
    private Branch branch;
    protected int artTypeId;
-   private boolean isHistorical;
+   private final boolean isHistorical;
 
    /**
     * @param sourceGamma
@@ -58,6 +58,32 @@ public abstract class Change implements IAdaptable {
       this.changeType = changeType;
       this.artTypeId = artTypeId;
       this.isHistorical = isHistorical;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof Change) {
+         Change change = (Change) obj;
+         return change.getArtId() == artId &&
+         //
+         change.getGamma() == sourceGamma &&
+         //
+         change.getBranch() == branch &&
+         //
+         change.getToTransactionId() == toTransactionId &&
+         //
+         change.getFromTransactionId() == fromTransactionId &&
+         //
+         change.getModificationType() == modType &&
+         //
+         change.getChangeType() == changeType;
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      return artId + branch.hashCode() + toTransactionId.hashCode() + fromTransactionId.hashCode() + modType.hashCode() + changeType.hashCode();
    }
 
    public boolean isHistorical() {

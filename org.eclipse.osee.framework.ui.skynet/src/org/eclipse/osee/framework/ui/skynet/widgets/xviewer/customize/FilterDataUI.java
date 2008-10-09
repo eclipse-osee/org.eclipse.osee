@@ -77,6 +77,11 @@ public class FilterDataUI {
 
       filterLabel = new Label(comp, SWT.NONE);
       filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
+      if (PlatformUI.isWorkbenchRunning()) {
+         filterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      } else {
+         filterLabel.setText("clear");
+      }
       filterLabel.addListener(SWT.MouseUp, new Listener() {
          /*
           * (non-Javadoc)
@@ -103,24 +108,12 @@ public class FilterDataUI {
       if (xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       if (custData.getFilterData().getFilterText().equals("")) {
          xViewer.removeFilter(xViewerFilter);
-         if (filterLabel != null) {
-            filterLabel.setImage(null);
-            filterLabel.getParent().layout();
-         }
       } else {
          if (isXViewerTextFiltered()) {
             xViewer.removeFilter(xViewerFilter);
          }
          xViewerFilter.setFilterText(custData.getFilterData().getFilterText());
          xViewer.addFilter(xViewerFilter);
-         if (filterLabel != null) {
-            if (PlatformUI.isWorkbenchRunning()) {
-               filterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
-            } else {
-               filterLabel.setText("clear");
-            }
-            filterLabel.getParent().layout();
-         }
       }
       if (filterText != null) filterText.setText(custData.getFilterData().getFilterText());
    }

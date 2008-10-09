@@ -28,6 +28,9 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -50,6 +53,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       this.byAttribute = byAttribute;
    }
 
+   @Override
    public IStatus run(IProgressMonitor monitor) {
       return runIt(monitor, getName(), teamArts, byAttribute);
    }
@@ -118,21 +122,23 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
-      for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
+      ChangeData changeData = teamArt.getSmaMgr().getBranchMgr().getChangeData();
+      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.CHANGE)) {
          List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   modArt.getDescriptiveName(), attrStr, rpcrNum, "Content"}));
       }
-      for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsDeleted()) {
+      for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
       }
-      for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsRelChanged()) {
+      for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
+            ModificationType.CHANGE)) {
          List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)

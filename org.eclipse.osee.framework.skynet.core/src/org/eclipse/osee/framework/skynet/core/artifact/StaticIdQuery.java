@@ -59,9 +59,19 @@ public class StaticIdQuery {
       return artifacts.iterator().next();
    }
 
-   public static Artifact getSingletonArtifact(String artifactType, String staticId, Branch branch) throws OseeCoreException {
-      Set<Artifact> artifacts = getArtifacts(artifactType, staticId, branch);
-      if (artifacts.size() == 1) return artifacts.iterator().next();
+   public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, Branch branch) throws OseeCoreException {
+      return getSingletonArtifact(artifactTypeName, staticId, branch, false);
+   }
+
+   public static Artifact getSingletonArtifact(String artifactTypeName, String staticId, Branch branch, boolean create) throws OseeCoreException {
+      Set<Artifact> artifacts = getArtifacts(artifactTypeName, staticId, branch);
+      if (artifacts.size() == 1)
+         return artifacts.iterator().next();
+      else if (artifacts.size() == 0 && create) {
+         Artifact artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
+         artifact.addAttribute(STATIC_ID_ATTRIBUTE, staticId);
+         return artifact;
+      }
       return null;
    }
 }

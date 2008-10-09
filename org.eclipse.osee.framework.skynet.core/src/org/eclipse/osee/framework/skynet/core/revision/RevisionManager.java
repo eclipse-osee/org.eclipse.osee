@@ -137,6 +137,10 @@ public class RevisionManager {
       return transactionDetails;
    }
 
+   /**
+    * Return the transaction(s) that a commitArtifact authored
+    */
+   // TODO need to specify what method replaces this
    @Deprecated
    public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws OseeDataStoreException {
       checkCommitArtifactToTransactionCache();
@@ -251,6 +255,7 @@ public class RevisionManager {
                cursor = null;
             }
          } finally {
+
             ConnectionHandler.close(chStmt);
          }
       }

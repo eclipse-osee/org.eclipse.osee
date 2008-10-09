@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.core.runtime.IAdaptable;
@@ -242,9 +241,9 @@ public class XChangeViewer extends XWidget implements IActionable {
 
             try {
                if (hasBranch) {
-                  changes = ChangeManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
+                  changes = ChangeManager.getChangesPerBranch(branch).toArray(new Change[0]);
                } else {
-                  changes = ChangeManager.getInstance().getChangesPerTransaction(transactionId).toArray(new Change[0]);
+                  changes = ChangeManager.getChangesPerTransaction(transactionId).toArray(new Change[0]);
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
