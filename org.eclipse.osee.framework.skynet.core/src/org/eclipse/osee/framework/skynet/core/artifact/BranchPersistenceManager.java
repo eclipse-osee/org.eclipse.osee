@@ -82,6 +82,8 @@ public class BranchPersistenceManager {
 
    private static final boolean MERGE_DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
+   private static final boolean PERSISTENCE_DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Persistence"));
 
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
@@ -152,7 +154,7 @@ public class BranchPersistenceManager {
                boolean isArchived = chStmt.getInt("archived") == 1;
 
                Branch branch = branchCache.get(branchId);
-               if (true) {
+               if (PERSISTENCE_DEBUG) {
                   if (branch != null && branch.getBranchId() == 381) {
                      System.out.println(String.format("Found a root branch Branch ID = %d", branch.getBranchId()));
                   }
