@@ -30,6 +30,8 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.BranchType;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
@@ -120,7 +122,7 @@ public class BranchCreator {
       return instance;
    }
 
-   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
+   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Connection connection, Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws OseeCoreException {
       User userToBlame = SkynetAuthentication.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId =
@@ -129,7 +131,7 @@ public class BranchCreator {
             NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
-            initializeBranch(childBranchShortName, childBranchName, null, userId, timestamp, comment,
+            initializeBranch(connection, childBranchShortName, childBranchName, null, userId, timestamp, comment,
                   associatedArtifact, branchType);
 
       // insert the new transaction data first.
@@ -137,7 +139,7 @@ public class BranchCreator {
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
                   "time", "author", "tx_type");
-      ConnectionHandler.runPreparedUpdate(query, childBranch.getBranchId(), newTransactionNumber,
+      ConnectionHandler.runPreparedUpdate(connection, query, childBranch.getBranchId(), newTransactionNumber,
             childBranch.getCreationComment(), childBranch.getCreationDate(), childBranch.getAuthorId(),
             TransactionDetailsType.Baselined.getId());
 
@@ -349,10 +351,10 @@ public class BranchCreator {
     * @throws UserNotInDatabase
     * @throws MultipleArtifactsExist
     */
-   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
+   private Branch initializeBranch(Connection connection, String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws OseeCoreException {
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
-      if (ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
+      if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, SELECT_BRANCH_BY_NAME, branchName) > 0) {
          throw new OseeCoreException("A branch with the name " + branchName + " already exists");
       }
 
@@ -369,7 +371,7 @@ public class BranchCreator {
          associatedArtifactId = associatedArtifact.getArtId();
       }
 
-      ConnectionHandler.runPreparedUpdate(BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
+      ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchShortName, branchName,
             parentBranchNumber, 0, associatedArtifactId, branchType.getValue());
 
       // this needs to be after the insert in case there is an exception on insert
@@ -426,6 +428,7 @@ public class BranchCreator {
       private Branch destBranch;
       private Collection<Integer> artIds;
       private Branch mergeBranch;
+      private OseeConnection connection;
 
       /**
        * @param sourceBranch
@@ -454,17 +457,17 @@ public class BranchCreator {
        */
       @Override
       protected void handleTxWork() throws OseeCoreException {
+         connection = OseeDbConnection.getConnection();
          boolean createBranch = (mergeBranch == null);
 
          if (artIds == null || artIds.isEmpty()) {
             throw new IllegalArgumentException("Artifact IDs can not be null or empty");
          }
 
-         Connection connection = ConnectionHandler.getConnection();
          Pair<Branch, Integer> branchWithTransactionNumber;
          if (createBranch) {
             branchWithTransactionNumber =
-                  createMergeBranchWithBaselineTransactionNumber(SkynetAuthentication.getUser(),
+                  createMergeBranchWithBaselineTransactionNumber(connection, SkynetAuthentication.getUser(),
                         TransactionIdManager.getStartEndPoint(sourceBranch).getKey(),
                         "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName(),
                         BranchType.MERGE, destBranch);
@@ -500,7 +503,7 @@ public class BranchCreator {
 
          if (createBranch) {
             try {
-               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, sourceBranch.getBranchId(),
                      destBranch.getBranchId(), mergeBranch.getBranchId());
             } finally {
                ConnectionHandler.close(chStmt);
@@ -513,7 +516,7 @@ public class BranchCreator {
       }
 
       private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws OseeDataStoreException {
-         ConnectionHandler.runPreparedUpdate(sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
+         ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
                sourceBranch.getBranchId(), queryId);
       }
    }

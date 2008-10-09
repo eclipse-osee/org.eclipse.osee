@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -83,6 +84,9 @@ public final class ArtifactLoader {
          "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
 
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
+
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Loading"));
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
@@ -226,7 +230,7 @@ public final class ArtifactLoader {
     * @throws OseeDataStoreException
     */
    public static int selectArtifacts(List<Object[]> insertParameters) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdate(INSERT_JOIN_ARTIFACT, insertParameters);
+      return ConnectionHandler.runPreparedUpdateBatch(INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
    /**
@@ -268,9 +272,15 @@ public final class ArtifactLoader {
          chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
+         if (DEBUG) {
+            System.out.println("ArtifactLoader: Found the following Artifacts");
+         }
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
+            if (DEBUG) {
+               System.out.println(String.format("  ArtifactID = %d , BranchID = %d", artId, branchId));
+            }
             Object transactionParameter =
                   transactionId == null ? SQL3DataType.INTEGER : transactionId.getTransactionNumber();
             insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,

@@ -152,6 +152,14 @@ public class BranchPersistenceManager {
                boolean isArchived = chStmt.getInt("archived") == 1;
 
                Branch branch = branchCache.get(branchId);
+               if (true) {
+                  if (branch != null && branch.getBranchId() == 381) {
+                     System.out.println(String.format("Found a root branch Branch ID = %d", branch.getBranchId()));
+                  }
+                  if (branch != null && branch.isRootBranch()) {
+                     System.out.println(String.format("Found a root branch Branch ID = %d", branch.getBranchId()));
+                  }
+               }
 
                if (isArchived) {
                   if (branch != null) {

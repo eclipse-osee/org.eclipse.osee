@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
@@ -69,6 +70,9 @@ public class InternalEventManager {
    // should be reset to false before release.
    public static final boolean enableRemoteEventLoopback = false;
 
+   private static final boolean DEBUG =
+         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
+
    /**
     * Kick LOCAL "remote event manager" event
     * 
@@ -79,8 +83,10 @@ public class InternalEventManager {
    static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -119,9 +125,11 @@ public class InternalEventManager {
       // Don't display ping/pong events 
       if (broadcastEventType != BroadcastEventType.Ping && broadcastEventType != BroadcastEventType.Pong) {
          try {
-            SkynetActivator.getLogger().log(
+            if (DEBUG) {
+               SkynetActivator.getLogger().log(
                   Level.INFO,
-                  "OEM: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
+                     "OEM: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
+            }
          } catch (Exception ex) {
             SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
          }
@@ -167,8 +175,10 @@ public class InternalEventManager {
    static void kickBranchEvent(final Sender sender, final BranchEventType branchEventType, final int branchId) {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -241,9 +251,11 @@ public class InternalEventManager {
       if (loadedArtifacts == null) throw new IllegalArgumentException("loadedArtifacts can not be null");
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(
                Level.INFO,
-               "OEM: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
+                  "OEM: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -294,7 +306,9 @@ public class InternalEventManager {
    static void kickLocalBranchToArtifactCacheUpdateEvent(final Sender sender) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO, "OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO, "OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -326,9 +340,11 @@ public class InternalEventManager {
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(
                Level.INFO,
-               "OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getHumanReadableId() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
+                  "OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getHumanReadableId() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -361,8 +377,10 @@ public class InternalEventManager {
    static void kickRelationModifiedEvent(final Sender sender, final RelationModType relationModType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickRelationModifiedEvent - " + relationModType + " - " + link + " - " + sender);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickRelationModifiedEvent - " + relationModType + " - " + link + " - " + sender);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -395,8 +413,10 @@ public class InternalEventManager {
    static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -440,8 +460,10 @@ public class InternalEventManager {
    static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -485,8 +507,10 @@ public class InternalEventManager {
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -526,8 +550,10 @@ public class InternalEventManager {
    static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) return;
       try {
-         SkynetActivator.getLogger().log(Level.INFO,
-               "OEM: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO,
+                  "OEM: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -583,7 +609,9 @@ public class InternalEventManager {
       if (listener == null) throw new IllegalArgumentException("listener can not be null");
       listeners.add(listener);
       try {
-         SkynetActivator.getLogger().log(Level.INFO, "OEM: addListener (" + listeners.size() + ") " + listener);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO, "OEM: addListener (" + listeners.size() + ") " + listener);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }
@@ -592,7 +620,9 @@ public class InternalEventManager {
    static void removeListeners(IEventListner listener) {
       listeners.remove(listener);
       try {
-         SkynetActivator.getLogger().log(Level.INFO, "OEM: removeListener: (" + listeners.size() + ") " + listener);
+         if (DEBUG) {
+            SkynetActivator.getLogger().log(Level.INFO, "OEM: removeListener: (" + listeners.size() + ") " + listener);
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.INFO, ex.getLocalizedMessage(), ex);
       }

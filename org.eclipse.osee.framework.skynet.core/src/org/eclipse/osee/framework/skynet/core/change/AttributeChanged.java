@@ -11,15 +11,16 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -144,6 +145,15 @@ public class AttributeChanged extends Change {
       return artifactChange;
    }
 
+   public Attribute<?> getAttribute() throws OseeCoreException {
+      for (Attribute<?> attribute : getArtifact().getAttributes(true)) {
+         if (attribute.getAttrId() == attrId) {
+            return attribute;
+         }
+      }
+      throw new AttributeDoesNotExist(String.format("Could not find Attribute %d on Artifact %d", attrId, getArtId()));
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
@@ -159,7 +169,10 @@ public class AttributeChanged extends Change {
          if (adapter.isInstance(getArtifact())) {
             return getArtifactChange().getArtifact();
          }
-      } catch (ArtifactDoesNotExist ex) {
+         if (adapter.isInstance(getAttribute())) {
+            return getAttribute();
+         }
+      } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return null;

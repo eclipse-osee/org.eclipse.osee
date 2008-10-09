@@ -45,10 +45,12 @@ public class MergeBranchManager {
 
    public static void updateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) throws OseeCoreException {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
+      long time = System.currentTimeMillis();
       Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
       Collection<Artifact> goodMergeBranchArtifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
 
       if (DEBUG) {
+         System.out.println(String.format("        Get artifacts on branch took %s", Lib.getElapseString(time)));
          System.out.println("            Need the following Artifacts on the Merge Branch");
          System.out.print("            ");
          for (Integer integer : expectedArtIds) {
@@ -56,7 +58,7 @@ public class MergeBranchManager {
          }
          System.out.print("\n");
       }
-      long time = System.currentTimeMillis();
+      time = System.currentTimeMillis();
       int count = 0;
       //Delete any damaged artifacts (from a source revert) on the merge branch
       for (Artifact artifact : goodMergeBranchArtifacts) {
@@ -120,22 +122,22 @@ public class MergeBranchManager {
          while (chStmt1.next()) {
             artSet.add(chStmt1.getInt("art_id"));
          }
-         if (DEBUG) {
+      if (DEBUG) {
             System.out.println(String.format(
                   "          Getting Artifacts that are on the Merge Branch Completed in %s", Lib.getElapseString(time)));
-            time = System.currentTimeMillis();
-         }
+         time = System.currentTimeMillis();
+      }
 
          chStmt2 = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, branch.getBranchId());
          while (chStmt2.next()) {
             artSet.add(chStmt2.getInt("art_id"));
          }
-         if (DEBUG) {
+      if (DEBUG) {
             System.out.println(String.format(
                   "          Getting Attributes that are on the Merge Branch Completed in %s",
-                  Lib.getElapseString(time)));
-            time = System.currentTimeMillis();
-         }
+               Lib.getElapseString(time)));
+         time = System.currentTimeMillis();
+      }
 
          chStmt3 = ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, branch.getBranchId());
          while (chStmt3.next()) {

@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MergeChangesInArtifactException;
@@ -102,7 +101,7 @@ public class AttributeConflict extends Conflict {
       }
       if (attribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on " + getArtId() + " on Branch " + mergeBranch.getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + mergeBranch.getBranchId());
       }
       return attribute;
    }
@@ -118,7 +117,7 @@ public class AttributeConflict extends Conflict {
       }
       if (sourceAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on " + getArtId() + " on Branch " + sourceBranch.getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getBranchId());
       }
       return sourceAttribute;
    }
@@ -134,7 +133,7 @@ public class AttributeConflict extends Conflict {
       }
       if (destAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on " + getArtId() + " on Branch " + destBranch.getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getBranchId());
       }
       return destAttribute;
    }
@@ -145,8 +144,7 @@ public class AttributeConflict extends Conflict {
     */
    public AttributeType getDynamicAttributeDescriptor() throws OseeCoreException {
       if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor =
-               AttributeTypeManager.getType(AttributeTypeManager.getType(attrTypeId).getName());
+         dynamicAttributeDescriptor = AttributeTypeManager.getType(AttributeTypeManager.getType(attrTypeId).getName());
       }
       return dynamicAttributeDescriptor;
    }
@@ -192,6 +190,10 @@ public class AttributeConflict extends Conflict {
 
       try {
          Artifact artifact;
+         Attribute attribute = getSourceAttribute();
+         if (adapter.isInstance(attribute)) {
+            return attribute;
+         }
          Branch defaultBranch = BranchPersistenceManager.getDefaultBranch();
          if (defaultBranch.equals(sourceBranch)) {
             artifact = getSourceArtifact();
@@ -373,12 +375,7 @@ public class AttributeConflict extends Conflict {
       } catch (AttributeDoesNotExist ex) {
          passedStatus = Status.NOT_RESOLVABLE;
       }
-      Status status = super.computeStatus(attrId, passedStatus);
-      //      if (DEBUG) {
-      //         System.out.println(String.format("Attribute Conflict: Computed Status Value for AttrId %d to %s", getAttrId(),
-      //               status));
-      //      }
-      return status;
+      return super.computeStatus(attrId, passedStatus);
    }
 
    @Override
@@ -428,7 +425,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println(String.format("AttributeConflict: Reverting Attribute %d", getAttrId()));
       }
-      ArtifactPersistenceManager.getInstance().revertAttribute(getSourceArtifact(), getSourceAttribute());
+      ArtifactPersistenceManager.getInstance().revertAttribute(getSourceAttribute());
    }
 
 }

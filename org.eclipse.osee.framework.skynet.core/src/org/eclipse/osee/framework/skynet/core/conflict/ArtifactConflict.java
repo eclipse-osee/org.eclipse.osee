@@ -50,6 +50,14 @@ public class ArtifactConflict extends Conflict {
       sourceDeleted = (sourceModType == ModificationType.DELETED.getValue());
    }
 
+   public String getArtifactName() throws OseeCoreException {
+      if (sourceDeleted) {
+         return getDestArtifact().getDescriptiveName();
+      } else {
+         return getSourceArtifact().getDescriptiveName();
+      }
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -214,4 +222,5 @@ public class ArtifactConflict extends Conflict {
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }
+
 }
