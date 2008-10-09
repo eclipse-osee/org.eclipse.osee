@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.ResultSet;
-import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 
 /**
  * Identifies and removes addressing from the transaction table that no longer addresses other tables.
@@ -29,21 +24,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipul
 public class CleanUpBackingData extends DatabaseHealthTask {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-         "(SELECT gamma_id FROM osee_artifact_version UNION SELECT gamma_id FROM osee_attribute UNION SELECT gamma_id FROM osee_relation_link) MINUS SELECT gamma_id FROM osee_txs";
+         HealthHelper.ALL_BACKING_GAMMAS + " MINUS SELECT gamma_id FROM osee_txs";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT DISTINCT transaction_id FROM osee_tx_details MINUS SELECT transaction_id FROM osee_txs";
+         "SELECT transaction_id FROM osee_tx_details MINUS SELECT transaction_id FROM osee_txs";
    private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_artifact_version WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_attribute WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_relation_link WHERE gamma_id = ?";
    private static final String REMOVE_NOT_ADDRESSED_TRANSACTIONS =
          "DELETE FROM osee_tx_details WHERE transaction_id = ?";
 
-   private static final String[] COLUMN_HEADER = {"Gamma Id", "Transaction Id"};
-   private static final int GAMMA = 0;
-   private static final int TRANSACTION = 1;
-
-   private Set<Integer> gammas = null;
-   private Set<Integer> transactions = null;
+   private Set<Object[]> gammas = null;
+   private Set<Object[]> transactions = null;
 
    @Override
    public String getFixTaskName() {
@@ -62,84 +53,42 @@ public class CleanUpBackingData extends DatabaseHealthTask {
       monitor.beginTask(fix ? "Deleting Data with no TXS addressing" : "Checking For Data with no TXS addressing", 100);
       monitor.worked(5);
 
-      if (verify || gammas == null || transactions == null) {
-         gammas = new HashSet<Integer>();
-         transactions = new HashSet<Integer>();
-         ConnectionHandlerStatement chStmt = null;
-         ResultSet resultSet = null;
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(NOT_ADDRESSESED_GAMMAS);
-            resultSet = chStmt.getRset();
-            while (resultSet.next()) {
-               gammas.add(resultSet.getInt("gamma_id"));
-            }
-         } finally {
-            ConnectionHandler.close(chStmt);
-         }
+      if (verify || gammas == null) {
+         gammas = HealthHelper.runSingleResultQuery(NOT_ADDRESSESED_GAMMAS, "gamma_id");
          monitor.worked(25);
          if (monitor.isCanceled()) return;
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(NOT_ADDRESSESED_TRANSACTIONS);
-            resultSet = chStmt.getRset();
-            while (resultSet.next()) {
-               transactions.add(resultSet.getInt("transaction_id"));
-            }
-         } finally {
-            ConnectionHandler.close(chStmt);
-         }
-         monitor.worked(25);
       }
-      if (monitor.isCanceled()) return;
+      if (verify || transactions == null) {
+         transactions = HealthHelper.runSingleResultQuery(NOT_ADDRESSESED_TRANSACTIONS, "transaction_id");
+         monitor.worked(25);
+         if (monitor.isCanceled()) return;
+      }
 
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      displayData(GAMMA, sbFull, builder, verify, gammas);
+      HealthHelper.displayForCleanUp("Gamma Id", sbFull, builder, verify, gammas, "'s with no TXS addressing\n");
       monitor.worked(20);
-      displayData(TRANSACTION, sbFull, builder, verify, transactions);
+      HealthHelper.displayForCleanUp("Transaction Id", sbFull, builder, verify, transactions,
+            "'s with no TXS addressing\n");
       monitor.worked(20);
 
       if (monitor.isCanceled()) return;
 
       if (fix) {
-         HashSet<Object[]> insertParameters = new HashSet<Object[]>();
-         for (Integer value : gammas) {
-            insertParameters.add(new Object[] {value.intValue()});
-         }
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ARTIFACT, insertParameters);
+         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ARTIFACT, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ATTRIBUTE, insertParameters);
+         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_ATTRIBUTE, gammas);
          monitor.worked(5);
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_RELATIONS, insertParameters);
+         ConnectionHandler.runPreparedUpdateBatch(REMOVE_GAMMAS_RELATIONS, gammas);
          monitor.worked(5);
-         insertParameters.clear();
-         for (Integer value : transactions) {
-            insertParameters.add(new Object[] {value.intValue()});
-         }
-         ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_TRANSACTIONS, insertParameters);
+         ConnectionHandler.runPreparedUpdateBatch(REMOVE_NOT_ADDRESSED_TRANSACTIONS, transactions);
          monitor.worked(5);
          gammas = null;
          transactions = null;
+
       }
 
       if (showDetails) {
-         sbFull.append(AHTML.endMultiColumnTable());
-         XResultData rd = new XResultData();
-         rd.addRaw(sbFull.toString());
-         rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
+         HealthHelper.endTable(sbFull, getVerifyTaskName());
       }
-   }
-
-   private void displayData(int x, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Integer> set) {
-      int count = 0;
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {COLUMN_HEADER[x]}));
-      sbFull.append(AHTML.addRowSpanMultiColumnTable(COLUMN_HEADER[x] + "'s with no TXS addressing", 1));
-      for (Integer value : set) {
-         count++;
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {value.toString()}));
-      }
-      builder.append(verify ? "Found " : "Fixed ");
-      builder.append(count);
-      builder.append(" ");
-      builder.append(COLUMN_HEADER[x]);
-      builder.append("'s with no TXS addressing\n");
    }
 }

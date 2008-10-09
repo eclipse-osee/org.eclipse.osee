@@ -98,6 +98,10 @@
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Revert Artifact...">
          </command>
+  <command
+        id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
+        name="Revert Attribute...">
+  </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
@@ -350,6 +354,18 @@
         </with>
      </enabledWhen>
   </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertAttributeHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+  </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
@@ -450,7 +466,7 @@
 			<description>
             Import Skynet configuration information.
          </description>
-		</wizard>		
+		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
   	</extension>
@@ -769,10 +785,18 @@
              visible="true">
        </separator>
           <command
-             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
+                commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
           </command>
           <command
              commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+          </command>
+          <separator
+                name="org.eclipse.ui.edit.ChangeView.revert.seperator"
+                visible="true">
+          </separator>
+          <command
+                commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
+                label="Revert Source Attribute...">
           </command>
     </menuContribution>
  </extension>
@@ -835,6 +859,9 @@
        </separator>
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
        </command>
        <separator
              name="org.eclipse.ui.edit.ChangeView.revert.seperator"
@@ -978,6 +1005,14 @@
        point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
     <Task
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
+    </Task>
+ </extension>
+ <extension
+       id="CommitedNewAndDeleted"
+       name="CommitedNewAndDeleted"
+       point="org.eclipse.osee.framework.ui.skynet.DBHealthTask">
+    <Task
+          class="org.eclipse.osee.framework.ui.skynet.dbHealth.CommitedNewAndDeleted">
     </Task>
  </extension>
  <extension

@@ -4,3 +4,4 @@ org.eclipse.osee.framework.ui.skynet/debug/Merge = false
 
 org.eclipse.osee.framework.ui.skynet/debug/Change = false
 
+org.eclipse.osee.framework.ui.skynet/debug/Blam = false

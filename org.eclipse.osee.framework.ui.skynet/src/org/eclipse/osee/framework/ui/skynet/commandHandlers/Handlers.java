@@ -63,7 +63,7 @@ public class Handlers {
     * @param structuredSelection
     * @return Returns a list of objects from the sturctruedSelection that are an instance of the Class
     */
-   private static <E> List<E> processSelectionObjects(Class<E> clazz, IStructuredSelection structuredSelection) {
+   public static <E> List<E> processSelectionObjects(Class<E> clazz, IStructuredSelection structuredSelection) {
       List<E> objects = new LinkedList<E>();
       Iterator<?> iterator = structuredSelection.iterator();
 

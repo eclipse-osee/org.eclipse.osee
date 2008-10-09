@@ -74,7 +74,18 @@ public class DatabaseHealth extends AbstractBlam {
    }
 
    private void runTasks(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Database Health", dbFix.size() + dbVerify.size());
+      int count = 0;
+      for (String taskName : dbFix.keySet()) {
+         if (variableMap.getBoolean(taskName)) {
+            count++;
+         }
+      }
+      for (String taskName : dbVerify.keySet()) {
+         if (variableMap.getBoolean(taskName)) {
+            count++;
+         }
+      }
+      monitor.beginTask("Database Health", count);
       if (OseeProperties.isDeveloper()) {
          StringBuilder builder = new StringBuilder();
          boolean showDetails = variableMap.getBoolean(SHOW_DETAILS_PROMPT);

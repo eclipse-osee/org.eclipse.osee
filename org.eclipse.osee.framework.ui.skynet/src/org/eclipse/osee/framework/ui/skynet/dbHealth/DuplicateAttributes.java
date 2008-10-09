@@ -1,8 +1,13 @@
-/*
- * Created on Aug 13, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import java.sql.ResultSet;
@@ -154,7 +159,7 @@ public class DuplicateAttributes extends DatabaseHealthTask {
                sbFull.append(AHTML.endMultiColumnTable());
                XResultData rd = new XResultData();
                rd.addRaw(sbFull.toString());
-               rd.report("Artifact TX_Current Fix", Manipulations.RAW_HTML);
+               rd.report(getVerifyTaskName(), Manipulations.RAW_HTML);
             }
 
          }
