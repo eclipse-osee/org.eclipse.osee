@@ -363,7 +363,7 @@ public class TaskXViewer extends WorldXViewer {
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      return super.handleAltLeftClick(treeColumn, treeItem, persist);
+      return false;
    }
 
    /**
