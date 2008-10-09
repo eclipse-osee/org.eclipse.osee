@@ -215,6 +215,14 @@ public final class ConnectionHandler {
       return updateCount;
    }
 
+   /**
+    * This method should only be used when not contained in a DB transaction
+    * 
+    * @param query
+    * @param data
+    * @return
+    * @throws OseeDataStoreException
+    */
    public static int runPreparedUpdate(String query, Object... data) throws OseeDataStoreException {
       OseeConnection connection = OseeDbConnection.getConnection();
       try {
@@ -224,6 +232,15 @@ public final class ConnectionHandler {
       }
    }
 
+   /**
+    * This method should only be used when contained in a DB transaction
+    * 
+    * @param connection
+    * @param query
+    * @param data
+    * @return
+    * @throws OseeDataStoreException
+    */
    public static int runPreparedUpdate(Connection connection, String query, Object... data) throws OseeDataStoreException {
       PreparedStatement preparedStatement = null;
       int updateCount = 0;
