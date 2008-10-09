@@ -2,17 +2,12 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * Public API class for access to change data from branches and transactionIds
@@ -37,15 +32,6 @@ public class ChangeManager {
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
-   }
-
-   public static void bulkLoadChanges(Collection<Change> changes) throws OseeCoreException {
-      System.err.println("Need to bulk load historical, create and call from InternalCM");
-      Set<Integer> artIds = new HashSet<Integer>();
-      for (Change change : changes) {
-         artIds.add(change.getArtId());
-      }
-      ArtifactQuery.getArtifactsFromIds(artIds, changes.iterator().next().getBranch(), true);
    }
 
    public static ChangeData getChangeDataPerTransaction(TransactionId transactionId) throws OseeCoreException {
@@ -113,10 +99,6 @@ public class ChangeManager {
     * @throws BranchDoesNotExist
     */
    public static Boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
-      Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getStartEndPoint(workingBranch);
-      if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
-         return false;
-      }
-      return true;
+      return InternalChangeManager.getInstance().isChangesOnWorkingBranch(workingBranch);
    }
 }

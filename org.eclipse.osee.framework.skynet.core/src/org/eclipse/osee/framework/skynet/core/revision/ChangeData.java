@@ -104,7 +104,7 @@ public class ChangeData {
       return artifacts;
    }
 
-   public Collection<Artifact> getArtifactsRelationOnly(ModificationType... modificationType) throws OseeCoreException {
+   private Collection<Artifact> getArtifactsRelationOnly(ModificationType... modificationType) throws OseeCoreException {
       Collection<Artifact> artMod = getArtifacts(KindType.Artifact, modificationType);
       Collection<Artifact> relMod = getArtifacts(KindType.Relation, modificationType);
       return Collections.setComplement(relMod, artMod);

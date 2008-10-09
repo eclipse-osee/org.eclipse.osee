@@ -432,4 +432,12 @@ public class InternalChangeManager {
       }
    }
 
+   public Boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
+      Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getStartEndPoint(workingBranch);
+      if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
+         return false;
+      }
+      return true;
+   }
+
 }

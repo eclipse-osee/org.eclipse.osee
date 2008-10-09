@@ -398,6 +398,7 @@ public class AtsBranchManager {
          }
       }
       final String finalBranchShortName = branchShortName;
+      // TODO Move this into createWorkingBranch
       final TransactionId parentTransactionId =
             TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
 
