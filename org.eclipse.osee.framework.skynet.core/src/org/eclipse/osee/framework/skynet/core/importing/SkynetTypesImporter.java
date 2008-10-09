@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeTypeDoesNotExist;
@@ -33,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -43,10 +39,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class SkynetTypesImporter implements RowProcessor {
-   private static final Pattern nonJavaCharP = Pattern.compile("[^a-zA-Z_0-9]");
-   private String upCaseEnums = "";
-   private String normalEnums = "";
-
    private enum Table {
       ARTIFACT_TYPE_TABLE, ATTRIBUTE_TYPE_TABLE, ATTRIBUTE_MAP_TABLE, RELATION_TYPE_TABLE, RELATION_SIDE_TABLE
    }
@@ -87,17 +79,6 @@ public class SkynetTypesImporter implements RowProcessor {
          attributeRow.persist();
       }
       relationValidity.persist();
-
-      String relSideStr = upCaseEnums + "\n\n" + normalEnums;
-
-      try {
-         BufferedWriter out;
-         out = new BufferedWriter(new FileWriter(OseeData.getFile("RelationSide.java")));
-         out.write(relSideStr);
-         out.close();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
-      }
    }
 
    public static String getDescription() {
@@ -187,29 +168,9 @@ public class SkynetTypesImporter implements RowProcessor {
       String baPhrasing = row[4];
       String shortName = row[5];
       String ordered = row[6];
-      generateRelationSideEnum(relationTypeName, sideAName, sideBName);
-      generateNormalRelationSideEnum(relationTypeName, sideAName, sideBName);
 
       RelationTypeManager.createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
             shortName, ordered);
-   }
-
-   private void generateRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {
-      sideAName = nonJavaCharP.matcher(sideAName).replaceAll("_").toUpperCase();
-      sideBName = nonJavaCharP.matcher(sideBName).replaceAll("_").toUpperCase();
-      String enumPrefix = nonJavaCharP.matcher(relationTypeName).replaceAll("_").toUpperCase();
-      upCaseEnums +=
-            String.format("%s__%s(true, \"%s\"), %s__%s(false, \"%s\"), ", enumPrefix, sideAName, relationTypeName,
-                  enumPrefix, sideBName, relationTypeName);
-   }
-
-   private void generateNormalRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {
-      sideAName = nonJavaCharP.matcher(sideAName).replaceAll("");
-      sideBName = nonJavaCharP.matcher(sideBName).replaceAll("");
-      String enumPrefix = nonJavaCharP.matcher(relationTypeName).replaceAll("");
-      normalEnums +=
-            String.format("%s_%s(true, \"%s\"), %s_%s(false, \"%s\"),\n", enumPrefix, sideAName, relationTypeName,
-                  enumPrefix, sideBName, relationTypeName);
    }
 
    private void associateWithSuperType(String artifactTypeName, String superTypeName) {
