@@ -19,10 +19,14 @@ public class InstallLinkPageGenerator {
 
    private static final String HTML_HEADER =
          "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">\n";
+
+   private static final String CSS_SHEET =
+         "<style type=\"text/css\"> table.oseeTable { border-width: 1px 1px 1px 1px; border-spacing: 2px; border-style: solid solid solid solid; border-color: blue blue blue blue; border-collapse: separate; background-color: rgb(255, 250, 250); } " + " table.oseeTable th { border-width: 1px 1px 1px 1px; padding: 4px 4px 4px 4px; border-style: solid solid solid solid; border-color: black black black black; background-color: white; -moz-border-radius: 0px 0px 0px 0px; } " + " table.oseeTable td { border-width: 1px 1px 1px 1px; padding: 4px 4px 4px 4px; border-style: solid solid solid solid; border-color: black black black black; background-color: white; -moz-border-radius: 0px 0px 0px 0px; } </style>\n";
+
    private static final String MULTI_LINK_TEMPLATE =
-         HTML_HEADER + "<html>\n<head>\n%s</head>\n<body onload=\"initialize()\">\n%s</body>\n</html>";
+         HTML_HEADER + "<html>\n<head>\n" + CSS_SHEET + "%s</head>\n<body onload=\"initialize()\">\n%s</body>\n</html>";
    private static final String LAUNCH_PAGE_TEMPLATE =
-         HTML_HEADER + "<html>\n<head>\n%s</head>\n<body onload=\"initialize()\">\n<div id='xmsg'/>\n</body>\n</html>";
+         HTML_HEADER + "<html>\n<head>\n" + CSS_SHEET + "%s</head>\n<body onload=\"initialize()\">\n<div id='xmsg'/>\n</body>\n</html>";
 
    private static final String LAUNCH_ERROR_MESSAGE =
          "Please use Internet Explorer. Your browser does not support this operation.";
@@ -32,8 +36,6 @@ public class InstallLinkPageGenerator {
    private static final String JS_CHECK =
          "if (document.implementation && document.implementation.createDocument) {\nalert('%s');\n return;}\n";
 
-   private static final String CSS_SHEET = "";
-   
    private InstallLinkPageGenerator() {
    }
 
@@ -115,7 +117,8 @@ public class InstallLinkPageGenerator {
             builder.append(String.format("<td>%s</td>", info.getComment()));
             builder.append("<td>Active</td>");
          } else {
-            builder.append(String.format("<td>%s</td>", info.getName().replaceAll("osee.install", "").toUpperCase().replaceAll("\\.", " ")));
+            builder.append(String.format("<td>%s</td>",
+                  info.getName().replaceAll("osee.install", "").toUpperCase().replaceAll("\\.", " ")));
             builder.append(String.format("<td>%s</td>", info.getComment()));
             builder.append("<td>In Active</td>");
          }
