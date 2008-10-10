@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Client Info Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.client.info.servlet
-Bundle-Version: 0.4.0.0
+Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.client.info.servlet.Activator
 Bundle-Vendor: Boeing
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
