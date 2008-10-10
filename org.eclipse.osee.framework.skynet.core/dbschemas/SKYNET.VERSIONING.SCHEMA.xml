@@ -507,7 +507,7 @@
 	</Table>
 
   <Table name="OSEE_INFO" schema="OSEE" tablespace="osee_data">
-    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="50" />
+    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="1000" />
     <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="50" />
     <Constraint schema="OSEE" id="OSEE_INFO_KEY_UN_IDX" type="UNIQUE" appliesTo="OSEE_KEY" />
   </Table>
