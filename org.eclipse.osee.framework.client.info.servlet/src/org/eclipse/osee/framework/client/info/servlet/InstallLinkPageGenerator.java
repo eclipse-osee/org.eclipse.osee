@@ -103,7 +103,7 @@ public class InstallLinkPageGenerator {
       StringBuilder builder = new StringBuilder();
       builder.append("<h3>OSEE Client Installs</h3>");
       builder.append("<p>Click on the <i>Active</i> install names to launch OSEE.</p>");
-      builder.append("<table class=\"oseeTable\" >");
+      builder.append("<table class=\"oseeTable\" width=\"95%\">");
       builder.append("<tr style=\"background:gray\" ><th>Name</th> <th>Comment</th><th>Status</th>");
       for (ClientInstallInfo info : infos) {
          builder.append("<tr>");
