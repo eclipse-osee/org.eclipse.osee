@@ -74,7 +74,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
             switch (cmdType) {
                case exec_path:
                   if (!Strings.isValid(key)) {
-                     key = "osee.install.";
+                     key = "osee.install.%";
                   }
                   if (key.startsWith("osee.install.")) {
                      List<ClientInstallInfo> infos = getInfoEntry(key);
@@ -113,8 +113,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
       List<ClientInstallInfo> infos = new ArrayList<ClientInstallInfo>();
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(QUERY, key);
+         chStmt = ConnectionHandler.runPreparedQuery(QUERY, key);
          while (chStmt.next()) {
             String name = chStmt.getString("osee_key");
             String data = chStmt.getString("osee_value");
