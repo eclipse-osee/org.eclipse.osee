@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -183,24 +182,6 @@ public class AtsBranchManager {
          // there may be times where the transaction id cache is not up-to-date yet; don't throw error
       }
       return null;
-   }
-
-   /**
-    * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
-    */
-   public void showChangeReportOld() {
-      try {
-         if (isWorkingBranch()) {
-            ChangeReportView.openViewUpon(getWorkingBranch());
-         } else if (isCommittedBranch()) {
-            ChangeReportView.openViewUpon(new ChangeReportInput(smaMgr.getSma().getDescriptiveName(),
-                  getTransactionId()));
-         } else {
-            AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't show change report.", ex, true);
-      }
    }
 
    /**
