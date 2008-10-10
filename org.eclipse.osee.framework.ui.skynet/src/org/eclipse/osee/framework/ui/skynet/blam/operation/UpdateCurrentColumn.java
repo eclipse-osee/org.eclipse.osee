@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,11 +47,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    private static final String SELECT_ATTRIBUTES_TO_UPDATE =
-         "SELECT branch_id, maxt, txs2.gamma_id, atid, txs2.mod_type FROM osee_attribute att2,  osee_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
+         "SELECT branch_id, maxt, txs2.gamma_id, data_id, txs2.mod_type FROM osee_attribute att2,  osee_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS data_id, txd1.branch_id FROM osee_attribute att1, osee_txs txs1, osee_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE data_id = att2.attr_id AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
    private static final String SELECT_ARTIFACTS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, art_id, txs1.mod_type FROM osee_artifact_version arv2,  osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_artifact_version arv1, osee_txs txs2, osee_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, art_id as data_id, txs1.mod_type FROM osee_artifact_version arv2,  osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_artifact_version arv1, osee_txs txs2, osee_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
    private static final String SELECT_RELATIONS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, rel_id, txs1.mod_type FROM osee_relation_link rel2, osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_relation_link rel1, osee_txs txs2, osee_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, data_id, txs1.mod_type FROM osee_relation_link rel2, osee_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS data_id, txd1.branch_id FROM osee_relation_link rel1, osee_txs txs2, osee_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE data_id = rel2.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
 
    private static final String SELECT_STALE_ATTRIBUTES =
          "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_tx_details txd1, osee_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = attr1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
@@ -78,11 +76,11 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "UPDATE osee_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
 
    private static final String VERIFY_ARTIFACT_MOD_TYPE =
-         "select count(1) from osee_txs txs1, osee_artifact_version artv1 WHERE txs1.gamma_id = artv1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) as total from osee_txs txs1, osee_artifact_version artv1 WHERE txs1.gamma_id = artv1.gamma_id AND txs1.mod_type IS NULL";
    private static final String VERIFY_ATTRIBUTE_MOD_TYPE =
-         "select count(1) from osee_txs txs1, osee_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) as total from osee_txs txs1, osee_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id AND txs1.mod_type IS NULL";
    private static final String VERIFY_RELATION_MOD_TYPE =
-         "select count(1) from osee_txs txs1, osee_relation_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
+         "select count(1) as total from osee_txs txs1, osee_relation_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
 
    private static final String INNER_SELECT_ARTIFACT_MOD_TYPE =
          "select artv1.modification_id from osee_txs txs1, osee_artifact_version artv1 where txs1.gamma_id = artv1.gamma_id";
@@ -105,13 +103,13 @@ public class UpdateCurrentColumn extends AbstractBlam {
       long gamma_id;
       int modification_id;
 
-      UpdateHelper(TypesEnum type, ResultSet resultSet) throws SQLException {
+      UpdateHelper(TypesEnum type, ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
          this.type = type;
-         this.branch_id = resultSet.getInt(1);
-         this.transaction_id = resultSet.getInt(2);
-         this.gamma_id = resultSet.getLong(3);
-         this.id = resultSet.getInt(4);
-         this.modification_id = resultSet.getInt(5);
+         this.branch_id = chStmt.getInt("branch_id");
+         this.transaction_id = chStmt.getInt("maxt");
+         this.gamma_id = chStmt.getLong("gamma_id");
+         this.id = chStmt.getInt("data_id");
+         this.modification_id = chStmt.getInt("mod_type");
       }
    }
 
@@ -276,13 +274,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
          final int batchSize = 100000;
          final List<Object[]> batchArgs = new ArrayList<Object[]>(batchSize);
          executeQuery(monitor, connection, new IRowProcessor() {
-            public void processRow(ResultSet resultSet) throws Exception {
-               int modType = resultSet.getInt(3);
+            public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+               int modType = chStmt.getInt("mod_type");
                int tx_current_value = TxChange.CURRENT.getValue();
                if (modType == ModificationType.DELETED.getValue()) {
                   tx_current_value = TxChange.DELETED.getValue();
                }
-               batchArgs.add(new Object[] {tx_current_value, resultSet.getLong(1), resultSet.getInt(2)});
+               batchArgs.add(new Object[] {tx_current_value, chStmt.getLong("gamma_id"),
+                     chStmt.getInt("transaction_id")});
 
                if (monitor.isCanceled() != true && batchArgs.size() >= batchSize) {
                   writeToDb(monitor, connection, UPDATE_TXS_CURRENT, "baselined txs", batchArgs);
@@ -309,8 +308,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
             String query = typesQueryMap.get(type).getKey();
             int totalRows = executeQuery(monitor, connection, new IRowProcessor() {
-               public void processRow(ResultSet resultSet) throws Exception {
-                  updates.add(new UpdateHelper(type, resultSet));
+               public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+                  updates.add(new UpdateHelper(type, chStmt));
                }
             }, 0, query, txNumber, txNumber);
             appendResultLine(String.format("%d updates for [%s]\n", totalRows, type));
@@ -326,8 +325,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          monitor.subTask("Setting Stale Items to 0");
          final List<Object[]> setToUpdate = new ArrayList<Object[]>();
          IRowProcessor processor = new IRowProcessor() {
-            public void processRow(ResultSet resultSet) throws Exception {
-               setToUpdate.add(new Object[] {resultSet.getLong(1), resultSet.getInt(2)});
+            public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+               setToUpdate.add(new Object[] {chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
             }
          };
          // Set Stale Items to 0
@@ -489,8 +488,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
             if (Strings.isValid(sql)) {
                executeQuery(monitor, connection, new IRowProcessor() {
                   @Override
-                  public void processRow(ResultSet resultSet) throws SQLException {
-                     int total = resultSet.getInt(1);
+                  public void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+                     int total = chStmt.getInt("total");
                      totalRowCount.getValueAndInc(total);
                      results.put(type, total);
                   }
@@ -522,26 +521,23 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    private interface IRowProcessor {
-      void processRow(ResultSet resultSet) throws Exception;
+      void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException;
    }
 
    private int executeQuery(IProgressMonitor monitor, Connection connection, IRowProcessor processor, int fetchSize, String sql, Object... data) throws Exception {
       int totalRowCount = 0;
-      ConnectionHandlerStatement statement = null;
+      ConnectionHandlerStatement chStmt = null;
       try {
-         statement = ConnectionHandler.runPreparedQuery(connection, fetchSize, sql, data);
-         ResultSet resultSet = statement.getRset();
-         while (statement.next()) {
+         chStmt = ConnectionHandler.runPreparedQuery(connection, fetchSize, sql, data);
+         while (chStmt.next()) {
             totalRowCount++;
-            processor.processRow(resultSet);
+            processor.processRow(chStmt);
             if (monitor.isCanceled()) {
                break;
             }
          }
       } finally {
-         if (statement != null) {
-            statement.close();
-         }
+         ConnectionHandler.close(chStmt);
       }
       return totalRowCount;
    }

@@ -1,10 +1,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.SQLException;
 import java.util.Collection;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
-import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -23,7 +20,6 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return changes
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionId transactionId) throws OseeCoreException {
@@ -48,7 +44,6 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return changes
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch) throws OseeCoreException {
@@ -73,7 +68,6 @@ public class ChangeManager {
     * @param sourceBranch
     * @param baselineTransactionId
     * @return changes
-    * @throws SQLException
     * @throws OseeCoreException
     */
    public static Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId) throws OseeCoreException {
@@ -94,9 +88,7 @@ public class ChangeManager {
 
    /**
     * @return true changes exist
-    * @throws SQLException
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
+    * @throws OseeCoreException
     */
    public static Boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
       return InternalChangeManager.getInstance().isChangesOnWorkingBranch(workingBranch);

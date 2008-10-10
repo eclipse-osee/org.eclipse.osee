@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,9 +30,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class SortRelationsByBranch extends AbstractBlam {
    private static final String UPDATE_B_ORDER = "update osee_relation_link set b_order = ? where gamma_id = ?";
    private static final String SELECT_B_RELATION_ORDER =
-         "select rel1.rel_link_type_id,  rel1.a_art_id, txd1.branch_id, rel1.b_order, txs1.gamma_id, rel1.b_art_id, rel1.a_order_value from osee_tx_details txd1, osee_relation_link rel1, osee_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.a_order_value";
+         "select rel1.rel_link_type_id,  rel1.a_art_id as art_id1, txd1.branch_id, rel1.b_order as order1, txs1.gamma_id, rel1.b_art_id as art_id2, rel1.a_order_value as order2 from osee_tx_details txd1, osee_relation_link rel1, osee_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.a_order_value";
    private static final String SELECT_A_RELATION_ORDER =
-         "select rel1.rel_link_type_id,  rel1.b_art_id, txd1.branch_id, rel1.a_order, txs1.gamma_id, rel1.a_art_id, rel1.b_order_value from osee_tx_details txd1, osee_relation_link rel1, osee_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
+         "select rel1.rel_link_type_id,  rel1.b_art_id as art_id1, txd1.branch_id, rel1.a_order as order1, txs1.gamma_id, rel1.a_art_id as art_id2, rel1.b_order_value as order2 from osee_tx_details txd1, osee_relation_link rel1, osee_txs txs1 where txd1.branch_id = ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
    private static final String UPDATE_A_ORDER = "update osee_relation_link set a_order = ? where gamma_id = ?";
 
    /* (non-Javadoc)
@@ -112,13 +110,16 @@ public class SortRelationsByBranch extends AbstractBlam {
          subMonitor.done();
       }
 
-      private void updateRelationsSortOrder(final IProgressMonitor monitor, final Connection connection, String name, String query, final String update) throws Exception {
+      private void updateRelationsSortOrder(final IProgressMonitor monitor, final Connection connection, String name, String query, final String update) throws OseeDataStoreException {
          final List<Object[]> batchArgs = new ArrayList<Object[]>();
          final RelationOrderTracker relationOrderTracker = new RelationOrderTracker();
          monitor.subTask(String.format("Updating [%s] sort order", name));
-         executeQuery(monitor, connection, new IRowProcessor() {
-            public void processRow(ResultSet resultSet) throws Exception {
-               relationOrderTracker.processRow(resultSet);
+
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(connection, 5000, query, branchToSort.getBranchId());
+            while (chStmt.next()) {
+               relationOrderTracker.processRow(chStmt);
                if (relationOrderTracker.isUpdateRequired()) {
                   if (monitor.isCanceled() != true && batchArgs.size() >= 100000) {
                      writeToDb(monitor, connection, update, batchArgs);
@@ -126,8 +127,15 @@ public class SortRelationsByBranch extends AbstractBlam {
                   }
                   batchArgs.add(relationOrderTracker.getUpdateData());
                }
+
+               if (monitor.isCanceled()) {
+                  break;
+               }
             }
-         }, 5000, query, branchToSort.getBranchId());
+         } finally {
+            ConnectionHandler.close(chStmt);
+         }
+
          if (monitor.isCanceled() != true) {
             writeToDb(monitor, connection, update, batchArgs);
          }
@@ -158,12 +166,12 @@ public class SortRelationsByBranch extends AbstractBlam {
       int other_side_art_id = -1;
       long gammaId = -1;
 
-      void processRow(ResultSet resultSet) throws SQLException {
-         rel_link_type = resultSet.getInt(1);
-         art_id = resultSet.getInt(2);
-         branch_id = resultSet.getInt(3);
-         order = resultSet.getInt(4);
-         gammaId = resultSet.getLong(5);
+      void processRow(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+         rel_link_type = chStmt.getInt("rel_link_type_id");
+         art_id = chStmt.getInt("art_id1");
+         branch_id = chStmt.getInt("branch_id");
+         order = chStmt.getInt("order1");
+         gammaId = chStmt.getLong("gamma_id");
          if ((rel_link_type != rel_link_type_old || art_id != art_id_old || branch_id != branch_id_old)) {//then it's a new start of ordering
             new_order = -1;
          } else {
@@ -173,7 +181,7 @@ public class SortRelationsByBranch extends AbstractBlam {
          rel_link_type_old = rel_link_type;
          art_id_old = art_id;
          branch_id_old = branch_id;
-         other_side_art_id = resultSet.getInt(6);
+         other_side_art_id = chStmt.getInt("art_id2");
       }
 
       boolean isUpdateRequired() {
@@ -183,30 +191,5 @@ public class SortRelationsByBranch extends AbstractBlam {
       Object[] getUpdateData() {
          return new Object[] {new_order, gammaId};
       }
-   }
-
-   private interface IRowProcessor {
-      void processRow(ResultSet resultSet) throws Exception;
-   }
-
-   private int executeQuery(IProgressMonitor monitor, Connection connection, IRowProcessor processor, int fetchSize, String sql, Object... data) throws Exception {
-      int totalRowCount = 0;
-      ConnectionHandlerStatement statement = null;
-      try {
-         statement = ConnectionHandler.runPreparedQuery(connection, fetchSize, sql, data);
-         ResultSet resultSet = statement.getRset();
-         while (statement.next()) {
-            totalRowCount++;
-            processor.processRow(resultSet);
-            if (monitor.isCanceled()) {
-               break;
-            }
-         }
-      } finally {
-         if (statement != null) {
-            statement.close();
-         }
-      }
-      return totalRowCount;
    }
 }

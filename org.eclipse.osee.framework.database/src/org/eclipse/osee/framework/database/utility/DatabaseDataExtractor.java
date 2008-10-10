@@ -23,7 +23,6 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -41,12 +40,12 @@ import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.database.data.TableElement.TableTags;
-import org.eclipse.osee.framework.db.connection.Activator;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -106,12 +105,16 @@ public class DatabaseDataExtractor {
       }
 
       public void run() {
-         Statement statement = null;
-         ResultSet resultSet = null;
+         ConnectionHandlerStatement chStmt = null;
          try {
-            resultSet = getTableData(statement, table);
-            Document document = buildXml(resultSet, table);
-            resultSet.close();
+            try {
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(connection, SQL_WILD_QUERY + table.getFullyQualifiedTableName());
+            } catch (OseeDataStoreException ex) {
+               chStmt = ConnectionHandler.runPreparedQuery(connection, SQL_WILD_QUERY + table.getName());
+            }
+
+            Document document = buildXml(chStmt.getRset(), table);
             if (document != null) {
                writeDocumentToFile(document, table.getFullyQualifiedTableName());
             }
@@ -119,20 +122,7 @@ public class DatabaseDataExtractor {
             logger.log(Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
-            try {
-               if (resultSet != null) {
-                  resultSet.close();
-               }
-            } catch (Exception ex) {
-            }
-
-            if (statement != null) {
-               try {
-                  statement.close();
-               } catch (SQLException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
+            ConnectionHandler.close(chStmt);
          }
       }
    }
@@ -171,18 +161,6 @@ public class DatabaseDataExtractor {
             }
          }
       }
-   }
-
-   private ResultSet getTableData(Statement statement, TableElement table) throws SQLException {
-      statement = connection.createStatement();
-
-      ResultSet rset = null;
-      try {
-         rset = statement.executeQuery(SQL_WILD_QUERY + table.getFullyQualifiedTableName());
-      } catch (SQLException ex) {
-         rset = statement.executeQuery(SQL_WILD_QUERY + table.getName());
-      }
-      return rset;
    }
 
    private Document buildXml(ResultSet resultSet, TableElement table) throws SQLException {

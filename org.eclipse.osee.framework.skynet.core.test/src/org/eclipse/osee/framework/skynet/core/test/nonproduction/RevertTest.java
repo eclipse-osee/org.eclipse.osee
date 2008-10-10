@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.skynet.core.test.nonproduction;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -220,7 +219,7 @@ public class RevertTest extends TestCase {
    private static final String GET_BASELINE_ARTIFACT_VERSION =
          "Select txs.transaction_id, txs.gamma_id FROM osee_artifact_version art, osee_txs txs, osee_tx_details det WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ? AND EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.transaction_id = txs.transaction_id AND txs2.gamma_id != txs.gamma_id AND txs2.gamma_id NOT IN ";
 
-   public void testRevertAttributes() throws SQLException, OseeCoreException {
+   public void testRevertAttributes() throws OseeCoreException {
 
       Set<Pair<Integer, Integer>> baselines = new HashSet<Pair<Integer, Integer>>();
       Set<Pair<Integer, Integer>> nonBaselines = new HashSet<Pair<Integer, Integer>>();

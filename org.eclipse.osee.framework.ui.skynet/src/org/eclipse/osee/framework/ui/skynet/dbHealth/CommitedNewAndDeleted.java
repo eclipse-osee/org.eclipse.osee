@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -118,8 +117,7 @@ public class CommitedNewAndDeleted extends DatabaseHealthTask {
       }
    }
 
-   //"Gamma Id", "Transaction Id", "Branch Id", "Art id", "Attribute Id", "Rel Link Id"
-   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) throws SQLException {
+   private void displayData(StringBuffer sbFull, StringBuilder builder, boolean verify) {
       int attributeCount = 0, artifactCount = 0, relLinkCount = 0;
       for (LocalValues value : addressing) {
          if (value.artId != 0) artifactCount++;

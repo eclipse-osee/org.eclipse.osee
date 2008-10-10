@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.Platform;
@@ -64,7 +63,7 @@ public class HealthHelper {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Blam"));
 
-   public static void displayForCleanUp(String header, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Object[]> set, String toPrint) throws SQLException {
+   public static void displayForCleanUp(String header, StringBuffer sbFull, StringBuilder builder, boolean verify, Set<Object[]> set, String toPrint) {
       int count = 0;
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {header}));
       sbFull.append(AHTML.addRowSpanMultiColumnTable(header + toPrint, 1));
