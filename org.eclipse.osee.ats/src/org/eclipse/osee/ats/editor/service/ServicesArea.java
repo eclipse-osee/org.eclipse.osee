@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.SetAsDefaultBranchService;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
-import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarServiceOld;
 import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -113,7 +112,6 @@ public class ServicesArea {
          if (atsWorkPage != null && (atsWorkPage.isAllowCommitBranch() || atsWorkPage.isAllowCreateBranch() || smaMgr.getBranchMgr().isCommittedBranch() || smaMgr.getBranchMgr().isWorkingBranch())) {
             toolBarServices.add(new ShowMergeManagerService(smaMgr));
             toolBarServices.add(new ShowChangeReportService(smaMgr));
-            toolBarServices.add(new ShowChangeReportToolbarServiceOld(smaMgr));
          }
          toolBarServices.add(new OpenParent(smaMgr));
          toolBarServices.add(new EmailActionService(smaMgr));
