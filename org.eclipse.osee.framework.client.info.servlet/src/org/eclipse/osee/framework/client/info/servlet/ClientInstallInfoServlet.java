@@ -114,8 +114,7 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(QUERY, String.format("%s%s%s", !key.startsWith("%") ? "%" : "", key,
-                     !key.endsWith("%") ? "%" : ""));
+               ConnectionHandler.runPreparedQuery(QUERY, key);
          while (chStmt.next()) {
             String name = chStmt.getString("osee_key");
             String data = chStmt.getString("osee_value");
