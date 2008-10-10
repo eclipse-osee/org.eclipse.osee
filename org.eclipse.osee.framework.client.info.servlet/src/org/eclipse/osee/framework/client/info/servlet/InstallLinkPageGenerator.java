@@ -32,6 +32,8 @@ public class InstallLinkPageGenerator {
    private static final String JS_CHECK =
          "if (document.implementation && document.implementation.createDocument) {\nalert('%s');\n return;}\n";
 
+   private static final String CSS_SHEET = "";
+   
    private InstallLinkPageGenerator() {
    }
 
@@ -69,7 +71,7 @@ public class InstallLinkPageGenerator {
          int index = path.lastIndexOf("\\");
          if (index > -1) {
             execName = path.substring(index + 1, path.length());
-            execPath = normalizePath(path.substring(0, index - 1));
+            execPath = normalizePath(path.substring(0, index));
          } else {
             execName = path;
             execPath = "";
@@ -78,7 +80,8 @@ public class InstallLinkPageGenerator {
          builder.append(String.format("v.ShellExecute(\"%s\",\"\",\"%s\", \"open\", 10);\n", execName, execPath));
       } else {
          // INVALID LINK PAGE
-         builder.append(String.format("var ex=\"No valid link found. Contact your OSEE admin. %s\";", info.getName()));
+         builder.append(String.format(
+               "var ex=\"No valid link found. Contact your OSEE administrator. Key was: [%s]\";", info.getName()));
          builder.append("document.getElementById('xmsg').innerHTML=ex;");
       }
       builder.append("}\n</script>\n");
@@ -96,16 +99,29 @@ public class InstallLinkPageGenerator {
 
    private static String getLinkTable(List<ClientInstallInfo> infos) {
       StringBuilder builder = new StringBuilder();
+      builder.append("<h3>OSEE Client Installs</h3>");
+      builder.append("<p>Click on the <i>Active</i> install names to launch OSEE.</p>");
+      builder.append("<table class=\"oseeTable\" >");
+      builder.append("<tr style=\"background:gray\" ><th>Name</th> <th>Comment</th><th>Status</th>");
       for (ClientInstallInfo info : infos) {
+         builder.append("<tr>");
          if (info.isActive()) {
             String path = info.getExecPath();
-            builder.append(String.format("<a href=\"%s\">Launch Osee Install: %s</a>",
+            builder.append("<td>");
+            builder.append(String.format("<a href=\"%s\"> %s</a>",
                   path.startsWith("file://") ? path : "file://" + path,
                   info.getName().replaceAll("osee.install", "").toUpperCase().replaceAll("\\.", " ")));
+            builder.append("</td>");
+            builder.append(String.format("<td>%s</td>", info.getComment()));
+            builder.append("<td>Active</td>");
          } else {
-            builder.append(String.format("Install: %s - INACTIVE Reason: %s", info.getName(), info.getComment()));
+            builder.append(String.format("<td>%s</td>", info.getName().replaceAll("osee.install", "").toUpperCase().replaceAll("\\.", " ")));
+            builder.append(String.format("<td>%s</td>", info.getComment()));
+            builder.append("<td>In Active</td>");
          }
+         builder.append("</tr>");
       }
+      builder.append("</table>");
       return builder.toString();
    }
 
