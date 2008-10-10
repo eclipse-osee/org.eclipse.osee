@@ -1,0 +1,121 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.client.info.servlet;
+
+import java.util.List;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class InstallLinkPageGenerator {
+
+   private static final String HTML_HEADER =
+         "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html14/loose.dtd\">\n";
+   private static final String MULTI_LINK_TEMPLATE =
+         HTML_HEADER + "<html>\n<head>\n%s</head>\n<body onload=\"initialize()\">\n%s</body>\n</html>";
+   private static final String LAUNCH_PAGE_TEMPLATE =
+         HTML_HEADER + "<html>\n<head>\n%s</head>\n<body onload=\"initialize()\">\n<div id='xmsg'/>\n</body>\n</html>";
+
+   private static final String LAUNCH_ERROR_MESSAGE =
+         "Please use Internet Explorer. Your browser does not support this operation.";
+
+   private static final String LINK_ERROR_MESSAGE = "Links below will not work unless you use Internet Explorer.";
+
+   private static final String JS_CHECK =
+         "if (document.implementation && document.implementation.createDocument) {\nalert('%s');\n return;}\n";
+
+   private InstallLinkPageGenerator() {
+   }
+
+   private static String normalizePath(String path) {
+      StringBuilder pathBuilder = new StringBuilder();
+      boolean wasLastPathSeparator = false;
+      for (int charIndex = 0; charIndex < path.length(); charIndex++) {
+         char charVal = path.charAt(charIndex);
+         if (charVal == '\\' && !wasLastPathSeparator) {
+            if (charIndex + 1 < path.length()) {
+               if (path.charAt(charIndex + 1) != '\\') {
+                  pathBuilder.append('\\');
+               }
+            } else {
+               pathBuilder.append('\\');
+            }
+            wasLastPathSeparator = true;
+         } else {
+            wasLastPathSeparator = false;
+         }
+         pathBuilder.append(charVal);
+      }
+      return pathBuilder.toString();
+   }
+
+   private static String getOpenScript(ClientInstallInfo info) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<script type=\"text/javascript\">\n");
+      builder.append("function initialize()\n{\n");
+      builder.append(String.format(JS_CHECK, LAUNCH_ERROR_MESSAGE));
+      String path = info.getExecPath();
+      if (info.getOs().contains("win") && info.isActive()) {
+         String execName = null;
+         String execPath = "";
+         int index = path.lastIndexOf("\\");
+         if (index > -1) {
+            execName = path.substring(index + 1, path.length());
+            execPath = normalizePath(path.substring(0, index - 1));
+         } else {
+            execName = path;
+            execPath = "";
+         }
+         builder.append("var v = new ActiveXObject(\"Shell.Application\");\n");
+         builder.append(String.format("v.ShellExecute(\"%s\",\"\",\"%s\", \"open\", 10);\n", execName, execPath));
+      } else {
+         // INVALID LINK PAGE
+         builder.append(String.format("var ex=\"No valid link found. Contact your OSEE admin. %s\";", info.getName()));
+         builder.append("document.getElementById('xmsg').innerHTML=ex;");
+      }
+      builder.append("}\n</script>\n");
+      return builder.toString();
+   }
+
+   private static String getCheckScript() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<script type=\"text/javascript\">\n");
+      builder.append("function initialize()\n{\n");
+      builder.append(String.format(JS_CHECK, LINK_ERROR_MESSAGE));
+      builder.append("}\n</script>\n");
+      return builder.toString();
+   }
+
+   private static String getLinkTable(List<ClientInstallInfo> infos) {
+      StringBuilder builder = new StringBuilder();
+      for (ClientInstallInfo info : infos) {
+         if (info.isActive()) {
+            String path = info.getExecPath();
+            builder.append(String.format("<a href=\"%s\">Launch Osee Install: %s</a>",
+                  path.startsWith("file://") ? path : "file://" + path,
+                  info.getName().replaceAll("osee.install", "").toUpperCase().replaceAll("\\.", " ")));
+         } else {
+            builder.append(String.format("Install: %s - INACTIVE Reason: %s", info.getName(), info.getComment()));
+         }
+      }
+      return builder.toString();
+   }
+
+   public static String generate(List<ClientInstallInfo> infos) {
+      String toReturn = null;
+      if (infos.size() == 1) {
+         toReturn = String.format(LAUNCH_PAGE_TEMPLATE, getOpenScript(infos.get(0)));
+      } else {
+         toReturn = String.format(MULTI_LINK_TEMPLATE, getCheckScript(), getLinkTable(infos));
+      }
+      return toReturn;
+   }
+}
