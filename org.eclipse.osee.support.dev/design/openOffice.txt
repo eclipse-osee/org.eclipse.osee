@@ -1,0 +1,6 @@
+implement IRenderer for OO
+implement ArtifactExtractor for OO
+new attribute type OO and Dash-10 artifact type
+availability of OO for users
+investigate how to embed custom XML in ODT
+investigate API and how to control OO from Java
