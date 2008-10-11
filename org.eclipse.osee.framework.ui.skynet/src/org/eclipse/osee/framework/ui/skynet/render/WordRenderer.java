@@ -22,11 +22,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -48,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -58,7 +55,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
-
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -78,7 +74,6 @@ public class WordRenderer extends FileRenderer {
    private static final String STYLES_END = "</w:styles>";
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
-   private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordRenderer.class);
 
@@ -427,8 +422,7 @@ public class WordRenderer extends FileRenderer {
          template = getTemplate(firstArtifact, presentationType, option);
 
          for (Artifact artifact : artifacts) {
-            Attribute<?> attribute =
-                  artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
+            Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WORD_TEMPLATE_CONTENT);
             if (attribute == null) {
                attribute =
                      artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT), true);
