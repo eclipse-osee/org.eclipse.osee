@@ -99,6 +99,10 @@
                ImagePath="images/laser_16_16.gif">
          </ArtifactImage>
          <ArtifactImage
+               ArtifactTypeName="General Data"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
                ArtifactTypeName="XViewer Global Customization"
                ImagePath="images/laser_16_16.gif">
          </ArtifactImage>

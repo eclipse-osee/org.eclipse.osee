@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.config.demo.workflow;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
@@ -20,8 +21,10 @@ public class DemoReqWorkFlowDefinition extends TeamWorkflowDefinition {
 
    public DemoReqWorkFlowDefinition() {
       super(ID, ID, TeamWorkflowDefinition.ID);
+      addWorkItem(AtsStatePercentCompleteWeightDefaultWorkflowRule.ID);
    }
 
+   @Override
    public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
             TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));

@@ -9,17 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkPageDefinition extends WorkItemDefinition {
+public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
 
    public static String ARTIFACT_NAME = "Work Page Definition";
    private String pageName;
-
-   private final List<String> workItemIds = new ArrayList<String>();
 
    public WorkPageDefinition(String pageName, String pageId, String parentId) {
       this(pageId, pageName, pageId, parentId);
@@ -31,7 +28,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
    }
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
-      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+      super(artifact, artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
@@ -39,10 +36,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
       loadWorkDataKeyValueMap(artifact);
       setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
             (String) null));
-      for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
-         String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null);
-         workItemIds.add(widId);
-      }
+
    }
 
    public boolean hasWorkRule(String ruleId) throws OseeCoreException {
@@ -52,60 +46,17 @@ public class WorkPageDefinition extends WorkItemDefinition {
    @Override
    public Artifact toArtifact(WriteType writeType) throws OseeCoreException {
       Artifact art = super.toArtifact(writeType);
-      List<Artifact> children = new ArrayList<Artifact>();
-      for (WorkItemDefinition wid : getWorkItems(false)) {
-         Artifact widArt = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(wid.getId());
-         if (widArt == null) {
-            throw new IllegalStateException(
-                  "While processing Work Page \"" + getId() + "\":  No Artifact found for WorkItemDefinition \"" + wid.getId() + "\"");
-         }
-         children.add(widArt);
-      }
       // Only store start page if it's part of this definition
       if (pageName != null) {
          art.setSoleAttributeFromString(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), pageName);
       }
-      // This supports both relating new children and when WriteType.Overwrite of updating
-      art.setRelations(CoreRelationEnumeration.WorkItem__Child, children);
-      art.setRelationOrder(CoreRelationEnumeration.WorkItem__Child, children);
       return art;
-   }
-
-   public void addWorkItem(String workItemDefintionId) {
-      workItemIds.add(workItemDefintionId);
-   }
-
-   public void removeWorkItem(String workItemDefintionId) {
-      workItemIds.remove(workItemDefintionId);
    }
 
    /**
     * @return the workItems
     * @throws OseeCoreException
     */
-
-   public List<WorkItemDefinition> getWorkItems(boolean includeInherited) throws OseeCoreException {
-      List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
-      getWorkItemsInherited(wids, includeInherited);
-      return wids;
-
-   }
-
-   private void getWorkItemsInherited(List<WorkItemDefinition> workItemDefinitions, boolean includeInherited) throws OseeCoreException {
-      workItemDefinitions.addAll(WorkItemDefinitionFactory.getWorkItemDefinition(workItemIds));
-      if (includeInherited && getParentId() != null) {
-         WorkPageDefinition widParent =
-               (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
-         if (widParent != null) widParent.getWorkItemsInherited(workItemDefinitions, includeInherited);
-      }
-   }
-
-   public WorkItemDefinition getWorkItemDefinition(String id) throws OseeCoreException {
-      if (workItemIds.contains(id)) {
-         return WorkItemDefinitionFactory.getWorkItemDefinition(id);
-      }
-      return null;
-   }
 
    public List<WorkItemDefinition> getWorkItemDefinitionsByType(String workType) throws OseeCoreException {
       List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
@@ -115,14 +66,6 @@ public class WorkPageDefinition extends WorkItemDefinition {
          }
       }
       return wids;
-   }
-
-   /**
-    * @param workItems the workItems to set
-    */
-   public void setWorkItems(List<String> workItemDefintionIds) {
-      this.workItemIds.clear();
-      this.workItemIds.addAll(workItemDefintionIds);
    }
 
    public boolean isCompletePage() {

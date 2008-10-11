@@ -5,10 +5,10 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -35,6 +35,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       super(ID, ID, null);
       addTransitions();
       startPageId = AtsDecisionPrepareWorkPageDefinition.ID;
+      addWorkItem(AtsStatePercentCompleteWeightDecisionReviewRule.ID);
    }
 
    public DecisionWorkflowDefinition(Artifact artifact) throws OseeCoreException {

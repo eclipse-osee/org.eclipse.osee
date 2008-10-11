@@ -16,13 +16,14 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkFlowDefinition extends WorkItemDefinition {
+public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    public static String ARTIFACT_NAME = "Work Flow Definition";
 
@@ -153,6 +154,33 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id);
    }
 
+   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      if (ruleId == null || ruleId.equals("")) return workRules;
+      // Get work rules from team definition
+      for (WorkRuleDefinition workRuleDefinition : getWorkRules()) {
+         if (!workRuleDefinition.getId().equals("") && workRuleDefinition.getId().startsWith(ruleId)) {
+            workRules.add(workRuleDefinition);
+         }
+      }
+
+      return workRules;
+   }
+
+   public Collection<WorkRuleDefinition> getWorkRules() throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      // Get work rules from team definition
+      for (Artifact art : WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId()).getRelatedArtifacts(
+            CoreRelationEnumeration.WorkItem__Child)) {
+         String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
+         if (id != null && !id.equals("")) {
+            workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+         }
+      }
+
+      return workRules;
+   }
+
    /**
     * @return Returns the defaultToPage.
     */
@@ -248,7 +276,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
     * 
     * @param fromPageId
     * @param transitionType
-    * @return
+    * @return definitions
     * @throws Exception
     */
    public List<WorkPageDefinition> getPageDefinitions(String fromPageId, TransitionType... transitionType) throws OseeCoreException {

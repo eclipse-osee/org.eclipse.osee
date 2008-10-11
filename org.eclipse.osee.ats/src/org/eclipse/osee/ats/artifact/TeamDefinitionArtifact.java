@@ -41,7 +41,9 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -257,6 +259,42 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          return null;
       }
       return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getDescriptiveName());
+   }
+
+   /**
+    * Return rules associated with team definition . Use SMAManager.getWorkRulesStartsWith to acquire these and work
+    * page rules and workflow rules.
+    * 
+    * @param ruleId
+    * @return rule definitions
+    * @throws OseeCoreException
+    */
+   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      if (ruleId == null || ruleId.equals("")) return workRules;
+      // Get work rules from team definition
+      for (WorkRuleDefinition workRuleDefinition : getWorkRules()) {
+         if (!workRuleDefinition.getId().equals("") && workRuleDefinition.getId().startsWith(ruleId)) {
+            workRules.add(workRuleDefinition);
+         }
+      }
+
+      return workRules;
+   }
+
+   public Collection<WorkRuleDefinition> getWorkRules() throws OseeCoreException {
+      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+      // Get work rules from team definition
+      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
+            if (id != null && !id.equals("")) {
+               workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+            }
+         }
+      }
+
+      return workRules;
    }
 
    /**

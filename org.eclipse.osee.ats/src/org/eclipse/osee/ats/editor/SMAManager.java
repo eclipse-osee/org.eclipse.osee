@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -66,9 +64,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.graphics.Image;
@@ -221,14 +217,14 @@ public class SMAManager {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       if (ruleId == null || ruleId.equals("")) return workRules;
       if (getSma() instanceof TeamWorkFlowArtifact) {
-         // Get work rules from team definition
-         TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) getSma()).getTeamDefinition();
-         for (Artifact art : teamDef.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
-            String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
-            if (!id.equals("") && id.startsWith(ruleId)) {
-               workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
-            }
-         }
+         // Get rules from team definition
+         workRules.addAll(((TeamWorkFlowArtifact) getSma()).getTeamDefinition().getWorkRulesStartsWith(ruleId));
+      }
+      // Get work rules from workflow
+      WorkFlowDefinition workFlowDefinition = getWorkFlowDefinition();
+      if (workFlowDefinition != null) {
+         // Get rules from workflow definitions
+         workRules.addAll(getWorkFlowDefinition().getWorkRulesStartsWith(ruleId));
       }
       // Add work rules from page
       for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {

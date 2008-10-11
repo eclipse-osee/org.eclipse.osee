@@ -13,10 +13,12 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
@@ -26,9 +28,11 @@ import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.graphics.Image;
 
@@ -1089,16 +1094,52 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @throws Exception
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
-      int percent = 0;
-      int numStates = 0;
-      for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
-         if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
-            percent += getPercentCompleteSMAStateTotal(stateName);
-            numStates++;
+      Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
+      if (stateToWeightMap.size() > 0) {
+         // Calculate total percent using configured weighting
+         int percent = 0;
+         for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
+            if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
+               Double weight = stateToWeightMap.get(stateName);
+               if (weight == null) {
+                  weight = 0.0;
+               }
+               percent += weight * getPercentCompleteSMAStateTotal(stateName);
+            }
          }
+         return percent;
+      } else {
+         int percent = 0;
+         int numStates = 0;
+         for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
+            if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
+               percent += getPercentCompleteSMAStateTotal(stateName);
+               numStates++;
+            }
+         }
+         if (numStates == 0) return 0;
+         return percent / numStates;
       }
-      if (numStates == 0) return 0;
-      return percent / numStates;
+   }
+
+   // Cache stateToWeight mapping
+   private Map<String, Double> stateToWeight = null;
+
+   public Map<String, Double> getStatePercentCompleteWeight() throws OseeCoreException {
+      if (stateToWeight == null) {
+         stateToWeight = new HashMap<String, Double>();
+         Collection<WorkRuleDefinition> workRuleDefs =
+               smaMgr.getWorkRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
+         // Log error if multiple of same rule found, but keep going
+         if (workRuleDefs.size() > 1) {
+            OseeLog.log(
+                  AtsPlugin.class,
+                  Level.SEVERE,
+                  "Team Definition has multiple rules of type " + AtsStatePercentCompleteWeightRule.ID + ".  Only 1 allowed.  Defaulting to first found.");
+         }
+         stateToWeight = AtsStatePercentCompleteWeightRule.getStateWeightMap(workRuleDefs.iterator().next());
+      }
+      return stateToWeight;
    }
 
    private StateMetricsData getStateMetricsData(String stateName) throws OseeCoreException {
@@ -1120,6 +1161,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
       return new StateMetricsData(percent, numObjects);
    }
+
    private class StateMetricsData {
       public int numObjects = 0;
       public int percent = 0;

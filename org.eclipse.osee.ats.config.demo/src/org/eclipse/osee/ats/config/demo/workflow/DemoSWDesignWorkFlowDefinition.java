@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -24,6 +25,7 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
 
    public DemoSWDesignWorkFlowDefinition() {
       super(ID, ID, TeamWorkflowDefinition.ID);
+      addWorkItem(AtsStatePercentCompleteWeightDefaultWorkflowRule.ID);
    }
 
    @Override

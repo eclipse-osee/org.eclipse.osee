@@ -5,10 +5,10 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsAnalyzeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsAuthorizeWorkPageDefinition;
@@ -32,6 +32,7 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
 
    public TeamWorkflowDefinition() {
       this(ID, ID);
+      addWorkItem(AtsStatePercentCompleteWeightDefaultWorkflowRule.ID);
    }
 
    public TeamWorkflowDefinition(Artifact artifact) throws OseeCoreException {

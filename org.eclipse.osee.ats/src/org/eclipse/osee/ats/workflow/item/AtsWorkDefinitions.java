@@ -98,6 +98,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
       workItems.add(new AtsAddDecisionReviewRule());
       workItems.add(new AtsAddPeerToPeerReviewRule());
+      workItems.add(new AtsStatePercentCompleteWeightRule());
+      workItems.add(new AtsStatePercentCompleteWeightDefaultWorkflowRule());
+      workItems.add(new AtsStatePercentCompleteWeightSimpleWorkflowRule());
+      workItems.add(new AtsStatePercentCompleteWeightDecisionReviewRule());
+      workItems.add(new AtsStatePercentCompleteWeightPeerToPeerReviewRule());
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,

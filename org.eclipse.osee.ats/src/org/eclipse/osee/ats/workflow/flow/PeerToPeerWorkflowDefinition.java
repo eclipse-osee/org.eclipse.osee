@@ -5,10 +5,10 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -34,6 +34,7 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       super(ID, ID, null);
       addTransitions();
       startPageId = AtsPeerPrepareWorkPageDefinition.ID;
+      addWorkItem(AtsStatePercentCompleteWeightPeerToPeerReviewRule.ID);
    }
 
    public PeerToPeerWorkflowDefinition(Artifact artifact) throws OseeCoreException {
