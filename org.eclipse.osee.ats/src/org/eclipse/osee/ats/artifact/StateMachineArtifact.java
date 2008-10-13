@@ -1137,7 +1137,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
                   Level.SEVERE,
                   "Team Definition has multiple rules of type " + AtsStatePercentCompleteWeightRule.ID + ".  Only 1 allowed.  Defaulting to first found.");
          }
-         stateToWeight = AtsStatePercentCompleteWeightRule.getStateWeightMap(workRuleDefs.iterator().next());
+         if (workRuleDefs.size() == 1) {
+            stateToWeight = AtsStatePercentCompleteWeightRule.getStateWeightMap(workRuleDefs.iterator().next());
+         }
       }
       return stateToWeight;
    }
