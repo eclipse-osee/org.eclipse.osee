@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -70,7 +71,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    public boolean areAvailable(int... branchIds) {
       boolean toReturn = false;
       if (branchIds != null && branchIds.length > 0) {
-         toReturn = this.idToImportFileBranchData.keySet().containsAll(Arrays.asList(branchIds));
+         Set<Integer> toCheck = new HashSet<Integer>();
+         for (int entry : branchIds) {
+            toCheck.add(entry);
+         }
+         toReturn = this.idToImportFileBranchData.keySet().containsAll(toCheck);
       }
       return toReturn;
    }
@@ -103,7 +108,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          }
       }
    }
-   
+
    public int[] store(int... branchesToImport) throws Exception {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
@@ -119,15 +124,15 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          Long original = new Long(branchData.getBranchId());
          Long newValue = (Long) getTranslator().translate(BranchData.BRANCH_ID, original);
          branchData.setBranchId(newValue.intValue());
-         
+
          original = new Long(branchData.getAssociatedArtId());
          newValue = (Long) getTranslator().translate(BranchData.COMMIT_ART_ID, original);
          branchData.setAssociatedBranchId(newValue.intValue());
-         
+
          original = new Long(branchData.getParentBranchId());
          newValue = (Long) getTranslator().translate(BranchData.PARENT_BRANCH_ID, original);
          branchData.setParentBranchId(newValue.intValue());
-         
+
          Object[] data = branchData.toArray(getMetaData());
          if (data != null) {
             addData(data);
