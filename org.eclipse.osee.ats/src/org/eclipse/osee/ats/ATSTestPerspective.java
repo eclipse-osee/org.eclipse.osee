@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
@@ -56,7 +55,6 @@ public class ATSTestPerspective implements IPerspectiveFactory {
 
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(ChangeReportView.VIEW_ID);
       layout.addShowViewShortcut(QueryLogView.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut("org.eclipse.osee.define.DefineNavigateView");
