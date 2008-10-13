@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -120,7 +119,7 @@ public abstract class SkynetDragAndDrop {
             event.data = new ArtifactData(getArtifacts(), "work", viewId);
          }
       } catch (Exception ex) {
-         OSEELog.logException(ChangeReportView.class, ex, true);
+//         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 
@@ -130,7 +129,7 @@ public abstract class SkynetDragAndDrop {
             event.data = HTMLTransferFormatter.getHtml(getArtifacts());
          }
       } catch (Exception ex) {
-         OSEELog.logException(ChangeReportView.class, ex, true);
+//         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 
@@ -146,7 +145,7 @@ public abstract class SkynetDragAndDrop {
             event.data = Collections.toString(names, null, ", ", null);
          }
       } catch (Exception ex) {
-         OSEELog.logException(ChangeReportView.class, ex, true);
+//         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 

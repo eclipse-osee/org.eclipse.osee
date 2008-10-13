@@ -302,23 +302,6 @@ public class RevisionManager {
       return changes;
    }
 
-   /**
-    * @param fromTransactionNumber
-    * @param toTransactionNumber
-    * @param artId
-    * @param artifactNameDescriptorResolver
-    * @return All revision changes including artifact, attribute and relationLink.
-    * @throws BranchDoesNotExist
-    * @throws ArtifactDoesNotExist
-    */
-   public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
-      Collection<RevisionChange> changes =
-            getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId, artifactNameDescriptorResolver);
-      changes.addAll(getArtifactChanges(fromTransactionId, toTransactionId, artId));
-
-      return changes;
-   }
-
    public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws OseeCoreException {
       Collection<AttributeChange> attributeChanges =
             getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
@@ -433,10 +416,6 @@ public class RevisionManager {
          bemsToName.put(artId, name);
       }
       return name;
-   }
-
-   private Collection<ArtifactChange> getArtifactChanges(TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
-      return getArtifactChanges(OUTGOING, fromTransactionId, toTransactionId, artId);
    }
 
    private Collection<ArtifactChange> getArtifactChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId) throws OseeCoreException {
