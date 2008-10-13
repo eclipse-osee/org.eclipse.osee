@@ -194,7 +194,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * order based on
     * 
     * @param relationType
-    * @return
+    * @return the related artifact
     * @throws ArtifactDoesNotExist
     * @throws OseeDataStoreException
     * @throws MultipleArtifactsExist
@@ -393,7 +393,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param <T>
     * @param attributeType
     * @param existingAttribute specifies whether this attribute is new or is being loaded from the database
-    * @return
+    * @return new Attribute
     */
    public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
@@ -469,7 +469,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     * 
-    * @return
+    * @return attributes
     * @throws OseeCoreException
     */
    public List<Attribute<?>> getAttributes(boolean includeDeleted) throws OseeCoreException {
@@ -1356,7 +1356,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return elementName;
    }
 
-   @SuppressWarnings("deprecation")
    private Set<IArtifactAnnotation> artifactAnnotationExtensions;
 
    private Set<IArtifactAnnotation> getAnnotationExtensions() {
