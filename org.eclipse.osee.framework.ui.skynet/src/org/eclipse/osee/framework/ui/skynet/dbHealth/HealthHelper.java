@@ -54,7 +54,7 @@ public class HealthHelper {
 
    private static final String[] DUPLICATE_TX_CURRENT_CLEANUP =
          {
-               "UPDATE osee_txs set tx_current = 0 WHERE (gamma_id, transaction_id) = (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
+               "UPDATE osee_txs set tx_current = 0 WHERE (gamma_id, transaction_id) in (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, ",
                " t1 WHERE t1.",
                " = ? AND t1.gamma_id = txs1.gamma_id AND txs1.transaction_id != (SELECT max(txs.transaction_id) FROM osee_tx_details det, osee_txs txs, ",
                " t2 WHERE det.branch_id = ? AND txs.tx_current != 0 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = t2.gamma_id AND t2.",
@@ -143,7 +143,8 @@ public class HealthHelper {
          builder.append(multipleSet.size() > 0 ? "Failed: " : "Passed: ");
          builder.append("Found ");
          builder.append(multipleSet.size());
-         builder.append(" Relation Links that have multiple tx_current values set\n");
+         builder.append(data);
+         builder.append(" that have multiple tx_current values set\n");
 
       } finally {
          ConnectionHandler.close(chStmt);

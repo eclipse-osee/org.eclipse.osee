@@ -26,7 +26,7 @@ public class CleanUpBackingData extends DatabaseHealthTask {
    private static final String NOT_ADDRESSESED_GAMMAS =
          HealthHelper.ALL_BACKING_GAMMAS + " MINUS SELECT gamma_id FROM osee_txs";
    private static final String NOT_ADDRESSESED_TRANSACTIONS =
-         "SELECT transaction_id FROM osee_tx_details MINUS SELECT transaction_id FROM osee_txs";
+         "SELECT transaction_id FROM osee_tx_details WHERE tx_type != 1 MINUS SELECT transaction_id FROM osee_txs";
    private static final String REMOVE_GAMMAS_ARTIFACT = "DELETE FROM osee_artifact_version WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_ATTRIBUTE = "DELETE FROM osee_attribute WHERE gamma_id = ?";
    private static final String REMOVE_GAMMAS_RELATIONS = "DELETE FROM osee_relation_link WHERE gamma_id = ?";
