@@ -100,12 +100,16 @@ public class OseeData {
       return project;
    }
 
-   public static IFolder getFolder(String name) throws CoreException {
-      IFolder folder = project.getFolder(name);
+   public static IFolder getFolder(String name) throws OseeCoreException {
+      try {
+         IFolder folder = project.getFolder(name);
 
-      if (!folder.exists()) {
-         folder.create(true, true, null);
+         if (!folder.exists()) {
+            folder.create(true, true, null);
+         }
+         return folder;
+      } catch (CoreException ex) {
+         throw new OseeCoreException(ex);
       }
-      return folder;
    }
 }

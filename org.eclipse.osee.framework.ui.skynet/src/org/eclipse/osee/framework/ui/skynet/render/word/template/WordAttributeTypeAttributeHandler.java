@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -31,7 +30,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler#process(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.render.word.template.TemplateAttribute)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException, IOException {
+   public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws OseeCoreException {
       Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
 
       if (!attributes.isEmpty()) {

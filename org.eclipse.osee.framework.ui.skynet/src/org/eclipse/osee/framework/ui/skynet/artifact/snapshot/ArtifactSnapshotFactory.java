@@ -126,8 +126,9 @@ class ArtifactSnapshotFactory {
     * 
     * @param artifact to render
     * @return rendered artifact data
+    * @throws OseeCoreException
     */
-   private String getRenderedArtifactData(Artifact artifact) {
+   private String getRenderedArtifactData(Artifact artifact) throws OseeCoreException {
       String toReturn = null;
       IRenderer render = RendererManager.getInstance().getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact);
       if (render instanceof Renderer) {

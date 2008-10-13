@@ -67,7 +67,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getTemplate(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
     */
-   public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
+   public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
       ensureTemplateCachePopulated();
       List<String> possibleTemplateNames =
             getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);

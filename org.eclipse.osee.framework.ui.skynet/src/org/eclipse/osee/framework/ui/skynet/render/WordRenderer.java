@@ -18,26 +18,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
@@ -75,7 +70,6 @@ public class WordRenderer extends FileRenderer {
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordRenderer.class);
 
    private static final Pattern pattern =
          Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
@@ -84,20 +78,17 @@ public class WordRenderer extends FileRenderer {
    private static final Program wordApp = Program.findProgram("doc");
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor();
 
-   public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError, CoreException {
-   }
-
    /**
     * Creates a difference report for each artifact between baseArtifact and newerArtifact. Then produces a single
     * report by combining each of the difference reports together for a single report.
     */
-   public void compareArtifacts(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifact, final String option, IProgressMonitor monitor, final Branch branch) throws CoreException, Exception {
+   public void compareArtifacts(final List<Artifact> baseArtifacts, final List<Artifact> newerArtifact, final String option, IProgressMonitor monitor, final Branch branch) throws OseeCoreException {
       if (branch == null) {
-         throw new IllegalArgumentException("Branch can not be null");
+         throw new OseeArgumentException("Branch can not be null");
       }
 
       if (baseArtifacts.size() != newerArtifact.size()) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifact.size() + ".");
       }
 
@@ -148,7 +139,7 @@ public class WordRenderer extends FileRenderer {
                } else {
                   createAggregateArtifactDiffReport(fileNames, baseFileStr, null, monitor);
                }
-            } catch (Exception ex) {
+            } catch (OseeCoreException ex) {
                return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
             }
             return Status.OK_STATUS;
@@ -156,7 +147,7 @@ public class WordRenderer extends FileRenderer {
       });
    }
 
-   private void createAggregateArtifactDiffReport(ArrayList<String> fileNames, String baseFileStr, Artifact artifact, IProgressMonitor monitor) {
+   private void createAggregateArtifactDiffReport(ArrayList<String> fileNames, String baseFileStr, Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       monitor.setTaskName("Writing final document");
       ArrayList<String> datas = new ArrayList<String>(fileNames.size());
       int startIndex;
@@ -199,8 +190,8 @@ public class WordRenderer extends FileRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception {
-      if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
+      if (baseVersion == null && newerVersion == null) throw new OseeArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
       Branch branch = (baseVersion != null ? baseVersion.getBranch() : newerVersion.getBranch());
@@ -231,7 +222,7 @@ public class WordRenderer extends FileRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {
@@ -283,30 +274,9 @@ public class WordRenderer extends FileRenderer {
    }
 
    @Override
-   public String generateHtml(Artifact artifact, IProgressMonitor monitor) {
-      String html = null;
-      InputStream xml = null;
-
-      try {
-         xml = getRenderInputStream(monitor, artifact, null, PresentationType.PREVIEW);
-         html = WordConverter.getInstance().toHtml(xml);
-      } catch (java.lang.StackOverflowError error) {
-         logger.log(Level.SEVERE, error.getLocalizedMessage(), error);
-         html = "Stack overflow error caused by recursion in the xslt transform";
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         html = ex.getLocalizedMessage();
-      } finally {
-         try {
-            if (xml != null) {
-               xml.close();
-            }
-         } catch (IOException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            html = ex.getLocalizedMessage();
-         }
-      }
-      return html;
+   public String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      InputStream xml = getRenderInputStream(monitor, artifact, null, PresentationType.PREVIEW);
+      return WordConverter.toHtml(xml);
    }
 
    public static QName getFoNamespace() {
@@ -348,7 +318,7 @@ public class WordRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension()
     */
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
+   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return "xml";
    }
 
@@ -358,7 +328,7 @@ public class WordRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedProgram()
     */
    @Override
-   public Program getAssociatedProgram(Artifact artifact) {
+   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       return wordApp;
    }
 
@@ -368,7 +338,7 @@ public class WordRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getEditOptions()
     */
    @Override
-   public List<String> getEditOptions() throws Exception {
+   public List<String> getEditOptions() throws OseeCoreException {
       return getTemplateOptions();
    }
 
@@ -378,11 +348,11 @@ public class WordRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#getPreviewOptions()
     */
    @Override
-   public List<String> getPreviewOptions() throws Exception {
+   public List<String> getPreviewOptions() throws OseeCoreException {
       return getTemplateOptions();
    }
 
-   private List<String> getTemplateOptions() throws Exception {
+   private List<String> getTemplateOptions() {
       return null;
    }
 
@@ -394,7 +364,7 @@ public class WordRenderer extends FileRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
       if (artifact != null) {
          artifacts.add(artifact);
@@ -410,7 +380,7 @@ public class WordRenderer extends FileRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
       String template;
 
@@ -457,7 +427,7 @@ public class WordRenderer extends FileRenderer {
       return templateProcessor.applyTemplate(artifacts, template, null, presentationType);
    }
 
-   protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
+   protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws OseeCoreException {
       return TemplateManager.getTemplate(this, artifact, presentationType.name(), option);
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.swt.program.Program;
@@ -35,7 +36,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension()
     */
    @Override
-   public String getAssociatedExtension(Artifact artifact) throws Exception {
+   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return ((NativeArtifact) artifact).getFileExtension();
    }
 
@@ -43,7 +44,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedProgram()
     */
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws Exception {
+   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       NativeArtifact nativeArtifact = (NativeArtifact) artifact;
 
       Program program = Program.findProgram(nativeArtifact.getFileExtension());
@@ -58,7 +59,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       return null;
    }
 
@@ -66,7 +67,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
       NativeArtifact nativeArtifact = (NativeArtifact) artifact;
       return nativeArtifact.getNativeContent();
    }

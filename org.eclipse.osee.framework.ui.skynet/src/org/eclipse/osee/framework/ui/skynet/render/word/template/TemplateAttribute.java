@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,9 +81,6 @@ public class TemplateAttribute implements ITemplateTask {
       this.outline = outline;
    }
 
-   /**
-    * @return
-    */
    public String getName() {
       return this.name;
    }
@@ -93,7 +89,7 @@ public class TemplateAttribute implements ITemplateTask {
     * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(java.lang.StringBuilder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
     */
    @Override
-   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeCoreException, IOException {
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws OseeCoreException {
       for (ITemplateAttributeHandler handler : handlers) {
          if (handler.canHandle(artifact, this)) {
             handler.process(wordMl, artifact, this);
@@ -106,30 +102,18 @@ public class TemplateAttribute implements ITemplateTask {
             artifact.toString(), this.toString()));
    }
 
-   /**
-    * @return
-    */
    public String getLabel() {
       return this.label;
    }
 
-   /**
-    * @return
-    */
    public String getFormat() {
       return this.format;
    }
 
-   /**
-    * @return
-    */
    public boolean hasFormatting() {
       return this.format != null && this.format.length() > 0;
    }
 
-   /**
-    * @return
-    */
    public boolean hasLabel() {
       return this.label != null && this.label.length() > 0;
    }

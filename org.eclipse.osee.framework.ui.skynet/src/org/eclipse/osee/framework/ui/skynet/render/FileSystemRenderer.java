@@ -15,6 +15,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -32,7 +34,7 @@ public abstract class FileSystemRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
       open(monitor, artifact, option, PresentationType.PREVIEW);
    }
 
@@ -40,30 +42,34 @@ public abstract class FileSystemRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
       open(monitor, artifact, option, PresentationType.EDIT);
    }
 
-   private void open(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+   private void open(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
       IFolder baseFolder = getRenderFolder(artifact.getBranch(), presentationType);
       IFile file = renderToFileSystem(monitor, baseFolder, artifact, artifact.getBranch(), option, presentationType);
       getAssociatedProgram(artifact).execute(file.getLocation().toFile().getAbsolutePath());
    }
 
-   public IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws CoreException {
-      IFolder baseFolder = ensureRenderFolderExists(presentationType);
-      IFolder renderFolder = baseFolder.getFolder(branch.asFolderName());
-      if (!renderFolder.exists()) {
-         renderFolder.create(true, true, null);
+   public IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws OseeCoreException {
+      try {
+         IFolder baseFolder = ensureRenderFolderExists(presentationType);
+         IFolder renderFolder = baseFolder.getFolder(branch.asFolderName());
+         if (!renderFolder.exists()) {
+            renderFolder.create(true, true, null);
+         }
+         return renderFolder;
+      } catch (CoreException ex) {
+         throw new OseeCoreException(ex);
       }
-      return renderFolder;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception {
+   public void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
       open(monitor, artifacts, option, PresentationType.PREVIEW);
    }
 
@@ -71,11 +77,11 @@ public abstract class FileSystemRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception {
+   public void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
       open(monitor, artifacts, option, PresentationType.EDIT);
    }
 
-   private void open(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   private void open(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          Artifact firstArtifact = artifacts.iterator().next();
          IFolder baseFolder = getRenderFolder(firstArtifact.getBranch(), presentationType);
@@ -100,7 +106,7 @@ public abstract class FileSystemRenderer extends Renderer {
       return true;
    }
 
-   public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws CoreException {
+   public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws OseeCoreException {
       switch (presentationType) {
          case DIFF:
             if (diffFolder == null || !diffFolder.exists()) {
@@ -121,25 +127,25 @@ public abstract class FileSystemRenderer extends Renderer {
             return previewFolder;
 
          default:
-            throw new IllegalStateException("Unexpected presentation type");
+            throw new OseeArgumentException("Unexpected presentation type");
       }
    }
 
-   public IFile renderForDiff(IProgressMonitor monitor, Branch branch, String option) throws Exception {
+   public IFile renderForDiff(IProgressMonitor monitor, Branch branch, String option) throws OseeCoreException {
       IFolder baseFolder = getRenderFolder(branch, PresentationType.DIFF);
       return renderToFileSystem(monitor, baseFolder, null, branch, option, PresentationType.DIFF);
    }
 
-   public IFile renderForDiff(IProgressMonitor monitor, Artifact artifact, String option) throws Exception {
+   public IFile renderForDiff(IProgressMonitor monitor, Artifact artifact, String option) throws OseeCoreException {
       if (artifact == null) {
-         throw new IllegalArgumentException("Artifact can not be null.");
+         throw new OseeArgumentException("Artifact can not be null.");
       }
 
       IFolder baseFolder = getRenderFolder(artifact.getBranch(), PresentationType.DIFF);
       return renderToFileSystem(monitor, baseFolder, artifact, artifact.getBranch(), option, PresentationType.DIFF);
    }
 
-   public IFile renderForMerge(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+   public IFile renderForMerge(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
       if (artifact == null) {
          throw new IllegalArgumentException("Artifact can not be null.");
       }
@@ -152,10 +158,10 @@ public abstract class FileSystemRenderer extends Renderer {
       return renderToFileSystem(monitor, baseFolder, artifact, artifact.getBranch(), option, presentationType);
    }
 
-   public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws Exception;
+   public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception;
+   public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract Program getAssociatedProgram(Artifact artifact) throws Exception;
+   public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
 }

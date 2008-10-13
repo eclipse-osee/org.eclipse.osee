@@ -12,13 +12,14 @@ package org.eclipse.osee.framework.skynet.core.word;
 
 import java.io.File;
 import java.io.InputStream;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IWordMLConversionHandler {
 
-   String wordMLToHtml(InputStream inputStream) throws Exception;
+   String wordMLToHtml(InputStream inputStream) throws OseeCoreException;
 
    void setImageDirectory(File directoryPath);
 

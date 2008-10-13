@@ -13,17 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
@@ -38,9 +32,8 @@ import org.eclipse.swt.program.Program;
 public class WholeDocumentRenderer extends FileRenderer {
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WholeDocumentRenderer.class);
 
-   public WholeDocumentRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
+   public WholeDocumentRenderer() {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
@@ -54,7 +47,7 @@ public class WholeDocumentRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
+   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return ".xml";
    }
 
@@ -62,7 +55,7 @@ public class WholeDocumentRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
@@ -70,13 +63,11 @@ public class WholeDocumentRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getRenderInputStream(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException {
       if (artifact != null) {
-         Attribute<?> attribute =
-               artifact.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
+         Attribute<?> attribute = artifact.getSoleAttribute(WordAttribute.WHOLE_WORD_CONTENT);
          if (attribute == null) {
-            attribute =
-                  artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WHOLE_WORD_CONTENT), true);
+            attribute = artifact.createAttribute(AttributeTypeManager.getType(WordAttribute.WHOLE_WORD_CONTENT), true);
          }
          if (presentationType == PresentationType.DIFF && attribute != null && ((WordAttribute) attribute).mergeMarkupPresent()) {
             throw new OseeCoreException(
@@ -85,56 +76,38 @@ public class WholeDocumentRenderer extends FileRenderer {
          }
       }
 
-      InputStream stream =
-            Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
+      try {
+         InputStream stream =
+               Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
 
-      if (artifact != null) {
-         String content =
-               artifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
-         String myGuid = artifact.getGuid();
-         content = WordUtil.addGUIDToDocument(myGuid, content);
-         stream = Streams.convertStringToInputStream(content, "UTF-8");
+         if (artifact != null) {
+            String content = artifact.getSoleAttributeValue(WordAttribute.WHOLE_WORD_CONTENT);
+            String myGuid = artifact.getGuid();
+            content = WordUtil.addGUIDToDocument(myGuid, content);
+            stream = Streams.convertStringToInputStream(content, "UTF-8");
+         }
+         return stream;
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
       }
-      return stream;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#getAssociatedProgram(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    @Override
-   public Program getAssociatedProgram(Artifact artifact) {
+   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       return wordApp;
    }
 
    @Override
-   public String generateHtml(Artifact artifact, IProgressMonitor monitor) {
-      String html = null;
-      InputStream xml = null;
-
-      try {
-         xml = getRenderInputStream(monitor, artifact, null, PresentationType.PREVIEW);
-         html = WordConverter.getInstance().toHtml(xml);
-      } catch (java.lang.StackOverflowError error) {
-         logger.log(Level.SEVERE, error.getLocalizedMessage(), error);
-         html = "Stack overflow error caused by recursion in the xslt transform";
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         html = ex.getLocalizedMessage();
-      } finally {
-         try {
-            if (xml != null) {
-               xml.close();
-            }
-         } catch (IOException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            html = ex.getLocalizedMessage();
-         }
-      }
-      return html;
+   public String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+      InputStream xml = getRenderInputStream(monitor, artifact, null, PresentationType.PREVIEW);
+      return WordConverter.toHtml(xml);
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -166,7 +139,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
       String diffPath;
 
       if (fileName == null || fileName.equals("")) {

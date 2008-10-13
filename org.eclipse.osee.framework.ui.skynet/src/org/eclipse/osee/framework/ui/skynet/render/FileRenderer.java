@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -48,7 +50,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws Exception {
+   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, Artifact artifact, Branch branch, String option, PresentationType presentationType) throws OseeCoreException {
       return renderToFile(baseFolder, getFilenameFromArtifact(artifact, presentationType), branch,
             getRenderInputStream(monitor, artifact, option, presentationType), presentationType);
    }
@@ -57,7 +59,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#renderToFileSystem(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.resources.IFolder, java.util.List, java.lang.String, org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   public IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       Branch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
@@ -73,17 +75,21 @@ public abstract class FileRenderer extends FileSystemRenderer {
             getRenderInputStream(monitor, artifacts, option, presentationType), presentationType);
    }
 
-   protected IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws Exception {
-      IFile workingFile = baseFolder.getFile(fileName);
-      AIFile.writeToFile(workingFile, renderInputStream);
+   protected IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
+      try {
+         IFile workingFile = baseFolder.getFile(fileName);
+         AIFile.writeToFile(workingFile, renderInputStream);
 
-      if (presentationType == PresentationType.EDIT) {
-         watcher.addFile(workingFile.getLocation().toFile());
-      } else if (presentationType == PresentationType.PREVIEW) {
-         workingFile.setResourceAttributes(readonlyfileAttributes);
+         if (presentationType == PresentationType.EDIT) {
+            watcher.addFile(workingFile.getLocation().toFile());
+         } else if (presentationType == PresentationType.PREVIEW) {
+            workingFile.setResourceAttributes(readonlyfileAttributes);
+         }
+
+         return workingFile;
+      } catch (CoreException ex) {
+         throw new OseeCoreException(ex);
       }
-
-      return workingFile;
    }
 
    protected void addFileToWatcher(IFolder baseFolder, String fileName) {
@@ -91,7 +97,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
       watcher.addFile(workingFile.getLocation().toFile());
    }
 
-   protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws Exception {
+   protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       StringBuilder name = new StringBuilder(100);
 
       if (artifact != null) {
@@ -120,9 +126,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
       return name.toString();
    }
 
-   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception;
+   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception;
+   public abstract InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws OseeCoreException;
 
-   public abstract String getAssociatedExtension(Artifact artifact) throws Exception;
+   public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
 }

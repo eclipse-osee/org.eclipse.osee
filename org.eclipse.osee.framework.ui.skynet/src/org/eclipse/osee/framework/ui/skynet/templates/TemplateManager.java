@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.templates;
 
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -32,7 +33,7 @@ public class TemplateManager {
       templateProviders = extensionDefinedObjects.getObjects();
    }
 
-   public static String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
+   public static String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
       ITemplateProvider bestTemplateProvider = null;
       int highestRating = 0;
       for (ITemplateProvider templateProvider : instance.templateProviders) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
@@ -22,7 +23,7 @@ public class DefaultArtifactRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
       ArtifactEditor.editArtifact(artifact);
    }
 
@@ -30,7 +31,7 @@ public class DefaultArtifactRenderer extends Renderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.Renderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
    @Override
-   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
       ArtifactEditor.editArtifact(artifact);
    }
 

@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -134,10 +132,11 @@ public class HtmlReportJob extends Job {
       return sb.toString();
    }
 
-   public String processAttributes(Artifact artifact, boolean recurseChildren, Collection<String> onlyAttributeNames) {
+   public String processAttributes(Artifact artifact, boolean recurseChildren, Collection<String> onlyAttributeNames) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(90));
-      sb.append(AHTML.addRowSpanMultiColumnTable(((Renderer)RendererManager.getInstance().getBestRenderer(PresentationType.PREVIEW, artifact)).generateHtml(artifact, new NullProgressMonitor()), 2));
+      sb.append(AHTML.addRowSpanMultiColumnTable(((Renderer) RendererManager.getInstance().getBestRenderer(
+            PresentationType.PREVIEW, artifact)).generateHtml(artifact, new NullProgressMonitor()), 2));
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
    }

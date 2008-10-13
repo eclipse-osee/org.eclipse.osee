@@ -11,14 +11,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -35,16 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
  */
 public class TisRenderer extends WordRenderer {
 
-   /**
-    * @throws TransformerConfigurationException
-    * @throws IOException
-    * @throws TransformerFactoryConfigurationError
-    * @throws CoreException
-    */
-   public TisRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError, CoreException {
-      super();
-   }
-
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if ("Test Information Sheet".equals(artifact.getArtifactTypeName())) {
          return SUBTYPE_TYPE_MATCH;
@@ -60,7 +49,7 @@ public class TisRenderer extends WordRenderer {
     *      org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer.PresentationType)
     */
    @Override
-   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
+   public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
       if (PresentationType.EDIT == presentationType) {
          return super.getRenderInputStream(monitor, artifacts, option, presentationType);
       }
@@ -83,10 +72,13 @@ public class TisRenderer extends WordRenderer {
       handlers.add(new WordAttributeTypeAttributeHandler());
       handlers.add(new BasicTemplateAttributeHandler());
       WordTemplateManager wtm = new WordTemplateManager(template, handlers);
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      WordMLProducer wordMl = new WordMLProducer(charBak);
-      wtm.processArtifacts(wordMl, variableMap.getArtifacts(wtm.getArtifactSet()));
-      return charBak;
+      try {
+         CharBackedInputStream charBak = new CharBackedInputStream();
+         WordMLProducer wordMl = new WordMLProducer(charBak);
+         wtm.processArtifacts(wordMl, variableMap.getArtifacts(wtm.getArtifactSet()));
+         return charBak;
+      } catch (CharacterCodingException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
-
 }

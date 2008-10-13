@@ -11,20 +11,21 @@
 package org.eclipse.osee.framework.skynet.core.word;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public class WordConverter {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordConverter.class);
    private static WordConverter instance = null;
 
    private IWordMLConversionHandler wordMLConversionHandler;
@@ -40,7 +41,7 @@ public class WordConverter {
       return instance;
    }
 
-   private IWordMLConversionHandler getWordMLConversionHandler() throws Throwable {
+   private IWordMLConversionHandler getWordMLConversionHandler() {
       if (wordMLConversionHandler == null) {
          IWordMLConversionHandler toReturn = null;
          ExtensionDefinedObjects<IWordMLConversionHandler> extensionDefinedObjects =
@@ -58,7 +59,8 @@ public class WordConverter {
                }
             }
          } catch (Exception ex) {
-            logger.log(Level.INFO, "Using default WordML Handler - Minimal Functionality Supported");
+            OseeLog.log(SkynetActivator.class, Level.INFO,
+                  "Using default WordML Handler - Minimal Functionality Supported");
          }
          wordMLConversionHandler = (toReturn != null) ? toReturn : new DefaultWordMLConversionHandler();
       }
@@ -66,29 +68,29 @@ public class WordConverter {
    }
 
    public boolean isDefaultConverter() {
-      IWordMLConversionHandler currentConverter = null;
-      try {
-         currentConverter = getWordMLConversionHandler();
-      } catch (Throwable ex) {
-         // Do Nothing
-      }
-      return currentConverter != null && currentConverter instanceof DefaultWordMLConversionHandler;
+      return instance.getWordMLConversionHandler() instanceof DefaultWordMLConversionHandler;
    }
 
-   public String toHtml(InputStream xml) {
+   public static String toHtml(InputStream xmlInputStream) {
       String html = null;
       try {
          HttpImageProcessor imageProcessor = HttpImageProcessor.getInstance();
-         IWordMLConversionHandler handler = getWordMLConversionHandler();
+         IWordMLConversionHandler handler = instance.getWordMLConversionHandler();
          handler.setHttpImageRequestServer(imageProcessor.getImageProcessingMarker());
          handler.setImageDirectory(imageProcessor.getImageDirectory());
-         html = handler.wordMLToHtml(xml);
-      } catch (java.lang.StackOverflowError error) {
-         logger.log(Level.SEVERE, error.getLocalizedMessage(), error);
+         html = handler.wordMLToHtml(xmlInputStream);
+      } catch (java.lang.StackOverflowError er) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, er);
          html = "Stack overflow error caused by recursion in the xslt transform";
-      } catch (Throwable ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
          html = ex.getLocalizedMessage();
+      } finally {
+         try {
+            xmlInputStream.close();
+         } catch (IOException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+         }
       }
       return html;
    }
@@ -116,7 +118,7 @@ public class WordConverter {
        * 
        * @see org.eclipse.osee.framework.skynet.core.util.IWordMLConversionHandler#wordMLToHtml(java.io.InputStream)
        */
-      public String wordMLToHtml(InputStream inputStream) throws Exception {
+      public String wordMLToHtml(InputStream inputStream) {
          StringBuilder builder = new StringBuilder();
          builder.append("<HTML></BODY>");
          builder.append("<span style=\"color:#FF0000;font-size:medium;font-style:bold;\">");
@@ -126,7 +128,13 @@ public class WordConverter {
          builder.append("Word content preview generation is not supported on this platform.");
          builder.append("</span>");
          builder.append("<div style=\"align:left; padding:8px; border-width:1px; border-top-style: solid;\">");
-         String rawData = Lib.inputStreamToString(inputStream);
+         String rawData;
+         try {
+            rawData = Lib.inputStreamToString(inputStream);
+         } catch (IOException ex) {
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
+            rawData = ex.getLocalizedMessage();
+         }
          builder.append(WordUtil.textOnly(rawData));
          builder.append("</BODY></HTML>");
          return builder.toString();

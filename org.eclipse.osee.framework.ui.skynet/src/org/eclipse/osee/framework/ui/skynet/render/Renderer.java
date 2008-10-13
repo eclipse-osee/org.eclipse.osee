@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.ArtifactRequest;
 
@@ -34,13 +35,13 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#edit(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#edit(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception {
+   public void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          edit(artifact, option, monitor);
       }
@@ -56,13 +57,13 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#preview(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception {
+   public void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          preview(artifact, option, monitor);
       }
@@ -71,13 +72,13 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void print(Artifact artifact, String option, IProgressMonitor monitor) throws Exception {
+   public void print(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException {
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#print(java.util.List, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception {
+   public void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          print(artifact, option, monitor);
       }
@@ -107,11 +108,12 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#generateHtml(org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public String generateHtml(Artifact artifact, IProgressMonitor monitor) {
+   @Override
+   public String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       return "<b>" + artifact.getDescriptiveName() + " - " + artifact.getHumanReadableId() + "</b>";
    }
 
-   public String generateHtml(List<Artifact> artifacts, IProgressMonitor monitor) throws Exception {
+   public String generateHtml(List<Artifact> artifacts, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder result = new StringBuilder();
       for (Artifact artifact : artifacts) {
          result.append(generateHtml(artifact, monitor));
@@ -122,39 +124,39 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getEditOptions()
     */
-   public List<String> getEditOptions() throws Exception {
+   public List<String> getEditOptions() throws OseeCoreException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPreviewOptions()
     */
-   public List<String> getPreviewOptions() throws Exception {
+   public List<String> getPreviewOptions() throws OseeCoreException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getPrintOptions()
     */
-   public List<String> getPrintOptions() throws Exception {
+   public List<String> getPrintOptions() throws OseeCoreException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#compare(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException {
       return null;
    }
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException {
       return null;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getCompareOptions()
     */
-   public List<String> getCompareOptions() throws Exception {
+   public List<String> getCompareOptions() throws OseeCoreException {
       return null;
    }
 
@@ -182,7 +184,7 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getArtifactUrl(org.eclipse.osee.framework.skynet.core.artifact.Artifact, boolean)
     */
-   public String getArtifactUrl(Artifact artifact) throws Exception {
+   public String getArtifactUrl(Artifact artifact) throws OseeCoreException {
       return ArtifactRequest.getInstance().getUrl(artifact);
    }
 

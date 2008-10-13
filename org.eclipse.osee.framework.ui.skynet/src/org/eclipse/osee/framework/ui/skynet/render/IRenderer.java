@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -25,35 +26,37 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public abstract void edit(Artifact artifact, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void edit(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void edit(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public List<String> getEditOptions() throws Exception;
+   public List<String> getEditOptions() throws OseeCoreException;
 
    public boolean supportsEdit();
 
-   public abstract void preview(Artifact artifact, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void preview(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void preview(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public List<String> getPreviewOptions() throws Exception;
+   public abstract String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException;
+
+   public List<String> getPreviewOptions() throws OseeCoreException;
 
    public boolean supportsPreview();
 
-   public abstract void print(Artifact artifact, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void print(Artifact artifact, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public abstract void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws Exception;
+   public abstract void print(List<Artifact> artifacts, String option, IProgressMonitor monitor) throws OseeCoreException;
 
-   public List<String> getPrintOptions() throws Exception;
+   public List<String> getPrintOptions() throws OseeCoreException;
 
    public boolean supportsPrint();
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws Exception;
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, PresentationType presentationType) throws OseeCoreException;
 
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws Exception;
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String fileName, PresentationType presentationType) throws OseeCoreException;
 
-   public List<String> getCompareOptions() throws Exception;
+   public List<String> getCompareOptions() throws OseeCoreException;
 
    public boolean supportsCompare();
 
@@ -61,7 +64,7 @@ public interface IRenderer {
 
    public abstract String getName();
 
-   public abstract String getArtifactUrl(Artifact artifact) throws Exception;
+   public abstract String getArtifactUrl(Artifact artifact) throws OseeCoreException;
 
    public abstract void setId(String rendererId);
 

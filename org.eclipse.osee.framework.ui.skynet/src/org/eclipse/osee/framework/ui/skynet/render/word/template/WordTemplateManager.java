@@ -82,23 +82,9 @@ public class WordTemplateManager {
       Label, Outline, Name, Format, Editable, ParagraphWrap
    }
 
-   //	public static void main(String[] args){
-   //	   String test = "<nls1:Artifact>some thing to capture here</nls1:Artifact>some more stuff<nls3:Artifact>more to capture</nls3:Artifact>";
-   //	   
-   //	   headElementsMatcher.reset(test);
-   //	   
-   //	   while(headElementsMatcher.find()){
-   //	      System.out.println("4 " + headElementsMatcher.group(4));
-   //	      System.out.println("3 " + headElementsMatcher.group(3));
-   //	      System.out.println("2 " + headElementsMatcher.group(2));
-   //	      System.out.println("1 " + headElementsMatcher.group(1));
-   //	   }
-   //	}
-
    private String template;
    private final String artifactSetName;
    private List<ITemplateTask> tasks = new ArrayList<ITemplateTask>();
-   private final StringBuilder sb = new StringBuilder();
    private final List<ITemplateAttributeHandler> attributeHandlers;
 
    public WordTemplateManager(String template, List<ITemplateAttributeHandler> attributeHandlers) {
@@ -179,20 +165,6 @@ public class WordTemplateManager {
       return template;
    }
 
-   /**
-    * @param text
-    * @return
-    */
-   private String trimUnwantedText(String text) {
-      setNameMatcher.reset(text);
-
-      while (setNameMatcher.find()) {
-         System.out.println("trim unwanted " + setNameMatcher.group(0));
-      }
-      text = setNameMatcher.replaceAll("");
-      return text;
-   }
-
    private void preProcessTemplatePositions() {
       headElementsMatcher.reset(template);
       int last = 0;
@@ -221,7 +193,7 @@ public class WordTemplateManager {
     * @param artifacts
     * @throws Exception
     */
-   public void processArtifacts(WordMLProducer wordMl, List<Artifact> artifacts) throws Exception {
+   public void processArtifacts(WordMLProducer wordMl, List<Artifact> artifacts) throws OseeCoreException {
       String outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, artifacts);
       template = wordMl.setHeadingNumbers(outlineNumber, template);
       preProcessTemplatePositions();

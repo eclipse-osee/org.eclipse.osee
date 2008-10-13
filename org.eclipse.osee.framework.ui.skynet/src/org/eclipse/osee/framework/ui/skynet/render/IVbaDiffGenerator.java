@@ -6,8 +6,8 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
-import java.io.IOException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 
 /**
  * @author Theron Virgin
@@ -17,7 +17,7 @@ public interface IVbaDiffGenerator {
 
    public boolean addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge);
 
-   public void finish(String path) throws IOException, InterruptedException;
+   public void finish(String path) throws OseeCoreException;
 
-   public File getFile(String path) throws IOException;
+   public File getFile(String path) throws OseeCoreException;
 }

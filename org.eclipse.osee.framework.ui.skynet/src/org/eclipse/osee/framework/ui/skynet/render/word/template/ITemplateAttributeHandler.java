@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
-import java.io.IOException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -21,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
  */
 public interface ITemplateAttributeHandler {
 
-   void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws IOException, OseeCoreException;
+   void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws OseeCoreException;
 
    boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws OseeCoreException;
 }

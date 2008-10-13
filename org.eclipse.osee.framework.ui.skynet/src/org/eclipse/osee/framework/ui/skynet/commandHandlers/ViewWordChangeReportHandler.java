@@ -19,14 +19,13 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,7 +58,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
-   public Object execute(ExecutionEvent event) throws ExecutionException {
+   public Object execute(ExecutionEvent event) {
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
       ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
 
@@ -96,11 +95,13 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             WordRenderer renderer =
                   (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
             try {
-	               renderer.compareArtifacts(baseArtifacts,newerArtifacts,DIFF_ARTIFACT,null,
-	                       baseArtifacts.get(0) == null ? newerArtifacts.get(0).getBranch() : baseArtifacts.get(0).getBranch());  
-            } catch (CoreException ex) {
-               OSEELog.logException(getClass(), ex, true);
-            } catch (Exception ex) {
+               renderer.compareArtifacts(
+                     baseArtifacts,
+                     newerArtifacts,
+                     DIFF_ARTIFACT,
+                     null,
+                     baseArtifacts.get(0) == null ? newerArtifacts.get(0).getBranch() : baseArtifacts.get(0).getBranch());
+            } catch (OseeCoreException ex) {
                OSEELog.logException(getClass(), ex, true);
             }
          }

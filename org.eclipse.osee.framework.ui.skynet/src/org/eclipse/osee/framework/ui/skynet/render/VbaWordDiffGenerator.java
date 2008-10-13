@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
@@ -86,32 +87,44 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       return true;
    }
 
-   public void finish(String path) throws IOException, InterruptedException {
+   @Override
+   public void finish(String path) throws OseeWrappedException {
       finalized = true;
       builder.append(tail);
       compare(getFile(path));
    }
 
-   public File getFile(String path) throws IOException {
+   @Override
+   public File getFile(String path) throws OseeWrappedException {
       if (!finalized) {
          return null;
       }
-      FileOutputStream out = new FileOutputStream(path != null ? path : "c:\\UserData\\compareDocs.vbs");
-      out.write(builder.toString().getBytes(), 0, builder.toString().getBytes().length);
-      out.close();
-      return new File(path != null ? path : "c:\\UserData\\compareDocs.vbs");
+      try {
+         FileOutputStream out = new FileOutputStream(path != null ? path : "c:\\UserData\\compareDocs.vbs");
+         out.write(builder.toString().getBytes(), 0, builder.toString().getBytes().length);
+         out.close();
+         return new File(path != null ? path : "c:\\UserData\\compareDocs.vbs");
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
-   private void compare(File vbDiffScript) throws IOException, InterruptedException {
-      String cmd[] = {"cmd", "/s /c", "\"" + vbDiffScript.getPath() + "\""};
+   private void compare(File vbDiffScript) throws OseeWrappedException {
+      try {
+         String cmd[] = {"cmd", "/s /c", "\"" + vbDiffScript.getPath() + "\""};
 
-      Process proc = Runtime.getRuntime().exec(cmd);
+         Process proc = Runtime.getRuntime().exec(cmd);
 
-      StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", logger);
-      StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
+         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR", logger);
+         StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
 
-      errorCatcher.start();
-      outputCatcher.start();
-      proc.waitFor();
+         errorCatcher.start();
+         outputCatcher.start();
+         proc.waitFor();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      } catch (InterruptedException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 }

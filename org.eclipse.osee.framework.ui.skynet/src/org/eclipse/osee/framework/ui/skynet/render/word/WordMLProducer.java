@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import java.io.IOException;
-import java.nio.charset.CharacterCodingException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +19,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,7 +60,7 @@ public class WordMLProducer {
       alphabetMap.put("C.0", 3);
    }
 
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) throws IOException {
+   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) throws OseeWrappedException {
       if (okToStartSubsection()) {
          outlineNumber[++outlineLevel]++;
          CharSequence paragraphNumber = getOutlineNumber();
@@ -81,20 +81,28 @@ public class WordMLProducer {
       }
    };
 
-   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws IOException {
-      strB.append("<wx:sub-section>");
-      strB.append("<w:p><w:pPr><w:pStyle w:val=\"");
-      strB.append(style);
-      strB.append("\"/><w:listPr><wx:t wx:val=\"");
-      strB.append(outlineNumber);
-      strB.append("\" wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"/><wx:font wx:val=\"");
-      strB.append(font);
-      strB.append("\"/></w:listPr></w:pPr><w:r><w:t>");
-      strB.append(Xml.escape(headingText));
-      strB.append("</w:t></w:r></w:p>");
+   private void append(CharSequence value) throws OseeWrappedException {
+      try {
+         strB.append(value);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
-   public String setHeadingNumbers(String outLineNumber, String template) throws CharacterCodingException {
+   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws OseeWrappedException {
+      append("<wx:sub-section>");
+      append("<w:p><w:pPr><w:pStyle w:val=\"");
+      append(style);
+      append("\"/><w:listPr><wx:t wx:val=\"");
+      append(outlineNumber);
+      append("\" wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"/><wx:font wx:val=\"");
+      append(font);
+      append("\"/></w:listPr></w:pPr><w:r><w:t>");
+      append(Xml.escape(headingText));
+      append("</w:t></w:r></w:p>");
+   }
+
+   public String setHeadingNumbers(String outLineNumber, String template) {
       if (outLineNumber == null) {
          return template;
       }
@@ -122,98 +130,98 @@ public class WordMLProducer {
       return template;
    }
 
-   public void endOutlineSubSection() throws IOException {
+   public void endOutlineSubSection() throws OseeWrappedException {
       endOutlineSubSection(false);
    }
 
-   private void endOutlineSubSection(boolean force) throws IOException {
+   private void endOutlineSubSection(boolean force) throws OseeWrappedException {
       if (!force && flattenedLevelCount > 0) {
          flattenedLevelCount--;
       } else {
-         strB.append("</wx:sub-section>");
+         append("</wx:sub-section>");
          if (outlineLevel + 1 < outlineNumber.length) outlineNumber[outlineLevel + 1] = 0;
          outlineLevel--;
       }
    }
 
-   public void addWordMl(CharSequence wordMl) throws IOException {
-      strB.append(wordMl);
+   public void addWordMl(CharSequence wordMl) throws OseeWrappedException {
+      append(wordMl);
    }
 
-   public void startParagraph() throws IOException {
-      strB.append("<w:p>");
+   public void startParagraph() throws OseeWrappedException {
+      append("<w:p>");
    }
 
-   public void createSubDoc(String fileName) throws IOException {
+   public void createSubDoc(String fileName) throws OseeWrappedException {
       if (fileName == null || fileName.length() == 0) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
 
-      strB.append(SUB_DOC.replace(FILE_NAME, fileName));
+      append(SUB_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void createHyperLinkDoc(String fileName) throws IOException {
+   public void createHyperLinkDoc(String fileName) throws OseeWrappedException {
       if (fileName == null || fileName.length() == 0) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
 
-      strB.append(HYPER_LINK_DOC.replace(FILE_NAME, fileName));
+      append(HYPER_LINK_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void resetListValue() throws IOException {
+   public void resetListValue() throws OseeWrappedException {
       startParagraph();
       addWordMl(LISTNUM_FIELD);
       endParagraph();
    }
 
-   public void endParagraph() throws IOException {
-      strB.append("</w:p>");
+   public void endParagraph() throws OseeWrappedException {
+      append("</w:p>");
    }
 
-   public void addParagraph(CharSequence text) throws IOException {
-      strB.append("<w:p><w:r><w:t>");
-      strB.append(Xml.escape(text));
-      strB.append("</w:t></w:r></w:p>");
+   public void addParagraph(CharSequence text) throws OseeWrappedException {
+      append("<w:p><w:r><w:t>");
+      append(Xml.escape(text));
+      append("</w:t></w:r></w:p>");
    }
 
-   public void addParagraphBold(CharSequence text) throws IOException {
-      strB.append("<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>");
-      strB.append(Xml.escape(text));
-      strB.append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
+   public void addParagraphBold(CharSequence text) throws OseeWrappedException {
+      append("<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>");
+      append(Xml.escape(text));
+      append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
    }
 
-   public void addTextInsideParagraph(CharSequence text) throws IOException {
-      strB.append("<w:r><w:t>");
-      strB.append(Xml.escape(text));
-      strB.append("</w:t></w:r>");
+   public void addTextInsideParagraph(CharSequence text) throws OseeWrappedException {
+      append("<w:r><w:t>");
+      append(Xml.escape(text));
+      append("</w:t></w:r>");
    }
 
-   public void addTextInsideParagraph(CharSequence text, String rgbHexColor) throws IOException {
+   public void addTextInsideParagraph(CharSequence text, String rgbHexColor) throws OseeWrappedException {
       if (rgbHexColor == null) throw new IllegalArgumentException("rgbHexColor can not be null");
       if (rgbHexColor.length() != 6) throw new IllegalArgumentException(
             "rgbHexColor should be a hex string 6 characters long");
 
-      strB.append("<w:r><w:rPr><w:color w:val=\"");
-      strB.append(rgbHexColor);
-      strB.append("\"/></w:rPr>");
-      strB.append("<w:t>");
-      strB.append(Xml.escape(text));
-      strB.append("</w:t></w:r>");
+      append("<w:r><w:rPr><w:color w:val=\"");
+      append(rgbHexColor);
+      append("\"/></w:rPr>");
+      append("<w:t>");
+      append(Xml.escape(text));
+      append("</w:t></w:r>");
    }
 
-   public void addOleData(CharSequence oleData) throws IOException {
-      strB.append("<w:docOleData>");
-      strB.append(oleData);
-      strB.append("</w:docOleData>");
+   public void addOleData(CharSequence oleData) throws OseeWrappedException {
+      append("<w:docOleData>");
+      append(oleData);
+      append("</w:docOleData>");
    }
 
-   private CharSequence getOutlineNumber() {
+   private CharSequence getOutlineNumber() throws OseeWrappedException {
       StringBuilder strB = new StringBuilder();
       for (int i = 1; i < outlineLevel; i++) {
-         strB.append(String.valueOf(outlineNumber[i]));
-         strB.append('.');
+         append(String.valueOf(outlineNumber[i]));
+         append(".");
       }
-      strB.append(String.valueOf(outlineNumber[outlineLevel]));
+      append(String.valueOf(outlineNumber[outlineLevel]));
       return strB;
    }
 
@@ -241,10 +249,9 @@ public class WordMLProducer {
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
     * 
-    * @throws IOException
     * @throws OseeCoreException
     */
-   public void setPageLayout(Artifact artifact) throws OseeCoreException, IOException {
+   public void setPageLayout(Artifact artifact) throws OseeCoreException {
       String pageTypeValue = null;
       if (artifact.isAttributeTypeValid("Page Type")) {
          pageTypeValue = artifact.getSoleAttributeValue("Page Type", "Portrait");
@@ -253,13 +260,13 @@ public class WordMLProducer {
       boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
 
       if (landscape || previousPageLandsacpe) {
-         strB.append("<w:p>");
-         strB.append("<w:pPr>");
-         strB.append("<w:sectPr>");
-         strB.append(landscape ? "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />" : "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
-         strB.append("</w:sectPr>");
-         strB.append("</w:pPr>");
-         strB.append("</w:p>");
+         append("<w:p>");
+         append("<w:pPr>");
+         append("<w:sectPr>");
+         append(landscape ? "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />" : "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
+         append("</w:sectPr>");
+         append("</w:pPr>");
+         append("</w:p>");
 
          previousPageLandsacpe = landscape;
       }

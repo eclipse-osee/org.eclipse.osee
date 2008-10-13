@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -34,6 +32,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -119,7 +118,7 @@ public class WordTemplateProcessor {
    private Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private int previousTemplateCopyIndex;
 
-   public WordTemplateProcessor() throws CoreException {
+   public WordTemplateProcessor() {
       this(null, null);
    }
 
@@ -130,7 +129,7 @@ public class WordTemplateProcessor {
     * @param slaveTemplate
     * @throws CoreException
     */
-   public WordTemplateProcessor(String masterTemplate, String slaveTemplate) throws CoreException {
+   public WordTemplateProcessor(String masterTemplate, String slaveTemplate) {
       this.masterTemplate = masterTemplate;
       this.slaveTemplate = slaveTemplate;
       loadIgnoreAttributeExtensions();
@@ -196,8 +195,13 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(List<Artifact> artifacts, String template, String outlineType, PresentationType presentationType) throws Exception {
-      CharBackedInputStream charBak = new CharBackedInputStream();
+   public InputStream applyTemplate(List<Artifact> artifacts, String template, String outlineType, PresentationType presentationType) throws OseeCoreException {
+      CharBackedInputStream charBak;
+      try {
+         charBak = new CharBackedInputStream();
+      } catch (CharacterCodingException ex) {
+         throw new OseeWrappedException(ex);
+      }
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
@@ -236,7 +240,7 @@ public class WordTemplateProcessor {
       return charBak;
    }
 
-   private void writeTemplateBetweenElements(WordMLProducer wordMl, String template, Matcher matcher) throws IOException {
+   private void writeTemplateBetweenElements(WordMLProducer wordMl, String template, Matcher matcher) throws OseeWrappedException {
       wordMl.addWordMl(template.substring(previousTemplateCopyIndex, matcher.start()));
       previousTemplateCopyIndex = matcher.end();
    }
@@ -280,17 +284,17 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws Exception {
-	  nonTemplateArtifacts.clear();
-	  
-	  if (outlineNumber != null) {
+   private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
+      nonTemplateArtifacts.clear();
+
+      if (outlineNumber != null) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
 
       extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
       for (Artifact artifact : artifacts) {
-          processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
+         processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
       }
    }
 
@@ -408,35 +412,34 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
-  	 if (artifact instanceof WordArtifact && !((WordArtifact)artifact).isWholeWordArtifact()) {
-		   if (outlining) {
-	         String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
-	         CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
-	
-	         if (paragraphNumber != null && saveParagraphNumOnArtifact) {
-	            if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-	               artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-	               artifact.persistAttributes();
-	            }
-	         }
-	      }
-	      processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
-	      if (recurseChildren) {
-	         for (Artifact childArtifact : artifact.getChildren()) {
-	            processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
-	         }
-	      }
-	      if (outlining) {
-	         wordMl.endOutlineSubSection();
-	      }
-	 }
- 	 else{
- 		 nonTemplateArtifacts.add(artifact);
- 	 }
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+      if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
+         if (outlining) {
+            String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
+            CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+
+            if (paragraphNumber != null && saveParagraphNumOnArtifact) {
+               if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
+                  artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+                  artifact.persistAttributes();
+               }
+            }
+         }
+         processAttributes(artifact, wordMl, presentationType, multipleArtifacts);
+         if (recurseChildren) {
+            for (Artifact childArtifact : artifact.getChildren()) {
+               processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
+            }
+         }
+         if (outlining) {
+            wordMl.endOutlineSubSection();
+         }
+      } else {
+         nonTemplateArtifacts.add(artifact);
+      }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -460,7 +463,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws IOException, OseeCoreException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes
@@ -557,14 +560,10 @@ public class WordTemplateProcessor {
       return elementName;
    }
 
-   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) {
-      try {
-         wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
-         wordMl.addWordMl(contentString);
-         wordMl.addWordMl("</ns0:" + name + ">");
-      } catch (IOException ex) {
-         throw new RuntimeException(ex);
-      }
+   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeWrappedException {
+      wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
+      wordMl.addWordMl(contentString);
+      wordMl.addWordMl("</ns0:" + name + ">");
    }
 
    /**
@@ -662,7 +661,7 @@ public class WordTemplateProcessor {
       return slaveTemplate;
    }
 
-   private void loadIgnoreAttributeExtensions() throws CoreException {
+   private void loadIgnoreAttributeExtensions() {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
          IExtensionPoint point =
@@ -691,7 +690,8 @@ public class WordTemplateProcessor {
       String contentName = null;
 
       for (AttributeType attributeType : attributeTypes) {
-         if (attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(WordAttribute.WORD_TEMPLATE_CONTENT)) {
+         if (attributeType.getName().equals(WordAttribute.WHOLE_WORD_CONTENT) || attributeType.getName().equals(
+               WordAttribute.WORD_TEMPLATE_CONTENT)) {
             contentName = attributeType.getName();
          } else {
             orderedNames.add(attributeType.getName());
@@ -703,15 +703,15 @@ public class WordTemplateProcessor {
       }
       return orderedNames;
    }
-   
-   private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts) {
-	      if (!artifacts.isEmpty()) {
-	         Displays.ensureInDisplayThread(new Runnable() {
 
-	            public void run() {
-	               ArtifactExplorer.explore(artifacts);
-	            }
-	         });
-	      }
-	   }
+   private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts) {
+      if (!artifacts.isEmpty()) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            public void run() {
+               ArtifactExplorer.explore(artifacts);
+            }
+         });
+      }
+   }
 }
