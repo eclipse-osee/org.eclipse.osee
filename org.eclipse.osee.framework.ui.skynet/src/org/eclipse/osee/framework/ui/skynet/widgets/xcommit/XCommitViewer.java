@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xcommit;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -143,7 +141,8 @@ public class XCommitViewer extends XWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             if (xCommitViewer.getWorkingBranch() != null)
-               ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
+               //ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
+               AWorkbench.popup("ERROR", "Not implemented yet.");
             else
                AWorkbench.popup("ERROR", "Not implemented yet.");
          }
