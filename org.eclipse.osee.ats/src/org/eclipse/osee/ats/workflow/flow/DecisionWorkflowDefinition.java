@@ -11,7 +11,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
-import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 public class DecisionWorkflowDefinition extends WorkFlowDefinition {
 
    public static String ID = "osee.ats.decisionReview";
-   public static String DECISION_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
    public static String DECISION_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public DecisionWorkflowDefinition() {
@@ -54,8 +53,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       workItems.add(new AtsDecisionPrepareWorkPageDefinition());
       workItems.add(new AtsDecisionDecisionWorkPageDefinition());
       workItems.add(new AtsDecisionFollowupWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-            DecisionWorkflowDefinition.DECISION_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new AtsDecisionCompletedWorkPageDefinition());
       workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
             DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
       workItems.add(new DecisionWorkflowDefinition());
@@ -70,7 +68,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       addPageTransitionToPageAndReturn(AtsDecisionPrepareWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Decision Transitions
-      addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, DECISION_COMPLETED_STATE_ID,
+      addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionCompletedWorkPageDefinition.ID,
             TransitionType.ToPageAsDefault);
       addPageTransition(AtsDecisionDecisionWorkPageDefinition.ID, AtsDecisionFollowupWorkPageDefinition.ID,
             TransitionType.ToPage);
@@ -80,14 +78,14 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       // Add Followup Transitions
       addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
             TransitionType.ToPageAsReturn);
-      addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, DECISION_COMPLETED_STATE_ID,
-            TransitionType.ToPageAsReturn);
+      addPageTransition(AtsDecisionFollowupWorkPageDefinition.ID, AtsDecisionCompletedWorkPageDefinition.ID,
+            TransitionType.ToPageAsDefault);
       addPageTransitionToPageAndReturn(AtsDecisionFollowupWorkPageDefinition.ID, DECISION_CANCELLED_STATE_ID);
 
       // Add Completed Transitions
-      addPageTransition(DECISION_COMPLETED_STATE_ID, AtsDecisionDecisionWorkPageDefinition.ID,
+      addPageTransition(AtsDecisionCompletedWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
             TransitionType.ToPageAsReturn);
-      addPageTransition(DECISION_COMPLETED_STATE_ID, AtsDecisionFollowupWorkPageDefinition.ID,
+      addPageTransition(AtsDecisionCompletedWorkPageDefinition.ID, AtsDecisionFollowupWorkPageDefinition.ID,
             TransitionType.ToPageAsReturn);
 
       // Add Cancelled Transitions

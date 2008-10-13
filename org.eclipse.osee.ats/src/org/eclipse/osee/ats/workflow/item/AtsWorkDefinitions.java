@@ -120,7 +120,10 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE, "XTextDam",
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Question",
-            AtsDecisionDecisionWorkPageDefinition.DECISION_XWIDGET_ID, "Name", "XLabelDam"));
+            AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL, "Name", "XLabelDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem("Decision",
+            AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL,
+            ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "XLabelDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE, "XTextDam",
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,

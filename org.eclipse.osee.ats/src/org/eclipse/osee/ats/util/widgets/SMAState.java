@@ -17,8 +17,12 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.UsersByIds;
+import org.eclipse.osee.framework.db.connection.exception.IllegalOseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.IllegalOseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 
 public class SMAState {
    private String name;
@@ -73,8 +77,15 @@ public class SMAState {
     * Sets the assigness but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
     * 
     * @param assignees
+    * @throws OseeCoreException
     */
-   public void setAssignees(Collection<User> assignees) {
+   public void setAssignees(Collection<User> assignees) throws OseeCoreException {
+      if (assignees.contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || assignees.contains(SkynetAuthentication.getUser(UserEnum.Guest))) {
+         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+      }
+      if (assignees.size() > 1 && assignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+         throw new IllegalOseeArgumentException("Can not assign to user and UnAssigned");
+      }
       if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new IllegalStateException(
             "Can't assign completed/cancelled states.");
       this.assignees.clear();
@@ -86,13 +97,19 @@ public class SMAState {
    }
 
    /**
-    * Sets the assignes but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
+    * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the SMAManager.
     * 
     * @param assignee
+    * @throws OseeCoreException
+    * @throws IllegalOseeArgumentException
     */
-   public void setAssignee(User assignee) {
-      if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new IllegalStateException(
-            "Can't assign completed/cancelled states.");
+   public void setAssignee(User assignee) throws OseeCoreException {
+      if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {
+         throw new IllegalOseeStateException("Can't assign completed/cancelled states.");
+      }
+      if (assignee == SkynetAuthentication.getUser(UserEnum.NoOne) || assignee == SkynetAuthentication.getUser(UserEnum.Guest)) {
+         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+      }
       this.assignees.clear();
       if (assignee != null) this.assignees.add(assignee);
    }
@@ -100,7 +117,10 @@ public class SMAState {
    /**
     * @param assignee
     */
-   public void addAssignee(User assignee) {
+   public void addAssignee(User assignee) throws OseeCoreException {
+      if (assignee == SkynetAuthentication.getUser(UserEnum.NoOne) || assignee == SkynetAuthentication.getUser(UserEnum.Guest)) {
+         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+      }
       if (assignee != null) this.assignees.add(assignee);
    }
 

@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -310,7 +311,11 @@ public class SMAWorkFlowSection extends SectionPart {
             if (toWorkPage == null)
                transitionAssigneesLabel.setText("");
             else
-               transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
+               try {
+                  transitionAssigneesLabel.setText(smaMgr.getTransitionAssigneesStr());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.toString(), ex);
+               }
             transitionAssigneesLabel.getParent().layout();
          }
       }
@@ -323,8 +328,8 @@ public class SMAWorkFlowSection extends SectionPart {
 
       if (isEditable && !smaMgr.isCancelled() && !smaMgr.isCompleted()) {
          toolkit.createLabel(comp, "\"" + page.getName() + "\" State  ");
-         Hyperlink link = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
-         link.addHyperlinkListener(new IHyperlinkListener() {
+         Hyperlink setAssigneesHyperlinkLabel = toolkit.createHyperlink(comp, ASSIGNEES, SWT.NONE);
+         setAssigneesHyperlinkLabel.addHyperlinkListener(new IHyperlinkListener() {
 
             public void linkEntered(HyperlinkEvent e) {
             }
@@ -558,7 +563,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // Get transition to assignees
-         Set<User> toAssignees;
+         Collection<User> toAssignees;
          if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage())
             toAssignees = new HashSet<User>();
          else

@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.db.connection.exception.IllegalOseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -77,7 +78,7 @@ import org.eclipse.ui.PlatformUI;
 public class SMAManager {
 
    private final StateMachineArtifact sma;
-   private final Set<User> transitionAssignees = new HashSet<User>();
+   private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
    private final TaskManager taskMgr;
    private final ReviewManager reviewMgr;
@@ -280,6 +281,10 @@ public class SMAManager {
       if (users.size() == 0) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
+      }
+      // As a convenience, remove the UnAssigned user if another user is selected
+      if (users.size() > 1) {
+         users.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
       }
       for (StateMachineArtifact sma : smas) {
          sma.getSmaMgr().getStateMgr().setAssignees(users);
@@ -700,21 +705,33 @@ public class SMAManager {
       return stateName.equals(stateMgr.getCurrentStateName());
    }
 
-   public void setTransitionAssignees(Collection<User> assignees) {
-      transitionAssignees.clear();
-      transitionAssignees.addAll(assignees);
+   public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
+      if (assignees.contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || assignees.contains(SkynetAuthentication.getUser(UserEnum.Guest))) {
+         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+      }
+      if (assignees.size() > 1 && assignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+         throw new IllegalOseeArgumentException("Can not assign to user and UnAssigned");
+      }
+      transitionAssignees = assignees;
    }
 
    public boolean isAssigneeMe() {
       return stateMgr.getAssignees().contains(SkynetAuthentication.getUser());
    }
 
-   public Set<User> getTransitionAssignees() {
-      if (transitionAssignees.size() == 0) transitionAssignees.addAll(stateMgr.getAssignees());
-      return transitionAssignees;
+   public Collection<User> getTransitionAssignees() throws OseeCoreException {
+      if (transitionAssignees != null) {
+         if (transitionAssignees.size() > 0 && transitionAssignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
+            transitionAssignees.remove(transitionAssignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned)));
+         }
+         if (transitionAssignees.size() > 0) {
+            return transitionAssignees;
+         }
+      }
+      return stateMgr.getAssignees();
    }
 
-   public String getTransitionAssigneesStr() {
+   public String getTransitionAssigneesStr() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (User u : getTransitionAssignees()) {
          sb.append(u.getName() + SEPERATOR);

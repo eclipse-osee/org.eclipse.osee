@@ -61,18 +61,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       return teamArts.iterator().next();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isCurrentSectionExpanded(String stateName)
-    */
-   @Override
-   public boolean isCurrentSectionExpanded(String stateName) {
-      // Always expand the decision state
-      if (stateName.endsWith(DecisionReviewState.Decision.name())) return true;
-      // If current state is decision and this is prepare state, don't expand the Prepare state
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(DecisionReviewState.Decision.name()) && stateName.contains(DecisionReviewState.Prepare.name())) return false;
-      return super.isCurrentSectionExpanded(stateName);
-   }
-
    @Override
    public String getHelpContext() {
       return "decisionReview";

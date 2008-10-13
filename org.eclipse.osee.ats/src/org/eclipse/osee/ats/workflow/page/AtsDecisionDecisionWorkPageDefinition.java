@@ -16,8 +16,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Decision.name();
-   public static String DECISION_XWIDGET_ID = "ats.Decision Question";
+   public static String ID =
+         DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Decision.name();
+   public static String DECISION_QUESTION_LABEL = "ats.Decision Question";
+   public static String DECISION_ANSWER_LABEL = "ats.Decision Answer";
 
    public AtsDecisionDecisionWorkPageDefinition() {
       this(DecisionReviewArtifact.DecisionReviewState.Decision.name(), ID, null);
@@ -25,7 +27,7 @@ public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
 
    public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_XWIDGET_ID);
+      addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(ATSAttributes.DECISION_ATTRIBUTE.getStoreName());
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
