@@ -13,7 +13,6 @@ package org.eclipse.osee.define;
 import org.eclipse.osee.define.navigate.DefineNavigateView;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
@@ -36,7 +35,6 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
       // Add views to Window -> Show View
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(ChangeReportView.VIEW_ID);
       layout.addShowViewShortcut(QueryLogView.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut(DefineNavigateView.VIEW_ID);
@@ -50,7 +48,6 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
       IFolderLayout lower = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.65f, editorArea);
       lower.addView(BranchView.VIEW_ID);
       lower.addPlaceholder(RevisionHistoryView.VIEW_ID);
-      lower.addPlaceholder(ChangeReportView.VIEW_ID);
       lower.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
       lower.addPlaceholder("org.eclipse.pde.runtime.LogView");
 
