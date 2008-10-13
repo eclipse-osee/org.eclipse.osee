@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -56,7 +58,7 @@ public class XWidgetParser {
       return layoutDatas;
    }
 
-   public static String toXml(DynamicXWidgetLayoutData data) throws OseeCoreException, ParserConfigurationException {
+   public static String toXml(DynamicXWidgetLayoutData data) throws OseeCoreException, ParserConfigurationException, TransformerException {
       Document doc = Jaxp.newDocument();
       Element element = doc.createElement(DynamicXWidgetLayout.XWIDGET);
       element.setAttribute("displayName", data.getName());
@@ -110,7 +112,7 @@ public class XWidgetParser {
             // do nothing
             ;
          else
-            throw new IllegalArgumentException("Unhandled xOption \"" + xOption + "\"");
+            throw new OseeArgumentException("Unhandled xOption \"" + xOption + "\"");
       }
       doc.appendChild(element);
       return Jaxp.getDocumentXml(doc);

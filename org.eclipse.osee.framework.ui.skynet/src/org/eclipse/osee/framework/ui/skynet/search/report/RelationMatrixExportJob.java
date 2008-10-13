@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -43,7 +42,7 @@ public class RelationMatrixExportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws IOException, CoreException, OseeCoreException {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException {
       matrix.clear();
       columnCount = selectedArtifacts.size() + 2; // use first column is the artifact name and 2nd is its identifier
       header = new String[columnCount];
@@ -84,18 +83,22 @@ public class RelationMatrixExportJob extends ReportJob {
       return row;
    }
 
-   private void writeMatrix() throws IOException, CoreException {
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      excelWriter.startSheet(relationTypeName + " Matrix", columnCount);
+   private void writeMatrix() throws OseeCoreException {
+      try {
+         CharBackedInputStream charBak = new CharBackedInputStream();
+         ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
+         excelWriter.startSheet(relationTypeName + " Matrix", columnCount);
 
-      excelWriter.writeRow(header);
-      for (String[] row : matrix.values()) {
-         excelWriter.writeRow(row);
+         excelWriter.writeRow(header);
+         for (String[] row : matrix.values()) {
+            excelWriter.writeRow(row);
+         }
+         excelWriter.endWorkbook();
+
+         IFile iFile = OseeData.getIFile(relationTypeName + ".xml");
+         AIFile.writeToFile(iFile, charBak);
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
       }
-      excelWriter.endWorkbook();
-
-      IFile iFile = OseeData.getIFile(relationTypeName + ".xml");
-      AIFile.writeToFile(iFile, charBak);
    }
 }

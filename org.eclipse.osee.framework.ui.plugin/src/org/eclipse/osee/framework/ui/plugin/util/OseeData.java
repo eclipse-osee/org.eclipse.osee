@@ -11,18 +11,8 @@
 package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -30,11 +20,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * This class provides a front end to writing files to a common osee.data directory in the workspace. This dir is
@@ -49,28 +37,20 @@ public class OseeData {
    private static String oseeDataPathName = ".osee.data";
    private static final IPath oseeDataPath = workspacePath.append(oseeDataPathName);
    private static final File oseeDir = oseeDataPath.toFile();
-   private static final String dataStoreName = "OseeDataStore";
    private static IProject project;
-   private static Map<String, String> keyValue;
 
    static {
       if (!oseeDir.exists()) {
          if (!oseeDir.mkdir()) {
-            System.err.println("Can't create " + oseeDataPathName + " dir.");
+            OseeLog.log(OseeUiActivator.class, Level.WARNING, "Can't create " + oseeDataPathName + " dir.");
          }
       }
 
       createProject();
-      initKeyValueDataStore();
    }
 
    public static IPath getPath() {
       return oseeDataPath;
-   }
-
-   private static void initKeyValueDataStore() {
-      keyValue = new HashMap<String, String>();
-      loadFromFile();
    }
 
    public static File getFile(String filename) {
@@ -81,11 +61,11 @@ public class OseeData {
       return project.getFile(fileName);
    }
 
-   public static IFile getIFile(String fileName, InputStream in) throws CoreException, IOException {
+   public static IFile getIFile(String fileName, InputStream in) throws OseeCoreException {
       return getIFile(fileName, in, false);
    }
 
-   public static IFile getIFile(String fileName, InputStream in, boolean overwrite) throws CoreException, IOException {
+   public static IFile getIFile(String fileName, InputStream in, boolean overwrite) throws OseeCoreException {
       IFile iFile = project.getFile(fileName);
       if (!iFile.exists() || overwrite) {
          AIFile.writeToFile(iFile, in);
@@ -111,66 +91,6 @@ public class OseeData {
          return false;
       }
       return true;
-   }
-
-   public static String getValue(String key) {
-      return keyValue.get(key);
-   }
-
-   public static void setValue(String key, String value) {
-      keyValue.put(key, value);
-      try {
-         saveToFile();
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
-   }
-
-   private static void loadFromFile() {
-      keyValue.clear();
-
-      try {
-         Document doc = Jaxp.readXmlDocument(getFile());
-
-         Element root = doc.getDocumentElement();
-         List<Element> pairs = Jaxp.getChildDirects(root, "Pair");
-
-         for (Element pair : pairs) {
-            String key = Jaxp.getChildText(pair, "Key");
-            String value = Jaxp.getChildText(pair, "Value");
-            if (key != null && value != null && !key.equals("") && !value.equals("")) keyValue.put(key, value);
-         }
-      } catch (Exception ex) {
-         OseePluginUiActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-   }
-
-   private static void saveToFile() throws ParserConfigurationException, TransformerException, IOException, CoreException {
-      Document doc = Jaxp.newDocument();
-      Element root = doc.createElement(dataStoreName);
-      doc.appendChild(root);
-
-      Set<Map.Entry<String, String>> keySet = keyValue.entrySet();
-      for (Map.Entry<String, String> entry : keySet) {
-         String key = entry.getKey();
-         String value = entry.getValue();
-         if (!key.equals("") && !value.equals("")) {
-            Element pair = doc.createElement("Pair");
-            pair.appendChild(Jaxp.createElement(doc, "Key", key));
-            pair.appendChild(Jaxp.createElement(doc, "Value", value));
-         }
-
-      }
-      Jaxp.writeXmlDocument(doc, getFile());
-   }
-
-   private static File getFile() throws IOException, CoreException {
-      PipedOutputStream pos = new PipedOutputStream();
-      PrintStream ps = new PrintStream(pos);
-      InputStream in = new PipedInputStream(pos);
-      ps.println("<" + dataStoreName + "></" + dataStoreName + ">");
-      ps.close();
-      return getIFile(OseeData.class.getCanonicalName() + "." + dataStoreName + ".xml", in).getLocation().toFile();
    }
 
    /**

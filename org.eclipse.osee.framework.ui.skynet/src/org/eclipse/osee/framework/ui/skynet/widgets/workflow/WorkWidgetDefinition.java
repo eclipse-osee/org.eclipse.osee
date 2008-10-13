@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -53,7 +54,10 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
          art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), XWidgetParser.toXml(get()));
       } catch (ParserConfigurationException ex) {
          throw new OseeCoreException(ex);
+      } catch (TransformerException ex) {
+         throw new OseeCoreException(ex);
       }
+
       return art;
    }
 

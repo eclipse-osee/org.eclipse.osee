@@ -245,16 +245,4 @@ public class WordUtil {
       spellCheck.reset(content);
       return spellCheck.replaceAll("");
    }
-
-   public static void main(String[] args) {
-      String match =
-            "do something <w:proofErr w:type=\"spellEnd\"/> some more stuff <w:proofErr w:type=\"spellStart\"/> now some more stuff";
-
-      String result = WordUtil.stripSpellCheck(match);
-
-      if ("do something  some more stuff  now some more stuff".equals(result)) {
-         System.out.println("success");
-      }
-
-   }
 }

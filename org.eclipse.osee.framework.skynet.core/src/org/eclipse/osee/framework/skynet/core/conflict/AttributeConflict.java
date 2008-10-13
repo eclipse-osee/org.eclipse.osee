@@ -172,7 +172,6 @@ public class AttributeConflict extends Conflict {
    @Override
    public Image getImage() {
       return SkynetActivator.getInstance().getImage("molecule.gif");
-      //      return AttributeChangeIcons.getImage(getChangeType(), ModificationType.CHANGE);
    }
 
    /*

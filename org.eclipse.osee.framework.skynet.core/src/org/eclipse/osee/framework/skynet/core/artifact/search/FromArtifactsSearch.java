@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -79,17 +78,16 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    }
 
    public String getStorageString() {
-      Document document;
       try {
-         document = Jaxp.newDocument();
-      } catch (ParserConfigurationException ex) {
+         Document document = Jaxp.newDocument();
+
+         Element root = document.createElement("FromArtifactAttribute");
+         root.appendChild(getStorageElements(document));
+
+         return Jaxp.getDocumentXml(document);
+      } catch (Exception ex) {
          throw new IllegalStateException(ex);
       }
-
-      Element root = document.createElement("FromArtifactAttribute");
-      root.appendChild(getStorageElements(document));
-
-      return Jaxp.getDocumentXml(document);
    }
 
    private Element getStorageElements(Document document) {

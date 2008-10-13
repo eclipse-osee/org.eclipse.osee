@@ -2,5 +2,4 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="DefaultMailServer" name="Default Mail Server" schema="schema/DefaultMailServer.exsd"/>
-
 </plugin>

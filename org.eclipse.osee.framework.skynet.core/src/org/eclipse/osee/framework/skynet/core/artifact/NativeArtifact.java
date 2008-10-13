@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +28,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class NativeArtifact extends Artifact {
    public static final String CONTENT_NAME = "Native Content";
-   private static final SkynetActivator plugin = SkynetActivator.getInstance();
 
    /**
     * @param parentFactory
@@ -44,15 +41,14 @@ public class NativeArtifact extends Artifact {
    @Override
    public Image getImage() {
       try {
-         Image image = plugin.getImageForProgram(getFileExtension());
-         if (image == null) {
-            image = plugin.getImage("laser_16_16.gif");
+         Image image = SkynetActivator.getInstance().getImageForProgram(getFileExtension());
+         if (image != null) {
+            return image;
          }
-         return image;
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
       }
-      return null;
+      return super.getImage();
    }
 
    public String getFileName() throws OseeCoreException {
@@ -63,7 +59,7 @@ public class NativeArtifact extends Artifact {
       return getSoleAttributeValue("Extension", "");
    }
 
-   public InputStream getNativeContent() throws IOException, OseeCoreException {
+   public InputStream getNativeContent() throws OseeCoreException {
       return getSoleAttributeValue(CONTENT_NAME);
    }
 

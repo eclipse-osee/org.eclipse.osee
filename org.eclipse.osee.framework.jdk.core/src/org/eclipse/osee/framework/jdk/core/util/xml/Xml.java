@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.xml;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +28,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * @author David Diepenbrock
@@ -323,23 +320,6 @@ public class Xml {
       Document myDocument = null;
       myDocument = Jaxp.readXmlDocumentNamespaceAware(wordLeader.concat(myInputString).concat(wordTrailer));
       return myDocument;
-   }
-
-   public static byte[] getFormattedContent(Element formattedItemElement) {
-      ByteArrayOutputStream data = new ByteArrayOutputStream();
-      OutputFormat format = Jaxp.getCompactFormat(formattedItemElement.getOwnerDocument());
-      format.setOmitDocumentType(true);
-      format.setOmitXMLDeclaration(true);
-      XMLSerializer serializer = new XMLSerializer(data, format);
-
-      try {
-         for (Element e : Jaxp.getChildDirects(formattedItemElement))
-            serializer.serialize(e);
-      } catch (IOException ex) {
-         throw new RuntimeException(ex);
-      }
-
-      return data.toByteArray();
    }
 
    public static final Object addNamespacesForWordMarkupLanguage(XPath myXPath, SimpleNamespaceContext mySimpleNamespaceContext) {

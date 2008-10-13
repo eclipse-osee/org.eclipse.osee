@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.search.report;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -40,7 +38,7 @@ public class ModificationReportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException, CoreException, IOException {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws OseeCoreException {
       matrix.clear();
 
       int columnIndex = 2;
@@ -69,21 +67,25 @@ public class ModificationReportJob extends ReportJob {
          processArtifact(child, monitor);
    }
 
-   private void writeMatrix() throws IOException, CoreException {
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      excelWriter.startSheet("Modification Report", 3);
+   private void writeMatrix() throws OseeCoreException {
+      try {
+         CharBackedInputStream charBak = new CharBackedInputStream();
+         ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
+         excelWriter.startSheet("Modification Report", 3);
 
-      excelWriter.writeRow(header);
-      for (String[] row : matrix.values()) {
-         excelWriter.writeRow(row);
+         excelWriter.writeRow(header);
+         for (String[] row : matrix.values()) {
+            excelWriter.writeRow(row);
+         }
+         excelWriter.endWorkbook();
+
+         IFile iFile = OseeData.getIFile("Modification_Report_" + Lib.getDateTimeString() + ".xml");
+         AIFile.writeToFile(iFile, charBak);
+
+         // Ensure Excel is used since the file assocation for xml could be off
+         Program.findProgram("xls").execute(iFile.getLocation().toOSString());
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
       }
-      excelWriter.endWorkbook();
-
-      IFile iFile = OseeData.getIFile("Modification_Report_" + Lib.getDateTimeString() + ".xml");
-      AIFile.writeToFile(iFile, charBak);
-
-      // Ensure Excel is used since the file assocation for xml could be off
-      Program.findProgram("xls").execute(iFile.getLocation().toOSString());
    }
 }

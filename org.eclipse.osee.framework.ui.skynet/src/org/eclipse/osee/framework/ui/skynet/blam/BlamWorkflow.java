@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -162,23 +162,33 @@ public class BlamWorkflow extends Artifact {
       return "Select parameters below and click the play button at the top right.";
    }
 
-   public void saveLayoutData(String xml) throws ParserConfigurationException, OseeCoreException, SAXException, IOException, IllegalArgumentException, CoreException {
-      String blamXml = getSoleAttributeValue("Workflow Definition", "");
-      Document document = Jaxp.readXmlDocument(blamXml);
-      Element rootElement = document.getDocumentElement();
+   public void saveLayoutData(String xml) throws OseeCoreException {
+      try {
+         String blamXml = getSoleAttributeValue("Workflow Definition", "");
+         Document document = Jaxp.readXmlDocument(blamXml);
+         Element rootElement = document.getDocumentElement();
 
-      NodeList oldXwidgets = rootElement.getElementsByTagName("Widgets");
+         NodeList oldXwidgets = rootElement.getElementsByTagName("Widgets");
 
-      // delete all old Xwidgets
-      for (int i = 0; i < oldXwidgets.getLength(); i++) {
-         rootElement.removeChild(oldXwidgets.item(i));
+         // delete all old Xwidgets
+         for (int i = 0; i < oldXwidgets.getLength(); i++) {
+            rootElement.removeChild(oldXwidgets.item(i));
+         }
+
+         String doc = Jaxp.getDocumentXml(document);
+         doc = doc.replace("<Workflow>", "<Workflow>" + xml);
+
+         setSoleAttributeValue("Workflow Definition", doc);
+         persistAttributes();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      } catch (TransformerException ex) {
+         throw new OseeCoreException(ex);
+      } catch (ParserConfigurationException ex) {
+         throw new OseeCoreException(ex);
+      } catch (SAXException ex) {
+         throw new OseeCoreException(ex);
       }
-
-      String doc = Jaxp.getDocumentXml(document);
-      doc = doc.replace("<Workflow>", "<Workflow>" + xml);
-
-      setSoleAttributeValue("Workflow Definition", doc);
-      persistAttributes();
    }
 
    /**
