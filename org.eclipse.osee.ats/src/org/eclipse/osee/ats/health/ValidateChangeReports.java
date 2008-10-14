@@ -22,8 +22,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,8 +37,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,6 +51,19 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
+ * This test will validate the change report data that is returned for the ATS configured actions with committed
+ * branches. Upon first time run against a newly committed branch, it will generate a "General Data" artifact with the
+ * change report data stored to xml in a "General String Data" attribute. <br>
+ * <br>
+ * Every additional time this validation is run against an already stored change report, the current xml and stored xml
+ * change report will be compared. <br>
+ * <br>
+ * If errors are found, the developer will need to put a breakpoint below to see the was-is values of the change report
+ * data.<br>
+ * <br>
+ * This test also ensures that all change reports can return their historical artifacts by loading and accessing the
+ * descriptive name for each artifact.
+ * 
  * @author Donald G. Dunne
  */
 public class ValidateChangeReports extends XNavigateItemAction {
@@ -102,9 +118,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      //            for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-
-      for (String artifactTypeName : new String[] {"Lba V13 Req Team Workflow"}) {
+      for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
          try {
             int x = 1;
@@ -178,11 +192,22 @@ public class ValidateChangeReports extends XNavigateItemAction {
          String currentChangeReport = getReport(currentChangeData);
          if (storedChangeReport.equals(currentChangeReport)) {
             resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
-            return Result.TrueResult;
+         } else {
+            resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
+            return new Result("FAIL");
          }
-         resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
-         return new Result("FAIL");
       }
+      // As another test, ensure that all artifacts can be retrieved and display their name
+      try {
+         for (Artifact art : currentChangeData.getArtifacts(KindType.ArtifactOrRelation, ModificationType.NEW,
+               ModificationType.DELETED, ModificationType.MERGED)) {
+            art.getDescriptiveName();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
+         return new Result("Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
+      }
+      return new Result(true, "PASS");
    }
 
    private static String getReport(ChangeData changeData) throws OseeCoreException, ParserConfigurationException {
