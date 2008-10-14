@@ -63,6 +63,7 @@ public class XViewerCustomMenu {
    protected Action tableProperties;
    protected Action viewTableReport;
    protected Action columnMultiEdit;
+   protected Action removeSelected;
    protected Action copySelected;
    protected Action copySelectedCell;
    protected Action viewSelectedCell;
@@ -100,13 +101,21 @@ public class XViewerCustomMenu {
       mm.add(tableProperties);
       mm.add(viewTableReport);
       if (xViewer.isColumnMultiEditEnabled()) mm.add(columnMultiEdit);
-      mm.add(copySelected);
       mm.add(viewSelectedCell);
+      mm.add(copySelected);
       mm.add(copySelectedCell);
+      mm.add(new Separator());
+      mm.add(removeSelected);
       mm.add(new GroupMarker(XViewer.MENU_GROUP_POST));
    }
 
    protected void setupActions() {
+      removeSelected = new Action("Remove Selected from View") {
+         @Override
+         public void run() {
+            performRemoveSelectedRows();
+         };
+      };
       copySelected = new Action("Copy Selected Row(s)- Ctrl-C") {
          @Override
          public void run() {
@@ -177,6 +186,23 @@ public class XViewerCustomMenu {
          } else if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
             performCopy();
          }
+      }
+   }
+
+   private void performRemoveSelectedRows() {
+      try {
+         TreeItem[] items = xViewer.getTree().getSelection();
+         if (items.length == 0) {
+            AWorkbench.popup("ERROR", "No items to copy");
+            return;
+         }
+         Set<Object> objs = new HashSet<Object>();
+         for (TreeItem item : items) {
+            objs.add(item.getData());
+         }
+         xViewer.remove(objs.toArray());
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
