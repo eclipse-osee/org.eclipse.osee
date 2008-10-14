@@ -56,6 +56,8 @@ public class BranchExportWorker extends BaseCmdWorker {
                options.put(ExportOptions.EXCLUDE_BASELINE_TXS.name(), true);
             } else if (arg.equals("-includeArchivedBranches")) {
                includeArchivedBranches = true;
+            } else if (arg.equals("-compress")) {
+               options.put(ExportOptions.COMPRESS.name(), true);
             } else if (arg.equals("-minTx")) {
                arg = getCommandInterpreter().nextArgument();
                if (isValidArg(arg)) {
@@ -88,7 +90,7 @@ public class BranchExportWorker extends BaseCmdWorker {
          try {
             chStmt = ConnectionHandler.runPreparedQuery(getAllBranchesQuery(includeArchivedBranches));
             while (chStmt.next()) {
-               branchIds.add(chStmt.getRset().getInt("branch_id"));
+               branchIds.add(chStmt.getInt("branch_id"));
             }
          } finally {
             ConnectionHandler.close(chStmt);

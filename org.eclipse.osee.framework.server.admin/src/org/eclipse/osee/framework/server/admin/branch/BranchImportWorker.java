@@ -78,7 +78,7 @@ public class BranchImportWorker extends BaseCmdWorker {
       for (File file : importFiles) {
          if (file == null || !file.exists() || !file.canRead()) {
             throw new IllegalArgumentException(String.format("File was not accessible: [%s]", file));
-         } else if (!Files.getExtension(file.getAbsolutePath()).equals("zip")) {
+         } else if (file.isFile() && !Files.getExtension(file.getAbsolutePath()).equals("zip")) {
             throw new IllegalArgumentException(String.format("Invalid File: [%s]", file));
          }
       }
