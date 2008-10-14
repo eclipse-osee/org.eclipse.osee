@@ -55,9 +55,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import javax.swing.ImageIcon;
-
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -293,8 +291,6 @@ public final class Lib {
       }
    }
 
-   
-   
    public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
       byte[] buf = new byte[2024];
       int count = -1;
@@ -1105,8 +1101,8 @@ public final class Lib {
    }
 
    /**
-    * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside ()
-    * or {}.
+    * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside
+    * () or {}.
     * 
     * @param source
     * @return String[]
@@ -1220,7 +1216,7 @@ public final class Lib {
     * This method takes in any name separated by underscores and converts it into a java standard variable name.
     * 
     * @param name
-    * @return
+    * @return java variable name
     */
    public static final String convertToJavaVariableName(String name) {
       name = name.toLowerCase();
@@ -1408,6 +1404,38 @@ public final class Lib {
       ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
       compressDirectory(directory.getPath(), directory, out, includeSubDirectories);
       out.close();
+   }
+
+   public static void decompressStream(InputStream inputStream, File targetDirectory) throws IOException {
+      ZipInputStream zipInputStream = null;
+      try {
+         zipInputStream = new ZipInputStream(inputStream);
+         if (!targetDirectory.exists()) {
+            targetDirectory.mkdirs();
+         }
+         ZipEntry entry = null;
+         while ((entry = zipInputStream.getNextEntry()) != null) {
+            String zipEntryName = entry.getName();
+            OutputStream outputStream = null;
+            try {
+               File target = new File(targetDirectory, zipEntryName);
+               File parent = target.getParentFile();
+               if (parent != null && !parent.exists()) {
+                  parent.mkdirs();
+               }
+               outputStream = new BufferedOutputStream(new FileOutputStream(target));
+               inputStreamToOutputStream(zipInputStream, outputStream);
+            } finally {
+               if (outputStream != null) {
+                  outputStream.close();
+               }
+            }
+         }
+      } finally {
+         if (zipInputStream != null) {
+            zipInputStream.close();
+         }
+      }
    }
 
    public static byte[] decompressBytes(InputStream inputStream) throws IOException {
