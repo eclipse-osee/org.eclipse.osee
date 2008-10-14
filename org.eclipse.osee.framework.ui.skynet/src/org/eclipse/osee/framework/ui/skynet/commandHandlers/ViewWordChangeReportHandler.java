@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
 
@@ -92,8 +92,8 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             aFamilyMember.schedule();
          } else {
             //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
-            WordRenderer renderer =
-                  (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
+            WordTemplateRenderer renderer =
+                  (WordTemplateRenderer) RendererManager.getInstance().getRendererById(WordTemplateRenderer.WORD_RENDERER_EXTENSION);
             try {
                renderer.compareArtifacts(
                      baseArtifacts,

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateMan
 /**
  * @author b1528444
  */
-public class TisRenderer extends WordRenderer {
+public class TisRenderer extends WordTemplateRenderer {
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if ("Test Information Sheet".equals(artifact.getArtifactTypeName())) {

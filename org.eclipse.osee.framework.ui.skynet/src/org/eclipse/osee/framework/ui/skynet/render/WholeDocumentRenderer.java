@@ -25,30 +25,14 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
-import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.swt.program.Program;
 
-public class WholeDocumentRenderer extends FileRenderer {
-   // We need MS Word, so look for the program that is for .doc files
-   private static final Program wordApp = Program.findProgram("doc");
-
-   public WholeDocumentRenderer() {
-   }
-
+public class WholeDocumentRenderer extends WordRenderer {
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
-   @Override
-   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      return ".xml";
    }
 
    /* (non-Javadoc)
@@ -90,20 +74,6 @@ public class WholeDocumentRenderer extends FileRenderer {
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer#getAssociatedProgram(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
-    */
-   @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
-      return wordApp;
-   }
-
-   @Override
-   public String generateHtml(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      InputStream xml = getRenderInputStream(monitor, artifact, null, PresentationType.PREVIEW);
-      return WordConverter.toHtml(xml);
    }
 
    @Override

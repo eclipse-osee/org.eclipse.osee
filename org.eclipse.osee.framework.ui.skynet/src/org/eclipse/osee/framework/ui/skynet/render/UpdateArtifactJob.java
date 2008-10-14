@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -125,7 +124,6 @@ public class UpdateArtifactJob extends UpdateJob {
       artifact.persistAttributes();
    }
 
-   @SuppressWarnings( {"unchecked", "serial"})
    private Collection<Element> getArtifacts(File wordFile, boolean single) throws ParserConfigurationException, SAXException, IOException {
       final Collection<Element> artifacts = new LinkedList<Element>();
       final String elementNameForWordAttribute =
@@ -178,11 +176,12 @@ public class UpdateArtifactJob extends UpdateJob {
                      artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
                   } else if (oleDataElement != null && singleArtifact) {
                      artifact.setSoleAttributeFromStream(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
-                           WordRenderer.getFormattedContent(oleDataElement)));
+                           WordTemplateRenderer.getFormattedContent(oleDataElement)));
                   }
 
                   String content =
-                        Lib.inputStreamToString(new ByteArrayInputStream(WordRenderer.getFormattedContent(artElement)));
+                        Lib.inputStreamToString(new ByteArrayInputStream(
+                              WordTemplateRenderer.getFormattedContent(artElement)));
                   StringBuilder stringBuffer = new StringBuilder();
 
                   // Decided not to support multi edit of artifacts that

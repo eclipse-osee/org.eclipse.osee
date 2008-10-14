@@ -625,7 +625,7 @@
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
 	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordRenderer"/>
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 	</extension>
 		<extension id="tis" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.TisRenderer"/>
@@ -639,6 +639,13 @@
 	<extension id="Whole document" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
    	<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer"/>
 	</extension>
+ <extension
+       id="openOfficeWriter"
+       point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+    <Renderer
+          classname="org.eclipse.osee.framework.ui.skynet.render.OpenOfficeWriterRenderer">
+    </Renderer>
+ </extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
 		<Template presentationType="ALL" templateFile="support/templates/PREVIEW_ALL.xml" templateName="PREVIEW_ALL"/>
 		<Template presentationType="ALL" templateFile="support/templates/Word Edit Template.xml" templateName="Word Edit Template"/>

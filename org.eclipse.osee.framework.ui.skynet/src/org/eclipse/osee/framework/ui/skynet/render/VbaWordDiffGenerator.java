@@ -30,7 +30,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String tail =
          "    If visible Then\n        oWord.Visible = True\n     Else\n         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
 
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordRenderer.class);
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordTemplateRenderer.class);
 
    private StringBuilder builder;
    private boolean finalized;

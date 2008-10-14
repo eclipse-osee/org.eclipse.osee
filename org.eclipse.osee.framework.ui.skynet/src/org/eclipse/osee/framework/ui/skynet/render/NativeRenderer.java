@@ -60,7 +60,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws OseeCoreException {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)

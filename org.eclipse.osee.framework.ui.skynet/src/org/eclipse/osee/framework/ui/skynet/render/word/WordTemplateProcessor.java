@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Robert A. Fisher
@@ -561,7 +561,7 @@ public class WordTemplateProcessor {
    }
 
    public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) throws OseeWrappedException {
-      wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
+      wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordTemplateRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
       wordMl.addWordMl(contentString);
       wordMl.addWordMl("</ns0:" + name + ">");
    }
