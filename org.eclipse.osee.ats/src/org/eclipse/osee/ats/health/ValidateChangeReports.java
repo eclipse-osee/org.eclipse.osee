@@ -136,7 +136,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
                   // Only validate committed branches cause working branches change too much
                   if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) continue;
-                  Result valid = changeReportValidated(teamArt, null);
+                  Result valid = changeReportValidated(teamArt, xResultData);
                   if (valid.isFalse()) {
                      resultStr = "Error: Not Valid: " + valid.getText();
                   }
