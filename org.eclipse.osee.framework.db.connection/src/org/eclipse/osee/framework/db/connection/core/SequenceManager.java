@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.Connection;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeConnection;
@@ -26,8 +25,6 @@ public class SequenceManager {
          "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
    private static final String UPDATE_SEQUENCE =
          "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
-
-   private HashMap<String, SequenceRange> sequences;
 
    public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
    public static final String ART_TYPE_ID_SEQ = "SKYNET_ART_TYPE_ID_SEQ";
@@ -49,17 +46,12 @@ public class SequenceManager {
                ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ,
                TRANSACTION_ID_SEQ, IMPORT_ID_SEQ, TTE_SESSION_SEQ};
 
-   private static final SequenceManager instance = new SequenceManager();
+   private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
    private SequenceManager() {
-      sequences = new HashMap<String, SequenceRange>(30);
    }
 
-   public static SequenceManager getInstance() {
-      return instance;
-   }
-
-   private SequenceRange getRange(String sequenceName) {
+   private static SequenceRange getRange(String sequenceName) {
       SequenceRange range = sequences.get(sequenceName);
       if (range == null) {
          // do this to keep transaction id's sequential in the face of concurrent transaction by multiple users
@@ -69,42 +61,30 @@ public class SequenceManager {
       return range;
    }
 
-   private void prefetch(String sequenceName) throws OseeDataStoreException {
-      SequenceRange range = getRange(sequenceName);
-
-      long lastValue = -1;
-      boolean gotSequence = false;
-      OseeConnection connection = OseeDbConnection.getConnection();
-      while (!gotSequence) {
-         lastValue = getSequence(connection, sequenceName);
-         gotSequence = updateSequenceValue(connection, sequenceName, lastValue + range.prefetchSize, lastValue);
-      }
-      connection.close();
-      range.updateRange(lastValue);
-   }
-
-   private boolean updateSequenceValue(Connection connection, String sequenceName, long value, long lastValue) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdate(connection, UPDATE_SEQUENCE, value, sequenceName, lastValue) == 1;
-   }
-
-   private boolean insertSequenceValue(String sequenceName, long value) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedUpdate(INSERT_SEQUENCE, value, sequenceName) == 1;
-   }
-
-   private long getSequence(Connection connection, String sequenceName) throws OseeDataStoreException {
-      long seq = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, QUERY_SEQUENCE, sequenceName);
-      if (seq == -1) {
-         throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
-      }
-      return seq;
-   }
-
    public static synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
-      SequenceRange range = instance.getRange(sequenceName);
+      SequenceRange range = getRange(sequenceName);
       if (range.lastAvailable == 0) {
-         instance.prefetch(sequenceName);
+         long lastValue = -1;
+         boolean gotSequence = false;
+         OseeConnection connection = null;
+         try {
+            connection = OseeDbConnection.getConnection();
+            while (!gotSequence) {
+               lastValue = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, QUERY_SEQUENCE, sequenceName);
+               if (lastValue == -1) {
+                  throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
+               }
+               gotSequence =
+                     ConnectionHandler.runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
+                           sequenceName, lastValue) == 1;
+            }
+            range.updateRange(lastValue);
+         } finally {
+            if (connection != null) {
+               connection.close();
+            }
+         }
       }
-
       range.currentValue++;
       if (range.currentValue == range.lastAvailable) {
          range.lastAvailable = 0;
@@ -112,10 +92,10 @@ public class SequenceManager {
       return range.currentValue;
    }
 
-   public void initializeSequence(String sequenceName) throws OseeDataStoreException {
+   public static void internalInitializeSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;
-      insertSequenceValue(sequenceName, 0);
+      ConnectionHandler.runPreparedUpdate(INSERT_SEQUENCE, 0, sequenceName);
    }
 
    public static int getNextSessionId() throws OseeDataStoreException {
@@ -174,7 +154,7 @@ public class SequenceManager {
       return (int) getNextSequence(IMPORT_ID_SEQ);
    }
 
-   private class SequenceRange {
+   private static final class SequenceRange {
       private long currentValue;
       private long lastAvailable;
       private int prefetchSize;

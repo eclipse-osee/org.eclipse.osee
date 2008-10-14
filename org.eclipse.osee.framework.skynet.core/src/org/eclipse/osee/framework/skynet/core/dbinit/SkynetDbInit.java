@@ -136,9 +136,8 @@ public class SkynetDbInit extends DbInitializationTask {
     * @throws OseeDataStoreException
     */
    private void populateSequenceTable() throws OseeDataStoreException {
-      SequenceManager seqManager = SequenceManager.getInstance();
       for (String sequenceName : SequenceManager.sequenceNames) {
-         seqManager.initializeSequence(sequenceName);
+         SequenceManager.internalInitializeSequence(sequenceName);
       }
    }
 }

@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeCodeVersion;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 
 /**
@@ -30,7 +30,7 @@ public class OseeSession implements Serializable {
          this.machineIp = InetAddress.getLocalHost().getHostAddress();
          this.machineName = InetAddress.getLocalHost().getHostName();
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         OseeLog.log(this.getClass(), Level.SEVERE, ex.toString(), ex);
       }
    }
 
