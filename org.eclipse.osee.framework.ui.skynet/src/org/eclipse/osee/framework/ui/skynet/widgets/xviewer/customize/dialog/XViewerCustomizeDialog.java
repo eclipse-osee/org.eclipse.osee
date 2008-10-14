@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
@@ -22,6 +23,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -37,6 +39,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeD
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.SortingData;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -52,6 +61,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 public class XViewerCustomizeDialog extends MessageDialog {
@@ -73,6 +83,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private static String REMOVE_DEFAULT = "Remove Default";
    private CustomizeData defaultTableCustData;
    private boolean inWorkbench = false;
+   boolean isFeedbackAfter = false;
 
    public XViewerCustomizeDialog(XViewer xViewer) {
       this(xViewer, Display.getCurrent().getActiveShell());
@@ -87,6 +98,118 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    public void setTitle(String title) {
       this.title = title;
+   }
+
+   DragSourceAdapter dragListener = new DragSourceAdapter() {
+      /*
+       * (non-Javadoc)
+       * 
+       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
+       */
+      @Override
+      public void dragStart(DragSourceEvent event) {
+         if (visibleColTable.getViewer().getSelection().isEmpty()) {
+            event.doit = false;
+         }
+      }
+
+      /*
+       * @see org.eclipse.swt.dnd.DragSourceAdapter#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
+       */
+      @Override
+      public void dragSetData(DragSourceEvent event) {
+         if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+            List<XViewerColumn> selCols = getVisibleTableSelection();
+            Collection<String> ids = new ArrayList<String>(selCols.size());
+
+            for (XViewerColumn xCol : selCols)
+               ids.add(xCol.getId());
+
+            event.data = Collections.toString(ids, null, ", ", null);
+         }
+      }
+   };
+   DropTargetAdapter dropListener = new DropTargetAdapter() {
+
+      @Override
+      public void dragOperationChanged(DropTargetEvent event) {
+      }
+
+      @Override
+      public void drop(DropTargetEvent event) {
+         if (event.data instanceof String) {
+            performTextDrop(event);
+         }
+      }
+
+      @Override
+      public void dragOver(DropTargetEvent event) {
+         performDragOver(event);
+      }
+
+      @Override
+      public void dropAccept(DropTargetEvent event) {
+      }
+   };
+
+   @SuppressWarnings("unchecked")
+   public void performTextDrop(DropTargetEvent event) {
+      Tree tree = visibleColTable.getViewer().getTree();
+      TreeItem dragOverTreeItem = tree.getItem(visibleColTable.getViewer().getTree().toControl(event.x, event.y));
+      XViewerColumn dragOverXCol = (XViewerColumn) dragOverTreeItem.getData();
+
+      String droppedIds = (String) event.data;
+
+      List<XViewerColumn> droppedXCols = new ArrayList<XViewerColumn>();
+      List<XViewerColumn> orderCols = (List<XViewerColumn>) visibleColTable.getViewer().getInput();
+      for (XViewerColumn xCol : orderCols) {
+         if (droppedIds.contains(xCol.getId())) {
+            droppedXCols.add(xCol);
+         }
+      }
+      orderCols.removeAll(droppedXCols);
+      int dropXColOrderColsIndex = 0;
+      for (XViewerColumn xCol : orderCols) {
+         if (xCol.getId().equals(dragOverXCol.getId())) {
+            break;
+         }
+         dropXColOrderColsIndex++;
+      }
+
+      if (isFeedbackAfter) {
+         orderCols.addAll(dropXColOrderColsIndex + 1, droppedXCols);
+      } else {
+         orderCols.addAll(dropXColOrderColsIndex, droppedXCols);
+      }
+      visibleColTable.getViewer().setInput(orderCols);
+   }
+
+   public void performDragOver(DropTargetEvent event) {
+      if (!TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
+         event.detail = DND.DROP_NONE;
+         return;
+      }
+
+      Tree tree = visibleColTable.getViewer().getTree();
+      TreeItem dragOverTreeItem = tree.getItem(visibleColTable.getViewer().getTree().toControl(event.x, event.y));
+
+      event.feedback = DND.FEEDBACK_EXPAND;
+      event.detail = DND.DROP_NONE;
+
+      if (dragOverTreeItem != null) {
+         IStructuredSelection selectedItem = (IStructuredSelection) visibleColTable.getViewer().getSelection();
+         Object obj = selectedItem.getFirstElement();
+         if (obj instanceof XViewerColumn) {
+            if (isFeedbackAfter) {
+               event.feedback = DND.FEEDBACK_INSERT_AFTER;
+            } else {
+               event.feedback = DND.FEEDBACK_INSERT_BEFORE;
+            }
+            event.detail = DND.DROP_MOVE;
+         }
+      } else {
+         tree.setInsertMark(null, false);
+      }
    }
 
    @Override
@@ -266,6 +389,11 @@ public class XViewerCustomizeDialog extends MessageDialog {
             updateButtonEnablements();
          }
       });
+      visibleColTable.getViewer().addDragSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
+            dragListener);
+      visibleColTable.getViewer().addDropSupport(DND.DROP_MOVE, new Transfer[] {TextTransfer.getInstance()},
+            dropListener);
+
       gridLayout.numColumns = 3;
       gridLayout.numColumns = 3;
 
@@ -817,7 +945,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       if (getCustTableSelection() != null) {
          selectedCustTableCustData = getCustTableSelection();
       }
-      System.out.println("Selection " + selectedCustTableCustData.getName() + " - " + selectedCustTableCustData.getGuid());
+      //      System.out.println("Selection " + selectedCustTableCustData.getName() + " - " + selectedCustTableCustData.getGuid());
    }
 
    public void restoreCustTableSelection() {
@@ -825,7 +953,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
          ArrayList<Object> selected = new ArrayList<Object>();
          selected.add(selectedCustTableCustData);
          custTable.getViewer().setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
-         System.out.println("Restoring " + selectedCustTableCustData.getName() + " - " + selectedCustTableCustData.getGuid());
+         //         System.out.println("Restoring " + selectedCustTableCustData.getName() + " - " + selectedCustTableCustData.getGuid());
       }
    }
 
