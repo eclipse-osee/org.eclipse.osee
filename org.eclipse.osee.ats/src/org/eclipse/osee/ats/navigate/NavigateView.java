@@ -108,7 +108,7 @@ public class NavigateView extends ViewPart implements IActionable {
             xNavComp.getFilteredTree().getViewer().expandAll();
          }
       };
-      expandAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      expandAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("expandAll.gif"));
       expandAction.setToolTipText("Expand All");
 
       Action openByIdAction = new Action("Open by Id") {
