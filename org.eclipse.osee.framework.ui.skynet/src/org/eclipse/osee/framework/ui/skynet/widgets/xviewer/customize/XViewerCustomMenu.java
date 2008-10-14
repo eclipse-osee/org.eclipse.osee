@@ -64,6 +64,7 @@ public class XViewerCustomMenu {
    protected Action viewTableReport;
    protected Action columnMultiEdit;
    protected Action removeSelected;
+   protected Action removeNonSelected;
    protected Action copySelected;
    protected Action copySelectedCell;
    protected Action viewSelectedCell;
@@ -106,6 +107,7 @@ public class XViewerCustomMenu {
       mm.add(copySelectedCell);
       mm.add(new Separator());
       mm.add(removeSelected);
+      mm.add(removeNonSelected);
       mm.add(new GroupMarker(XViewer.MENU_GROUP_POST));
    }
 
@@ -114,6 +116,12 @@ public class XViewerCustomMenu {
          @Override
          public void run() {
             performRemoveSelectedRows();
+         };
+      };
+      removeNonSelected = new Action("Remove Non-Selected from View") {
+         @Override
+         public void run() {
+            performRemoveNonSelectedRows();
          };
       };
       copySelected = new Action("Copy Selected Row(s)- Ctrl-C") {
@@ -200,7 +208,24 @@ public class XViewerCustomMenu {
          for (TreeItem item : items) {
             objs.add(item.getData());
          }
-         xViewer.remove(objs.toArray());
+         xViewer.remove(objs);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+   }
+
+   private void performRemoveNonSelectedRows() {
+      try {
+         TreeItem[] items = xViewer.getTree().getSelection();
+         if (items.length == 0) {
+            AWorkbench.popup("ERROR", "No items to copy");
+            return;
+         }
+         Set<Object> keepObjects = new HashSet<Object>();
+         for (TreeItem item : items) {
+            keepObjects.add(item.getData());
+         }
+         xViewer.load(keepObjects);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

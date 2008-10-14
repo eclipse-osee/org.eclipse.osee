@@ -250,6 +250,19 @@ public class XViewer extends TreeViewer {
       customizeMgr.resetDefaultSorter();
    }
 
+   /**
+    * Override this method if need to perform other tasks upon remove
+    * 
+    * @param objects
+    */
+   public void remove(Collection<Object> objects) {
+      super.remove(objects);
+   }
+
+   public void load(Collection<Object> objects) {
+      super.setInput(objects);
+   }
+
    @Override
    public void setSorter(ViewerSorter sorter) {
       super.setSorter(sorter);

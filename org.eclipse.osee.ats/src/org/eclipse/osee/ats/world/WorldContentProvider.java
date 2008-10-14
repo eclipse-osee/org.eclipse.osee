@@ -76,11 +76,11 @@ public class WorldContentProvider implements ITreeContentProvider {
       remove(Arrays.asList(art));
    }
 
-   public void remove(final Collection<? extends Artifact> arts) {
+   public void remove(final Collection<? extends Object> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (Artifact art : arts) {
+            for (Object art : arts) {
                rootSet.remove(art);
             }
             xViewer.refresh();

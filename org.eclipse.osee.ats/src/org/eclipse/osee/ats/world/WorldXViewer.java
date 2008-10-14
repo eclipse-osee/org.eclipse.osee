@@ -680,8 +680,20 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       ((WorldContentProvider) getContentProvider()).remove(artifact);
    }
 
-   public void remove(final Collection<Artifact> artifacts) {
+   @Override
+   public void remove(final Collection<Object> artifacts) {
       ((WorldContentProvider) getContentProvider()).remove(artifacts);
+   }
+
+   @Override
+   public void load(Collection<Object> objects) {
+      Set<Artifact> arts = new HashSet<Artifact>();
+      for (Object obj : objects) {
+         if (obj instanceof IWorldViewArtifact) {
+            arts.add((Artifact) obj);
+         }
+      }
+      set(arts);
    }
 
    public ArrayList<Artifact> getSelectedArtifactItems() {
