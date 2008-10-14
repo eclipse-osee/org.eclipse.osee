@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
@@ -138,12 +139,20 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          }
 
          String zipTargetName = exportName + ZIP_EXTENSION;
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Compressing Branch Export Data - [%s]", zipTargetName));
-         File zipTarget = new File(tempFolder.getParent(), zipTargetName);
-         Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
-         OseeLog.log(this.getClass(), Level.INFO,
-               String.format("Deleting Branch Export Temp Folder - [%s]", tempFolder));
-         Lib.deleteDir(tempFolder);
+         if (this.options.getBoolean(ExportOptions.COMPRESS.name())) {
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Compressing Branch Export Data - [%s]",
+                  zipTargetName));
+            File zipTarget = new File(tempFolder.getParent(), zipTargetName);
+            Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Deleting Branch Export Temp Folder - [%s]",
+                  tempFolder));
+            Lib.deleteDir(tempFolder);
+         } else {
+            File target = new File(tempFolder.getParent(), exportName);
+            if (!target.equals(tempFolder)) {
+               tempFolder.renameTo(target);
+            }
+         }
       } finally {
          cleanUp(connection, taskList);
       }
