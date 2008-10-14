@@ -35,7 +35,8 @@ public class AtsDatabaseConfig extends DbInitializationTask {
    public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData) throws OseeCoreException {
 
       // Import Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, null, AtsWorkDefinitions.getAtsWorkDefinitions());
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
+            AtsWorkDefinitions.getAtsWorkDefinitions());
 
       new TeamWorkflowDefinition().config(writeType, null);
       new TaskWorkflowDefinition().config(writeType, null);
