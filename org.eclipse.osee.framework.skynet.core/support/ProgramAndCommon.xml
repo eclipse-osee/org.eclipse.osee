@@ -441,7 +441,7 @@
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell ss:StyleID="s37"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</Data></Cell>
+    <Cell ss:StyleID="Default"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell ss:StyleID="s28"><Data ss:Type="String">General String Data</Data></Cell>
     <Cell ss:StyleID="s28"/>
     <Cell ss:StyleID="s28"/>
@@ -690,12 +690,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
-   <TopRowVisible>20</TopRowVisible>
+   <TopRowVisible>8</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
      <ActiveRow>25</ActiveRow>
-     <ActiveCol>2</ActiveCol>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
 import org.eclipse.osee.ats.health.ValidateChangeReports;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.operation.EditTasksNavigateItem;
@@ -270,6 +271,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
          new ValidateChangeReports(healthItems);
+         new ValidateChangeReportByHrid(healthItems);
 
          // new ActionNavigateItem(adminItems, new XViewerViewAction());
          // new ActionNavigateItem(adminItems, new OpenEditorAction());

@@ -26,6 +26,14 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 public class ChangeData {
 
    Collection<Change> changes;
+
+   /**
+    * @return the changes
+    */
+   public Collection<Change> getChanges() {
+      return changes;
+   }
+
    public static enum KindType {
       Artifact, Relation, ArtifactOrRelation, RelationOnly
    };

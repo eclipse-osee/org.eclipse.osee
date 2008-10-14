@@ -139,7 +139,7 @@ public class ATSLog {
    /**
     * Since originator can be changed, return the date of the first originated log item
     * 
-    * @return
+    * @return Date
     */
    public Date getCreationDate() {
       LogItem logItem = getEvent(LogType.Originated);
@@ -150,7 +150,7 @@ public class ATSLog {
    /**
     * Since originator change be changed, return the last originated event's user
     * 
-    * @return
+    * @return User
     */
    public User getOriginator() {
       LogItem logItem = getLastEvent(LogType.Originated);
