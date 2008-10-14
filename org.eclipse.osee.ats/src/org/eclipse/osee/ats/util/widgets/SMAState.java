@@ -17,10 +17,9 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.UsersByIds;
-import org.eclipse.osee.framework.db.connection.exception.IllegalOseeArgumentException;
-import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -82,10 +81,10 @@ public class SMAState {
     */
    public void setAssignees(Collection<User> assignees) throws OseeCoreException {
       if (assignees.contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || assignees.contains(SkynetAuthentication.getUser(UserEnum.Guest))) {
-         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
       if (assignees.size() > 1 && assignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
-         throw new IllegalOseeArgumentException("Can not assign to user and UnAssigned");
+         throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) throw new IllegalStateException(
             "Can't assign completed/cancelled states.");
