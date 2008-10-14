@@ -5,11 +5,12 @@
  */
 package org.eclipse.osee.framework.branch.management.exchange.resource;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -20,16 +21,13 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 public final class ZipBinaryResource implements IResource {
 
    private final IResourceLocator locator;
-   private final ZipEntry entry;
-   private final ZipFile zipFile;
+   private final File entry;
 
-   public ZipBinaryResource(ZipFile zipFile, ZipEntry entry, IResourceLocator locator) {
-      checkNotNull("ZipFile", zipFile);
-      checkNotNull("ZipEntry", entry);
+   public ZipBinaryResource(File entry, IResourceLocator locator) {
+      checkNotNull("FileEntry", entry);
       checkNotNull("IResourceLocator", locator);
       this.entry = entry;
       this.locator = locator;
-      this.zipFile = zipFile;
    }
 
    private void checkNotNull(String argName, Object object) {
@@ -43,7 +41,7 @@ public final class ZipBinaryResource implements IResource {
     */
    @Override
    public InputStream getContent() throws IOException {
-      return zipFile.getInputStream(entry);
+      return new BufferedInputStream(new FileInputStream(entry));
    }
 
    /* (non-Javadoc)

@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
@@ -36,12 +35,12 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    }
 
    private final Set<Integer> branchesToImport;
-   private ZipFile zipFile;
+   private File decompressedFolder;
 
    protected RelationalSaxHandler(boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
-      this.zipFile = null;
+      this.decompressedFolder = null;
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -53,12 +52,12 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void setZipFile(ZipFile zipFile) {
-      this.zipFile = zipFile;
+   public void setDecompressedFolder(File decompressedFolder) {
+      this.decompressedFolder = decompressedFolder;
    }
 
-   public ZipFile getZipFile() {
-      return zipFile;
+   public File getDecompressedFolder() {
+      return decompressedFolder;
    }
 
    public void store() throws Exception {
@@ -67,13 +66,9 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + "\\" + uriValue;
-      if (this.zipFile != null) {
-         ZipEntry entry = zipFile.getEntry(entrySearch);
-         if (entry == null) {
-            entry = zipFile.getEntry(entrySearch.replace('\\', '/'));
-         }
-
-         if (entry != null) {
+      if (this.decompressedFolder != null) {
+         File entry = new File(decompressedFolder, entrySearch);
+         if (entry.exists()) {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
@@ -81,14 +76,14 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
             IResourceLocator locator =
                   Activator.getInstance().getResourceManager().save(locatorHint,
-                        new ZipBinaryResource(getZipFile(), entry, locatorHint), new Options());
+                        new ZipBinaryResource(entry, locatorHint), new Options());
             return locator.getLocation().toASCIIString();
          } else {
             throw new RuntimeException(String.format(
                   "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
          }
       } else {
-         throw new RuntimeException("ZipFile was Null.");
+         throw new RuntimeException("Uncompressed folder was Null.");
       }
    }
 

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.common.Activator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
@@ -136,16 +138,18 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          }
 
          String zipTargetName = exportName + ZIP_EXTENSION;
-         System.out.println(String.format("Compressing Branch Export Data - [%s]", zipTargetName));
+         OseeLog.log(this.getClass(), Level.INFO, String.format("Compressing Branch Export Data - [%s]", zipTargetName));
          File zipTarget = new File(tempFolder.getParent(), zipTargetName);
          Lib.compressDirectory(tempFolder, zipTarget.getAbsolutePath(), true);
+         OseeLog.log(this.getClass(), Level.INFO,
+               String.format("Deleting Branch Export Temp Folder - [%s]", tempFolder));
          Lib.deleteDir(tempFolder);
       } finally {
          cleanUp(connection, taskList);
       }
       int branchTotal = branchIds != null ? branchIds.length : 0;
-      System.out.println(String.format("Exported [%s] branch%s in [%s]", branchTotal, branchTotal != 1 ? "es" : "",
-            Lib.getElapseString(startTime)));
+      OseeLog.log(this.getClass(), Level.INFO, String.format("Exported [%s] branch%s in [%s]", branchTotal,
+            branchTotal != 1 ? "es" : "", Lib.getElapseString(startTime)));
    }
 
    /* (non-Javadoc)
