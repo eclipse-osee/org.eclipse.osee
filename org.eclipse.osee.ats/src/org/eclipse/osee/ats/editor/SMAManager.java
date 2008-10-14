@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.db.connection.exception.IllegalOseeArgumentException;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -707,10 +707,10 @@ public class SMAManager {
 
    public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
       if (assignees.contains(SkynetAuthentication.getUser(UserEnum.NoOne)) || assignees.contains(SkynetAuthentication.getUser(UserEnum.Guest))) {
-         throw new IllegalOseeArgumentException("Can not assign workflow to NoOne or Guest");
+         throw new OseeArgumentException("Can not assign workflow to NoOne or Guest");
       }
       if (assignees.size() > 1 && assignees.contains(SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
-         throw new IllegalOseeArgumentException("Can not assign to user and UnAssigned");
+         throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       transitionAssignees = assignees;
    }

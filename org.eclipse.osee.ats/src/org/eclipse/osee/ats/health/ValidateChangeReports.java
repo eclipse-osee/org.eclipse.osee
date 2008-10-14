@@ -22,7 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.db.connection.exception.IllegalOseeStateException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -158,7 +158,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
             ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsPlugin.getAtsBranch());
       String storedChangeReport = null;
       if (arts.size() > 1) {
-         throw new IllegalOseeStateException("Multiple artifacts found of name \"" + name + "\"");
+         throw new OseeStateException("Multiple artifacts found of name \"" + name + "\"");
       } else if (arts.size() == 1) {
          storedChangeReport =
                arts.iterator().next().getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);

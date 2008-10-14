@@ -14,11 +14,11 @@ package org.eclipse.osee.framework.db.connection.exception;
 /**
  * @author Donald G. Dunne
  */
-public class IllegalOseeArgumentException extends OseeCoreException {
+public class OseeStateException extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public IllegalOseeArgumentException(String message) {
+   public OseeStateException(String message) {
       super(message);
    }
 }
