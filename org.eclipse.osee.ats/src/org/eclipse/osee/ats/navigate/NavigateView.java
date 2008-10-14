@@ -95,21 +95,21 @@ public class NavigateView extends ViewPart implements IActionable {
 
          @Override
          public void run() {
-            xNavComp.getFilteredTree().getViewer().collapseAll();
+            xNavComp.refresh();
          }
       };
       collapseAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
       collapseAction.setToolTipText("Collapse All");
 
-      Action refreshAction = new Action("Refresh") {
+      Action expandAction = new Action("Expand All") {
 
          @Override
          public void run() {
-            xNavComp.refresh();
+            xNavComp.getFilteredTree().getViewer().expandAll();
          }
       };
-      refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
-      refreshAction.setToolTipText("Refresh");
+      expandAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
+      expandAction.setToolTipText("Expand All");
 
       Action openByIdAction = new Action("Open by Id") {
 
@@ -181,7 +181,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAction);
-      toolbarManager.add(refreshAction);
+      toolbarManager.add(expandAction);
       toolbarManager.add(openChangeReportById);
       toolbarManager.add(openByIdAction);
       toolbarManager.add(new NewAction());
