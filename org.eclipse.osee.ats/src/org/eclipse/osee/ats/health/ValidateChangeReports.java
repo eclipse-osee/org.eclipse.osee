@@ -171,19 +171,26 @@ public class ValidateChangeReports extends XNavigateItemAction {
       List<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsPlugin.getAtsBranch());
       String storedChangeReport = null;
+      Artifact artifactForStore = null;
       if (arts.size() > 1) {
          throw new OseeStateException("Multiple artifacts found of name \"" + name + "\"");
       } else if (arts.size() == 1) {
+         artifactForStore = arts.iterator().next();
          storedChangeReport =
-               arts.iterator().next().getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
+               artifactForStore.getSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, null);
       }
       // Retrieve current 
       ChangeData currentChangeData = teamArt.getSmaMgr().getBranchMgr().getChangeData();
       // Store 
       if (storedChangeReport == null) {
-         Artifact artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsPlugin.getAtsBranch(), name);
-         artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(currentChangeData));
-         artifact.persistAttributes();
+         // Reuse same artifact if already exists
+         if (artifactForStore == null) {
+            artifactForStore =
+                  ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, AtsPlugin.getAtsBranch(), name);
+         }
+         artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME,
+               getReport(currentChangeData));
+         artifactForStore.persistAttributes();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
