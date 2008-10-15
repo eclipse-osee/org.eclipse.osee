@@ -150,6 +150,7 @@ public class CustomizeManager {
          }
       }
       resolvedCustData.getColumnData().setColumns(resolvedColumns);
+      resolvedCustData.getColumnFilterData().setFromXml(loadedCustData.getColumnFilterData().getXml());
       resolvedCustData.getFilterData().setFromXml(loadedCustData.getFilterData().getXml());
       resolvedCustData.getSortingData().setFromXml(loadedCustData.getSortingData().getXml());
       return resolvedCustData;
@@ -171,6 +172,13 @@ public class CustomizeManager {
       } else {
          currentCustData.columnFilterData.setFilterText(colId, text);
       }
+      xViewerTextFilter.update();
+      xViewer.refresh();
+   }
+
+   public void clearFilters() {
+      xViewer.getFilterDataUI().clear();
+      currentCustData.columnFilterData.clear();
       xViewerTextFilter.update();
       xViewer.refresh();
    }
@@ -248,6 +256,7 @@ public class CustomizeManager {
       custData.columnData.setColumns(columns);
       custData.sortingData.setFromXml(currentCustData.sortingData.getXml());
       custData.filterData.setFromXml(currentCustData.filterData.getXml());
+      custData.columnFilterData.setFromXml(currentCustData.columnFilterData.getXml());
       return custData;
    }
 

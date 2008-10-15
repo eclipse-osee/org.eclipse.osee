@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumnLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.ColumnFilterData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeDataLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
@@ -73,6 +75,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
    private OSEEFilteredTree visibleColTable;
    private Text sorterText;
    private Text filterText;
+   private Text columnFilterText;
    // Select Customization Buttons
    Button setDefaultButton, deleteButton;
    // Config Customization Buttons - Moving items
@@ -459,6 +462,37 @@ public class XViewerCustomizeDialog extends MessageDialog {
          }
       });
 
+      // Filter text block
+      final Composite composite_8 = new Composite(composite_2, SWT.NONE);
+      composite_8.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+      final GridLayout gridLayout_14 = new GridLayout();
+      gridLayout_14.numColumns = 3;
+      composite_8.setLayout(gridLayout_14);
+
+      final Label columnFilterLabel = new Label(composite_8, SWT.NONE);
+      columnFilterLabel.setText("Column Filter:");
+
+      columnFilterText = new Text(composite_8, SWT.BORDER);
+      columnFilterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+      final Label clearColumnFilterLabel = new Label(composite_8, SWT.PUSH);
+      if (inWorkbench)
+         clearColumnFilterLabel.setImage(SkynetGuiPlugin.getInstance().getImage("clear.gif"));
+      else
+         clearColumnFilterLabel.setText("clear");
+      clearColumnFilterLabel.addMouseListener(new MouseListener() {
+         public void mouseDown(MouseEvent e) {
+         }
+
+         public void mouseDoubleClick(MouseEvent e) {
+
+         }
+
+         public void mouseUp(MouseEvent e) {
+            columnFilterText.setText("");
+         }
+      });
+
       // Button block
       final Composite composite_1 = new Composite(composite_2, SWT.NONE);
       composite_1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
@@ -596,6 +630,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       hiddenColTable.getViewer().setInput(hiddenCols);
 
       updateSortTextField();
+      updateColumnFilterField();
    }
 
    @SuppressWarnings("unchecked")
@@ -620,6 +655,28 @@ public class XViewerCustomizeDialog extends MessageDialog {
    }
 
    @SuppressWarnings("unchecked")
+   private void updateColumnFilterField() {
+      // get visible column ids
+      List<String> visibleColumnIds = new ArrayList<String>();
+      for (XViewerColumn xCol : (List<XViewerColumn>) visibleColTable.getViewer().getInput()) {
+         visibleColumnIds.add(xCol.getId());
+      }
+      // get current columnFilterIds
+      ColumnFilterData columnFilterData = new ColumnFilterData();
+      columnFilterData.setFromXml(columnFilterText.getText());
+      Set<String> currentSortIds = columnFilterData.getColIds();
+
+      // get complement to determine ids that are sorted but not visible == invalid
+      for (String invalidId : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(currentSortIds,
+            visibleColumnIds)) {
+         columnFilterData.removeFilterText(invalidId);
+      }
+      if (columnFilterText != null && !columnFilterText.isDisposed()) {
+         columnFilterText.setText(columnFilterData.getXml());
+      }
+   }
+
+   @SuppressWarnings("unchecked")
    private void handleAddAllItemButton() {
 
       List<XViewerColumn> hiddenCols = (List<XViewerColumn>) hiddenColTable.getViewer().getInput();
@@ -633,6 +690,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       hiddenColTable.getViewer().setInput(hiddenCols);
 
       updateSortTextField();
+      updateColumnFilterField();
    }
 
    @SuppressWarnings("unchecked")
@@ -649,6 +707,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       visibleColTable.getViewer().setInput(visibleCols);
 
       updateSortTextField();
+      updateColumnFilterField();
    }
 
    @SuppressWarnings("unchecked")
@@ -767,6 +826,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       custData.getColumnData().setColumns(getConfigCustXViewerColumns());
       custData.getSortingData().setFromXml(sorterText.getText());
       custData.getFilterData().setFilterText(filterText.getText());
+      custData.getColumnFilterData().setFromXml(columnFilterText.getText());
       return custData;
    }
 
@@ -876,6 +936,7 @@ public class XViewerCustomizeDialog extends MessageDialog {
       }
 
       updateSortTextField();
+      updateColumnFilterField();
       updateButtonEnablements();
    }
 
@@ -936,7 +997,11 @@ public class XViewerCustomizeDialog extends MessageDialog {
       filterText.setText(custData.getFilterData().getFilterText());
       filterText.setData(custData);
 
+      columnFilterText.setText(custData.getColumnFilterData().getXml());
+      columnFilterText.setData(custData);
+
       updateSortTextField();
+      updateColumnFilterField();
    }
    private CustomizeData selectedCustTableCustData = null;
 

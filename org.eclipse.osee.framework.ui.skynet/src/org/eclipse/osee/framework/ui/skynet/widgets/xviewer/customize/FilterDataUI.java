@@ -11,10 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize;
 
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -96,17 +94,15 @@ public class FilterDataUI {
    public void dispose() {
    }
 
+   public void clear() {
+      filterText.setText("");
+      xViewer.getCustomizeMgr().setFilterText("");
+   }
+
    public void getStatusLabelAddition(StringBuffer sb) {
       if (filterText != null && !filterText.getText().equals("")) {
          sb.append("[Text Filter]");
       }
-   }
-
-   private boolean isXViewerTextFiltered() {
-      for (ViewerFilter filter : xViewer.getFilters()) {
-         if (filter instanceof XViewerTextFilter) return true;
-      }
-      return false;
    }
 
 }

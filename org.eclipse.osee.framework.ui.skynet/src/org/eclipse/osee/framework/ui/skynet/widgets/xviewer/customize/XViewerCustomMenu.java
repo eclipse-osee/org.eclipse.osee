@@ -60,6 +60,7 @@ public class XViewerCustomMenu {
    private final Clipboard clipboard = new Clipboard(null);
 
    protected Action clearAllSorting;
+   protected Action clearAllFilters;
    protected Action tableProperties;
    protected Action viewTableReport;
    protected Action columnMultiEdit;
@@ -98,13 +99,15 @@ public class XViewerCustomMenu {
       MenuManager mm = xViewer.getMenuManager();
       mm.add(new GroupMarker(XViewer.MENU_GROUP_PRE));
       mm.add(new Separator());
-      mm.add(clearAllSorting);
       mm.add(tableProperties);
       mm.add(viewTableReport);
       if (xViewer.isColumnMultiEditEnabled()) mm.add(columnMultiEdit);
       mm.add(viewSelectedCell);
       mm.add(copySelected);
       mm.add(copySelectedCell);
+      mm.add(new Separator());
+      mm.add(clearAllSorting);
+      mm.add(clearAllFilters);
       mm.add(new Separator());
       mm.add(removeSelected);
       mm.add(removeNonSelected);
@@ -146,6 +149,12 @@ public class XViewerCustomMenu {
          @Override
          public void run() {
             xViewer.getCustomizeMgr().clearSorter();
+         };
+      };
+      clearAllFilters = new Action("Clear All Filters") {
+         @Override
+         public void run() {
+            xViewer.getCustomizeMgr().clearFilters();
          };
       };
       tableProperties = new Action("Table Customization") {

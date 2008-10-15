@@ -404,7 +404,7 @@ public class XViewer extends TreeViewer {
    /**
     * @return the textFilterComp
     */
-   public FilterDataUI getTextFilterComp() {
+   public FilterDataUI getFilterDataUI() {
       return filterDataUI;
    }
 
