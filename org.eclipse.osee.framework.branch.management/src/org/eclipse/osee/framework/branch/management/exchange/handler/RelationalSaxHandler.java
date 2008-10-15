@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -65,7 +66,8 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    }
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
-      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + uriValue.replaceAll("\\\\", File.separator);
+      String relativePath = Lib.isWindows() ? uriValue :  uriValue.replaceAll("\\\\", File.separator);
+      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
       if (this.decompressedFolder != null) {
          File entry = new File(decompressedFolder, entrySearch);
          if (entry.exists()) {
