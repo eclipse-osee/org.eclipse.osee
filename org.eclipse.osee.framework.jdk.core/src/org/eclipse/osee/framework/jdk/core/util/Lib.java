@@ -1416,15 +1416,18 @@ public final class Lib {
          ZipEntry entry = null;
          while ((entry = zipInputStream.getNextEntry()) != null) {
             String zipEntryName = entry.getName();
+            
             OutputStream outputStream = null;
             try {
                File target = new File(targetDirectory, zipEntryName);
-               File parent = target.getParentFile();
-               if (parent != null && !parent.exists()) {
-                  parent.mkdirs();
+               if(target != null && !entry.isDirectory()) {
+                  File parent = target.getParentFile();
+                  if (parent != null && !parent.exists()) {
+                     parent.mkdirs();
+                  }
+                  outputStream = new BufferedOutputStream(new FileOutputStream(target));
+                  inputStreamToOutputStream(zipInputStream, outputStream);
                }
-               outputStream = new BufferedOutputStream(new FileOutputStream(target));
-               inputStreamToOutputStream(zipInputStream, outputStream);
             } finally {
                if (outputStream != null) {
                   outputStream.close();

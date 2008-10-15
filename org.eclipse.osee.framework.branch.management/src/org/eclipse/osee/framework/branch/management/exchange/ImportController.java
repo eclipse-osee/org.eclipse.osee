@@ -83,12 +83,14 @@ final class ImportController extends DbTransaction {
          IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
          File source = new File(resource.getLocation());
          if (source.isFile()) {
+            wasExtracted = true;
             tempZipFolder = createTempFolder();
             OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
                   source.getName(), tempZipFolder));
             Lib.decompressStream(new FileInputStream(source), tempZipFolder);
             wasExtracted = true;
          } else {
+            wasExtracted = false;
             tempZipFolder = source;
          }
          // Process manifest

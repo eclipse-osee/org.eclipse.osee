@@ -72,7 +72,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
          File entry = new File(decompressedFolder, entrySearch);
          if (entry.exists()) {
 
-            String name = uriValue.substring(uriValue.lastIndexOf(File.separator) + 1, uriValue.length());
+            String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
                   Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
