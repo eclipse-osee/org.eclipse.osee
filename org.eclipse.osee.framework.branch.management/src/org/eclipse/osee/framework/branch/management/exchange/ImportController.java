@@ -75,17 +75,22 @@ final class ImportController extends DbTransaction {
       translator.configure(options);
 
       if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
-         throw new IllegalStateException("DO NOT IMPORT ON PRODUCTION");
+            throw new IllegalStateException("DO NOT IMPORT ON PRODUCTION");
       }
+      boolean wasExtracted = false;
       File tempZipFolder = null;
       try {
          IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
          File source = new File(resource.getLocation());
-         tempZipFolder = createTempFolder();
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
-               source.getName(), tempZipFolder));
-         Lib.decompressStream(new FileInputStream(source), tempZipFolder);
-
+         if (source.isFile()) {
+            tempZipFolder = createTempFolder();
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
+                  source.getName(), tempZipFolder));
+            Lib.decompressStream(new FileInputStream(source), tempZipFolder);
+            wasExtracted = true;
+         } else {
+            tempZipFolder = source;
+         }
          // Process manifest
          ManifestSaxHandler manifestHandler = new ManifestSaxHandler();
          processImportFile(tempZipFolder, "export.manifest.xml", manifestHandler);
@@ -125,7 +130,7 @@ final class ImportController extends DbTransaction {
          translator.storeImport(connection, manifestHandler.getSourceDatabaseId(),
                manifestHandler.getSourceExportDate());
       } finally {
-         if (tempZipFolder != null && tempZipFolder.exists()) {
+         if (wasExtracted && tempZipFolder != null && tempZipFolder.exists() && tempZipFolder.getAbsolutePath() != ExchangeProvider.getExchangeFilePath()) {
             OseeLog.log(this.getClass(), Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
                   tempZipFolder));
             Lib.deleteDir(tempZipFolder);

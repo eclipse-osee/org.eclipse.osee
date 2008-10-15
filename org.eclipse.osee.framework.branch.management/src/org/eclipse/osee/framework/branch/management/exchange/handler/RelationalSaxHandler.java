@@ -65,12 +65,12 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    }
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
-      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + "\\" + uriValue;
+      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + uriValue.replaceAll("\\\\", File.separator);
       if (this.decompressedFolder != null) {
          File entry = new File(decompressedFolder, entrySearch);
          if (entry.exists()) {
 
-            String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
+            String name = uriValue.substring(uriValue.lastIndexOf(File.separator) + 1, uriValue.length());
             IResourceLocator locatorHint =
                   Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
@@ -85,6 +85,17 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       } else {
          throw new RuntimeException("Uncompressed folder was Null.");
       }
+   }
+   
+   public static void main(String[] args){
+      String uriValue = "558\\235\\8\\FY4GG.zip";
+      
+      uriValue = uriValue.replaceAll("\\\\", File.separator);
+      
+      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + uriValue;
+      System.out.println(entrySearch);
+      
+      
    }
 
    @Override
