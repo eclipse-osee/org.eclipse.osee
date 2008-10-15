@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -54,11 +53,10 @@ public class CheckValidType extends AbstractBlam {
          Calendar cal = Calendar.getInstance(TimeZone.getDefault());
          List<String> datas = new LinkedList<String>();
          XResultData rd = new XResultData();
-         ResultSet rSet = chStmt.getRset();
          int count = 0;
-         while (rSet.next()) {
+         while (chStmt.next()) {
             for (String colName : colNames) {
-               datas.add(rSet.getString(colName));
+               datas.add(chStmt.getString(colName));
             }
             count++;
          }

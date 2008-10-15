@@ -20,9 +20,6 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -114,7 +111,7 @@ public class DatabaseDataExtractor {
                chStmt = ConnectionHandler.runPreparedQuery(connection, SQL_WILD_QUERY + table.getName());
             }
 
-            Document document = buildXml(chStmt.getRset(), table);
+            Document document = buildXml(chStmt, table);
             if (document != null) {
                writeDocumentToFile(document, table.getFullyQualifiedTableName());
             }
@@ -163,17 +160,15 @@ public class DatabaseDataExtractor {
       }
    }
 
-   private Document buildXml(ResultSet resultSet, TableElement table) throws SQLException {
-      ResultSetMetaData resultMetaData = resultSet.getMetaData();
-
+   private Document buildXml(ConnectionHandlerStatement chStmt, TableElement table) throws OseeDataStoreException {
       ArrayList<ColumnInfo> columns = new ArrayList<ColumnInfo>();
-      int numberOfColumns = resultMetaData.getColumnCount();
+      int numberOfColumns = chStmt.getColumnCount();
       for (int index = 1; index <= numberOfColumns; index++) {
          ColumnInfo columnInfo = new ColumnInfo();
-         columnInfo.name = resultMetaData.getColumnName(index);
+         columnInfo.name = chStmt.getColumnName(index);
          columnInfo.name = columnInfo.name.toUpperCase();
 
-         int dataType = resultMetaData.getColumnType(index);
+         int dataType = chStmt.getColumnType(index);
          if (dbType.equals(SupportedDatabase.foxpro)) {
             if (dataType == Types.CHAR) {
                dataType = Types.VARCHAR;
@@ -196,29 +191,29 @@ public class DatabaseDataExtractor {
          columnInfo.setAttribute(ColumnFields.type.name(), info.type.name());
       }
 
-      while (resultSet.next()) {
+      while (chStmt.next()) {
          Element columnElement = xmlDoc.createElement(TableTags.Row.name());
          for (ColumnInfo column : columns) {
             String columnValue;
             switch (column.type) {
                case BIGINT:
-                  BigDecimal bigD = resultSet.getBigDecimal(column.name);
+                  BigDecimal bigD = chStmt.getBigDecimal(column.name);
                   columnValue = (bigD != null ? bigD.toString() : "");
                   break;
                case DATE:
-                  Date date = resultSet.getDate(column.name);
+                  Date date = chStmt.getDate(column.name);
                   columnValue = (date != null ? date.toString() : "");
                   break;
                case TIME:
-                  Time time = resultSet.getTime(column.name);
+                  Time time = chStmt.getTime(column.name);
                   columnValue = (time != null ? time.toString() : "");
                   break;
                case TIMESTAMP:
-                  Timestamp timestamp = resultSet.getTimestamp(column.name);
+                  Timestamp timestamp = chStmt.getTimestamp(column.name);
                   columnValue = (timestamp != null ? timestamp.toString() : "");
                   break;
                default:
-                  columnValue = resultSet.getString(column.name);
+                  columnValue = chStmt.getString(column.name);
                   columnValue = handleSpecialCharacters(columnValue);
                   break;
             }

@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -37,10 +36,9 @@ public class CommitTransactions extends DatabaseHealthTask {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
-            ResultSet resultSet = chStmt.getRset();
 
-            while (resultSet.next()) {
-               int transactionNumber = resultSet.getInt(1);
+            while (chStmt.next()) {
+               int transactionNumber = chStmt.getInt("transaction_id");
                int updateCount =
                      ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, transactionNumber,
                            transactionNumber);

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,18 +47,15 @@ public class DbDescribe {
          try {
             String sql = "SELECT * FROM " + dbItem.getTableName();
             chStmt = ConnectionHandler.runPreparedQuery(sql);
-            ResultSetMetaData meta = chStmt.getRset().getMetaData();
-            int numberOfColumns = meta.getColumnCount() + 1;
+            int numberOfColumns = chStmt.getColumnCount() + 1;
             for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
                Describe describe = new Describe();
 
-               describe.name = meta.getColumnName(columnIndex).toUpperCase();
-               describe.nullable = meta.isNullable(columnIndex) == ResultSetMetaData.columnNullable;
-               describe.type = meta.getColumnTypeName(columnIndex).toUpperCase();
+               describe.name = chStmt.getColumnName(columnIndex).toUpperCase();
+               describe.nullable = chStmt.isNullable(columnIndex);
+               describe.type = chStmt.getColumnTypeName(columnIndex).toUpperCase();
                dbColumns.add(describe);
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             chStmt.close();
          }
@@ -79,16 +74,16 @@ public class DbDescribe {
             int x = 0;
             for (Describe d : describeList) {
                if (d.type.contains("NUMBER")) {
-                  Long l = chStmt.getRset().getLong(d.name);
+                  Long l = chStmt.getLong(d.name);
                   dbModel.addColumn(x++, l);
                } else if (d.type.contains("VARCHAR")) {
-                  String value = chStmt.getRset().getString(d.name);
+                  String value = chStmt.getString(d.name);
                   dbModel.addColumn(x++, value);
                } else if (d.type.contains("INT")) {
-                  Integer value = chStmt.getRset().getInt(d.name);
+                  Integer value = chStmt.getInt(d.name);
                   dbModel.addColumn(x++, value);
                } else if (d.type.contains("TIMESTAMP")) {
-                  Timestamp value = chStmt.getRset().getTimestamp(d.name);
+                  Timestamp value = chStmt.getTimestamp(d.name);
                   dbModel.addColumn(x++, value);
                } else {
                   dbModel.addColumn(x++, new String("Unknown object type"));
@@ -96,8 +91,6 @@ public class DbDescribe {
             }
             taskList.addTask(dbModel);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

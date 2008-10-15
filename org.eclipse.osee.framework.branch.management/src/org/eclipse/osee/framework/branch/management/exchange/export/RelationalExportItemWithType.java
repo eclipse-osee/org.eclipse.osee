@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
-import java.sql.ResultSet;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility;
 import org.eclipse.osee.framework.db.connection.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -124,9 +124,9 @@ public class RelationalExportItemWithType extends RelationalExportItem {
        * @see org.eclipse.osee.framework.branch.management.export.RelationalExportItem.IExportColumnListener#onColumnExport(java.lang.String, java.sql.ResultSet)
        */
       @Override
-      public void onColumnExport(String columnName, ResultSet resultSet) throws Exception {
+      public void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
          if (columnName.equals(getColumnToListenFor())) {
-            this.joinQuery.add(resultSet.getInt(columnName), -1);
+            this.joinQuery.add(chStmt.getInt(columnName), -1);
          }
       }
    }

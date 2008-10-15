@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
@@ -38,10 +37,9 @@ public class PurgeArtifactType extends AbstractBlam {
 
       try {
          chStmt = ConnectionHandler.runPreparedQuery(COUNT_ARTIFACT_OCCURRENCE, artTypeId);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next() && rSet.getInt("artCount") != 0) {
+         if (chStmt.next() && chStmt.getInt("artCount") != 0) {
             throw new IllegalArgumentException(
-                  "Can not delete artifact type " + artType.getName() + " because there are " + rSet.getInt("artCount") + " existing artifacts of this type.");
+                  "Can not delete artifact type " + artType.getName() + " because there are " + chStmt.getInt("artCount") + " existing artifacts of this type.");
          }
       } finally {
          ConnectionHandler.close(chStmt);

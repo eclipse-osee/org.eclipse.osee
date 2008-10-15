@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -92,18 +90,15 @@ public class RemoveAttributesWithoutArtifacts extends DatabaseHealthTask {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_WITH_NO_ARTIFACTS);
-         ResultSet rSet = chStmt.getRset();
          int transactionNumber;
          int gammaIdNumber;
 
-         while (rSet.next()) {
-            transactionNumber = rSet.getInt("transaction_id");
-            gammaIdNumber = rSet.getInt("gamma_id");
-            datas.add(new Integer[] {transactionNumber, gammaIdNumber, rSet.getInt("branch_id"), rSet.getInt("art_id"),
-                  rSet.getInt("attr_id")});
+         while (chStmt.next()) {
+            transactionNumber = chStmt.getInt("transaction_id");
+            gammaIdNumber = chStmt.getInt("gamma_id");
+            datas.add(new Integer[] {transactionNumber, gammaIdNumber, chStmt.getInt("branch_id"),
+                  chStmt.getInt("art_id"), chStmt.getInt("attr_id")});
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,9 +40,8 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_USER_COUNT);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            logger.log(Level.INFO, "active user count: " + rSet.getInt("user_count"));
+         if (chStmt.next()) {
+            logger.log(Level.INFO, "active user count: " + chStmt.getInt("user_count"));
          }
       } finally {
          ConnectionHandler.close(chStmt);

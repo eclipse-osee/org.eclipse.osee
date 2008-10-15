@@ -14,8 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashSet;
@@ -102,48 +100,50 @@ public class RelationalExportItem extends AbstractDbExportItem {
                BranchExportTaskConfig.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
          chStmt = ConnectionHandler.runPreparedQuery(getConnection(), sqlData.object1, sqlData.object2);
          while (chStmt.next()) {
-            processData(appendable, chStmt.getRset());
+            processData(appendable, chStmt);
          }
       } finally {
          ConnectionHandler.close(chStmt);
       }
    }
 
-   protected void processData(Appendable appendable, ResultSet resultSet) throws Exception {
+   protected void processData(Appendable appendable, ConnectionHandlerStatement chStmt) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
       try {
-         ResultSetMetaData meta = resultSet.getMetaData();
-         int numberOfColumns = meta.getColumnCount() + 1;
+         int numberOfColumns = chStmt.getColumnCount() + 1;
          for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
-            String name = meta.getColumnName(columnIndex).toLowerCase();
-            notifyOnColumnExport(name, resultSet);
+            String name = chStmt.getColumnName(columnIndex).toLowerCase();
+            notifyOnColumnExport(name, chStmt);
             if (name.equals("uri")) {
-               handleBinaryContent(binaryContentBuffer, getWriteLocation(), name, resultSet);
+               handleBinaryContent(binaryContentBuffer, getWriteLocation(), chStmt.getString(name));
             } else if (name.equals("value")) {
-               handleStringContent(stringContentBuffer, getWriteLocation(), name, resultSet,
+               handleStringContent(stringContentBuffer, getWriteLocation(), chStmt.getString(name),
                      ExportImportXml.STRING_CONTENT);
             } else if (name.equals(ExportImportXml.OSEE_COMMENT)) {
-               handleStringContent(oseeCommentBuffer, getWriteLocation(), name, resultSet, ExportImportXml.OSEE_COMMENT);
+               handleStringContent(oseeCommentBuffer, getWriteLocation(), chStmt.getString(name),
+                     ExportImportXml.OSEE_COMMENT);
             } else if (name.equals(ExportImportXml.BRANCH_NAME)) {
-               handleStringContent(branchNameBuffer, getWriteLocation(), name, resultSet, ExportImportXml.BRANCH_NAME);
+               handleStringContent(branchNameBuffer, getWriteLocation(), chStmt.getString(name),
+                     ExportImportXml.BRANCH_NAME);
             } else if (name.equals(ExportImportXml.BRANCH_SHORT_NAME)) {
-               handleStringContent(branchShortNameBuffer, getWriteLocation(), name, resultSet,
+               handleStringContent(branchShortNameBuffer, getWriteLocation(), chStmt.getString(name),
                      ExportImportXml.BRANCH_SHORT_NAME);
             } else if (name.equals(ExportImportXml.RATIONALE)) {
-               handleStringContent(rationaleBuffer, getWriteLocation(), name, resultSet, ExportImportXml.RATIONALE);
+               handleStringContent(rationaleBuffer, getWriteLocation(), chStmt.getString(name),
+                     ExportImportXml.RATIONALE);
             } else {
-               switch (meta.getColumnType(columnIndex)) {
+               switch (chStmt.getColumnType(columnIndex)) {
                   case Types.TIMESTAMP:
-                     Timestamp timestamp = resultSet.getTimestamp(columnIndex);
+                     Timestamp timestamp = chStmt.getTimestamp(name);
                      ExportImportXml.addXmlAttribute(appendable, name, timestamp);
                      break;
                   default:
                      try {
-                        String value = resultSet.getString(columnIndex);
+                        String value = chStmt.getString(name);
                         ExportImportXml.addXmlAttribute(appendable, name, value);
                      } catch (Exception ex) {
                         throw new Exception(String.format("Unable to convert [%s] of raw type [%s] to string.", name,
-                              meta.getColumnTypeName(columnIndex)), ex);
+                              chStmt.getColumnTypeName(columnIndex)), ex);
                      }
                      break;
                }
@@ -183,8 +183,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleBinaryContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet) throws Exception {
-      String uriData = resultSet.getString(name);
+   private void handleBinaryContent(Appendable appendable, File tempFolder, String uriData) throws Exception {
       if (Strings.isValid(uriData)) {
          uriData = exportBinaryDataTo(tempFolder, uriData);
          ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.BINARY_CONTENT);
@@ -193,8 +192,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
-   private void handleStringContent(Appendable appendable, File tempFolder, String name, ResultSet resultSet, String tag) throws Exception {
-      String stringValue = resultSet.getString(name);
+   private void handleStringContent(Appendable appendable, File tempFolder, String stringValue, String tag) throws Exception {
       if (Strings.isValid(stringValue)) {
          ExportImportXml.openXmlNodeNoNewline(appendable, tag);
          Xml.writeAsCdata(appendable, stringValue);
@@ -219,13 +217,13 @@ public class RelationalExportItem extends AbstractDbExportItem {
       super.cleanUp();
    }
 
-   private void notifyOnColumnExport(String columnName, ResultSet resultSet) throws Exception {
+   private void notifyOnColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
       for (IExportColumnListener listener : this.exportColumnListeners) {
-         listener.onColumnExport(columnName, resultSet);
+         listener.onColumnExport(columnName, chStmt);
       }
    }
 
    public interface IExportColumnListener {
-      public abstract void onColumnExport(String columnName, ResultSet resultSet) throws Exception;
+      public abstract void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception;
    }
 }

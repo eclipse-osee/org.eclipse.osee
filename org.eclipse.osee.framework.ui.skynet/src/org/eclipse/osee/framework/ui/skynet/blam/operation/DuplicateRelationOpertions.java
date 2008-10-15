@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -75,10 +75,10 @@ public class DuplicateRelationOpertions extends AbstractBlam {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_DUPLICATE_RELATIONS);
-         while (chStmt.getRset().next()) {
-            addRelationEntry(chStmt.getRset().getInt(1), chStmt.getRset().getInt(2), chStmt.getRset().getInt(3),
-                  chStmt.getRset().getInt(4), chStmt.getRset().getInt(5), chStmt.getRset().getLong(6),
-                  chStmt.getRset().getInt(7));
+         while (chStmt.next()) {
+            addRelationEntry(chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_type_id"),
+                  chStmt.getInt("branch_id"), chStmt.getInt("rel_link_id"), chStmt.getLong("gamma_id"),
+                  chStmt.getInt("transaction_id"));
          }
       } finally {
          ConnectionHandler.close(chStmt);
@@ -129,14 +129,14 @@ public class DuplicateRelationOpertions extends AbstractBlam {
          try {
             chStmt =
                   ConnectionHandler.runPreparedQuery(this.checkGammaCase, info.art_b, info.art_a, info.rel_link_type);
-            while (chStmt.getRset().next()) {
-               if (chStmt.getRset().getInt("mod_type") == 2) {
+            while (chStmt.next()) {
+               if (chStmt.getInt("mod_type") == 2) {
                   modCount++;
-                  gammaId = chStmt.getRset().getLong("gamma_id");
+                  gammaId = chStmt.getLong("gamma_id");
                }
                count++;
             }
-         } catch (SQLException ex) {
+         } catch (OseeCoreException ex) {
             ex.printStackTrace();
          } finally {
             ConnectionHandler.close(chStmt);

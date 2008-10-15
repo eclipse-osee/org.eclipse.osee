@@ -59,7 +59,7 @@ public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
                ConnectionHandler.runPreparedQuery(getConnection(), String.format("select %s from %s where %s = ?",
                      typeField, getMetaData().getTableName(), nameField), name);
          if (chStmt.next()) {
-            getTranslator().checkIdMapping(typeField, original, chStmt.getRset().getLong(1));
+            getTranslator().checkIdMapping(typeField, original, chStmt.getLong(chStmt.getColumnName(1)));
          } else {
             this.errorCheck.append(String.format("Type not found in target db. type:[%s] - [%s (%s)]\n", name,
                   typeField, typeId));

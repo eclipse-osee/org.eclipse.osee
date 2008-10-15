@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -210,22 +208,18 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthTask {
 
    private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
-      ResultSet resultSet = null;
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(sql);
-         resultSet = chStmt.getRset();
-         while (resultSet.next()) {
-            if (!map.containsKey(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id")) && (forDelete || !deleteMap.containsKey(
-                  resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id")))) {
-               map.put(resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"), new LocalRelationLink(
-                     resultSet.getInt("rel_link_id"), resultSet.getInt("gamma_id"), resultSet.getInt("transaction_id"),
-                     resultSet.getInt("branch_id"), resultSet.getInt("a_art_id"), resultSet.getInt("b_art_id"),
-                     resultSet.getInt("deleted_tran")));
+         while (chStmt.next()) {
+            if (!map.containsKey(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")) && (forDelete || !deleteMap.containsKey(
+                  chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")))) {
+               map.put(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"), new LocalRelationLink(
+                     chStmt.getInt("rel_link_id"), chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id"),
+                     chStmt.getInt("branch_id"), chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"),
+                     chStmt.getInt("deleted_tran")));
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

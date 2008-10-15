@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -81,8 +79,6 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       LinkedList<DuplicateAttribute> diffValues = new LinkedList<DuplicateAttribute>();
       ConnectionHandlerStatement chStmt1 = null;
       ConnectionHandlerStatement chStmt2 = null;
-      ResultSet resultSet = null;
-      ResultSet resultSet2 = null;
       fixErrors = operation.equals(Operation.Fix);
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
@@ -92,31 +88,28 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       if (monitor.isCanceled()) return;
       try {
          chStmt1 = ConnectionHandler.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
-         resultSet = chStmt1.getRset();
          monitor.worked(6);
          monitor.subTask("Processing Results");
          if (monitor.isCanceled()) return;
-         while (resultSet.next()) {
+         while (chStmt1.next()) {
             try {
-               chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_1"));
-               resultSet2 = chStmt2.getRset();
-               if (resultSet2.next()) {
+               chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_1"));
+               if (chStmt2.next()) {
                   ConnectionHandler.close(chStmt2);
-                  chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, resultSet.getInt("attr_id_2"));
-                  resultSet2 = chStmt2.getRset();
-                  if (resultSet2.next()) {
+                  chStmt2 = ConnectionHandler.runPreparedQuery(FILTER_DELTED, chStmt1.getInt("attr_id_2"));
+                  if (chStmt2.next()) {
                      DuplicateAttribute duplicateAttribute;
                      duplicateAttribute = new DuplicateAttribute();
-                     duplicateAttribute.artId = resultSet.getInt("art_id");
-                     duplicateAttribute.attrId1 = resultSet.getInt("attr_id_1");
-                     duplicateAttribute.attrId2 = resultSet.getInt("attr_id_2");
-                     duplicateAttribute.name = resultSet.getString("name");
-                     duplicateAttribute.value1 = resultSet.getString("value_1");
-                     duplicateAttribute.value2 = resultSet.getString("value_2");
-                     duplicateAttribute.uri1 = resultSet.getString("uri_1");
-                     duplicateAttribute.uri2 = resultSet.getString("uri_2");
-                     duplicateAttribute.gamma1 = resultSet.getInt("gamma_id_1");
-                     duplicateAttribute.gamma2 = resultSet.getInt("gamma_id_2");
+                     duplicateAttribute.artId = chStmt1.getInt("art_id");
+                     duplicateAttribute.attrId1 = chStmt1.getInt("attr_id_1");
+                     duplicateAttribute.attrId2 = chStmt1.getInt("attr_id_2");
+                     duplicateAttribute.name = chStmt1.getString("name");
+                     duplicateAttribute.value1 = chStmt1.getString("value_1");
+                     duplicateAttribute.value2 = chStmt1.getString("value_2");
+                     duplicateAttribute.uri1 = chStmt1.getString("uri_1");
+                     duplicateAttribute.uri2 = chStmt1.getString("uri_2");
+                     duplicateAttribute.gamma1 = chStmt1.getInt("gamma_id_1");
+                     duplicateAttribute.gamma2 = chStmt1.getInt("gamma_id_2");
 
                      if ((duplicateAttribute.value1 != null && duplicateAttribute.value2 != null && duplicateAttribute.value1.equals(duplicateAttribute.value2)) || (duplicateAttribute.uri1 != null && duplicateAttribute.uri2 != null && duplicateAttribute.uri1.equals(duplicateAttribute.uri2)) || (duplicateAttribute.value1 == null && duplicateAttribute.value2 == null && duplicateAttribute.uri1 == null && duplicateAttribute.uri2 == null)) {
                         sameValues.add(duplicateAttribute);
@@ -208,12 +201,9 @@ public class DuplicateAttributes extends DatabaseHealthTask {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(BRANCHES_WITH_ONLY_ATTR, attrId1, attrId2);
-         ResultSet resultSet = chStmt.getRset();
-         while (resultSet.next()) {
-            branches.add(new Integer(resultSet.getInt("branch_id")));
+         while (chStmt.next()) {
+            branches.add(new Integer(chStmt.getInt("branch_id")));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
