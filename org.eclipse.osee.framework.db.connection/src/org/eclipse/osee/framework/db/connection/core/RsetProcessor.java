@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 
 /**
  * @author Robert A. Fisher
  */
 public interface RsetProcessor<T> {
-   public T process(ResultSet set) throws SQLException;
+   public T process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException;
 
    public boolean validate(T item);
 }
