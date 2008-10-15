@@ -87,17 +87,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       }
    }
    
-   public static void main(String[] args){
-      String uriValue = "558\\235\\8\\FY4GG.zip";
-      
-      uriValue = uriValue.replaceAll("\\\\", File.separator);
-      
-      String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + uriValue;
-      System.out.println(entrySearch);
-      
-      
-   }
-
    @Override
    protected void processData(Map<String, String> fieldMap) throws Exception {
       boolean process = true;
