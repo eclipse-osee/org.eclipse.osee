@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -67,28 +65,25 @@ public class AttributeTypeManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
 
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            String baseClassString = rSet.getString("attribute_class");
-            String baseProviderClassString = rSet.getString("attribute_provider_class");
+         while (chStmt.next()) {
+            String baseClassString = chStmt.getString("attribute_class");
+            String baseProviderClassString = chStmt.getString("attribute_provider_class");
             try {
                Class<? extends Attribute<?>> baseAttributeClass =
                      AttributeExtensionManager.getAttributeClassFor(baseClassString);
                Class<? extends IAttributeDataProvider> providerAttributeClass =
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
                AttributeType type =
-                     new AttributeType(rSet.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
-                           rSet.getString("file_type_extension"), rSet.getString("namespace"), rSet.getString("name"),
-                           rSet.getString("default_value"), rSet.getString("validity_xml"),
-                           rSet.getInt("min_occurence"), rSet.getInt("max_occurence"), rSet.getString("tip_text"),
-                           rSet.getString("tagger_id"));
+                     new AttributeType(chStmt.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
+                           chStmt.getString("file_type_extension"), chStmt.getString("namespace"),
+                           chStmt.getString("name"), chStmt.getString("default_value"),
+                           chStmt.getString("validity_xml"), chStmt.getInt("min_occurence"),
+                           chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
             } catch (ClassNotFoundException ex) {
                OseeLog.log(SkynetActivator.class, Level.SEVERE, ex);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -202,15 +197,12 @@ public class AttributeTypeManager {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, attrProviderExtension);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            attrBaseTypeId = rSet.getInt("attr_provider_type_id");
+         if (chStmt.next()) {
+            attrBaseTypeId = chStmt.getInt("attr_provider_type_id");
          } else {
             attrBaseTypeId = SequenceManager.getNextAttributeProviderTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, attrBaseTypeId, attrProviderExtension);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -222,15 +214,12 @@ public class AttributeTypeManager {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, attrBaseExtension);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            attrBaseTypeId = rSet.getInt("attr_base_type_id");
+         if (chStmt.next()) {
+            attrBaseTypeId = chStmt.getInt("attr_base_type_id");
          } else {
             attrBaseTypeId = SequenceManager.getNextAttributeBaseTypeId();
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, attrBaseTypeId, attrBaseExtension);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

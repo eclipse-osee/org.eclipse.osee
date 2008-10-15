@@ -22,8 +22,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -163,13 +161,10 @@ public class RevisionManager {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.runPreparedQuery(SELECT_COMMIT_ART_TRANSACTIONS);
-            ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
-               int commitArtId = rSet.getInt("commit_art_id");
-               cacheTransactionDataPerCommitArtifact(commitArtId, rSet.getInt("transaction_id"));
+               int commitArtId = chStmt.getInt("commit_art_id");
+               cacheTransactionDataPerCommitArtifact(commitArtId, chStmt.getInt("transaction_id"));
             }
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
          } finally {
             ConnectionHandler.close(chStmt);
          }
@@ -407,9 +402,7 @@ public class RevisionManager {
          try {
             chStmt = ConnectionHandler.runPreparedQuery(sql, artId);
 
-            if (chStmt.next()) name = chStmt.getRset().getString("value");
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
+            if (chStmt.next()) name = chStmt.getString("value");
          } finally {
             ConnectionHandler.close(chStmt);
          }
@@ -430,13 +423,10 @@ public class RevisionManager {
 
          Artifact artifact = ArtifactQuery.getArtifactFromId(artId, fromTransactionId.getBranch(), true);
 
-         ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
-            changes.add(new ArtifactChange(changeType, ModificationType.getMod(rSet.getInt("mod_type")), artifact,
-                  null, null, null, toTransactionId, fromTransactionId, rSet.getInt("gamma_id")));
+            changes.add(new ArtifactChange(changeType, ModificationType.getMod(chStmt.getInt("mod_type")), artifact,
+                  null, null, null, toTransactionId, fromTransactionId, chStmt.getInt("gamma_id")));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -546,10 +536,9 @@ public class RevisionManager {
                      ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
                            toTransactionId.getTransactionNumber(), fromTransactionId.getBranch().getBranchId());
 
-               ResultSet rset = chStmt.getRset();
-               while (rset.next()) {
-                  artIdToMinOver.put(rset.getInt("art_id"),
-                        TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
+               while (chStmt.next()) {
+                  artIdToMinOver.put(chStmt.getInt("art_id"),
+                        TransactionIdManager.getTransactionId(chStmt.getInt("base_tx")));
                }
             } finally {
                ConnectionHandler.close(chStmt);
@@ -564,17 +553,14 @@ public class RevisionManager {
                      ConnectionHandler.runPreparedQuery(sql, fromTransactionId.getTransactionNumber(),
                            fromTransactionId.getBranch().getBranchId());
 
-               ResultSet rset = chStmt1.getRset();
-               while (rset.next()) {
-                  artIdToMaxUnder.put(rset.getInt("art_id"),
-                        TransactionIdManager.getTransactionId(rset.getInt("base_tx")));
+               while (chStmt1.next()) {
+                  artIdToMaxUnder.put(chStmt1.getInt("art_id"),
+                        TransactionIdManager.getTransactionId(chStmt1.getInt("base_tx")));
                }
             } finally {
                ConnectionHandler.close(chStmt1);
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -633,22 +619,22 @@ public class RevisionManager {
          this.artifactNameDescriptorCache = artifactNameDescriptorCache;
       }
 
-      public ArtifactChange process(ResultSet set) throws SQLException {
+      public ArtifactChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
          try {
-            ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
+            ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
 
-            TransactionId transactionId = TransactionIdManager.getTransactionId(set.getInt("deleted_transaction"));
-            int artId = set.getInt("art_id");
+            TransactionId transactionId = TransactionIdManager.getTransactionId(chStmt.getInt("deleted_transaction"));
+
+            int artId = chStmt.getInt("art_id");
             Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, transactionId);
 
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(artId,
                   artifact.getDescriptiveName(), artifact.getArtifactType());
 
             return new ArtifactChange(OUTGOING, modType, artifact, baseParentTransactionId, headParentTransactionId,
-                  fromTransactionId, fromTransactionId, transactionId, set.getInt("gamma_id"));
-
+                  fromTransactionId, fromTransactionId, transactionId, chStmt.getInt("gamma_id"));
          } catch (OseeCoreException ex) {
-            throw new SQLException(ex);
+            throw new OseeDataStoreException(ex);
          }
       }
 
@@ -675,18 +661,18 @@ public class RevisionManager {
          this.changeType = changeType;
       }
 
-      public AttributeChange process(ResultSet set) throws SQLException {
-         ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
+      public AttributeChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+         ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
          if (modType == DELETED) {
-            String wasValue = set.getString("was_value");
-            return new AttributeChange(changeType, set.getInt("attr_id"), set.getLong("gamma_id"),
-                  set.getString("name"), wasValue == null ? "" : wasValue);
+            String wasValue = chStmt.getString("was_value");
+            return new AttributeChange(changeType, chStmt.getInt("attr_id"), chStmt.getLong("gamma_id"),
+                  chStmt.getString("name"), wasValue == null ? "" : wasValue);
          } else {
-            String isValue = set.getString("is_value");
-            String wasValue = set.getString("was_value");
-            return new AttributeChange(changeType, modType, set.getInt("attr_id"), set.getLong("gamma_id"),
-                  set.getString("name"), isValue == null ? "" : isValue, set.getBinaryStream("is_content"),
-                  wasValue == null ? "" : wasValue, set.getBinaryStream("was_content"));
+            String isValue = chStmt.getString("is_value");
+            String wasValue = chStmt.getString("was_value");
+            return new AttributeChange(changeType, modType, chStmt.getInt("attr_id"), chStmt.getLong("gamma_id"),
+                  chStmt.getString("name"), isValue == null ? "" : isValue, chStmt.getBinaryStream("is_content"),
+                  wasValue == null ? "" : wasValue, chStmt.getBinaryStream("was_content"));
          }
       }
 
@@ -715,24 +701,24 @@ public class RevisionManager {
          this.artifactNameDescriptorResolver = artifactNameDescriptorResolver;
       }
 
-      public RelationLinkChange process(ResultSet set) throws SQLException {
+      public RelationLinkChange process(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
 
-         ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
+         ModificationType modType = ModificationType.getMod(chStmt.getInt("modification_id"));
 
          Pair<String, ArtifactType> artifactData;
          if (artifactNameDescriptorResolver != null)
-            artifactData = artifactNameDescriptorResolver.get(set.getInt("art_id"));
+            artifactData = artifactNameDescriptorResolver.get(chStmt.getInt("art_id"));
          else
             artifactData = UNKNOWN_DATA;
 
-         String relName = set.getString("type_name") + " (" + set.getString("side_name") + ")";
+         String relName = chStmt.getString("type_name") + " (" + chStmt.getString("side_name") + ")";
          if (modType == DELETED) {
-            return new RelationLinkChange(changeType, set.getInt("rel_link_id"), set.getLong("gamma_id"), relName,
-                  artifactData.getKey(), artifactData.getValue());
+            return new RelationLinkChange(changeType, chStmt.getInt("rel_link_id"), chStmt.getLong("gamma_id"),
+                  relName, artifactData.getKey(), artifactData.getValue());
          } else {
-            return new RelationLinkChange(changeType, modType, set.getInt("rel_link_id"), set.getLong("gamma_id"),
-                  set.getString("rationale"), set.getInt("order_val"), relName, artifactData.getKey(),
-                  artifactData.getValue());
+            return new RelationLinkChange(changeType, modType, chStmt.getInt("rel_link_id"),
+                  chStmt.getLong("gamma_id"), chStmt.getString("rationale"), chStmt.getInt("order_val"), relName,
+                  artifactData.getKey(), artifactData.getValue());
          }
       }
 
@@ -767,10 +753,8 @@ public class RevisionManager {
                   ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(),
                         artifact.getBranch().getBranchId(), artifact.getBranch().getParentBranchId());
 
-            ResultSet rset = chStmt.getRset();
-
-            while (rset.next()) {
-               otherBranches.add(BranchPersistenceManager.getBranch(rset.getInt("branch_id")));
+            while (chStmt.next()) {
+               otherBranches.add(BranchPersistenceManager.getBranch(chStmt.getInt("branch_id")));
             }
          } catch (Exception e) {
             logger.log(Level.SEVERE, e.toString(), e);

@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -247,14 +245,10 @@ public class TransactionIdManager {
                         startTransactionId.getBranch().getBranchId(), startTransactionId.getTransactionNumber(),
                         endTransactionId.getTransactionNumber());
          }
-
-         ResultSet rset = chStmt.getRset();
-         while (rset.next()) {
-            checksum.update(toBytes(rset.getLong("transaction_id")), 0, 8);
-            checksum.update(toBytes(rset.getLong("gamma_id")), 0, 8);
+         while (chStmt.next()) {
+            checksum.update(toBytes(chStmt.getLong("transaction_id")), 0, 8);
+            checksum.update(toBytes(chStmt.getLong("gamma_id")), 0, 8);
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

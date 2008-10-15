@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -53,11 +51,10 @@ public class ConflictStatusManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
 
-         ResultSet statusSet = chStmt.getRset();
-         if (statusSet.next()) {
+         if (chStmt.next()) {
             //There was an entry so lets check it and update it.
-            int intStatus = statusSet.getInt("status");
-            if (((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITTED.getValue()) {
+            int intStatus = chStmt.getInt("status");
+            if (((chStmt.getInt("source_gamma_id") != sourceGamma) || (chStmt.getInt("dest_gamma_id") != destGamma)) && intStatus != Status.COMMITTED.getValue()) {
                if (intStatus == Status.RESOLVED.getValue()) {
                   intStatus = Status.OUT_OF_DATE.getValue();
                }
@@ -70,8 +67,6 @@ public class ConflictStatusManager {
             return Status.getStatus(intStatus);
          }
          // add the entry to the table and set as UNTOUCHED
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

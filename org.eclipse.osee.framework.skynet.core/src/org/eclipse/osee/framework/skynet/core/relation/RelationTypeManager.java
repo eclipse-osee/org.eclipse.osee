@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -134,18 +132,15 @@ public class RelationTypeManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(SELECT_LINK_TYPES);
 
-         ResultSet rset = chStmt.getRset();
-         while (rset.next()) {
+         while (chStmt.next()) {
             RelationType relationType =
-                  new RelationType(rset.getInt("rel_link_type_id"), rset.getString("namespace"),
-                        rset.getString("type_name"), rset.getString("a_name"), rset.getString("b_name"),
-                        rset.getString("ab_phrasing"), rset.getString("ba_phrasing"), rset.getString("short_name"),
-                        rset.getString("user_ordered"));
+                  new RelationType(chStmt.getInt("rel_link_type_id"), chStmt.getString("namespace"),
+                        chStmt.getString("type_name"), chStmt.getString("a_name"), chStmt.getString("b_name"),
+                        chStmt.getString("ab_phrasing"), chStmt.getString("ba_phrasing"),
+                        chStmt.getString("short_name"), chStmt.getString("user_ordered"));
             cache(relationType);
          }
          loadLinkValidities();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
@@ -164,14 +159,11 @@ public class RelationTypeManager {
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
-         ResultSet rset = chStmt.getRset();
 
-         while (rset.next()) {
-            validityMap.put(rset.getInt("rel_link_type_id"), rset.getInt("art_type_id"),
-                  new ObjectPair<Integer, Integer>(rset.getInt("side_a_max"), rset.getInt("side_b_max")));
+         while (chStmt.next()) {
+            validityMap.put(chStmt.getInt("rel_link_type_id"), chStmt.getInt("art_type_id"),
+                  new ObjectPair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max")));
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }

@@ -294,7 +294,7 @@ public class DeleteTransactionJob extends Job {
       chStmt = ConnectionHandler.runPreparedQuery(conn, TRANSACATION_GAMMA_IN_USE, queryId);
       if (chStmt.next() && !force) {
          throw new OseeCoreException(
-               "The Transaction " + chStmt.getRset().getInt("transaction_id") + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
+               "The Transaction " + chStmt.getInt("transaction_id") + " holds a Gamma that is in use on other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
       }
    }
 
