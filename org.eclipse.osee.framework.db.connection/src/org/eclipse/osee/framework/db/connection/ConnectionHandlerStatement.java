@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.db.connection;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
@@ -38,16 +41,6 @@ public class ConnectionHandlerStatement {
          }
       }
       return false;
-   }
-
-   /**
-    * use the ConnectionHandlerStatement directly for getX() calls and next()
-    * 
-    * @return Returns the rset.
-    */
-   @Deprecated
-   public ResultSet getRset() {
-      return rSet;
    }
 
    /**
@@ -87,6 +80,14 @@ public class ConnectionHandlerStatement {
    public InputStream getBinaryStream(String columnName) throws OseeDataStoreException {
       try {
          return rSet.getBinaryStream(columnName);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public InputStream getAsciiStream(String columnName) throws OseeDataStoreException {
+      try {
+         return rSet.getAsciiStream(columnName);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -177,6 +178,22 @@ public class ConnectionHandlerStatement {
       }
    }
 
+   public BigDecimal getBigDecimal(String name) throws OseeDataStoreException {
+      try {
+         return rSet.getBigDecimal(name);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public Time getTime(String name) throws OseeDataStoreException {
+      try {
+         return rSet.getTime(name);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
    public double getDouble(String columnName) throws OseeDataStoreException {
       try {
          return rSet.getDouble(columnName);
@@ -196,6 +213,54 @@ public class ConnectionHandlerStatement {
    public boolean wasNull() throws OseeDataStoreException {
       try {
          return rSet.wasNull();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public int getColumnCount() throws OseeDataStoreException {
+      try {
+         return rSet.getMetaData().getColumnCount();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public String getColumnName(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getMetaData().getColumnName(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public int getColumnType(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getMetaData().getColumnType(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public String getColumnTypeName(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getMetaData().getColumnTypeName(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public Object getObject(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getObject(columnIndex);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public boolean isNullable(int columnIndex) throws OseeDataStoreException {
+      try {
+         return rSet.getMetaData().isNullable(columnIndex) == ResultSetMetaData.columnNullable;
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }

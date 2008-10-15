@@ -220,7 +220,7 @@ public final class ConnectionHandler {
     * 
     * @param query
     * @param data
-    * @return
+    * @return number of records updated
     * @throws OseeDataStoreException
     */
    public static int runPreparedUpdate(String query, Object... data) throws OseeDataStoreException {
@@ -237,7 +237,7 @@ public final class ConnectionHandler {
     * 
     * @param query
     * @param dataList
-    * @return
+    * @return number of records updated
     * @throws OseeDataStoreException
     */
    public static int runPreparedUpdate(String query, List<Object[]> dataList) throws OseeDataStoreException {
@@ -255,7 +255,7 @@ public final class ConnectionHandler {
     * @param connection
     * @param query
     * @param data
-    * @return
+    * @return number of records updated
     * @throws OseeDataStoreException
     */
    public static int runPreparedUpdate(Connection connection, String query, Object... data) throws OseeDataStoreException {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core.query;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
@@ -42,15 +41,13 @@ public class Query {
          chStmt = ConnectionHandler.runPreparedQuery(sql, data);
          while (chStmt.next()) {
             try {
-               item = processor.process(chStmt.getRset());
+               item = processor.process(chStmt);
                if (processor.validate(item)) collection.add(item);
             } catch (IllegalStateException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "Encountered Exception when trying to acquire a collection.",
                      ex);
             }
          }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       } finally {
          ConnectionHandler.close(chStmt);
       }
