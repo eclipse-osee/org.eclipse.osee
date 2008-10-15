@@ -33,6 +33,15 @@ public class CustomizeData {
    private boolean personal = false;
    protected SortingData sortingData = new SortingData(this);
    protected FilterData filterData = new FilterData();
+   protected ColumnFilterData columnFilterData = new ColumnFilterData();
+
+   /**
+    * @return the columnFilterData
+    */
+   public ColumnFilterData getColumnFilterData() {
+      return columnFilterData;
+   }
+
    protected ColumnData columnData = new ColumnData();
    private final Map<String, Image> imageMap = new HashMap<String, Image>();
    private boolean isWorkbench = false;
@@ -82,6 +91,7 @@ public class CustomizeData {
                   "<XTreeProperties name=\"" + name + "\" namespace=\"" + nameSpace + "\" guid=\"" + guid + "\">");
       sb.append(sortingData.getXml());
       sb.append(filterData.getXml());
+      sb.append(columnFilterData.getXml());
       sb.append(columnData.getXml(visibleColumnsOnly));
       sb.append("</XTreeProperties>");
       return sb.toString();
@@ -101,11 +111,12 @@ public class CustomizeData {
       sortingData.setFromXml(xml);
       filterData.setFromXml(xml);
       columnData.setFromXml(xml);
+      columnFilterData.setFromXml(xml);
    }
 
    @Override
    public String toString() {
-      return "[" + name + "][" + nameSpace + "][" + guid + "][" + columnData + "][" + filterData + "][" + sortingData + "]";
+      return "[" + name + "][" + nameSpace + "][" + guid + "][" + columnData + "][" + filterData + "][" + columnFilterData + "][" + sortingData + "]";
    }
 
    /**

@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.ColumnFilterDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -49,8 +50,17 @@ public class XViewer extends TreeViewer {
    private Label statusLabel;
    private final MenuManager menuManager;
    private static Boolean ctrlKeyDown = null;
+   private static Boolean altKeyDown = null;
    protected final IXViewerFactory xViewerFactory;
    private final FilterDataUI filterDataUI;
+   private final ColumnFilterDataUI columnFilterDataUI;
+
+   /**
+    * @return the columnFilterDataUI
+    */
+   public ColumnFilterDataUI getColumnFilterDataUI() {
+      return columnFilterDataUI;
+   }
    private boolean columnMultiEditEnabled = false;
    private CustomizeManager customizeMgr;
    private TreeColumn rightClickSelectedColumn = null;
@@ -64,6 +74,7 @@ public class XViewer extends TreeViewer {
       this.menuManager.setRemoveAllWhenShown(true);
       this.menuManager.createContextMenu(parent);
       this.filterDataUI = new FilterDataUI(this);
+      this.columnFilterDataUI = new ColumnFilterDataUI(this);
       try {
          customizeMgr = new CustomizeManager(this, xViewerFactory);
       } catch (Exception ex) {
@@ -80,6 +91,7 @@ public class XViewer extends TreeViewer {
 
    public void dispose() {
       filterDataUI.dispose();
+      columnFilterDataUI.dispose();
    }
 
    @Override
@@ -159,6 +171,7 @@ public class XViewer extends TreeViewer {
 
       getTree().setMenu(getMenuManager().getMenu());
       filterDataUI.createWidgets(comp);
+      columnFilterDataUI.createWidgets(comp);
 
       customizeMgr.loadCustomization();
    }
@@ -230,6 +243,7 @@ public class XViewer extends TreeViewer {
    private void setupCtrlKeyListener() {
       if (ctrlKeyDown == null) {
          ctrlKeyDown = false;
+         altKeyDown = false;
          Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
          Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
       }
@@ -241,6 +255,13 @@ public class XViewer extends TreeViewer {
                ctrlKeyDown = true;
             } else if (event.type == SWT.KeyUp) {
                ctrlKeyDown = false;
+            }
+         }
+         if (event.keyCode == SWT.ALT) {
+            if (event.type == SWT.KeyDown) {
+               altKeyDown = true;
+            } else if (event.type == SWT.KeyUp) {
+               altKeyDown = false;
             }
          }
       }
@@ -346,6 +367,7 @@ public class XViewer extends TreeViewer {
       sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
       customizeMgr.getStatusLabelAddition(sb);
       filterDataUI.getStatusLabelAddition(sb);
+      columnFilterDataUI.getStatusLabelAddition(sb);
       sb.append(getStatusString());
    }
 
@@ -361,8 +383,10 @@ public class XViewer extends TreeViewer {
          sb.append("\n");
       }
       getStatusLine2(sb);
-      statusLabel.setText(sb.toString());
+      String str = sb.toString();
+      statusLabel.setText(str);
       statusLabel.getParent().getParent().layout();
+      statusLabel.setToolTipText(str);
    }
 
    public String getViewerNamespace() {
@@ -416,6 +440,10 @@ public class XViewer extends TreeViewer {
 
    public boolean isCtrlKeyDown() {
       return ctrlKeyDown != null && ctrlKeyDown;
+   }
+
+   public boolean isAltKeyDown() {
+      return altKeyDown != null && altKeyDown;
    }
 
 }

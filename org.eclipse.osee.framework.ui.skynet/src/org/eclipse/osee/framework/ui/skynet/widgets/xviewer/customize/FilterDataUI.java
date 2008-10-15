@@ -32,14 +32,11 @@ import org.eclipse.ui.PlatformUI;
 public class FilterDataUI {
 
    private Text filterText;
-   private final XViewerTextFilter xViewerFilter;
    private Label filterLabel;
-   private CustomizeData custData;
    private final XViewer xViewer;
 
    public FilterDataUI(XViewer xViewer) {
       this.xViewer = xViewer;
-      this.xViewerFilter = new XViewerTextFilter(xViewer);
    }
 
    public void createWidgets(Composite comp) {
@@ -70,8 +67,9 @@ public class FilterDataUI {
           */
          public void keyReleased(KeyEvent e) {
             // System.out.println(e.keyCode);
-            custData.getFilterData().setFilterText(filterText.getText());
-            if (filterText.getText().equals("") || e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) refresh();
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+               xViewer.getCustomizeMgr().setFilterText(filterText.getText());
+            }
          }
       });
 
@@ -89,8 +87,8 @@ public class FilterDataUI {
           * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
           */
          public void handleEvent(Event event) {
-            custData.getFilterData().setFilterText("");
-            refresh();
+            filterText.setText("");
+            xViewer.getCustomizeMgr().setFilterText("");
          }
       });
    }
@@ -99,23 +97,9 @@ public class FilterDataUI {
    }
 
    public void getStatusLabelAddition(StringBuffer sb) {
-      if (isXViewerTextFiltered()) {
+      if (filterText != null && !filterText.getText().equals("")) {
          sb.append("[Text Filter]");
       }
-   }
-
-   private void refresh() {
-      if (xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
-      if (custData.getFilterData().getFilterText().equals("")) {
-         xViewer.removeFilter(xViewerFilter);
-      } else {
-         if (isXViewerTextFiltered()) {
-            xViewer.removeFilter(xViewerFilter);
-         }
-         xViewerFilter.setFilterText(custData.getFilterData().getFilterText());
-         xViewer.addFilter(xViewerFilter);
-      }
-      if (filterText != null) filterText.setText(custData.getFilterData().getFilterText());
    }
 
    private boolean isXViewerTextFiltered() {
@@ -123,21 +107,6 @@ public class FilterDataUI {
          if (filter instanceof XViewerTextFilter) return true;
       }
       return false;
-   }
-
-   /**
-    * @return the custData
-    */
-   public CustomizeData getCustData() {
-      return custData;
-   }
-
-   /**
-    * @param custData the custData to set
-    */
-   public void setCustData(CustomizeData custData) {
-      this.custData = custData;
-      refresh();
    }
 
 }

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.dialog.XViewerCustomizeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,6 +39,7 @@ public class CustomizeManager {
 
    private final IXViewerFactory xViewerFactory;
    private final XViewer xViewer;
+   private XViewerTextFilter xViewerTextFilter;
    private CustomizeData currentCustData;
    public static String CURRENT_LABEL = "-- Current Table View --";
    public static String TABLE_DEFAULT_LABEL = "-- Table Default --";
@@ -153,6 +155,40 @@ public class CustomizeManager {
       return resolvedCustData;
    }
 
+   public void setFilterText(String text) {
+      currentCustData.filterData.setFilterText(text);
+      xViewerTextFilter.update();
+      xViewer.refresh();
+   }
+
+   public String getFilterText() {
+      return currentCustData.getFilterData().getFilterText();
+   }
+
+   public void setColumnFilterText(String colId, String text) {
+      if (text == null || text.equals("")) {
+         currentCustData.columnFilterData.removeFilterText(colId);
+      } else {
+         currentCustData.columnFilterData.setFilterText(colId, text);
+      }
+      xViewerTextFilter.update();
+      xViewer.refresh();
+   }
+
+   public void clearAllColumnFilters() {
+      currentCustData.columnFilterData.clear();
+      xViewerTextFilter.update();
+      xViewer.refresh();
+   }
+
+   public String getColumnFilterText(String colId) {
+      return currentCustData.getColumnFilterData().getFilterText(colId);
+   }
+
+   public ColumnFilterData getColumnFilterData() {
+      return currentCustData.getColumnFilterData();
+   }
+
    /**
     * Clears out current columns, sorting and filtering and loads table customization
     */
@@ -217,6 +253,10 @@ public class CustomizeManager {
 
    public List<XViewerColumn> getCurrentTableColumns() {
       return currentCustData.getColumnData().getColumns();
+   }
+
+   public XViewerColumn getCurrentTableColumn(String id) {
+      return currentCustData.getColumnData().getXColumn(id);
    }
 
    public List<XViewerColumn> getCurrentTableColumnsInOrder() {
@@ -352,13 +392,16 @@ public class CustomizeManager {
     */
    public void loadCustomization(final CustomizeData newCustData) {
       loading = true;
+      if (xViewerTextFilter == null) {
+         xViewerTextFilter = new XViewerTextFilter(xViewer);
+         xViewer.addFilter(xViewerTextFilter);
+      }
       if (xViewer.getTree().isDisposed()) return;
       currentCustData = newCustData;
       if (currentCustData.getName() == null || currentCustData.getName().equals("")) {
          currentCustData.setName(CURRENT_LABEL);
       }
       currentCustData.setNameSpace(xViewer.getViewerNamespace());
-      xViewer.getTextFilterComp().setCustData(newCustData);
       if (currentCustData.getSortingData().isSorting())
          xViewer.resetDefaultSorter();
       else
@@ -398,7 +441,9 @@ public class CustomizeManager {
                if (xViewer.getSorter() == null) {
                   resetDefaultSorter();
                }
-               if (xViewer.isCtrlKeyDown()) {
+               if (xViewer.isAltKeyDown()) {
+                  xViewer.getColumnFilterDataUI().promptSetFilter(xCol.getId());
+               } else if (xViewer.isCtrlKeyDown()) {
                   List<XViewerColumn> currSortCols = currentCustData.getSortingData().getSortXCols(oldNameToColumnId);
                   if (currSortCols == null) {
                      currSortCols = new ArrayList<XViewerColumn>();

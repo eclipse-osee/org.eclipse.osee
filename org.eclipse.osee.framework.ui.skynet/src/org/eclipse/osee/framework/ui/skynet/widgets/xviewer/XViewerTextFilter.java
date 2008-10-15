@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -20,31 +22,77 @@ public class XViewerTextFilter extends ViewerFilter {
 
    private final XViewer xViewer;
    private ITableLabelProvider labelProv;
-   private Pattern pattern;
+   private Pattern textPattern;
    private Matcher matcher;
+   private final Map<String, Pattern> colIdToPattern = new HashMap<String, Pattern>();
 
    public XViewerTextFilter(XViewer xViewer) {
       this.xViewer = xViewer;
    }
 
-   public void setFilterText(String text) {
-      pattern = Pattern.compile(text, Pattern.CASE_INSENSITIVE);
+   /**
+    * Setup all patterns for text and column text filters
+    */
+   public void update() {
+      // Update text filter pattern
+      if (xViewer.getCustomizeMgr().getFilterText() == null || xViewer.getCustomizeMgr().getFilterText().equals("")) {
+         textPattern = null;
+      } else {
+         textPattern = Pattern.compile(xViewer.getCustomizeMgr().getFilterText(), Pattern.CASE_INSENSITIVE);
+      }
+      // Update column filter patterns
+      colIdToPattern.clear();
+      for (String colId : xViewer.getCustomizeMgr().getColumnFilterData().getColIds()) {
+         if (xViewer.getCustomizeMgr().getColumnFilterText(colId) != null && !xViewer.getCustomizeMgr().getColumnFilterText(
+               colId).equals("")) {
+            colIdToPattern.put(colId, Pattern.compile(xViewer.getCustomizeMgr().getColumnFilterData().getFilterText(
+                  colId), Pattern.CASE_INSENSITIVE));
+         }
+      }
    }
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (pattern == null) return true;
+      if (textPattern == null && colIdToPattern.size() == 0) return true;
       if (labelProv == null) labelProv = (ITableLabelProvider) xViewer.getLabelProvider();
-      for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumns()) {
+      boolean match = true;
+      // Must match all column filters or don't show
+      for (String filteredColId : xViewer.getCustomizeMgr().getColumnFilterData().getColIds()) {
+         XViewerColumn xCol = xViewer.getCustomizeMgr().getCurrentTableColumn(filteredColId);
          if (xCol.isShow()) {
-            String cellStr =
-                  labelProv.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
-            if (cellStr != null) {
-               matcher = pattern.matcher(cellStr);
-               if (matcher.find()) return true;
+            // Check column filters
+            if (colIdToPattern.keySet().contains(xCol.getId())) {
+               String cellStr =
+                     labelProv.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+               if (cellStr != null) {
+                  matcher = colIdToPattern.get(xCol.getId()).matcher(cellStr);
+                  if (!matcher.find()) {
+                     return false;
+                  }
+               }
             }
          }
       }
+      if (!match) return false;
+
+      // Must match at least one column for filter text
+      if (textPattern == null) {
+         return match;
+      }
+      if (textPattern != null) {
+         for (XViewerColumn xCol : xViewer.getCustomizeMgr().getCurrentTableColumns()) {
+            if (xCol.isShow()) {
+               // Check text filter
+               String cellStr =
+                     labelProv.getColumnText(element, xViewer.getCustomizeMgr().getColumnNumFromXViewerColumn(xCol));
+               if (cellStr != null) {
+                  matcher = textPattern.matcher(cellStr);
+                  if (matcher.find()) return true;
+               }
+            }
+         }
+      }
+
       return false;
    }
 
