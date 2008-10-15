@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -87,7 +88,12 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
    private void runIt(IProgressMonitor monitor, String hrid, XResultData xResultData) throws OseeCoreException, ParserConfigurationException {
       TeamWorkFlowArtifact teamArt =
             (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
-      ValidateChangeReports.changeReportValidated(teamArt, xResultData);
+      Result result = ValidateChangeReports.changeReportValidated(teamArt);
+      if (result.isFalse()) {
+         xResultData.logError(result.getText());
+      } else {
+         xResultData.log(result.getText());
+      }
    }
 
 }
