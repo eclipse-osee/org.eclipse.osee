@@ -57,8 +57,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
                "Team that has been assigned to work this Action.");
    public static final XViewerColumn Notes_Col =
-         new XViewerAtsAttributeColumn(ATSAttributes.SMA_NOTE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, true,
-               null);
+         new XViewerColumn(COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT, true, SortDataType.String, true,
+               "Team that has been assigned to work this Action.");
    public static final XViewerColumn Deadline_Col =
          new XViewerAtsAttributeColumn(ATSAttributes.DEADLINE_ATTRIBUTE, 80, SWT.LEFT, true, SortDataType.String, true,
                null);

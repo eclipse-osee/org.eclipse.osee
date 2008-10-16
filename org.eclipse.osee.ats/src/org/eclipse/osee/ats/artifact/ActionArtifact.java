@@ -500,6 +500,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewNotes()
     */
+   @Override
    public String getWorldViewNotes() throws OseeCoreException {
       String str = "";
       // Roll up if same for all children
