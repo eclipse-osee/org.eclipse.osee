@@ -893,6 +893,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
     */
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
+      updateStatusLabel();
    }
 
 }
