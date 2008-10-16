@@ -66,7 +66,7 @@ public class SkynetTransactionBuilder {
       RelationPersistenceManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 
-   public void deleteArtifact(Artifact artifact) throws OseeCoreException {
+   public void deleteArtifact(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
       // No work is recorded since this reports children, and the number of children
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work
@@ -75,7 +75,7 @@ public class SkynetTransactionBuilder {
       } catch (Exception ex) {
          monitor.subTask("Deleting art_id - " + artifact.getArtId());
       }
-      ArtifactPersistenceManager.getInstance().doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
+      ArtifactPersistenceManager.getInstance().doDelete(artifact, getTransaction(artifact.isVersionControlled()), this, reorderRelations);
    }
 
    /**

@@ -589,7 +589,7 @@ public class HyperView extends ViewPart implements IPartListener {
                      if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Delete Link",
                            "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
                         Artifact artA = hvi.getLink().getArtifactA();
-                        hvi.getLink().delete();
+                        hvi.getLink().delete(true);
                         artA.persistRelations();
                         connectPopupMenu.dispose();
                         connectPopupMenu = null;

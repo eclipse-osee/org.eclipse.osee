@@ -547,7 +547,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       Object[] objects = selection.toArray();
       for (Object object : objects) {
          if (object instanceof RelationLink) {
-            ((RelationLink) object).delete();
+            ((RelationLink) object).delete(true);
 
             RelationType relationType = ((RelationLink) object).getRelationType();
             int sideAMax =

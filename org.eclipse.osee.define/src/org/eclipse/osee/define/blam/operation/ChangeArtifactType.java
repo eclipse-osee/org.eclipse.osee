@@ -163,7 +163,7 @@ public class ChangeArtifactType extends AbstractBlam {
       }
 
       for (RelationLink relation : relationsToDelete) {
-         relation.delete();
+         relation.delete(true);
       }
 
       artifact.changeArtifactType(descriptor);

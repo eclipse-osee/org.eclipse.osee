@@ -494,7 +494,7 @@ public class ArtifactPersistenceManager {
       final Branch branch = artifacts[0].getBranch();
       if (SkynetTransactionManager.getInstance().isInBatch(branch)) {
          for (Artifact artifact : artifacts) {
-            deleteTrace(artifact, SkynetTransactionManager.getInstance().getTransactionBuilder(branch));
+            deleteTrace(artifact, SkynetTransactionManager.getInstance().getTransactionBuilder(branch), true);
          }
       } else {
          AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
@@ -502,7 +502,7 @@ public class ArtifactPersistenceManager {
             protected void handleTxWork() throws OseeCoreException {
                for (Artifact artifact : artifacts) {
                   if (!artifact.isDeleted()) {
-                     deleteTrace(artifact, getTxBuilder());
+                     deleteTrace(artifact, getTxBuilder(), true);
                   }
                }
             }
@@ -513,18 +513,19 @@ public class ArtifactPersistenceManager {
 
    /**
     * @param artifact
-    * @param builder
+ * @param builder
+ * @param reorderReloations TODO
     * @throws Exception
     */
-   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws OseeCoreException {
+   public static void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
-            deleteTrace(childArtifact, builder);
+            deleteTrace(childArtifact, builder, false);
          }
          try {
             artifact.setDeleted();
-            builder.deleteArtifact(artifact);
+            builder.deleteArtifact(artifact, reorderRelations);
          } catch (Exception ex) {
             artifact.setNotDeleted();
             throw new OseeCoreException(ex);
@@ -534,10 +535,11 @@ public class ArtifactPersistenceManager {
 
    /**
     * @param artifact
-    * @param transaction
+ * @param transaction
+ * @param reorderRelations TODO
     * @throws Exception
     */
-   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws OseeCoreException {
+   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder, boolean reorderRelations) throws OseeCoreException {
       if (!artifact.isInDb()) return;
 
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SequenceManager.getNextGammaId());
@@ -545,7 +547,7 @@ public class ArtifactPersistenceManager {
       // Kick Local Event
       transaction.addArtifactModifiedEvent(this, ArtifactModType.Deleted, artifact);
 
-      RelationManager.deleteRelationsAll(artifact);
+      RelationManager.deleteRelationsAll(artifact, reorderRelations);
       artifact.deleteAttributes();
 
       artifact.persistAttributesAndRelations();
