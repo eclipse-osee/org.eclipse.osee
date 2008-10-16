@@ -58,7 +58,9 @@ public class LegacyPCRActions {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
-         teamArts.add((TeamWorkFlowArtifact) art);
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamArts.add((TeamWorkFlowArtifact) art);
+         }
       }
       return teamArts;
    }
@@ -71,7 +73,9 @@ public class LegacyPCRActions {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, true);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
-         actArts.add((ActionArtifact) art);
+         if (art instanceof ActionArtifact) {
+            actArts.add((ActionArtifact) art);
+         }
       }
       return actArts;
    }
