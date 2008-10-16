@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.workflow.vue;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

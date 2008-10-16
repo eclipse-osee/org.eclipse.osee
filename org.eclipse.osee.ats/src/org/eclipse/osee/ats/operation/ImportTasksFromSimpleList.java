@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.operation;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

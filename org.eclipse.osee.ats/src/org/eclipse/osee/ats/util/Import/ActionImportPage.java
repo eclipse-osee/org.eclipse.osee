@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;

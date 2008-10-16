@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;

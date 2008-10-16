@@ -64,7 +64,7 @@ public class NewActionPage3 extends WizardPage {
       }
    }
 
-   private XModifiedListener xModListener = new XModifiedListener() {
+   private final XModifiedListener xModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
          getContainer().updateButtons();
       }
@@ -147,7 +147,6 @@ public class NewActionPage3 extends WizardPage {
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   @SuppressWarnings("deprecation")
    private static void getWizardXWidgetExtensions() {
       if (wizardExtensionItems.size() > 0) return;
 

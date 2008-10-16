@@ -31,7 +31,7 @@ public enum RelationSide {
    }
 
    /**
-    * @return
+    * @return RelationSide
     */
    public static RelationSide[] getSides() {
       return sides;

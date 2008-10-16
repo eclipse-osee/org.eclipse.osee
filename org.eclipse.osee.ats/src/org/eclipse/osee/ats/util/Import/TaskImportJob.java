@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;

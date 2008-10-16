@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.editor.service.WorkPageService;

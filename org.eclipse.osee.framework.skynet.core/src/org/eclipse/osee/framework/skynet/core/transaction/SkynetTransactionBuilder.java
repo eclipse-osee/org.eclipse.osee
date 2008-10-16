@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;

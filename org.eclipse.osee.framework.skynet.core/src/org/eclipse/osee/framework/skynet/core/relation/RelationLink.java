@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
@@ -171,12 +170,10 @@ public class RelationLink {
       return getArtifactIfLoaded(getSide(artifact).oppositeSide());
    }
 
-   @Deprecated
    public Artifact getArtifactA() throws OseeCoreException {
       return getArtifact(RelationSide.SIDE_A);
    }
 
-   @Deprecated
    public Artifact getArtifactB() throws OseeCoreException {
       return getArtifact(RelationSide.SIDE_B);
    }
@@ -240,7 +237,7 @@ public class RelationLink {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.RationaleMod, this,
                   getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.report;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;

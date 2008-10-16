@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.operation;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.sql.SQLException;
 import java.util.Date;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;

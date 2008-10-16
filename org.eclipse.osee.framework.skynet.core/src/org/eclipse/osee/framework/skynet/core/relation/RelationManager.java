@@ -72,7 +72,7 @@ public class RelationManager {
     * @param bArtifactId
     * @param aBranch
     * @param bBranch
-    * @return
+    * @return RelationLink
     */
    public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       Artifact artifactA = ArtifactCache.getActive(aArtifactId, aBranch);
@@ -437,7 +437,7 @@ public class RelationManager {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Added, relation,
                   relation.getABranch(), relationType.getTypeName());
          } catch (Exception ex) {
-            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
    }
@@ -633,7 +633,7 @@ public class RelationManager {
          OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
                relation.getABranch(), relationType.getTypeName());
       } catch (Exception ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 

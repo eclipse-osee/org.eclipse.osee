@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
@@ -29,13 +28,13 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class PeerToPeerReviewWorkflowManager {
 
    /**
-    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
-    * transitioning for things such as developmental testing and demos.
+    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
+    * for things such as developmental testing and demos.
     * 
     * @param toState
     * @param user User to transition to OR null if should use user of current state
     * @param popup
-    * @return
+    * @return Result
     * @throws Exception
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup) throws OseeCoreException {

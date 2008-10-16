@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

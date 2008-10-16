@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,6 +48,7 @@ public class VersionArtifact extends BasicArtifact {
       return getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
    }
 
+   @Override
    public String toString() {
       return getDescriptiveName();
    }
@@ -127,7 +127,7 @@ public class VersionArtifact extends BasicArtifact {
     * Refrain from using this method as Version Artifact names can be changed by the user.
     * 
     * @param name
-    * @return
+    * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
       return AtsCache.getArtifactsByName(name, VersionArtifact.class).iterator().next();

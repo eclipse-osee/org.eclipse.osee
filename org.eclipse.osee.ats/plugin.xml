@@ -52,13 +52,6 @@
          id="org.eclipse.osee.ats.ATSPerspective"
          icon="images/atsPerspective.gif">
    </perspective>
-   <perspective
-         class="org.eclipse.osee.ats.ATSTestPerspective"
-         fixed="false"
-         icon="images/atsPerspective.gif"
-         id="org.eclipse.osee.ats.ATSTestPerspective"
-         name="ATS Test">
-   </perspective>
 </extension>
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
@@ -75,9 +68,6 @@
             <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
             <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
-         <perspectiveExtension
-               targetID="org.eclipse.osee.ats.ATSTestPerspective">
          </perspectiveExtension>
       </extension>
 

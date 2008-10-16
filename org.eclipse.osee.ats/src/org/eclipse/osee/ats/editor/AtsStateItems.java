@@ -40,7 +40,7 @@ public class AtsStateItems {
       return getStateItems(smaMgr.getWorkPageDefinition().getId());
    }
 
-   @SuppressWarnings( {"deprecation", "unchecked"})
+   @SuppressWarnings( {"unchecked"})
    private void loadAllStateItems() {
       if (stateItems.size() > 0) return;
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsStateItem");

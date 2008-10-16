@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.report;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;

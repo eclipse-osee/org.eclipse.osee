@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;

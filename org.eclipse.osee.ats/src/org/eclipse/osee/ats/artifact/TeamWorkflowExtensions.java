@@ -24,9 +24,6 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-/**
- * @author Donald G. Dunne
- */
 public class TeamWorkflowExtensions {
 
    private static TeamWorkflowExtensions instance = new TeamWorkflowExtensions();
@@ -49,7 +46,7 @@ public class TeamWorkflowExtensions {
       return artifactNames;
    }
 
-   @SuppressWarnings( {"deprecation", "unchecked"})
+   @SuppressWarnings( {"unchecked"})
    public Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
       if (teamWorkflowExtensionItems != null) return teamWorkflowExtensionItems;
       teamWorkflowExtensionItems = new HashSet<IAtsTeamWorkflow>();

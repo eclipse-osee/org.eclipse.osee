@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;

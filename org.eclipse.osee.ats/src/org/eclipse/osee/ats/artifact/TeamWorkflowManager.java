@@ -34,13 +34,13 @@ public class TeamWorkflowManager {
    }
 
    /**
-    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
-    * transitioning for things such as developmental testing and demos.
+    * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
+    * for things such as developmental testing and demos.
     * 
     * @param toState
     * @param user User to transition to OR null if should use user of current state
     * @param popup
-    * @return
+    * @return Result
     * @throws Exception
     */
    public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws OseeCoreException {
