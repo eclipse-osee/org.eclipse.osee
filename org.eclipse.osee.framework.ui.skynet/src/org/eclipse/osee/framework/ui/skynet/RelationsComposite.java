@@ -167,7 +167,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       treeViewer.setCellEditors(editors);
       treeViewer.setCellModifier(new RelationCellModifier(treeViewer));
       treeViewer.setColumnProperties(columnNames);
-      treeViewer.setContentProvider(new RelationContentProvider(this));
+      treeViewer.setContentProvider(new RelationContentProvider());
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setSorter(new LabelSorter() {
          @Override

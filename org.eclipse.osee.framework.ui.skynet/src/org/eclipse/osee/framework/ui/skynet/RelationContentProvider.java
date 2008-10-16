@@ -36,9 +36,6 @@ public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    private Artifact artifact;
 
-   public RelationContentProvider(RelationsComposite relComp) {
-   }
-
    /*
     * @see IContentProvider#dispose()
     */
