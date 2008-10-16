@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
@@ -40,10 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
@@ -106,13 +104,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
 
-      } else if (element instanceof SnapshotDescription && columnIndex == 0) {
-         if (((SnapshotDescription) element).isOutOfDate()) {
-            checkImages();
-
-            return oldSnapshotImage;
-         }
-      } else if (element instanceof TransactionData && columnIndex == 0) {
+      }else if (element instanceof TransactionData && columnIndex == 0) {
          return SkynetGuiPlugin.getInstance().getImage("transaction.gif");
 
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
@@ -308,13 +300,6 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    }
 
    public Color getForeground(Object element, int columnIndex) {
-      if (element instanceof ITreeNode) element = ((ITreeNode) element).getBackingData();
-
-      if (element instanceof SnapshotDescription && columnIndex == 0) {
-         if (((SnapshotDescription) element).isOutOfDate()) {
-            return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-         }
-      }
       return null;
    }
 

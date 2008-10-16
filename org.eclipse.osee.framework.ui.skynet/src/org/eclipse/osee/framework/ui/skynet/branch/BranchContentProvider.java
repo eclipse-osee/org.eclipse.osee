@@ -12,12 +12,11 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,9 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.db.connection.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.exception.TransactionDoesNotExist;
@@ -63,7 +62,6 @@ import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
-import org.eclipse.osee.framework.ui.swt.TreeNode;
 
 /**
  * @author Jeff C. Phillips
@@ -72,7 +70,6 @@ import org.eclipse.osee.framework.ui.swt.TreeNode;
 public class BranchContentProvider implements ITreeContentProvider, ArtifactChangeListener {
    private static final Object[] EMPTY_ARRAY = new Object[0];
    private static final String EMPTY_REPORT = "No changes";
-   private static final Object[] EMPTY_REPORT_CHILDREN = new Object[] {EMPTY_REPORT};
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
    private JobbedNode root;
    private IContentProviderRunnable providerRunnable;
@@ -147,9 +144,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             if (pair.getKey() instanceof TransactionId && pair.getValue() instanceof TransactionId) {
                return getArtifactChanges(null, (TransactionId) pair.getKey(), (TransactionId) pair.getValue());
             }
-         } else if (parentElement instanceof ChangeReportInput) {
-            ChangeReportInput input = (ChangeReportInput) parentElement;
-            return handleBranchChangeReportRequest(input);
          } else if (parentElement instanceof ArtifactChange) {
             ArtifactChange change = (ArtifactChange) parentElement;
             if (change.getModType() != DELETED) {
@@ -181,87 +175,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             return Collections.emptyList();
          }
       }
-   }
-
-   // This is synchronized so that successive calls to refresh will result in just one refresh. This
-   // will happen since
-   // the first job will shut off the forceRefresh flag on the input before the other jobs come in,
-   // so they will just
-   // use the snapshot that the first concurrently running job produced.
-   @SuppressWarnings("unchecked")
-   private synchronized Object[] handleBranchChangeReportRequest(ChangeReportInput input) throws OseeCoreException {
-      String key = calculateKey(input);
-      Object[] changeReport = null;
-      Date changeTime = null;
-      Pair<Object, Date> snapshotData = null;
-      Pair<ChangeReportInput, Object[]> reportData;
-      ChangeReportInput oldInput = null;
-
-      try {
-         // Check that the snapshot is the correct format, inherently performs null checking via
-         // instanceof
-         if (!(snapshotData instanceof Pair && snapshotData.getKey() instanceof Pair && ((Pair) snapshotData.getKey()).getKey() instanceof ChangeReportInput && ((Pair) snapshotData.getKey()).getValue() instanceof Object[])) {
-            changeReport = computeChangeReport(input);
-
-            changeTime = new Date();
-            input.setForceRefresh(false);
-            oldInput = input;
-         } else {
-            reportData = (Pair<ChangeReportInput, Object[]>) snapshotData.getKey();
-            changeReport = reportData.getValue();
-            changeTime = snapshotData.getValue();
-            oldInput = reportData.getKey();
-         }
-
-         ITreeNode node = new TreeNode(new SnapshotDescription(oldInput, input, changeTime));
-         node.setChildren(changeReport);
-         changeReport = new Object[] {node};
-      } catch (BranchDoesNotExist ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-      return changeReport;
-   }
-
-   private String calculateKey(ChangeReportInput input) {
-      if (input.getBaseParentTransactionId() == null)
-         return "Transaction " + input.getBaseTransaction() + " to " + input.getToTransaction();
-      else
-         return "Branch " + input.getBaseTransaction().getBranch().getBranchId();
-   }
-
-   @SuppressWarnings("unchecked")
-   private Object[] computeChangeReport(ChangeReportInput input) throws OseeCoreException {
-      Object[] items;
-      if (input.isEmptyChange()) {
-         items = EMPTY_REPORT_CHILDREN;
-      } else {
-
-         // Get a new cache with a backup mechanism to the parent if it is available
-         if (input.getBaseParentTransactionId() != null) {
-            artifactNameDescriptorCache =
-                  new ArtifactNameDescriptorCache(input.getBaseParentTransactionId().getBranch());
-         }
-
-         items = getArtifactChanges(input);
-
-         Object childData;
-         for (int index = 0; index < items.length; index++) {
-            ITreeNode node = new TreeNode(items[index]);
-            TreeNode.fillNode(node, providerRunnable);
-            items[index] = node;
-
-            for (Object childObj : node.getChildren()) {
-               childData = ((TreeNode) childObj).getBackingData();
-               if (childData instanceof ChangeSummary && ((ChangeSummary) childData).isConflicted()) {
-                  ((ArtifactChange) node.getBackingData()).setChangeType(ChangeType.CONFLICTING);
-                  break;
-               }
-            }
-         }
-      }
-
-      return items;
    }
 
    public static Object[] getArtifactChanges(ChangeReportInput input) throws OseeCoreException {
@@ -365,7 +278,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          }
       }
 
-      return (element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
+      return (element instanceof TransactionData || element instanceof Pair || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
    }
 
    public void dispose() {
