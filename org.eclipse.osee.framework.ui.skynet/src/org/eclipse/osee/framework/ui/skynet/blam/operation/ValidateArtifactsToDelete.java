@@ -46,6 +46,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       }
 
       XResultData rd = new XResultData();
+      rd.log("Validation Artifacts: " + Artifacts.toString("; ", artifacts));
       // Confirm artifacts are fit to delete
       try {
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
@@ -60,8 +61,8 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      rd.log("\n\n\n");
-      rd.log("Validation Artifacts: " + Artifacts.toString("; ", artifacts));
+      rd.log("\n");
+      rd.log("Validation Complete - Any errors will be displayed.");
       rd.report("Validate Artifacts to Delete");
    }
 
