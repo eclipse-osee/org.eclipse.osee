@@ -98,7 +98,7 @@ public class XViewerSorter extends ViewerSorter {
       try {
          float2Float = (new Double(float2)).doubleValue();
       } catch (NumberFormatException ex) {
-         return 0;
+         return 1;
       }
       return getCompareForFloat(float1Float, float2Float);
    }
@@ -114,7 +114,7 @@ public class XViewerSorter extends ViewerSorter {
       try {
          int2Integer = (new Integer(int2)).intValue();
       } catch (NumberFormatException ex) {
-         return 0;
+         return 1;
       }
       return getCompareForInteger(int1Integer, int2Integer);
    }
