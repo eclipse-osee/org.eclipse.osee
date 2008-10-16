@@ -10,19 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryCheckDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -47,11 +44,11 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      EntryDialog ed = new EntryDialog(getName(), "Enter HRID");
+      EntryCheckDialog ed = new EntryCheckDialog(getName(), "Enter HRID", "Display Was/Is data in Results View.");
       if (ed.open() == 0) {
          String hrid = ed.getEntry();
          if (hrid != null && !hrid.equals("")) {
-            Jobs.startJob(new Report(getName(), hrid), true);
+            Jobs.startJob(new Report(getName(), hrid, ed.isChecked()), true);
          }
       }
    }
@@ -59,10 +56,12 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
    public class Report extends Job {
 
       private final String hrid;
+      private final boolean exportWasIs;
 
-      public Report(String name, String hrid) {
+      public Report(String name, String hrid, boolean exportWasIs) {
          super(name);
          this.hrid = hrid;
+         this.exportWasIs = exportWasIs;
       }
 
       /*
@@ -74,7 +73,13 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
       protected IStatus run(IProgressMonitor monitor) {
          try {
             final XResultData rd = new XResultData();
-            runIt(monitor, hrid, rd);
+            try {
+               TeamWorkFlowArtifact teamArt =
+                     (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
+               ValidateChangeReports.changeReportValidated(teamArt, rd, exportWasIs);
+            } catch (Exception ex) {
+               rd.logError(ex.getLocalizedMessage());
+            }
             rd.report(getName());
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
@@ -82,17 +87,6 @@ public class ValidateChangeReportByHrid extends XNavigateItemAction {
          }
          monitor.done();
          return Status.OK_STATUS;
-      }
-   }
-
-   private void runIt(IProgressMonitor monitor, String hrid, XResultData xResultData) throws OseeCoreException, ParserConfigurationException {
-      TeamWorkFlowArtifact teamArt =
-            (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(hrid, AtsPlugin.getAtsBranch());
-      Result result = ValidateChangeReports.changeReportValidated(teamArt);
-      if (result.isFalse()) {
-         xResultData.logError(result.getText());
-      } else {
-         xResultData.log(result.getText());
       }
    }
 

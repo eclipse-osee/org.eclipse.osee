@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -48,6 +51,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -116,7 +121,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      String[] columnHeaders = new String[] {"HRID", "PCR", "Valid", "Notes"};
+      String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
       for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
          sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactTypeName, columnHeaders.length));
@@ -126,7 +131,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   ArtifactQuery.getArtifactsFromType(artifactTypeName, AtsPlugin.getAtsBranch());
             for (Artifact artifact : artifacts) {
                String resultStr = "PASS";
-               String notesStr = "";
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                try {
                   String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
@@ -137,20 +141,16 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
                   // Only validate committed branches cause working branches change too much
                   if (!teamArt.getSmaMgr().getBranchMgr().isCommittedBranch()) continue;
-                  Result valid = changeReportValidated(teamArt);
+                  Result valid = changeReportValidated(teamArt, null, false);
                   if (valid.isFalse()) {
-                     resultStr = "FAIL";
-                     notesStr = "Error: " + valid.getText();
-                  } else {
-                     notesStr = valid.getText();
+                     resultStr = "Error: Not Valid: " + valid.getText();
                   }
                } catch (Exception ex) {
-                  resultStr = "FAIL";
-                  notesStr = "Error: Exception: " + ex.getLocalizedMessage();
+                  resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
                   OseeLog.log(SkynetActivator.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
                }
                sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(), teamArt.getSoleAttributeValue(
-                     ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr, notesStr));
+                     ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""), resultStr));
             }
          } catch (Exception ex) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),
@@ -159,8 +159,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
       sbFull.append(AHTML.endMultiColumnTable());
       xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
-      if (monitorLog.getSevereLogs().size() > 0) {
-         xResultData.logError(String.format("%d SevereLogs during test.\n", monitorLog.getSevereLogs().size()));
+      for (IHealthStatus stat : monitorLog.getSevereLogs()) {
+         xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
       }
    }
 
@@ -171,7 +171,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
     * @throws ParserConfigurationException
     */
-   public static Result changeReportValidated(TeamWorkFlowArtifact teamArt) throws OseeCoreException, ParserConfigurationException {
+   public static Result changeReportValidated(final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException, ParserConfigurationException {
       String name = "VCR_" + teamArt.getHumanReadableId();
       List<Artifact> arts =
             ArtifactQuery.getArtifactsFromTypeAndName(GeneralData.ARTIFACT_TYPE, name, AtsPlugin.getAtsBranch());
@@ -196,13 +196,45 @@ public class ValidateChangeReports extends XNavigateItemAction {
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME,
                getReport(currentChangeData));
          artifactForStore.persistAttributes();
+         resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
       // Else, compare the two and report
       else {
-         String currentChangeReport = getReport(currentChangeData);
-         if (!storedChangeReport.equals(currentChangeReport)) {
-            return new Result("Was/Is Change Report different for " + teamArt.getHumanReadableId());
+         final String currentChangeReport = getReport(currentChangeData);
+         final String fStoredChangeReport = storedChangeReport;
+         if (storedChangeReport.equals(currentChangeReport)) {
+            resultData.log("Change Report Valid for " + teamArt.getHumanReadableId());
+         } else {
+            resultData.logError("Was/Is Change Report different for " + teamArt.getHumanReadableId());
+            if (displayWasIs) {
+               resultData.log("Was / Is reports displayed in Results View");
+            }
+            if (displayWasIs) {
+               try {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        try {
+                           String prePage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(fStoredChangeReport));
+                           XResultView.getResultView().addResultPage(
+                                 new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(), prePage));
+
+                           String postPage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(currentChangeReport));
+                           XResultView.getResultView().addResultPage(
+                                 new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(), postPage));
+
+                        } catch (Exception ex) {
+                           OSEELog.logException(AtsPlugin.class, ex, true);
+                        }
+                     }
+                  });
+
+               } catch (Exception ex) {
+                  System.err.println(ex.getLocalizedMessage());
+               }
+            }
+            return new Result("FAIL");
          }
       }
       // As another test, ensure that all artifacts can be retrieved and display their name
@@ -215,7 +247,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex.getLocalizedMessage(), ex);
          return new Result("Exception accessing name of change report artifacts: " + ex.getLocalizedMessage());
       }
-      return new Result(true, "Change Report Valid for " + teamArt.getHumanReadableId());
+      return new Result(true, "PASS");
    }
 
    private static String getReport(ChangeData changeData) throws OseeCoreException, ParserConfigurationException {

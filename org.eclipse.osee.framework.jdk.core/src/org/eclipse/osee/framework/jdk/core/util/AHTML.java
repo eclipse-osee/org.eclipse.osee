@@ -39,7 +39,7 @@ public class AHTML {
       str = str.replaceAll(">", "&gt;");
       str = str.replaceAll("<", "&lt;");
       str = str.replaceAll("\"", "&quot;");
-      str = str.replaceAll("\\n", "<br>");
+      str = str.replaceAll("\\n", "<br/>");
       str = str.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
       str = str.replaceAll("[\\x0B\\f\\r]+", "");
       return str;
@@ -83,6 +83,10 @@ public class AHTML {
 
    public static String simplePage(String text) {
       return pageEncoding("<html>" + text + "</html>");
+   }
+
+   public static String simplePageNoPageEncoding(String text) {
+      return "<html>" + text + "</html>";
    }
 
    public static String getLabelStr(String labelFont, String str) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;

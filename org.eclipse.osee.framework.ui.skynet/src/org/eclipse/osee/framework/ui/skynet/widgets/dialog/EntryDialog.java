@@ -45,7 +45,7 @@ public class EntryDialog extends MessageDialog {
    Label errorLabel;
    boolean fillVertically = false;
 
-   private List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
+   private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
       super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION,
@@ -57,6 +57,7 @@ public class EntryDialog extends MessageDialog {
             defaultIndex);
    }
 
+   @Override
    protected Control createCustomArea(Composite parent) {
 
       c = new Composite(parent, SWT.NONE);
@@ -94,10 +95,18 @@ public class EntryDialog extends MessageDialog {
          }
       };
       text.addModifyListener(modifyListener);
-
+      createExtendedArea(c);
       c.layout();
       parent.layout();
       return c;
+   }
+
+   /**
+    * Override to provide other widgets
+    * 
+    * @param parent
+    */
+   protected void createExtendedArea(Composite parent) {
    }
 
    public void setInitialButtonState() {
