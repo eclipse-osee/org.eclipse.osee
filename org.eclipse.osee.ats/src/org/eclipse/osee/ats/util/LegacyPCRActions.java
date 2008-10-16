@@ -35,7 +35,9 @@ public class LegacyPCRActions {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
-         teamArts.add((TeamWorkFlowArtifact) art);
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamArts.add((TeamWorkFlowArtifact) art);
+         }
       }
       return teamArts;
    }
