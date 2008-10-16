@@ -481,14 +481,14 @@ public class RelationManager {
 
    public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws ArtifactDoesNotExist {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
-      relation.delete(true);
+      relation.delete();
    }
 
    public static void deleteRelationsAll(Artifact artifact) throws ArtifactDoesNotExist {
       List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            relation.delete(false);
+            relation.delete();
          }
       }
    }
@@ -498,10 +498,10 @@ public class RelationManager {
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
-               relation.delete(true);
+               relation.delete();
             } else {
                if (relation.getSide(artifact) != relationSide) {
-                  relation.delete(true);
+                  relation.delete();
                }
             }
          }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
+
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -157,28 +159,47 @@ public class SkynetTransaction {
 
    public boolean executeTransactionDataItems(Connection connection) throws OseeDataStoreException {
       boolean insertTransactionDataItems = transactionItems.size() > 0;
-
       TransactionJoinQuery transactionJoin = JoinUtility.createTransactionJoinQuery();
       Timestamp insertTime = transactionJoin.getInsertTime();
       int queryId = transactionJoin.getQueryId();
+      
       try {
-         for (ITransactionData transactionData : transactionItems.keySet()) {
-            //This must be called before adding the new transaction information, because it
-            //will update the current transaction to 0.
-            transactionData.setPreviousTxNotCurrent(connection, insertTime, queryId);
-
-            //Add current transaction information
-            ModificationType modType = transactionData.getModificationType();
-
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE,
-                  transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
-                  modType.getValue(), TxChange.getCurrent(modType).getValue());
-
-            if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
-               //Add specific object values to the their tables
-               transactionData.insertTransactionChange(connection);
-            }
-         }
+    	  
+    	Map<Integer, ModificationType> deletedRelationDataItems = new HashMap<Integer, ModificationType>();  
+    	for(ITransactionData transactionData : transactionItems.keySet()){
+    		if(transactionData instanceof RelationTransactionData){
+    			RelationTransactionData relationTransactionData = (RelationTransactionData)transactionData;
+    			if(relationTransactionData.getModificationType() == ModificationType.ARTIFACT_DELETED){
+    				deletedRelationDataItems.put(relationTransactionData.getLink().getRelationId(), relationTransactionData.getModificationType());
+    			}
+    		}
+    	}
+    	  
+	     for (ITransactionData transactionData : transactionItems.keySet()) {
+	        //This must be called before adding the new transaction information, because it
+	        //will update the current transaction to 0.
+	        transactionData.setPreviousTxNotCurrent(connection, insertTime, queryId);
+	        //Add current transaction information
+	        ModificationType modType = transactionData.getModificationType();
+	
+	        //To stop relation link reorders from changing the gamma IDs of links that were deleted 
+	        //Because the artifact was deleted.
+	        if(transactionData instanceof RelationTransactionData){
+	        	RelationTransactionData relationTransactionData = (RelationTransactionData)transactionData;
+	        	if(deletedRelationDataItems.containsKey(relationTransactionData.getLink().getRelationId()) && modType !=  ModificationType.ARTIFACT_DELETED){
+	        		continue;
+	        	}
+	        }
+	        //Adds addressing data for changes into the txs table
+	        ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_TABLE,
+	              transactionData.getTransactionId().getTransactionNumber(), transactionData.getGammaId(),
+	              modType.getValue(), TxChange.getCurrent(modType).getValue());
+	
+	        //Add specific object values to the their tables i.e. attribute, relation and artifact version tables
+	        if (transactionData.getModificationType() != ModificationType.ARTIFACT_DELETED) {
+	           transactionData.insertTransactionChange(connection);
+	        }
+	     }
 
          ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_NOT_CURRENT, queryId);
       } finally {

@@ -117,13 +117,11 @@ public class RelationLink {
       return dirty;
    }
 
-   public void delete(boolean reorder) throws ArtifactDoesNotExist {
+   public void delete() throws ArtifactDoesNotExist {
       if (!deleted) {
          markAsDeleted();
          setDirty();
-         if (reorder) {
-            RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
-         }
+         RelationManager.setOrderValuesBasedOnCurrentMemoryOrder(this, false);
 
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.Deleted, this,

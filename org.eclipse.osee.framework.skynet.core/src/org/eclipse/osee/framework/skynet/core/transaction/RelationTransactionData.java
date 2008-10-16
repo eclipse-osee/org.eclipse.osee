@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -46,7 +47,11 @@ public class RelationTransactionData implements ITransactionData {
       this.branch = branch;
    }
 
-   /* (non-Javadoc)
+   public RelationLink getLink() {
+	return link;
+   }
+
+/* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
