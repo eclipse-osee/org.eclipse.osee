@@ -575,9 +575,7 @@ public class WorldView extends ViewPart implements IFrameworkTransactionEventLis
    }
 
    public void updateExtendedStatusString() {
-      if (filterCompletedAction.isChecked()) {
-         xViewer.setExtendedStatusString("[Complete/Cancel Filter]");
-      }
+      xViewer.setExtendedStatusString(filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "");
    }
 
    public void redisplayAsAction() {
