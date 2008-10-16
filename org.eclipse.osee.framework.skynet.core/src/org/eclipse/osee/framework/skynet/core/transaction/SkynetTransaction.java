@@ -164,7 +164,7 @@ public class SkynetTransaction {
       int queryId = transactionJoin.getQueryId();
       
       try {
-    	  
+    	//filter artifact deleted relations  
     	Map<Integer, ModificationType> deletedRelationDataItems = new HashMap<Integer, ModificationType>();  
     	for(ITransactionData transactionData : transactionItems.keySet()){
     		if(transactionData instanceof RelationTransactionData){
