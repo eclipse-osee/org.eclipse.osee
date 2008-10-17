@@ -41,6 +41,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
          Collection<Artifact> arts = ArtifactQuery.getArtifactsFromAttributeType(attributeType.getName(), branch);
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
+      xResultData.addRaw(AHTML.endMultiColumnTable());
       xResultData.report(getName() + " " + branch.getBranchName());
    }
 
