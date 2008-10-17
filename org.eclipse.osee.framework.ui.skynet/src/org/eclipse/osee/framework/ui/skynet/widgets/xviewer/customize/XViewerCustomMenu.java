@@ -59,6 +59,7 @@ public class XViewerCustomMenu {
    protected XViewer xViewer;
    private final Clipboard clipboard = new Clipboard(null);
 
+   protected Action filterByColumn;
    protected Action clearAllSorting;
    protected Action clearAllFilters;
    protected Action tableProperties;
@@ -106,8 +107,9 @@ public class XViewerCustomMenu {
       mm.add(copySelected);
       mm.add(copySelectedCell);
       mm.add(new Separator());
-      mm.add(clearAllSorting);
+      mm.add(filterByColumn);
       mm.add(clearAllFilters);
+      mm.add(clearAllSorting);
       mm.add(new Separator());
       mm.add(removeSelected);
       mm.add(removeNonSelected);
@@ -155,6 +157,12 @@ public class XViewerCustomMenu {
          @Override
          public void run() {
             xViewer.getCustomizeMgr().clearFilters();
+         };
+      };
+      filterByColumn = new Action("Filter By Column") {
+         @Override
+         public void run() {
+            performFilterByColumn();
          };
       };
       tableProperties = new Action("Table Customization") {
@@ -255,6 +263,40 @@ public class XViewerCustomMenu {
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
+   }
+
+   private void performFilterByColumn() {
+      Set<TreeColumn> visibleColumns = new HashSet<TreeColumn>();
+      for (TreeColumn treeCol : xViewer.getTree().getColumns())
+         if (treeCol.getWidth() > 0) visibleColumns.add(treeCol);
+      if (visibleColumns.size() == 0) {
+         AWorkbench.popup("ERROR", "No Columns Are Available");
+         return;
+      }
+      ListDialog ld = new ListDialog(xViewer.getTree().getShell()) {
+         /*
+          * (non-Javadoc)
+          * 
+          * @see org.eclipse.ui.dialogs.ListDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+          */
+         @Override
+         protected Control createDialogArea(Composite container) {
+            Control control = super.createDialogArea(container);
+            getTableViewer().setSorter(treeColumnSorter);
+            return control;
+         }
+      };
+      ld.setMessage("Select Column to Filter");
+      ld.setInput(visibleColumns);
+      ld.setLabelProvider(treeColumnLabelProvider);
+      ld.setContentProvider(new ArrayContentProvider());
+      ld.setTitle("Select Column to Filter");
+      int result = ld.open();
+      if (result != 0) return;
+      TreeColumn treeCol = (TreeColumn) ld.getResult()[0];
+      String colId = ((XViewerColumn) treeCol.getData()).getId();
+      xViewer.getColumnFilterDataUI().promptSetFilter(colId);
+
    }
 
    private void performCopyCell() {
