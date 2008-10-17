@@ -1048,4 +1048,10 @@
           class="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpAttrFromDeletedArt">
     </Task>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ReportAttributeTypesUsageBlam">
+    </Operation>
+ </extension>
 </plugin>
