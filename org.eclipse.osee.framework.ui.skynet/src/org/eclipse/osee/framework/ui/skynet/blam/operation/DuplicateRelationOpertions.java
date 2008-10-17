@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyQuadHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyTripleHashMap;
@@ -64,7 +65,7 @@ public class DuplicateRelationOpertions extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
     */
    @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
       return variableMap.getBranch("Parent Branch");
    }
 

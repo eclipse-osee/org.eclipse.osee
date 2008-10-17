@@ -12,6 +12,7 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -71,7 +72,7 @@ public class PublishRequirements extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
     */
    @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
       return variableMap.getArtifacts("artifacts").get(0).getBranch();
    }
 }

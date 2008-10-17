@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -32,7 +33,7 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#wrapOperationForBranch()
     */
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
       return null;
    }
 

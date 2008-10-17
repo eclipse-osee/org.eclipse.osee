@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -80,55 +81,54 @@ public class BlamVariableMap {
       }
    }
 
-   public List<Artifact> getArtifacts(String parameterName) {
+   public List<Artifact> getArtifacts(String parameterName) throws OseeArgumentException {
       Collection<Artifact> arts = getCollection(Artifact.class, parameterName);
       if (arts == null) return new ArrayList<Artifact>();
       return new ArrayList<Artifact>(arts);
    }
 
-   public ArtifactType getArtifactSubtypeDescriptor(String parameterName) {
+   public ArtifactType getArtifactSubtypeDescriptor(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
-   public AttributeType getAttributeDescriptor(String parameterName) {
+   public AttributeType getAttributeDescriptor(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(AttributeType.class, parameterName);
    }
 
-   public String getString(String parameterName) {
+   public String getString(String parameterName) throws OseeArgumentException {
       return getValue(String.class, parameterName);
    }
 
-   public Branch getBranch(String parameterName) {
+   public Branch getBranch(String parameterName) throws OseeArgumentException {
       return getValue(Branch.class, parameterName);
    }
 
-   public boolean getBoolean(String parameterName) {
+   public boolean getBoolean(String parameterName) throws OseeArgumentException {
       return getValue(Boolean.class, parameterName);
    }
 
    @SuppressWarnings("unchecked")
-   public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
+   public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) throws OseeArgumentException {
       return getValue(Collection.class, parameterName);
    }
 
-   @SuppressWarnings("unchecked")
-   public User getUser(String parameterName) {
+   public User getUser(String parameterName) throws OseeArgumentException {
       return getValue(User.class, parameterName);
    }
 
-   private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) {
+   private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) throws OseeArgumentException {
       Collection<T> objects = getCollection(clazz, parameterName);
       if (objects.size() != 1) {
-         throw new IllegalArgumentException("Require a collection of size 1 not " + objects.size());
+         throw new OseeArgumentException("Require a collection of size 1 not " + objects.size());
       }
       return objects.iterator().next();
    }
 
-   public <T> T getValue(Class<T> clazz, String variableName) {
+   public <T> T getValue(Class<T> clazz, String variableName) throws OseeArgumentException {
       Object object = getBlamVariable(variableName).getValue();
 
       if (object != null && !clazz.isInstance(object)) {
-         throw new IllegalArgumentException(
+         throw new OseeArgumentException(
                "Expecting object of type " + clazz.getName() + " not " + object.getClass().getName());
       }
       return clazz.cast(object);

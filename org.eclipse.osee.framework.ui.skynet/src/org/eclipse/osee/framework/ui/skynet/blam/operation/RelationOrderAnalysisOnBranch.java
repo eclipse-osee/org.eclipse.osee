@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
@@ -56,7 +57,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
 	 * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
 	 */
 	@Override
-	public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+	public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
 		return currentBranch;
 	}
 

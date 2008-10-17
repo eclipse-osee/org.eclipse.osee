@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
@@ -31,7 +32,7 @@ public interface BlamOperation {
 
    public abstract String getName();
 
-   public abstract Branch wrapOperationForBranch(BlamVariableMap variableMap);
+   public abstract Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException;
 
    public abstract void setWorkflowEditor(WorkflowEditor workflow);
 }

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.db.connection.exception.MultipleArtifactsExist;
+import org.eclipse.osee.framework.db.connection.exception.OseeArgumentException;
 import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -106,7 +107,7 @@ public class SetRequirementCategory extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
     */
    @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) throws OseeArgumentException {
       return variableMap.getBranch("Branch");
    }
 }
