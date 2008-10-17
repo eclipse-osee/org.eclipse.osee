@@ -15,7 +15,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
@@ -31,7 +38,14 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.Translator;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
+import org.eclipse.osee.framework.db.connection.exception.OseeCoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.db.connection.exception.OseeStateException;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,16 +60,41 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Roberto E. Escobar
  */
-final class ImportController extends DbTransaction {
+final class ImportController {
+   private static final String SAVE_POINT_PREFIX = "save.point.";
+   private static final String EMPTY_STRING = "";
+
+   private static final String INSERT_INTO_IMPORT_SOURCES =
+         "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
+
+   private static final String INSERT_INTO_IMPORT_SAVE_POINT =
+         "INSERT INTO osee_import_save_point (import_id, save_point_name, status, comment) VALUES (?, ?, ?, ?)";
+
+   private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
+         "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
+
    private static final String TEMP_NAME_PREFIX = "branch.imp.xchng.";
    private final IResourceLocator locator;
    private final Options options;
    private final int[] branchesToImport;
+   private final Map<String, SavePoint> savePoints;
+
+   private File importSource;
+   private Translator translator;
+   private ManifestSaxHandler manifestHandler;
+   private MetaDataSaxHandler metadataHandler;
+   private boolean wasZipExtractionRequired;
+   private String currentSavePoint;
 
    ImportController(IResourceLocator locator, Options options, int... branchesToImport) {
       this.locator = locator;
       this.options = options;
       this.branchesToImport = branchesToImport;
+      if (branchesToImport != null && branchesToImport.length > 0) {
+         throw new UnsupportedOperationException("selective branch import is not supported.");
+      }
+      this.wasZipExtractionRequired = false;
+      this.savePoints = new LinkedHashMap<String, SavePoint>();
    }
 
    private File createTempFolder() {
@@ -66,94 +105,125 @@ final class ImportController extends DbTransaction {
       return rootDirectory;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
-    */
-   @Override
-   protected void handleTxWork(Connection connection) throws Exception {
-      Translator translator = new Translator();
-      translator.configure(options);
-
-      if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
-            throw new IllegalStateException("DO NOT IMPORT ON PRODUCTION");
+   private void setupImportSourceFolder() throws Exception {
+      importSource = null;
+      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+      File source = new File(resource.getLocation());
+      if (source.isFile()) {
+         currentSavePoint = "extract.zip";
+         wasZipExtractionRequired = true;
+         importSource = createTempFolder();
+         OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
+               source.getName(), importSource));
+         Lib.decompressStream(new FileInputStream(source), importSource);
+         wasZipExtractionRequired = true;
+      } else {
+         wasZipExtractionRequired = false;
+         importSource = source;
       }
-      boolean wasExtracted = false;
-      File tempZipFolder = null;
+   }
+
+   private void checkPreconditions() throws OseeCoreException {
+      OseeConnection connection = null;
       try {
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
-         File source = new File(resource.getLocation());
-         if (source.isFile()) {
-            wasExtracted = true;
-            tempZipFolder = createTempFolder();
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Extracting Branch Import File: [%s] to [%s]",
-                  source.getName(), tempZipFolder));
-            Lib.decompressStream(new FileInputStream(source), tempZipFolder);
-            wasExtracted = true;
-         } else {
-            wasExtracted = false;
-            tempZipFolder = source;
+         connection = OseeDbConnection.getConnection();
+         if (SupportedDatabase.getDatabaseType(connection).equals(SupportedDatabase.oracle)) {
+            throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
          }
-         // Process manifest
-         ManifestSaxHandler manifestHandler = new ManifestSaxHandler();
-         processImportFile(tempZipFolder, "export.manifest.xml", manifestHandler);
-
-         // Process database meta data
-         MetaDataSaxHandler metadataHandler = new MetaDataSaxHandler();
-         processImportFile(tempZipFolder, manifestHandler.getMetadataFile(), metadataHandler);
-         metadataHandler.checkAndLoadTargetDbMetadata(connection);
-
-         // Load Import Indexes
-         translator.loadTranslators(connection, manifestHandler.getSourceDatabaseId());
-
-         // Import Branches
-         BranchDataSaxHandler branchHandler = BranchDataSaxHandler.createWithCacheAll();
-         process(branchHandler, connection, tempZipFolder, manifestHandler.getBranchFile(), metadataHandler, translator);
-         int[] branchesStored = branchHandler.store(branchesToImport);
-
-         // Import Branch Definitions
-         BranchDefinitionsSaxHandler definitionsHandler = BranchDefinitionsSaxHandler.createWithCacheAll();
-         definitionsHandler.setStoredBranches(branchesStored);
-         process(definitionsHandler, connection, tempZipFolder, manifestHandler.getBranchDefinitionsFile(),
-               metadataHandler, translator);
-         definitionsHandler.store();
-
-         // Type Checks
-         RelationalTypeCheckSaxHandler typeCheckHandler = RelationalTypeCheckSaxHandler.createWithLimitedCache(1000);
-         processImportFiles(connection, tempZipFolder, metadataHandler, translator, manifestHandler.getTypeFiles(),
-               typeCheckHandler);
-
-         // Data Table Imports
-         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.createWithLimitedCache(1000);
-         relationalSaxHandler.setSelectedBranchIds(branchesToImport);
-         processImportFiles(connection, tempZipFolder, metadataHandler, translator, manifestHandler.getImportFiles(),
-               relationalSaxHandler);
-
-         // Store Import Index Translations
-         translator.storeImport(connection, manifestHandler.getSourceDatabaseId(),
-               manifestHandler.getSourceExportDate());
       } finally {
-         if (wasExtracted && tempZipFolder != null && tempZipFolder.exists() && tempZipFolder.getAbsolutePath() != ExchangeProvider.getExchangeFilePath()) {
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
-                  tempZipFolder));
-            Lib.deleteDir(tempZipFolder);
+         if (connection != null) {
+            connection.close();
          }
       }
    }
 
-   private void initializeHandler(Connection connection, BaseDbSaxHandler handler, MetaData metadata, Translator translator) {
+   private void setup() throws Exception {
+      setupImportSourceFolder();
+
+      currentSavePoint = "setup";
+      translator = new Translator();
+      translator.configure(options);
+
+      // Process manifest
+      currentSavePoint = "manifest";
+      manifestHandler = new ManifestSaxHandler();
+      processImportFile(importSource, "export.manifest.xml", manifestHandler);
+
+      // Process database meta data
+      currentSavePoint = manifestHandler.getMetadataFile();
+      metadataHandler = new MetaDataSaxHandler();
+      processImportFile(importSource, manifestHandler.getMetadataFile(), metadataHandler);
+      metadataHandler.checkAndLoadTargetDbMetadata();
+
+      // Load Import Indexes
+      currentSavePoint = "load.translator";
+      translator.loadTranslators(manifestHandler.getSourceDatabaseId());
+
+      loadImportTrace(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
+   }
+
+   private void cleanup() throws Exception {
+      if (wasZipExtractionRequired && importSource != null && importSource.exists() && importSource.getAbsolutePath() != ExchangeProvider.getExchangeFilePath()) {
+         OseeLog.log(this.getClass(), Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
+               importSource));
+         Lib.deleteDir(importSource);
+      }
+      translator = null;
+      manifestHandler = null;
+      metadataHandler = null;
+      wasZipExtractionRequired = false;
+      importSource = null;
+      savePoints.clear();
+   }
+
+   public void execute() throws Exception {
+      checkPreconditions();
+      savePoints.clear();
+      try {
+         currentSavePoint = "start";
+         addSavePoint(currentSavePoint);
+         setup();
+
+         ImportBranchesTx importBranchesTx = new ImportBranchesTx();
+         importBranchesTx.execute();
+
+         currentSavePoint = "init.relational.objects";
+         RelationalTypeCheckSaxHandler typeCheckHandler = RelationalTypeCheckSaxHandler.createWithLimitedCache(1000);
+         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.createWithLimitedCache(1000);
+         relationalSaxHandler.setSelectedBranchIds(branchesToImport);
+
+         processImportFiles(manifestHandler.getTypeFiles(), typeCheckHandler);
+         processImportFiles(manifestHandler.getImportFiles(), relationalSaxHandler);
+
+         currentSavePoint = "stop";
+         addSavePoint(currentSavePoint);
+      } catch (Exception ex) {
+         reportError(currentSavePoint, ex);
+         OseeLog.log(this.getClass(), Level.SEVERE, ex);
+      } finally {
+         try {
+            CommitImportSavePointsTx saveImportState = new CommitImportSavePointsTx();
+            saveImportState.execute();
+         } finally {
+            cleanup();
+         }
+      }
+   }
+
+   private void initializeHandler(Connection connection, BaseDbSaxHandler handler, MetaData metadata) {
       handler.setConnection(connection);
       handler.setMetaData(metadata);
       handler.setOptions(options);
       handler.setTranslator(translator);
    }
 
-   private void process(BaseDbSaxHandler handler, Connection connection, File decompressedFolder, ImportFile importSourceFile, MetaDataSaxHandler metadataHandler, Translator translator) throws Exception {
-      MetaData metadata = checkMetadata(metadataHandler, importSourceFile);
-      initializeHandler(connection, handler, metadata, translator);
-      processImportFile(decompressedFolder, importSourceFile.getFileName(), handler);
+   private void process(BaseDbSaxHandler handler, Connection connection, ImportFile importSourceFile) throws Exception {
+      MetaData metadata = checkMetadata(importSourceFile);
+      initializeHandler(connection, handler, metadata);
+      processImportFile(importSource, importSourceFile.getFileName(), handler);
    }
 
-   private MetaData checkMetadata(MetaDataSaxHandler metadataHandler, ImportFile importFile) {
+   private MetaData checkMetadata(ImportFile importFile) {
       MetaData metadata = metadataHandler.getMetadata(importFile.getSource());
       if (metadata == null) {
          throw new IllegalStateException(String.format("Invalid metadata for [%s]", importFile.getSource()));
@@ -161,22 +231,35 @@ final class ImportController extends DbTransaction {
       return metadata;
    }
 
-   private void processImportFiles(Connection connection, File decompressedFolder, MetaDataSaxHandler metaHandler, Translator translator, Collection<ImportFile> importFiles, RelationalSaxHandler handler) throws Exception {
-      handler.setDecompressedFolder(decompressedFolder);
-      for (ImportFile item : importFiles) {
-         MetaData metadata = checkMetadata(metaHandler, item);
-         initializeHandler(connection, handler, metadata, translator);
-         if (item.getPriority() > 0) {
-            boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
-            OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s", item.getSource(),
-                  cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
-            if (cleanDataTable) {
-               ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s", item.getSource()));
-            }
+   private void processImportFiles(Collection<ImportFile> importFiles, final RelationalSaxHandler handler) throws Exception {
+      handler.setDecompressedFolder(importSource);
+      for (final ImportFile item : importFiles) {
+         currentSavePoint = item.getSource();
+         if (!doesSavePointExist(currentSavePoint)) {
+            DbTransaction importTx = new DbTransaction() {
+               protected void handleTxWork(Connection connection) throws Exception {
+                  MetaData metadata = checkMetadata(item);
+                  initializeHandler(connection, handler, metadata);
+                  if (item.getPriority() > 0) {
+                     boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+                     OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
+                           item.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
+                     if (cleanDataTable) {
+                        ConnectionHandler.runPreparedUpdate(connection, String.format("DELETE FROM %s",
+                              item.getSource()));
+                     }
+                  }
+                  processImportFile(importSource, item.getFileName(), handler);
+                  handler.store();
+                  handler.reset();
+                  addSavePoint(currentSavePoint);
+               }
+            };
+            importTx.execute();
+         } else {
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
+                  item.getSource()));
          }
-         processImportFile(decompressedFolder, item.getFileName(), handler);
-         handler.store();
-         handler.reset();
       }
    }
 
@@ -192,6 +275,171 @@ final class ImportController extends DbTransaction {
          if (inputStream != null) {
             inputStream.close();
          }
+      }
+   }
+
+   private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
+      OseeConnection connection = null;
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         currentSavePoint = "load.save.points";
+         connection = OseeDbConnection.getConnection();
+         chStmt =
+               ConnectionHandler.runPreparedQuery(connection, QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId,
+                     new Timestamp(sourceExportDate.getTime()));
+         while (chStmt.next()) {
+            String key = chStmt.getString("save_point_name");
+            savePoints.put(key, new SavePoint(key));
+         }
+         addSavePoint(currentSavePoint);
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
+      }
+   }
+
+   private String asSavePointName(String sourceName) {
+      return SAVE_POINT_PREFIX + sourceName;
+   }
+
+   private boolean doesSavePointExist(String sourceName) {
+      return savePoints.containsKey(asSavePointName(sourceName));
+   }
+
+   private void addSavePoint(String sourceName) {
+      String key = asSavePointName(sourceName);
+      SavePoint point = savePoints.get(key);
+      if (point == null) {
+         point = new SavePoint(key);
+         savePoints.put(key, point);
+      }
+   }
+
+   private void reportError(String sourceName, Throwable ex) {
+      String key = asSavePointName(sourceName);
+      SavePoint point = savePoints.get(key);
+      if (point == null) {
+         point = new SavePoint(key);
+         savePoints.put(key, point);
+      }
+      point.addError(ex);
+   }
+
+   private final class ImportBranchesTx extends DbTransaction {
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
+       */
+      @Override
+      protected void handleTxWork(Connection connection) throws Exception {
+         // Import Branches
+         currentSavePoint = manifestHandler.getBranchFile().getSource();
+
+         int[] branchesStored = new int[0];
+         BranchDataSaxHandler branchHandler = BranchDataSaxHandler.createWithCacheAll();
+         process(branchHandler, connection, manifestHandler.getBranchFile());
+
+         if (!doesSavePointExist(currentSavePoint)) {
+            branchesStored = branchHandler.store(true, branchesToImport);
+            addSavePoint(currentSavePoint);
+         } else {
+            // This step has already been performed - only get branches needed for remaining operations
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
+                  currentSavePoint));
+            branchesStored = branchHandler.store(false, branchesToImport);
+         }
+
+         // Import Branch Definitions
+         currentSavePoint = manifestHandler.getBranchDefinitionsFile().getSource();
+         if (!doesSavePointExist(currentSavePoint)) {
+            BranchDefinitionsSaxHandler definitionsHandler = BranchDefinitionsSaxHandler.createWithCacheAll();
+            definitionsHandler.setStoredBranches(branchesStored);
+            process(definitionsHandler, connection, manifestHandler.getBranchDefinitionsFile());
+            definitionsHandler.store();
+            addSavePoint(currentSavePoint);
+         } else {
+            OseeLog.log(this.getClass(), Level.INFO, String.format("Save point found for: [%s] - skipping",
+                  currentSavePoint));
+         }
+      }
+
+   }
+
+   private final class CommitImportSavePointsTx extends DbTransaction {
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction#handleTxWork(java.sql.Connection)
+       */
+      @Override
+      protected void handleTxWork(Connection connection) throws Exception {
+         if (manifestHandler != null && translator != null) {
+            int importIdIndex = SequenceManager.getNextImportId();
+            String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
+            Timestamp importDate = new Timestamp(new Date().getTime());
+            Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
+                  sourceDatabaseId, exportDate, importDate);
+
+            translator.store(connection, importIdIndex);
+
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (SavePoint savePoint : savePoints.values()) {
+               int status = 1;
+               String comment = EMPTY_STRING;
+               if (savePoint.hasErrors()) {
+                  status = -1;
+                  StringBuilder builder = new StringBuilder();
+                  for (Throwable ex : savePoint.getErrors()) {
+                     builder.append(Lib.exceptionToString(ex).replaceAll("\n", " "));
+                  }
+                  if (builder.length() < 4000) {
+                     comment = builder.toString();
+                  } else {
+                     comment = builder.substring(0, 3999);
+                  }
+               }
+               data.add(new Object[] {importIdIndex, savePoint.getName(), status, comment});
+            }
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
+         } else {
+            throw new Exception("Import didn't make it past initialization");
+         }
+      }
+   }
+
+   private final class SavePoint {
+      private String savePointName;
+      private List<Throwable> errors;
+
+      public SavePoint(String name) {
+         this.savePointName = name;
+         this.errors = null;
+      }
+
+      public String getName() {
+         return savePointName;
+      }
+
+      public void addError(Throwable ex) {
+         if (errors == null) {
+            errors = new ArrayList<Throwable>();
+         }
+         if (!errors.contains(ex)) {
+            errors.add(ex);
+         }
+      }
+
+      public List<Throwable> getErrors() {
+         if (errors == null) {
+            return Collections.emptyList();
+         } else {
+            return this.errors;
+         }
+      }
+
+      public boolean hasErrors() {
+         return errors != null;
       }
    }
 }

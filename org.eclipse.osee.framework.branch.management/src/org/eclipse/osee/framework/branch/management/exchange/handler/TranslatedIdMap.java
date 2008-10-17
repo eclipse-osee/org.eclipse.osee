@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException
  */
 public class TranslatedIdMap {
    private static final String INSERT_INTO_IMPORT_INDEX_MAP =
-         "INSERT INTO osee_import_index_map (import_id, original_id, mapped_id) VALUES (?, ?, ?)";
+         "INSERT INTO osee_import_index_map (sequence_id, original_id, mapped_id) VALUES (?, ?, ?)";
 
    private static final String SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME =
-         "SELECT original_id, mapped_id FROM osee_import_map oim, osee_import_index_map oiim WHERE oim.import_id = oiim.import_id AND oim.db_source_guid = ? AND oim.sequence_name = ?";
+         "SELECT original_id, mapped_id FROM osee_import_source ois, osee_import_map oim, osee_import_index_map oiim WHERE ois.import_id = oim.import_id AND oim.sequence_id = oiim.sequence_id AND oiim.sequence_id = oiim.sequence_id AND ois.db_source_guid = ?  AND oim.sequence_name = ?";
 
    private final String sequenceName;
    private final Set<String> aliases;
@@ -130,12 +130,16 @@ public class TranslatedIdMap {
       }
    }
 
-   public void store(Connection connection, int importId) throws OseeDataStoreException {
-      if (!newIds.isEmpty()) {
+   public boolean hasItemsToStore() {
+      return !newIds.isEmpty();
+   }
+
+   public void store(Connection connection, int sequenceId) throws OseeDataStoreException {
+      if (hasItemsToStore()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Long original : newIds) {
             Long mapped = originalToMapped.get(original);
-            data.add(new Object[] {importId, original, mapped});
+            data.add(new Object[] {sequenceId, original, mapped});
          }
          ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
       }

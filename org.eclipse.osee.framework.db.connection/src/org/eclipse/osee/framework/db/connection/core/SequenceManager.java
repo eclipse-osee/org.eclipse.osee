@@ -39,12 +39,13 @@ public class SequenceManager {
    public static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
    public static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
    public static final String IMPORT_ID_SEQ = "SKYNET_IMPORT_ID_SEQ";
+   public static final String IMPORT_MAPPED_INDEX_SEQ = "SKYNET_IMPORT_MAPPED_INDEX_SEQ";
    public static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
 
    public static final String[] sequenceNames =
          new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_PROVIDER_TYPE_ID_SEQ, ATTR_ID_SEQ,
                ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ,
-               TRANSACTION_ID_SEQ, IMPORT_ID_SEQ, TTE_SESSION_SEQ};
+               TRANSACTION_ID_SEQ, IMPORT_ID_SEQ, IMPORT_MAPPED_INDEX_SEQ, TTE_SESSION_SEQ};
 
    private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
@@ -154,6 +155,10 @@ public class SequenceManager {
       return (int) getNextSequence(IMPORT_ID_SEQ);
    }
 
+   public static int getNextImportMappedIndexId() throws OseeDataStoreException {
+      return (int) getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
+   }
+
    private static final class SequenceRange {
       private long currentValue;
       private long lastAvailable;
@@ -178,4 +183,5 @@ public class SequenceManager {
          }
       }
    }
+
 }

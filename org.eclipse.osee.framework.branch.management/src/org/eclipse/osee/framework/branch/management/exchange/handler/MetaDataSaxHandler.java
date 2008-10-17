@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
@@ -81,26 +83,34 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   public void checkAndLoadTargetDbMetadata(Connection connection) throws Exception {
-      Map<String, MetaData> targetTables = getTargetDbMetadata(connection);
+   public void checkAndLoadTargetDbMetadata() throws Exception {
+      OseeConnection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         Map<String, MetaData> targetTables = getTargetDbMetadata(connection);
 
-      StringBuffer errorMessage = new StringBuffer();
-      for (String tableName : targetTables.keySet()) {
-         MetaData sourceMeta = this.importMetadataMap.get(tableName);
-         MetaData destinationMeta = targetTables.get(tableName);
-         Collection<String> sourceColumns = sourceMeta.getColumnNames();
-         for (String destinationColumn : destinationMeta.getColumnNames()) {
-            if (!sourceColumns.contains(destinationColumn)) {
-               errorMessage.append(String.format(
-                     "Target column not found in source database.\nTable:[%s] - [%s not in (%s)]\n", tableName,
-                     destinationColumn, sourceColumns));
+         StringBuffer errorMessage = new StringBuffer();
+         for (String tableName : targetTables.keySet()) {
+            MetaData sourceMeta = this.importMetadataMap.get(tableName);
+            MetaData destinationMeta = targetTables.get(tableName);
+            Collection<String> sourceColumns = sourceMeta.getColumnNames();
+            for (String destinationColumn : destinationMeta.getColumnNames()) {
+               if (!sourceColumns.contains(destinationColumn)) {
+                  errorMessage.append(String.format(
+                        "Target column not found in source database.\nTable:[%s] - [%s not in (%s)]\n", tableName,
+                        destinationColumn, sourceColumns));
+               }
             }
          }
+         if (errorMessage.length() > 0) {
+            throw new Exception(errorMessage.toString());
+         }
+         this.targetMetadataMap.putAll(targetTables);
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
       }
-      if (errorMessage.length() > 0) {
-         throw new Exception(errorMessage.toString());
-      }
-      this.targetMetadataMap.putAll(targetTables);
    }
 
    private Map<String, MetaData> getTargetDbMetadata(Connection connection) throws SQLException, OseeDataStoreException {

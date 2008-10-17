@@ -11,15 +11,20 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.Activator;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -35,6 +40,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       return new RelationalSaxHandler(false, cacheLimit);
    }
 
+   private final List<IResourceLocator> transferredBinaryContent;
    private final Set<Integer> branchesToImport;
    private File decompressedFolder;
 
@@ -42,6 +48,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
       this.decompressedFolder = null;
+      this.transferredBinaryContent = new ArrayList<IResourceLocator>();
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -66,7 +73,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    }
 
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
-      String relativePath = Lib.isWindows() ? uriValue :  uriValue.replaceAll("\\\\", File.separator);
+      String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
       if (this.decompressedFolder != null) {
          File entry = new File(decompressedFolder, entrySearch);
@@ -79,6 +86,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             IResourceLocator locator =
                   Activator.getInstance().getResourceManager().save(locatorHint,
                         new ZipBinaryResource(entry, locatorHint), new Options());
+            transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
             throw new RuntimeException(String.format(
@@ -88,7 +96,7 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
          throw new RuntimeException("Uncompressed folder was Null.");
       }
    }
-   
+
    @Override
    protected void processData(Map<String, String> fieldMap) throws Exception {
       boolean process = true;
@@ -122,9 +130,41 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                }
             }
          }
+
+         if (this.transferredBinaryContent.size() > 0) {
+            throw new Exception("Test Exception");
+         }
       } catch (Exception ex) {
-         // TODO Clean up binary content transfer;
+         cleanUpBinaryContent();
          throw new Exception(String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler#reset()
+    */
+   @Override
+   public void reset() {
+      transferredBinaryContent.clear();
+      super.reset();
+   }
+
+   private void cleanUpBinaryContent() {
+      StringBuilder errorMessage = new StringBuilder();
+      IResourceManager manager = Activator.getInstance().getResourceManager();
+      for (IResourceLocator locator : transferredBinaryContent) {
+         try {
+            manager.delete(locator);
+         } catch (Exception ex) {
+            errorMessage.append(String.format("Error deleting [%s]\n", locator.getLocation().toASCIIString()));
+
+         }
+      }
+      if (errorMessage.length() > 0) {
+         OseeLog.log(
+               this.getClass(),
+               Level.SEVERE,
+               "Error deleting binary data after transfer error. Please delete all content manually. " + errorMessage.toString());
       }
    }
 }

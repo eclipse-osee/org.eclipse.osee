@@ -109,7 +109,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public int[] store(int... branchesToImport) throws Exception {
+   public int[] store(boolean writeToDb, int... branchesToImport) throws Exception {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
       branchesToStore = checkTargetDbBranches(branchesToStore);
@@ -139,7 +139,9 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          }
          index++;
       }
-      super.store(getConnection());
+      if (writeToDb) {
+         super.store(getConnection());
+      }
       return toReturn;
    }
 

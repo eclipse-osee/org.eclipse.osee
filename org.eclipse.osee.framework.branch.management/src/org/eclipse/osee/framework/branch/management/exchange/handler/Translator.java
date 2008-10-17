@@ -11,21 +11,21 @@
 package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeConnection;
+import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.SequenceManager;
 import org.eclipse.osee.framework.db.connection.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
 public class Translator {
    private static final String INSERT_INTO_IMPORT_MAP =
-         "INSERT INTO osee_import_map (import_id, sequence_name, db_source_guid, insert_time) VALUES (?, ?, ?, ?)";
+         "INSERT INTO osee_import_map (import_id, sequence_id, sequence_name) VALUES (?, ?, ?)";
 
    private static final String[] ARTIFACT_ID_ALIASES =
          new String[] {"art_id", "associated_art_id", "a_order", "b_order", "a_order_value", "b_order_value",
@@ -36,6 +36,7 @@ public class Translator {
 
    private final List<TranslatedIdMap> translators;
    private final Map<String, TranslatedIdMap> translatorMap;
+
    private boolean useOriginalIds;
 
    public Translator() {
@@ -69,29 +70,38 @@ public class Translator {
       return translators;
    }
 
-   public void loadTranslators(Connection connection, String sourceDatabaseId) throws OseeDataStoreException {
-      for (TranslatedIdMap translator : translators) {
-         translator.load(connection, sourceDatabaseId);
+   public void loadTranslators(String sourceDatabaseId) throws OseeDataStoreException {
+      OseeConnection connection = null;
+      try {
+         connection = OseeDbConnection.getConnection();
+         for (TranslatedIdMap translator : translators) {
+            translator.load(connection, sourceDatabaseId);
+         }
+      } finally {
+         if (connection != null) {
+            connection.close();
+         }
       }
    }
 
-   public void storeImport(Connection connection, String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
-      Timestamp timeStamp = new Timestamp(sourceExportDate.getTime());
+   public List<String> getSequenceNames() {
+      List<String> toReturn = new ArrayList<String>();
+      for (TranslatedIdMap translatedIdMap : translators) {
+         toReturn.add(translatedIdMap.getSequence());
+      }
+      return toReturn;
+   }
 
-      Map<Integer, TranslatedIdMap> importIdIndex = new HashMap<Integer, TranslatedIdMap>();
+   public void store(Connection connection, int importIdIndex) throws OseeDataStoreException {
       List<Object[]> data = new ArrayList<Object[]>();
-      for (TranslatedIdMap entry : translators) {
-         int importId = SequenceManager.getNextImportId();
-         String sequence = entry.getSequence();
-         importIdIndex.put(importId, entry);
-         data.add(new Object[] {importId, sequence, sourceDatabaseId, timeStamp});
+      for (TranslatedIdMap translatedIdMap : translators) {
+         if (translatedIdMap.hasItemsToStore()) {
+            int importSeqId = SequenceManager.getNextImportMappedIndexId();
+            data.add(new Object[] {importIdIndex, importSeqId, translatedIdMap.getSequence()});
+            translatedIdMap.store(connection, importSeqId);
+         }
       }
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
-
-      for (Integer importIndex : importIdIndex.keySet()) {
-         TranslatedIdMap translatedIdMap = importIdIndex.get(importIndex);
-         translatedIdMap.store(connection, importIndex);
-      }
    }
 
    public boolean isTranslatable(String name) {
