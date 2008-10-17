@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -131,7 +130,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                                  IWorkbenchPage.VIEW_VISIBLE);
                      mergeView.explore(sourceBranch, destBranch, tranId, commitTrans);
                   } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                   }
                }
             });
@@ -541,16 +540,16 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
                final Branch sourceBranch = BranchPersistenceManager.getBranch(sourceBranchId);
                if (sourceBranch == null) {
-                  OSEELog.logWarning(SkynetGuiPlugin.class,
-                        "Merge View can't init due to invalid source branch id " + sourceBranchId, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                        "Merge View can't init due to invalid source branch id " + sourceBranchId);
                   xMergeViewer.setLabel("Could not restore this Merge View");
                   return;
                }
                destBranchId = memento.getInteger(DEST_BRANCH_ID);
                final Branch destBranch = BranchPersistenceManager.getBranch(destBranchId);
                if (destBranch == null) {
-                  OSEELog.logWarning(SkynetGuiPlugin.class,
-                        "Merge View can't init due to invalid destination branch id " + sourceBranchId, false);
+                  OseeLog.log(SkynetGuiPlugin.class, Level.WARNING,
+                        "Merge View can't init due to invalid destination branch id " + sourceBranchId);
                   xMergeViewer.setLabel("Could not restore this Merge View");
                   return;
                }
@@ -567,7 +566,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(SkynetGuiPlugin.class, "Merge View error on init", ex, false);
+         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Merge View error on init", ex);
       }
    }
    private static final String INPUT = "input";
