@@ -68,7 +68,7 @@ final class ImportController {
          "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
 
    private static final String INSERT_INTO_IMPORT_SAVE_POINT =
-         "INSERT INTO osee_import_save_point (import_id, save_point_name, status, comment) VALUES (?, ?, ?, ?)";
+         "INSERT INTO osee_import_save_point (import_id, save_point_name, status, state_error) VALUES (?, ?, ?, ?)";
 
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
          "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";

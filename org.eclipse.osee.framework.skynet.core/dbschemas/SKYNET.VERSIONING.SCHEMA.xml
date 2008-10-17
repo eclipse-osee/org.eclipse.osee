@@ -576,9 +576,9 @@
 		<Column id="IMPORT_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="SAVE_POINT_NAME" defaultValue="not null" type="VARCHAR" limits="128"/>
 		<Column id="STATUS" defaultValue="not null" type="INTEGER" />
-		<Column id="COMMENT" type="VARCHAR" limits="4000" />
-		<Constraint schema="OSEE" id="OSEE_IMPORT_SAVE_POINT_II_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID, SAVE_POINT_NAME" />
-		<Constraint schema="OSEE" id="OSEE_IMPORT_SAVE_POINT_II_FK" type="FOREIGN KEY" appliesTo="IMPORT_ID" deferrable="true">
+		<Column id="STATE_ERROR" type="VARCHAR" limits="4000" />
+		<Constraint schema="OSEE" id="OSEE_IMP_SAVE_POINT_II_PK" type="PRIMARY KEY" appliesTo="IMPORT_ID, SAVE_POINT_NAME" />
+		<Constraint schema="OSEE" id="OSEE_IMP_SAVE_POINT_II_FK" type="FOREIGN KEY" appliesTo="IMPORT_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_IMPORT_SOURCE" column="IMPORT_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
