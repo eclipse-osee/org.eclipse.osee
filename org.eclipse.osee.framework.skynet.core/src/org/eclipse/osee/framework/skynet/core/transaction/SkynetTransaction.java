@@ -164,27 +164,7 @@ public class SkynetTransaction {
       int queryId = transactionJoin.getQueryId();
       
       try {
-//    	//filter artifact deleted relations  
-//    	Map<Integer, ModificationType> deletedRelationDataItems = new HashMap<Integer, ModificationType>();  
-//    	for(ITransactionData transactionData : transactionItems.keySet()){
-//    		if(transactionData instanceof RelationTransactionData){
-//    			RelationTransactionData relationTransactionData = (RelationTransactionData)transactionData;
-//    			if(relationTransactionData.getModificationType() == ModificationType.ARTIFACT_DELETED){
-//    				deletedRelationDataItems.put(relationTransactionData.getLink().getRelationId(), relationTransactionData.getModificationType());
-//    			}
-//    		}
-//    	}
-    	  
 	     for (ITransactionData transactionData : transactionItems.keySet()) {
-//	    	//To stop relation link reorders from changing the gamma IDs of links that were deleted 
-//	        //Because the artifact was deleted.
-//	        if(transactionData instanceof RelationTransactionData){
-//	        	RelationTransactionData relationTransactionData = (RelationTransactionData)transactionData;
-//	        	if(deletedRelationDataItems.containsKey(relationTransactionData.getLink().getRelationId()) && relationTransactionData.getModificationType() !=  ModificationType.ARTIFACT_DELETED){
-//	        		continue;
-//	        	}
-//	        }
-		        
 	        //This must be called before adding the new transaction information, because it
 	        //will update the current transaction to 0.
 	        transactionData.setPreviousTxNotCurrent(connection, insertTime, queryId);
