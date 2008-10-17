@@ -76,7 +76,7 @@ public class HttpBranchCreation {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
-      parameters.put("authorId", "-1");
+      parameters.put("authorId", Integer.toString(SkynetAuthentication.getUser().getArtId()));
       parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(null)));
       parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
       if (shortBranchName != null && shortBranchName.length() > 0) {
