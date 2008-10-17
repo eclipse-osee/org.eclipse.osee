@@ -130,10 +130,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
                }
             }
          }
-
-         if (this.transferredBinaryContent.size() > 0) {
-            throw new Exception("Test Exception");
-         }
       } catch (Exception ex) {
          cleanUpBinaryContent();
          throw new Exception(String.format("Error processing in [%s]", getMetaData().getTableName()), ex);
