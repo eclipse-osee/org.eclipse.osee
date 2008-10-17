@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -285,9 +286,8 @@ public class WordTemplateProcessor {
    }
 
    private void processArtifactSet(final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
-      nonTemplateArtifacts.clear();
-
-      if (outlineNumber != null) {
+	  nonTemplateArtifacts.clear();
+	   if (outlineNumber != null) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
 
@@ -709,7 +709,9 @@ public class WordTemplateProcessor {
          Displays.ensureInDisplayThread(new Runnable() {
 
             public void run() {
-               ArtifactExplorer.explore(artifacts);
+            	ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
+            	nonTempArtifacts.addAll(artifacts);
+               ArtifactExplorer.explore(nonTempArtifacts);
             }
          });
       }
