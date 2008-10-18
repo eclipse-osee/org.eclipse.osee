@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.CharBuffer;
+import java.util.regex.Matcher;
 
 /**
  * @author Ryan D. Brooks
@@ -233,5 +234,18 @@ public class ChangeSet {
 
    public String toString() {
       return new String(toCharArray());
+   }
+   
+   /**
+    * This function calls reset(source) on your matcher and will replace all matched items in the ChangesSet source.
+    * 
+    * @param matcher
+    * @param replacement
+    */
+   public void replaceAll(Matcher matcher, String replacement){
+      matcher.reset(source);
+      while(matcher.find()){
+         replace(matcher.start(), matcher.end(), replacement);
+      }
    }
 }
